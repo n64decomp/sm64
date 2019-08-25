@@ -1,0 +1,417 @@
+# act_name_ Names
+.balign 4
+act_name_00: # 0x0200E4C0
+.byte _("BIG BOB-OMB ON THE SUMMIT")
+
+.balign 4
+act_name_01: # 0x0200E4D0
+.byte _("FOOTRACE WITH KOOPA THE QUICK")
+
+.balign 4
+act_name_02: # 0x0200E4E0
+.byte _("SHOOT TO THE ISLAND IN THE SKY")
+
+.balign 4
+act_name_03: # 0x0200E4F0
+.byte _("FIND THE 8 RED COINS")
+
+.balign 4
+act_name_04: # 0x0200E4FC
+.byte _("MARIO WINGS TO THE SKY")
+
+.balign 4
+act_name_05: # 0x0200E50C
+.byte _("BEHIND CHAIN CHOMP'S GATE")
+
+.balign 4
+act_name_06: # 0x0200E51C
+.byte _("CHIP OFF WHOMP'S BLOCK")
+
+.balign 4
+act_name_07: # 0x0200E52C
+.byte _("TO THE TOP OF THE FORTRESS")
+
+.balign 4
+act_name_08: # 0x0200E53C
+.byte _("SHOOT INTO THE WILD BLUE")
+
+.balign 4
+act_name_09: # 0x0200E54C
+.byte _("RED COINS ON THE FLOATING ISLE")
+
+.balign 4
+act_name_10: # 0x0200E55C
+.byte _("FALL ONTO THE CAGED ISLAND")
+
+.balign 4
+act_name_11: # 0x0200E568
+.byte _("BLAST AWAY THE WALL")
+
+.balign 4
+act_name_12: # 0x0200E578
+.byte _("PLUNDER IN THE SUNKEN SHIP")
+
+.balign 4
+act_name_13: # 0x0200E588
+.byte _("CAN THE EEL COME OUT TO PLAY?")
+
+.balign 4
+act_name_14: # 0x0200E598
+.byte _("TREASURE OF THE OCEAN CAVE")
+
+.balign 4
+act_name_15: # 0x0200E5A8
+.byte _("RED COINS ON THE SHIP AFLOAT")
+
+.balign 4
+act_name_16: # 0x0200E5B8
+.byte _("BLAST TO THE STONE PILLAR")
+
+.balign 4
+act_name_17: # 0x0200E5C8
+.byte _("THROUGH THE JET STREAM")
+
+.balign 4
+act_name_18: # 0x0200E5D8
+.byte _("SLIP SLIDIN' AWAY")
+
+.balign 4
+act_name_19: # 0x0200E5E8
+.byte _("LI'L PENGUIN LOST")
+
+.balign 4
+act_name_20: # 0x0200E5F8
+.byte _("BIG PENGUIN RACE")
+
+.balign 4
+act_name_21: # 0x0200E60C
+.byte _("FROSTY SLIDE FOR 8 RED COINS")
+
+.balign 4
+act_name_22: # 0x0200E61C
+.byte _("SNOWMAN'S LOST HIS HEAD")
+
+.balign 4
+act_name_23: # 0x0200E62C
+.byte _("WALL KICKS WILL WORK")
+
+.balign 4
+act_name_24: # 0x0200E640
+.byte _("GO ON A GHOST HUNT")
+
+.balign 4
+act_name_25: # 0x0200E650
+.byte _("RIDE BIG BOO'S MERRY-GO-ROUND")
+
+.balign 4
+act_name_26: # 0x0200E660
+.byte _("SECRET OF THE HAUNTED BOOKS")
+
+.balign 4
+act_name_27: # 0x0200E670
+.byte _("SEEK THE 8 RED COINS")
+
+.balign 4
+act_name_28: # 0x0200E680
+.byte _("BIG BOO'S BALCONY")
+
+.balign 4
+act_name_29: # 0x0200E690
+.byte _("EYE TO EYE IN THE SECRET ROOM")
+
+.balign 4
+act_name_30: # 0x0200E6A0
+.byte _("SWIMMING BEAST IN THE CAVERN")
+
+.balign 4
+act_name_31: # 0x0200E6B0
+.byte _("ELEVATE FOR 8 RED COINS")
+
+.balign 4
+act_name_32: # 0x0200E6C0
+.byte _("METAL-HEAD MARIO CAN MOVE!")
+
+.balign 4
+act_name_33: # 0x0200E6CC
+.byte _("NAVIGATING THE TOXIC MAZE")
+
+.balign 4
+act_name_34: # 0x0200E6D8
+.byte _("A-MAZE-ING EMERGENCY EXIT")
+
+.balign 4
+act_name_35: # 0x0200E6EC
+.byte _("WATCH FOR ROLLING ROCKS")
+
+.balign 4
+act_name_36: # 0x0200E6FC
+.byte _("BOIL THE BIG BULLY")
+
+.balign 4
+act_name_37: # 0x0200E70C
+.byte _("BULLY THE BULLIES")
+
+.balign 4
+act_name_38: # 0x0200E71C
+.byte _("8-COIN PUZZLE WITH 15 PIECES")
+
+.balign 4
+act_name_39: # 0x0200E72C
+.byte _("RED-HOT LOG ROLLING")
+
+.balign 4
+act_name_40: # 0x0200E738
+.byte _("HOT-FOOT-IT INTO THE VOLCANO")
+
+.balign 4
+act_name_41: # 0x0200E748
+.byte _("ELEVATOR TOUR IN THE VOLCANO")
+
+.balign 4
+act_name_42: # 0x0200E758
+.byte _("IN THE TALONS OF THE BIG BIRD")
+
+.balign 4
+act_name_43: # 0x0200E76C
+.byte _("SHINING ATOP THE PYRAMID")
+
+.balign 4
+act_name_44: # 0x0200E780
+.byte _("INSIDE THE ANCIENT PYRAMID")
+
+.balign 4
+act_name_45: # 0x0200E794
+.byte _("STAND TALL ON THE FOUR PILLARS")
+
+.balign 4
+act_name_46: # 0x0200E7A4
+.byte _("FREE FLYING FOR 8 RED COINS")
+
+.balign 4
+act_name_47: # 0x0200E7B4
+.byte _("PYRAMID PUZZLE")
+
+.balign 4
+act_name_48: # 0x0200E7C8
+.byte _("BOARD BOWSER'S SUB")
+
+.balign 4
+act_name_49: # 0x0200E7D8
+.byte _("CHESTS IN THE CURRENT")
+
+.balign 4
+act_name_50: # 0x0200E7E8
+.byte _("POLE-JUMPING FOR RED COINS")
+
+.balign 4
+act_name_51: # 0x0200E7F8
+.byte _("THROUGH THE JET STREAM")
+
+.balign 4
+act_name_52: # 0x0200E808
+.byte _("THE MANTA RAY'S REWARD")
+
+.balign 4
+act_name_53: # 0x0200E814
+.byte _("COLLECT THE CAPS...")
+
+.balign 4
+act_name_54: # 0x0200E824
+.byte _("SNOWMAN'S BIG HEAD")
+
+.balign 4
+act_name_55: # 0x0200E834
+.byte _("CHILL WITH THE BULLY")
+
+.balign 4
+act_name_56: # 0x0200E844
+.byte _("IN THE DEEP FREEZE")
+
+.balign 4
+act_name_57: # 0x0200E850
+.byte _("WHIRL FROM THE FREEZING POND")
+
+.balign 4
+act_name_58: # 0x0200E860
+.byte _("SHELL SHREDDIN' FOR RED COINS")
+
+.balign 4
+act_name_59: # 0x0200E870
+.byte _("INTO THE IGLOO")
+
+.balign 4
+act_name_60: # 0x0200E87C
+.byte _("SHOCKING ARROW LIFTS!")
+
+.balign 4
+act_name_61: # 0x0200E88C
+.byte _("TOP O' THE TOWN")
+
+.balign 4
+act_name_62: # 0x0200E89C
+.byte _("SECRETS IN THE SHALLOWS & SKY")
+
+.balign 4
+act_name_63: # 0x0200E8AC
+.byte _("EXPRESS ELEVATOR--HURRY UP!")
+
+.balign 4
+act_name_64: # 0x0200E8C0
+.byte _("GO TO TOWN FOR RED COINS")
+
+.balign 4
+act_name_65: # 0x0200E8D0
+.byte _("QUICK RACE THROUGH DOWNTOWN!")
+
+.balign 4
+act_name_66: # 0x0200E8E0
+.byte _("SCALE THE MOUNTAIN")
+
+.balign 4
+act_name_67: # 0x0200E8F0
+.byte _("MYSTERY OF THE MONKEY CAGE")
+
+.balign 4
+act_name_68: # 0x0200E904
+.byte _("SCARY 'SHROOMS, RED COINS")
+
+.balign 4
+act_name_69: # 0x0200E914
+.byte _("MYSTERIOUS MOUNTAINSIDE")
+
+.balign 4
+act_name_70: # 0x0200E924
+.byte _("BREATHTAKING VIEW FROM BRIDGE")
+
+.balign 4
+act_name_71: # 0x0200E934
+.byte _("BLAST TO THE LONELY MUSHROOM")
+
+.balign 4
+act_name_72: # 0x0200E944
+.byte _("PLUCK THE PIRANHA FLOWER")
+
+.balign 4
+act_name_73: # 0x0200E954
+.byte _("THE TIP TOP OF THE HUGE ISLAND")
+
+.balign 4
+act_name_74: # 0x0200E964
+.byte _("REMATCH WITH KOOPA THE QUICK")
+
+.balign 4
+act_name_75: # 0x0200E974
+.byte _("FIVE ITTY BITTY SECRETS")
+
+.balign 4
+act_name_76: # 0x0200E984
+.byte _("WIGGLER'S RED COINS")
+
+.balign 4
+act_name_77: # 0x0200E994
+.byte _("MAKE WIGGLER SQUIRM")
+
+.balign 4
+act_name_78: # 0x0200E9A0
+.byte _("ROLL INTO THE CAGE")
+
+.balign 4
+act_name_79: # 0x0200E9B0
+.byte _("THE PIT AND THE PENDULUMS")
+
+.balign 4
+act_name_80: # 0x0200E9B8
+.byte _("GET A HAND")
+
+.balign 4
+act_name_81: # 0x0200E9C8
+.byte _("STOMP ON THE THWOMP")
+
+.balign 4
+act_name_82: # 0x0200E9DC
+.byte _("TIMED JUMPS ON MOVING BARS")
+
+.balign 4
+act_name_83: # 0x0200E9EC
+.byte _("STOP TIME FOR RED COINS")
+
+.balign 4
+act_name_84: # 0x0200E9F8
+.byte _("CRUISER CROSSING THE RAINBOW")
+
+.balign 4
+act_name_85: # 0x0200EA04
+.byte _("THE BIG HOUSE IN THE SKY")
+
+.balign 4
+act_name_86: # 0x0200EA10
+.byte _("COINS AMASSED IN A MAZE")
+
+.balign 4
+act_name_87: # 0x0200EA20
+.byte _("SWINGIN' IN THE BREEZE")
+
+.balign 4
+act_name_88: # 0x0200EA34
+.byte _("TRICKY TRIANGLES!")
+
+.balign 4
+act_name_89: # 0x0200EA44
+.byte _("SOMEWHERE OVER THE RAINBOW")
+
+.balign 4
+act_name_90: # 0x0200EA54
+.byte _("ONE OF THE CASTLE'S SECRET STARS!")
+
+.balign 4
+act_name_91: # 0x0200EA60
+.byte _("")
+
+.balign 4
+act_name_92: # 0x0200EA70
+.byte _("")
+
+.balign 4
+act_name_93: # 0x0200EA80
+.byte _("")
+
+.balign 4
+act_name_94: # 0x0200EA94
+.byte _("")
+
+.balign 4
+act_name_95: # 0x0200EAA8
+.byte _("")
+
+.balign 4
+act_name_96: # 0x0200EABC
+.byte _("")
+
+# act names table 0x0200EAD0
+.balign 4
+glabel seg2_act_name_table
+.word act_name_00, act_name_01, act_name_02, act_name_03
+.word act_name_04, act_name_05, act_name_06, act_name_07
+.word act_name_08, act_name_09, act_name_10, act_name_11
+.word act_name_12, act_name_13, act_name_14, act_name_15
+.word act_name_16, act_name_17, act_name_18, act_name_19
+.word act_name_20, act_name_21, act_name_22, act_name_23
+.word act_name_24, act_name_25, act_name_26, act_name_27
+.word act_name_28, act_name_29, act_name_30, act_name_31
+.word act_name_32, act_name_33, act_name_34, act_name_35
+.word act_name_36, act_name_37, act_name_38, act_name_39
+.word act_name_40, act_name_41, act_name_42, act_name_43
+.word act_name_44, act_name_45, act_name_46, act_name_47
+.word act_name_48, act_name_49, act_name_50, act_name_51
+.word act_name_52, act_name_53, act_name_54, act_name_55
+.word act_name_56, act_name_57, act_name_58, act_name_59
+.word act_name_60, act_name_61, act_name_62, act_name_63
+.word act_name_64, act_name_65, act_name_66, act_name_67
+.word act_name_68, act_name_69, act_name_70, act_name_71
+.word act_name_72, act_name_73, act_name_74, act_name_75
+.word act_name_76, act_name_77, act_name_78, act_name_79
+.word act_name_80, act_name_81, act_name_82, act_name_83
+.word act_name_84, act_name_85, act_name_86, act_name_87
+.word act_name_88, act_name_89, act_name_90, act_name_91
+.word act_name_92, act_name_93, act_name_94, act_name_95
+.word act_name_96, 0x0

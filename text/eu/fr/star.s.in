@@ -1,0 +1,417 @@
+# act names (EU, Français)
+.balign 4
+act_name_00: # 0x1900A694
+.byte _("ROI BOB-OMB DU SOMMET")
+
+.balign 4
+act_name_01: # 0x1900A6AC
+.byte _("COURSE CONTRE KOOPA-RAPIDO")
+
+.balign 4
+act_name_02: # 0x1900A6C8
+.byte _("CANON VERS L'ILE PERCHEE")
+
+.balign 4
+act_name_03: # 0x1900A6E4
+.byte _("LES 8 PIECES ROUGES")
+
+.balign 4
+act_name_04: # 0x1900A6F8
+.byte _("VOL DU MARIO AILE")
+
+.balign 4
+act_name_05: # 0x1900A70C
+.byte _("DERRIERE LA CAGE DE CHOMP")
+
+.balign 4
+act_name_06: # 0x1900A728
+.byte _("DESTRUCTION DU GROS WHOMP")
+
+.balign 4
+act_name_07: # 0x1900A744
+.byte _("EN HAUT DE LA FORTERESSE")
+
+.balign 4
+act_name_08: # 0x1900A760
+.byte _("CANON VERS LES CIEUX")
+
+.balign 4
+act_name_09: # 0x1900A778
+.byte _("PIECES ROUGES DANS LES AIRS")
+
+.balign 4
+act_name_10: # 0x1900A794
+.byte _("TOMBEZ DANS LA CAGE PERCHEE")
+
+.balign 4
+act_name_11: # 0x1900A7B0
+.byte _("CANON VERS UN MUR...")
+
+.balign 4
+act_name_12: # 0x1900A7C8
+.byte _("PILLEZ LE BATEAU COULE")
+
+.balign 4
+act_name_13: # 0x1900A7E0
+.byte _("L'ANGUILLE VEUT FAIRE JOUJOU?")
+
+.balign 4
+act_name_14: # 0x1900A800
+.byte _("TRESOR DANS LA CAVERNE")
+
+.balign 4
+act_name_15: # 0x1900A818
+.byte _("PIECES ROUGES A BORD!")
+
+.balign 4
+act_name_16: # 0x1900A830
+.byte _("CANON VERS LES PILIERS")
+
+.balign 4
+act_name_17: # 0x1900A848
+.byte _("DANS LE GEYSER")
+
+.balign 4
+act_name_18: # 0x1900A858
+.byte _("GLISSADE SUR GLACE")
+
+.balign 4
+act_name_19: # 0x1900A86C
+.byte _("PETIT PINGOUIN PERDU")
+
+.balign 4
+act_name_20: # 0x1900A884
+.byte _("COURSE DU PINGOUIN")
+
+.balign 4
+act_name_21: # 0x1900A898
+.byte _("8 PIECES ROUGES GIVREES")
+
+.balign 4
+act_name_22: # 0x1900A8B0
+.byte _("BONHOMME DE NEIGE SANS TETE")
+
+.balign 4
+act_name_23: # 0x1900A8CC
+.byte _("MURS POUR REBONDIR")
+
+.balign 4
+act_name_24: # 0x1900A8E0
+.byte _("CHERCHEZ LE BIG BOO")
+
+.balign 4
+act_name_25: # 0x1900A8F4
+.byte _("MANEGE DES BOOS PAS BEAUX")
+
+.balign 4
+act_name_26: # 0x1900A910
+.byte _("SECRET DES LIVRES HANTES")
+
+.balign 4
+act_name_27: # 0x1900A92C
+.byte _("TROUVEZ LES 8 PIECES ROUGES")
+
+.balign 4
+act_name_28: # 0x1900A948
+.byte _("BALCON DE BIG BOO")
+
+.balign 4
+act_name_29: # 0x1900A95C
+.byte _("UN OEIL SUR LES SALLES SECRETES")
+
+.balign 4
+act_name_30: # 0x1900A97C
+.byte _("GROS BIBI DE LA CAVERNE")
+
+.balign 4
+act_name_31: # 0x1900A994
+.byte _("CHARIOT POUR PIECES ROUGES")
+
+.balign 4
+act_name_32: # 0x1900A9B0
+.byte _("COURSE DE METAL MARIO")
+
+.balign 4
+act_name_33: # 0x1900A9C8
+.byte _("DANS LE LABYRINTHE TOXIQUE")
+
+.balign 4
+act_name_34: # 0x1900A9E4
+.byte _("AU-DESSUS DES GAZ...")
+
+.balign 4
+act_name_35: # 0x1900A9FC
+.byte _("ATTENTION AUX BOULETS")
+
+.balign 4
+act_name_36: # 0x1900AA14
+.byte _("CRAMEZ LE GROS MOCHE")
+
+.balign 4
+act_name_37: # 0x1900AA2C
+.byte _("POUSSEZ LES PETITS MOCHES")
+
+.balign 4
+act_name_38: # 0x1900AA48
+.byte _("PUZZLE DE 8 PIECES ROUGES")
+
+.balign 4
+act_name_39: # 0x1900AA64
+.byte _("BALADE SUR LA BUCHE")
+
+.balign 4
+act_name_40: # 0x1900AA78
+.byte _("CHAUD DANS LE VOLCAN")
+
+.balign 4
+act_name_41: # 0x1900AA90
+.byte _("ASCENCEUR DANS LE VOLCAN")
+
+.balign 4
+act_name_42: # 0x1900AAAC
+.byte _("DANS LES GRIFFES DU VAUTOUR")
+
+.balign 4
+act_name_43: # 0x1900AAC8
+.byte _("AU SOMMET DE LA PYRAMIDE")
+
+.balign 4
+act_name_44: # 0x1900AAE4
+.byte _("DANS L'ANCIENNE PYRAMIDE")
+
+.balign 4
+act_name_45: # 0x1900AB00
+.byte _("LES QUATRE PILIERS DE LA FOI")
+
+.balign 4
+act_name_46: # 0x1900AB20
+.byte _("VOL VERS LES PIECES ROUGES")
+
+.balign 4
+act_name_47: # 0x1900AB3C
+.byte _("ENIGME DE LA PYRAMIDE")
+
+.balign 4
+act_name_48: # 0x1900AB54
+.byte _("SOUS-MARIN DE BOWSER")
+
+.balign 4
+act_name_49: # 0x1900AB6C
+.byte _("COFFRES DANS LE COURANT")
+
+.balign 4
+act_name_50: # 0x1900AB84
+.byte _("PERCHES POUR PIECES ROUGES")
+
+.balign 4
+act_name_51: # 0x1900ABA0
+.byte _("DANS LE GEYSER")
+
+.balign 4
+act_name_52: # 0x1900ABB0
+.byte _("RECOMPENSE DE LA RAIE")
+
+.balign 4
+act_name_53: # 0x1900ABC8
+.byte _("ASSOCIATION DE CASQUETTES...")
+
+.balign 4
+act_name_54: # 0x1900ABE8
+.byte _("GROSSE TETE DU BONHOMME")
+
+.balign 4
+act_name_55: # 0x1900AC00
+.byte _("COMBATTEZ LE GROS MOCHE GIVRE")
+
+.balign 4
+act_name_56: # 0x1900AC20
+.byte _("DANS LE GLAÇON")
+
+.balign 4
+act_name_57: # 0x1900AC30
+.byte _("VRILLE DEPUIS LE LAC")
+
+.balign 4
+act_name_58: # 0x1900AC48
+.byte _("CARAPACE POUR PIECES ROUGES")
+
+.balign 4
+act_name_59: # 0x1900AC64
+.byte _("DANS L'IGLOO")
+
+.balign 4
+act_name_60: # 0x1900AC74
+.byte _("MINI PLATES-FORMES FLECHEES!")
+
+.balign 4
+act_name_61: # 0x1900AC94
+.byte _("SUR LES TOITS")
+
+.balign 4
+act_name_62: # 0x1900ACA4
+.byte _("ENIGME DES CHIFFRES CACHES")
+
+.balign 4
+act_name_63: # 0x1900ACC0
+.byte _("ASCENSEUR EXPRESS!")
+
+.balign 4
+act_name_64: # 0x1900ACD4
+.byte _("PIECES ROUGES: VILLE ENGLOUTIE")
+
+.balign 4
+act_name_65: # 0x1900ACF4
+.byte _("COURSE EN VILLE")
+
+.balign 4
+act_name_66: # 0x1900AD04
+.byte _("ESCALADEZ LA MONTAGNE")
+
+.balign 4
+act_name_67: # 0x1900AD1C
+.byte _("MYSTERE DE LA CAGE DU SINGE")
+
+.balign 4
+act_name_68: # 0x1900AD38
+.byte _("PIECES ROUGES SUR CHAMPIGNON")
+
+.balign 4
+act_name_69: # 0x1900AD58
+.byte _("PAROI MYSTERIEUSE")
+
+.balign 4
+act_name_70: # 0x1900AD6C
+.byte _("PANORAMA DU PONT")
+
+.balign 4
+act_name_71: # 0x1900AD80
+.byte _("CANON VERS LE CHAMPIGNON")
+
+.balign 4
+act_name_72: # 0x1900AD9C
+.byte _("DETRUISEZ LES MAXI-CARNIVORES")
+
+.balign 4
+act_name_73: # 0x1900ADBC
+.byte _("AU SOMMET DE L'ILE DES GEANTS")
+
+.balign 4
+act_name_74: # 0x1900ADDC
+.byte _("KOOPA-RAPIDO, LA VENGEANCE")
+
+.balign 4
+act_name_75: # 0x1900ADF8
+.byte _("CINQ TOUT PETITS SECRETS")
+
+.balign 4
+act_name_76: # 0x1900AE14
+.byte _("LES PIECES ROUGES DU GIGOTEUR")
+
+.balign 4
+act_name_77: # 0x1900AE34
+.byte _("ENERVEZ LE GIGOTEUR")
+
+.balign 4
+act_name_78: # 0x1900AE48
+.byte _("ROULEMENTS DANS LA CAGE")
+
+.balign 4
+act_name_79: # 0x1900AE60
+.byte _("LES TROUS ET LE PENDULE")
+
+.balign 4
+act_name_80: # 0x1900AE78
+.byte _("CHEVAUCHEZ L'AIGUILLE")
+
+.balign 4
+act_name_81: # 0x1900AE90
+.byte _("L'ECRABOUILLEUR")
+
+.balign 4
+act_name_82: # 0x1900AEA0
+.byte _("SAUTS SYNCHRONISES")
+
+.balign 4
+act_name_83: # 0x1900AEB4
+.byte _("L'HEURE PILE POUR LES PIECES")
+
+.balign 4
+act_name_84: # 0x1900AED4
+.byte _("CROISIERE SUR L'ARC-EN-CIEL")
+
+.balign 4
+act_name_85: # 0x1900AEF0
+.byte _("MANOIR DANS LES AIRS")
+
+.balign 4
+act_name_86: # 0x1900AF08
+.byte _("LABYRINTHE DES PIECES ROUGES")
+
+.balign 4
+act_name_87: # 0x1900AF28
+.byte _("BALANÇOIRE CELESTE")
+
+.balign 4
+act_name_88: # 0x1900AF3C
+.byte _("VICIEUX TRIANGLES!")
+
+.balign 4
+act_name_89: # 0x1900AF50
+.byte _("L'ARC-EN-CIEL ET AU-DELA")
+
+.balign 4
+act_name_90: # 0x1900AF6C
+.byte _("UNE ETOILE SECRETE DU CHATEAU")
+
+.balign 4
+act_name_91: # 0x1900AF8C
+.byte _("")
+
+.balign 4
+act_name_92: # 0x1900AF90
+.byte _("")
+
+.balign 4
+act_name_93: # 0x1900AF94
+.byte _("")
+
+.balign 4
+act_name_94: # 0x1900AF98
+.byte _("")
+
+.balign 4
+act_name_95: # 0x1900AF9C
+.byte _("")
+
+.balign 4
+act_name_96: # 0x1900AFA0
+.byte _("")
+
+# act name table
+.balign 4
+glabel act_name_table_eu_fr # 0x1900AFA4
+.word act_name_00, act_name_01, act_name_02, act_name_03
+.word act_name_04, act_name_05, act_name_06, act_name_07
+.word act_name_08, act_name_09, act_name_10, act_name_11
+.word act_name_12, act_name_13, act_name_14, act_name_15
+.word act_name_16, act_name_17, act_name_18, act_name_19
+.word act_name_20, act_name_21, act_name_22, act_name_23
+.word act_name_24, act_name_25, act_name_26, act_name_27
+.word act_name_28, act_name_29, act_name_30, act_name_31
+.word act_name_32, act_name_33, act_name_34, act_name_35
+.word act_name_36, act_name_37, act_name_38, act_name_39
+.word act_name_40, act_name_41, act_name_42, act_name_43
+.word act_name_44, act_name_45, act_name_46, act_name_47
+.word act_name_48, act_name_49, act_name_50, act_name_51
+.word act_name_52, act_name_53, act_name_54, act_name_55
+.word act_name_56, act_name_57, act_name_58, act_name_59
+.word act_name_60, act_name_61, act_name_62, act_name_63
+.word act_name_64, act_name_65, act_name_66, act_name_67
+.word act_name_68, act_name_69, act_name_70, act_name_71
+.word act_name_72, act_name_73, act_name_74, act_name_75
+.word act_name_76, act_name_77, act_name_78, act_name_79
+.word act_name_80, act_name_81, act_name_82, act_name_83
+.word act_name_84, act_name_85, act_name_86, act_name_87
+.word act_name_88, act_name_89, act_name_90, act_name_91
+.word act_name_92, act_name_93, act_name_94, act_name_95
+.word act_name_96, 0x0

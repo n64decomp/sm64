@@ -1,0 +1,56 @@
+glabel ccm_seg7_trajectory_penguin_race # 0x07023604 - 0x070237A6
+trajectory_init
+trajectory_pos /*pos*/ -4762,  6660, -6143
+trajectory_pos /*pos*/ -4133,  6455, -6100
+trajectory_pos /*pos*/ -2000,  6100, -5944
+trajectory_pos /*pos*/ -1200,  6033, -5833
+trajectory_pos /*pos*/  1022,  5611, -6033
+trajectory_pos /*pos*/  3833,  5033, -6233
+trajectory_pos /*pos*/  6055,  4598, -5766
+trajectory_pos /*pos*/  6677,  4462, -4877
+trajectory_pos /*pos*/  6277,  4417, -3344
+trajectory_pos /*pos*/  4788,  4280, -1844
+trajectory_pos /*pos*/  2211,  4086,  -555
+trajectory_pos /*pos*/   522,  3687,  -222
+trajectory_pos /*pos*/  -724,  3443,  -466
+trajectory_pos /*pos*/ -1350,  3302, -1288
+trajectory_pos /*pos*/ -1255,  3039, -3000
+trajectory_pos /*pos*/ -2233,  2785, -4533
+trajectory_pos /*pos*/ -3288,  2622, -4820
+trajectory_pos /*pos*/ -4266,  2480, -4555
+trajectory_pos /*pos*/ -4900,  2333, -3944
+trajectory_pos /*pos*/ -5066,  2175, -2977
+trajectory_pos /*pos*/ -4833,  2018, -1999
+trajectory_pos /*pos*/ -4122,  1866, -1366
+trajectory_pos /*pos*/ -3200,  1736, -1088
+trajectory_pos /*pos*/  -222,  1027, -1200
+trajectory_pos /*pos*/  1333,   761, -1733
+trajectory_pos /*pos*/  2488,   562, -2944
+trajectory_pos /*pos*/  2977,   361, -4988
+trajectory_skip #! missing ID
+trajectory_pos /*pos*/  3754,   329, -5689
+trajectory_pos /*pos*/  5805,    86, -5980
+trajectory_pos /*pos*/  6566,  -449, -4133
+trajectory_pos /*pos*/  6689, -1119,  -888
+trajectory_pos /*pos*/  6688, -2127,  1200
+trajectory_pos /*pos*/  6666, -2573,  3555
+trajectory_pos /*pos*/  6600, -2667,  4333
+trajectory_pos /*pos*/  6366, -2832,  5722
+trajectory_pos /*pos*/  5844, -3021,  6355
+trajectory_pos /*pos*/  2955, -3394,  6255
+trajectory_pos /*pos*/  1788, -3512,  5988
+trajectory_pos /*pos*/   -89, -3720,  5188
+trajectory_pos /*pos*/  -732, -3910,  4144
+trajectory_pos /*pos*/  -722, -4095,  2688
+trajectory_pos /*pos*/ -1333, -4198,  1255
+trajectory_pos /*pos*/ -2377, -4302,   788
+trajectory_pos /*pos*/ -4500, -4684,   277
+trajectory_pos /*pos*/ -5466, -4790,    11
+trajectory_pos /*pos*/ -6044, -4860,  -333
+trajectory_pos /*pos*/ -6388, -5079, -1155
+trajectory_pos /*pos*/ -6510, -5389, -2666
+trajectory_pos /*pos*/ -6476, -5555, -3622
+trajectory_pos /*pos*/ -6488, -5684, -4777
+trajectory_pos /*pos*/ -6488, -5829, -6088
+trajectory_pos /*pos*/ -6507, -5841, -6400
+trajectory_end

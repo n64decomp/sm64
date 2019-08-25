@@ -1,0 +1,293 @@
+# --------------------------------------
+# General Rules
+# --------------------------------------
+
+# obtain a list of segments from the *.s files in bin directory
+SEGMENTS := $(notdir $(basename $(wildcard bin/*.s))) $(addprefix $(VERSION)/,$(notdir $(basename $(wildcard bin/$(VERSION)/*.s))))
+ACTORS := $(filter %/,$(wildcard actors/*/))
+TEXTURE_DIRS := $(addprefix textures/,$(SEGMENTS)) $(ACTORS) textures/intro_raw
+
+# NOTE: textures assume naming convention "texture.<encoding>.png" generates "texture.<encoding>"
+
+ACTOR_GROUPS := \
+    group0  \
+    group1  \
+    group2  \
+    group3  \
+    group4  \
+    group5  \
+    group6  \
+    group7  \
+    group8  \
+    group9  \
+    group10 \
+    group11 \
+    group12 \
+    group13 \
+    group14 \
+    group15 \
+    group16 \
+    group17 \
+    common0 \
+    common1
+
+LEVEL_FILES := $(addsuffix leveldata,$(LEVEL_DIRS))
+MIO0_FILES := $(addprefix $(MIO0_DIR)/,$(addsuffix .mio0,$(SEGMENTS) $(ACTOR_GROUPS) $(LEVEL_FILES)))
+MIO0_OBJ_FILES := $(MIO0_FILES:.mio0=.mio0.o)
+
+SEGMENT_ELF_FILES := $(addprefix $(BUILD_DIR)/bin/,$(addsuffix .elf,$(SEGMENTS)))
+ACTOR_ELF_FILES := $(addprefix $(BUILD_DIR)/bin/,$(addsuffix .elf,$(ACTOR_GROUPS)))
+LEVEL_ELF_FILES := $(addprefix $(BUILD_DIR)/bin/,$(addsuffix .elf,$(LEVEL_FILES)))
+
+# --------------------------------------
+# Actor Rules
+# --------------------------------------
+
+# Actor Directories
+KOOPA_DIRS       := koopa_flag poundable_pole koopa piranha_plant whomp chain_ball chain_chomp
+CAPSWITCH_DIRS   := capswitch springboard
+CHILLYCHIEF_DIRS := chillychief moneybag
+BULLY_DIRS       := bully blargg
+SPINDRIFT_DIRS   := spindrift penguin snowman
+KING_BOBOMB_DIRS := king_bobomb water_bubble
+BOO_DIRS         := bookend book chair small_key mad_piano boo haunted_cage
+MR_I_DIRS        := mr_i_eyeball mr_i_iris swoop snufit dorrie scuttlebug
+HOOT_DIRS        := yellow_sphere_small hoot yoshi_egg thwomp bullet_bill heave_ho
+COINS_DIRS       := mist explosion butterfly coin warp_pipe door bowser_key flame blue_fish pebble leaves warp_collision mario_cap power_meter mushroom_1up star sand dirt transparent_star white_particle wooden_signpost tree
+BUBBA_DIRS       := bubba wiggler lakitu_enemy spiny_egg spiny
+SKEETER_DIRS     := skeeter seaweed water_mine cyan_fish bub water_ring treasure_chest
+KLEPTO_DIRS      := klepto eyerok pokey tornado
+SEA_DIRS         := clam_shell manta sushi unagi whirlpool
+AMP_DIRS         := blue_coin_switch amp cannon_lid cannon_base cannon_barrel chuckya purple_switch checkerboard_platform heart flyguy breakable_box exclamation_box goomba bobomb metal_box exclamation_box_outline test_platform koopa_shell
+MOLE_DIRS        := monty_mole_hole monty_mole smoke ukiki fwoosh
+LAKITU_DIRS      := lakitu_cameraman toad mips boo_castle
+PEACH_DIRS       := bird peach yoshi
+BOWSER_DIRS      := bowser_flame impact_ring yellow_sphere bowser bomb impact_smoke
+MARIO_DIRS       := mario bubble walk_smoke burn_smoke stomp_smoke water_waves sparkle water_splash white_particle_small sparkle_animation
+
+# Actor Files
+AMP_CHUCKYA_FILES            := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(AMP_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+BOBOMBS_BUBBLE_FILES         := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(KING_BOBOMB_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+BOO_BOOKEND_FILES            := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BOO_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+CAPSWITCH_SPRINGBOARD_FILES  := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(CAPSWITCH_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+COINS_PIPE_FILES             := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(COINS_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+BOWSER_FLAMES_FILES          := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BOWSER_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+BUBBA_WIGGLER_FILES          := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BUBBA_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+BULLY_BLARGG_FILES           := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BULLY_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+CHILLYCHIEF_FILES            := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(CHILLYCHIEF_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+HOOT_THWOMP_FILES            := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(HOOT_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+KOOPA_LOG_FILES              := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(KOOPA_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+KLEPTO_EYEROK_FILES          := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(KLEPTO_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+LAKITU_TOAD_FILES            := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(LAKITU_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+MARIO_WATER_FILES            := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(MARIO_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+MOLE_UKIKI_FILES             := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(MOLE_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+MR_I_SWOOP_FILES             := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(MR_I_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+PEACH_TOADSTOOL_FILES        := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(PEACH_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+SEA_CREATURES_FILES          := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(SEA_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+SKEETER_FISH_FILES           := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(SKEETER_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+SPINDRIFT_PENGUIN_FILES      := $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(SPINDRIFT_DIRS)),$(basename $(wildcard $(dir)/*.png)))
+
+# Actor dependencies
+$(BUILD_DIR)/bin/group0.o: $(addprefix $(BUILD_DIR)/,$(MARIO_WATER_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(MARIO_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group1.o: $(addprefix $(BUILD_DIR)/,$(HOOT_THWOMP_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(HOOT_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group2.o: $(addprefix $(BUILD_DIR)/,$(BULLY_BLARGG_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BULLY_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group3.o: $(addprefix $(BUILD_DIR)/,$(BOBOMBS_BUBBLE_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(KING_BOBOMB_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group4.o: $(addprefix $(BUILD_DIR)/,$(SEA_CREATURES_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(SEA_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group5.o: $(addprefix $(BUILD_DIR)/,$(KLEPTO_EYEROK_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(KLEPTO_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group6.o: $(addprefix $(BUILD_DIR)/,$(MOLE_UKIKI_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(MOLE_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group7.o: $(addprefix $(BUILD_DIR)/,$(SPINDRIFT_PENGUIN_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(SPINDRIFT_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group8.o: $(addprefix $(BUILD_DIR)/,$(CAPSWITCH_SPRINGBOARD_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(CAPSWITCH_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group9.o: $(addprefix $(BUILD_DIR)/,$(BOO_BOOKEND_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BOO_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group10.o: $(addprefix $(BUILD_DIR)/,$(PEACH_TOADSTOOL_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(PEACH_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group11.o: $(addprefix $(BUILD_DIR)/,$(BUBBA_WIGGLER_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BUBBA_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group12.o: $(addprefix $(BUILD_DIR)/,$(BOWSER_FLAMES_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(BOWSER_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group13.o: $(addprefix $(BUILD_DIR)/,$(SKEETER_FISH_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(SKEETER_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group14.o: $(addprefix $(BUILD_DIR)/,$(KOOPA_LOG_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(KOOPA_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group15.o: $(addprefix $(BUILD_DIR)/,$(LAKITU_TOAD_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(LAKITU_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group16.o: $(addprefix $(BUILD_DIR)/,$(CHILLYCHIEF_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(CHILLYCHIEF_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/group17.o: $(addprefix $(BUILD_DIR)/,$(MR_I_SWOOP_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(MR_I_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/common0.o: $(addprefix $(BUILD_DIR)/,$(AMP_CHUCKYA_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(AMP_DIRS)),$(wildcard $(dir)/*.s))
+$(BUILD_DIR)/bin/common1.o: $(addprefix $(BUILD_DIR)/,$(COINS_PIPE_FILES)) $(foreach dir,$(addprefix $(ACTOR_DIR)/,$(COINS_DIRS)),$(wildcard $(dir)/*.s))
+
+# Actor Elf Files
+$(BUILD_DIR)/bin/group0.elf: SEGMENT_ADDRESS := 0x04000000
+$(BUILD_DIR)/bin/group1.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group2.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group3.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group4.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group5.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group6.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group7.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group8.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group9.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group10.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group11.elf: SEGMENT_ADDRESS := 0x05000000
+$(BUILD_DIR)/bin/group12.elf: SEGMENT_ADDRESS := 0x06000000
+$(BUILD_DIR)/bin/group13.elf: SEGMENT_ADDRESS := 0x06000000
+$(BUILD_DIR)/bin/group14.elf: SEGMENT_ADDRESS := 0x06000000
+$(BUILD_DIR)/bin/group15.elf: SEGMENT_ADDRESS := 0x06000000
+$(BUILD_DIR)/bin/group16.elf: SEGMENT_ADDRESS := 0x06000000
+$(BUILD_DIR)/bin/group17.elf: SEGMENT_ADDRESS := 0x06000000
+$(BUILD_DIR)/bin/common0.elf: SEGMENT_ADDRESS := 0x08000000
+$(BUILD_DIR)/bin/common1.elf: SEGMENT_ADDRESS := 0x03000000
+
+# --------------------------------------
+# Level Rules
+# --------------------------------------
+
+# Using these rules:
+# When defining a level, define the 3 variables needed and copy the rules
+# as-is.
+# TODO: Generate these rules from the level configs?
+
+define level_rules = 
+    $(1)_SEG7_FILES     := $$(basename $$(notdir $$(wildcard levels/$(1)/*.png)))
+    $(1)_SEG7_FILES_RAW := $(shell find levels/$(1)/ -type f -iname '*')
+    $$(BUILD_DIR)/bin/$(1)/leveldata.o: $$(addprefix $$(BUILD_DIR)/levels/$(1)/,$$($(1)_SEG7_FILES)) $$($(1)_SEG7_FILES_RAW)
+    $$(BUILD_DIR)/bin/$(1)/leveldata.elf: SEGMENT_ADDRESS := $(2)
+    $$(BUILD_DIR)/bin/$(1)/leveldata.elf: TEXTURE_BIN := $(3)
+endef
+
+$(eval $(call level_rules,bbh,0x07000000,spooky)) # BBH (Big Boo's Haunt)
+$(eval $(call level_rules,ccm,0x07000000,snow)) # CCM (Cool Cool Mountain)
+$(eval $(call level_rules,castle_inside,0x07000000,inside)) # Castle Inside (Inside Princess Peach's Castle)
+$(eval $(call level_rules,hmc,0x07000000,cave))# HMC (Hazy Maze Cave)
+$(eval $(call level_rules,ssl,0x07000000,generic)) # SSL (Shifting Sand Land)
+$(eval $(call level_rules,bob,0x07000000,generic)) # BOB (Bob-Omb Battlefield)
+$(eval $(call level_rules,sl,0x07000000,snow)) # SL (Snowman's Land)
+$(eval $(call level_rules,wdw,0x07000000,grass)) # WDW (Wet Dry World)
+$(eval $(call level_rules,jrb,0x07000000,water)) # JRB (Jolly Roger Bay)
+$(eval $(call level_rules,thi,0x07000000,grass)) # THI (Tiny Huge Island)
+$(eval $(call level_rules,ttc,0x07000000,machine)) # TTC (Tick Tock Clock)
+$(eval $(call level_rules,rr,0x07000000,sky)) # RR (Rainbow Ride)
+$(eval $(call level_rules,castle_grounds,0x07000000,outside)) # Castle Grounds (Outside Princess Peach's Castle)
+$(eval $(call level_rules,bitdw,0x07000000,sky)) # BitDW (Bowser in the Dark World)
+$(eval $(call level_rules,vcutm,0x07000000,outside)) # VCUTM (Vanish Cap under the Moat)
+$(eval $(call level_rules,bitfs,0x07000000,sky)) # BITFS (Bowser in the Fire Sea)
+$(eval $(call level_rules,sa,0x07000000,inside)) # SA (The Secret Aquarium)
+$(eval $(call level_rules,bits,0x07000000,sky)) # BITS (Bowser in the Sky)
+$(eval $(call level_rules,lll,0x07000000,fire)) # LLL (Lethal Lava Land)
+$(eval $(call level_rules,ddd,0x07000000,water)) # DDD (Dire Dire Docks)
+$(eval $(call level_rules,wf,0x07000000,grass)) # WF (Whomp's Fortress)
+$(eval $(call level_rules,ending,0x07000000,generic)) # Ending
+$(eval $(call level_rules,castle_courtyard,0x07000000,outside)) # Castle Courtyard (The Courtyard of Princess Peach's Castle)
+$(eval $(call level_rules,pss,0x07000000,mountain)) # PSS (The Princess's Secret Slide)
+$(eval $(call level_rules,cotmc,0x07000000,cave)) # COTMC (Cavern of the Metal Cap)
+$(eval $(call level_rules,totwc,0x07000000,sky)) # TOTWC (Tower of the Wing Cap)
+$(eval $(call level_rules,bowser_1,0x07000000,generic)) # BOWSER_1 (Bowser in the Dark World [Boss Area])
+$(eval $(call level_rules,wmotr,0x07000000,generic)) # WMOTR (Wing Mario over the Rainbow)
+$(eval $(call level_rules,bowser_2,0x07000000,fire)) # BOWSER_2 (Bowser in the Fire Sea [Boss Area])
+$(eval $(call level_rules,bowser_3,0x07000000,generic)) # BOWSER_3 (Bowser in the Sky [Boss Area])
+$(eval $(call level_rules,totwc,0x07000000,sky)) # TOTWC (Tower of the Wing Cap)
+$(eval $(call level_rules,ttm,0x07000000,mountain)) # TTM (Tall Tall Mountain)
+$(eval $(call level_rules,intro,0x07000000,generic)) # Intro (Super Mario 64 Logo)
+$(eval $(call level_rules,menu,0x07000000,generic)) # Menu (File Select)
+
+# --------------------------------------
+# Texture Bin Rules
+# --------------------------------------
+
+# Others
+SEGMENT2_FILES               := $(basename $(wildcard $(TEXTURE_DIR)/segment2/*.png))
+TITLE_SCREEN_BG_FILES        := $(basename $(wildcard $(TEXTURE_DIR)/title_screen_bg/*.png))
+SPOOKY_FILES                 := $(basename $(wildcard $(TEXTURE_DIR)/spooky/*.png))
+GENERIC_FILES                := $(basename $(wildcard $(TEXTURE_DIR)/generic/*.png))
+OUTSIDE_FILES                := $(basename $(wildcard $(TEXTURE_DIR)/outside/*.png))
+SNOW_FILES                   := $(basename $(wildcard $(TEXTURE_DIR)/snow/*.png))
+EFFECT_FILES                 := $(basename $(wildcard $(TEXTURE_DIR)/effect/*.png))
+CAVE_FILES                   := $(basename $(wildcard $(TEXTURE_DIR)/cave/*.png))
+INSIDE_FILES                 := $(basename $(wildcard $(TEXTURE_DIR)/inside/*.png))
+WATER_FILES                  := $(basename $(wildcard $(TEXTURE_DIR)/water/*.png))
+FIRE_TEXTURES_FILES          := $(basename $(wildcard $(TEXTURE_DIR)/fire/*.png))
+SKY_FILES                    := $(basename $(wildcard $(TEXTURE_DIR)/sky/*.png))
+MACHINE_FILES                := $(basename $(wildcard $(TEXTURE_DIR)/machine/*.png))
+MOUNTAIN_FILES               := $(basename $(wildcard $(TEXTURE_DIR)/mountain/*.png))
+GRASS_FILES                  := $(basename $(wildcard $(TEXTURE_DIR)/grass/*.png))
+
+# Texture Files
+$(BUILD_DIR)/bin/segment2.o: $(addprefix $(BUILD_DIR)/,$(SEGMENT2_FILES))
+$(BUILD_DIR)/bin/title_screen_bg.o: $(addprefix $(BUILD_DIR)/,$(TITLE_SCREEN_BG_FILES))
+$(BUILD_DIR)/bin/spooky.o: $(addprefix $(BUILD_DIR)/,$(SPOOKY_FILES))
+$(BUILD_DIR)/bin/generic.o: $(addprefix $(BUILD_DIR)/,$(GENERIC_FILES))
+$(BUILD_DIR)/bin/outside.o: $(addprefix $(BUILD_DIR)/,$(OUTSIDE_FILES))
+$(BUILD_DIR)/bin/snow.o: $(addprefix $(BUILD_DIR)/,$(SNOW_FILES))
+$(BUILD_DIR)/bin/effect.o: $(addprefix $(BUILD_DIR)/,$(EFFECT_FILES))
+$(BUILD_DIR)/bin/cave.o: $(addprefix $(BUILD_DIR)/,$(CAVE_FILES))
+$(BUILD_DIR)/bin/inside.o: $(addprefix $(BUILD_DIR)/,$(INSIDE_FILES))
+$(BUILD_DIR)/bin/water.o: $(addprefix $(BUILD_DIR)/,$(WATER_FILES))
+$(BUILD_DIR)/bin/fire.o: $(addprefix $(BUILD_DIR)/,$(FIRE_TEXTURES_FILES))
+$(BUILD_DIR)/bin/sky.o: $(addprefix $(BUILD_DIR)/,$(SKY_FILES))
+$(BUILD_DIR)/bin/machine.o: $(addprefix $(BUILD_DIR)/,$(MACHINE_FILES))
+$(BUILD_DIR)/bin/mountain.o: $(addprefix $(BUILD_DIR)/,$(MOUNTAIN_FILES))
+$(BUILD_DIR)/bin/grass.o: $(addprefix $(BUILD_DIR)/,$(GRASS_FILES))
+
+# Others
+$(BUILD_DIR)/bin/segment2.elf: SEGMENT_ADDRESS := 0x02000000
+$(BUILD_DIR)/bin/title_screen_bg.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/debug_level_select.elf: SEGMENT_ADDRESS := 0x07000000
+$(BUILD_DIR)/bin/effect.elf: SEGMENT_ADDRESS := 0x0B000000
+$(BUILD_DIR)/bin/spooky.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/generic.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/outside.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/snow.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/cave.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/inside.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/water.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/fire.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/sky.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/machine.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/mountain.elf: SEGMENT_ADDRESS := 0x09000000
+$(BUILD_DIR)/bin/grass.elf: SEGMENT_ADDRESS := 0x09000000
+
+# EU segment 19 translations
+$(BUILD_DIR)/bin/$(VERSION)/translation_de.elf: SEGMENT_ADDRESS := 0x19000000
+$(BUILD_DIR)/bin/$(VERSION)/translation_en.elf: SEGMENT_ADDRESS := 0x19000000
+$(BUILD_DIR)/bin/$(VERSION)/translation_fr.elf: SEGMENT_ADDRESS := 0x19000000
+
+# --------------------------------------
+# Skybox Rules
+# --------------------------------------
+
+# Skybox Files
+BBH_SKYBOX_FILES             := $(basename $(wildcard $(TEXTURE_DIR)/bbh_skybox/*.png))
+BIDW_SKYBOX_FILES            := $(basename $(wildcard $(TEXTURE_DIR)/bidw_skybox/*.png))
+BITFS_SKYBOX_FILES           := $(basename $(wildcard $(TEXTURE_DIR)/bitfs_skybox/*.png))
+BITS_SKYBOX_FILES            := $(basename $(wildcard $(TEXTURE_DIR)/bits_skybox/*.png))
+CCM_SKYBOX_FILES             := $(basename $(wildcard $(TEXTURE_DIR)/ccm_skybox/*.png))
+CLOUD_FLOOR_SKYBOX_FILES     := $(basename $(wildcard $(TEXTURE_DIR)/cloud_floor_skybox/*.png))
+CLOUDS_SKYBOX_FILES          := $(basename $(wildcard $(TEXTURE_DIR)/clouds_skybox/*.png))
+SSL_SKYBOX_FILES             := $(basename $(wildcard $(TEXTURE_DIR)/ssl_skybox/*.png))
+WATER_SKYBOX_FILES           := $(basename $(wildcard $(TEXTURE_DIR)/water_skybox/*.png))
+WDW_SKYBOX_FILES             := $(basename $(wildcard $(TEXTURE_DIR)/wdw_skybox/*.png))
+
+# Skybox Files
+$(BUILD_DIR)/bin/bbh_skybox.o: $(addprefix $(BUILD_DIR)/,$(BBH_SKYBOX_FILES))
+$(BUILD_DIR)/bin/bidw_skybox.o: $(addprefix $(BUILD_DIR)/,$(BIDW_SKYBOX_FILES))
+$(BUILD_DIR)/bin/bitfs_skybox.o: $(addprefix $(BUILD_DIR)/,$(BITFS_SKYBOX_FILES))
+$(BUILD_DIR)/bin/bits_skybox.o: $(addprefix $(BUILD_DIR)/,$(BITS_SKYBOX_FILES))
+$(BUILD_DIR)/bin/ccm_skybox.o: $(addprefix $(BUILD_DIR)/,$(CCM_SKYBOX_FILES))
+$(BUILD_DIR)/bin/cloud_floor_skybox.o: $(addprefix $(BUILD_DIR)/,$(CLOUD_FLOOR_SKYBOX_FILES))
+$(BUILD_DIR)/bin/clouds_skybox.o: $(addprefix $(BUILD_DIR)/,$(CLOUDS_SKYBOX_FILES))
+$(BUILD_DIR)/bin/ssl_skybox.o: $(addprefix $(BUILD_DIR)/,$(SSL_SKYBOX_FILES))
+$(BUILD_DIR)/bin/water_skybox.o: $(addprefix $(BUILD_DIR)/,$(WATER_SKYBOX_FILES))
+$(BUILD_DIR)/bin/wdw_skybox.o: $(addprefix $(BUILD_DIR)/,$(WDW_SKYBOX_FILES))
+
+# Skybox Files
+$(BUILD_DIR)/bin/bbh_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/bidw_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/bitfs_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/bits_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/ccm_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/cloud_floor_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/clouds_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/ssl_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/water_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+$(BUILD_DIR)/bin/wdw_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
+
+# --------------------------------------
+# Misc Rules
+# --------------------------------------
+
+# intro_raw textures are not compressed
+INTRO_RAW_FILES              := $(basename $(notdir $(wildcard $(TEXTURE_DIR)/intro_raw/*.png)))
+$(BUILD_DIR)/data/goddard_tex_dl.o: $(addprefix $(BUILD_DIR)/textures/intro_raw/,$(INTRO_RAW_FILES))

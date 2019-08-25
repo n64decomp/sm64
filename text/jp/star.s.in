@@ -1,0 +1,417 @@
+# act_name_ Names
+.balign 4
+act_name_00: # 0x0200E4C0
+.byte _("やまのうえの ボムキング")
+
+.balign 4
+act_name_01: # 0x0200E4D0
+.byte _("はくねつ ノコノコレ-ス")
+
+.balign 4
+act_name_02: # 0x0200E4E0
+.byte _("そらのしままで ぶっとべ")
+
+.balign 4
+act_name_03: # 0x0200E4F0
+.byte _("8まいの あかコイン")
+
+.balign 4
+act_name_04: # 0x0200E4FC
+.byte _("そらにはばたけ はねマリオ")
+
+.balign 4
+act_name_05: # 0x0200E50C
+.byte _("ワンワンの いぬごやで")
+
+.balign 4
+act_name_06: # 0x0200E51C
+.byte _("いかりのバッタン キング")
+
+.balign 4
+act_name_07: # 0x0200E52C
+.byte _("とりでの てっぺんへ")
+
+.balign 4
+act_name_08: # 0x0200E53C
+.byte _("たいほうで ひとっとび")
+
+.balign 4
+act_name_09: # 0x0200E54C
+.byte _("うきしまの 8まいコイン")
+
+.balign 4
+act_name_10: # 0x0200E55C
+.byte _("とりかごへ スト-ン")
+
+.balign 4
+act_name_11: # 0x0200E568
+.byte _("たいほうで ぶっこわせ!")
+
+.balign 4
+act_name_12: # 0x0200E578
+.byte _("ちんぼつせんの おたから")
+
+.balign 4
+act_name_13: # 0x0200E588
+.byte _("でてこい きょだいウツボ")
+
+.balign 4
+act_name_14: # 0x0200E598
+.byte _("かいていどうくつの おたから")
+
+.balign 4
+act_name_15: # 0x0200E5A8
+.byte _("うかんだフネの あかコイン")
+
+.balign 4
+act_name_16: # 0x0200E5B8
+.byte _("いわのはしらへ ひとっとび")
+
+.balign 4
+act_name_17: # 0x0200E5C8
+.byte _("ふきだす みずを くぐれ")
+
+.balign 4
+act_name_18: # 0x0200E5D8
+.byte _("ス-パ-スノ-スライダ-")
+
+.balign 4
+act_name_19: # 0x0200E5E8
+.byte _("まいごの こペンギン")
+
+.balign 4
+act_name_20: # 0x0200E5F8
+.byte _("ペンギン チャンピオンレ-ス")
+
+.balign 4
+act_name_21: # 0x0200E60C
+.byte _("すべって 8まいあかコイン")
+
+.balign 4
+act_name_22: # 0x0200E61C
+.byte _("ゴロゴロ ゆきダルマ")
+
+.balign 4
+act_name_23: # 0x0200E62C
+.byte _("かくれ ス-パ- カベキック")
+
+.balign 4
+act_name_24: # 0x0200E640
+.byte _("おやかたテレサを さがせ")
+
+.balign 4
+act_name_25: # 0x0200E650
+.byte _("テレサの メリ-ゴ-ランド")
+
+.balign 4
+act_name_26: # 0x0200E660
+.byte _("ほんだなオバケの ナゾ")
+
+.balign 4
+act_name_27: # 0x0200E670
+.byte _("8まいコインは どこだ")
+
+.balign 4
+act_name_28: # 0x0200E680
+.byte _("バルコニ-の ボステレサ")
+
+.balign 4
+act_name_29: # 0x0200E690
+.byte _("かくしべやの おおめだま")
+
+.balign 4
+act_name_30: # 0x0200E6A0
+.byte _("ドッシ-のいる ちていこ")
+
+.balign 4
+act_name_31: # 0x0200E6B0
+.byte _("そうさリフトの あかコイン")
+
+.balign 4
+act_name_32: # 0x0200E6C0
+.byte _("メタルで ダッシュ")
+
+.balign 4
+act_name_33: # 0x0200E6CC
+.byte _("ケムリめいろを ぬけて")
+
+.balign 4
+act_name_34: # 0x0200E6D8
+.byte _("ケムリめいろの ひじょうぐち")
+
+.balign 4
+act_name_35: # 0x0200E6EC
+.byte _("ゴロゴロいわの ひみつ")
+
+.balign 4
+act_name_36: # 0x0200E6FC
+.byte _("おとせ ボスどんけつ")
+
+.balign 4
+act_name_37: # 0x0200E70C
+.byte _("たたかえ!どんけつたい")
+
+.balign 4
+act_name_38: # 0x0200E71C
+.byte _("15パズルの 8まいコイン")
+
+.balign 4
+act_name_39: # 0x0200E72C
+.byte _("コロコロ まるたわたり")
+
+.balign 4
+act_name_40: # 0x0200E738
+.byte _("かざんの パワ-スタ-")
+
+.balign 4
+act_name_41: # 0x0200E748
+.byte _("かざんの リフトツア-")
+
+.balign 4
+act_name_42: # 0x0200E758
+.byte _("いたずらハゲたか ジャンゴ")
+
+.balign 4
+act_name_43: # 0x0200E76C
+.byte _("ピラミッドの てっぺんで")
+
+.balign 4
+act_name_44: # 0x0200E780
+.byte _("きょだいピラミッドの ないぶ")
+
+.balign 4
+act_name_45: # 0x0200E794
+.byte _("4つのはしらに たつものへ")
+
+.balign 4
+act_name_46: # 0x0200E7A4
+.byte _("とびまわれ 8まいコイン")
+
+.balign 4
+act_name_47: # 0x0200E7B4
+.byte _("きょだいピラミッドのナゾ")
+
+.balign 4
+act_name_48: # 0x0200E7C8
+.byte _("クッパの せんすいかん")
+
+.balign 4
+act_name_49: # 0x0200E7D8
+.byte _("うずしおの たからばこ")
+
+.balign 4
+act_name_50: # 0x0200E7E8
+.byte _("にげたクッパの あかコイン")
+
+.balign 4
+act_name_51: # 0x0200E7F8
+.byte _("ふきだす みずを くぐれ")
+
+.balign 4
+act_name_52: # 0x0200E808
+.byte _("マンタの おくりもの")
+
+.balign 4
+act_name_53: # 0x0200E814
+.byte _("ボウシが そろったら")
+
+.balign 4
+act_name_54: # 0x0200E824
+.byte _("おおゆきダルマの おでこ")
+
+.balign 4
+act_name_55: # 0x0200E834
+.byte _("こおりのくにの どんけつ")
+
+.balign 4
+act_name_56: # 0x0200E844
+.byte _("こおりの オブジェ")
+
+.balign 4
+act_name_57: # 0x0200E850
+.byte _("つめたい いけを こえて")
+
+.balign 4
+act_name_58: # 0x0200E860
+.byte _("コウラにのって あかコイン")
+
+.balign 4
+act_name_59: # 0x0200E870
+.byte _("フワフワさんの おうち")
+
+.balign 4
+act_name_60: # 0x0200E87C
+.byte _("ビリビリの まめリフト")
+
+.balign 4
+act_name_61: # 0x0200E88C
+.byte _("トップオブ ザ シティ-")
+
+.balign 4
+act_name_62: # 0x0200E89C
+.byte _("あさせと そらのシ-クレット")
+
+.balign 4
+act_name_63: # 0x0200E8AC
+.byte _("いそげ!かなあみエレベ-タ-")
+
+.balign 4
+act_name_64: # 0x0200E8C0
+.byte _("ダウンタウンの あかコイン")
+
+.balign 4
+act_name_65: # 0x0200E8D0
+.byte _("ダウンタウンを かけろ")
+
+.balign 4
+act_name_66: # 0x0200E8E0
+.byte _("たかいたかい やまのうえ")
+
+.balign 4
+act_name_67: # 0x0200E8F0
+.byte _("いたずらザル ウッキィのオリ")
+
+.balign 4
+act_name_68: # 0x0200E904
+.byte _("おばけキノコの あかコイン")
+
+.balign 4
+act_name_69: # 0x0200E914
+.byte _("マウンテン スライダ-")
+
+.balign 4
+act_name_70: # 0x0200E924
+.byte _("はしのうえから みわたせば")
+
+.balign 4
+act_name_71: # 0x0200E934
+.byte _("ぶっとべ はなれキノコへ")
+
+.balign 4
+act_name_72: # 0x0200E944
+.byte _("きょだいパックンフラワ-")
+
+.balign 4
+act_name_73: # 0x0200E954
+.byte _("デカじまの てっぺんで")
+
+.balign 4
+act_name_74: # 0x0200E964
+.byte _("ノコノコ リタ-ンマッチ")
+
+.balign 4
+act_name_75: # 0x0200E974
+.byte _("チビじまの 5シ-クレット")
+
+.balign 4
+act_name_76: # 0x0200E984
+.byte _("ハナチャンの あかコイン")
+
+.balign 4
+act_name_77: # 0x0200E994
+.byte _("イカリの ハナチャン")
+
+.balign 4
+act_name_78: # 0x0200E9A0
+.byte _("グルグル かごのなかへ")
+
+.balign 4
+act_name_79: # 0x0200E9B0
+.byte _("ふりこの へや")
+
+.balign 4
+act_name_80: # 0x0200E9B8
+.byte _("チックタックはりの うえ")
+
+.balign 4
+act_name_81: # 0x0200E9C8
+.byte _("えっへん てっぺん ドッスン")
+
+.balign 4
+act_name_82: # 0x0200E9DC
+.byte _("つきだしを のりこえて")
+
+.balign 4
+act_name_83: # 0x0200E9EC
+.byte _("00ふんの あかコイン")
+
+.balign 4
+act_name_84: # 0x0200E9F8
+.byte _("にじを わたる ふね")
+
+.balign 4
+act_name_85: # 0x0200EA04
+.byte _("てんくうの おやしき")
+
+.balign 4
+act_name_86: # 0x0200EA10
+.byte _("タテめいろの あかコイン")
+
+.balign 4
+act_name_87: # 0x0200EA20
+.byte _("カゼきる きょだいブランコ")
+
+.balign 4
+act_name_88: # 0x0200EA34
+.byte _("おおぞら アスレチック")
+
+.balign 4
+act_name_89: # 0x0200EA44
+.byte _("にじの かなたの しま")
+
+.balign 4
+act_name_90: # 0x0200EA54
+.byte _("おしろのかくれスタ-")
+
+.balign 4
+act_name_91: # 0x0200EA60
+.byte _("100まいコインの スタ-")
+
+.balign 4
+act_name_92: # 0x0200EA70
+.byte _("マウンテンのへやが ひらく!")
+
+.balign 4
+act_name_93: # 0x0200EA80
+.byte _("みずとゆき2つのへやが ひらく!")
+
+.balign 4
+act_name_94: # 0x0200EA94
+.byte _("おおきなほしの ドアがひらく!")
+
+.balign 4
+act_name_95: # 0x0200EAA8
+.byte _("クッパへの とびらがひらく!")
+
+.balign 4
+act_name_96: # 0x0200EABC
+.byte _("3がいへの とびらがひらく!")
+
+# act names table 0x0200EAD0
+.balign 4
+glabel seg2_act_name_table
+.word act_name_00, act_name_01, act_name_02, act_name_03
+.word act_name_04, act_name_05, act_name_06, act_name_07
+.word act_name_08, act_name_09, act_name_10, act_name_11
+.word act_name_12, act_name_13, act_name_14, act_name_15
+.word act_name_16, act_name_17, act_name_18, act_name_19
+.word act_name_20, act_name_21, act_name_22, act_name_23
+.word act_name_24, act_name_25, act_name_26, act_name_27
+.word act_name_28, act_name_29, act_name_30, act_name_31
+.word act_name_32, act_name_33, act_name_34, act_name_35
+.word act_name_36, act_name_37, act_name_38, act_name_39
+.word act_name_40, act_name_41, act_name_42, act_name_43
+.word act_name_44, act_name_45, act_name_46, act_name_47
+.word act_name_48, act_name_49, act_name_50, act_name_51
+.word act_name_52, act_name_53, act_name_54, act_name_55
+.word act_name_56, act_name_57, act_name_58, act_name_59
+.word act_name_60, act_name_61, act_name_62, act_name_63
+.word act_name_64, act_name_65, act_name_66, act_name_67
+.word act_name_68, act_name_69, act_name_70, act_name_71
+.word act_name_72, act_name_73, act_name_74, act_name_75
+.word act_name_76, act_name_77, act_name_78, act_name_79
+.word act_name_80, act_name_81, act_name_82, act_name_83
+.word act_name_84, act_name_85, act_name_86, act_name_87
+.word act_name_88, act_name_89, act_name_90, act_name_91
+.word act_name_92, act_name_93, act_name_94, act_name_95
+.word act_name_96, 0x0

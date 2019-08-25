@@ -1,0 +1,5 @@
+.include "levels/ssl/areas/1/1/model.s"
+.include "levels/ssl/areas/1/2/model.s"
+.include "levels/ssl/areas/1/3/model.s"
+.include "levels/ssl/areas/1/4/model.s"
+.include "levels/ssl/areas/1/5/model.s"

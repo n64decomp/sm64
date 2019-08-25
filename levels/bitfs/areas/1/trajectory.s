@@ -1,0 +1,43 @@
+glabel bitfs_seg7_trajectory_070159AC # 0x070159AC - 0x07015AEE
+trajectory_init
+trajectory_pos /*pos*/ -5744, -3072,     0
+trajectory_pos /*pos*/ -5444, -3072,     0
+trajectory_pos /*pos*/ -5144, -3072,     0
+trajectory_pos /*pos*/ -4954, -3122,     0
+trajectory_pos /*pos*/ -4754, -3172,     0
+trajectory_pos /*pos*/ -4300, -3172,     0
+trajectory_pos /*pos*/ -3850, -3172,     0
+trajectory_pos /*pos*/ -3650, -3122,     0
+trajectory_pos /*pos*/ -3460, -3072,     0
+trajectory_pos /*pos*/ -3160, -3072,     0
+trajectory_pos /*pos*/ -3000, -3150,     0
+trajectory_pos /*pos*/ -2800, -3300,     0
+trajectory_pos /*pos*/ -2600, -3450,     0
+trajectory_pos /*pos*/ -2400, -3500,     0
+trajectory_pos /*pos*/ -2200, -3450,     0
+trajectory_pos /*pos*/ -2000, -3300,     0
+trajectory_pos /*pos*/ -1800, -3150,     0
+trajectory_pos /*pos*/ -1600, -3072,     0
+trajectory_pos /*pos*/ -1300, -3072,     0
+trajectory_pos /*pos*/ -1000, -3072,     0
+trajectory_pos /*pos*/  -608, -3072,     0
+trajectory_pos /*pos*/ -1000, -3072,     0
+trajectory_pos /*pos*/ -1300, -3072,     0
+trajectory_pos /*pos*/ -1600, -3072,     0
+trajectory_pos /*pos*/ -1800, -3150,     0
+trajectory_pos /*pos*/ -2000, -3300,     0
+trajectory_pos /*pos*/ -2200, -3450,     0
+trajectory_pos /*pos*/ -2400, -3500,     0
+trajectory_pos /*pos*/ -2600, -3450,     0
+trajectory_pos /*pos*/ -2800, -3300,     0
+trajectory_pos /*pos*/ -3000, -3150,     0
+trajectory_pos /*pos*/ -3160, -3072,     0
+trajectory_pos /*pos*/ -3460, -3072,     0
+trajectory_pos /*pos*/ -3650, -3122,     0
+trajectory_pos /*pos*/ -3850, -3172,     0
+trajectory_pos /*pos*/ -4300, -3172,     0
+trajectory_pos /*pos*/ -4754, -3172,     0
+trajectory_pos /*pos*/ -4954, -3122,     0
+trajectory_pos /*pos*/ -5144, -3072,     0
+trajectory_pos /*pos*/ -5444, -3072,     0
+trajectory_end

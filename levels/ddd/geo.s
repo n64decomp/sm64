@@ -1,0 +1,5 @@
+.include "levels/ddd/pole/geo.s"
+.include "levels/ddd/sub_door/geo.s"
+.include "levels/ddd/submarine/geo.s"
+.include "levels/ddd/areas/1/geo.s"
+.include "levels/ddd/areas/2/geo.s"

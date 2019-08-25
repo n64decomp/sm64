@@ -1,0 +1,115 @@
+# level names (EU, English)
+.balign 4
+level_name_01: # 0x19008F84
+.byte _(" 1 BOB-OMB BATTLEFIELD")
+
+.balign 4
+level_name_02: # 0x19008F9C
+.byte _(" 2 WHOMP'S FORTRESS")
+
+.balign 4
+level_name_03: # 0x19008FB0
+.byte _(" 3 JOLLY ROGER BAY")
+
+.balign 4
+level_name_04: # 0x19008FC4
+.byte _(" 4 COOL, COOL MOUNTAIN")
+
+.balign 4
+level_name_05: # 0x19008FDC
+.byte _(" 5 BIG BOO'S HAUNT")
+
+.balign 4
+level_name_06: # 0x19008FF0
+.byte _(" 6 HAZY MAZE CAVE")
+
+.balign 4
+level_name_07: # 0x19009004
+.byte _(" 7 LETHAL LAVA LAND")
+
+.balign 4
+level_name_08: # 0x19009018
+.byte _(" 8 SHIFTING SAND LAND")
+
+.balign 4
+level_name_09: # 0x19009030
+.byte _(" 9 DIRE, DIRE DOCKS")
+
+.balign 4
+level_name_10: # 0x19009044
+.byte _("10 SNOWMAN'S LAND")
+
+.balign 4
+level_name_11: # 0x19009058
+.byte _("11 WET-DRY WORLD")
+
+.balign 4
+level_name_12: # 0x1900906C
+.byte _("12 TALL, TALL MOUNTAIN")
+
+.balign 4
+level_name_13: # 0x19009084
+.byte _("13 TINY-HUGE ISLAND")
+
+.balign 4
+level_name_14: # 0x19009098
+.byte _("14 TICK TOCK CLOCK")
+
+.balign 4
+level_name_15: # 0x190090AC
+.byte _("15 RAINBOW RIDE")
+
+.balign 4
+level_name_16: # 0x190090BC
+.byte _("   BOWSER IN THE DARK WORLD")
+
+.balign 4
+level_name_17: # 0x190090D8
+.byte _("   BOWSER IN THE FIRE SEA")
+
+.balign 4
+level_name_18: # 0x190090F4
+.byte _("   BOWSER IN THE SKY")
+
+.balign 4
+level_name_19: # 0x1900910C
+.byte _("   THE PRINCESS'S SECRET SLIDE")
+
+.balign 4
+level_name_20: # 0x1900912C
+.byte _("   CAVERN OF THE METAL CAP")
+
+.balign 4
+level_name_21: # 0x19009148
+.byte _("   TOWER OF THE WING CAP")
+
+.balign 4
+level_name_22: # 0x19009164
+.byte _("   VANISH CAP UNDER THE MOAT")
+
+.balign 4
+level_name_23: # 0x19009184
+.byte _("   WING MARIO OVER THE RAINBOW")
+
+.balign 4
+level_name_24: # 0x190091A4
+.byte _("   THE SECRET AQUARIUM")
+
+.balign 4
+level_name_25: # 0x190091BC
+.byte _("")
+
+.balign 4
+level_name_castle_secret_stars: # 0x190091C0
+.byte _("   CASTLE SECRET STARS")
+
+# level name table
+.balign 4
+glabel level_name_table_eu_en # 0x190091D8
+.word level_name_01, level_name_02, level_name_03, level_name_04
+.word level_name_05, level_name_06, level_name_07, level_name_08
+.word level_name_09, level_name_10, level_name_11, level_name_12
+.word level_name_13, level_name_14, level_name_15, level_name_16
+.word level_name_17, level_name_18, level_name_19, level_name_20
+.word level_name_21, level_name_22, level_name_23, level_name_24
+.word level_name_25, level_name_castle_secret_stars, 0x0

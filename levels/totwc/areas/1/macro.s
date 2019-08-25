@@ -1,0 +1,30 @@
+glabel totwc_seg7_macro_objs # 0x070088AC - 0x070089C6
+macro_object /*preset*/ macro_box_wing_cap,       /*yaw*/   0, /*pos*/     0, -1760,  -600
+macro_object /*preset*/ macro_coin_ring_vertical, /*yaw*/  90, /*pos*/     0, -1000,  3000
+macro_object /*preset*/ macro_coin_ring_vertical, /*yaw*/   0, /*pos*/ -3500,  -200,     0
+macro_object /*preset*/ macro_coin_ring_vertical, /*yaw*/   0, /*pos*/  4500,  1400,     0
+macro_object /*preset*/ macro_coin_ring_vertical, /*yaw*/  90, /*pos*/     0,   600, -4000
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/  -100,   800, -4000
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/ -3500,     0,   100
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/   100,  -800,  3000
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/  4500,  1600,  -100
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/   100,   800, -4000
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/ -3500,     0,  -100
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/  -100,  -800,  3000
+macro_object /*preset*/ macro_red_coin,           /*yaw*/   0, /*pos*/  4500,  1600,   100
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/  2913,  1200, -2941
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/  3954,  1400, -1817
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/  1554,  1000, -3680
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -2657,   400, -2742
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -1485,   600, -3628
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -3231,   200, -1514
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -2197,  -400,  2142
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -3056,  -200,  1310
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -1144,  -600,  2742
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/  3680,  1800,  1439
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/  2080,  2000,  2080
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/   920,  2200,  1920
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/   -40,  2400,  1520
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/  -960,  2600,  1040
+macro_object /*preset*/ macro_yellow_coin,        /*yaw*/   0, /*pos*/ -1760,  2800,   600
+.hword 0x001E

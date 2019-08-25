@@ -1,0 +1,115 @@
+# level names
+.balign 4
+level_name_01: # 0x0200E294
+.byte _(" 1 ボムへいの せんじょう")
+
+.balign 4
+level_name_02: # 0x0200E2A8
+.byte _(" 2 バッタンキングの とりで")
+
+.balign 4
+level_name_03: # 0x0200E2BC
+.byte _(" 3 かいぞくの いりえ")
+
+.balign 4
+level_name_04: # 0x0200E2CC
+.byte _(" 4 さむいさむい マウンテン")
+
+.balign 4
+level_name_05: # 0x0200E2DC
+.byte _(" 5 テレサの ホラ-ハウス")
+
+.balign 4
+level_name_06: # 0x0200E2EC
+.byte _(" 6 やみにとける どうくつ")
+
+.balign 4
+level_name_07: # 0x0200E2FC
+.byte _(" 7 ファイアバブル ランド")
+
+.balign 4
+level_name_08: # 0x0200E310
+.byte _(" 8 あっちっち さばく")
+
+.balign 4
+level_name_09: # 0x0200E320
+.byte _(" 9 ウォ-タ- ランド")
+
+.balign 4
+level_name_10: # 0x0200E330
+.byte _("10 スノ-マンズ ランド")
+
+.balign 4
+level_name_11: # 0x0200E340
+.byte _("11 みずびたシティ-")
+
+.balign 4
+level_name_12: # 0x0200E350
+.byte _("12 たかいたかいマウンテン")
+
+.balign 4
+level_name_13: # 0x0200E360
+.byte _("13 ちびでか アイランド")
+
+.balign 4
+level_name_14: # 0x0200E374
+.byte _("14 チックタックロック")
+
+.balign 4
+level_name_15: # 0x0200E384
+.byte _("15 レインボ- クル-ズ")
+
+.balign 4
+level_name_16: # 0x0200E394
+.byte _("   やみの せかいの クッパ")
+
+.balign 4
+level_name_17: # 0x0200E3A8
+.byte _("   ほのおの うみの クッパ")
+
+.balign 4
+level_name_18: # 0x0200E3BC
+.byte _("   てんくうの たたかい!")
+
+.balign 4
+level_name_19: # 0x0200E3CC
+.byte _("   ピ-チのかくれスライダ-")
+
+.balign 4
+level_name_20: # 0x0200E3E0
+.byte _("   メタルスイッチの たき")
+
+.balign 4
+level_name_21: # 0x0200E3F0
+.byte _("   はばたけ!はねスイッチへ")
+
+.balign 4
+level_name_22: # 0x0200E404
+.byte _("   おほりのとうめいスイッチ")
+
+.balign 4
+level_name_23: # 0x0200E414
+.byte _("   にじ かける はねマリオ")
+
+.balign 4
+level_name_24: # 0x0200E428
+.byte _("   おさかなと いっしょ")
+
+.balign 4
+level_name_25: # 0x0200E438
+.byte _("   おいしいケ-キ")
+
+.balign 4
+level_name_castle_secret_stars: # 0x0200E444
+.byte _("   おしろのかくれスタ-")
+
+# level name table
+.balign 4
+glabel seg2_level_name_table # 0x0200E454
+.word level_name_01, level_name_02, level_name_03, level_name_04
+.word level_name_05, level_name_06, level_name_07, level_name_08
+.word level_name_09, level_name_10, level_name_11, level_name_12
+.word level_name_13, level_name_14, level_name_15, level_name_16
+.word level_name_17, level_name_18, level_name_19, level_name_20
+.word level_name_21, level_name_22, level_name_23, level_name_24
+.word level_name_25, level_name_castle_secret_stars, 0x0

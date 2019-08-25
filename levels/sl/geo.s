@@ -1,0 +1,5 @@
+.include "levels/sl/unused_cracked_ice/geo.s"
+.include "levels/sl/unused_ice_shard/geo.s"
+.include "levels/sl/snow_mound/geo.s"
+.include "levels/sl/areas/1/geo.s"
+.include "levels/sl/areas/2/geo.s"
