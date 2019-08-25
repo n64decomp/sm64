@@ -67,7 +67,7 @@ Build examples:
 ```
 make VERSION=jp -j4       # build (J) version instead with 4 jobs
 make VERSION=eu COMPARE=0 # non-matching EU version still WIP
-
+```
 ## Windows
 
 For Windows, install WSL and a distro of your choice and follow the Linux guide.
