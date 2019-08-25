@@ -10,7 +10,7 @@ It builds the following ROMs:
 This repo does not include all assets necessary for compiling the ROMs.
 A prior copy of the game is required.
 
-To set up the repository, see [INSTALL.md](INSTALL.md).
+Official discord: https://discord.gg/RHeyDvU
 
 ## Installation
 
