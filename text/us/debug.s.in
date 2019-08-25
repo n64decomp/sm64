@@ -1,0 +1,28 @@
+# This debug dialog wasn't translated for US.
+
+.balign 4
+Debug0: # 0x020087E4
+.byte _("STAGE SELECT\n"
+        " つづける?\n"
+        " 1 マウンテン\n"
+        " 2 ファイア-バブル\n"
+        " 3 スノ-スライダ-\n"
+        " 4 ウォ-タ-ランド\n"
+        "   クッパ1ごう\n"
+        " もどる")
+
+.balign 4
+Debug1: # 0x0200883C
+.byte _("PAUSE    \n"
+        " つづける?\n"
+        " やめる ?")
+
+# debug text table
+.balign 4
+debug_text_entry_0:
+dialog_entry 0x00000001, 0x0800001E, 0x00C80000, Debug0
+debug_text_entry_1:
+dialog_entry 0x00000001, 0x03000064, 0x00960000, Debug1
+
+glabel seg2_debug_text_table
+.word debug_text_entry_0, debug_text_entry_1, 0x0

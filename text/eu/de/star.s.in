@@ -1,0 +1,417 @@
+# act names (EU, Deutsch)
+.balign 4
+act_name_00: # 0x1900A20C
+.byte _("BESIEGE KÖNIG BOB-OMB!")
+
+.balign 4
+act_name_01: # 0x1900A224
+.byte _("BESIEGE DEN SCHNELLEN KOOPA!")
+
+.balign 4
+act_name_02: # 0x1900A244
+.byte _("FLIEGE ZUR SCHWEBENDEN INSEL!")
+
+.balign 4
+act_name_03: # 0x1900A264
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_04: # 0x1900A280
+.byte _("DURCHFLIEGE ALLE MÜNZENRINGE!")
+
+.balign 4
+act_name_05: # 0x1900A2A0
+.byte _("BEFREIE DEN KETTENHUND!")
+
+.balign 4
+act_name_06: # 0x1900A2B8
+.byte _("BESIEGE KÖNIG WUMMP!")
+
+.balign 4
+act_name_07: # 0x1900A2D0
+.byte _("STEIGE AUF DIE BERGFESTUNG!")
+
+.balign 4
+act_name_08: # 0x1900A2EC
+.byte _("FLIEG INS BLAUE!")
+
+.balign 4
+act_name_09: # 0x1900A300
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_10: # 0x1900A31C
+.byte _("WECKE DIE EULE!")
+
+.balign 4
+act_name_11: # 0x1900A32C
+.byte _("ZERSTÖRE DIE FELSWAND!")
+
+.balign 4
+act_name_12: # 0x1900A344
+.byte _("TAUCHE IN DAS SCHIFFSWRACK!")
+
+.balign 4
+act_name_13: # 0x1900A360
+.byte _("LOCKE DEN AAL KANO HERAUS!")
+
+.balign 4
+act_name_14: # 0x1900A37C
+.byte _("TAUCHE ZUR SCHATZHÖHLE!")
+
+.balign 4
+act_name_15: # 0x1900A394
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_16: # 0x1900A3B0
+.byte _("FLIEGE ZU DEN STEINSÄULEN!")
+
+.balign 4
+act_name_17: # 0x1900A3CC
+.byte _("LAUFE DURCH DEN STRUDEL!")
+
+.balign 4
+act_name_18: # 0x1900A3E8
+.byte _("RUTSCHE AUF DER EISBAHN!")
+
+.balign 4
+act_name_19: # 0x1900A404
+.byte _("FINDE DAS PINGUINBABY!")
+
+.balign 4
+act_name_20: # 0x1900A41C
+.byte _("BESIEGE DEN SCHNELLEN PINGUIN!")
+
+.balign 4
+act_name_21: # 0x1900A43C
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_22: # 0x1900A458
+.byte _("BAUE EINEN SCHNEEMANN!")
+
+.balign 4
+act_name_23: # 0x1900A470
+.byte _("DENKE AN DEN WANDSPRUNG!")
+
+.balign 4
+act_name_24: # 0x1900A48C
+.byte _("GEHE AUF GEISTERJAGD!")
+
+.balign 4
+act_name_25: # 0x1900A4A4
+.byte _("BESUCHE BIG BOOS KARUSSEL!")
+
+.balign 4
+act_name_26: # 0x1900A4C0
+.byte _("LÖSE DAS BÜCHEREI-RÄTSEL!")
+
+.balign 4
+act_name_27: # 0x1900A4DC
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_28: # 0x1900A4F8
+.byte _("KLETTERE AUF BIG BOOS BALKON!")
+
+.balign 4
+act_name_29: # 0x1900A518
+.byte _("FINDE DAS AUGE IM GEHEIMRAUM!")
+
+.balign 4
+act_name_30: # 0x1900A538
+.byte _("KLETTERE AUF NESSIS RÜCKEN!")
+
+.balign 4
+act_name_31: # 0x1900A554
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_32: # 0x1900A570
+.byte _("LAUFE AUF DEM GRUND DES SEES!")
+
+.balign 4
+act_name_33: # 0x1900A590
+.byte _("DURCHSUCHE DAS NEBELLABYRINTH!")
+
+.balign 4
+act_name_34: # 0x1900A5B0
+.byte _("SUCHE IM NEBEL DEN NOTAUSGANG!")
+
+.balign 4
+act_name_35: # 0x1900A5D0
+.byte _("ACHTE AUF ROLLENDE FELSEN!")
+
+.balign 4
+act_name_36: # 0x1900A5EC
+.byte _("WERFE BIG BULLY IN DIE LAVA!")
+
+.balign 4
+act_name_37: # 0x1900A60C
+.byte _("WERFE DIE BULLIES IN DIE LAVA!")
+
+.balign 4
+act_name_38: # 0x1900A62C
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_39: # 0x1900A648
+.byte _("TANZE AUF DEM BAUMSTAMM!")
+
+.balign 4
+act_name_40: # 0x1900A664
+.byte _("ERKUNDE DEN VULKAN!")
+
+.balign 4
+act_name_41: # 0x1900A678
+.byte _("GEWINNE IM VULKAN AN HÖHE!")
+
+.balign 4
+act_name_42: # 0x1900A694
+.byte _("FOLGE DEM RIESENGEIER!")
+
+.balign 4
+act_name_43: # 0x1900A6AC
+.byte _("BRINGE LICHT IN DIE PYRAMIDE!")
+
+.balign 4
+act_name_44: # 0x1900A6CC
+.byte _("BEGEBE DICH IN DIE PYRAMIDE!")
+
+.balign 4
+act_name_45: # 0x1900A6EC
+.byte _("LANDE AUF ALLEN VIER SÄULEN!")
+
+.balign 4
+act_name_46: # 0x1900A70C
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_47: # 0x1900A728
+.byte _("LÖSE DAS PYRAMIDENPUZZLE!")
+
+.balign 4
+act_name_48: # 0x1900A744
+.byte _("ENTERE BOWSERS U-BOOT!")
+
+.balign 4
+act_name_49: # 0x1900A75C
+.byte _("ÖFFNE DIE TRUHEN!")
+
+.balign 4
+act_name_50: # 0x1900A770
+.byte _("SPRINGE ZU DEN ROTEN MÜNZEN!")
+
+.balign 4
+act_name_51: # 0x1900A790
+.byte _("SCHWIMME DURCH DIE RINGE!")
+
+.balign 4
+act_name_52: # 0x1900A7AC
+.byte _("FOLGE DEM FISCH!")
+
+.balign 4
+act_name_53: # 0x1900A7C0
+.byte _("VEREINE DIE MÜTZEN!")
+
+.balign 4
+act_name_54: # 0x1900A7D4
+.byte _("ERKLIMME DEN KOPF!")
+
+.balign 4
+act_name_55: # 0x1900A7E8
+.byte _("SPIELE MIT BAD BULLY!")
+
+.balign 4
+act_name_56: # 0x1900A800
+.byte _("WAGE DICH INS EIS!")
+
+.balign 4
+act_name_57: # 0x1900A814
+.byte _("GEHE ZUM EISSEE!")
+
+.balign 4
+act_name_58: # 0x1900A828
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_59: # 0x1900A844
+.byte _("SCHAU IM IGLU NACH!")
+
+.balign 4
+act_name_60: # 0x1900A858
+.byte _("FOLGE DEN BLAUEN PFEILEN!")
+
+.balign 4
+act_name_61: # 0x1900A874
+.byte _("SUCHE NACH DER SPITZE DER STADT!")
+
+.balign 4
+act_name_62: # 0x1900A898
+.byte _("ERFORSCHE DIE HÖHEN UND TIEFEN!")
+
+.balign 4
+act_name_63: # 0x1900A8B8
+.byte _("BEEILE DICH - EXPRESSAUFZUG!")
+
+.balign 4
+act_name_64: # 0x1900A8D8
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_65: # 0x1900A8F4
+.byte _("BEACHTE DAS ZEITLIMIT!")
+
+.balign 4
+act_name_66: # 0x1900A90C
+.byte _("ERKLIMME DEN BERG!")
+
+.balign 4
+act_name_67: # 0x1900A920
+.byte _("ERKUNDE DEN AFFENKÄFIG!")
+
+.balign 4
+act_name_68: # 0x1900A938
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_69: # 0x1900A954
+.byte _("ERFORSCHE DIE STEILWAND!")
+
+.balign 4
+act_name_70: # 0x1900A970
+.byte _("HALTE AUSSCHAU AUF DER BRÜCKE!")
+
+.balign 4
+act_name_71: # 0x1900A990
+.byte _("SUCHE DEN EINSAMEN PILZ!")
+
+.balign 4
+act_name_72: # 0x1900A9AC
+.byte _("PFLÜCKE DIE SCHNAPP-PIRANHA!")
+
+.balign 4
+act_name_73: # 0x1900A9CC
+.byte _("BEGIB DICH ZUR SPITZE DER INSEL!")
+
+.balign 4
+act_name_74: # 0x1900A9F0
+.byte _("TRETE NOCH EINMAL GEGEN KOOPA AN!")
+
+.balign 4
+act_name_75: # 0x1900AA14
+.byte _("LÖSE DIE 5 ITTY BITTY-RÄTSEL!")
+
+.balign 4
+act_name_76: # 0x1900AA34
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_77: # 0x1900AA50
+.byte _("DREHE WIGGLER IM KREIS!")
+
+.balign 4
+act_name_78: # 0x1900AA68
+.byte _("ROLLE DEN KÄFIG!")
+
+.balign 4
+act_name_79: # 0x1900AA7C
+.byte _("ACHTE AUF DAS PENDEL!")
+
+.balign 4
+act_name_80: # 0x1900AA94
+.byte _("LASS DIR DEN WEG ZEIGEN!")
+
+.balign 4
+act_name_81: # 0x1900AAB0
+.byte _("STAMPFE MÄCHTIG AUF!")
+
+.balign 4
+act_name_82: # 0x1900AAC8
+.byte _("SPRINGE AUF DEN SCHWEBEBALKEN!")
+
+.balign 4
+act_name_83: # 0x1900AAE8
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_84: # 0x1900AB04
+.byte _("REISE AUF DEN REGENBÖGEN!")
+
+.balign 4
+act_name_85: # 0x1900AB20
+.byte _("SUCHE DAS HAUS AM HIMMEL!")
+
+.balign 4
+act_name_86: # 0x1900AB3C
+.byte _("FINDE DIE 8 ROTEN MÜNZEN!")
+
+.balign 4
+act_name_87: # 0x1900AB58
+.byte _("LASS DICH VON DER BRISE TRAGEN!")
+
+.balign 4
+act_name_88: # 0x1900AB78
+.byte _("ÜBERWINDE DIE MACHT DER DREIECKE!")
+
+.balign 4
+act_name_89: # 0x1900AB9C
+.byte _("SCHAU DIR DEN REGENBOGEN AN!")
+
+.balign 4
+act_name_90: # 0x1900ABBC
+.byte _("EIN GEHEIMER STERN DES SCHLOSSES!")
+
+.balign 4
+act_name_91: # 0x1900ABE0
+.byte _("")
+
+.balign 4
+act_name_92: # 0x1900ABE4
+.byte _("")
+
+.balign 4
+act_name_93: # 0x1900ABE8
+.byte _("")
+
+.balign 4
+act_name_94: # 0x1900ABEC
+.byte _("")
+
+.balign 4
+act_name_95: # 0x1900ABF0
+.byte _("")
+
+.balign 4
+act_name_96: # 0x1900ABF4
+.byte _("")
+
+# act names table
+.balign 4
+glabel act_name_table_eu_de # 0x1900ABF8
+.word act_name_00, act_name_01, act_name_02, act_name_03
+.word act_name_04, act_name_05, act_name_06, act_name_07
+.word act_name_08, act_name_09, act_name_10, act_name_11
+.word act_name_12, act_name_13, act_name_14, act_name_15
+.word act_name_16, act_name_17, act_name_18, act_name_19
+.word act_name_20, act_name_21, act_name_22, act_name_23
+.word act_name_24, act_name_25, act_name_26, act_name_27
+.word act_name_28, act_name_29, act_name_30, act_name_31
+.word act_name_32, act_name_33, act_name_34, act_name_35
+.word act_name_36, act_name_37, act_name_38, act_name_39
+.word act_name_40, act_name_41, act_name_42, act_name_43
+.word act_name_44, act_name_45, act_name_46, act_name_47
+.word act_name_48, act_name_49, act_name_50, act_name_51
+.word act_name_52, act_name_53, act_name_54, act_name_55
+.word act_name_56, act_name_57, act_name_58, act_name_59
+.word act_name_60, act_name_61, act_name_62, act_name_63
+.word act_name_64, act_name_65, act_name_66, act_name_67
+.word act_name_68, act_name_69, act_name_70, act_name_71
+.word act_name_72, act_name_73, act_name_74, act_name_75
+.word act_name_76, act_name_77, act_name_78, act_name_79
+.word act_name_80, act_name_81, act_name_82, act_name_83
+.word act_name_84, act_name_85, act_name_86, act_name_87
+.word act_name_88, act_name_89, act_name_90, act_name_91
+.word act_name_92, act_name_93, act_name_94, act_name_95
+.word act_name_96, 0x0
