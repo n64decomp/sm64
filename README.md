@@ -10,7 +10,7 @@ It builds the following ROMs:
 This repo does not include all assets necessary for compiling the ROMs.
 A prior copy of the game is required.
 
-Official discord: https://discord.gg/RHeyDvU
+Official discord: https://discord.gg/27JtCWs
 
 ## Installation
 
