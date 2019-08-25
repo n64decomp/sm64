@@ -24,7 +24,7 @@ aifc_decode_CFLAGS := -O2 # both runs and compiles faster than -O3
 
 aiff_extract_codebook_SOURCES := aiff_extract_codebook.c
 
-tabledesign_SOURCES := sdk-tools/tabledesign/codebook.c sdk-tools/tabledesign/estimate.c sdk-tools/tabledesign/print.c sdk-tools/tabledesign/tabledesign.c
+tabledesign_SOURCES := sdk-tools/tabledesign_src/codebook.c sdk-tools/tabledesign_src/estimate.c sdk-tools/tabledesign_src/print.c sdk-tools/tabledesign_src/tabledesign.c
 tabledesign_CFLAGS := -Wno-uninitialized -laudiofile
 
 vadpcm_enc_SOURCES := sdk-tools/adpcm/vadpcm_enc.c sdk-tools/adpcm/vpredictor.c sdk-tools/adpcm/quant.c sdk-tools/adpcm/util.c sdk-tools/adpcm/vencode.c
