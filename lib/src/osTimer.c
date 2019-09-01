@@ -23,8 +23,9 @@ void __osTimerInterrupt() {
     OSTimer *sp24;
     u32 sp20;
     u32 sp1c;
-    if (D_80334830->next == D_80334830)
+    if (D_80334830->next == D_80334830) {
         return;
+    }
     while (1) {
         sp24 = D_80334830->next;
         if (sp24 == D_80334830) {

@@ -30,8 +30,7 @@ void bhv_mips_init(void) {
         o->activeFlags = 0;
     }
 
-    // This flag seems to make MIPS fall straight down when thrown.
-    o->oUnk190 = 0x10;
+    o->oInteractionSubtype = INT_SUBTYPE_HOLDABLE_NPC;
 
 #ifndef VERSION_JP
     o->oGravity = 15.0f;
@@ -161,7 +160,11 @@ void bhv_mips_act_wait_for_animation_done(void) {
  * Handles MIPS falling down after being thrown.
  */
 void bhv_mips_act_fall_down(void) {
+#ifdef VERSION_EU
+    s32 collisionFlags = 0;
+#else
     s16 collisionFlags = 0;
+#endif
 
     collisionFlags = ObjectStep();
     o->header.gfx.unk38.animFrame = 0;
@@ -242,7 +245,7 @@ void bhv_mips_held(void) {
         if (set_mario_npc_dialog(1) == 2) {
             o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
             if (func_8028F8E0(162, o, dialogId)) {
-                o->oUnk190 |= 0x40;
+                o->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
                 o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
                 o->oMipsStarStatus = MIPS_STAR_STATUS_SHOULD_SPAWN_STAR;
                 set_mario_npc_dialog(0);

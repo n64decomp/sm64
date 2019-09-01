@@ -769,6 +769,7 @@ SECTIONS
       gMusicData = .;
       BUILD_DIR/sound/sequences.bin.o(.data);
       . = ALIGN(0x10);
+      gBankSetsData = .;
       BUILD_DIR/sound/bank_sets.o(.data);
       . = ALIGN(0x10);
    }

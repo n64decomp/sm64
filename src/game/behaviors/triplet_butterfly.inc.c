@@ -1,3 +1,9 @@
+struct TripletButterflyActivationData {
+    s32 model;
+    void *behavior;
+    f32 scale;
+};
+
 static struct ObjectHitbox sTripletButterflyExplodeHitbox = {
     /* interactType:      */ INTERACT_MR_BLIZZARD,
     /* downOffset:        */ 50,

@@ -1,6 +1,9 @@
 #ifndef _ULTRA64_VI_H_
 #define _ULTRA64_VI_H_
 
+#include <PR/ultratypes.h>
+#include <PR/os_message.h>
+
 /* Ultra64 Video Interface */
 
 

@@ -31,7 +31,7 @@ baseimg = 'baserom.' + lang + '.z64'
 basemap = 'sm64.' + lang + '.map'
 
 myimg = 'build/' + lang + '/sm64.' + lang + '.z64'
-mymap = 'build/' + lang + '/sm64.map'
+mymap = 'build/' + lang + '/sm64.' + lang + '.map'
 
 if os.path.isfile('expected/' + mymap):
     basemap = 'expected/' + mymap

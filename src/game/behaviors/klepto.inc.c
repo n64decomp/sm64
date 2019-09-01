@@ -361,7 +361,7 @@ void bhv_klepto_update(void) {
                 save_file_clear_flags(SAVE_FLAG_CAP_ON_KLEPTO);
                 spawn_object(o, MODEL_MARIOS_CAP, bhvNormalCap);
             } else if (o->oAnimState == KLEPTO_ANIM_STATE_HOLDING_STAR) {
-                CreateStar(-5550.0f, 300.0f, -930.0f);
+                create_star(-5550.0f, 300.0f, -930.0f);
             }
 
             o->oAnimState = KLEPTO_ANIM_STATE_HOLDING_NOTHING;

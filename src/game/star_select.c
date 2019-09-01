@@ -34,14 +34,16 @@ void BehStarActSelectorLoop(void) {
     switch (gCurrentObject->oStarSelectorType) {
         case STAR_SELECTOR_NOT_SELECTED:
             gCurrentObject->oStarSelectorSize -= 0.1;
-            if (gCurrentObject->oStarSelectorSize < 1.0)
+            if (gCurrentObject->oStarSelectorSize < 1.0) {
                 gCurrentObject->oStarSelectorSize = 1.0;
+            }
             gCurrentObject->oFaceAngleYaw = 0;
             break;
         case STAR_SELECTOR_SELECTED:
             gCurrentObject->oStarSelectorSize += 0.1;
-            if (gCurrentObject->oStarSelectorSize > 1.3)
+            if (gCurrentObject->oStarSelectorSize > 1.3) {
                 gCurrentObject->oStarSelectorSize = 1.3;
+            }
             gCurrentObject->oFaceAngleYaw += 0x800;
             break;
         case STAR_SELECTOR_100_COINS:
@@ -50,8 +52,7 @@ void BehStarActSelectorLoop(void) {
     }
 
     obj_scale(gCurrentObject->oStarSelectorSize);
-    gCurrentObject
-        ->oStarSelectorTimer++; // unused timer field? only ever referenced here to my knowledge.
+    gCurrentObject->oStarSelectorTimer++; // unused timer field? only ever referenced here
 }
 
 void Show100CoinStar(u8 stars) {
@@ -71,16 +72,14 @@ void BehActSelectorInit(void) {
 
     sVisibleStars = 0;
     while (i != sObtainedStars) {
-        if (stars & (1 << sVisibleStars)) // Star has been collected
-        {
+        if (stars & (1 << sVisibleStars)) { // Star has been collected
             selectorModelIDs[sVisibleStars] = MODEL_STAR;
             i++;
-        } else // Star has not been collected
-        {
+        } else { // Star has not been collected
             selectorModelIDs[sVisibleStars] = MODEL_TRANSPARENT_STAR;
-            if (sDefaultSelectedAct == 0) // If this is the first star that has not been collected, set
-                                          // the default selection to this star.
-            {
+            // If this is the first star that has not been collected, set
+            // the default selection to this star.
+            if (sDefaultSelectedAct == 0) {
                 sDefaultSelectedAct = sVisibleStars + 1;
                 sSelectedStarIndex = sVisibleStars;
             }
@@ -88,24 +87,26 @@ void BehActSelectorInit(void) {
         sVisibleStars++;
     }
 
-    if (sVisibleStars == sObtainedStars
-        && sVisibleStars != 6) // If the stars have been collected in order so far, show the next star.
-    {
+    // If the stars have been collected in order so far, show the next star.
+    if (sVisibleStars == sObtainedStars && sVisibleStars != 6) {
         selectorModelIDs[sVisibleStars] = MODEL_TRANSPARENT_STAR;
         sDefaultSelectedAct = sVisibleStars + 1;
         sSelectedStarIndex = sVisibleStars;
         sVisibleStars++;
     }
 
-    if (sObtainedStars
-        == 6) // If all stars have been collected, set the default selection to the last star.
+    // If all stars have been collected, set the default selection to the last star.
+    if (sObtainedStars == 6) {
         sDefaultSelectedAct = sVisibleStars;
-    if (sObtainedStars == 0) //! Useless, since sDefaultSelectedAct has already been set in this
-                             //! scenario by the code that shows the next uncollected star.
-        sDefaultSelectedAct = 1;
+    }
 
-    for (i = 0; i < sVisibleStars; i++) // Spawn star selector objects
-    {
+    //! Useless, since sDefaultSelectedAct has already been set in this
+    //! scenario by the code that shows the next uncollected star.
+    if (sObtainedStars == 0) {
+        sDefaultSelectedAct = 1;
+    }
+
+    for (i = 0; i < sVisibleStars; i++) { // Spawn star selector objects
         sStarSelectIcons[i] =
             spawn_object_abs_with_rot(gCurrentObject, 0, selectorModelIDs[i], bhvStarInActSelector,
                                       75 + sVisibleStars * -75 + i * 152, 248, -300, 0, 0, 0);
@@ -127,12 +128,9 @@ void BehActSelectorLoop(void) {
         handleMenuScrolling(MENU_SCROLL_HORIZONTAL, &sSelectedStarIndex, 0, sObtainedStars);
         starIndexCounter = sSelectedStarIndex;
         for (i = 0; i < sVisibleStars; i++) {
-            if ((stars & (1 << i))
-                || i + 1 == sDefaultSelectedAct) // Can the star be selected (is it either already
-                                                 // completed or the first non-completed mission)
-            {
-                if (starIndexCounter == 0) // We have reached the sSelectedStarIndex-th selectable star.
-                {
+            // Can the star be selected (is it either already completed or the first non-completed mission)
+            if ((stars & (1 << i)) || i + 1 == sDefaultSelectedAct) {
+                if (starIndexCounter == 0) { // We have reached the sSelectedStarIndex-th selectable star.
                     sSelectedAct = i;
                     break;
                 }
@@ -146,10 +144,11 @@ void BehActSelectorLoop(void) {
     }
 
     for (i = 0; i < sVisibleStars; i++) {
-        if (sSelectedAct == i)
+        if (sSelectedAct == i) {
             sStarSelectIcons[i]->oStarSelectorType = STAR_SELECTOR_SELECTED;
-        else
+        } else {
             sStarSelectIcons[i]->oStarSelectorType = STAR_SELECTOR_NOT_SELECTED;
+        }
     }
 }
 
@@ -164,10 +163,11 @@ static void ShowCourseNumber(void) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
 
     Int2Str(gCurrCourseNum, courseNum);
-    if (gCurrCourseNum < 10)
+    if (gCurrCourseNum < 10) {
         PutString(2, 152, 158, courseNum);
-    else
+    } else {
         PutString(2, 143, 158, courseNum);
+    }
 
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
 }
@@ -202,11 +202,11 @@ static void ShowActSelectorMenu(void) {
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
 
     // Display the "MY SCORE" text
-    if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0)
+    if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0) {
         PrintGenericText(102, 118, myScore);
+    }
 
-    // Display the level name; add 3 to skip the number and spacing to get to the actual string to
-    // center.
+    // Display the level name; add 3 to skip the number and spacing to get to the actual string to center.
     x = get_str_x_pos_from_center(160, currLevelName + 3, 10.0f);
     PrintGenericText(x, 33, currLevelName + 3);
 
@@ -220,8 +220,7 @@ static void ShowActSelectorMenu(void) {
 
     // Display the name of the selected act.
     if (sVisibleStars != 0) {
-        selectedActName =
-            (u8 *) segmented_to_virtual((void *) (actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedAct]));
+        selectedActName = (u8 *) segmented_to_virtual((void *) (actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedAct]));
 #ifdef VERSION_JP
         x2 = get_str_x_pos_from_center(158, selectedActName, 8.0f);
 #else
@@ -242,8 +241,9 @@ static void ShowActSelectorMenu(void) {
 
 //! @bug Another geo function missing the third param. Harmless in practice due to o32 convention.
 Gfx *Geo18_80177518(s16 run, UNUSED struct GraphNode *node) {
-    if (run == TRUE)
+    if (run == TRUE) {
         ShowActSelectorMenu();
+    }
     return NULL;
 }
 
@@ -257,24 +257,26 @@ void LevelProc_80177560(UNUSED s32 a, UNUSED s32 b) {
     sObtainedStars = save_file_get_course_star_count(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
 
     // Don't count 100 coin star
-    if (stars & (1 << 6))
+    if (stars & (1 << 6)) {
         sObtainedStars--;
+    }
 }
 
 int LevelProc_80177610(UNUSED s32 a, UNUSED s32 b) {
     if (sActSelectorMenuTimer >= 11) {
         if ((gPlayer3Controller->buttonPressed & A_BUTTON)
-            || (gPlayer3Controller->buttonPressed & START_BUTTON)
-            || (gPlayer3Controller->buttonPressed & B_BUTTON)) {
+         || (gPlayer3Controller->buttonPressed & START_BUTTON)
+         || (gPlayer3Controller->buttonPressed & B_BUTTON)) {
 #ifdef VERSION_JP
             play_sound(SOUND_MENU_STARSOUND, gDefaultSoundArgs);
 #else
             play_sound(SOUND_MENU_STARSOUNDLETSAGO, gDefaultSoundArgs);
 #endif
-            if (sDefaultSelectedAct > sSelectedAct)
+            if (sDefaultSelectedAct > sSelectedAct) {
                 sCurrentMission = sSelectedAct + 1;
-            else
+            } else {
                 sCurrentMission = sDefaultSelectedAct;
+            }
             D_80330534 = sSelectedAct + 1;
         }
     }

@@ -199,9 +199,9 @@ void BullyLavaDeath(void) {
             func_802A3004();
 
             if (o->oBullySubtype == BULLY_STYPE_CHILL)
-                CreateStar(130.0f, 1600.0f, -4335.0f);
+                create_star(130.0f, 1600.0f, -4335.0f);
             else {
-                CreateStar(0, 950.0f, -6800.0f);
+                create_star(0, 950.0f, -6800.0f);
                 spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvLllTumblingBridge, 0, 154, -5631, 0, 0,
                                           0);
             }
@@ -286,12 +286,16 @@ void bhv_big_bully_with_minions_init(void) {
 void BigBullyWithMinionsLavaDeath(void) {
     if (ObjLavaDeath() == 1) {
         func_802A3004();
-        CreateStar(3700.0f, 600.0f, -5500.0f);
+        create_star(3700.0f, 600.0f, -5500.0f);
     }
 }
 
 void bhv_big_bully_with_minions_loop(void) {
+#ifdef VERSION_EU
+    s32 collisionFlags;
+#else
     s16 collisionFlags;
+#endif
 
     o->oBullyPrevX = o->oPosX;
     o->oBullyPrevY = o->oPosY;

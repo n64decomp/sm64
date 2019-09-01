@@ -499,17 +499,17 @@ void ActionBooGivingStar2(void) {
 }
 
 void func_802C41AC(void) {
-    CreateStar(980.0f, 1100.0f, 250.0f);
+    create_star(980.0f, 1100.0f, 250.0f);
 }
 
 void func_802C41E4(void) {
-    CreateStar(700.0f, 3200.0f, 1900.0f);
+    create_star(700.0f, 3200.0f, 1900.0f);
 }
 
 void func_802C4220(void) {
     struct Object *merryGoRound;
 
-    CreateStar(-1600.0f, -2100.0f, 205.0f);
+    create_star(-1600.0f, -2100.0f, 205.0f);
 
     merryGoRound = obj_nearest_object_with_behavior(bhvMerryGoRound);
 

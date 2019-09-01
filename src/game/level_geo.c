@@ -9,8 +9,9 @@
 #include "envfx_snow.h"
 #include "level_geo.h"
 
-/** Geo function that generates a displaylist for environment effects such as
- *  snow or jetstream bubbles.
+/**
+ * Geo function that generates a displaylist for environment effects such as
+ * snow or jetstream bubbles.
  */
 Gfx *geo_enfvx_main(s32 callContext, struct GraphNode *node, f32 c[4][4]) {
     Vec3s marioPos;
@@ -53,8 +54,9 @@ Gfx *geo_enfvx_main(s32 callContext, struct GraphNode *node, f32 c[4][4]) {
     return gfx;
 }
 
-/** Geo function that generates a displaylist for the skybox. Can be assigned
- *  as the function of a GraphNodeBackground.
+/**
+ * Geo function that generates a displaylist for the skybox. Can be assigned
+ * as the function of a GraphNodeBackground.
  */
 Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) {
     Gfx *gfx = NULL;

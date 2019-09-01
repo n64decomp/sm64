@@ -123,8 +123,9 @@ u64 *func_80313CD4(u64 *cmdBuf, s32 *writtenCmds, u16 *aiBuf, s32 bufLen) {
             // chunkLen = v0 rounded to nearest multiple of 8
             chunkLen = v0 - (v0 & 7);
 
-            if ((v0 & 7) >= 4)
+            if ((v0 & 7) >= 4) {
                 chunkLen += 8;
+            }
         }
         process_sequences(i - 1);
         if (D_802211B0.unk1 != 0) {
@@ -134,8 +135,9 @@ u64 *func_80313CD4(u64 *cmdBuf, s32 *writtenCmds, u16 *aiBuf, s32 bufLen) {
         remaining -= chunkLen;
         aiBufPtr += chunkLen;
     }
-    if (D_802211B0.unk2 != 0)
+    if (D_802211B0.unk2 != 0) {
         D_802211B0.unk2--;
+    }
     D_802211B0.unk3 ^= 1;
     *writtenCmds = cmd - cmdBuf;
     return cmd;

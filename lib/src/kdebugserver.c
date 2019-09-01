@@ -41,8 +41,9 @@ void send_packet(u8 *a0, s32 a1) {
         sp1c.unk2[i] = a0[i];
     }
     *(volatile u32 *) 0xc0000000 = *(u32 *) &sp1c;
-    while (!(__osGetCause() & 0x2000))
+    while (!(__osGetCause() & 0x2000)) {
         ;
+    }
     *(volatile u32 *) 0xc000000c = 0;
 }
 
@@ -51,8 +52,9 @@ void send(u8 *buff, s32 len) {
     s32 end;
     s32 rem;
     if (!D_80334A44) {
-        while (!(__osGetCause() & 0x2000))
+        while (!(__osGetCause() & 0x2000)) {
             ;
+        }
         *(volatile u32 *) 0xc000000c = 0;
         D_80334A44 = 1;
     }

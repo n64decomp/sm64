@@ -83,8 +83,9 @@ void discard_sequence(s32 seqId) {
     s32 i;
 
     for (i = 0; i < SEQUENCE_PLAYERS; i++) {
-        if (gSequencePlayers[i].enabled && gSequencePlayers[i].seqId == seqId)
+        if (gSequencePlayers[i].enabled && gSequencePlayers[i].seqId == seqId) {
             sequence_player_disable(gSequencePlayers + i);
+        }
     }
 }
 
@@ -97,8 +98,9 @@ void *soundAlloc(struct SoundAllocPool *pool, u32 size) {
         start = pool->cur;
         pool->cur += ALIGN16(size);
         last = pool->cur - start - 1;
-        for (i = 0; i <= last; i++)
+        for (i = 0; i <= last; i++) {
             start[i] = 0;
+        }
     } else {
         return NULL;
     }

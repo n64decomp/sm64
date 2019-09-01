@@ -136,7 +136,8 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
     return sp3C;
 }
 
-/** @bug Every geo function declares the 3 parameters of run, node, and the matrix array.
+/**
+ * @bug Every geo function declares the 3 parameters of run, node, and the matrix array.
  * This one (see also geo_switch_area) doesn't. When executed, the node function
  * executor passes the 3rd argument to a function that doesn't declare it. This is
  * undefined behavior, but harmless in practice due to the o32 calling convention.
@@ -1114,7 +1115,7 @@ void obj_get_thrown_or_placed(f32 forwardVel, f32 velY, s32 thrownAction) {
 
     o->oHeldState = HELD_FREE;
 
-    if ((o->oUnk190 & 0x10) || forwardVel == 0.0f) {
+    if ((o->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC) || forwardVel == 0.0f) {
         obj_move_after_thrown_or_dropped(0.0f, 0.0f);
     } else {
         o->oAction = thrownAction;
@@ -2902,7 +2903,7 @@ void obj_spawn_loot_blue_coin(void) {
 void obj_spawn_star_at_y_offset(f32 targetX, f32 targetY, f32 targetZ, f32 offsetY) {
     f32 objectPosY = o->oPosY;
     o->oPosY += offsetY + gDebugInfo[5][0];
-    CreateStar(targetX, targetY, targetZ);
+    create_star(targetX, targetY, targetZ);
     o->oPosY = objectPosY;
 }
 #endif

@@ -737,7 +737,7 @@ static void koopa_the_quick_act_after_race(void) {
             o->oTimer = 0;
         }
     } else if (o->parentObj->oKoopaRaceEndpointRaceStatus != 0) {
-        CreateStar(sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[0],
+        create_star(sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[0],
                    sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[1],
                    sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[2]);
 

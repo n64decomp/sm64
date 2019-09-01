@@ -31,26 +31,31 @@ u32 print_list_stats(struct GMemBlock *, s32, s32);
  * to the empty block list.
  */
 void empty_mem_block(struct GMemBlock *block) {
-    if (block->next != NULL)
+    if (block->next != NULL) {
         block->next->prev = block->prev;
+    }
 
-    if (block->prev != NULL)
+    if (block->prev != NULL) {
         block->prev->next = block->next;
+    }
 
     switch (block->blockType) {
         case G_MEM_BLOCK_FREE:
-            if (block->prev == NULL)
+            if (block->prev == NULL) {
                 sFreeBlockListHead = block->next;
+            }
             break;
         case G_MEM_BLOCK_USED:
-            if (block->prev == NULL)
+            if (block->prev == NULL) {
                 sUsedBlockListHead = block->next;
+            }
             break;
     }
 
     block->next = sEmptyBlockListHead;
-    if (block->next != NULL)
+    if (block->next != NULL) {
         sEmptyBlockListHead->prev = block;
+    }
 
     sEmptyBlockListHead = block;
     block->prev = NULL;
@@ -98,28 +103,32 @@ struct GMemBlock *make_mem_block(u32 blockType, u8 permFlag) {
     if (sEmptyBlockListHead == NULL) {
         sEmptyBlockListHead = (struct GMemBlock *) gd_allocblock(sizeof(struct GMemBlock));
 
-        if (sEmptyBlockListHead == NULL)
+        if (sEmptyBlockListHead == NULL) {
             fatal_printf("MakeMemBlock() unable to allocate");
+        }
 
         sEmptyBlockListHead->next = NULL;
         sEmptyBlockListHead->prev = NULL;
     }
 
     newMemBlock = sEmptyBlockListHead;
-    if ((sEmptyBlockListHead = newMemBlock->next) != NULL)
+    if ((sEmptyBlockListHead = newMemBlock->next) != NULL) {
         newMemBlock->next->prev = NULL;
+    }
 
     switch (blockType) {
         case G_MEM_BLOCK_FREE:
             newMemBlock->next = sFreeBlockListHead;
-            if (newMemBlock->next != NULL)
+            if (newMemBlock->next != NULL) {
                 sFreeBlockListHead->prev = newMemBlock;
+            }
             sFreeBlockListHead = newMemBlock;
             break;
         case G_MEM_BLOCK_USED:
             newMemBlock->next = sUsedBlockListHead;
-            if (newMemBlock->next != NULL)
+            if (newMemBlock->next != NULL) {
                 sUsedBlockListHead->prev = newMemBlock;
+            }
             sUsedBlockListHead = newMemBlock;
             break;
         default:
@@ -181,8 +190,9 @@ void *gd_request_mem(u32 size, u8 permanence) {
             } else {
                 if (curBlock->size > size) {
                     if (foundBlock != NULL) { /* find closest sized block */
-                        if (curBlock->size < foundBlock->size)
+                        if (curBlock->size < foundBlock->size) {
                             foundBlock = curBlock;
+                        }
                     } else {
                         foundBlock = curBlock;
                     }
@@ -192,8 +202,9 @@ void *gd_request_mem(u32 size, u8 permanence) {
         curBlock = curBlock->next;
     }
 
-    if (foundBlock == NULL)
+    if (foundBlock == NULL) {
         return NULL;
+    }
 
     if (foundBlock->size > size) { /* split free block */
         newBlock->data.ptr = foundBlock->data.ptr;
@@ -254,10 +265,11 @@ u32 print_list_stats(struct GMemBlock *block, s32 printBlockInfo, s32 permanence
     while (block != NULL) {
         if (block->permFlag & permanence) {
             entries++;
-            if (printBlockInfo)
+            if (printBlockInfo) {
                 gd_printf("     %6.2fk (%d bytes)\n",
                           (f32) block->size / 1024.0, //? 1024.0f
                           block->size);
+            }
             totalSize += block->size;
         }
         block = block->next;

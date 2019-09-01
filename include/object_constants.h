@@ -84,7 +84,7 @@
 #define OBJ_MOVE_HIT_WALL              (1 <<  9) // 0x0200
 #define OBJ_MOVE_HIT_EDGE              (1 << 10) // 0x0400
 #define OBJ_MOVE_ABOVE_LAVA            (1 << 11) // 0x0800
-#define OBJ_MOVE_LEAVING_WATER                    (1 << 12) // 0x1000
+#define OBJ_MOVE_LEAVING_WATER         (1 << 12) // 0x1000
 #define OBJ_MOVE_13                    (1 << 13) // 0x2000
 #ifndef VERSION_JP
 #define OBJ_MOVE_ABOVE_DEATH_BARRIER   (1 << 14) // 0x4000
@@ -99,6 +99,11 @@
     OBJ_MOVE_UNDERWATER_ON_GROUND)
 #define OBJ_MOVE_MASK_HIT_WALL_OR_IN_WATER \
     (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER)
+#define OBJ_MOVE_MASK_NOT_AIR (\
+    OBJ_MOVE_LANDED |\
+    OBJ_MOVE_ON_GROUND |\
+    OBJ_MOVE_AT_WATER_SURFACE |\
+    OBJ_MOVE_UNDERWATER_ON_GROUND)
 
 /* oActiveParticleFlags */
 #define ACTIVE_PARTICLE_0    0x00000001
@@ -568,6 +573,82 @@
     /* oAction */
     #define MONTY_MOLE_ROCK_ACT_HELD 0
     #define MONTY_MOLE_ROCK_ACT_MOVE 1
+
+/* Ukiki */
+    /* oAction */
+    #define UKIKI_ACT_IDLE            0
+    #define UKIKI_ACT_RUN             1
+    #define UKIKI_ACT_TURN_TO_MARIO   2
+    #define UKIKI_ACT_JUMP            3
+    #define UKIKI_ACT_GO_TO_CAGE      4
+    #define UKIKI_ACT_WAIT_TO_RESPAWN 5
+    #define UKIKI_ACT_UNUSED_TURN     6
+    #define UKIKI_ACT_RETURN_HOME     7
+
+    /* oSubAction */
+    #define UKIKI_SUB_ACT_TAUNT_NONE       0
+    #define UKIKI_SUB_ACT_TAUNT_ITCH       1
+    #define UKIKI_SUB_ACT_TAUNT_SCREECH    2
+    #define UKIKI_SUB_ACT_TAUNT_JUMP_CLAP  3
+    #define UKIKI_SUB_ACT_TAUNT_HANDSTAND  4
+
+    #define UKIKI_SUB_ACT_CAGE_RUN_TO_CAGE    0
+    #define UKIKI_SUB_ACT_CAGE_WAIT_FOR_MARIO 1
+    #define UKIKI_SUB_ACT_CAGE_TALK_TO_MARIO  2
+    #define UKIKI_SUB_ACT_CAGE_TURN_TO_CAGE   3
+    #define UKIKI_SUB_ACT_CAGE_JUMP_TO_CAGE   4
+    #define UKIKI_SUB_ACT_CAGE_LAND_ON_CAGE   5
+    #define UKIKI_SUB_ACT_CAGE_SPIN_ON_CAGE   6
+    #define UKIKI_SUB_ACT_CAGE_DESPAWN        7
+
+    /* oUkikiTextState */
+    #define UKIKI_TEXT_DEFAULT       0
+    #define UKIKI_TEXT_CAGE_TEXTBOX  1
+    #define UKIKI_TEXT_GO_TO_CAGE    2
+    #define UKIKI_TEXT_STOLE_HAT     3
+    #define UKIKI_TEXT_HAS_HAT       4
+    #define UKIKI_TEXT_GAVE_HAT_BACK 5
+    #define UKIKI_TEXT_DO_NOT_LET_GO 6
+    #define UKIKI_TEXT_STEAL_HAT     7
+
+    /* oBehParams2ndByte */
+    #define UKIKI_CAGE 0
+    #define UKIKI_HAT  1
+
+    /* Animations */
+    #define UKIKI_ANIM_RUN           0
+    #define UKIKI_ANIM_UNUSED_WALK   1
+    #define UKIKI_ANIM_UNUSED_APOSE  2
+    #define UKIKI_ANIM_UNUSED_DEATH  3
+    #define UKIKI_ANIM_SCREECH       4
+    #define UKIKI_ANIM_JUMP_CLAP     5
+    #define UKIKI_ANIM_UNUSED_HOP    6
+    #define UKIKI_ANIM_LAND          7
+    #define UKIKI_ANIM_JUMP          8
+    #define UKIKI_ANIM_ITCH          9
+    #define UKIKI_ANIM_HANDSTAND    10
+    #define UKIKI_ANIM_TURN         11
+    #define UKIKI_ANIM_HELD         12
+
+    /* oAnimState */
+    #define UKIKI_ANIM_STATE_DEFAULT    0
+    #define UKIKI_ANIM_STATE_EYE_CLOSED 1
+    #define UKIKI_ANIM_STATE_HAT_ON     2
+
+    /* oUkikiHasHat */
+    #define UKIKI_HAT_ON 1
+
+/* Ukiki Cage Star */
+    /* oAction */
+    #define UKIKI_CAGE_STAR_ACT_IN_CAGE    0
+    #define UKIKI_CAGE_STAR_ACT_SPAWN_STAR 1
+
+/* Ukiki Cage */
+    /* oAction */
+    #define UKIKI_CAGE_ACT_WAIT_FOR_UKIKI 0
+    #define UKIKI_CAGE_ACT_SPIN           1
+    #define UKIKI_CAGE_ACT_FALL           2
+    #define UKIKI_CAGE_ACT_HIDE           3
 
 /* Piranha Plant */
     /* oAction */

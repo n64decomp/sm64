@@ -16,7 +16,7 @@ void bhv_bobomb_init(void) {
     o->oGravity = 2.5;
     o->oFriction = 0.8;
     o->oBuoyancy = 1.3;
-    o->oUnk190 = 0x100;
+    o->oInteractionSubtype = INT_SUBTYPE_KICKABLE;
 }
 
 void func_802E5B7C(void) {
@@ -281,7 +281,7 @@ void bhv_bobomb_buddy_init(void) {
     o->oGravity = 2.5;
     o->oFriction = 0.8;
     o->oBuoyancy = 1.3;
-    o->oUnk190 = 0x4000;
+    o->oInteractionSubtype = INT_SUBTYPE_NPC;
 }
 
 void BobombBuddyIdleLoop(void) {

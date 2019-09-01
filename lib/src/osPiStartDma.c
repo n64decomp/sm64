@@ -6,8 +6,9 @@ s32 osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction, u32 devAddr, void *v
                  OSMesgQueue *mq) {
     register s32 result;
     register OSMesgQueue *cmdQueue;
-    if (!piMgrArgs.initialized)
+    if (!piMgrArgs.initialized) {
         return -1;
+    }
 
     // TODO: name magic constants
     if (direction == OS_READ) {

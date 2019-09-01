@@ -50,8 +50,9 @@ u32 __main__(void) {
     stop_timer("dlgen");
     mem_stats();
 
-    while (TRUE)
+    while (TRUE) {
         func_801A520C();
+    }
 
     imout();
     return 0;

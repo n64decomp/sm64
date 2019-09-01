@@ -1,0 +1,25 @@
+Refresh #1
+Changes from initial release:
+
+1.) More README cleanups and documentation
+2.) Fix .gitignore in tools/
+3.) More README cleanups and corrections
+4.) oUnk190 -> oInteractionSubtype
+5.) Normalize line endings
+6.) Replace bank_sets.s by sequences.json + build magic
+7.) Fix tabledesign in .gitignore
+8.) Cleaned and documented arrays in audio/
+9.) Change minimum Python 3 requirement in README.md to 3.6
+10.) Remove whitespace in ingame_menu.c, save_file.c, and star_select.c
+11.) Documentation comment style fixed
+12.) sm64.map -> sm64.version.map (ex: sm64.us.map)
+13.) Decompile EU versions of HUD and obj behaviors
+14.) Label ukiki.inc.c and ukiki_cage.inc.c
+15.) Add missing OS header includes
+16.) Fix alignment issue in model_ids.h
+17.) A bunch of behavior changes:
+     a.) Made styles consistent with function names (ex: BehBehaviorLoop -> beh_behavior_loop)
+     b.) Split obj_behaviors_2.c into multiple .inc.c files in behaviors/
+     c.) bhvHauntedRoomCheck -> bhvCoffinManager
+18.) Update README.md notes on WSL and add links
+19.) Added tidy.sh and also bracing around single-line ifs and loops

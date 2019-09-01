@@ -24,8 +24,9 @@ static void func_80383B70(u32 segptr) {
 u16 RandomU16(void) {
     u16 temp1, temp2;
 
-    if (gRandomSeed16 == 22026)
+    if (gRandomSeed16 == 22026) {
         gRandomSeed16 = 0;
+    }
 
     temp1 = (gRandomSeed16 & 0x00FF) << 8;
     temp1 = temp1 ^ gRandomSeed16;
@@ -36,10 +37,11 @@ u16 RandomU16(void) {
     temp2 = (temp1 >> 1) ^ 0xFF80;
 
     if ((temp1 & 1) == 0) {
-        if (temp2 == 43605)
+        if (temp2 == 43605) {
             gRandomSeed16 = 0;
-        else
+        } else {
             gRandomSeed16 = temp2 ^ 0x1FF4;
+        }
     } else {
         gRandomSeed16 = temp2 ^ 0x8180;
     }
@@ -53,10 +55,11 @@ f32 RandomFloat(void) {
 }
 
 s32 RandomSign(void) {
-    if (RandomU16() >= 0x7FFF)
+    if (RandomU16() >= 0x7FFF) {
         return 1;
-    else
+    } else {
         return -1;
+    }
 }
 
 void func_80383D68(struct Object *object) {
@@ -83,8 +86,9 @@ static u32 cur_object_stack_pop(void) {
 
 static void Unknown80383E44(void) // ?
 {
-    for (;;)
+    for (;;) {
         ;
+    }
 }
 
 static s32 beh_cmd_unhide(void) {
@@ -558,12 +562,15 @@ static s32 Behavior24(void) {
 }
 
 static s32 beh_cmd_begin(void) {
-    if (obj_has_behavior(bhvHauntedChair))
+    if (obj_has_behavior(bhvHauntedChair)) {
         bhv_init_room();
-    if (obj_has_behavior(bhvMadPiano))
+    }
+    if (obj_has_behavior(bhvMadPiano)) {
         bhv_init_room();
-    if (obj_has_behavior(bhvMessagePanel))
+    }
+    if (obj_has_behavior(bhvMessagePanel)) {
         gCurrentObject->oCollisionDistance = 150.0f;
+    }
     gBehCommand++;
     return BEH_CONTINUE;
 }
@@ -605,7 +612,7 @@ static s32 beh_cmd_interact_type(void) {
 
 // unused
 static s32 Behavior31(void) {
-    gCurrentObject->oUnk190 = gBehCommand[1];
+    gCurrentObject->oInteractionSubtype = gBehCommand[1];
 
     gBehCommand += 2;
     return BEH_CONTINUE;
@@ -662,8 +669,9 @@ static s32 beh_cmd_text_anim_rate(void) {
     u8 objectOffset = (gBehCommand[0] >> 16) & 0xFF;
     s16 arg1 = (gBehCommand[0] & 0xFFFF);
 
-    if ((gGlobalTimer % arg1) == 0)
+    if ((gGlobalTimer % arg1) == 0) {
         cur_object_add_int(objectOffset, 1);
+    }
 
     gBehCommand++;
     return BEH_CONTINUE;
@@ -748,8 +756,9 @@ void cur_object_exec_behavior(void) {
         distanceFromMario = 0.0f;
     }
 
-    if (flagsLo & OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO)
+    if (flagsLo & OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO) {
         gCurrentObject->oAngleToMario = angle_to_object(gCurrentObject, gMarioObject);
+    }
 
     if (gCurrentObject->oAction != gCurrentObject->oPrevAction) {
         (void) (gCurrentObject->oTimer = 0, gCurrentObject->oSubAction = 0,
@@ -765,8 +774,9 @@ void cur_object_exec_behavior(void) {
 
     gCurrentObject->behScript = gBehCommand;
 
-    if (gCurrentObject->oTimer < 0x3FFFFFFF)
+    if (gCurrentObject->oTimer < 0x3FFFFFFF) {
         gCurrentObject->oTimer++;
+    }
 
     if (gCurrentObject->oAction != gCurrentObject->oPrevAction) {
         (void) (gCurrentObject->oTimer = 0, gCurrentObject->oSubAction = 0,
@@ -775,26 +785,33 @@ void cur_object_exec_behavior(void) {
 
     flagsLo = (s16) gCurrentObject->oFlags;
 
-    if (flagsLo & OBJ_FLAG_0010)
+    if (flagsLo & OBJ_FLAG_0010) {
         obj_set_facing_to_move_angles(gCurrentObject);
+    }
 
-    if (flagsLo & OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW)
+    if (flagsLo & OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW) {
         gCurrentObject->oFaceAngleYaw = gCurrentObject->oMoveAngleYaw;
+    }
 
-    if (flagsLo & OBJ_FLAG_MOVE_XZ_USING_FVEL)
+    if (flagsLo & OBJ_FLAG_MOVE_XZ_USING_FVEL) {
         obj_move_xz_using_fvel_and_yaw();
+    }
 
-    if (flagsLo & OBJ_FLAG_MOVE_Y_WITH_TERMINAL_VEL)
+    if (flagsLo & OBJ_FLAG_MOVE_Y_WITH_TERMINAL_VEL) {
         obj_move_y_with_terminal_vel();
+    }
 
-    if (flagsLo & OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT)
+    if (flagsLo & OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT) {
         build_object_transform_relative_to_parent(gCurrentObject);
+    }
 
-    if (flagsLo & OBJ_FLAG_0800)
+    if (flagsLo & OBJ_FLAG_0800) {
         func_802A2270(gCurrentObject);
+    }
 
-    if (flagsLo & OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)
+    if (flagsLo & OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE) {
         func_80383D68(gCurrentObject);
+    }
 
     if (gCurrentObject->oRoom != -1) {
         obj_enable_rendering_if_mario_in_room();

@@ -30,8 +30,9 @@ void update_mario_platform(void) {
     f32 floorHeight;
     u32 awayFromFloor;
 
-    if (gMarioObject == NULL)
+    if (gMarioObject == NULL) {
         return;
+    }
 
     //! If mario moves onto a rotating platform in a PU, the find_floor call
     //  will detect the platform and he will end up receiving a large amount
@@ -43,10 +44,11 @@ void update_mario_platform(void) {
     marioZ = gMarioObject->oPosZ;
     floorHeight = find_floor(marioX, marioY, marioZ, &floor);
 
-    if (absf(marioY - floorHeight) < 4.0f)
+    if (absf(marioY - floorHeight) < 4.0f) {
         awayFromFloor = 0;
-    else
+    } else {
         awayFromFloor = 1;
+    }
 
     switch (awayFromFloor) {
         case 1:
@@ -125,8 +127,9 @@ void apply_platform_displacement(u32 isMario, struct Object *platform) {
         unused2 = rotation[2];
         unused3 = platform->oFaceAngleYaw;
 
-        if (isMario)
+        if (isMario) {
             gMarioStates[0].faceAngle[1] += rotation[1];
+        }
 
         platformPosX = platform->oPosX;
         platformPosY = platform->oPosY;
@@ -171,8 +174,9 @@ void apply_mario_platform_displacement(void) {
     struct Object *platform;
 
     platform = gMarioPlatform;
-    if (!(gTimeStopState & TIME_STOP_ACTIVE) && gMarioObject != NULL && platform != NULL)
+    if (!(gTimeStopState & TIME_STOP_ACTIVE) && gMarioObject != NULL && platform != NULL) {
         apply_platform_displacement(1, platform);
+    }
 }
 
 #ifndef VERSION_JP

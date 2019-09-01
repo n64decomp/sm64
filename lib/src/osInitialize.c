@@ -29,10 +29,12 @@ void osInitialize(void) {
     D_80365CD0 = TRUE;
     __osSetSR(__osGetSR() | 0x20000000);
     __osSetFpcCsr(0x01000800);
-    while (__osSiRawReadIo(PIF_ADDR_START, &sp34))
+    while (__osSiRawReadIo(PIF_ADDR_START, &sp34)) {
         ;
-    while (__osSiRawWriteIo(PIF_ADDR_START, sp34 | 8))
+    }
+    while (__osSiRawWriteIo(PIF_ADDR_START, sp34 | 8)) {
         ;
+    }
     *(exceptionPreamble *) EXCEPTION_TLB_MISS = __osExceptionPreamble;
     *(exceptionPreamble *) EXCEPTION_XTLB_MISS = __osExceptionPreamble;
     *(exceptionPreamble *) EXCEPTION_CACHE_ERROR = __osExceptionPreamble;

@@ -839,14 +839,14 @@ extern void func_8029A514(u8, f32, f32, f32);
 // extern ? Unknown8029A724(?);
 extern void func_8029A7DC(struct Object *, Vec3f, s16, s16, s16, s16);
 // extern ? func_8029A87C(?);
-// extern ? BehBeginningPeachLoop(?);
+// extern ? bhv_intro_peach_loop(?);
 // extern ? func_8029AB70(?);
 // extern ? func_8029AC3C(?);
 // extern ? func_8029ACAC(?);
-// extern ? BehBeginningLakituLoop(?);
-// extern ? BehEndBirds1Loop(?);
-// extern ? BehEndBirds2Loop(?);
+// extern ? bhv_intro_lakitu_loop(?);
+// extern ? bhv_end_birds_1_loop(?);
+// extern ? bhv_end_birds_2_loop(?);
 // extern ? func_8029B964(?);
-// extern ? BehIntroSceneLoop(?);
+// extern ? bhv_intro_scene_loop(?);
 
 #endif /* _CAMERA_H */

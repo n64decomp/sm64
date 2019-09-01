@@ -100,7 +100,7 @@ static struct {
 } sUpdateViewState;
 static struct ObjLight *sPhongLight;          // material light? phong light?
 static struct GdVec3f sPhongLightPosition;    //@ 801B9D00; guess; light source unit position for light
-                                              //flagged 0x20 (sPhongLight)
+                                              // flagged 0x20 (sPhongLight)
 static struct GdVec3f sLightPositionOffset;   // @ 801B9D10
 static struct GdVec3f sLightPositionCache[8]; // @ 801B9D20; unit positions
 static s32 sNumActiveLights;                  // @ 801B9D80; maybe?
@@ -251,8 +251,9 @@ void draw_shape_2d(struct ObjShape *shape, s32 flag, UNUSED f32 c, UNUSED f32 d,
     restart_timer("drawshape2d");
     sUpdateViewState.shapesDrawn++;
 
-    if (shape == NULL)
+    if (shape == NULL) {
         return;
+    }
 
     if (flag & 2) {
         sp1C.x = f;
@@ -615,8 +616,9 @@ void draw_net(struct ObjNet *self) {
 void draw_gadget(struct ObjGadget *gdgt) {
     s32 colour = 0;
 
-    if (gdgt->unk5C != 0)
+    if (gdgt->unk5C != 0) {
         colour = gdgt->unk5C;
+    }
 
     draw_rect_fill(colour, gdgt->unk14.x, gdgt->unk14.y, gdgt->unk14.x + gdgt->unk28 * gdgt->unk40.x,
                    gdgt->unk14.y + gdgt->unk40.y);
@@ -671,8 +673,9 @@ void Unknown80179ACC(struct GdObj *obj) {
     if (obj->type == OBJ_TYPE_NETS) {
         if (0) {
         }
-        if (((struct ObjNet *) obj)->unk1C8 != NULL)
+        if (((struct ObjNet *) obj)->unk1C8 != NULL) {
             func_80179B64(((struct ObjNet *) obj)->unk1C8);
+        }
     } else {
         if (0) {
         }

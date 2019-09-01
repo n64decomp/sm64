@@ -310,8 +310,9 @@ void note_pool_clear(struct NotePool *pool) {
         j = 0;
         do {
             cur = source->next;
-            if (cur == source)
+            if (cur == source) {
                 break;
+            }
             audio_list_remove(cur);
             audio_list_push_back(dest, cur);
             j++;
@@ -329,8 +330,9 @@ void note_pool_fill(struct NotePool *pool, s32 count) {
     note_pool_clear(pool);
 
     for (i = 0, j = 0; j < count; i++) {
-        if (i == 4)
+        if (i == 4) {
             return;
+        }
 
         switch (i) {
             case 0:
@@ -356,8 +358,9 @@ void note_pool_fill(struct NotePool *pool, s32 count) {
 
         while (j < count) {
             note = audio_list_pop_back(source);
-            if (note == NULL)
+            if (note == NULL) {
                 break;
+            }
             audio_list_push_back(dest, &note->listItem);
             j++;
         }

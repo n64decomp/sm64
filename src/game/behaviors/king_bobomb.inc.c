@@ -166,7 +166,7 @@ void ActionKingBobomb7(void) {
         obj_spawn_star_at_y_offset(2000.0f, 4500.0f, -4500.0f, 200.0f);
 #else
         o->oPosY += 100.0f;
-        CreateStar(2000.0f, 4500.0f, -4500.0f);
+        create_star(2000.0f, 4500.0f, -4500.0f);
 #endif
         o->oAction = 8;
     }
@@ -291,7 +291,7 @@ void bhv_king_bobomb_loop(void) {
     f32 sp34 = 20.0f;
     f32 sp30 = 50.0f;
     UNUSED u8 pad[8];
-    o->oUnk190 |= 4;
+    o->oInteractionSubtype |= INT_SUBTYPE_GRABS_MARIO;
     switch (o->oHeldState) {
         case HELD_FREE:
             func_802A7748();

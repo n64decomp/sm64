@@ -485,8 +485,9 @@ void *sequence_dma_immediate(s32 seqId, s32 arg1) {
     seqLength = ALIGN16(seqLength);
     seqData = gSeqFileHeader->seqArray[seqId].offset;
     ptr = alloc_bank_or_seq(&gSeqLoadedPool, 1, seqLength, arg1, seqId);
-    if (ptr == NULL)
+    if (ptr == NULL) {
         return NULL;
+    }
 
     audio_dma_copy_immediate((u32) seqData, ptr, seqLength);
     gSeqLoadStatus[seqId] = SOUND_LOAD_STATUS_COMPLETE;
@@ -640,6 +641,9 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
             if (bank_load_async(bankId, 2, seqPlayer) == NULL) {
                 return;
             }
+            // @bug This should set the last bank (i.e. the first in the JSON)
+            // as default, not the missing one. This code path never gets
+            // taken, though -- all sequence loading is synchronous.
             seqPlayer->anyBank[0] = bankId;
         } else if (load_banks_immediate(seqId, &seqPlayer->anyBank[0]) == NULL) {
             return;
@@ -651,16 +655,19 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
     seqPlayer->seqId = seqId;
     sequenceData = get_bank_or_seq(&gSeqLoadedPool, 2, seqId);
     if (sequenceData == NULL) {
-        if (seqPlayer->seqDmaInProgress)
+        if (seqPlayer->seqDmaInProgress) {
             return;
+        }
 
-        if (loadAsync)
+        if (loadAsync) {
             sequenceData = sequence_dma_async(seqId, 2, seqPlayer);
-        else
+        } else {
             sequenceData = sequence_dma_immediate(seqId, 2);
+        }
 
-        if (sequenceData == NULL)
+        if (sequenceData == NULL) {
             return;
+        }
     }
 
     init_sequence_player(player);

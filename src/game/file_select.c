@@ -94,24 +94,29 @@ static s32 button_clicked_test(s16 x, s16 y,
     s16 maxY = newY + 21.0f;
     s16 minY = newY - 21.0f;
 
-    if (sClickPos[0] < maxX && minX < sClickPos[0] && sClickPos[1] < maxY && minY < sClickPos[1])
+    if (sClickPos[0] < maxX && minX < sClickPos[0] && sClickPos[1] < maxY && minY < sClickPos[1]) {
         return TRUE;
+    }
 
     return FALSE;
 }
 
 // Grow from main menu, used by playing files and submenus
 static void bhvMenuButton_growing_from_main_menu(struct Object *button) {
-    if (button->oMenuButtonTimer < 16)
+    if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw += 0x800;
-    if (button->oMenuButtonTimer < 8)
+    }
+    if (button->oMenuButtonTimer < 8) {
         button->oFaceAnglePitch += 0x800;
-    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16)
+    }
+    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16) {
         button->oFaceAnglePitch -= 0x800;
+    }
     button->oParentRelativePosX -= button->oMenuButtonOrigPosX / 16.0;
     button->oParentRelativePosY -= button->oMenuButtonOrigPosY / 16.0;
-    if (button->oPosZ < button->oMenuButtonOrigPosZ + 17800.0)
+    if (button->oPosZ < button->oMenuButtonOrigPosZ + 17800.0) {
         button->oParentRelativePosZ += 1112.5;
+    }
     button->oMenuButtonTimer++;
     if (button->oMenuButtonTimer == 16) {
         button->oParentRelativePosX = 0.0f;
@@ -122,16 +127,20 @@ static void bhvMenuButton_growing_from_main_menu(struct Object *button) {
 }
 // Shrink to main menu, used by playing files and submenus
 static void bhvMenuButton_shrinking_to_main_menu(struct Object *button) {
-    if (button->oMenuButtonTimer < 16)
+    if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw -= 0x800;
-    if (button->oMenuButtonTimer < 8)
+    }
+    if (button->oMenuButtonTimer < 8) {
         button->oFaceAnglePitch -= 0x800;
-    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16)
+    }
+    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16) {
         button->oFaceAnglePitch += 0x800;
+    }
     button->oParentRelativePosX += button->oMenuButtonOrigPosX / 16.0;
     button->oParentRelativePosY += button->oMenuButtonOrigPosY / 16.0;
-    if (button->oPosZ > button->oMenuButtonOrigPosZ)
+    if (button->oPosZ > button->oMenuButtonOrigPosZ) {
         button->oParentRelativePosZ -= 1112.5;
+    }
     button->oMenuButtonTimer++;
     if (button->oMenuButtonTimer == 16) {
         button->oParentRelativePosX = button->oMenuButtonOrigPosX;
@@ -142,12 +151,15 @@ static void bhvMenuButton_shrinking_to_main_menu(struct Object *button) {
 }
 // Grow from submenu, used by scoring files
 static void bhvMenuButton_growing_from_submenu(struct Object *button) {
-    if (button->oMenuButtonTimer < 16)
+    if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw += 0x800;
-    if (button->oMenuButtonTimer < 8)
+    }
+    if (button->oMenuButtonTimer < 8) {
         button->oFaceAnglePitch += 0x800;
-    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16)
+    }
+    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16) {
         button->oFaceAnglePitch -= 0x800;
+    }
     button->oParentRelativePosX -= button->oMenuButtonOrigPosX / 16.0;
     button->oParentRelativePosY -= button->oMenuButtonOrigPosY / 16.0;
     button->oParentRelativePosZ -= 116.25;
@@ -161,16 +173,20 @@ static void bhvMenuButton_growing_from_submenu(struct Object *button) {
 }
 // Shrink to submenu, used by scoring files
 static void bhvMenuButton_shrinking_to_submenu(struct Object *button) {
-    if (button->oMenuButtonTimer < 16)
+    if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw -= 0x800;
-    if (button->oMenuButtonTimer < 8)
+    }
+    if (button->oMenuButtonTimer < 8) {
         button->oFaceAnglePitch -= 0x800;
-    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16)
+    }
+    if (button->oMenuButtonTimer >= 8 && button->oMenuButtonTimer < 16) {
         button->oFaceAnglePitch += 0x800;
+    }
     button->oParentRelativePosX += button->oMenuButtonOrigPosX / 16.0;
     button->oParentRelativePosY += button->oMenuButtonOrigPosY / 16.0;
-    if (button->oPosZ > button->oMenuButtonOrigPosZ)
+    if (button->oPosZ > button->oMenuButtonOrigPosZ) {
         button->oParentRelativePosZ += 116.25;
+    }
     button->oMenuButtonTimer++;
     if (button->oMenuButtonTimer == 16) {
         button->oParentRelativePosX = button->oMenuButtonOrigPosX;
@@ -183,15 +199,19 @@ static void bhvMenuButton_shrinking_to_submenu(struct Object *button) {
 // Used by failed copy/erase/score operations and sound mode select.
 static void bhvMenuButton_zoom_in_out(struct Object *button) {
     if (sCurrentMenuLevel == MENU_LAYER_MAIN) {
-        if (button->oMenuButtonTimer < 4)
+        if (button->oMenuButtonTimer < 4) {
             button->oParentRelativePosZ -= 20.0f;
-        if (button->oMenuButtonTimer >= 4)
+        }
+        if (button->oMenuButtonTimer >= 4) {
             button->oParentRelativePosZ += 20.0f;
+        }
     } else {
-        if (button->oMenuButtonTimer < 4)
+        if (button->oMenuButtonTimer < 4) {
             button->oParentRelativePosZ += 20.0f;
-        if (button->oMenuButtonTimer >= 4)
+        }
+        if (button->oMenuButtonTimer >= 4) {
             button->oParentRelativePosZ -= 20.0f;
+        }
     }
     button->oMenuButtonTimer++;
     if (button->oMenuButtonTimer == 8) {
@@ -231,20 +251,24 @@ void bhvMenuButton_loop(void) {
             gCurrentObject->oMenuButtonOrigPosZ = gCurrentObject->oPosZ;
             break;
         case MENU_BUTTON_STATE_GROWING: // Switching from button to menu state
-            if (sCurrentMenuLevel == MENU_LAYER_MAIN)
+            if (sCurrentMenuLevel == MENU_LAYER_MAIN) {
                 bhvMenuButton_growing_from_main_menu(gCurrentObject);
-            if (sCurrentMenuLevel == MENU_LAYER_SUBMENU)
+            }
+            if (sCurrentMenuLevel == MENU_LAYER_SUBMENU) {
                 bhvMenuButton_growing_from_submenu(gCurrentObject); // Only used for score files
+            }
             sTextBaseAlpha = 0;
             sCursorClickingTimer = 4;
             break;
         case MENU_BUTTON_STATE_FULLSCREEN: // Menu state
             break;
         case MENU_BUTTON_STATE_SHRINKING: // Switching from menu to button state
-            if (sCurrentMenuLevel == MENU_LAYER_MAIN)
+            if (sCurrentMenuLevel == MENU_LAYER_MAIN) {
                 bhvMenuButton_shrinking_to_main_menu(gCurrentObject);
-            if (sCurrentMenuLevel == MENU_LAYER_SUBMENU)
+            }
+            if (sCurrentMenuLevel == MENU_LAYER_SUBMENU) {
                 bhvMenuButton_shrinking_to_submenu(gCurrentObject); // Only used for score files
+            }
             sTextBaseAlpha = 0;
             sCursorClickingTimer = 4;
             break;
@@ -274,48 +298,53 @@ static void score_menu_file_exiting(struct Object *scoreFileButton, s8 scoreButt
     // End exit
     if (scoreFileButton->oMenuButtonState == MENU_BUTTON_STATE_DEFAULT) {
         sSelectedButtonID = scoreButtonId;
-        if (sCurrentMenuLevel == MENU_LAYER_SUBMENU)
+        if (sCurrentMenuLevel == MENU_LAYER_SUBMENU) {
             sCurrentMenuLevel = MENU_LAYER_MAIN;
+        }
     }
 }
 
 static void score_menu_create_buttons(struct Object *scoreButton) {
     // File A
-    if (save_file_exists(0) == TRUE)
+    if (save_file_exists(0) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       711, 311, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711,
                                       311, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A]->oMenuButtonScale = 0.11111111f;
     // File B
-    if (save_file_exists(1) == TRUE)
+    if (save_file_exists(1) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B]->oMenuButtonScale = 0.11111111f;
     // File C
-    if (save_file_exists(2) == TRUE)
+    if (save_file_exists(2) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
             scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
             scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C]->oMenuButtonScale = 0.11111111f;
     // File D
-    if (save_file_exists(3) == TRUE)
+    if (save_file_exists(3) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       -166, 0, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] = spawn_object_rel_with_rot(
             scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D]->oMenuButtonScale = 0.11111111f;
     // Return to main menu button
     sMainMenuButtons[MENU_BUTTON_SCORE_RETURN] = spawn_object_rel_with_rot(
@@ -377,39 +406,43 @@ static void score_menu_check_clicked_buttons(struct Object *scoreButton) {
 
 static void copy_menu_create_buttons(struct Object *copyButton) {
     // File A
-    if (save_file_exists(0) == TRUE)
+    if (save_file_exists(0) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_A] =
             spawn_object_rel_with_rot(copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711,
                                       311, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_A] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 311, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_COPY_FILE_A]->oMenuButtonScale = 0.11111111f;
     // File B
-    if (save_file_exists(1) == TRUE)
+    if (save_file_exists(1) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_B] =
             spawn_object_rel_with_rot(copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_B] =
             spawn_object_rel_with_rot(copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166,
                                       311, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_COPY_FILE_B]->oMenuButtonScale = 0.11111111f;
     // File C
-    if (save_file_exists(2) == TRUE)
+    if (save_file_exists(2) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_C] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_C] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_COPY_FILE_C]->oMenuButtonScale = 0.11111111f;
     // File D
-    if (save_file_exists(3) == TRUE)
+    if (save_file_exists(3) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_D] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_D] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_COPY_FILE_D]->oMenuButtonScale = 0.11111111f;
     // Return to main menu button
     sMainMenuButtons[MENU_BUTTON_COPY_RETURN] = spawn_object_rel_with_rot(
@@ -428,8 +461,9 @@ static void copy_menu_create_buttons(struct Object *copyButton) {
 static void CopyMenuCopyFile(struct Object *copyButton, s32 copyFileButtonId) {
     switch (copyButton->oMenuButtonActionPhase) {
         case 0:
-            if (sAllFilesExist == TRUE)
+            if (sAllFilesExist == TRUE) {
                 return;
+            }
             if (save_file_exists(copyFileButtonId - 14) == TRUE) {
                 play_sound(SOUND_MENU_CLICKFILESELECT, gDefaultSoundArgs);
                 sMainMenuButtons[copyFileButtonId]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN;
@@ -497,8 +531,9 @@ static void copy_menu_check_clicked_buttons(struct Object *copyButton) {
                 // If file button clicked
                 else {
                     if (sMainMenuButtons[buttonId]->oMenuButtonState == MENU_BUTTON_STATE_DEFAULT
-                        && sMainMenuTimer >= 31)
+                        && sMainMenuTimer >= 31) {
                         CopyMenuCopyFile(copyButton, buttonId);
+                    }
                 }
                 sCurrentMenuLevel = MENU_LAYER_SUBMENU;
                 break;
@@ -514,41 +549,45 @@ static void copy_menu_check_clicked_buttons(struct Object *copyButton) {
 
 static void erase_menu_create_buttons(struct Object *eraseButton) {
     // File A
-    if (save_file_exists(0) == TRUE)
+    if (save_file_exists(0) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       711, 311, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711,
                                       311, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A]->oMenuButtonScale = 0.11111111f;
     // File B
-    if (save_file_exists(1) == TRUE)
+    if (save_file_exists(1) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_B] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_B] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_ERASE_FILE_B]->oMenuButtonScale = 0.11111111f;
     // File C
-    if (save_file_exists(2) == TRUE)
+    if (save_file_exists(2) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_C] = spawn_object_rel_with_rot(
             eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_C] = spawn_object_rel_with_rot(
             eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_ERASE_FILE_C]->oMenuButtonScale = 0.11111111f;
     // File D
-    if (save_file_exists(3) == TRUE)
+    if (save_file_exists(3) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_D] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
                                       -166, 0, -100, 0, -0x8000, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_D] = spawn_object_rel_with_rot(
             eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_ERASE_FILE_D]->oMenuButtonScale = 0.11111111f;
     // Return to main menu button
     sMainMenuButtons[MENU_BUTTON_ERASE_RETURN] = spawn_object_rel_with_rot(
@@ -615,8 +654,9 @@ static void erase_menu_check_clicked_buttons(struct Object *eraseButton) {
                 }
                 // If file button clicked
                 else {
-                    if (sMainMenuTimer >= 31)
+                    if (sMainMenuTimer >= 31) {
                         erase_menu_erase_file(eraseButton, buttonId);
+                    }
                 }
                 sCurrentMenuLevel = MENU_LAYER_SUBMENU;
                 break;
@@ -675,8 +715,9 @@ static void sound_mode_menu_check_clicked_buttons(struct Object *soundModeButton
 }
 
 static void main_menu_file_selected(struct Object *fileButton, s32 fileNum) {
-    if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN)
+    if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
         D_801A7C0C = fileNum;
+    }
 }
 
 static void return_to_main_menu(s16 prevMenuButtonId, struct Object *sourceButton) {
@@ -692,20 +733,24 @@ static void return_to_main_menu(s16 prevMenuButtonId, struct Object *sourceButto
         // Hide buttons on corresponding submenu
         sSelectedButtonID = MENU_BUTTON_NONE;
         if (prevMenuButtonId == MENU_BUTTON_SCORE) {
-            for (buttonID = 7; buttonID < 14; buttonID++)
+            for (buttonID = 7; buttonID < 14; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_COPY) {
-            for (buttonID = 14; buttonID < 21; buttonID++)
+            for (buttonID = 14; buttonID < 21; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_ERASE) {
-            for (buttonID = 21; buttonID < 28; buttonID++)
+            for (buttonID = 21; buttonID < 28; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_SOUND_MODE) {
-            for (buttonID = 29; buttonID < 32; buttonID++)
+            for (buttonID = 29; buttonID < 32; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
     }
 }
@@ -724,16 +769,19 @@ static void score_menu_init_from_submenu(s16 prevMenuButtonId, struct Object *so
         if (prevMenuButtonId == MENU_BUTTON_SCORE) //! Not possible, this is checking if the score menu
                                                    //! was opened from the score menu!
         {
-            for (buttonID = 7; buttonID < 14; buttonID++)
+            for (buttonID = 7; buttonID < 14; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_COPY) {
-            for (buttonID = 14; buttonID < 21; buttonID++)
+            for (buttonID = 14; buttonID < 21; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_ERASE) {
-            for (buttonID = 21; buttonID < 28; buttonID++)
+            for (buttonID = 21; buttonID < 28; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         sSelectedButtonID = MENU_BUTTON_SCORE;
         play_sound(SOUND_MENU_CAMERAZOOMIN, gDefaultSoundArgs);
@@ -754,18 +802,21 @@ static void copy_menu_init_from_submenu(s16 prevMenuButtonId, struct Object *sou
     if (sMainMenuButtons[prevMenuButtonId]->oMenuButtonState == MENU_BUTTON_STATE_DEFAULT) {
         // Hide buttons on corresponding submenu
         if (prevMenuButtonId == MENU_BUTTON_SCORE) {
-            for (buttonID = 7; buttonID < 14; buttonID++)
+            for (buttonID = 7; buttonID < 14; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_COPY) //! Not possible, this is checking if the copy menu
                                                   //! was opened from the copy menu!
         {
-            for (buttonID = 14; buttonID < 21; buttonID++)
+            for (buttonID = 14; buttonID < 21; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_ERASE) {
-            for (buttonID = 21; buttonID < 28; buttonID++)
+            for (buttonID = 21; buttonID < 28; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         sSelectedButtonID = MENU_BUTTON_COPY;
         play_sound(SOUND_MENU_CAMERAZOOMIN, gDefaultSoundArgs);
@@ -786,18 +837,21 @@ static void erase_menu_init_from_submenu(s16 prevMenuButtonId, struct Object *so
     if (sMainMenuButtons[prevMenuButtonId]->oMenuButtonState == MENU_BUTTON_STATE_DEFAULT) {
         // Hide buttons on corresponding submenu
         if (prevMenuButtonId == MENU_BUTTON_SCORE) {
-            for (buttonID = 7; buttonID < 14; buttonID++)
+            for (buttonID = 7; buttonID < 14; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_COPY) {
-            for (buttonID = 14; buttonID < 21; buttonID++)
+            for (buttonID = 14; buttonID < 21; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         if (prevMenuButtonId == MENU_BUTTON_ERASE) //! Not possible, this is checking if the erase menu
                                                    //! was opened from the erase menu!
         {
-            for (buttonID = 21; buttonID < 28; buttonID++)
+            for (buttonID = 21; buttonID < 28; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
+            }
         }
         sSelectedButtonID = MENU_BUTTON_ERASE;
         play_sound(SOUND_MENU_CAMERAZOOMIN, gDefaultSoundArgs);
@@ -808,40 +862,44 @@ static void erase_menu_init_from_submenu(s16 prevMenuButtonId, struct Object *so
 // Create buttons on the main menu. Unlike buttons on submenus, these are never hidden or recreated.
 void bhvMenuButtonManager_init(void) {
     // File A
-    if (save_file_exists(0) == TRUE)
+    if (save_file_exists(0) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
                                       bhvMenuButton, -6400, 2800, 0, 0, 0, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
             spawn_object_rel_with_rot(gCurrentObject, 10, bhvMenuButton, -6400, 2800, 0, 0, 0, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A]->oMenuButtonScale = 1.0f;
     // File B
-    if (save_file_exists(1) == TRUE)
+    if (save_file_exists(1) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
                                       bhvMenuButton, 1500, 2800, 0, 0, 0, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE,
                                       bhvMenuButton, 1500, 2800, 0, 0, 0, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B]->oMenuButtonScale = 1.0f;
     // File C
-    if (save_file_exists(2) == TRUE)
+    if (save_file_exists(2) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
                                       bhvMenuButton, -6400, 0, 0, 0, 0, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, -6400, 0, 0, 0, 0, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C]->oMenuButtonScale = 1.0f;
     // File D
-    if (save_file_exists(3) == TRUE)
+    if (save_file_exists(3) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
-    else
+    } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
+    }
     sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D]->oMenuButtonScale = 1.0f;
     // Score menu button
     sMainMenuButtons[MENU_BUTTON_SCORE] = spawn_object_rel_with_rot(
@@ -1062,28 +1120,35 @@ static void handle_controller_input(void) {
     s16 rawStickY = gPlayer3Controller->rawStickY;
 
     // Handle deadzone
-    if (rawStickY > -2 && rawStickY < 2)
+    if (rawStickY > -2 && rawStickY < 2) {
         rawStickY = 0;
-    if (rawStickX > -2 && rawStickX < 2)
+    }
+    if (rawStickX > -2 && rawStickX < 2) {
         rawStickX = 0;
+    }
 
     // Move cursor
     sCursorPos[0] += rawStickX / 8;
     sCursorPos[1] += rawStickY / 8;
 
     // Stop cursor from going offscreen
-    if (sCursorPos[0] > 132.0f)
+    if (sCursorPos[0] > 132.0f) {
         sCursorPos[0] = 132.0f;
-    if (sCursorPos[0] < -132.0f)
+    }
+    if (sCursorPos[0] < -132.0f) {
         sCursorPos[0] = -132.0f;
+    }
 
-    if (sCursorPos[1] > 90.0f)
+    if (sCursorPos[1] > 90.0f) {
         sCursorPos[1] = 90.0f;
-    if (sCursorPos[1] < -90.0f)
+    }
+    if (sCursorPos[1] < -90.0f) {
         sCursorPos[1] = -90.0f;
+    }
 
-    if (sCursorClickingTimer == 0)
+    if (sCursorClickingTimer == 0) {
         handle_button_presses();
+    }
 }
 
 static void draw_cursor(void) {
@@ -1100,8 +1165,9 @@ static void draw_cursor(void) {
     if (sCursorClickingTimer != 0) {
         sCursorClickingTimer++; // This is a very strange way to implement a timer? It counts up and
                                 // then resets to 0 instead of just counting down to 0.
-        if (sCursorClickingTimer == 5)
+        if (sCursorClickingTimer == 5) {
             sCursorClickingTimer = 0;
+        }
     }
 }
 // Print colorful text
@@ -1127,8 +1193,9 @@ static s32 update_text_fade_out(void) {
             return TRUE;
         }
     } else {
-        if (sTextTransparency > 0)
+        if (sTextTransparency > 0) {
             sTextTransparency -= 50;
+        }
     }
     return FALSE;
 }
@@ -1220,13 +1287,15 @@ static void score_menu_display_message(s8 messageID) {
 
 static void draw_score_menu(void) {
     // Update and display the message at the top of the menu.
-    if (sMainMenuTimer == 20)
+    if (sMainMenuTimer == 20) {
         sFadeOutText = 1;
+    }
     if (update_text_fade_out() == TRUE) {
-        if (sStatusMessageId == 0)
+        if (sStatusMessageId == 0) {
             sStatusMessageId = 1;
-        else
+        } else {
             sStatusMessageId = 0;
+        }
     }
     score_menu_display_message(sStatusMessageId);
     // Display file star counts
@@ -1264,10 +1333,11 @@ static void copy_menu_display_message(s8 messageId) {
     switch (messageId) {
 #ifdef VERSION_JP
         case 0:
-            if (sAllFilesExist == TRUE)
+            if (sAllFilesExist == TRUE) {
                 menu_print_generic_text(90, 190, textNoFileToCopyFrom);
-            else
+            } else {
                 menu_print_title_text(1, 90, 35, textCopyFile);
+            }
             break;
         case 1:
             menu_print_generic_text(90, 190, textCopyItToWhere);
@@ -1283,10 +1353,11 @@ static void copy_menu_display_message(s8 messageId) {
             break;
 #else
         case 0:
-            if (sAllFilesExist == TRUE)
+            if (sAllFilesExist == TRUE) {
                 menu_print_generic_text(119, 190, textNoFileToCopyFrom);
-            else
+            } else {
                 menu_print_title_text(2, 104, 35, textCopyFile);
+            }
             break;
         case 1:
             menu_print_generic_text(109, 190, textCopyItToWhere);
@@ -1307,33 +1378,39 @@ static void copy_menu_display_message(s8 messageId) {
 static void copy_menu_update_message(void) {
     switch (sMainMenuButtons[MENU_BUTTON_COPY]->oMenuButtonActionPhase) {
         case 0:
-            if (sMainMenuTimer == 20)
+            if (sMainMenuTimer == 20) {
                 sFadeOutText = 1;
+            }
             if (update_text_fade_out() == TRUE) {
-                if (sStatusMessageId == 0)
+                if (sStatusMessageId == 0) {
                     sStatusMessageId = 2;
-                else
+                } else {
                     sStatusMessageId = 0;
+                }
             }
             break;
         case 1:
-            if (sMainMenuTimer == 20 && sStatusMessageId == 4)
+            if (sMainMenuTimer == 20 && sStatusMessageId == 4) {
                 sFadeOutText = 1;
+            }
             if (update_text_fade_out() == TRUE) {
-                if (sStatusMessageId != 1)
+                if (sStatusMessageId != 1) {
                     sStatusMessageId = 1;
-                else
+                } else {
                     sStatusMessageId = 4;
+                }
             }
             break;
         case 2:
-            if (sMainMenuTimer == 20)
+            if (sMainMenuTimer == 20) {
                 sFadeOutText = 1;
+            }
             if (update_text_fade_out() == TRUE) {
-                if (sStatusMessageId != 3)
+                if (sStatusMessageId != 3) {
                     sStatusMessageId = 3;
-                else
+                } else {
                     sStatusMessageId = 0;
+                }
             }
             break;
     }
@@ -1489,31 +1566,36 @@ static void erase_menu_display_message(s8 messageId) {
 static void erase_menu_update_message(void) {
     switch (sMainMenuButtons[MENU_BUTTON_ERASE]->oMenuButtonActionPhase) {
         case 0:
-            if (sMainMenuTimer == 20 && sStatusMessageId == 2)
+            if (sMainMenuTimer == 20 && sStatusMessageId == 2) {
                 sFadeOutText = 1;
+            }
             if (update_text_fade_out() == TRUE) {
-                if (sStatusMessageId == 0)
+                if (sStatusMessageId == 0) {
                     sStatusMessageId = 2;
-                else
+                } else {
                     sStatusMessageId = 0;
+                }
             }
             break;
         case 1:
             if (update_text_fade_out() == TRUE) {
-                if (sStatusMessageId != 1)
+                if (sStatusMessageId != 1) {
                     sStatusMessageId = 1;
+                }
                 sCursorPos[0] = 43.0f;
                 sCursorPos[1] = 80.0f;
             }
             break;
         case 2:
-            if (sMainMenuTimer == 20)
+            if (sMainMenuTimer == 20) {
                 sFadeOutText = 1;
+            }
             if (update_text_fade_out() == TRUE) {
-                if (sStatusMessageId != 3)
+                if (sStatusMessageId != 3) {
                     sStatusMessageId = 3;
-                else
+                } else {
                     sStatusMessageId = 0;
+                }
             }
             break;
     }
@@ -1622,8 +1704,9 @@ static void score_file_print_course_coin_score(s8 fileNum, s16 courseNum, s16 x,
         Int2Str(save_file_get_course_coin_score(fileNum, courseNum), coinScoreText);
         PrintRegularText(x + 41, y, coinScoreText);
         // If collected, print 100 coin star
-        if (stars & (1 << 6))
+        if (stars & (1 << 6)) {
             PrintRegularText(x + 70, y, textStar);
+        }
     }
     // HISCORE
     else {
@@ -1655,11 +1738,13 @@ static void score_file_print_course_star_score(s8 fileNum, s16 courseNum, s16 x,
     u8 stars = save_file_get_star_flags(fileNum, courseNum);
     s8 starCount = save_file_get_course_star_count(fileNum, courseNum);
     // Don't count 100 coin star
-    if (stars & (1 << 6))
+    if (stars & (1 << 6)) {
         starCount--;
+    }
     // Add 1 star character for every star collected
-    for (i = 0; i < starCount; i++)
+    for (i = 0; i < starCount; i++) {
         starScoreText[i] = 0xFA;
+    }
     // Terminating byte
     starScoreText[i] = 0xFF;
     PrintRegularText(x, y, starScoreText);
@@ -1739,20 +1824,22 @@ static void draw_file_scores(s8 fileNum) {
     // Print castle secret stars
     score_file_print_castle_secret_stars(fileNum, 152, 215);
     // Print current coin score mode
-    if (sScoreFileCoinScoreMode == 0)
+    if (sScoreFileCoinScoreMode == 0) {
         PrintRegularText(237, 24, textMyScore);
-    else
+    } else {
         PrintRegularText(237, 24, textHiScore);
+    }
 #else
     // Print level name
     PrintRegularText(29, 215, segmented_to_virtual(levelNameTable[25]));
     // Print castle secret stars
     score_file_print_castle_secret_stars(fileNum, 171, 215);
     // Print current coin score mode
-    if (sScoreFileCoinScoreMode == 0)
+    if (sScoreFileCoinScoreMode == 0) {
         PrintRegularText(238, 24, textMyScore);
-    else
+    } else {
         PrintRegularText(231, 24, textHiScore);
+    }
 #endif
 
     gSPDisplayList(gDisplayListHead++, main_menu_seg7_dl_0700D160);
@@ -1795,14 +1882,17 @@ static void draw_current_menu(void) {
             break;
     }
     if (save_file_exists(0) == TRUE && save_file_exists(1) == TRUE && save_file_exists(2) == TRUE
-        && save_file_exists(3) == TRUE)
+        && save_file_exists(3) == TRUE) {
         sAllFilesExist = TRUE;
-    else
+    } else {
         sAllFilesExist = FALSE;
-    if (sTextBaseAlpha < 250)
+    }
+    if (sTextBaseAlpha < 250) {
         sTextBaseAlpha += 10;
-    if (sMainMenuTimer < 1000)
+    }
+    if (sMainMenuTimer < 1000) {
         sMainMenuTimer += 1;
+    }
 }
 
 Gfx *Geo18_80176688(s32 run, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {

@@ -16,16 +16,18 @@ static void _bnkfPatchBank(ALInstrument *inst, ALBankFile *f, u8 *table) {
     ALWaveTable *wavetable;
     u8 *table2;
 
-    if (inst->flags)
+    if (inst->flags) {
         return;
+    }
 
     inst->flags = 1;
 
     for (i = 0; i < inst->soundCount; i++) {
         PATCH(inst->soundArray[i], f, ALSound *);
         sound = inst->soundArray[i];
-        if (sound->flags)
+        if (sound->flags) {
             continue;
+        }
 
         table2 = table;
 
@@ -34,18 +36,21 @@ static void _bnkfPatchBank(ALInstrument *inst, ALBankFile *f, u8 *table) {
         PATCH(sound->keyMap, f, ALKeyMap *);
         PATCH(sound->wavetable, f, ALWaveTable *);
         wavetable = sound->wavetable;
-        if (wavetable->flags)
+        if (wavetable->flags) {
             continue;
+        }
 
         wavetable->flags = 1;
         PATCH(wavetable->base, table2, u8 *);
         if (wavetable->type == 0) {
             PATCH(wavetable->waveInfo.adpcmWave.book, f, ALADPCMBook *);
-            if (wavetable->waveInfo.adpcmWave.loop != NULL)
+            if (wavetable->waveInfo.adpcmWave.loop != NULL) {
                 PATCH(wavetable->waveInfo.adpcmWave.loop, f, ALADPCMloop *);
+            }
         } else if (wavetable->type == 1) {
-            if (wavetable->waveInfo.rawWave.loop != NULL)
+            if (wavetable->waveInfo.rawWave.loop != NULL) {
                 PATCH(wavetable->waveInfo.rawWave.loop, f, ALRawLoop *);
+            }
         }
     }
 }
@@ -60,13 +65,15 @@ void alBnkfNew(ALBankFile *f, u8 *table) {
     int i;
     int j;
     unused();
-    if (f->revision != AL_BANK_VERSION)
+    if (f->revision != AL_BANK_VERSION) {
         return;
+    }
 
     for (i = 0; i < f->bankCount; i++) {
         PATCH(f->bankArray[i], f, ALBank *);
-        if (f->bankArray[i] == NULL)
+        if (f->bankArray[i] == NULL) {
             continue;
+        }
 
         bank = f->bankArray[i];
         if (bank->flags == 0) {

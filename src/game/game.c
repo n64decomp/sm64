@@ -62,11 +62,13 @@ static void record_demo(void) {
 
     // if the stick is in deadzone, set its value to 0 to
     // nullify the effects. We do not record deadzone inputs.
-    if (rawStickX > -8 && rawStickX < 8)
+    if (rawStickX > -8 && rawStickX < 8) {
         rawStickX = 0;
+    }
 
-    if (rawStickY > -8 && rawStickY < 8)
+    if (rawStickY > -8 && rawStickY < 8) {
         rawStickY = 0;
+    }
 
     // record the distinct input and timer so long as they
     // are unique. If the timer hits 0xFF, reset the timer
@@ -91,17 +93,21 @@ void adjust_analog_stick(struct Controller *controller) {
     controller->stickY = 0;
 
     // modulate the rawStickX and rawStickY to be the new f32 values by adding/subtracting 6.
-    if (controller->rawStickX <= -8)
+    if (controller->rawStickX <= -8) {
         controller->stickX = controller->rawStickX + 6;
+    }
 
-    if (controller->rawStickX >= 8)
+    if (controller->rawStickX >= 8) {
         controller->stickX = controller->rawStickX - 6;
+    }
 
-    if (controller->rawStickY <= -8)
+    if (controller->rawStickY <= -8) {
         controller->stickY = controller->rawStickY + 6;
+    }
 
-    if (controller->rawStickY >= 8)
+    if (controller->rawStickY >= 8) {
         controller->stickY = controller->rawStickY - 6;
+    }
 
     // calculate f32 magnitude from the center by vector length.
     controller->stickMag =
@@ -174,8 +180,9 @@ void run_demo_inputs(void) {
 
             // run the current demo input's timer down. if it hits 0, advance the
             // demo input list.
-            if (--gCurrDemoInput->timer == 0)
+            if (--gCurrDemoInput->timer == 0) {
                 gCurrDemoInput++;
+            }
         }
     }
 }
@@ -309,8 +316,9 @@ void thread5_game_loop(UNUSED void *arg) {
 
         // if any controllers are plugged in, start read the data for when
         // read_controller_inputs is called later.
-        if (gControllerBits)
+        if (gControllerBits) {
             osContStartReadData(&gSIEventMesgQueue);
+        }
 
         audio_game_loop_tick();
         func_80247FAC();
@@ -319,9 +327,10 @@ void thread5_game_loop(UNUSED void *arg) {
         display_and_vsync();
 
         // when debug info is enabled, print the "BUF %d" information.
-        if (gShowDebugText)
+        if (gShowDebugText) {
             // subtract the end of the gfx pool with the display list to obtain the
             // amount of free space remaining.
             print_text_fmt_int(180, 20, "BUF %d", (s32) gGfxPoolEnd - (s32) gDisplayListHead);
+        }
     }
 }

@@ -118,33 +118,36 @@ void func_80248D90(void) {
  * Sets the sound mode
  */
 void set_sound_mode(u16 soundMode) {
-    if (soundMode < 3)
+    if (soundMode < 3) {
         audio_set_sound_mode(sSoundMenuModeToSoundMode[soundMode]);
+    }
 }
 
 /**
  * Wrapper method by menu used to set the sound via flags.
  */
 void play_menu_sounds(s16 soundMenuFlags) {
-    if (soundMenuFlags & SOUND_MENU_FLAG_HANDAPPEAR)
+    if (soundMenuFlags & SOUND_MENU_FLAG_HANDAPPEAR) {
         play_sound(SOUND_MENU_HANDAPPEAR, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_HANDISAPPEAR)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_HANDISAPPEAR) {
         play_sound(SOUND_MENU_HANDDISAPPEAR, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_UNKNOWN1)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_UNKNOWN1) {
         play_sound(SOUND_MENU_UNKNOWN1, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_PINCHMARIOFACE)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_PINCHMARIOFACE) {
         play_sound(SOUND_MENU_PINCHMARIOFACE, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_PINCHMARIOFACE2)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_PINCHMARIOFACE2) {
         play_sound(SOUND_MENU_PINCHMARIOFACE, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_LETGOMARIOFACE)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_LETGOMARIOFACE) {
         play_sound(SOUND_MENU_LETGOMARIOFACE, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_CAMERAZOOMIN)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_CAMERAZOOMIN) {
         play_sound(SOUND_MENU_CAMERAZOOMIN, gDefaultSoundArgs);
-    else if (soundMenuFlags & SOUND_MENU_FLAG_CAMERAZOOMOUT)
+    } else if (soundMenuFlags & SOUND_MENU_FLAG_CAMERAZOOMOUT) {
         play_sound(SOUND_MENU_CAMERAZOOMOUT, gDefaultSoundArgs);
+    }
 
-    if (soundMenuFlags & 0x100)
+    if (soundMenuFlags & 0x100) {
         play_menu_sounds_extra(20, NULL);
+    }
 }
 
 /**
@@ -154,9 +157,10 @@ void play_painting_eject_sound(void) {
     if (ripplingPainting != NULL
         && ripplingPainting->rippleStatus == 2) // ripple when Mario enters painting
     {
-        if (paintingEjectSoundPlayed == FALSE)
+        if (paintingEjectSoundPlayed == FALSE) {
             play_sound(SOUND_GENERAL_PAINTING_EJECT,
                        gMarioStates[0].marioObj->header.gfx.cameraToObject);
+        }
         paintingEjectSoundPlayed = TRUE;
     } else {
         paintingEjectSoundPlayed = FALSE;
@@ -169,26 +173,29 @@ void play_infinite_stairs_music(void) {
     /* Infinite stairs? */
     if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < 70) {
         if (gMarioState->floor != NULL && gMarioState->floor->room == 6) {
-            if (gMarioState->pos[2] < 2540.0f)
+            if (gMarioState->pos[2] < 2540.0f) {
                 shouldPlay = TRUE;
+            }
         }
     }
 
     if (sPlayingInfiniteStairs ^ shouldPlay) {
         sPlayingInfiniteStairs = shouldPlay;
-        if (shouldPlay)
+        if (shouldPlay) {
             play_secondary_music(SEQ_EVENT_ENDLESS_STAIRS, 0, 255, 1000);
-        else
+        } else {
             func_80321080(500);
+        }
     }
 }
 
 void set_background_music(u16 a, u16 seqArgs, s16 fadeTimer) {
     if (gResetTimer == 0 && seqArgs != sCurrentMusic) {
-        if (gCurrCreditsEntry != 0)
+        if (gCurrCreditsEntry != 0) {
             sound_reset(7);
-        else
+        } else {
             sound_reset(a);
+        }
 
         if (!(gShouldNotPlayCastleMusic && seqArgs == SEQ_LEVEL_INSIDE_CASTLE)) {
             play_music(0, seqArgs, fadeTimer);
@@ -230,14 +237,16 @@ void stop_shell_music(void) {
 
 void play_cap_music(u16 seqArgs) {
     play_music(0, seqArgs, 0);
-    if (sCurrentCapMusic != MUSIC_NONE && sCurrentCapMusic != seqArgs)
+    if (sCurrentCapMusic != MUSIC_NONE && sCurrentCapMusic != seqArgs) {
         stop_background_music(sCurrentCapMusic);
+    }
     sCurrentCapMusic = seqArgs;
 }
 
 void fadeout_cap_music(void) {
-    if (sCurrentCapMusic != MUSIC_NONE)
+    if (sCurrentCapMusic != MUSIC_NONE) {
         fadeout_background_music(sCurrentCapMusic, 600);
+    }
 }
 
 void stop_cap_music(void) {
@@ -277,8 +286,9 @@ void thread4_sound(UNUSED void *arg) {
 
             profiler_log_thread4_time();
             spTask = create_next_audio_frame_task();
-            if (spTask != NULL)
+            if (spTask != NULL) {
                 dispatch_audio_sptask(spTask);
+            }
 
             profiler_log_thread4_time();
         }

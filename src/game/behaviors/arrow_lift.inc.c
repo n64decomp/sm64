@@ -17,16 +17,15 @@ static s32 arrow_lift_move_away(void) {
 
     o->oMoveAngleYaw = o->oFaceAngleYaw - 0x4000;
     o->oVelY = 0;
-    o->oForwardVel = 12.0f;
-
+    o->oForwardVel = 12;
     // Cumulative displacement is used to keep track of how far the platform
     // has travelled, so that it can stop.
     o->oArrowLiftDisplacement += o->oForwardVel;
 
     // Stop the platform after moving 384 units.
-    if (o->oArrowLiftDisplacement > 384.0f) {
-        o->oForwardVel = 0.0f;
-        o->oArrowLiftDisplacement = 384.0f;
+    if (o->oArrowLiftDisplacement > 384) {
+        o->oForwardVel = 0;
+        o->oArrowLiftDisplacement = 384;
         status = ARROW_LIFT_DONE_MOVING;
     }
 
@@ -42,14 +41,13 @@ static s8 arrow_lift_move_back(void) {
 
     o->oMoveAngleYaw = o->oFaceAngleYaw + 0x4000;
     o->oVelY = 0;
-    o->oForwardVel = 12.0f;
-
+    o->oForwardVel = 12;
     o->oArrowLiftDisplacement -= o->oForwardVel;
 
     // Stop the platform after returning back to its original position.
-    if (o->oArrowLiftDisplacement < 0.0f) {
-        o->oForwardVel = 0.0f;
-        o->oArrowLiftDisplacement = 0.0f;
+    if (o->oArrowLiftDisplacement < 0) {
+        o->oForwardVel = 0;
+        o->oArrowLiftDisplacement = 0;
         status = ARROW_LIFT_DONE_MOVING;
     }
 

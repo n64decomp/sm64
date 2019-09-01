@@ -217,7 +217,7 @@ void ActionWhomp8(void) {
             spawn_triangle_break_particles(20, 138, 3.0f, 4);
             ShakeScreen(1);
             o->oPosY += 100.0f;
-            CreateStar(180.0f, 3880.0f, 340.0f);
+            create_star(180.0f, 3880.0f, 340.0f);
             PlaySound2(SOUND_OBJECT_KINGWHOMPDEATH);
             o->oAction = 9;
         }

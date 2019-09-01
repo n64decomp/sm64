@@ -216,7 +216,7 @@ void bhv_snowmans_head_loop(void) {
         case 4:
             if (func_802E4A38(&o->oSnowmansHeadUnkF4, 111, 700.0f, 2)) {
                 func_802A3004();
-                CreateStar(-4700.0f, -1024.0f, 1890.0f);
+                create_star(-4700.0f, -1024.0f, 1890.0f);
                 o->oAction = 1;
             }
             break;

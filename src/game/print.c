@@ -117,8 +117,9 @@ void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 
     {
         numDigits = 1;
         if (width > numDigits) {
-            for (len = 0; len < width - numDigits; len++)
+            for (len = 0; len < width - numDigits; len++) {
                 dest[len] = pad;
+            }
         }
         dest[len] = '0';
     }
@@ -291,50 +292,65 @@ void print_text_centered(s32 x, s32 y, const char *str) {
  * Converts a char into the proper colorful glyph for the char.
  */
 s8 char_to_glyph_index(char c) {
-    if (c >= 'A' && c <= 'Z')
+    if (c >= 'A' && c <= 'Z') {
         return c - 55;
+    }
 
-    if (c >= 'a' && c <= 'z')
+    if (c >= 'a' && c <= 'z') {
         return c - 87;
+    }
 
-    if (c >= '0' && c <= '9')
+    if (c >= '0' && c <= '9') {
         return c - 48;
+    }
 
-    if (c == ' ')
+    if (c == ' ') {
         return GLYPH_SPACE;
+    }
 
-    if (c == '!')
+    if (c == '!') {
         return GLYPH_EXCLAMATION_PNT; // !, JP only
+    }
 
-    if (c == '#')
+    if (c == '#') {
         return GLYPH_TWO_EXCLAMATION; // !!, JP only
+    }
 
-    if (c == '?')
+    if (c == '?') {
         return GLYPH_QUESTION_MARK; // ?, JP only
+    }
 
-    if (c == '&')
+    if (c == '&') {
         return GLYPH_AMPERSAND; // &, JP only
+    }
 
-    if (c == '%')
+    if (c == '%') {
         return GLYPH_PERCENT; // %, JP only
+    }
 
-    if (c == '*')
+    if (c == '*') {
         return GLYPH_MULTIPLY; // x
+    }
 
-    if (c == '+')
+    if (c == '+') {
         return GLYPH_COIN; // coin
+    }
 
-    if (c == ',')
+    if (c == ',') {
         return GLYPH_MARIO_HEAD; // Imagine I drew Mario's head
+    }
 
-    if (c == '-')
+    if (c == '-') {
         return GLYPH_STAR; // star
+    }
 
-    if (c == '.')
+    if (c == '.') {
         return GLYPH_PERIOD; // large shaded dot, JP only
+    }
 
-    if (c == '/')
+    if (c == '/') {
         return GLYPH_BETA_KEY; // beta key, JP only. Reused for Ü in EU.
+    }
 
     return GLYPH_SPACE;
 }
@@ -354,17 +370,21 @@ void add_glyph_texture(s8 glyphIndex) {
  * Clips textrect into the boundaries defined.
  */
 void clip_to_bounds(s32 *x, s32 *y) {
-    if (*x < TEXRECT_MIN_X)
+    if (*x < TEXRECT_MIN_X) {
         *x = TEXRECT_MIN_X;
+    }
 
-    if (*x > TEXRECT_MAX_X)
+    if (*x > TEXRECT_MAX_X) {
         *x = TEXRECT_MAX_X;
+    }
 
-    if (*y < TEXRECT_MIN_Y)
+    if (*y < TEXRECT_MIN_Y) {
         *y = TEXRECT_MIN_Y;
+    }
 
-    if (*y > TEXRECT_MAX_Y)
+    if (*y > TEXRECT_MAX_Y) {
         *y = TEXRECT_MAX_Y;
+    }
 }
 
 /**

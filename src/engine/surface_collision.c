@@ -33,8 +33,9 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
     s32 numCols = 0;
 
     // Max collision radius = 200
-    if (radius > 200.0f)
+    if (radius > 200.0f) {
         radius = 200.0f;
+    }
 
     // Stay in this loop until out of walls.
     while (surfaceNode != NULL) {
@@ -67,19 +68,25 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
             y3 = surf->vertex3[1];
 
             if (surf->normal.x > 0.0f) {
-                if ((y1 - y) * (w2 - w1) - (w1 - -pz) * (y2 - y1) > 0.0f)
+                if ((y1 - y) * (w2 - w1) - (w1 - -pz) * (y2 - y1) > 0.0f) {
                     continue;
-                if ((y2 - y) * (w3 - w2) - (w2 - -pz) * (y3 - y2) > 0.0f)
+                }
+                if ((y2 - y) * (w3 - w2) - (w2 - -pz) * (y3 - y2) > 0.0f) {
                     continue;
-                if ((y3 - y) * (w1 - w3) - (w3 - -pz) * (y1 - y3) > 0.0f)
+                }
+                if ((y3 - y) * (w1 - w3) - (w3 - -pz) * (y1 - y3) > 0.0f) {
                     continue;
+                }
             } else {
-                if ((y1 - y) * (w2 - w1) - (w1 - -pz) * (y2 - y1) < 0.0f)
+                if ((y1 - y) * (w2 - w1) - (w1 - -pz) * (y2 - y1) < 0.0f) {
                     continue;
-                if ((y2 - y) * (w3 - w2) - (w2 - -pz) * (y3 - y2) < 0.0f)
+                }
+                if ((y2 - y) * (w3 - w2) - (w2 - -pz) * (y3 - y2) < 0.0f) {
                     continue;
-                if ((y3 - y) * (w1 - w3) - (w3 - -pz) * (y1 - y3) < 0.0f)
+                }
+                if ((y3 - y) * (w1 - w3) - (w3 - -pz) * (y1 - y3) < 0.0f) {
                     continue;
+                }
             }
         } else {
             w1 = surf->vertex1[0];
@@ -90,30 +97,38 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
             y3 = surf->vertex3[1];
 
             if (surf->normal.z > 0.0f) {
-                if ((y1 - y) * (w2 - w1) - (w1 - px) * (y2 - y1) > 0.0f)
+                if ((y1 - y) * (w2 - w1) - (w1 - px) * (y2 - y1) > 0.0f) {
                     continue;
-                if ((y2 - y) * (w3 - w2) - (w2 - px) * (y3 - y2) > 0.0f)
+                }
+                if ((y2 - y) * (w3 - w2) - (w2 - px) * (y3 - y2) > 0.0f) {
                     continue;
-                if ((y3 - y) * (w1 - w3) - (w3 - px) * (y1 - y3) > 0.0f)
+                }
+                if ((y3 - y) * (w1 - w3) - (w3 - px) * (y1 - y3) > 0.0f) {
                     continue;
+                }
             } else {
-                if ((y1 - y) * (w2 - w1) - (w1 - px) * (y2 - y1) < 0.0f)
+                if ((y1 - y) * (w2 - w1) - (w1 - px) * (y2 - y1) < 0.0f) {
                     continue;
-                if ((y2 - y) * (w3 - w2) - (w2 - px) * (y3 - y2) < 0.0f)
+                }
+                if ((y2 - y) * (w3 - w2) - (w2 - px) * (y3 - y2) < 0.0f) {
                     continue;
-                if ((y3 - y) * (w1 - w3) - (w3 - px) * (y1 - y3) < 0.0f)
+                }
+                if ((y3 - y) * (w1 - w3) - (w3 - px) * (y1 - y3) < 0.0f) {
                     continue;
+                }
             }
         }
 
         // Determine if checking for the camera or not.
         if (gCheckingSurfaceCollisionsForCamera) {
-            if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION)
+            if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION) {
                 continue;
+            }
         } else {
             // Ignore camera only surfaces.
-            if (surf->type == SURFACE_CAMERA_BOUNDARY)
+            if (surf->type == SURFACE_CAMERA_BOUNDARY) {
                 continue;
+            }
 
             // If an object can pass through a vanish cap wall, pass through.
             if (surf->type == SURFACE_VANISH_CAP_WALLS) {
@@ -186,10 +201,12 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
 
     colData->numWalls = 0;
 
-    if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX)
+    if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
         return numCollisions;
-    if (z <= -LEVEL_BOUNDARY_MAX || z >= LEVEL_BOUNDARY_MAX)
+    }
+    if (z <= -LEVEL_BOUNDARY_MAX || z >= LEVEL_BOUNDARY_MAX) {
         return numCollisions;
+    }
 
     // World (level) consists of a 16x16 grid. Find where the collision is on
     // the grid (round toward -inf)
@@ -236,21 +253,25 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
         x2 = surf->vertex2[0];
 
         // Checking if point is in bounds of the triangle laterally.
-        if ((z1 - z) * (x2 - x1) - (x1 - x) * (z2 - z1) > 0)
+        if ((z1 - z) * (x2 - x1) - (x1 - x) * (z2 - z1) > 0) {
             continue;
+        }
 
         // Slight optimization by checking these later.
         x3 = surf->vertex3[0];
         z3 = surf->vertex3[2];
-        if ((z2 - z) * (x3 - x2) - (x2 - x) * (z3 - z2) > 0)
+        if ((z2 - z) * (x3 - x2) - (x2 - x) * (z3 - z2) > 0) {
             continue;
-        if ((z3 - z) * (x1 - x3) - (x3 - x) * (z1 - z3) > 0)
+        }
+        if ((z3 - z) * (x1 - x3) - (x3 - x) * (z1 - z3) > 0) {
             continue;
+        }
 
         // Determine if checking for the camera or not.
         if (gCheckingSurfaceCollisionsForCamera != 0) {
-            if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION)
+            if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION) {
                 continue;
+            }
         }
         // Ignore camera only surfaces.
         else if (surf->type == SURFACE_CAMERA_BOUNDARY) {
@@ -265,8 +286,9 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
             f32 height;
 
             // If a wall, ignore it. Likely a remnant, should never occur.
-            if (ny == 0.0f)
+            if (ny == 0.0f) {
                 continue;
+            }
 
             // Find the ceil height at the specific point.
             height = -(x * nx + nz * z + oo) / ny;
@@ -275,8 +297,9 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
             //! (Exposed Ceilings) Because any point above a ceiling counts
             //  as interacting with a ceiling, ceilings far below can cause
             // "invisible walls" that are really just exposed ceilings.
-            if (y - (height - -78.0f) > 0.0f)
+            if (y - (height - -78.0f) > 0.0f) {
                 continue;
+            }
 
             *pheight = height;
             ceil = surf;
@@ -405,22 +428,26 @@ static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32
         z2 = surf->vertex2[2];
 
         // Check that the point is within the triangle bounds.
-        if ((z1 - z) * (x2 - x1) - (x1 - x) * (z2 - z1) < 0)
+        if ((z1 - z) * (x2 - x1) - (x1 - x) * (z2 - z1) < 0) {
             continue;
+        }
 
         // To slightly save on computation time, set this later.
         x3 = surf->vertex3[0];
         z3 = surf->vertex3[2];
 
-        if ((z2 - z) * (x3 - x2) - (x2 - x) * (z3 - z2) < 0)
+        if ((z2 - z) * (x3 - x2) - (x2 - x) * (z3 - z2) < 0) {
             continue;
-        if ((z3 - z) * (x1 - x3) - (x3 - x) * (z1 - z3) < 0)
+        }
+        if ((z3 - z) * (x1 - x3) - (x3 - x) * (z1 - z3) < 0) {
             continue;
+        }
 
         // Determine if we are checking for the camera or not.
         if (gCheckingSurfaceCollisionsForCamera != 0) {
-            if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION)
+            if (surf->flags & SURFACE_FLAG_NO_CAM_COLLISION) {
                 continue;
+            }
         }
         // If we are not checking for the camera, ignore camera only floors.
         else if (surf->type == SURFACE_CAMERA_BOUNDARY) {
@@ -440,8 +467,9 @@ static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32
         // Find the height of the floor at a given location.
         height = -(x * nx + nz * z + oo) / ny;
         // Checks for floor interaction with a 78 unit buffer.
-        if (y - (height + -78.0f) < 0.0f)
+        if (y - (height + -78.0f) < 0.0f) {
             continue;
+        }
 
         *pheight = height;
         floor = surf;

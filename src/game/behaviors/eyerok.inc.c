@@ -118,7 +118,7 @@ static void eyerok_boss_act_fight(void) {
 static void eyerok_boss_act_die(void) {
     if (o->oTimer == 60) {
         if (obj_update_dialog_unk2(2, 0, 0xA2, 0x76)) {
-            CreateStar(0.0f, -900.0f, -3700.0f);
+            create_star(0.0f, -900.0f, -3700.0f);
         } else {
             o->oTimer -= 1;
         }

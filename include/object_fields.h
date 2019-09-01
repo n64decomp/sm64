@@ -93,7 +93,7 @@
 #define /*0x184*/ oHealth OBJECT_FIELD_S32(0x3F)
 #define /*0x188*/ oBehParams OBJECT_FIELD_S32(0x40)
 #define /*0x18C*/ oPrevAction OBJECT_FIELD_S32(0x41)
-#define /*0x190*/ oUnk190 OBJECT_FIELD_U32(0x42)
+#define /*0x190*/ oInteractionSubtype OBJECT_FIELD_U32(0x42)
 #define /*0x194*/ oCollisionDistance OBJECT_FIELD_F32(0x43)
 #define /*0x198*/ oNumLootCoins OBJECT_FIELD_S32(0x44)
 #define /*0x19C*/ oDrawingDistance OBJECT_FIELD_F32(0x45)
@@ -103,13 +103,9 @@
 #define /*0x1AC*/ oUnk1AC_VPTR OBJECT_FIELD_VPTR(0x49)
 #define /*0x1AC*/ oUnk1AC_S32 OBJECT_FIELD_S32(0x49)
 #define /*0x1AC*/ oUnk1AC_F32 OBJECT_FIELD_F32(0x49)
-#define /*0x1AC*/ oMipsForwardVelocity OBJECT_FIELD_F32(0x49)
 #define /*0x1AC*/ oUnk1AC_S16 OBJECT_FIELD_S16(0x49, 0)
-#define /*0x1AE*/ oUnk1AE OBJECT_FIELD_S16(0x49, 1)
 #define /*0x1B0*/ oUnk1B0 OBJECT_FIELD_S32(0x4A)
-#define /*0x1B0*/ oEyesShut OBJECT_FIELD_S16(0x4A, 0)
 #define /*0x1B0*/ oUnk1B0_S16 OBJECT_FIELD_S16(0x4A, 0)
-#define /*0x1B2*/ oUnk1B2 OBJECT_FIELD_S16(0x4A, 1)
 // more generic fields
 #define /*0x1B4*/ oWallAngle OBJECT_FIELD_U32(0x4B)
 #define /*0x1B8*/ oFloorType OBJECT_FIELD_S16(0x4C, 0)
@@ -349,16 +345,19 @@
 #define /*0x0F8*/ oBulletBillUnkF8 OBJECT_FIELD_S32(0x1C)
 
 /* Bowser */
-#define /*0x0F4*/ oBowserUnkF4 OBJECT_FIELD_S32(0x1B)
-#define /*0x0F8*/ oBowserUnkF8 OBJECT_FIELD_S32(0x1C)
-#define /*0x0FC*/ oBowserDistToCentre OBJECT_FIELD_F32(0x1D)
-#define /*0x106*/ oBowserUnk106 OBJECT_FIELD_S16(0x1F, 1)
-#define /*0x108*/ oBowserUnk108 OBJECT_FIELD_S16(0x20, 0)
-#define /*0x10A*/ oBowserHeldAnglePitch OBJECT_FIELD_S16(0x20, 1)
+#define /*0x0F4*/ oBowserUnkF4           OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oBowserUnkF8           OBJECT_FIELD_S32(0x1C)
+#define /*0x0FC*/ oBowserDistToCentre    OBJECT_FIELD_F32(0x1D)
+#define /*0x106*/ oBowserUnk106          OBJECT_FIELD_S16(0x1F, 1)
+#define /*0x108*/ oBowserUnk108          OBJECT_FIELD_S16(0x20, 0)
+#define /*0x10A*/ oBowserHeldAnglePitch  OBJECT_FIELD_S16(0x20, 1)
 #define /*0x10D*/ oBowserHeldAngleVelYaw OBJECT_FIELD_S16(0x21, 0)
-#define /*0x10E*/ oBowserUnk10E OBJECT_FIELD_S16(0x21, 1)
-#define /*0x110*/ oBowserUnk110 OBJECT_FIELD_S16(0x22, 0)
-#define /*0x112*/ oBowserAngleToCentre OBJECT_FIELD_S16(0x22, 1)
+#define /*0x10E*/ oBowserUnk10E          OBJECT_FIELD_S16(0x21, 1)
+#define /*0x110*/ oBowserUnk110          OBJECT_FIELD_S16(0x22, 0)
+#define /*0x112*/ oBowserAngleToCentre   OBJECT_FIELD_S16(0x22, 1)
+#define /*0x1AE*/ oBowserUnk1AE          OBJECT_FIELD_S16(0x49, 1)
+#define /*0x1B0*/ oBowserEyesShut        OBJECT_FIELD_S16(0x4A, 0)
+#define /*0x1B2*/ oBowserUnk1B2          OBJECT_FIELD_S16(0x4A, 1)
 
 /* Flame */
 #define /*0x0F4*/ oFlameUnkF4 OBJECT_FIELD_F32(0x1B)
@@ -387,12 +386,19 @@
 /* bhvBowserKeyCourseExit */
 #define /*0x0F4*/ oBowserKeyCourseExitScale OBJECT_FIELD_F32(0x1B)
 
-/* UkikiOpenCage */
-#define /*0x0F4*/ oUkikiOpenCageUnkF4 OBJECT_FIELD_S16(0x1B, 0)
-#define /*0x0F6*/ oUkikiOpenCageUnkF6 OBJECT_FIELD_S16(0x1B, 1)
-#define /*0x0FC*/ oUkikiOpenCageUnkFC OBJECT_FIELD_VPTR(0x1D)
-#define /*0x10C*/ oUkikiOpenCageUnk10C OBJECT_FIELD_S32(0x21)
-#define /*0x110*/ oUkikiOpenCageUnk110 OBJECT_FIELD_F32(0x22)
+/* Ukiki */
+#define /*0x0F4*/ oUkikiTauntCounter   OBJECT_FIELD_S16(0x1B, 0)
+#define /*0x0F6*/ oUkikiTauntsToBeDone OBJECT_FIELD_S16(0x1B, 1)
+ //TODO change to the actual waypoint form.
+#define /*0x0FC*/ oUkikiPath           OBJECT_FIELD_VPTR(0x1D)
+#define /*0x110*/ oUkikiChaseFleeRange OBJECT_FIELD_F32(0x22)
+#define /*0x1AC*/ oUkikiTextState      OBJECT_FIELD_S16(0x49, 0)
+#define /*0x1AE*/ oUkikiTextboxTimer   OBJECT_FIELD_S16(0x49, 1)
+#define /*0x1B0*/ oUkikiCageSpinTimer  OBJECT_FIELD_S16(0x4A, 0)
+#define /*0x1B2*/ oUkikiHasHat         OBJECT_FIELD_S16(0x4A, 1)
+
+/* Ukiki Cage*/
+#define /*0x088*/ oUkikiCageNextAction      OBJECT_FIELD_S32(0x00)
 
 /* HorizontalMovement */
 #define /*0x0F4*/ oHorizontalMovementUnkF4 OBJECT_FIELD_S32(0x1B)
@@ -1028,8 +1034,9 @@
 #define /*0x0FC*/ oTreasureChestUnkFC OBJECT_FIELD_S32(0x1D)
 
 /* Mips */
-#define /*0x0F4*/ oMipsStarStatus OBJECT_FIELD_S32(0x1B)
+#define /*0x0F4*/ oMipsStarStatus         OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oMipsStartWaypointIndex OBJECT_FIELD_S32(0x1C)
+#define /*0x1AC*/ oMipsForwardVelocity    OBJECT_FIELD_F32(0x49)
 
 /* Yoshi */
 #define /*0x0F4*/ oYoshiUnkF4 OBJECT_FIELD_S32(0x1B)

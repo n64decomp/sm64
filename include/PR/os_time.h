@@ -1,5 +1,7 @@
 #ifndef _ULTRA64_TIME_H_
 #define _ULTRA64_TIME_H_
+
+#include <PR/ultratypes.h>
 #include <PR/os_message.h>
 
 /* Types */

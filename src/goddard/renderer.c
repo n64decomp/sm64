@@ -1340,12 +1340,14 @@ Vtx *make_Vtx_if_new(f32 x, f32 y, f32 z, f32 alpha) {
 
     for (i = D_801BB0CC; i < (D_801BB0CC + D_801BB0BC); i++) {
         // the ifs need to be separate to match...
-        if (sCurrentGdDl->vtx[i].n.ob[0] == (s16) x)
-            if (sCurrentGdDl->vtx[i].n.ob[1] == (s16) y)
+        if (sCurrentGdDl->vtx[i].n.ob[0] == (s16) x) {
+            if (sCurrentGdDl->vtx[i].n.ob[1] == (s16) y) {
                 if (sCurrentGdDl->vtx[i].n.ob[2] == (s16) z) {
                     D_801BAF30[D_801BB0C4][D_801BB0B4++] = (s16) i;
                     return NULL;
                 }
+            }
+        }
     }
 
     D_801BB0BC++;
@@ -2348,8 +2350,9 @@ void Unknown801A47F4(UNUSED u32 arg0) {
 
 /* 252FD8 -> 253018 */
 void func_801A4808(void) {
-    while (D_801A8674 != 0)
+    while (D_801A8674 != 0) {
         ;
+    }
 
     return;
 }

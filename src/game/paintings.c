@@ -52,8 +52,9 @@ void stopAllRippleExcept(s16 *idptr, struct PaintingData *paintingGroup[]) {
     while (paintingGroup[index] != NULL) // for each painting
     {
         struct PaintingData *painting = segmented_to_virtual(paintingGroup[index]);
-        if (painting->id != id)
+        if (painting->id != id) {
             painting->rippleStatus = 0; // stop all rippling except for the selected painting
+        }
         index++;
     }
 }
@@ -62,21 +63,24 @@ float find_mario_y_position_on_painting(struct PaintingData *painting) {
     //! unnecessary use of double constants
     float marioYOffsetFromPainting = gPaintingMarioYPos - painting->vYPos + 50.0;
 
-    if (marioYOffsetFromPainting < 0.0)
+    if (marioYOffsetFromPainting < 0.0) {
         marioYOffsetFromPainting = 0.0; // If Mario is below the bottom, return the bottom
-    else if (marioYOffsetFromPainting > painting->vSize) // If Mario is above the top, return the top
+    } else if (marioYOffsetFromPainting
+               > painting->vSize) { // If Mario is above the top, return the top
         marioYOffsetFromPainting = painting->vSize;
+    }
     return marioYOffsetFromPainting;
 }
 
 float find_mario_z_position_on_painting(struct PaintingData *painting) {
     float marioZOffsetFromPainting = painting->vZPos - gPaintingMarioZPos;
 
-    if (marioZOffsetFromPainting < 0.0)
+    if (marioZOffsetFromPainting < 0.0) {
         marioZOffsetFromPainting = 0.0; // If Mario is past the left side, return the left side
-    else if (marioZOffsetFromPainting > painting->vSize)
+    } else if (marioZOffsetFromPainting > painting->vSize) {
         marioZOffsetFromPainting =
             painting->vSize; // If Mario is past the right side, return the right side
+    }
     return marioZOffsetFromPainting;
 }
 
@@ -99,28 +103,30 @@ float find_part_of_painting_near_mario(struct PaintingData *painting) {
     float secondQuarter = painting->vSize / 2.0;      // 1/2 of the way across the painting
     float thirdQuarter = painting->vSize * 3.0 / 4.0; // 3/4 of the way across the painting
 
-    if (painting->floorEntered & STAND_LEFT)
+    if (painting->floorEntered & STAND_LEFT) {
         return firstQuarter;
-    else if (painting->floorEntered & STAND_MIDDLE)
+    } else if (painting->floorEntered & STAND_MIDDLE) {
         return secondQuarter;
-    else if (painting->floorEntered & STAND_RIGHT)
+    } else if (painting->floorEntered & STAND_RIGHT) {
         return thirdQuarter;
-    else if (painting->floorEntered & ENTER_LEFT)
+    } else if (painting->floorEntered & ENTER_LEFT) {
         return firstQuarter;
-    else if (painting->floorEntered & ENTER_MIDDLE)
+    } else if (painting->floorEntered & ENTER_MIDDLE) {
         return secondQuarter;
-    else if (painting->floorEntered & ENTER_RIGHT)
+    } else if (painting->floorEntered & ENTER_RIGHT) {
         return thirdQuarter;
+    }
 }
 
 float find_mario_x_position_on_painting(struct PaintingData *painting) {
     float mario_x_offset_from_painting = gPaintingMarioXPos - painting->vXPos;
 
-    if (mario_x_offset_from_painting < 0.0)
+    if (mario_x_offset_from_painting < 0.0) {
         mario_x_offset_from_painting = 0.0; // If Mario is past the left side, return the left side
-    else if (mario_x_offset_from_painting > painting->vSize)
+    } else if (mario_x_offset_from_painting > painting->vSize) {
         mario_x_offset_from_painting =
             painting->vSize; // If Mario is past the right side, return the right side
+    }
     return mario_x_offset_from_painting;
 }
 
@@ -162,8 +168,9 @@ void painting_set_ripple_type(s8 intendedStatus, struct PaintingData *painting,
         painting_find_horizontal_ripple_location(painting, hRippleSpot); // find the ripple location
     painting->verticalRippleSpot = painting_find_vertical_ripple_location(painting, vRippleSpot);
     gPaintingMarioYEntry = gPaintingMarioYPos;
-    if (resetTimer == RESET_TIMER)
+    if (resetTimer == RESET_TIMER) {
         painting->rippleTimer = 0.0f;
+    }
     ripplingPainting = painting;
 }
 
@@ -173,24 +180,25 @@ void vertical_proximity_ripple_painting_ripple(
         *paintingGroup[]) // For paintings aligned vertically that follow RIPPLE_TRIGGER_PROXIMITY, set
                           // some flags depending on where Mario is
 {
-    if (painting->floorEntered & STAND_LEFT)
+    if (painting->floorEntered & STAND_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & STAND_MIDDLE)
+    } else if (painting->floorEntered & STAND_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & STAND_RIGHT)
+    } else if (painting->floorEntered & STAND_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_LEFT)
+    } else if (painting->floorEntered & ENTER_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_MIDDLE)
+    } else if (painting->floorEntered & ENTER_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_RIGHT)
+    } else if (painting->floorEntered & ENTER_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
+    }
 }
 
 void vertical_proximity_ripple_painting_ripple_if_mario_enters(
@@ -198,15 +206,16 @@ void vertical_proximity_ripple_painting_ripple_if_mario_enters(
     struct PaintingData *paintingGroup[]) // For paintings aligned vertically that follow
                                           // RIPPLE_TRIGGER_PROXIMITY, set some flags if Mario enters
 {
-    if (painting->floorEntered & ENTER_LEFT)
+    if (painting->floorEntered & ENTER_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_MIDDLE)
+    } else if (painting->floorEntered & ENTER_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_RIGHT)
+    } else if (painting->floorEntered & ENTER_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
+    }
 }
 
 void vertical_continuous_ripple_painting_ripple(
@@ -215,24 +224,25 @@ void vertical_continuous_ripple_painting_ripple(
         *paintingGroup[]) // For paintings aligned vertically that follow RIPPLE_TRIGGER_CONTINUOUS (DDD
                           // only), set some flags depending on where Mario is
 {
-    if (painting->floorEntered & STAND_LEFT)
+    if (painting->floorEntered & STAND_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MIDDLE_X, MIDDLE_Y,
                                  RESET_TIMER);
-    else if (painting->floorEntered & STAND_MIDDLE)
+    } else if (painting->floorEntered & STAND_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MIDDLE_X, MIDDLE_Y,
                                  RESET_TIMER);
-    else if (painting->floorEntered & STAND_RIGHT)
+    } else if (painting->floorEntered & STAND_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MIDDLE_X, MIDDLE_Y,
                                  RESET_TIMER);
-    else if (painting->floorEntered & ENTER_LEFT)
+    } else if (painting->floorEntered & ENTER_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_MIDDLE)
+    } else if (painting->floorEntered & ENTER_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
-    else if (painting->floorEntered & ENTER_RIGHT)
+    } else if (painting->floorEntered & ENTER_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, RESET_TIMER);
+    }
 }
 
 void vertical_continuous_ripple_painting_ripple_if_mario_enters(
@@ -241,15 +251,16 @@ void vertical_continuous_ripple_painting_ripple_if_mario_enters(
         *paintingGroup[]) // For paintings aligned vertically that follow RIPPLE_TRIGGER_CONTINUOUS (DDD
                           // only), set some flags if Mario enters
 {
-    if (painting->floorEntered & ENTER_LEFT)
+    if (painting->floorEntered & ENTER_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, DONT_RESET_TIMER);
-    else if (painting->floorEntered & ENTER_MIDDLE)
+    } else if (painting->floorEntered & ENTER_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, DONT_RESET_TIMER);
-    else if (painting->floorEntered & ENTER_RIGHT)
+    } else if (painting->floorEntered & ENTER_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, NEAR_MARIO_LATERALLY,
                                  MARIO_Y, DONT_RESET_TIMER);
+    }
 }
 
 void horizontal_proximity_ripple_painting_ripple(
@@ -258,25 +269,26 @@ void horizontal_proximity_ripple_painting_ripple(
         *paintingGroup[]) // For paintings aligned horizontally that follow RIPPLE_TRIGGER_PROXIMITY
                           // (these are not found in-game), set some flags depending on where Mario is
 {
-    if (painting->floorEntered & STAND_LEFT)
+    if (painting->floorEntered & STAND_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MARIO_X, MARIO_Z,
                                  RESET_TIMER);
-    else if (painting->floorEntered & STAND_MIDDLE)
+    } else if (painting->floorEntered & STAND_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MARIO_X, MARIO_Z,
                                  RESET_TIMER);
-    else if (painting->floorEntered & STAND_RIGHT)
+    } else if (painting->floorEntered & STAND_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MARIO_X, MARIO_Z,
                                  RESET_TIMER);
-    else if (painting->marioNewlyUnderPainting) {
-        if (painting->currFloor & ENTER_LEFT)
+    } else if (painting->marioNewlyUnderPainting) {
+        if (painting->currFloor & ENTER_LEFT) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      RESET_TIMER);
-        else if (painting->currFloor & ENTER_MIDDLE)
+        } else if (painting->currFloor & ENTER_MIDDLE) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      RESET_TIMER);
-        else if (painting->currFloor & ENTER_RIGHT)
+        } else if (painting->currFloor & ENTER_RIGHT) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      RESET_TIMER);
+        }
     }
 }
 
@@ -287,15 +299,16 @@ void horizontal_proximity_ripple_painting_ripple_if_mario_enters(
                           // (these are not found in-game), set some flags if Mario enters
 {
     if (painting->marioNewlyUnderPainting) {
-        if (painting->currFloor & ENTER_LEFT)
+        if (painting->currFloor & ENTER_LEFT) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      RESET_TIMER);
-        else if (painting->currFloor & ENTER_MIDDLE)
+        } else if (painting->currFloor & ENTER_MIDDLE) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      RESET_TIMER);
-        else if (painting->currFloor & ENTER_RIGHT)
+        } else if (painting->currFloor & ENTER_RIGHT) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      RESET_TIMER);
+        }
     }
 }
 
@@ -305,24 +318,25 @@ void horizontal_continuous_ripple_painting_ripple(
         *paintingGroup[]) // For paintings aligned horizontally that follow RIPPLE_TRIGGER_CONTINUOUS
                           // (HMC and CotMC), set some flags depending on where Mario is
 {
-    if (painting->floorEntered & STAND_LEFT)
+    if (painting->floorEntered & STAND_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MIDDLE_X, MIDDLE_Y,
                                  RESET_TIMER);
-    else if (painting->floorEntered & STAND_MIDDLE)
+    } else if (painting->floorEntered & STAND_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MIDDLE_X, MIDDLE_Y,
                                  RESET_TIMER);
-    else if (painting->floorEntered & STAND_RIGHT)
+    } else if (painting->floorEntered & STAND_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_IDLE, painting, paintingGroup, MIDDLE_X, MIDDLE_Y,
                                  RESET_TIMER);
-    else if (painting->currFloor & ENTER_LEFT)
+    } else if (painting->currFloor & ENTER_LEFT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                  RESET_TIMER);
-    else if (painting->currFloor & ENTER_MIDDLE)
+    } else if (painting->currFloor & ENTER_MIDDLE) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                  RESET_TIMER);
-    else if (painting->currFloor & ENTER_RIGHT)
+    } else if (painting->currFloor & ENTER_RIGHT) {
         painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                  RESET_TIMER);
+    }
 }
 
 void horizontal_continuous_ripple_painting_ripple_if_mario_enters(
@@ -332,15 +346,16 @@ void horizontal_continuous_ripple_painting_ripple_if_mario_enters(
                           // (HMC and CotMC), set some flags if Mario enters
 {
     if (painting->marioNewlyUnderPainting) {
-        if (painting->currFloor & ENTER_LEFT)
+        if (painting->currFloor & ENTER_LEFT) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      DONT_RESET_TIMER);
-        else if (painting->currFloor & ENTER_MIDDLE)
+        } else if (painting->currFloor & ENTER_MIDDLE) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      DONT_RESET_TIMER);
-        else if (painting->currFloor & ENTER_RIGHT)
+        } else if (painting->currFloor & ENTER_RIGHT) {
             painting_set_ripple_type(RIPPLE_STATE_ENTRY, painting, paintingGroup, MARIO_X, MARIO_Z,
                                      DONT_RESET_TIMER);
+        }
     }
 }
 
@@ -359,19 +374,26 @@ void painting_update_floors(struct PaintingData *painting) {
     \* and sets a bitfield accordingly.                                               */
 
     if (gPaintingMarioFloorType
-        == paintingId * 3 + SURFACE_PAINTING_WOBBLE_A6) // check if Mario's current floor is one of the
-                                                        // special floors
+        == paintingId * 3
+               + SURFACE_PAINTING_WOBBLE_A6) { // check if Mario's current floor is one of the
+                                               // special floors
         leftSideStand = STAND_LEFT;
-    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WOBBLE_A7)
+    }
+    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WOBBLE_A7) {
         middleStand = STAND_MIDDLE;
-    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WOBBLE_A8)
+    }
+    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WOBBLE_A8) {
         rightSideStand = STAND_RIGHT;
-    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WARP_D3)
+    }
+    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WARP_D3) {
         leftSideEnter = ENTER_LEFT;
-    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WARP_D4)
+    }
+    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WARP_D4) {
         middleEnter = ENTER_MIDDLE;
-    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WARP_D5)
+    }
+    if (gPaintingMarioFloorType == paintingId * 3 + SURFACE_PAINTING_WARP_D5) {
         rightSideEnter = ENTER_RIGHT;
+    }
 
     painting->lastFloor = painting->currFloor;
     painting->currFloor = leftSideStand + middleStand + rightSideStand + leftSideEnter + middleEnter
@@ -381,10 +403,11 @@ void painting_update_floors(struct PaintingData *painting) {
         & painting->currFloor; // floorEntered is true iff currFloor is true and lastFloor is false
                                // (Mario just entered the floor on this frame)
     painting->lastMarioUnderPainting = painting->currMarioUnderPainting;
-    if (gPaintingMarioYPos < painting->vYPos)
+    if (gPaintingMarioYPos < painting->vYPos) {
         painting->currMarioUnderPainting = 1; // If Mario is below the painting, set a variable
-    else
+    } else {
         painting->currMarioUnderPainting = 0; // Otherwise, reset it
+    }
     painting->marioNewlyUnderPainting =
         (painting->lastMarioUnderPainting ^ painting->currMarioUnderPainting)
         & painting->currMarioUnderPainting; // Again, marioNewlyUnderPainting is true iff he is under it
@@ -463,8 +486,9 @@ s16 painting_conditionally_calculate_point_ripple(struct PaintingData *painting,
                                                   s16 xpos, s16 ypos) {
     s16 rippleHeight = 0;
 
-    if (condition)
+    if (condition) {
         rippleHeight = painting_calculate_point_ripple(painting, xpos, ypos);
+    }
     return rippleHeight;
 }
 
@@ -514,12 +538,13 @@ s8 small_float_to_byte(float decimal) // This function converts a decimal to a s
 {
     s8 convertedFloat;
 
-    if (decimal > 0.0)
+    if (decimal > 0.0) {
         convertedFloat = decimal * 127.0 + 0.5; // round up
-    else if (decimal < 0.0)
+    } else if (decimal < 0.0) {
         convertedFloat = decimal * 128.0 - 0.5; // round down
-    else
+    } else {
         convertedFloat = 0; // don't round 0
+    }
     return convertedFloat;
 }
 
@@ -658,8 +683,9 @@ Gfx *func_802D45FC(struct PaintingData *painting) {
     Gfx *sp48 = alloc_display_list(faceCount * 8 + 48);
     Gfx *sp44 = sp48;
 
-    if (sp48 == NULL)
+    if (sp48 == NULL) {
         return sp48;
+    }
 
     gSPDisplayList(sp44++, func_802D43FC(painting));
     gSPDisplayList(sp44++, dl_paintings_rippling_begin);
@@ -690,8 +716,9 @@ Gfx *func_802D4874(struct PaintingData *painting) {
     Gfx *sp48 = alloc_display_list(56);
     Gfx *sp44 = sp48;
 
-    if (sp48 == NULL)
+    if (sp48 == NULL) {
         return sp48;
+    }
 
     gSPDisplayList(sp44++, func_802D43FC(painting));
     gSPDisplayList(sp44++, dl_paintings_env_mapped_begin);
@@ -735,8 +762,9 @@ Gfx *display_painting_not_rippling(struct PaintingData *painting) {
     Gfx *sp2C = alloc_display_list(32);
     Gfx *sp28 = sp2C;
 
-    if (sp2C == NULL)
+    if (sp2C == NULL) {
         return sp2C;
+    }
     gSPDisplayList(sp28++, func_802D43FC(painting));
     gSPDisplayList(sp28++, painting->displayList58);
     gSPPopMatrix(sp28++, G_MTX_MODELVIEW);
@@ -878,8 +906,9 @@ Gfx *Geo18_802D5B98(s32 run, struct GraphNode *node, UNUSED s32 c) {
         reset_painting(painting);
     } else if (run == TRUE) // because the extra comparison was really necessary...
     {
-        if (sp28 == 1 && id == PAINTING_ID_DDD) // painting is DDD painting
+        if (sp28 == 1 && id == PAINTING_ID_DDD) { // painting is DDD painting
             update_ddd_painting(painting, 3456.0f, 5529.6f, 20.0f);
+        }
         func_802D4E04(sp2C, painting);
         sp20 = display_painting(painting);
         painting_update_floors(painting);

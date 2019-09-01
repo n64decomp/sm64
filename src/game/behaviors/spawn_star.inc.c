@@ -121,7 +121,7 @@ struct Object *func_802F1A50(struct Object *sp30, f32 sp34, f32 sp38, f32 sp3C) 
     return sp30;
 }
 
-void CreateStar(f32 sp20, f32 sp24, f32 sp28) {
+void create_star(f32 sp20, f32 sp24, f32 sp28) {
     struct Object *sp1C;
     sp1C = func_802F1A50(sp1C, sp20, sp24, sp28);
     sp1C->oBehParams2ndByte = 0;
@@ -137,7 +137,7 @@ void func_802F1BD4(f32 sp20, f32 sp24, f32 sp28) {
     struct Object *sp1C;
     sp1C = func_802F1A50(sp1C, sp20, sp24, sp28);
     sp1C->oBehParams2ndByte = 1;
-    sp1C->oUnk190 |= 0x400;
+    sp1C->oInteractionSubtype |= INT_SUBTYPE_NO_EXIT;
 }
 
 void bhv_hidden_red_coin_star_init(void) {

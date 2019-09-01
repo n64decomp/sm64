@@ -303,7 +303,7 @@ void ActionBowser18() // unused?
 
 void ActionBowser0() // only lasts one frame
 {
-    o->oEyesShut = 0;
+    o->oBowserEyesShut = 0;
     set_obj_animation_and_sound_state(12);
     // stop him still
     o->oAngleVelYaw = 0;
@@ -416,7 +416,7 @@ void ActionBowser12(void) {
         o->oForwardVel = -400.0f;
         o->oVelY = 100.0f;
         o->oMoveAngleYaw = o->oBowserAngleToCentre + 0x8000;
-        o->oEyesShut = 1;
+        o->oBowserEyesShut = 1;
     }
     if (o->oSubAction == 0) {
         set_obj_animation_and_sound_state(25);
@@ -438,7 +438,7 @@ void ActionBowser12(void) {
                 o->oAction = 3;
             else
                 o->oAction = 0;
-            o->oEyesShut = 0;
+            o->oBowserEyesShut = 0;
         }
     } else {
     }
@@ -788,7 +788,7 @@ void func_802B5D18(void) {
 }
 
 void func_802B5DD8(void) {
-    o->oEyesShut = 1;
+    o->oBowserEyesShut = 1;
     func_802B392C(&o->oBowserUnkF8);
     if (o->oMoveFlags & 1)
         PlaySound2(SOUND_OBJECT_BOWSERWALK);
@@ -1159,12 +1159,12 @@ void bhv_bowser_init(void) {
     else
         level = 0;
     o->oBehParams2ndByte = level;
-    o->oUnk1B2 = D_8032F690[level];
+    o->oBowserUnk1B2 = D_8032F690[level];
     o->oHealth = D_8032F694[level];
     func_802A11B4(o, 4);
     o->oAction = 5;
-    o->oUnk1AE = 0;
-    o->oEyesShut = 0;
+    o->oBowserUnk1AE = 0;
+    o->oBowserEyesShut = 0;
 }
 
 #undef BITDW
@@ -1199,23 +1199,23 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
                 if (a0->oAngleVelYaw < 0)
                     switchCase->selectedCase = 3;
             }
-            if (a0->oUnk1AE > 50)
+            if (a0->oBowserUnk1AE > 50)
                 switchCase->selectedCase = 1;
             break;
         case 1:
-            if (a0->oUnk1AE > 2)
+            if (a0->oBowserUnk1AE > 2)
                 switchCase->selectedCase = 2;
             break;
         case 2:
-            if (a0->oUnk1AE > 2)
+            if (a0->oBowserUnk1AE > 2)
                 switchCase->selectedCase = 9;
             break;
         case 9:
-            if (a0->oUnk1AE > 2)
+            if (a0->oBowserUnk1AE > 2)
                 switchCase->selectedCase = 0;
             break;
         case 5:
-            if (a0->oUnk1AE > 2) {
+            if (a0->oBowserUnk1AE > 2) {
                 switchCase->selectedCase = 6;
                 if (a0->oAngleVelYaw <= 0)
                     switchCase->selectedCase = 0;
@@ -1226,7 +1226,7 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
                 switchCase->selectedCase = 5;
             break;
         case 3:
-            if (a0->oUnk1AE > 2) {
+            if (a0->oBowserUnk1AE > 2) {
                 switchCase->selectedCase = 4;
                 if (a0->oAngleVelYaw >= 0)
                     switchCase->selectedCase = 0;
@@ -1240,11 +1240,11 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
             switchCase->selectedCase = 0;
     }
     if (switchCase->selectedCase != sp1C)
-        a0->oUnk1AE = -1;
+        a0->oBowserUnk1AE = -1;
 }
 
 /** Geo switch for controlling the state of bowser's eye direction and open/closed
- * state. Checks whether oEyesShut is TRUE and closes eyes if so and processes
+ * state. Checks whether oBowserEyesShut is TRUE and closes eyes if so and processes
  * direction otherwise.
  */
 s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
@@ -1255,7 +1255,7 @@ s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
     if (run == TRUE) {
         if (gCurGraphNodeHeldObject != NULL)
             obj = (struct Object *) gCurGraphNodeHeldObject->objNode;
-        switch (sp36 = obj->oEyesShut) {
+        switch (sp36 = obj->oBowserEyesShut) {
             case 0: // eyes open, handle eye looking direction
                 func_802B70C8(obj, switchCase);
                 break;
@@ -1263,7 +1263,7 @@ s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
                 switchCase->selectedCase = 2;
                 break;
         }
-        obj->oUnk1AE++;
+        obj->oBowserUnk1AE++;
     }
     return 0;
 }
@@ -1285,7 +1285,7 @@ Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
             sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | (0x100 | 0x400);
         sp28 = sp2C = alloc_display_list(16);
 
-        if (sp24->oUnk1B2 != 0) {
+        if (sp24->oBowserUnk1B2 != 0) {
             gSPClearGeometryMode(sp28++, G_LIGHTING);
         }
         gSPEndDisplayList(sp28);

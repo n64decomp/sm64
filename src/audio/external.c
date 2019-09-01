@@ -155,46 +155,94 @@ u8 sSoundRequestCount = 0;
 #define DYN3(cond1, val1, cond2, val2, cond3, val3, res)                                               \
     1 << (15 - cond1) | 1 << (15 - cond2) | 1 << (15 - cond3) | res, val1, val2, val3
 
-s16 sDynBbh[] = { // BBH
-    SEQ_LEVEL_SPOOKY, DYN1(MARIO_IS_IN_ROOM, BBH_OUTSIDE_ROOM, 6),
-    DYN1(MARIO_IS_IN_ROOM, BBH_NEAR_MERRY_GO_ROUND_ROOM, 6), 5
+s16 sDynBbh[] = {
+    SEQ_LEVEL_SPOOKY,
+    DYN1(MARIO_IS_IN_ROOM, BBH_OUTSIDE_ROOM, 6),
+    DYN1(MARIO_IS_IN_ROOM, BBH_NEAR_MERRY_GO_ROUND_ROOM, 6),
+    5,
 };
-s16 sDynDdd[] = { // DDD
-    SEQ_LEVEL_WATER, DYN2(MARIO_X_LT, -800, MARIO_IS_IN_AREA, AREA_DDD_WHIRLPOOL & 0xf, 0),
+s16 sDynDdd[] = {
+    SEQ_LEVEL_WATER,
+    DYN2(MARIO_X_LT, -800, MARIO_IS_IN_AREA, AREA_DDD_WHIRLPOOL & 0xf, 0),
     DYN3(MARIO_Y_GE, -2000, MARIO_X_LT, 470, MARIO_IS_IN_AREA, AREA_DDD_WHIRLPOOL & 0xf, 0),
-    DYN2(MARIO_Y_GE, 100, MARIO_IS_IN_AREA, AREA_DDD_SUB & 0xf, 2), 1
+    DYN2(MARIO_Y_GE, 100, MARIO_IS_IN_AREA, AREA_DDD_SUB & 0xf, 2),
+    1,
 };
 s16 sDynJrb[] = {
-    // JRB
     SEQ_LEVEL_WATER,
     DYN2(MARIO_Y_GE, 945, MARIO_X_LT, -5260, 0),
     DYN1(MARIO_IS_IN_AREA, AREA_JRB_SHIP & 0xf, 0),
     DYN1(MARIO_Y_GE, 1000, 0),
     DYN2(MARIO_Y_GE, -3100, MARIO_Z_LT, -900, 2),
     1,
-    5 // bogus entry, ignored
+    5, // bogus entry, ignored (was JRB originally intended to have spooky music?)
 };
-s16 sDynWdw[] = { // WDW
-    SEQ_LEVEL_UNDERGROUND, DYN2(MARIO_Y_LT, -670, MARIO_IS_IN_AREA, AREA_WDW_MAIN & 0xf, 4),
-    DYN1(MARIO_IS_IN_AREA, AREA_WDW_TOWN & 0xf, 4), 3
+s16 sDynWdw[] = {
+    SEQ_LEVEL_UNDERGROUND,
+    DYN2(MARIO_Y_LT, -670, MARIO_IS_IN_AREA, AREA_WDW_MAIN & 0xf, 4),
+    DYN1(MARIO_IS_IN_AREA, AREA_WDW_TOWN & 0xf, 4),
+    3,
 };
-s16 sDynHmc[] = { // HMC
-    SEQ_LEVEL_UNDERGROUND, DYN2(MARIO_X_GE, 0, MARIO_Y_LT, -203, 4),
-    DYN2(MARIO_X_LT, 0, MARIO_Y_LT, -2400, 4), 3
+s16 sDynHmc[] = {
+    SEQ_LEVEL_UNDERGROUND,
+    DYN2(MARIO_X_GE, 0, MARIO_Y_LT, -203, 4),
+    DYN2(MARIO_X_LT, 0, MARIO_Y_LT, -2400, 4),
+    3,
 };
-s16 sDynUnk38[] = { // LEVEL_UNKNOWN_38
-    SEQ_LEVEL_UNDERGROUND, DYN1(MARIO_IS_IN_AREA, 1, 3), DYN1(MARIO_IS_IN_AREA, 2, 4),
-    DYN1(MARIO_IS_IN_AREA, 3, 7), 0
+s16 sDynUnk38[] = {
+    SEQ_LEVEL_UNDERGROUND,
+    DYN1(MARIO_IS_IN_AREA, 1, 3),
+    DYN1(MARIO_IS_IN_AREA, 2, 4),
+    DYN1(MARIO_IS_IN_AREA, 3, 7),
+    0,
 };
-s16 D_80331EA8[] = { 0, 0 };
+s16 sDynNone[] = { SEQ_SOUND_PLAYER, 0 };
 
 u8 sCurrentMusicDynamic = 0xff;
 u8 sBackgroundMusicForDynamics = SEQUENCE_NONE;
 
-#define _ D_80331EA8
-s16 *sLevelDynamics[] = { _, _, _, _, sDynBbh, _, _, sDynHmc, _, _, _,       sDynWdw, sDynJrb,
-                          _, _, _, _, _,       _, _, _,       _, _, sDynDdd, _,       _,
-                          _, _, _, _, _,       _, _, _,       _, _, _,       _,       sDynUnk38 };
+#define _ sDynNone
+s16 *sLevelDynamics[] = {
+    _,         // LEVEL_NONE
+    _,         // LEVEL_UNKNOWN_1
+    _,         // LEVEL_UNKNOWN_2
+    _,         // LEVEL_UNKNOWN_3
+    sDynBbh,   // LEVEL_BBH
+    _,         // LEVEL_CCM
+    _,         // LEVEL_CASTLE
+    sDynHmc,   // LEVEL_HMC
+    _,         // LEVEL_SSL
+    _,         // LEVEL_BOB
+    _,         // LEVEL_SL
+    sDynWdw,   // LEVEL_WDW
+    sDynJrb,   // LEVEL_JRB
+    _,         // LEVEL_THI
+    _,         // LEVEL_TTC
+    _,         // LEVEL_RR
+    _,         // LEVEL_CASTLE_GROUNDS
+    _,         // LEVEL_BITDW
+    _,         // LEVEL_VCUTM
+    _,         // LEVEL_BITFS
+    _,         // LEVEL_SA
+    _,         // LEVEL_BITS
+    _,         // LEVEL_LLL
+    sDynDdd,   // LEVEL_DDD
+    _,         // LEVEL_WF
+    _,         // LEVEL_ENDING
+    _,         // LEVEL_CASTLE_COURTYARD
+    _,         // LEVEL_PSS
+    _,         // LEVEL_COTMC
+    _,         // LEVEL_TOTWC
+    _,         // LEVEL_BOWSER_1
+    _,         // LEVEL_WMOTR
+    _,         // LEVEL_UNKNOWN_32
+    _,         // LEVEL_BOWSER_2
+    _,         // LEVEL_BOWSER_3
+    _,         // LEVEL_UNKNOWN_35
+    _,         // LEVEL_TTM
+    _,         // LEVEL_UNKNOWN_37
+    sDynUnk38, // LEVEL_UNKNOWN_38
+};
 STATIC_ASSERT(ARRAY_COUNT(sLevelDynamics) == LEVEL_COUNT, "change this array if you are adding levels");
 #undef _
 
@@ -210,10 +258,14 @@ struct MusicDynamic {
 }; // size = 0xC
 
 struct MusicDynamic sMusicDynamics[8] = {
-    { 0x0000, 0, 127, 100, 0x0e43, 0, 0, 100 }, { 0x0003, 0, 127, 100, 0x0e40, 0, 0, 100 },
-    { 0x0e43, 0, 127, 200, 0x0000, 0, 0, 200 }, { 0x02ff, 0, 127, 100, 0x0100, 0, 0, 100 },
-    { 0x03f7, 0, 127, 100, 0x0008, 0, 0, 100 }, { 0x0070, 0, 127, 10, 0x0000, 0, 0, 100 },
-    { 0x0000, 0, 127, 100, 0x0070, 0, 0, 10 },  { 0xffff, 0, 127, 100, 0x0000, 0, 0, 100 }
+    { 0x0000, 0, 127, 100, 0x0e43, 0, 0, 100 }, // SEQ_LEVEL_WATER
+    { 0x0003, 0, 127, 100, 0x0e40, 0, 0, 100 }, // SEQ_LEVEL_WATER
+    { 0x0e43, 0, 127, 200, 0x0000, 0, 0, 200 }, // SEQ_LEVEL_WATER
+    { 0x02ff, 0, 127, 100, 0x0100, 0, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
+    { 0x03f7, 0, 127, 100, 0x0008, 0, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
+    { 0x0070, 0, 127, 10, 0x0000, 0, 0, 100 },  // SEQ_LEVEL_SPOOKY
+    { 0x0000, 0, 127, 100, 0x0070, 0, 0, 10 },  // SEQ_LEVEL_SPOOKY
+    { 0xffff, 0, 127, 100, 0x0000, 0, 0, 100 }, // any (unused)
 };
 
 u8 gAreaEchoLevel[][3] = {
@@ -313,7 +365,8 @@ STATIC_ASSERT(ARRAY_COUNT(D_80332028) == LEVEL_COUNT, "change this array if you 
 
 #define AUDIO_MAX_DISTANCE US_FLOAT(22000.0)
 
-u8 sBackgroundMusicDefaultVolume[35] = {
+// Default volume for background music sequences (playing on player 0).
+u8 sBackgroundMusicDefaultVolume[] = {
     127, // SEQ_SOUND_PLAYER
     80,  // SEQ_EVENT_CUTSCENE_COLLECT_STAR
     80,  // SEQ_MENU_TITLE_SCREEN
@@ -348,8 +401,11 @@ u8 sBackgroundMusicDefaultVolume[35] = {
     80,  // SEQ_EVENT_CUTSCENE_VICTORY
     70,  // SEQ_EVENT_CUTSCENE_ENDING
     65,  // SEQ_MENU_FILE_SELECT
-    0    // SEQ_EVENT_CUTSCENE_LAKITU
+    0,   // SEQ_EVENT_CUTSCENE_LAKITU (not in JP)
 };
+
+STATIC_ASSERT(ARRAY_COUNT(sBackgroundMusicDefaultVolume) == SEQ_COUNT,
+              "change this array if you are adding sequences");
 
 u8 gPlayer0CurSeqId = SEQUENCE_NONE;
 u8 sMusicDynamicDelay = 0;
@@ -357,14 +413,18 @@ u8 D_803320A4[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // pointers 
 u8 D_803320B0[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // pointers to head of list
 u8 D_803320BC[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 u8 D_803320C8[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // sizes of D_80360C38
+
+// Banks 2 and 7 both grew from 0x30 sounds to 0x40 in size in US.
 #ifdef VERSION_JP
-#define NUM_DIFF 0x30
+#define BANK27_SIZE 0x30
 #else
-#define NUM_DIFF 0x40
+#define BANK27_SIZE 0x40
 #endif
-u8 sNumSoundsPerBank[SOUND_BANK_COUNT] = { 0x70, 0x30, NUM_DIFF, 0x80, 0x20,
-                                           0x80, 0x20, NUM_DIFF, 0x80, 0x80 };
-#undef NUM_DIFF
+u8 sNumSoundsPerBank[SOUND_BANK_COUNT] = {
+    0x70, 0x30, BANK27_SIZE, 0x80, 0x20, 0x80, 0x20, BANK27_SIZE, 0x80, 0x80,
+};
+#undef BANK27_SIZE
+
 f32 gDefaultSoundArgs[3] = { 0.0f, 0.0f, 0.0f };
 f32 gUnusedSoundArgs[3] = { 1.0f, 1.0f, 1.0f };
 u8 gSoundBankDisabled[16] = { 0 };
@@ -387,8 +447,8 @@ struct Sound sSoundRequests[0x100];
 struct ChannelVolumeScaleFade D_80360928[SEQUENCE_PLAYERS][CHANNELS_MAX];
 u8 D_80360C28[SOUND_BANK_COUNT];
 u8 D_80360C38[SOUND_BANK_COUNT][1];
-struct SoundCharacteristics gSoundBanks[SOUND_BANK_COUNT]
-                                       [40]; // list item memory for D_803320A4 and D_803320B0
+// list item memory for D_803320A4 and D_803320B0
+struct SoundCharacteristics gSoundBanks[SOUND_BANK_COUNT][40];
 u8 D_80363808[SOUND_BANK_COUNT];
 u8 D_80363812;
 static u8 sCapVolumeTo40;
@@ -916,12 +976,14 @@ static f32 get_sound_pan(f32 x, f32 z) {
     f32 pan;
 
     absX = (x < 0 ? -x : x);
-    if (absX > AUDIO_MAX_DISTANCE)
+    if (absX > AUDIO_MAX_DISTANCE) {
         absX = AUDIO_MAX_DISTANCE;
+    }
 
     absZ = (z < 0 ? -z : z);
-    if (absZ > AUDIO_MAX_DISTANCE)
+    if (absZ > AUDIO_MAX_DISTANCE) {
         absZ = AUDIO_MAX_DISTANCE;
+    }
 
     // There are 4 panning equations (12-hr clock used for angles)
     // 1. (0,0) fully-centered pan
@@ -1024,8 +1086,9 @@ static u8 get_sound_reverb(UNUSED u8 bankIndex, UNUSED u8 item, u8 channelIndex)
 #endif
         level = (gCurrLevelNum > LEVEL_MAX ? LEVEL_MAX : gCurrLevelNum);
         area = gCurrAreaIndex - 1;
-        if (area > 2)
+        if (area > 2) {
             area = 2;
+        }
 #ifndef VERSION_JP
     }
 #endif
@@ -1774,8 +1837,9 @@ void play_music(u8 player, u16 seqArgs, s16 fadeTimer) {
     }
 
     // Abort if the queue is already full.
-    if (sBackgroundMusicQueueSize == MAX_BG_MUSIC_QUEUE_SIZE)
+    if (sBackgroundMusicQueueSize == MAX_BG_MUSIC_QUEUE_SIZE) {
         return;
+    }
 
     // If already in the queue, abort, after first restarting the sequence if
     // it is first, and handling disabled music somehow.
@@ -1822,8 +1886,9 @@ void stop_background_music(u16 seqId) {
     u8 foundIndex;
     u8 i;
 
-    if (sBackgroundMusicQueueSize == 0)
+    if (sBackgroundMusicQueueSize == 0) {
         return;
+    }
 
     // If sequence is not found, remove an empty queue item (the next empty
     // queue slot).

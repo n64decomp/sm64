@@ -82,7 +82,7 @@ void bhv_manta_ray_loop(void) {
             func_802F5FD8();
             if (o->oUnk1AC_S32 == 5) {
                 func_802A3004();
-                CreateStar(-3180.0f, -3600.0f, 120.0f);
+                create_star(-3180.0f, -3600.0f, 120.0f);
                 o->oAction = 1;
             }
             break;

@@ -28,13 +28,17 @@ void exec_anim_sound_state(struct SoundState *soundStates) {
 
             // in the sound state information, -1 (0xFF) is for empty
             // animFrame entries. These checks skips them.
-            if ((animFrame = soundStates[stateIdx].animFrame1) >= 0)
-                if (obj_check_anim_frame(animFrame))
+            if ((animFrame = soundStates[stateIdx].animFrame1) >= 0) {
+                if (obj_check_anim_frame(animFrame)) {
                     PlaySound2(soundStates[stateIdx].soundMagic);
+                }
+            }
 
-            if ((animFrame = soundStates[stateIdx].animFrame2) >= 0)
-                if (obj_check_anim_frame(animFrame))
+            if ((animFrame = soundStates[stateIdx].animFrame2) >= 0) {
+                if (obj_check_anim_frame(animFrame)) {
                     PlaySound2(soundStates[stateIdx].soundMagic);
+                }
+            }
         } break;
     }
 }
@@ -55,14 +59,16 @@ void create_sound_spawner(s32 soundMagic) {
  * seperate left/right leg functions that went unused.
  */
 void PlaySound(s32 soundMagic) {
-    if (gCurrentObject->header.gfx.node.flags & 0x0001)
+    if (gCurrentObject->header.gfx.node.flags & 0x0001) {
         play_sound(soundMagic, gCurrentObject->header.gfx.cameraToObject);
+    }
 }
 
 // duplicate function, but its the used one
 void PlaySound2(s32 soundMagic) {
-    if (gCurrentObject->header.gfx.node.flags & 0x0001)
+    if (gCurrentObject->header.gfx.node.flags & 0x0001) {
         play_sound(soundMagic, gCurrentObject->header.gfx.cameraToObject);
+    }
 }
 
 /*
@@ -80,12 +86,13 @@ int calc_dist_to_volume_range_1(f32 distance) // range from 60-124
 {
     s32 volume;
 
-    if (distance < 500.0f)
+    if (distance < 500.0f) {
         volume = 127;
-    else if (1500.0f < distance)
+    } else if (1500.0f < distance) {
         volume = 0;
-    else
+    } else {
         volume = (((distance - 500.0f) / 1000.0f) * 64.0f) + 60.0f;
+    }
 
     return volume;
 }
@@ -94,12 +101,13 @@ int calc_dist_to_volume_range_2(f32 distance) // range from 79.2-143.2
 {
     s32 volume;
 
-    if (distance < 1300.0f)
+    if (distance < 1300.0f) {
         volume = 127;
-    else if (2300.0f < distance)
+    } else if (2300.0f < distance) {
         volume = 0;
-    else
+    } else {
         volume = (((distance - 1000.0f) / 1000.0f) * 64.0f) + 60.0f;
+    }
 
     return volume;
 }

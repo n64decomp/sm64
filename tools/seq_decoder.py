@@ -280,9 +280,9 @@ if sys.argv[1] == "--emit-asm-macros":
 
 filename = sys.argv[1]
 try:
-    parts = filename.split('/seq_')
-    lang = parts[0][-2:]
-    seq_num = int(parts[1].split('.')[0], 16)
+    lang = filename.split('/')[-2]
+    assert lang in ['us', 'jp', 'eu']
+    seq_num = int(filename.split('/')[-1].split('_')[0], 16)
 except Exception:
     lang = ''
     seq_num = -1

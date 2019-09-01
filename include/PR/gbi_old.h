@@ -1,6 +1,8 @@
 #ifndef _ULTRA64_GBI_H_
 #define _ULTRA64_GBI_H_
 
+#include <PR/ultratypes.h>
+
 /* Types */
 
 /* Vertex (set up for use with colors) */

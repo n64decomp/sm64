@@ -110,8 +110,9 @@ int run_press_start_demo_timer(s32 timer) {
                 // the first sequence.
                 // FIXME: Why the fuck doesn't this match?
                 // if((++gDemoInputListID) == gDemo.animDmaTable[0].unk0)
-                if ((++gDemoInputListID) == gDemo.animDmaTable->unk0)
+                if ((++gDemoInputListID) == gDemo.animDmaTable->unk0) {
                     gDemoInputListID = 0;
+                }
 
                 gCurrDemoInput = ((struct DemoInput *) gDemo.targetAnim)
                                  + 1; // add 1 (+4) to the pointer to skip the demoID.
@@ -120,8 +121,9 @@ int run_press_start_demo_timer(s32 timer) {
                 gCurrSaveFileNum = 1;
                 gCurrActNum = 1;
             }
-        } else // activity was detected, so reset the demo countdown.
+        } else { // activity was detected, so reset the demo countdown.
             gDemoCountdown = 0;
+        }
     }
     return timer;
 }
@@ -135,29 +137,38 @@ s16 level_select_input_loop(void) {
     s32 stageChanged = FALSE;
 
     // perform the ID updates per each button press.
-    if (gPlayer1Controller->buttonPressed & A_BUTTON)
+    if (gPlayer1Controller->buttonPressed & A_BUTTON) {
         ++gCurrLevelNum, stageChanged = TRUE;
-    if (gPlayer1Controller->buttonPressed & B_BUTTON)
+    }
+    if (gPlayer1Controller->buttonPressed & B_BUTTON) {
         --gCurrLevelNum, stageChanged = TRUE;
-    if (gPlayer1Controller->buttonPressed & U_JPAD)
+    }
+    if (gPlayer1Controller->buttonPressed & U_JPAD) {
         --gCurrLevelNum, stageChanged = TRUE;
-    if (gPlayer1Controller->buttonPressed & D_JPAD)
+    }
+    if (gPlayer1Controller->buttonPressed & D_JPAD) {
         ++gCurrLevelNum, stageChanged = TRUE;
-    if (gPlayer1Controller->buttonPressed & L_JPAD)
+    }
+    if (gPlayer1Controller->buttonPressed & L_JPAD) {
         gCurrLevelNum -= 10, stageChanged = TRUE;
-    if (gPlayer1Controller->buttonPressed & R_JPAD)
+    }
+    if (gPlayer1Controller->buttonPressed & R_JPAD) {
         gCurrLevelNum += 10, stageChanged = TRUE;
+    }
 
     // if the stage was changed, play the sound for changing a stage.
-    if (stageChanged)
+    if (stageChanged) {
         play_sound(SOUND_GENERAL_EXITPAINTING4, gDefaultSoundArgs);
+    }
 
     // TODO: enum counts for the stage lists
-    if (gCurrLevelNum > LEVEL_MAX)
+    if (gCurrLevelNum > LEVEL_MAX) {
         gCurrLevelNum = LEVEL_MIN; // exceeded max. set to min.
+    }
 
-    if (gCurrLevelNum < LEVEL_MIN)
+    if (gCurrLevelNum < LEVEL_MIN) {
         gCurrLevelNum = LEVEL_MAX; // exceeded min. set to max.
+    }
 
     gCurrSaveFileNum = 4; // file 4 is used for level select tests
     gCurrActNum = 6;

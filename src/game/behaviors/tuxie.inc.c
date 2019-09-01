@@ -70,26 +70,27 @@ void ActionTuxiesMother1(void) {
                         o->oSubAction = 1;
                     else
                         o->oSubAction = 2;
-                    o->prevObj->oUnk190 |= 0x40;
+                    o->prevObj->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
                 }
             } else
                 set_obj_animation_and_sound_state(0);
             break;
         case 1:
             if (o->prevObj->oHeldState == HELD_FREE) {
-                ((s32 *) o->prevObj)[o->oUnk190 + 34] &= ~0x40; // FIXME: find something more normal?
+                ((s32 *) o->prevObj)[o->oInteractionSubtype + 34] &=
+                    ~INT_SUBTYPE_DROP_IMMEDIATELY; // FIXME: find something more normal?
                 set_object_behavior(o->prevObj, bhvUnused20E0);
 #ifndef VERSION_JP
                 obj_spawn_star_at_y_offset(3167.0f, -4300.0f, 5108.0f, 200.0f);
 #else
-                CreateStar(3500.0f, -4300.0f, 4650.0f);
+                create_star(3500.0f, -4300.0f, 4650.0f);
 #endif
                 o->oAction = 2;
             }
             break;
         case 2:
             if (o->prevObj->oHeldState == HELD_FREE) {
-                ((s32 *) o->prevObj)[o->oUnk190 + 34] &= ~0x40;
+                ((s32 *) o->prevObj)[o->oInteractionSubtype + 34] &= ~INT_SUBTYPE_DROP_IMMEDIATELY;
                 set_object_behavior(o->prevObj, bhvPenguinBaby);
                 o->oAction = 2;
             }

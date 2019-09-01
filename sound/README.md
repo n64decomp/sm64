@@ -29,7 +29,7 @@ which is similar to MIDI, but Turing complete. An .m64 file has a sequence
 script that can spawn channels, which have channel scripts that can spawn
 layers, which have layer scripts that can play notes. Each note is performed
 using an instrument from a sound bank. A sequence file can use multiple banks;
-`bank_sets.s` describes the mapping from sequences to sound banks. Channels
+`sequences.json` describes the mapping from sequences to sound banks. Channels
 can switch between banks using a command. However, in practice most sequences
 limit themselves to a single sound bank. The main exception is sequence 0,
 which is responsible for sound effects.

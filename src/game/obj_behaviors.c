@@ -68,8 +68,9 @@ struct Struct802E2F58 *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 a
         sp2c = (struct Object *) gCurGraphNodeObject;
         sp28 = arg1;
         sp24 = arg1;
-        if (gCurGraphNodeHeldObject != NULL)
+        if (gCurGraphNodeHeldObject != NULL) {
             sp2c = (struct Object *) gCurGraphNodeHeldObject->objNode;
+        }
 
         sp34 = (struct Struct802E2F58 *) alloc_display_list(0x18);
         sp30 = (Gfx *) sp34;
@@ -85,8 +86,9 @@ struct Struct802E2F58 *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 a
 }
 
 f32 absf_2(f32 f) {
-    if (f < 0)
+    if (f < 0) {
         f *= -1.0f;
+    }
     return f;
 }
 
@@ -183,13 +185,16 @@ void ObjOrientGraph(struct Object *obj, f32 normalX, f32 normalY, f32 normalZ) {
 
     f32(*throwMatrix)[4][4]; // TODO: use Mtx type
 
-    if (D_80331500 == 0)
+    if (D_80331500 == 0) {
         return;
-    if ((obj->header.gfx.node.flags & 0x4) != 0)
+    }
+    if ((obj->header.gfx.node.flags & 0x4) != 0) {
         return; // bit 2
+    }
     throwMatrix = (f32(*)[4][4]) alloc_display_list(0x40);
-    if (throwMatrix == NULL)
+    if (throwMatrix == NULL) {
         return;
+    }
 
     sp2c[0] = obj->oPosX;
     sp2c[1] = obj->oPosY + obj->oGraphYOffset;
@@ -206,10 +211,11 @@ void ObjOrientGraph(struct Object *obj, f32 normalX, f32 normalY, f32 normalZ) {
 // sp4 = floor_nY
 
 void CalcObjFriction(f32 *objFriction, f32 floor_nY) {
-    if (floor_nY < 0.2 && o->oFriction < 0.9999)
+    if (floor_nY < 0.2 && o->oFriction < 0.9999) {
         *objFriction = 0;
-    else
+    } else {
         *objFriction = o->oFriction;
+    }
 }
 
 // sp28 = objFloor
@@ -227,18 +233,21 @@ void CalcNewObjVelAndPosY(struct Surface *objFloor, f32 objFloorY, f32 objVelX, 
     f32 objFriction;
 
     o->oVelY -= o->oGravity;
-    if (o->oVelY > 75.0)
+    if (o->oVelY > 75.0) {
         o->oVelY = 75.0;
-    if (o->oVelY < -75.0)
+    }
+    if (o->oVelY < -75.0) {
         o->oVelY = -75.0;
+    }
 
     o->oPosY += o->oVelY;
     if (o->oPosY < objFloorY) {
         o->oPosY = objFloorY;
-        if (o->oVelY < -17.5)
+        if (o->oVelY < -17.5) {
             o->oVelY = -(o->oVelY / 2.0f);
-        else
+        } else {
             o->oVelY = 0;
+        }
     }
 
     //! potential TRUNC crash
@@ -246,18 +255,20 @@ void CalcNewObjVelAndPosY(struct Surface *objFloor, f32 objFloorY, f32 objVelX, 
         ObjOrientGraph(o, floor_nX, floor_nY, floor_nZ);
         objVelX += floor_nX * (floor_nX * floor_nX + floor_nZ * floor_nZ)
                    / (floor_nX * floor_nX + floor_nY * floor_nY + floor_nZ * floor_nZ) * o->oGravity
-                   * 2.0f;
+                   * 2;
         objVelZ += floor_nZ * (floor_nX * floor_nX + floor_nZ * floor_nZ)
                    / (floor_nX * floor_nX + floor_nY * floor_nY + floor_nZ * floor_nZ) * o->oGravity
-                   * 2.0f;
-
-        if (objVelX < 0.000001 && objVelX > -0.000001)
+                   * 2;
+        if (objVelX < 0.000001 && objVelX > -0.000001) {
             objVelX = 0;
-        if (objVelZ < 0.000001 && objVelZ > -0.000001)
+        }
+        if (objVelZ < 0.000001 && objVelZ > -0.000001) {
             objVelZ = 0;
+        }
 
-        if (objVelX != 0 || objVelZ != 0)
+        if (objVelX != 0 || objVelZ != 0) {
             o->oMoveAngleYaw = atan2s(objVelZ, objVelX);
+        }
 
         CalcObjFriction(&objFriction, floor_nY);
         o->oForwardVel = sqrtf(objVelX * objVelX + objVelZ * objVelZ) * objFriction;
@@ -282,43 +293,49 @@ void CalcNewObjVelAndPosYUnderwater(struct Surface *objFloor, f32 floorY, f32 ob
 
     f32 netYAccel = (1.0f - o->oBuoyancy) * (-1.0f * o->oGravity);
     o->oVelY -= netYAccel;
-    if (o->oVelY > 75.0)
+    if (o->oVelY > 75.0) {
         o->oVelY = 75.0;
-    if (o->oVelY < -75.0)
+    }
+    if (o->oVelY < -75.0) {
         o->oVelY = -75.0;
+    }
 
     o->oPosY += o->oVelY;
     if (o->oPosY < floorY) {
         o->oPosY = floorY;
-        if (o->oVelY < -17.5)
-            o->oVelY = -(o->oVelY / 2.0f);
-        else
+        if (o->oVelY < -17.5) {
+            o->oVelY = -(o->oVelY / 2);
+        } else {
             o->oVelY = 0;
+        }
     }
 
-    if (o->oForwardVel > 12.5 && (waterY + 30.0f) > o->oPosY && waterY - 30.0f < o->oPosY)
+    if (o->oForwardVel > 12.5 && (waterY + 30.0f) > o->oPosY && waterY - 30.0f < o->oPosY) {
         o->oVelY = -o->oVelY;
+    }
 
     if ((s32) o->oPosY >= (s32) floorY && (s32) o->oPosY < (s32) floorY + 37) {
         ObjOrientGraph(o, floor_nX, floor_nY, floor_nZ);
         objVelX += floor_nX * (floor_nX * floor_nX + floor_nZ * floor_nZ)
-                   / (floor_nX * floor_nX + floor_nY * floor_nY + floor_nZ * floor_nZ) * netYAccel
-                   * 2.0f;
+                   / (floor_nX * floor_nX + floor_nY * floor_nY + floor_nZ * floor_nZ) * netYAccel * 2;
         objVelZ += floor_nZ * (floor_nX * floor_nX + floor_nZ * floor_nZ)
-                   / (floor_nX * floor_nX + floor_nY * floor_nY + floor_nZ * floor_nZ) * netYAccel
-                   * 2.0f;
+                   / (floor_nX * floor_nX + floor_nY * floor_nY + floor_nZ * floor_nZ) * netYAccel * 2;
     }
 
-    if (objVelX < 0.000001 && objVelX > -0.000001)
+    if (objVelX < 0.000001 && objVelX > -0.000001) {
         objVelX = 0;
-    if (objVelZ < 0.000001 && objVelZ > -0.000001)
+    }
+    if (objVelZ < 0.000001 && objVelZ > -0.000001) {
         objVelZ = 0;
+    }
 
-    if (o->oVelY < 0.000001 && o->oVelY > -0.000001)
+    if (o->oVelY < 0.000001 && o->oVelY > -0.000001) {
         o->oVelY = 0;
+    }
 
-    if (objVelX != 0 || objVelZ != 0)
+    if (objVelX != 0 || objVelZ != 0) {
         o->oMoveAngleYaw = atan2s(objVelZ, objVelX);
+    }
     o->oForwardVel = sqrtf(objVelX * objVelX + objVelZ * objVelZ) * 0.8;
     o->oVelY *= 0.8;
 }
@@ -342,12 +359,13 @@ void ObjSplash(s32 waterY, s32 objY) {
     u32 globalTimer = gGlobalTimer;
     if ((f32)(waterY + 30) > o->oPosY && o->oPosY > (f32)(waterY - 30)) {
         spawn_object(o, MODEL_WATER_WAVES_SURF, bhvObjectWaterWave);
-        if (o->oVelY < -20.0f)
+        if (o->oVelY < -20.0f) {
             PlaySound2(SOUND_OBJECT_DIVINGINTOWATER);
+        }
     }
-
-    if ((objY + 50) < waterY && (globalTimer & 0x1F) == 0)
+    if ((objY + 50) < waterY && (globalTimer & 0x1F) == 0) {
         spawn_object(o, MODEL_WHITE_PARTICLE_SMALL, bhvObjectBubble); /* 0x1F is bits 4-0 */
+    }
 }
 
 // sp3c = objX
@@ -359,7 +377,7 @@ void ObjSplash(s32 waterY, s32 objY) {
 // sp2c = waterY
 // sp22 = collisionFlags
 
-s16 ObjectStep(void) {
+s32 ObjectStep(void) {
     f32 objX = o->oPosX;
     f32 objY = o->oPosY;
     f32 objZ = o->oPosZ;
@@ -369,37 +387,42 @@ s16 ObjectStep(void) {
     f32 objVelZ = o->oForwardVel * coss(o->oMoveAngleYaw);
     s16 collisionFlags = 0;
 
-    if (ObjFindWall(objX + objVelX, objY, objZ + objVelZ, objVelX, objVelZ) == 0)
+    if (ObjFindWall(objX + objVelX, objY, objZ + objVelZ, objVelX, objVelZ) == 0) {
         collisionFlags += OBJ_COL_FLAG_HIT_WALL;
-
+    }
     floorY = find_floor(objX + objVelX, objY, objZ + objVelZ, &D_803600E0);
-
     if (TurnObjAwayFromAwkwardFloor(D_803600E0, floorY, objVelX, objVelZ) == 1) {
         waterY = find_water_level(objX + objVelX, objZ + objVelZ);
         if (waterY > objY) {
             CalcNewObjVelAndPosYUnderwater(D_803600E0, floorY, objVelX, objVelZ, waterY);
             collisionFlags += OBJ_COL_FLAG_UNDERWATER;
-        } else
+        } else {
             CalcNewObjVelAndPosY(D_803600E0, floorY, objVelX, objVelZ);
-    } else
+        }
+    } else {
         collisionFlags +=
             ((collisionFlags & OBJ_COL_FLAG_HIT_WALL) ^ OBJ_COL_FLAG_HIT_WALL); /* bit 1 = 1 */
-
+    }
     ObjUpdatePosVelXZ();
-    if ((s32) o->oPosY == (s32) floorY)
+    if ((s32) o->oPosY == (s32) floorY) {
         collisionFlags += OBJ_COL_FLAG_GROUNDED;
-    if ((s32) o->oVelY == 0)
+    }
+    if ((s32) o->oVelY == 0) {
         collisionFlags += OBJ_COL_FLAG_NO_Y_VEL;
+    }
 
     ObjSplash((s32) waterY, (s32) o->oPosY);
-
     return collisionFlags;
 }
 
 // sp1e = collisionFlags
 
-s16 func_802E4204(void) {
+s32 func_802E4204(void) {
+#ifdef VERSION_EU
+    s32 collisionFlags = 0;
+#else
     s16 collisionFlags = 0;
+#endif
     D_80331500 = 0;
     collisionFlags = ObjectStep();
     D_80331500 = 1;
@@ -431,8 +454,9 @@ s32 is_point_within_radius_of_mario(f32 x, f32 y, f32 z, s32 dist) {
     f32 mGfxZ = gMarioObject->header.gfx.pos[2];
 
     if ((x - mGfxX) * (x - mGfxX) + (y - mGfxY) * (y - mGfxY) + (z - mGfxZ) * (z - mGfxZ)
-        < (f32)(dist * dist))
+        < (f32)(dist * dist)) {
         return 1;
+    }
 
     return 0;
 }
@@ -450,8 +474,9 @@ s32 IsPointCloseToObject(struct Object *obj, f32 x, f32 y, f32 z, s32 dist) {
     f32 objZ = obj->oPosZ;
 
     if ((x - objX) * (x - objX) + (y - objY) * (y - objY) + (z - objZ) * (z - objZ)
-        < (f32)(dist * dist))
+        < (f32)(dist * dist)) {
         return 1;
+    }
 
     return 0;
 }
@@ -467,10 +492,11 @@ void SetObjectVisibility(struct Object *obj, s32 arg1) {
     f32 objY = obj->oPosY;
     f32 objZ = obj->oPosZ;
 
-    if (is_point_within_radius_of_mario(objX, objY, objZ, arg1) == 1)
+    if (is_point_within_radius_of_mario(objX, objY, objZ, arg1) == 1) {
         obj->header.gfx.node.flags &= ~0x10; /* bit 4 = 0 */
-    else
+    } else {
         obj->header.gfx.node.flags |= 0x10; /* bit 4 = 1 */
+    }
 }
 
 // sp28 = obj
@@ -483,9 +509,9 @@ s32 ObjLeaveIfMarioIsNearHome(struct Object *obj, f32 homeX, f32 y, f32 homeZ, s
     f32 homeDistZ = homeZ - obj->oPosZ;
     s16 angleAwayFromHome = atan2s(homeDistZ, homeDistX);
 
-    if (is_point_within_radius_of_mario(homeX, y, homeZ, dist) == 1)
+    if (is_point_within_radius_of_mario(homeX, y, homeZ, dist) == 1) {
         return 1;
-    else {
+    } else {
         obj->oMoveAngleYaw = approach_s16_symmetric(obj->oMoveAngleYaw, angleAwayFromHome, 320);
     }
 
@@ -516,8 +542,9 @@ s32 func_802E46C0(u32 arg0, u32 arg1, s16 arg2) {
     s16 sp6 = (u16) arg1 - (u16) arg0;
 
     if (((f32) sins(-arg2) < (f32) sins(sp6)) && ((f32) sins(sp6) < (f32) sins(arg2))
-        && (coss(sp6) > 0))
+        && (coss(sp6) > 0)) {
         return 1;
+    }
 
     return 0;
 }
@@ -542,33 +569,36 @@ s32 func_802E478C(Vec3f dist, f32 x, f32 y, f32 z, f32 arg4) {
         dist[1] = hitbox.y - y;
         dist[2] = hitbox.z - z;
         return 1;
-    } else
+    } else {
         return 0;
+    }
 }
 
 // sp20 = obj
 // sp24 = nCoins
 
-void ObjSpawnYellowCoins(struct Object *obj, s32 nCoins) {
+void ObjSpawnYellowCoins(struct Object *obj, s8 nCoins) {
     struct Object *coin;
     s8 count;
 
-    for (count = 0; count < (s8) nCoins; count++) {
+    for (count = 0; count < nCoins; count++) {
         coin = spawn_object(obj, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
-        coin->oForwardVel = RandomFloat() * 20.0f;
-        coin->oVelY = RandomFloat() * 40.0f + 20.0f;
+        coin->oForwardVel = RandomFloat() * 20;
+        coin->oVelY = RandomFloat() * 40 + 20;
         coin->oMoveAngleYaw = RandomU16();
     }
 }
 
 s32 ObjFlickerAndDisappear(struct Object *obj, s16 arg1) {
-    if (obj->oTimer < arg1)
+    if (obj->oTimer < arg1) {
         return 0;
+    }
     if (obj->oTimer < arg1 + 40) {
-        if (obj->oTimer % 2 != 0)
+        if (obj->oTimer % 2 != 0) {
             obj->header.gfx.node.flags |= 0x10; /* bit 4 = 1 */
-        else
+        } else {
             obj->header.gfx.node.flags &= ~0x10; /* bit 4 = 0 */
+        }
     } else {
         obj->activeFlags = 0;
         return 1;
@@ -581,15 +611,17 @@ s8 func_802E49A4(s16 arg0) {
     s16 sp6;
 
     if (gMarioCurrentRoom == 0) {
-        if (arg0 == D_80331504)
+        if (arg0 == D_80331504) {
             return 1;
-        else
+        } else {
             return 0;
+        }
     } else {
-        if (arg0 == gMarioCurrentRoom)
+        if (arg0 == gMarioCurrentRoom) {
             sp6 = 1;
-        else
+        } else {
             sp6 = 0;
+        }
 
         D_80331504 = gMarioCurrentRoom;
     }
@@ -625,8 +657,9 @@ s16 func_802E4A38(s32 *arg0, s16 arg1, f32 arg2, s32 arg3) {
 }
 
 void ObjCheckFloorDeath(s16 collisionFlags, struct Surface *floor) {
-    if (floor == NULL)
+    if (floor == NULL) {
         return;
+    }
 
     if ((collisionFlags & 0x1) == 1) /* bit 0 */
     {
@@ -651,8 +684,9 @@ s32 ObjLavaDeath(void) {
     if (o->oTimer >= 31) {
         o->activeFlags = 0;
         return 1;
-    } else
+    } else {
         o->oPosY -= 10.0f;
+    }
 
     if ((o->oTimer % 8) == 0) {
         PlaySound2(SOUND_OBJECT_BULLYEXPLODE_2);
@@ -674,8 +708,9 @@ s32 ObjLavaDeath(void) {
 void SpawnOrangeNumber(s8 arg0, s16 arg1, s16 arg2, s16 arg3) {
     struct Object *orangeNumber;
 
-    if (arg0 >= 10)
+    if (arg0 >= 10) {
         return;
+    }
 
     orangeNumber = spawn_object_relative(arg0, arg1, arg2, arg3, o, MODEL_NUMBER, bhvOrangeNumber);
     orangeNumber->oPosY += 25.0f;
@@ -727,60 +762,13 @@ s32 Unknown802E4DF4(s16 *arg0) {
 #include "behaviors/pyramid_wall.inc.c"
 #include "behaviors/pyramid_elevator.inc.c"
 #include "behaviors/pyramid_top.inc.c"
-
-// not part of behavior files
-// or are they? TODO: misc.inc.c?
-
-void BehWaterfallSoundLoop(void) {
-    PlaySound(SOUND_ENVIRONMENT_WATERFALL2);
-}
-
-void BehVolcanoSoundLoop(void) {
-    PlaySound(SOUND_ENVIRONMENT_DRONING1);
-}
-
-void BehCastleFlagWavingInit(void) {
-    o->header.gfx.unk38.animFrame = RandomFloat() * 28.0f;
-}
-
-void BehBirdsSoundLoop(void) {
-    if (gCurrLevelCamera->currPreset == CAMERA_PRESET_BEHIND_MARIO)
-        return;
-
-    switch (o->oBehParams2ndByte) {
-        case 0:
-            PlaySound(SOUND_CH9_UNK52);
-            break;
-
-        case 1:
-            PlaySound(SOUND_CH8_UNK50);
-            break;
-
-        case 2:
-            PlaySound(SOUND_OBJECT_BIRDS2);
-            break;
-    }
-}
-
-void bhv_ambient_sounds_init(void) {
-    if (gCurrLevelCamera->currPreset == CAMERA_PRESET_BEHIND_MARIO)
-        return;
-
-    play_sound(SOUND_CH6_CASTLEOUTDOORSAMBIENT, gDefaultSoundArgs);
-}
-
-void BehSandSoundLoop(void) {
-    if (gCurrLevelCamera->currPreset == CAMERA_PRESET_BEHIND_MARIO)
-        return;
-
-    PlaySound(SOUND_ENVIRONMENT_MOVINGSAND);
-}
-
-void BehHiddenAt120StarsInit(void) {
-    if (save_file_get_total_star_count(gCurrSaveFileNum - 1, 0, 24) >= 120)
-        o->activeFlags = 0;
-}
-
+#include "behaviors/sound_waterfall.inc.c"
+#include "behaviors/sound_volcano.inc.c"
+#include "behaviors/castle_flag.inc.c"
+#include "behaviors/sound_birds.inc.c"
+#include "behaviors/sound_ambient.inc.c"
+#include "behaviors/sound_sand.inc.c"
+#include "behaviors/castle_cannon_grate.inc.c"
 #include "behaviors/snowman.inc.c"
 #include "behaviors/boulder.inc.c"
 #include "behaviors/cap.inc.c"

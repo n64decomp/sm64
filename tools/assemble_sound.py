@@ -285,7 +285,7 @@ def validate_bank_toplevel(json):
     )
 
 
-def make_sound_json_uniform(json):
+def normalize_sound_json(json):
     # Convert {"sound": "str"} into {"sound": {"sample": "str"}}
     fixup = []
     for inst in json["instruments"].values():
@@ -667,41 +667,146 @@ def serialize_seqfile(entries, serialize_entry, entry_list, magic, extra_padding
     return ser.finish()
 
 
-def write_sequences(inputs, out_filename):
-    inputs.sort(key=lambda f: os.path.basename(f))
+def validate_and_normalize_sequence_json(json, bank_names, defines):
+    validate(isinstance(json, dict), "must have a top-level object")
+    if "comment" in json:
+        del json["comment"]
+    for key, seq in json.items():
+        if isinstance(seq, dict):
+            validate_json_format(seq, {"ifdef": list, "banks": list}, key)
+            validate(
+                all(isinstance(x, str) for x in seq["ifdef"]),
+                '"ifdef" must be an array of strings',
+                key,
+            )
+            if all(d not in defines for d in seq["ifdef"]):
+                seq = None
+            else:
+                seq = seq["banks"]
+            json[key] = seq
+        if isinstance(seq, list):
+            for x in seq:
+                validate(
+                    isinstance(x, str), "bank list must be an array of strings", key
+                )
+                validate(
+                    x in bank_names, "reference to non-existing sound bank " + x, key
+                )
+        else:
+            validate(seq is None, "bad JSON type, expected null, array or object", key)
 
-    def serialize_file(fname, ser):
+
+def write_sequences(
+    inputs, out_filename, out_bank_sets, sound_bank_dir, seq_json, defines
+):
+    bank_names = sorted(
+        [os.path.splitext(os.path.basename(x))[0] for x in os.listdir(sound_bank_dir)]
+    )
+
+    try:
+        with open(seq_json, "r") as inf:
+            data = inf.read()
+            data = strip_comments(data)
+            json = orderedJsonDecoder.decode(data)
+            validate_and_normalize_sequence_json(json, bank_names, defines)
+
+    except Exception as e:
+        fail("failed to parse " + str(seq_json) + ": " + str(e))
+
+    inputs.sort(key=lambda f: os.path.basename(f))
+    name_to_fname = {}
+    for fname in inputs:
+        name = os.path.splitext(os.path.basename(fname))[0]
+        if name in name_to_fname:
+            fail(
+                "Files "
+                + fname
+                + " and "
+                + name_to_fname[name]
+                + " conflict. Remove one of them."
+            )
+        name_to_fname[name] = fname
+        if name not in json:
+            fail(
+                "Sequence file " + fname + " is not mentioned in sequences.json. "
+                "Either assign it a list of sound banks, or set it to null to "
+                "explicitly leave it out from the build."
+            )
+
+    for key, seq in json.items():
+        if key not in name_to_fname and seq is not None:
+            fail(
+                "sequences.json assigns sound banks to "
+                + key
+                + ", but there is no such sequence file. Either remove the entry (or "
+                "set it to null), or create sound/sequences/" + key + ".m64."
+            )
+
+    ind_to_name = []
+    for key in json:
+        ind = int(key.split("_")[0], 16)
+        while len(ind_to_name) <= ind:
+            ind_to_name.append(None)
+        if ind_to_name[ind] is not None:
+            fail(
+                "Sequence files "
+                + key
+                + " and "
+                + ind_to_name[ind]
+                + " have the same index. Renumber or delete one of them."
+            )
+        ind_to_name[ind] = key
+
+    while ind_to_name and json.get(ind_to_name[-1], None) is None:
+        ind_to_name.pop()
+
+    def serialize_file(name, ser):
+        if json.get(name, None) is None:
+            return
         ser.reset_garbage_pos()
-        with open(fname, "rb") as f:
+        with open(name_to_fname[name], "rb") as f:
             ser.add(f.read())
         ser.align_garbage(16)
 
     with open(out_filename, "wb") as f:
-        n = range(len(inputs))
-        f.write(serialize_seqfile(inputs, serialize_file, n, 3, extra_padding=False))
+        n = range(len(ind_to_name))
+        f.write(serialize_seqfile(ind_to_name, serialize_file, n, 3, False))
+
+    with open(out_bank_sets, "wb") as f:
+        ser = ReserveSerializer()
+        table = ser.reserve(len(ind_to_name) * 2)
+        for name in ind_to_name:
+            bank_set = json.get(name, None)
+            if bank_set is None:
+                bank_set = []
+            table.append(struct.pack(">H", ser.size))
+            ser.add(bytes([len(bank_set)]))
+            for bank in bank_set[::-1]:
+                ser.add(bytes([bank_names.index(bank)]))
+        f.write(ser.finish())
 
 
 def main():
     global STACK_TRACES
     need_help = False
-    skip_next = False
+    skip_next = 0
     cpp_command = None
     print_samples = False
     sequences_out_file = None
     defines = []
     args = []
     for i, a in enumerate(sys.argv[1:], 1):
-        if skip_next:
-            skip_next = False
+        if skip_next > 0:
+            skip_next -= 1
             continue
         if a == "--help" or a == "-h":
             need_help = True
         elif a == "--cpp":
             cpp_command = sys.argv[i + 1]
-            skip_next = True
+            skip_next = 1
         elif a == "-D":
             defines.append(sys.argv[i + 1])
-            skip_next = True
+            skip_next = 1
         elif a.startswith("-D"):
             defines.append(a[2:])
         elif a == "--stack-trace":
@@ -710,15 +815,27 @@ def main():
             print_samples = True
         elif a == "--sequences":
             sequences_out_file = sys.argv[i + 1]
-            skip_next = True
+            bank_sets_out_file = sys.argv[i + 2]
+            sound_bank_dir = sys.argv[i + 3]
+            sequence_json = sys.argv[i + 4]
+            skip_next = 4
         elif a.startswith("-"):
             print("Unrecognized option " + a)
             sys.exit(1)
         else:
             args.append(a)
 
+    defines_set = {d.split("=")[0] for d in defines}
+
     if sequences_out_file is not None and not need_help:
-        write_sequences(args, sequences_out_file)
+        write_sequences(
+            args,
+            sequences_out_file,
+            bank_sets_out_file,
+            sound_bank_dir,
+            sequence_json,
+            defines_set,
+        )
         sys.exit(0)
 
     if need_help or len(args) != 4:
@@ -728,7 +845,8 @@ def main():
             " [--cpp <preprocessor>]"
             " [-D <symbol>]"
             " [--stack-trace]"
-            " | --sequences <out .bin file> <inputs...>".format(sys.argv[0])
+            " | --sequences <out sequence .bin> <out bank sets .bin> <sound bank dir> "
+            "<sequences.json> <inputs...>".format(sys.argv[0])
         )
         sys.exit(0 if need_help else 1)
 
@@ -736,8 +854,6 @@ def main():
     sound_bank_dir = args[1]
     ctl_data_out = args[2]
     tbl_data_out = args[3]
-
-    defines_set = {d.split("=")[0] for d in defines}
 
     banks = []
     sample_banks = []
@@ -785,7 +901,7 @@ def main():
 
             validate_bank_toplevel(bank_json)
             apply_version_diffs(bank_json, defines_set)
-            make_sound_json_uniform(bank_json)
+            normalize_sound_json(bank_json)
 
             sample_bank_name = bank_json["sample_bank"]
             validate(

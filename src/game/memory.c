@@ -142,14 +142,16 @@ u32 main_pool_free(void *addr) {
     struct MainPoolBlock *oldListHead = (struct MainPoolBlock *) ((u8 *) addr - 16);
 
     if (oldListHead < sPoolListHeadL) {
-        while (oldListHead->next != NULL)
+        while (oldListHead->next != NULL) {
             oldListHead = oldListHead->next;
+        }
         sPoolListHeadL = block;
         sPoolListHeadL->next = NULL;
         sPoolFreeSpace += (u32) oldListHead - (u32) sPoolListHeadL;
     } else {
-        while (oldListHead->prev != NULL)
+        while (oldListHead->prev != NULL) {
             oldListHead = oldListHead->prev;
+        }
         sPoolListHeadR = block->next;
         sPoolListHeadR->prev = NULL;
         sPoolFreeSpace += (u32) sPoolListHeadR - (u32) oldListHead;
@@ -242,8 +244,9 @@ static void *dynamic_dma_read(u8 *srcStart, u8 *srcEnd, u32 side) {
     u32 size = ALIGN16(srcEnd - srcStart);
 
     dest = main_pool_alloc(size, side);
-    if (dest != NULL)
+    if (dest != NULL) {
         dma_read(dest, srcStart, srcEnd);
+    }
     return dest;
 }
 
@@ -254,8 +257,9 @@ static void *dynamic_dma_read(u8 *srcStart, u8 *srcEnd, u32 side) {
 void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side) {
     void *addr = dynamic_dma_read(srcStart, srcEnd, side);
 
-    if (addr != NULL)
+    if (addr != NULL) {
         set_segment_base_addr(segment, addr);
+    }
     return addr;
 }
 
@@ -389,8 +393,9 @@ struct AllocOnlyPool *alloc_only_pool_resize(struct AllocOnlyPool *pool, u32 siz
 
     size = ALIGN4(size);
     newPool = main_pool_realloc(pool, size + 16);
-    if (newPool != NULL)
+    if (newPool != NULL) {
         pool->totalSpace = size;
+    }
     return newPool;
 }
 
@@ -469,8 +474,9 @@ void mem_pool_free(struct MemoryPool *pool, void *addr) {
             }
         } else {
             while (freeList->next != NULL) {
-                if (freeList < block && block < freeList->next)
+                if (freeList < block && block < freeList->next) {
                     break;
+                }
                 freeList = freeList->next;
             }
             if ((u8 *) freeList + freeList->size == (u8 *) block) {
@@ -511,8 +517,9 @@ static struct MarioAnimDmaRelatedThing *func_802789F0(u8 *srcAddr) {
 }
 
 void func_80278A78(struct MarioAnimation *a, void *b, void *c) {
-    if (b != NULL)
+    if (b != NULL) {
         a->animDmaTable = func_802789F0(b);
+    }
     a->currentDma = 0;
     a->targetAnim = c;
 }

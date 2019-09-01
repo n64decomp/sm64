@@ -1,3 +1,8 @@
+struct Struct80331C38 {
+    s16 unk00;
+    s16 unk02;
+};
+
 struct ObjectHitbox sSkeeterHitbox = {
     /* interactType:      */ INTERACT_BOUNCE_TOP,
     /* downOffset:        */ 20,

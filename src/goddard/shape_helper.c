@@ -278,10 +278,11 @@ struct ObjShape *make_shape(s32 flag, const char *name) {
 
     newShape = (struct ObjShape *) make_object(OBJ_TYPE_SHAPES);
 
-    if (name != NULL)
+    if (name != NULL) {
         gd_strcpy(newShape->name, name);
-    else
+    } else {
         gd_strcpy(newShape->name, "NoName");
+    }
 
     sGdShapeCount++;
 
@@ -327,8 +328,9 @@ s8 get_current_buf_char(void) {
 
 /* @ 246200 for 0x64; orig name: func_80197A30 */
 s8 get_and_advance_buf(void) {
-    if (get_current_buf_char() == '\0')
+    if (get_current_buf_char() == '\0') {
         return '\0';
+    }
 
     return sGdLineBuf[sGdLineBufCsr++];
 }
@@ -337,10 +339,11 @@ s8 get_and_advance_buf(void) {
 s8 load_next_line_into_buf(void) {
     sGdLineBufCsr = 0;
 
-    if (gd_feof(sGdShapeFile) != 0)
+    if (gd_feof(sGdShapeFile) != 0) {
         sGdLineBuf[sGdLineBufCsr] = '\0';
-    else
+    } else {
         gd_fread_line(sGdLineBuf, 0xFF, sGdShapeFile);
+    }
 
     return get_current_buf_char();
 }
@@ -415,11 +418,13 @@ s32 getfloat(f32 *floatPtr) {
 
     add_to_stacktrace("getfloat");
 
-    if (is_line_end(get_current_buf_char()))
+    if (is_line_end(get_current_buf_char())) {
         fatal_printf("getfloat(): Unexpected EOL");
+    }
 
-    while (is_white_space(get_current_buf_char()))
+    while (is_white_space(get_current_buf_char())) {
         get_and_advance_buf();
+    }
 
     bufCsr = 0;
 
@@ -449,11 +454,13 @@ s32 getint(s32 *intPtr) {
 
     add_to_stacktrace("getint");
 
-    if (is_line_end(get_current_buf_char()))
+    if (is_line_end(get_current_buf_char())) {
         fatal_printf("getint(): Unexpected EOL");
+    }
 
-    while (is_white_space(get_current_buf_char()))
+    while (is_white_space(get_current_buf_char())) {
         get_and_advance_buf();
+    }
 
     bufCsr = 0;
     for (curChar = get_and_advance_buf(); curChar != '\0'; curChar = get_and_advance_buf()) {
@@ -512,8 +519,9 @@ void Unknown80198184(struct ObjShape *shape, f32 x, f32 y, f32 z) {
 void scale_obj_position(struct GdObj *obj) {
     struct GdVec3f pos;
 
-    if (obj->type == OBJ_TYPE_GROUPS)
+    if (obj->type == OBJ_TYPE_GROUPS) {
         return;
+    }
 
     set_cur_dynobj(obj);
     d_get_rel_pos(&pos);
@@ -572,8 +580,9 @@ void Unknown80198444(struct ObjVertex *vtx) {
     if (distance != 0.0) {
         distance = gd_sqrt_d(distance); // sqrtd?
 
-        if (distance > D_801A8668)
+        if (distance > D_801A8668) {
             D_801A8668 = distance;
+        }
     }
 }
 
@@ -636,8 +645,9 @@ void get_3DG1_shape(struct ObjShape *shape) {
     tempNormal.z = 1.0f;
 
     load_next_line_into_buf();
-    if (!getint(&totalVtx))
+    if (!getint(&totalVtx)) {
         fatal_printf("Missing number of points");
+    }
 
     load_next_line_into_buf();
     while (scan_to_next_non_whitespace()) {
@@ -646,55 +656,64 @@ void get_3DG1_shape(struct ObjShape *shape) {
         getfloat(&tempVec.z);
         vtxPtrArr[vtxCount] = gd_make_vertex(tempVec.x, tempVec.y, tempVec.z);
 
-        if (vtxHead == NULL)
+        if (vtxHead == NULL) {
             vtxHead = vtxPtrArr[vtxCount];
+        }
 
         func_8019807C(vtxPtrArr[vtxCount]);
         vtxCount++;
 
-        if (vtxCount >= 4000)
+        if (vtxCount >= 4000) {
             fatal_printf("Too many vertices in shape data");
+        }
 
         shape->vtxCount++;
         clear_buf_to_cr();
 
-        if (--totalVtx == 0) /* Count down vertex ponts */
+        if (--totalVtx == 0) { /* Count down vertex ponts */
             break;
+        }
     }
 
     while (scan_to_next_non_whitespace()) {
-        if (!getint(&totalFacePoints))
+        if (!getint(&totalFacePoints)) {
             fatal_printf("Missing number of points in face");
+        }
 
         mtl = find_or_add_new_mtl(shape->mtlGroup, 0, tempNormal.x, tempNormal.y, tempNormal.z);
         newFace = make_face_with_material(mtl);
 
-        if (faceHead == NULL)
+        if (faceHead == NULL) {
             faceHead = newFace;
+        }
 
         facePtrArr[faceCount] = newFace;
         faceCount++;
-        if (faceCount >= 4000)
+        if (faceCount >= 4000) {
             fatal_printf("Too many faces in shape data");
+        }
 
         curFaceVtx = 0;
         while (get_current_buf_char() != '\0') {
             getint(&faceVtxID);
 
-            if (curFaceVtx > 3)
+            if (curFaceVtx > 3) {
                 fatal_printf("Too many points in a face(%d)", curFaceVtx);
+            }
 
             newFace->vertices[curFaceVtx] = vtxPtrArr[faceVtxID];
             curFaceVtx++;
 
-            if (is_line_end(get_current_buf_char()) || --totalFacePoints == 0)
+            if (is_line_end(get_current_buf_char()) || --totalFacePoints == 0) {
                 break;
+            }
         }
 
         newFace->vtxCount = curFaceVtx;
 
-        if (newFace->vtxCount > 3)
+        if (newFace->vtxCount > 3) {
             fatal_printf("Too many points in a face(%d)", newFace->vtxCount);
+        }
 
         calc_face_normal(newFace);
 
@@ -746,8 +765,9 @@ void get_OBJ_shape(struct ObjShape *shape) {
                 func_8019807C(vtxArr[vtxCount]);
                 vtxCount++;
 
-                if (vtxCount >= 4000)
+                if (vtxCount >= 4000) {
                     fatal_printf("Too many vertices in shape data");
+                }
 
                 shape->vtxCount++;
                 break;
@@ -757,22 +777,25 @@ void get_OBJ_shape(struct ObjShape *shape) {
                 faceArr[faceCount] = newFace;
                 faceCount++;
 
-                if (faceCount >= 4000)
+                if (faceCount >= 4000) {
                     fatal_printf("Too many faces in shape data");
+                }
 
                 curFaceVtx = 0;
                 while (get_current_buf_char() != '\0') {
                     getint(&faceVtxIndex);
 
-                    if (curFaceVtx > 3)
+                    if (curFaceVtx > 3) {
                         fatal_printf("Too many points in a face(%d)", curFaceVtx);
+                    }
 
                     /* .obj vertex list is 1-indexed */
                     newFace->vertices[curFaceVtx] = vtxArr[faceVtxIndex - 1];
                     curFaceVtx++;
 
-                    if (is_line_end(get_current_buf_char()))
+                    if (is_line_end(get_current_buf_char())) {
                         break;
+                    }
                 }
 
                 /* These are already set by make_face_with_colour... */
@@ -782,8 +805,9 @@ void get_OBJ_shape(struct ObjShape *shape) {
 
                 newFace->vtxCount = curFaceVtx;
 
-                if (newFace->vtxCount > 3)
+                if (newFace->vtxCount > 3) {
                     fatal_printf("Too many points in a face(%d)", newFace->vtxCount);
+                }
 
                 calc_face_normal(newFace);
 
@@ -919,8 +943,9 @@ void read_ARK_shape(struct ObjShape *shape, char *fileName) {
 
     sGdShapeFile = gd_fopen(fileName, "rb");
 
-    if (sGdShapeFile == NULL)
+    if (sGdShapeFile == NULL) {
         fatal_printf("Cant load shape '%s'", fileName);
+    }
 
     gd_fread(fileInfo.bytes, 0x48, 1, sGdShapeFile);
     func_801A5998(&fileInfo.bytes[0x40]); // face count?
@@ -949,8 +974,9 @@ void read_ARK_shape(struct ObjShape *shape, char *fileName) {
 
             sp44 = make_face_with_material(sp34);
 
-            if (sp40 == NULL)
+            if (sp40 == NULL) {
                 sp40 = sp44;
+            }
 
             func_801A5998(&face.bytes[0x0]);
 
@@ -974,14 +1000,16 @@ void read_ARK_shape(struct ObjShape *shape, char *fileName) {
                 func_801980E8(vtx.data.v);
                 sp3C = gd_make_vertex(vtx.data.v[0], vtx.data.v[1], vtx.data.v[2]);
 
-                if (sp44->vtxCount > 3)
+                if (sp44->vtxCount > 3) {
                     fatal_printf("Too many points in a face(%d)", sp44->vtxCount);
+                }
 
                 sp44->vertices[sp44->vtxCount] = sp3C;
                 sp44->vtxCount++;
 
-                if (sp38 == NULL)
+                if (sp38 == NULL) {
                     sp38 = sp3C;
+                }
             }
 
             calc_face_normal(sp44);
@@ -1006,17 +1034,19 @@ struct GdFile *get_shape_from_file(struct ObjShape *shape, char *fileName) {
     } else {
         sGdShapeFile = gd_fopen(fileName, "r");
 
-        if (sGdShapeFile == NULL)
+        if (sGdShapeFile == NULL) {
             fatal_printf("Cant open shape '%s'", fileName);
+        }
 
         sGdLineBufCsr = 0;
         sGdLineBuf[sGdLineBufCsr] = '\0';
         load_next_line_into_buf();
 
-        if (is_next_buf_word("3DG1"))
+        if (is_next_buf_word("3DG1")) {
             get_3DG1_shape(shape);
-        else
+        } else {
             get_OBJ_shape(shape);
+        }
 
         printf("Num Vertices=%d\n", shape->vtxCount);
         printf("Num Faces=%d\n", shape->faceCount);
@@ -1111,8 +1141,9 @@ struct ObjShape *make_grid_shape(enum ObjTypeFlag gridType, s32 a1, s32 a2, s32 
                 D_801BACA0 = make_face_with_material(mtl2);
             }
 
-            if (sp40 == NULL)
+            if (sp40 == NULL) {
                 sp40 = D_801BAC9C;
+            }
 
             add_3_vtx_to_face(D_801BAC9C, objBuf[row][col + 1], objBuf[row + 1][col + 1],
                               objBuf[row][col]);
@@ -1153,16 +1184,18 @@ void Unknown80199E88(struct ObjFace *face) {
     // TODO: remove cast when make_plane is updated
     D_801BAC74 = make_plane(FALSE, face);
 
-    if (D_801BAC78 == NULL)
+    if (D_801BAC78 == NULL) {
         D_801BAC78 = D_801BAC74;
+    }
 }
 
 /* @ 2486B4 for 0xbc; orig name: func_80199EE4 */
 struct ObjNet *make_netfromshape(struct ObjShape *shape) {
     struct ObjNet *newNet;
 
-    if (shape == NULL)
+    if (shape == NULL) {
         fatal_printf("make_netfromshape(): null shape ptr");
+    }
 
     D_801BAC78 = NULL;
     apply_to_obj_types_in_group(OBJ_TYPE_FACES, (applyproc_t) Unknown80199E88, shape->faceGroup);
@@ -1206,16 +1239,18 @@ void animate_mario_head_normal(struct ObjAnimator *self) {
             self->unk50 = 5;
             break;
         case 2:
-            if (aBtnPressed)
+            if (aBtnPressed) {
                 state = 5;
+            }
 
             self->unk28 += 1.0f;
 
             if (self->unk28 == 810.0f) {
                 self->unk28 = 750.0f;
                 self->unk50 -= 1;
-                if (self->unk50 == 0)
+                if (self->unk50 == 0) {
                     state = 3;
+                }
             }
             break;
         case 3:

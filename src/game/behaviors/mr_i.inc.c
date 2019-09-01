@@ -109,7 +109,7 @@ void ActionMrI3(void) {
             o->oMrISize = sp1C * 0.6;
             if (o->oBehParams2ndByte) {
                 o->oPosY += 100.0f;
-                CreateStar(1370, 2000.0f, -320.0f);
+                create_star(1370, 2000.0f, -320.0f);
                 mark_object_for_deletion(o);
             } else
                 obj_spawn_loot_blue_coin();

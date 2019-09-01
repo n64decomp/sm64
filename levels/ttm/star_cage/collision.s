@@ -1,4 +1,4 @@
-glabel ttm_seg7_collision_little_cage # 0x07013790 - 0x07013814
+glabel ttm_seg7_collision_ukiki_cage # 0x07013790 - 0x07013814
 colInit
 colVertexInit 0x8
 colVertex -76, 102, -76

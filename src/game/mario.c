@@ -251,10 +251,13 @@ void play_mario_action_sound(struct MarioState *m) {
         if (m->action == ACT_TRIPLE_JUMP) {
             play_sound(SOUND_MARIO_YAHOO2 + ((D_80226EB8 % 5) << 0x10),
                        m->marioObj->header.gfx.cameraToObject);
-        } else
+        } else {
 #endif
             play_sound(SOUND_MARIO_YAH + ((D_80226EB8 % 3) << 0x10),
                        m->marioObj->header.gfx.cameraToObject);
+#ifndef VERSION_JP
+        }
+#endif
 
         m->flags |= MARIO_ACTION_NOISE_PLAYED;
     }
@@ -920,8 +923,9 @@ static u32 set_mario_action_moving(struct MarioState *m, u32 action, UNUSED u32 
  * Transition for certain submerged actions, which is actually just the metal jump actions.
  */
 static u32 set_mario_action_submerged(struct MarioState *m, u32 action, UNUSED u32 actionArg) {
-    if (action == ACT_METAL_WATER_JUMP || action == ACT_HOLD_METAL_WATER_JUMP)
+    if (action == ACT_METAL_WATER_JUMP || action == ACT_HOLD_METAL_WATER_JUMP) {
         m->vel[1] = 32.0f;
+    }
 
     return action;
 }
@@ -978,8 +982,9 @@ u32 set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
     // Resets the sound played flags, meaning Mario can play those sound types again.
     m->flags &= ~(MARIO_ENVIRONMENT_NOISE_PLAYED | MARIO_ACTION_NOISE_PLAYED);
 
-    if (!(m->action & ACT_FLAG_AIR))
+    if (!(m->action & ACT_FLAG_AIR)) {
         m->flags &= ~MARIO_UNKNOWN_18;
+    }
 
     // Initialize the action information.
     m->prevAction = m->action;
@@ -996,10 +1001,11 @@ u32 set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
  */
 s32 set_jump_from_landing(struct MarioState *m) {
     if (m->quicksandDepth >= 11.0f) {
-        if (m->heldObj == NULL)
+        if (m->heldObj == NULL) {
             return set_mario_action(m, ACT_QUICKSAND_JUMP_LAND, 0);
-        else
+        } else {
             return set_mario_action(m, ACT_HOLD_QUICKSAND_JUMP_LAND, 0);
+        }
     }
 
     if (mario_floor_is_steep(m)) {
@@ -1596,8 +1602,9 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
         //! (Pause buffered hitstun) Since the global timer increments while paused,
         //  this can be paused through to give continual invisibility. This leads to
         //  no interaction with objects.
-        if (gGlobalTimer & 1)
+        if (gGlobalTimer & 1) {
             gMarioState->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+        }
     }
 
     if (flags & MARIO_CAP_IN_HAND) {

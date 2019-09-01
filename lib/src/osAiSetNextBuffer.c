@@ -30,8 +30,9 @@ s32 osAiSetNextBuffer(void *buff, u32 len) {
         D_80334820 = 0;
     }
 
-    if (__osAiDeviceBusy())
+    if (__osAiDeviceBusy()) {
         return -1;
+    }
 
     HW_REG(AI_DRAM_ADDR_REG, void *) = (void *) osVirtualToPhysical(sp1c);
     HW_REG(AI_LEN_REG, u32) = len;

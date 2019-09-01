@@ -9,7 +9,7 @@ void bhv_yoshi_init(void) {
     o->oGravity = 2.0f;
     o->oFriction = 0.9f;
     o->oBuoyancy = 1.3f;
-    o->oUnk190 = 0x4000;
+    o->oInteractionSubtype = INT_SUBTYPE_NPC;
 
     if (save_file_get_total_star_count(gCurrSaveFileNum - 1, 0, 24) < 120 || D_80331508 == 1) {
         o->activeFlags = 0;

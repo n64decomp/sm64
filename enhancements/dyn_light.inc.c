@@ -94,15 +94,17 @@ void point_light(s16 x, s16 y, s16 z, s16 size, f32 shade, s16 size1, f32 shade1
 
     if (gMarioState->pos[0] >= (x - size1) && gMarioState->pos[0] <= x + size1
         && gMarioState->pos[1] >= (y - size1) && gMarioState->pos[1] <= y + size1
-        && gMarioState->pos[2] >= (z - size1) && gMarioState->pos[2] <= z + size1)
+        && gMarioState->pos[2] >= (z - size1) && gMarioState->pos[2] <= z + size1) {
         set_mario_shade_light(shade1);
+    }
 
     /* Inner region */
 
     if (gMarioState->pos[0] >= (x - size) && gMarioState->pos[0] <= x + size
         && gMarioState->pos[1] >= (y - size) && gMarioState->pos[1] <= y + size
-        && gMarioState->pos[2] >= (z - size) && gMarioState->pos[2] <= z + size)
+        && gMarioState->pos[2] >= (z - size) && gMarioState->pos[2] <= z + size) {
         set_mario_shade_light(shade);
+    }
 }
 
 /*
@@ -138,13 +140,15 @@ void set_level_shading(void) {
             break;
         case LEVEL_CASTLE:
             set_mario_shade_light(SHADE_75);
-            if (gCurrAreaIndex == 3)
+            if (gCurrAreaIndex == 3) {
                 set_mario_shade_light(SHADE_50);
+            }
             break;
         case LEVEL_SSL:
             set_mario_shade_light(SHADE_100);
-            if (gCurrAreaIndex == 2 || gCurrAreaIndex == 3) /* Both pyramid areas */
+            if (gCurrAreaIndex == 2 || gCurrAreaIndex == 3) { /* Both pyramid areas */
                 set_mario_shade_light(SHADE_25);
+            }
             break;
         case LEVEL_JRB:
         case LEVEL_DDD:
@@ -155,8 +159,9 @@ void set_level_shading(void) {
         case LEVEL_SL:
         case LEVEL_PSS:
             set_mario_shade_light(SHADE_75);
-            if (gCurrAreaIndex == 2)
+            if (gCurrAreaIndex == 2) {
                 set_mario_shade_light(SHADE_50);
+            }
             break;
         default:
             set_mario_shade_light(SHADE_100);

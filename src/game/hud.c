@@ -10,6 +10,7 @@
 #include "hud.h"
 #include "segment2.h"
 #include "area.h"
+#include "save_file.h"
 
 /* Originally hud_print.c
  * This file seems to draw the in-game HUD
@@ -28,7 +29,6 @@ struct PowerMeterHUD {
     s16 x;
     s16 y;
     f32 u_E8;
-    s32 d_EC;
 };
 
 struct UnknownStruct803314F0 {
@@ -45,8 +45,13 @@ struct CameraHUD {
 static s16 D_803600D0;
 
 static struct PowerMeterHUD sPowerMeterHUD = {
-    POWER_METER_HIDDEN, 140, 166, 1.0, 0x00000000,
+    POWER_METER_HIDDEN,
+    140,
+    166,
+    1.0,
 };
+
+s32 gUnknownPowerMeterVar = 0x00000000;
 
 static struct UnknownStruct803314F0 D_803314F0 = { 0x00000000, 0x000A, 0x0000 };
 
@@ -96,8 +101,9 @@ void func_802E2304(s16 numHealthWedges) {
 
     sp2C = alloc_display_list(0x40);
 
-    if (sp2C == NULL)
+    if (sp2C == NULL) {
         return;
+    }
 
     guTranslate(sp2C, (f32) sPowerMeterHUD.x, (f32) sPowerMeterHUD.y, 0);
 
@@ -114,29 +120,33 @@ void func_802E2304(s16 numHealthWedges) {
     gSPPopMatrix(gDisplayListHead++, 0);
 }
 
-static void animate_power_meter_emphasized(void) {
+void animate_power_meter_emphasized(void) {
     s16 hudDisplayFlags;
     hudDisplayFlags = gHudDisplay.flags;
 
     if (!(hudDisplayFlags & HUD_DISPLAY_FLAG_EMPHASIZE_POWER)) {
-        if (sPowerMeterHUD.d_EC == 45.0)
+        if (gUnknownPowerMeterVar == 45.0) {
             sPowerMeterHUD.animation = POWER_METER_DEEMPHASIZING;
+        }
     } else {
-        sPowerMeterHUD.d_EC = 0;
+        gUnknownPowerMeterVar = 0;
     }
 }
 
 static void animate_power_meter_deemphasizing(void) {
     s16 speed = 5;
 
-    if (sPowerMeterHUD.y >= 181)
+    if (sPowerMeterHUD.y >= 181) {
         speed = 3;
+    }
 
-    if (sPowerMeterHUD.y >= 191)
+    if (sPowerMeterHUD.y >= 191) {
         speed = 2;
+    }
 
-    if (sPowerMeterHUD.y >= 196)
+    if (sPowerMeterHUD.y >= 196) {
         speed = 1;
+    }
 
     sPowerMeterHUD.y += speed;
 
@@ -150,7 +160,7 @@ static void animate_power_meter_hiding(void) {
     sPowerMeterHUD.y += 20;
     if (sPowerMeterHUD.y >= 301) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
-        sPowerMeterHUD.d_EC = 0;
+        gUnknownPowerMeterVar = 0;
     }
 }
 
@@ -160,11 +170,12 @@ void func_802E261C(s16 numHealthWedges) {
         sPowerMeterHUD.y = 166;
     }
 
-    if (numHealthWedges == 8 && D_803600D0 == 7)
-        sPowerMeterHUD.d_EC = 0;
-
-    if (numHealthWedges == 8 && sPowerMeterHUD.d_EC > 45.0)
+    if (numHealthWedges == 8 && D_803600D0 == 7) {
+        gUnknownPowerMeterVar = 0;
+    }
+    if (numHealthWedges == 8 && gUnknownPowerMeterVar > 45.0) {
         sPowerMeterHUD.animation = POWER_METER_HIDING;
+    }
 
     D_803600D0 = numHealthWedges;
 
@@ -174,18 +185,20 @@ void func_802E261C(s16 numHealthWedges) {
             sPowerMeterHUD.animation = POWER_METER_DEEMPHASIZING;
             sPowerMeterHUD.y = 166;
         }
-        sPowerMeterHUD.d_EC = 0;
+        gUnknownPowerMeterVar = 0;
     }
 }
 
 void render_hud_hp(void) {
     s16 shownHealthWedges = gHudDisplay.wedges;
 
-    if (sPowerMeterHUD.animation != POWER_METER_HIDING)
+    if (sPowerMeterHUD.animation != POWER_METER_HIDING) {
         func_802E261C(shownHealthWedges);
+    }
 
-    if (sPowerMeterHUD.animation == POWER_METER_HIDDEN)
+    if (sPowerMeterHUD.animation == POWER_METER_HIDDEN) {
         return;
+    }
 
     switch (sPowerMeterHUD.animation) {
         case POWER_METER_EMPHASIZED:
@@ -203,7 +216,7 @@ void render_hud_hp(void) {
 
     func_802E2304(shownHealthWedges);
 
-    sPowerMeterHUD.d_EC += 1;
+    gUnknownPowerMeterVar += 1;
 }
 
 #ifdef VERSION_JP
@@ -233,23 +246,27 @@ void render_hud_coins(void) {
 void render_hud_stars(void) {
     s8 showX = 0;
 
-    if (D_803305CC == 1 && gGlobalTimer & 0x00000008)
+    if (D_803305CC == 1 && gGlobalTimer & 0x00000008) {
         return;
+    }
 
-    if (gHudDisplay.stars < 100)
+    if (gHudDisplay.stars < 100) {
         showX = 1;
+    }
 
     print_text(HUD_STARS_X, HUD_TOP_Y, "-"); // 'Star' glyph
-    if (showX == 1)
+    if (showX == 1) {
         print_text((HUD_STARS_X + 16), HUD_TOP_Y, "*"); // 'X' glyph
+    }
     print_text_fmt_int(((showX * 14) + (HUD_STARS_X + 16)), HUD_TOP_Y, "%d", gHudDisplay.stars);
 }
 
 void func_802E29D4() {
     s16 i;
 
-    for (i = 0; i < gHudDisplay.keys; i++)
+    for (i = 0; i < gHudDisplay.keys; i++) {
         print_text((i * 16) + 220, 142, "/"); // unused glyph (originally for a key?)
+    }
 }
 
 void render_hud_timer(void) {
@@ -261,12 +278,26 @@ void render_hud_timer(void) {
 
     hudPrintLUT = segmented_to_virtual(&seg2_hud_lut);
     timerValFrames = gHudDisplay.timer;
+#ifdef VERSION_EU
+    switch (eu_get_language()) {
+        case LANGUAGE_ENGLISH:
+            print_text(170, 185, "TIME");
+            break;
+        case LANGUAGE_FRENCH:
+            print_text(165, 185, "TEMPS");
+            break;
+        case LANGUAGE_GERMAN:
+            print_text(170, 185, "ZEIT");
+            break;
+    }
+#endif
     timerMins = timerValFrames / (30 * 60);
     timerSecs = (timerValFrames - (timerMins * 1800)) / 30;
 
     timerFracSecs = ((timerValFrames - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) / 3;
-
+#ifndef VERSION_EU
     print_text(170, 185, "TIME");
+#endif
     print_text_fmt_int(229, 185, "%0d", timerMins);
     print_text_fmt_int(249, 185, "%02d", timerSecs);
     print_text_fmt_int(283, 185, "%d", timerFracSecs);
@@ -289,8 +320,9 @@ void show_camera_status(void) {
     x = 266;
     y = 205;
 
-    if (sCameraHUD.d_F8 == 0)
+    if (sCameraHUD.d_F8 == 0) {
         return;
+    }
 
     gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
     render_hud_camera(x, y, (*cameraLUT)[0]);
@@ -321,37 +353,58 @@ void show_camera_status(void) {
 
 void render_hud(void) {
     s16 hudDisplayFlags;
+#ifdef VERSION_EU
+    Mtx *mtx;
+#endif
 
     hudDisplayFlags = gHudDisplay.flags;
 
     if (hudDisplayFlags == HUD_DISPLAY_NONE) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
         D_803600D0 = 8;
-        sPowerMeterHUD.d_EC = 0;
+        gUnknownPowerMeterVar = 0;
     } else {
+#ifdef VERSION_EU
+        mtx = alloc_display_list(sizeof(*mtx));
+        if (mtx == NULL) {
+            return;
+        }
+        func_802D6440();
+        guOrtho(mtx, -16.0f, 336.0f, 0, 240.0f, -10.0f, 10.0f, 1.0f);
+        gMoveWd(gDisplayListHead++, 0xE, 0, 0xFFFF);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), 1);
+
+#else
         dl_add_new_ortho_matrix();
+#endif
 
-        if (gCurrentArea != NULL && gCurrentArea->camera->currPreset == CAMERA_PRESET_INSIDE_CANNON)
+        if (gCurrentArea != NULL && gCurrentArea->camera->currPreset == CAMERA_PRESET_INSIDE_CANNON) {
             RenderHudCannonReticle();
+        }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES)
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
             render_hud_mario_lives();
+        }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT)
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
             render_hud_coins();
+        }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT)
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
             render_hud_stars();
+        }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_UNKNOWN_0010)
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_UNKNOWN_0010) {
             func_802E29D4();
+        }
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
             render_hud_hp();
             show_camera_status();
         }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER)
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
             render_hud_timer();
+        }
     }
 }

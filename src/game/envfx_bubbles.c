@@ -12,12 +12,13 @@
 #include "audio/external.h"
 #include "obj_behaviors.h"
 
-/** This file implements environment effects that are not snow:
- *  Flowers (unused), lava bubbles and jetsream/whirlpool bubbles.
- *  Refer to 'envfx_snow.c' for more info about environment effects.
- *  Note that the term 'bubbles' is used as a collective name for
- *  effects in this file even though flowers aren't bubbles. For the
- *  sake of concise naming, flowers fall under bubbles.
+/**
+ * This file implements environment effects that are not snow:
+ * Flowers (unused), lava bubbles and jetsream/whirlpool bubbles.
+ * Refer to 'envfx_snow.c' for more info about environment effects.
+ * Note that the term 'bubbles' is used as a collective name for
+ * effects in this file even though flowers aren't bubbles. For the
+ * sake of concise naming, flowers fall under bubbles.
  */
 
 s16 gEnvFxBubbleConfig[10];
@@ -42,35 +43,40 @@ extern void *tiny_bubble_dl_0B006AB0;
 extern void *tiny_bubble_dl_0B006D38;
 extern void *tiny_bubble_dl_0B006D68;
 
-/** Check whether the particle with the given index is
- *  laterally within distance of point (x, z). Used to
- *  kill flower and bubble particles.
+/**
+ * Check whether the particle with the given index is
+ * laterally within distance of point (x, z). Used to
+ * kill flower and bubble particles.
  */
 s32 particle_is_laterally_close(s32 index, s32 x, s32 z, s32 distance) {
     s32 xPos = (gEnvFxBuffer + index)->xPos;
     s32 zPos = (gEnvFxBuffer + index)->zPos;
 
-    if (sqr(xPos - x) + sqr(zPos - z) > sqr(distance))
+    if (sqr(xPos - x) + sqr(zPos - z) > sqr(distance)) {
         return 0;
+    }
 
     return 1;
 }
 
-/** Generate a uniform random number in range [-2000, -1000[ or [1000, 2000[
- *  Used to position flower particles
+/**
+ * Generate a uniform random number in range [-2000, -1000[ or [1000, 2000[
+ * Used to position flower particles
  */
 s32 random_flower_offset() {
     s32 result = RandomFloat() * 2000.0f - 1000.0f;
-    if (result < 0)
+    if (result < 0) {
         result -= 1000;
-    else
+    } else {
         result += 1000;
+    }
 
     return result;
 }
 
-/** Update flower particles. Flowers are scattered randomly in front of the
- *  camera, and can land on any ground
+/**
+ * Update flower particles. Flowers are scattered randomly in front of the
+ * camera, and can land on any ground
  */
 void envfx_update_flower(Vec3s centerPos) {
     s32 i;
@@ -92,19 +98,21 @@ void envfx_update_flower(Vec3s centerPos) {
             (gEnvFxBuffer + i)->animFrame = RandomFloat() * 5.0f;
         } else if ((timer & 0x03) == 0) {
             (gEnvFxBuffer + i)->animFrame += 1;
-            if ((gEnvFxBuffer + i)->animFrame > 5)
+            if ((gEnvFxBuffer + i)->animFrame > 5) {
                 (gEnvFxBuffer + i)->animFrame = 0;
+            }
         }
     }
 }
 
-/** Update the position of a lava bubble to be somewhere around centerPos
- *  Uses find_floor to find the height of lava, if no floor or a non-lava
- *  floor is found the bubble y is set to -10000, which is why you can see
- *  occasional lava bubbles far below the course in Lethal Lava Land.
- *  In the second Bowser fight arena, the visual lava is above the lava
- *  floor so lava-bubbles are not normally visible, only if you bring the
- *  camera below the lava plane.
+/**
+ * Update the position of a lava bubble to be somewhere around centerPos
+ * Uses find_floor to find the height of lava, if no floor or a non-lava
+ * floor is found the bubble y is set to -10000, which is why you can see
+ * occasional lava bubbles far below the course in Lethal Lava Land.
+ * In the second Bowser fight arena, the visual lava is above the lava
+ * floor so lava-bubbles are not normally visible, only if you bring the
+ * camera below the lava plane.
  */
 void envfx_set_lava_bubble_position(s32 index, Vec3s centerPos) {
     struct Surface *surface;
@@ -118,15 +126,19 @@ void envfx_set_lava_bubble_position(s32 index, Vec3s centerPos) {
     (gEnvFxBuffer + index)->xPos = RandomFloat() * 6000.0f - 3000.0f + centerX;
     (gEnvFxBuffer + index)->zPos = RandomFloat() * 6000.0f - 3000.0f + centerZ;
 
-    if ((gEnvFxBuffer + index)->xPos > 8000)
+    if ((gEnvFxBuffer + index)->xPos > 8000) {
         (gEnvFxBuffer + index)->xPos = 16000 - (gEnvFxBuffer + index)->xPos;
-    if ((gEnvFxBuffer + index)->xPos < -8000)
+    }
+    if ((gEnvFxBuffer + index)->xPos < -8000) {
         (gEnvFxBuffer + index)->xPos = -16000 - (gEnvFxBuffer + index)->xPos;
+    }
 
-    if ((gEnvFxBuffer + index)->zPos > 8000)
+    if ((gEnvFxBuffer + index)->zPos > 8000) {
         (gEnvFxBuffer + index)->zPos = 16000 - (gEnvFxBuffer + index)->zPos;
-    if ((gEnvFxBuffer + index)->zPos < -8000)
+    }
+    if ((gEnvFxBuffer + index)->zPos < -8000) {
         (gEnvFxBuffer + index)->zPos = -16000 - (gEnvFxBuffer + index)->zPos;
+    }
 
     floorY =
         find_floor((gEnvFxBuffer + index)->xPos, centerY + 500, (gEnvFxBuffer + index)->zPos, &surface);
@@ -142,8 +154,9 @@ void envfx_set_lava_bubble_position(s32 index, Vec3s centerPos) {
     }
 }
 
-/** Update lava bubble animation and give the bubble a new position if the
- *  animation is over.
+/**
+ * Update lava bubble animation and give the bubble a new position if the
+ * animation is over.
  */
 void envfx_update_lava(Vec3s centerPos) {
     s32 i;
@@ -168,12 +181,14 @@ void envfx_update_lava(Vec3s centerPos) {
         }
     }
 
-    if ((chance = (s32)(RandomFloat() * 16.0f)) == 8)
+    if ((chance = (s32)(RandomFloat() * 16.0f)) == 8) {
         play_sound(SOUND_GENERAL_QUIETBUBBLE2, gDefaultSoundArgs);
+    }
 }
 
-/** Rotate the input x, y and z around the rotation origin of the whirlpool
- *  according to the pitch and yaw of the whirlpool.
+/**
+ * Rotate the input x, y and z around the rotation origin of the whirlpool
+ * according to the pitch and yaw of the whirlpool.
  */
 void envfx_rotate_around_whirlpool(s32 *x, s32 *y, s32 *z) {
     s32 vecX = *x - gEnvFxBubbleConfig[ENVFX_STATE_DEST_X];
@@ -193,23 +208,27 @@ void envfx_rotate_around_whirlpool(s32 *x, s32 *y, s32 *z) {
     *z = gEnvFxBubbleConfig[ENVFX_STATE_DEST_Z] + (s32) rotatedZ;
 }
 
-/** Check whether a whirlpool bubble is alive. A bubble respawns when it is too
- *  low or close to the center.
+/**
+ * Check whether a whirlpool bubble is alive. A bubble respawns when it is too
+ * low or close to the center.
  */
 s32 envfx_is_whirlpool_bubble_alive(s32 index) {
     s32 UNUSED sp4;
 
-    if ((gEnvFxBuffer + index)->bubbleY < gEnvFxBubbleConfig[ENVFX_STATE_DEST_Y] - 100)
+    if ((gEnvFxBuffer + index)->bubbleY < gEnvFxBubbleConfig[ENVFX_STATE_DEST_Y] - 100) {
         return 0;
+    }
 
-    if ((gEnvFxBuffer + index)->angleAndDist[1] < 10)
+    if ((gEnvFxBuffer + index)->angleAndDist[1] < 10) {
         return 0;
+    }
 
     return 1;
 }
 
-/** Update whirlpool particles. Whirlpool particles start high and far from
- *  the center and get sucked into the sink in a spiraling motion.
+/**
+ * Update whirlpool particles. Whirlpool particles start high and far from
+ * the center and get sucked into the sink in a spiraling motion.
  */
 void envfx_update_whirlpool(void) {
     s32 i;
@@ -252,7 +271,8 @@ void envfx_update_whirlpool(void) {
     }
 }
 
-/** Check whether a jetstream bubble should respawn. Happens if it is laterally
+/**
+ * Check whether a jetstream bubble should respawn. Happens if it is laterally
  * 1000 units away from the source or 1500 units above it.
  */
 s32 envfx_is_jestream_bubble_alive(s32 index) {
@@ -260,14 +280,16 @@ s32 envfx_is_jestream_bubble_alive(s32 index) {
 
     if (!particle_is_laterally_close(index, gEnvFxBubbleConfig[ENVFX_STATE_SRC_X],
                                      gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z], 1000)
-        || gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + 1500 < (gEnvFxBuffer + index)->yPos)
+        || gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + 1500 < (gEnvFxBuffer + index)->yPos) {
         return 0;
+    }
 
     return 1;
 }
 
-/** Update the positions of jestream bubble particles.
- *  They move up and outwards.
+/**
+ * Update the positions of jestream bubble particles.
+ * They move up and outwards.
  */
 void envfx_update_jetstream(void) {
     s32 i;
@@ -294,9 +316,10 @@ void envfx_update_jetstream(void) {
     }
 }
 
-/** Initialize bubble (or flower) effect by allocating a buffer to store
- *  the state of each particle and setting the initial and max count.
- *  Analogous to init_snow_particles, but for bubbles.
+/**
+ * Initialize bubble (or flower) effect by allocating a buffer to store
+ * the state of each particle and setting the initial and max count.
+ * Analogous to init_snow_particles, but for bubbles.
  */
 s32 envfx_init_bubble(s32 mode) {
     s32 i;
@@ -326,8 +349,9 @@ s32 envfx_init_bubble(s32 mode) {
 
     gEnvFxBuffer = (struct EnvFxParticle *) mem_pool_alloc(
         D_8033A124, sBubbleParticleCount * sizeof(struct EnvFxParticle));
-    if (!gEnvFxBuffer)
+    if (!gEnvFxBuffer) {
         return 0;
+    }
 
     bzero(gEnvFxBuffer, sBubbleParticleCount * sizeof(struct EnvFxParticle));
     bzero(gEnvFxBubbleConfig, sizeof(gEnvFxBubbleConfig));
@@ -349,9 +373,10 @@ s32 envfx_init_bubble(s32 mode) {
     return 1;
 }
 
-/** Update particles depending on mode.
- *  Also sets the given vertices to the correct shape for each mode,
- *  though they are not being rotated yet.
+/**
+ * Update particles depending on mode.
+ * Also sets the given vertices to the correct shape for each mode,
+ * though they are not being rotated yet.
  */
 void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3) {
     switch (mode) {
@@ -409,9 +434,10 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
     }
 }
 
-/** Append 15 vertices to 'gfx', which is enough for 5 bubbles starting at
- *  'index'. The 3 input vertices represent the roated triangle around (0,0,0)
- *  that will be translated to bubble positions to draw the bubble image
+/**
+ * Append 15 vertices to 'gfx', which is enough for 5 bubbles starting at
+ * 'index'. The 3 input vertices represent the roated triangle around (0,0,0)
+ * that will be translated to bubble positions to draw the bubble image
  */
 #if defined(VERSION_EU) && !defined(NON_MATCHING)
 void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
@@ -423,8 +449,9 @@ void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s verte
     s32 i = 0;
     Vtx *vertBuf = (Vtx *) alloc_display_list(15 * sizeof(Vtx));
 
-    if (vertBuf == NULL)
+    if (vertBuf == NULL) {
         return;
+    }
 
     for (i = 0; i < 15; i += 3) {
         vertBuf[i] = template[0];
@@ -447,9 +474,10 @@ void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s verte
 }
 #endif
 
-/** Appends to the enfvx display list a command setting the appropriate texture
- *  for a specific particle. The display list is not passed as parameter but uses
- *  the global sGfxCursor instead.
+/**
+ * Appends to the enfvx display list a command setting the appropriate texture
+ * for a specific particle. The display list is not passed as parameter but uses
+ * the global sGfxCursor instead.
  */
 void envfx_set_bubble_texture(s32 mode, s16 index) {
     void **imageArr;
@@ -477,8 +505,9 @@ void envfx_set_bubble_texture(s32 mode, s16 index) {
     gSPDisplayList(sGfxCursor++, &tiny_bubble_dl_0B006D68);
 }
 
-/** Updates the bubble particle positions, then generates and returns a display
- *  list drawing them.
+/**
+ * Updates the bubble particle positions, then generates and returns a display
+ * list drawing them.
  */
 Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFrom, Vec3s camTo) {
     s32 i;
@@ -492,8 +521,9 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
 
     gfxStart = (Gfx *) alloc_display_list(
         ((sBubbleParticleMaxCount / 5) * 10 + sBubbleParticleMaxCount + 3) * sizeof(Gfx));
-    if (gfxStart == NULL)
+    if (gfxStart == NULL) {
         return NULL;
+    }
 
     sGfxCursor = gfxStart;
 
@@ -520,8 +550,9 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
     return gfxStart;
 }
 
-/** Set the maximum particle count from the gEnvFxBubbleConfig variable,
- *  which is set by the whirlpool or jetstream behavior.
+/**
+ * Set the maximum particle count from the gEnvFxBubbleConfig variable,
+ * which is set by the whirlpool or jetstream behavior.
  */
 void envfx_set_max_bubble_particles(s32 mode) {
     switch (mode) {
@@ -534,20 +565,23 @@ void envfx_set_max_bubble_particles(s32 mode) {
     }
 }
 
-/** Update bubble-like environment effects. Assumes the mode is larger than 10,
- *  lower modes are snow effects which are updated in a different function.
- *  Returns a display list drawing the particles.
+/**
+ * Update bubble-like environment effects. Assumes the mode is larger than 10,
+ * lower modes are snow effects which are updated in a different function.
+ * Returns a display list drawing the particles.
  */
 Gfx *envfx_update_bubbles(s32 mode, Vec3s marioPos, Vec3s camTo, Vec3s camFrom) {
     Gfx *gfx;
 
-    if (gEnvFxMode == 0 && !envfx_init_bubble(mode))
+    if (gEnvFxMode == 0 && !envfx_init_bubble(mode)) {
         return NULL;
+    }
 
     envfx_set_max_bubble_particles(mode);
 
-    if (sBubbleParticleMaxCount == 0)
+    if (sBubbleParticleMaxCount == 0) {
         return NULL;
+    }
 
     switch (mode) {
         case ENVFX_FLOWERS:

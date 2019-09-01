@@ -42,8 +42,9 @@ void __osViInit(void) {
     D_80334914->unk00 = 32;
     D_80334914->features = D_80334914->unk08->comRegs.ctrl;
 #ifndef VERSION_JP
-    while (HW_REG(VI_CURRENT_REG, u32) > 0xa)
+    while (HW_REG(VI_CURRENT_REG, u32) > 0xa) {
         ;
+    }
     HW_REG(VI_STATUS_REG, u32) = 0;
 #endif
     __osViSwapContext();

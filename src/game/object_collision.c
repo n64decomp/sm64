@@ -5,6 +5,7 @@
 #include "debug.h"
 #include "spawn_object.h"
 #include "object_list_processor.h"
+#include "interaction.h"
 
 struct Object *Unknown802C8460(struct Object *a) {
     struct Object *sp24;
@@ -14,8 +15,9 @@ struct Object *Unknown802C8460(struct Object *a) {
     for (i = 0; i < a->numCollidedObjs; i++) {
         print_debug_top_down_objectinfo("ON", 0);
         sp24 = a->collidedObjs[i];
-        if (sp24 != gMarioObject)
+        if (sp24 != gMarioObject) {
             return sp24;
+        }
     }
     return NULL;
 }
@@ -33,14 +35,18 @@ int func_802C8504(struct Object *a, struct Object *b) {
         f32 sp20 = a->hitboxHeight + sp3C;
         f32 sp1C = b->hitboxHeight + sp38;
 
-        if (sp3C > sp1C)
+        if (sp3C > sp1C) {
             return 0;
-        if (sp20 < sp38)
+        }
+        if (sp20 < sp38) {
             return 0;
-        if (a->numCollidedObjs >= 4)
+        }
+        if (a->numCollidedObjs >= 4) {
             return 0;
-        if (b->numCollidedObjs >= 4)
+        }
+        if (b->numCollidedObjs >= 4) {
             return 0;
+        }
         a->collidedObjs[a->numCollidedObjs] = b;
         b->collidedObjs[b->numCollidedObjs] = a;
         a->collidedObjInteractTypes |= b->oInteractType;
@@ -62,19 +68,23 @@ int func_802C870C(struct Object *a, struct Object *b) {
     f32 sp28 = a->hurtboxRadius + b->hurtboxRadius;
     f32 sp24 = sqrtf(sp34 * sp34 + sp2C * sp2C);
 
-    if (a == gMarioObject)
-        b->oUnk190 |= 2;
+    if (a == gMarioObject) {
+        b->oInteractionSubtype |= INT_SUBTYPE_DELAY_INVINCIBILITY;
+    }
 
     if (sp28 > sp24) {
         f32 sp20 = a->hitboxHeight + sp3C;
         f32 sp1C = b->hurtboxHeight + sp38;
 
-        if (sp3C > sp1C)
+        if (sp3C > sp1C) {
             return 0;
-        if (sp20 < sp38)
+        }
+        if (sp20 < sp38) {
             return 0;
-        if (a == gMarioObject)
-            b->oUnk190 &= ~2;
+        }
+        if (a == gMarioObject) {
+            b->oInteractionSubtype &= ~INT_SUBTYPE_DELAY_INVINCIBILITY;
+        }
         return 1;
     }
 
@@ -87,8 +97,9 @@ void func_802C88A8(struct Object *a) {
     while (sp4 != a) {
         sp4->numCollidedObjs = 0;
         sp4->collidedObjInteractTypes = 0;
-        if (sp4->oIntangibleTimer > 0)
+        if (sp4->oIntangibleTimer > 0) {
             sp4->oIntangibleTimer--;
+        }
         sp4 = (struct Object *) sp4->header.next;
     }
 }
@@ -97,8 +108,9 @@ void func_802C8918(struct Object *a, struct Object *b, struct Object *c) {
     if (a->oIntangibleTimer == 0) {
         while (b != c) {
             if (b->oIntangibleTimer == 0) {
-                if (func_802C8504(a, b) && b->hurtboxRadius != 0.0f)
+                if (func_802C8504(a, b) && b->hurtboxRadius != 0.0f) {
                     func_802C870C(a, b);
+                }
             }
             b = (struct Object *) b->header.next;
         }

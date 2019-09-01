@@ -66,8 +66,9 @@ int func_802CEAD0(s8 a, f32 b) {
     f32 sp8 = (115200.0 * spC) / (b * 65536.0);
     s32 sp4 = sp8 + 0.5;
 
-    if (sp4 > 1280)
+    if (sp4 > 1280) {
         sp4 -= sp4 / 1280 * 1280;
+    }
     return 1280 - sp4;
 }
 
@@ -77,10 +78,12 @@ int func_802CEBBC(s8 a, UNUSED f32 b) {
     s32 sp1C = round_float(sp20);
     s32 sp18 = sp1C + 0x258;
 
-    if (sp18 > 960)
+    if (sp18 > 960) {
         sp18 = 960;
-    if (sp18 < 240)
+    }
+    if (sp18 < 240) {
         sp18 = 240;
+    }
     return sp18;
 }
 
@@ -176,8 +179,9 @@ Gfx *func_802CF414(s8 a, s8 b, f32 c, f32 d, f32 e, f32 f, f32 g, f32 h, f32 i) 
     f32 sp2C = i - f;
     s8 sp2B = 1;
 
-    if (b == 8 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, 2) & 1))
+    if (b == 8 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, 2) & 1)) {
         sp2B = 0;
+    }
 
     c = 90.0f;
     D_8035FF50[a].unk0 = atan2s(sp2C, sp34);

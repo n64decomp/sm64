@@ -164,10 +164,11 @@ void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
     f32 sp2C;
     struct ObjValPtrs *vp;
 
-    if (gdgt->unk24 == 1)
+    if (gdgt->unk24 == 1) {
         gdgt->unk28 += a2 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
-    else if (gdgt->unk24 == 2)
+    } else if (gdgt->unk24 == 2) {
         gdgt->unk28 += a1 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
+    }
 
     if (gdgt->unk28 < 0.0f) {
         gdgt->unk28 = 0.0f;
@@ -201,8 +202,9 @@ void reset_gadget(struct ObjGadget *gdgt) {
     f32 sp34;
     struct ObjValPtrs *vp;
 
-    if (gdgt->unk3C - gdgt->unk38 == 0.0f)
+    if (gdgt->unk3C - gdgt->unk38 == 0.0f) {
         fatal_printf("gadget has zero range (%f -> %f)\n", gdgt->unk38, gdgt->unk3C);
+    }
 
     sp34 = (f32)(1.0 / (gdgt->unk3C - gdgt->unk38));
 

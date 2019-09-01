@@ -264,8 +264,8 @@ struct MacroPreset MacroObjectPresets[] = {
     {bhvYellowCoin, MODEL_YELLOW_COIN, 0},
     {bhvYellowCoin, MODEL_YELLOW_COIN, 0},
     {bhvYellowCoin, MODEL_YELLOW_COIN, 0},
-    {bhvUkikiOpenCage, MODEL_UKIKI, 0}, // unused
-    {bhvUkikiOpenCage, MODEL_UKIKI, 1}, // unused
+    {bhvMacroUkiki, MODEL_UKIKI, 0}, // unused
+    {bhvMacroUkiki, MODEL_UKIKI, 1}, // unused
     {bhvPiranhaPlant, MODEL_PIRANHA_PLANT, 0}, // unused
     {bhvYellowCoin, MODEL_YELLOW_COIN, 0},
     {bhvSmallWhomp, MODEL_WHOMP, 0},
