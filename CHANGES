@@ -1,5 +1,11 @@
+Refresh #2a (hotfix)
+Changes from Refresh #2:
+
+1.) Fixed text Makefile dependencies"
+
 Refresh #2
 Changes from Refresh #1:
+
 1.) Label src/game/behaviors/boo.inc.c
 2.) Verify half of audio_defines.h
 3.) Label ingame_menu.c and some dialog stuff
