@@ -447,8 +447,7 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
         movtex_make_quad_vertex(verts, 1, x2, y, z2, rot, 16384, scale, alpha);
         movtex_make_quad_vertex(verts, 2, x3, y, z3, rot, -32768, scale, alpha);
         movtex_make_quad_vertex(verts, 3, x4, y, z4, rot, -16384, scale, alpha);
-    } else // ROTATE_COUNTER_CLOCKWISE
-    {
+    } else { // ROTATE_COUNTER_CLOCKWISE
         movtex_make_quad_vertex(verts, 0, x1, y, z1, rot, 0, scale, alpha);
         movtex_make_quad_vertex(verts, 1, x2, y, z2, rot, -16384, scale, alpha);
         movtex_make_quad_vertex(verts, 2, x3, y, z3, rot, -32768, scale, alpha);
@@ -457,28 +456,31 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
 
     // Only add commands to change the texture when necessary
     if (textureId != gMovetexLastTextureId) {
-        if (textureId == TEXTURE_MIST) // an G_IM_FMT_IA texture
-        {
+        if (textureId == TEXTURE_MIST) { // an G_IM_FMT_IA texture
             if (0) {
             }
-            gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId])
-                gDPTileSync(gfx++)
-                    gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
-                               G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD) gDPLoadSync(gfx++)
-                        gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256)
-        } else // any rgba16 texture
-        {
-            gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId])
-                gDPTileSync(gfx++)
-                    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
-                               G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD) gDPLoadSync(gfx++)
-                        gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256) if (0) {
+            gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
+            gDPTileSync(gfx++);
+            gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
+                    G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+            gDPLoadSync(gfx++);
+            gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+        } else { // any rgba16 texture
+            gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
+            gDPTileSync(gfx++);
+            gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
+                    G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+            gDPLoadSync(gfx++);
+            gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+            if (0) {
             }
         }
         gMovetexLastTextureId = textureId;
     }
-    gSPVertex(gfx++, 0x80000000 + (u32) verts, 4, 0) gSPDisplayList(gfx++, dl_draw_quad_verts_0123)
-        gSPEndDisplayList(gfx) return gfxHead;
+    gSPVertex(gfx++, VIRTUAL_TO_PHYSICAL2(verts), 4, 0);
+    gSPDisplayList(gfx++, dl_draw_quad_verts_0123);
+    gSPEndDisplayList(gfx);
+    return gfxHead;
 }
 
 /**
@@ -502,8 +504,9 @@ Gfx *movtex_gen_from_quad_array(s16 y, void *quadArrSegmented) {
         // quadArr is an array of s16, so sizeof(MovtexQuad) gets divided by 2
         subList = movtex_gen_from_quad(
             y, (struct MovtexQuad *) (&quadArr[i * (sizeof(struct MovtexQuad) / 2) + 1]));
-        if (subList != NULL)
-            gSPDisplayList(gfx++, VIRTUAL_TO_PHYSICAL(subList))
+        if (subList != NULL) {
+            gSPDisplayList(gfx++, VIRTUAL_TO_PHYSICAL(subList));
+        }
     }
     gSPEndDisplayList(gfx);
     return gfxHead;
@@ -620,13 +623,17 @@ void *get_quad_collection_from_id(u32 id) {
 void movtex_change_texture_format(u32 quadCollectionId, Gfx **gfx) {
     switch (quadCollectionId) {
         case HMC_MOVTEX_TOXIC_MAZE_MIST:
-            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
+            break;
         case SSL_MOVTEX_TOXBOX_QUICKSAND_MIST:
-            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
+            break;
         case JRB_MOVTEX_INTIAL_MIST:
-            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
+            break;
         default:
-            gSPDisplayList((*gfx)++, dl_waterbox_rgba16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_rgba16_begin);
+            break;
     }
 }
 
@@ -833,14 +840,19 @@ Gfx *movtex_gen_list(s16 *movtexVerts, struct MovtexObject *movtexList, s8 attrL
         movtex_write_vertex_index(verts, i, movtexVerts, movtexList, attrLayout);
     }
 
-    gSPDisplayList(gfx++, movtexList->beginDl) gDPSetTextureImage(
-        gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId])
-        gDPTileSync(gfx++) gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP,
-                                      G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD)
-            gDPLoadSync(gfx++) gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256)
-                gSPVertex(gfx++, 0x80000000 + (u32) verts, movtexList->vtx_count, 0)
-                    gSPDisplayList(gfx++, movtexList->triDl) gSPDisplayList(gfx++, movtexList->endDl)
-                        gSPEndDisplayList(gfx) return gfxHead;
+    gSPDisplayList(gfx++, movtexList->beginDl);
+    gDPSetTextureImage(
+        gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId]);
+    gDPTileSync(gfx++);
+    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP,
+            G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+    gDPLoadSync(gfx++);
+    gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+    gSPVertex(gfx++, VIRTUAL_TO_PHYSICAL2(verts), movtexList->vtx_count, 0);
+    gSPDisplayList(gfx++, movtexList->triDl);
+    gSPDisplayList(gfx++, movtexList->endDl);
+    gSPEndDisplayList(gfx);
+    return gfxHead;
 }
 
 /**

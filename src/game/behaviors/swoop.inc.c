@@ -28,7 +28,7 @@ static void swoop_act_idle(void) {
 
     if (approach_f32_ptr(&o->header.gfx.scale[0], 1.0f, 0.05f) && o->oDistanceToMario < 1500.0f) {
         if (obj_rotate_yaw_toward(o->oAngleToMario, 0x320)) {
-            PlaySound2(SOUND_CH9_UNK49);
+            PlaySound2(SOUND_OBJ2_SWOOP);
             o->oAction = SWOOP_ACT_MOVE;
             o->oVelY = -12.0f;
         }
@@ -44,7 +44,7 @@ static void swoop_act_idle(void) {
 static void swoop_act_move(void) {
     func_8029ED98(0, 2.0f);
     if (func_8029F788()) {
-        PlaySound2(SOUND_OBJECT_UNKNOWN6);
+        PlaySound2(SOUND_OBJ_UNKNOWN6);
     }
 
     if (o->oForwardVel == 0.0f) {
@@ -101,7 +101,7 @@ void bhv_swoop_update(void) {
     // No partial update (only appears in roomed levels)
 
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
-        o->oDeathSound = SOUND_OBJECT_BATDEATH;
+        o->oDeathSound = SOUND_OBJ_SWOOP_DEATH;
 
         obj_update_floor_and_walls();
 

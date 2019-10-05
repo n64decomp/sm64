@@ -55,7 +55,7 @@ void bhv_pyramid_top_spinning(void) {
         pyramidFragment = spawn_object(o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment);
         pyramidFragment->oForwardVel = RandomFloat() * 10.0f + 20.0f;
         pyramidFragment->oMoveAngleYaw = RandomU16();
-        pyramidFragment->oUnknownUnkF4_F32 = 0.8f;
+        pyramidFragment->oPyramidTopFragmentsScale = 0.8f;
         pyramidFragment->oGravity = RandomFloat() + 2.0f;
     }
 
@@ -82,7 +82,7 @@ void bhv_pyramid_top_explode(void) {
         pyramidFragment->oForwardVel = RandomFloat() * 50 + 80;
         pyramidFragment->oVelY = RandomFloat() * 80 + 20;
         pyramidFragment->oMoveAngleYaw = RandomU16();
-        pyramidFragment->oUnknownUnkF4_F32 = 3;
+        pyramidFragment->oPyramidTopFragmentsScale = 3;
         pyramidFragment->oGravity = RandomFloat() * 2 + 5;
     }
 
@@ -101,7 +101,7 @@ void bhv_pyramid_top_loop(void) {
 
         case PYRAMID_TOP_ACT_SPINNING:
             if (o->oTimer == 0) {
-                PlaySound2(SOUND_CH8_UNK4B);
+                PlaySound2(SOUND_GENERAL2_PYRAMID_TOP_SPIN);
             }
 
             bhv_pyramid_top_spinning();
@@ -109,7 +109,7 @@ void bhv_pyramid_top_loop(void) {
 
         case PYRAMID_TOP_ACT_EXPLODE:
             if (o->oTimer == 0) {
-                create_sound_spawner(SOUND_CH8_UNK4C);
+                create_sound_spawner(SOUND_GENERAL2_PYRAMID_TOP_EXPLOSION);
             }
 
             bhv_pyramid_top_explode();

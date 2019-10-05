@@ -43,9 +43,9 @@ void bhv_star_spawn_init(void) {
     o->oForwardVel = o->oStarSpawnDisFromHome / 30.0f;
     o->oStarSpawnUnkFC = o->oPosY;
     if (o->oBehParams2ndByte == 0 || gCurrCourseNum == 5)
-        func_8028F9E8(173, o);
+        cutscene_object(CUTSCENE_STAR_SPAWN, o);
     else
-        func_8028F9E8(176, o);
+        cutscene_object(CUTSCENE_SPECIAL_STAR_SPAWN, o);
 
     set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
     o->activeFlags |= 0x20;
@@ -66,7 +66,7 @@ void bhv_star_spawn_loop(void) {
             o->oPosY = o->oStarSpawnUnkFC + sins((o->oTimer * 0x8000) / 30) * 400.0f;
             o->oFaceAngleYaw += 0x1000;
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
-            PlaySound(SOUND_ENVIRONMENT_STAR);
+            PlaySound(SOUND_ENV_STAR);
             if (o->oTimer == 30) {
                 o->oAction = 2;
                 o->oForwardVel = 0;
@@ -83,10 +83,10 @@ void bhv_star_spawn_loop(void) {
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
             obj_move_xyz_using_fvel_and_yaw(o);
             o->oFaceAngleYaw = o->oFaceAngleYaw - o->oTimer * 0x10 + 0x1000;
-            PlaySound(SOUND_ENVIRONMENT_STAR);
+            PlaySound(SOUND_ENV_STAR);
 
             if (o->oPosY < o->oHomeY) {
-                PlaySound2(SOUND_GENERAL_STARAPPEARS);
+                PlaySound2(SOUND_GENERAL_STAR_APPEARS);
                 obj_become_tangible();
                 o->oPosY = o->oHomeY;
                 o->oAction = 3;
@@ -155,14 +155,14 @@ void bhv_hidden_red_coin_star_init(void) {
         o->activeFlags = 0;
     }
 
-    o->oHiddenRedCoinStarCoinsCollected = 8 - sp36;
+    o->oHiddenStarTriggerCounter = 8 - sp36;
 }
 
 void bhv_hidden_red_coin_star_loop(void) {
-    D_8036008E = o->oHiddenRedCoinStarCoinsCollected;
+    gRedCoinsCollected = o->oHiddenStarTriggerCounter;
     switch (o->oAction) {
         case 0:
-            if (o->oHiddenRedCoinStarCoinsCollected == 8)
+            if (o->oHiddenStarTriggerCounter == 8)
                 o->oAction = 1;
             break;
 

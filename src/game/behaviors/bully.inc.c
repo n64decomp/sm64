@@ -52,14 +52,13 @@ void bhv_big_bully_init(void) {
 }
 
 void BullyCheckMarioCollision(void) {
-    if (o->oInteractStatus & INT_STATUS_INTERACTED) /* bit 15 */
-    {
+    if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL)
-            PlaySound2(SOUND_CH9_UNK1C);
+            PlaySound2(SOUND_OBJ2_BULLY_ATTACKED);
         else
-            PlaySound2(SOUND_CH9_UNK57);
+            PlaySound2(SOUND_OBJ2_LARGE_BULLY_ATTACKED);
 
-        o->oInteractStatus &= ~INT_STATUS_INTERACTED; /* bit 15 */
+        o->oInteractStatus &= ~INT_STATUS_INTERACTED;
         o->oAction = BULLY_ACT_KNOCKBACK;
         o->oFlags &= ~0x8; /* bit 3 */
         SetObjAnimation(3);
@@ -145,9 +144,9 @@ void PlayBullyStompingSound(void) {
         case BULLY_ACT_PATROL:
             if (sp26 == 0 || sp26 == 12) {
                 if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL)
-                    PlaySound2(SOUND_OBJECT_BULLYWALK);
+                    PlaySound2(SOUND_OBJ_BULLY_WALK);
                 else
-                    PlaySound2(SOUND_OBJECT_BULLYWALKING);
+                    PlaySound2(SOUND_OBJ_BULLY_WALKING);
             }
             break;
 
@@ -155,9 +154,9 @@ void PlayBullyStompingSound(void) {
         case BULLY_ACT_BACK_UP:
             if (sp26 == 0 || sp26 == 5) {
                 if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL)
-                    PlaySound2(SOUND_OBJECT_BULLYWALK);
+                    PlaySound2(SOUND_OBJ_BULLY_WALK);
                 else
-                    PlaySound2(SOUND_OBJECT_BULLYWALKING);
+                    PlaySound2(SOUND_OBJ_BULLY_WALKING);
             }
             break;
     }
@@ -179,9 +178,9 @@ void BullyStep(void) {
 void BullySpawnCoin(void) {
     struct Object *coin = spawn_object(o, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
 #ifdef VERSION_JP
-    PlaySound2(SOUND_GENERAL_COINSPURT);
+    PlaySound2(SOUND_GENERAL_COIN_SPURT);
 #else
-    PlaySound2(SOUND_GENERAL_COINSPURT_2);
+    PlaySound2(SOUND_GENERAL_COIN_SPURT_2);
 #endif
     coin->oForwardVel = 10.0f;
     coin->oVelY = 100.0f;
@@ -349,7 +348,7 @@ void bhv_big_bully_with_minions_loop(void) {
                 o->oAction = BULLY_ACT_PATROL;
 
             if (collisionFlags == 1) {
-                PlaySound2(SOUND_OBJECT_THWOMP);
+                PlaySound2(SOUND_OBJ_THWOMP);
                 func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
                 func_802A3004();
             }

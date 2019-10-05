@@ -6,7 +6,7 @@ void bhv_wf_breakable_wall_loop(void) {
         if (are_objects_collided(o, gMarioObject)) {
             if (obj_has_behavior(bhvWfBreakableWallRight))
                 play_puzzle_jingle();
-            create_sound_spawner(SOUND_GENERAL_EXPLOSION3);
+            create_sound_spawner(SOUND_GENERAL_WALL_EXPLOSION);
             o->oInteractType = 8;
             o->oDamageOrCoinValue = 1;
             func_802A3C98(80.0f, 0);

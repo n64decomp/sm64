@@ -54,8 +54,8 @@ void func_802E2F40(void) {
     D_80331508 = 0;
 }
 
-struct Struct802E2F58 *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2) {
-    struct Struct802E2F58 *sp34;
+Gfx *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2) {
+    Gfx *sp34;
     Gfx *sp30;
     struct Object *sp2c;
     struct Object *sp28;
@@ -72,8 +72,8 @@ struct Struct802E2F58 *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 a
             sp2c = (struct Object *) gCurGraphNodeHeldObject->objNode;
         }
 
-        sp34 = (struct Struct802E2F58 *) alloc_display_list(0x18);
-        sp30 = (Gfx *) sp34;
+        sp34 = alloc_display_list(3 * sizeof(Gfx));
+        sp30 = sp34;
         sp28->header.gfx.node.flags =
             (sp28->header.gfx.node.flags & 0xFF) | 0x500; // sets bits 8, 10 and zeros upper byte
 
@@ -183,7 +183,7 @@ s32 TurnObjAwayFromAwkwardFloor(struct Surface *objFloor, f32 floorY, f32 objVel
 void ObjOrientGraph(struct Object *obj, f32 normalX, f32 normalY, f32 normalZ) {
     Vec3f sp2c, sp20;
 
-    f32(*throwMatrix)[4][4]; // TODO: use Mtx type
+    Mat4 *throwMatrix;
 
     if (D_80331500 == 0) {
         return;
@@ -191,7 +191,7 @@ void ObjOrientGraph(struct Object *obj, f32 normalX, f32 normalY, f32 normalZ) {
     if ((obj->header.gfx.node.flags & 0x4) != 0) {
         return; // bit 2
     }
-    throwMatrix = (f32(*)[4][4]) alloc_display_list(0x40);
+    throwMatrix = alloc_display_list(sizeof(*throwMatrix));
     if (throwMatrix == NULL) {
         return;
     }
@@ -360,7 +360,7 @@ void ObjSplash(s32 waterY, s32 objY) {
     if ((f32)(waterY + 30) > o->oPosY && o->oPosY > (f32)(waterY - 30)) {
         spawn_object(o, MODEL_WATER_WAVES_SURF, bhvObjectWaterWave);
         if (o->oVelY < -20.0f) {
-            PlaySound2(SOUND_OBJECT_DIVINGINTOWATER);
+            PlaySound2(SOUND_OBJ_DIVING_INTO_WATER);
         }
     }
     if ((objY + 50) < waterY && (globalTimer & 0x1F) == 0) {
@@ -634,7 +634,7 @@ s8 func_802E49A4(s16 arg0) {
 // sp28 = arg2
 // sp2c = arg3
 
-s16 func_802E4A38(s32 *arg0, s16 arg1, f32 arg2, s32 arg3) {
+s16 func_802E4A38(s32 *arg0, s16 dialogID, f32 arg2, s32 arg3) {
     s16 sp1e;
 
     if ((is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, (s32) arg2) == 1
@@ -643,7 +643,7 @@ s16 func_802E4A38(s32 *arg0, s16 arg1, f32 arg2, s32 arg3) {
         || (*arg0 == 1)) {
         *arg0 = 1;
         if (set_mario_npc_dialog(arg3) == 2) {
-            sp1e = func_8028F8E0(162, o, arg1);
+            sp1e = cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, dialogID);
             if (sp1e != 0) {
                 set_mario_npc_dialog(0);
                 *arg0 = 0;
@@ -689,7 +689,7 @@ s32 ObjLavaDeath(void) {
     }
 
     if ((o->oTimer % 8) == 0) {
-        PlaySound2(SOUND_OBJECT_BULLYEXPLODE_2);
+        PlaySound2(SOUND_OBJ_BULLY_EXPLODE_2);
         deathSmoke = spawn_object(o, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
         deathSmoke->oPosX += RandomFloat() * 20.0f;
         deathSmoke->oPosY += RandomFloat() * 20.0f;

@@ -43,7 +43,7 @@ void func_802A525C(void) {
     particle->oPosY += 50.0f * sp18;
     particle->oPosX += sins(o->oMoveAngleYaw) * 90.0f * sp18;
     particle->oPosZ += coss(o->oMoveAngleYaw) * 90.0f * sp18;
-    PlaySound2(SOUND_OBJECT_MRISHOOT);
+    PlaySound2(SOUND_OBJ_MRI_SHOOT);
 }
 
 void bhv_mr_i_body_loop(void) {
@@ -56,12 +56,12 @@ void bhv_mr_i_body_loop(void) {
         o->oFaceAnglePitch = o->oMoveAnglePitch;
         o->oGraphYOffset = o->header.gfx.scale[1] * 100.f;
     }
-    if (o->parentObj->OBJECT_FIELD_S32(0x22) != 1)
-        o->OBJECT_FIELD_S32(0x1a) = -1;
+    if (o->parentObj->oMrIUnk110 != 1)
+        o->oAnimState = -1;
     else {
-        o->OBJECT_FIELD_S32(0x1a)++;
-        if (o->OBJECT_FIELD_S32(0x1a) == 15)
-            o->parentObj->OBJECT_FIELD_S32(0x22) = 0;
+        o->oAnimState++;
+        if (o->oAnimState == 15)
+            o->parentObj->oMrIUnk110 = 0;
     }
     if (!o->parentObj->activeFlags)
         mark_object_for_deletion(o);
@@ -79,7 +79,7 @@ void ActionMrI3(void) {
         sp1C = 2.0f;
     else
         sp1C = 1.0f;
-    if (o->OBJECT_FIELD_S32(0x1E) < 0)
+    if (o->oMrIUnk100 < 0)
         sp34 = 0x1000;
     else
         sp34 = -0x1000;
@@ -88,12 +88,12 @@ void ActionMrI3(void) {
         sp36 = o->oMoveAngleYaw;
         o->oMoveAngleYaw += sp34 * coss(0x4000 * sp2C);
         if (sp36 < 0 && o->oMoveAngleYaw >= 0)
-            PlaySound2(SOUND_CH9_UNK6B);
+            PlaySound2(SOUND_OBJ2_MRI_SPINNING);
         o->oMoveAnglePitch = (1.0 - coss(0x4000 * sp2C)) * -0x4000;
         obj_shake_y(4.0f);
     } else if (o->oTimer < 96) {
         if (o->oTimer == 64)
-            PlaySound2(SOUND_OBJECT_MRIDEATH);
+            PlaySound2(SOUND_OBJ_MRI_DEATH);
         sp30 = (f32)(o->oTimer - 63) / 32;
         o->oMoveAngleYaw += sp34 * coss(0x4000 * sp2C);
         o->oMoveAnglePitch = (1.0 - coss(0x4000 * sp2C)) * -0x4000;
@@ -101,8 +101,8 @@ void ActionMrI3(void) {
         sp20 = coss(0x4000 * sp30) * 0.4 + 0.6;
         obj_scale(sp20 * sp1C);
     } else if (o->oTimer < 104) {
-    } // do nothing
-    else if (o->oTimer < 168) {
+        // do nothing
+    } else if (o->oTimer < 168) {
         if (o->oTimer == 104) {
             obj_become_intangible();
             func_802A3004();
@@ -128,53 +128,53 @@ void ActionMrI2() {
     sp1E = o->oMoveAngleYaw;
     if (o->oTimer == 0) {
         if (o->oBehParams2ndByte)
-            o->OBJECT_FIELD_S32(0x1B) = 200;
+            o->oMrIUnkF4 = 200;
         else
-            o->OBJECT_FIELD_S32(0x1B) = 120;
-        o->OBJECT_FIELD_S32(0x1D) = 0;
-        o->OBJECT_FIELD_S32(0x1E) = 0;
-        o->OBJECT_FIELD_S32(0x1F) = 0;
+            o->oMrIUnkF4 = 120;
+        o->oMrIUnkFC = 0;
+        o->oMrIUnk100 = 0;
+        o->oMrIUnk104 = 0;
     }
     obj_turn_toward_object(o, gMarioObject, 0x10, 0x800);
     obj_turn_toward_object(o, gMarioObject, 0x0F, 0x400);
     sp1C = sp1E - (s16)(o->oMoveAngleYaw);
     if (!sp1C) {
-        o->OBJECT_FIELD_S32(0x1D) = 0;
-        o->OBJECT_FIELD_S32(0x1E) = 0;
+        o->oMrIUnkFC = 0;
+        o->oMrIUnk100 = 0;
     } else if (sp1C > 0) {
-        if (o->OBJECT_FIELD_S32(0x1E) > 0)
-            o->OBJECT_FIELD_S32(0x1D) += sp1C;
+        if (o->oMrIUnk100 > 0)
+            o->oMrIUnkFC += sp1C;
         else
-            o->OBJECT_FIELD_S32(0x1D) = 0;
-        o->OBJECT_FIELD_S32(0x1E) = 1;
+            o->oMrIUnkFC = 0;
+        o->oMrIUnk100 = 1;
     } else {
-        if (o->OBJECT_FIELD_S32(0x1E) < 0)
-            o->OBJECT_FIELD_S32(0x1D) -= sp1C;
+        if (o->oMrIUnk100 < 0)
+            o->oMrIUnkFC -= sp1C;
         else
-            o->OBJECT_FIELD_S32(0x1D) = 0;
-        o->OBJECT_FIELD_S32(0x1E) = -1;
+            o->oMrIUnkFC = 0;
+        o->oMrIUnk100 = -1;
     }
-    if (!o->OBJECT_FIELD_S32(0x1D))
-        o->OBJECT_FIELD_S32(0x1B) = 120;
-    if (o->OBJECT_FIELD_S32(0x1D) > 1 << 16)
+    if (!o->oMrIUnkFC)
+        o->oMrIUnkF4 = 120;
+    if (o->oMrIUnkFC > 1 << 16)
         o->oAction = 3;
-    o->OBJECT_FIELD_S32(0x1B) -= 1;
-    if (!o->OBJECT_FIELD_S32(0x1B)) {
-        o->OBJECT_FIELD_S32(0x1B) = 120;
-        o->OBJECT_FIELD_S32(0x1D) = 0;
+    o->oMrIUnkF4 -= 1;
+    if (!o->oMrIUnkF4) {
+        o->oMrIUnkF4 = 120;
+        o->oMrIUnkFC = 0;
     }
-    if (o->OBJECT_FIELD_S32(0x1D) < 5000) {
-        if (o->OBJECT_FIELD_S32(0x1F) == o->OBJECT_FIELD_S32(0x20))
-            o->OBJECT_FIELD_S32(0x22) = 1;
-        if (o->OBJECT_FIELD_S32(0x1F) == o->OBJECT_FIELD_S32(0x20) + 20) {
+    if (o->oMrIUnkFC < 5000) {
+        if (o->oMrIUnk104 == o->oMrIUnk108)
+            o->oMrIUnk110 = 1;
+        if (o->oMrIUnk104 == o->oMrIUnk108 + 20) {
             func_802A525C();
-            o->OBJECT_FIELD_S32(0x1F) = 0;
-            o->OBJECT_FIELD_S32(0x20) = (s32)(RandomFloat() * 50.0f + 50.0f);
+            o->oMrIUnk104 = 0;
+            o->oMrIUnk108 = (s32)(RandomFloat() * 50.0f + 50.0f);
         }
-        o->OBJECT_FIELD_S32(0x1F)++;
+        o->oMrIUnk104++;
     } else {
-        o->OBJECT_FIELD_S32(0x1F) = 0;
-        o->OBJECT_FIELD_S32(0x20) = (s32)(RandomFloat() * 50.0f + 50.0f);
+        o->oMrIUnk104 = 0;
+        o->oMrIUnk108 = (s32)(RandomFloat() * 50.0f + 50.0f);
     }
     if (o->oDistanceToMario > 800.0f)
         o->oAction = 1;
@@ -190,9 +190,9 @@ void ActionMrI1(void) {
     if (o->oTimer == 0) {
         obj_become_tangible();
         o->oMoveAnglePitch = 0;
-        o->OBJECT_FIELD_S32(0x1F) = 30;
-        o->OBJECT_FIELD_S32(0x20) = RandomFloat() * 20.0f;
-        if (o->OBJECT_FIELD_S32(0x20) & 1)
+        o->oMrIUnk104 = 30;
+        o->oMrIUnk108 = RandomFloat() * 20.0f;
+        if (o->oMrIUnk108 & 1)
             o->oAngleVelYaw = -256;
         else
             o->oAngleVelYaw = 256;
@@ -201,16 +201,16 @@ void ActionMrI1(void) {
         if (o->oDistanceToMario < 700.0f)
             o->oAction = 2;
         else
-            o->OBJECT_FIELD_S32(0x1F)++;
+            o->oMrIUnk104++;
     } else {
         o->oMoveAngleYaw += o->oAngleVelYaw;
-        o->OBJECT_FIELD_S32(0x1F) = 30;
+        o->oMrIUnk104 = 30;
     }
-    if (o->OBJECT_FIELD_S32(0x1F) == o->OBJECT_FIELD_S32(0x20) + 60)
-        o->OBJECT_FIELD_S32(0x22) = 1;
-    if (o->OBJECT_FIELD_S32(0x20) + 80 < o->OBJECT_FIELD_S32(0x1F)) {
-        o->OBJECT_FIELD_S32(0x1F) = 0;
-        o->OBJECT_FIELD_S32(0x20) = RandomFloat() * 80.0f;
+    if (o->oMrIUnk104 == o->oMrIUnk108 + 60)
+        o->oMrIUnk110 = 1;
+    if (o->oMrIUnk108 + 80 < o->oMrIUnk104) {
+        o->oMrIUnk104 = 0;
+        o->oMrIUnk108 = RandomFloat() * 80.0f;
         func_802A525C();
     }
 }

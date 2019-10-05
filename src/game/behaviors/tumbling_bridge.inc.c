@@ -17,7 +17,7 @@ void bhv_tumbling_bridge_platform_loop(void) {
         case 0:
             if (gMarioObject->platform == o) {
                 o->oAction++;
-                o->OBJECT_FIELD_S32(0x1B) = RandomSign() * 0x80;
+                o->oTumblingBridgeUnkF4 = RandomSign() * 0x80;
             }
             break;
         case 1:
@@ -31,7 +31,7 @@ void bhv_tumbling_bridge_platform_loop(void) {
             if (o->oAngleVelPitch < 0x400)
                 o->oAngleVelPitch += 0x80;
             if (o->oAngleVelRoll > -0x400 && o->oAngleVelRoll < 0x400)
-                o->oAngleVelRoll += o->OBJECT_FIELD_S32(0x1B); // acceleraration?
+                o->oAngleVelRoll += o->oTumblingBridgeUnkF4; // acceleration?
             o->oGravity = -3.0f;
             obj_rotate_face_angle_using_vel();
             obj_move_using_fvel_and_gravity();

@@ -53,9 +53,9 @@ void bhv_animates_on_floor_switch_press_loop(void) {
 
     if (o->oFloorSwitchPressAnimationUnkF4 != 0) {
         if (o->oFloorSwitchPressAnimationUnkF4 < 60) {
-            PlaySound(SOUND_CH8_SWITCH6);
+            PlaySound(SOUND_GENERAL2_SWITCH_TICK_SLOW);
         } else {
-            PlaySound(SOUND_CH8_SWITCH5);
+            PlaySound(SOUND_GENERAL2_SWITCH_TICK_FAST);
         }
 
         if (--o->oFloorSwitchPressAnimationUnkF4 == 0) {

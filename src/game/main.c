@@ -7,7 +7,7 @@
 #include "sound_init.h"
 #include "profiler.h"
 #include "game.h"
-#include "buffers.h"
+#include "buffers/buffers.h"
 #include "segments.h"
 #include "main.h"
 
@@ -319,7 +319,7 @@ void thread3_main(UNUSED void *arg) {
         OSMesg msg;
 
         osRecvMesg(&gIntrMesgQueue, &msg, OS_MESG_BLOCK);
-        switch ((u32) msg) {
+        switch ((uintptr_t) msg) {
             case MESG_VI_VBLANK:
                 handle_vblank();
                 break;
@@ -362,7 +362,7 @@ void SendMessage(OSMesg *msg) {
 void dispatch_audio_sptask(struct SPTask *spTask) {
     if (sAudioEnabled != 0 && spTask != NULL) {
         osWritebackDCacheAll();
-        osSendMesg(&gSPTaskMesgQueue, (OSMesg) spTask, OS_MESG_NOBLOCK);
+        osSendMesg(&gSPTaskMesgQueue, spTask, OS_MESG_NOBLOCK);
     }
 }
 

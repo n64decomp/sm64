@@ -3,7 +3,7 @@ extern OSThread *D_803348A0;
 extern OSThread *D_80334898;
 void osStartThread(OSThread *thread) {
     register u32 int_disabled;
-    register u32 state;
+    register uintptr_t state;
     int_disabled = __osDisableInt();
     state = thread->state;
 
@@ -22,7 +22,7 @@ void osStartThread(OSThread *thread) {
         } else {
             thread->state = OS_STATE_WAITING;
             __osEnqueueThread(thread->queue, thread);
-            state = (u32) __osPopThread(thread->queue);
+            state = (uintptr_t) __osPopThread(thread->queue);
             __osEnqueueThread(&D_80334898, (OSThread *) state);
         }
     }

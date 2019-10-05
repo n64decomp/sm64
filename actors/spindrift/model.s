@@ -184,10 +184,9 @@ spindrift_seg5_anim_050006AC: # 0x050006AC
 .word spindrift_seg5_animindex_050005F8
 .word 0
 
-.word 0
+.balign 8
 
-.word 0
-.word 1 # False Bin ID?
+.dword 1 # False Bin ID?
 
 spindrift_seg5_texture_050006D0: # 0x050006D0
 .incbin "actors/spindrift/spindrift_face.rgba16"

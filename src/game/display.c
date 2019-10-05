@@ -5,7 +5,7 @@
 #include "main.h"
 #include "memory.h"
 #include "profiler.h"
-#include "buffers.h"
+#include "buffers/buffers.h"
 #include "audio/external.h"
 #include "display.h"
 
@@ -164,14 +164,14 @@ void create_task_structure(void) {
     s32 entries = gDisplayListHead - gGfxPool->buffer;
 
     gGfxSPTask->msgqueue = &D_80339CB8;
-    gGfxSPTask->msg = (OSMesg *) 2;
+    gGfxSPTask->msg = (OSMesg) 2;
     gGfxSPTask->task.t.type = M_GFXTASK;
     gGfxSPTask->task.t.ucode_boot = rspF3DBootStart;
-    gGfxSPTask->task.t.ucode_boot_size = ((u32) rspF3DBootEnd - (u32) rspF3DBootStart);
+    gGfxSPTask->task.t.ucode_boot_size = ((u8 *) rspF3DBootEnd - (u8 *) rspF3DBootStart);
     gGfxSPTask->task.t.flags = 0;
     gGfxSPTask->task.t.ucode = rspF3DStart;
     gGfxSPTask->task.t.ucode_data = rspF3DDataStart;
-    gGfxSPTask->task.t.ucode_size = SP_UCODE_SIZE;
+    gGfxSPTask->task.t.ucode_size = SP_UCODE_SIZE; // (this size is ignored)
     gGfxSPTask->task.t.ucode_data_size = SP_UCODE_DATA_SIZE;
     gGfxSPTask->task.t.dram_stack = (u64 *) gGfxSPTaskStack;
     gGfxSPTask->task.t.dram_stack_size = SP_DRAM_STACK_SIZE8;

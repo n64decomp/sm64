@@ -87,7 +87,7 @@ void ActionCheepCheep2(void) {
     } else
         o->oInteractStatus = 0;
     if (o->oTimer == 0)
-        PlaySound2(SOUND_GENERAL_MOVINGWATER);
+        PlaySound2(SOUND_GENERAL_MOVING_WATER);
     if (o->oForwardVel == 0.0f)
         o->oForwardVel = 6.0f;
     dy = o->oPosY - gMarioObject->oPosY;

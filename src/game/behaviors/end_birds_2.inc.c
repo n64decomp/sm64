@@ -23,7 +23,7 @@ void bhv_end_birds_2_loop(void) {
             func_8029A7DC(gCurrentObject, sp3C, 0, 0, 8, 8);
 
             if ((gCurrentObject->oEndBirdUnk104 == 0.f) && (gCurrentObject->oTimer == 0))
-                PlaySound2(SOUND_GENERAL_BIRDSFLYAWAY);
+                PlaySound2(SOUND_GENERAL_BIRDS_FLY_AWAY);
             break;
     }
 

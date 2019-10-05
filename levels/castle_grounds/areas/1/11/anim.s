@@ -20,14 +20,15 @@ castle_grounds_seg7_anim_indexes_flags: # 0x0700C8F0 - 0x0700C944
 .hword   1,   0,    1,   0,   29,   3
 
 castle_grounds_seg7_anim_header_flags: # 0x0700C944 - 0x0700C95C
-.hword  0 # repeats
-.hword 0x0000
-.word 0x00000000
+.hword 0 # repeats
+.hword 0
+.hword 0
+.hword 0
 .hword 29 # frame count
-.hword  6 # node count
+.hword 6 # node count
 .word castle_grounds_seg7_anim_values_flags # 0x0700C7C8
 .word castle_grounds_seg7_anim_indexes_flags # 0x0700C8F0
-.word 0x00000000
+.word 0
 
 glabel castle_grounds_seg7_anim_flags # 0x0700C95C - 0x0700C960
 .word castle_grounds_seg7_anim_header_flags # 0x0700C944

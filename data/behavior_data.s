@@ -241,7 +241,8 @@
 
 .macro obj_child model_id, beh
     bytes4 0x1C, 0x00, 0x00, 0x00
-    .word \model_id, \beh
+    .word \model_id
+    .word \beh
 .endm
 
 .macro deactivate
@@ -3301,35 +3302,35 @@ glabel bhvYellowBackgroundInMenu # 2FA0
 glabel bhvMenuButton # 2FC4
     begin OBJ_LIST_LEVEL
     obj_or_int objFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
-    callnative bhvMenuButton_init
+    callnative bhv_menu_button_init
     begin_loop
         obj_set_int objIntangibleTimer, 0
-        callnative bhvMenuButton_loop
+        callnative bhv_menu_button_loop
     end_loop
 
 glabel bhvMenuButtonManager # 2FE8
     begin OBJ_LIST_LEVEL
     obj_or_int objFlags, (OBJ_FLAG_0800 | OBJ_FLAG_0020 | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)
-    callnative bhvMenuButtonManager_init
+    callnative bhv_menu_button_manager_init
     begin_loop
         obj_set_int objIntangibleTimer, 0
-        callnative bhvMenuButtonManager_loop
+        callnative bhv_menu_button_manager_loop
     end_loop
 
-glabel bhvStarInActSelector # 300C
+glabel bhvActSelectorStarType # 300C
     begin OBJ_LIST_DEFAULT
     obj_or_int objFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
     obj_set_pos
     begin_loop
-        callnative BehStarActSelectorLoop
+        callnative bhv_act_selector_star_type_loop
     end_loop
 
 glabel bhvActSelector # 3028
     begin OBJ_LIST_DEFAULT
     obj_or_int objFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
-    callnative BehActSelectorInit
+    callnative bhv_act_selector_init
     begin_loop
-        callnative BehActSelectorLoop
+        callnative bhv_act_selector_loop
     end_loop
 
 glabel bhvMovingYellowCoin # 3048

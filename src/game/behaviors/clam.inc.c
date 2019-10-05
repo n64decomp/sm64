@@ -14,14 +14,14 @@ struct ObjectHitbox sClamShellHitbox = {
 
 void clam_act_0(void) {
     if (func_802F92EC(0, 25)) {
-        PlaySound2(SOUND_GENERAL_CLAMSHELL4);
+        PlaySound2(SOUND_GENERAL_CLAM_SHELL3);
         func_802ADA94();
         obj_become_tangible();
 
         o->oClamUnkF4 = 10;
         o->oTimer = 0;
     } else if (o->oTimer > 150 && o->oDistanceToMario < 500.0f) {
-        PlaySound2(SOUND_GENERAL_CLAMSHELL3);
+        PlaySound2(SOUND_GENERAL_CLAM_SHELL2);
         o->oAction = 1;
     } else if (o->oClamUnkF4 != 0) {
         o->oClamUnkF4 -= 1;

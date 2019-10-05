@@ -522,7 +522,7 @@ void alloc_surface_pools(void) {
     sSurfacePool = main_pool_alloc(sSurfacePoolSize * sizeof(struct Surface), MEMORY_POOL_LEFT);
 
     gCCMEnteredSlide = 0;
-    func_802DA4DC();
+    reset_red_coins_collected();
 }
 
 /**

@@ -10,7 +10,7 @@ void bhv_bowser_bomb_loop(void) {
     if (o->oInteractStatus & INTERACT_MR_BLIZZARD) /* bit 21 */
     {
         spawn_object(o, MODEL_BOWSER_FLAMES, bhvBowserBombExplosion);
-        create_sound_spawner(SOUND_GENERAL_EXPLOSION5);
+        create_sound_spawner(SOUND_GENERAL_BOWSER_BOMB_EXPLOSION);
         func_8027F440(3, o->oPosX, o->oPosY, o->oPosZ);
         o->activeFlags = 0;
     }

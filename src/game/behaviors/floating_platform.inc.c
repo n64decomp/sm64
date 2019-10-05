@@ -7,12 +7,12 @@ f32 func_802F54F8(void) {
 
     sp20 = find_water_level(o->oPosX, o->oPosZ);
     sp1C = find_floor(o->oPosX, o->oPosY, o->oPosZ, &sp24);
-    if (sp20 > sp1C + o->oUnknownUnkFC_F32) {
-        o->oUnknownUnkF4_S32 = 0;
-        return sp20 + o->oUnknownUnkFC_F32;
+    if (sp20 > sp1C + o->oFloatingPlatformUnkFC) {
+        o->oFloatingPlatformUnkF4 = 0;
+        return sp20 + o->oFloatingPlatformUnkFC;
     } else {
-        o->oUnknownUnkF4_S32 = 1;
-        return sp1C + o->oUnknownUnkFC_F32;
+        o->oFloatingPlatformUnkF4 = 1;
+        return sp1C + o->oFloatingPlatformUnkFC;
     }
 }
 
@@ -29,27 +29,27 @@ void func_802F55CC(void) {
         if (o->oVelY < 0.0f)
             o->oVelY = 0.0f;
 
-        o->oUnknownUnkF8_F32 += o->oVelY;
-        if (o->oUnknownUnkF8_F32 > 90.0f)
-            o->oUnknownUnkF8_F32 = 90.0f;
+        o->oFloatingPlatformUnkF8 += o->oVelY;
+        if (o->oFloatingPlatformUnkF8 > 90.0f)
+            o->oFloatingPlatformUnkF8 = 90.0f;
     } else {
         o->oFaceAnglePitch /= 2;
         o->oFaceAngleRoll /= 2;
-        o->oUnknownUnkF8_F32 -= 5.0;
+        o->oFloatingPlatformUnkF8 -= 5.0;
         o->oVelY = 10.0f;
-        if (o->oUnknownUnkF8_F32 < 0.0f)
-            o->oUnknownUnkF8_F32 = 0.0f;
+        if (o->oFloatingPlatformUnkF8 < 0.0f)
+            o->oFloatingPlatformUnkF8 = 0.0f;
     }
 
-    o->oPosY = o->oHomeY - 64.0f - o->oUnknownUnkF8_F32 + sins(o->oUnknownUnk100_S32 * 0x800) * 10.0f;
-    o->oUnknownUnk100_S32++;
-    if (o->oUnknownUnk100_S32 == 32)
-        o->oUnknownUnk100_S32 = 0;
+    o->oPosY = o->oHomeY - 64.0f - o->oFloatingPlatformUnkF8 + sins(o->oFloatingPlatformUnk100 * 0x800) * 10.0f;
+    o->oFloatingPlatformUnk100++;
+    if (o->oFloatingPlatformUnk100 == 32)
+        o->oFloatingPlatformUnk100 = 0;
 }
 
 void bhv_floating_platform_loop(void) {
     o->oHomeY = func_802F54F8();
-    if (o->oFloatingPlatformUnkFC == 0)
+    if (o->oFloatingPlatformUnkF4 == 0)
         o->oAction = 0;
     else
         o->oAction = 1;

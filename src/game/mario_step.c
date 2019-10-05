@@ -212,7 +212,7 @@ u32 mario_update_windy_ground(struct MarioState *m) {
         m->vel[2] += pushSpeed * coss(pushAngle);
 
 #if VERSION_JP
-        play_sound(SOUND_ENVIRONMENT_WIND2, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_ENV_WIND2, m->marioObj->header.gfx.cameraToObject);
 #endif
         return 1;
     }
@@ -335,7 +335,7 @@ s32 perform_ground_step(struct MarioState *m) {
         }
     }
 
-    m->stepSound = mario_get_step_noise(m);
+    m->terrainSoundAddend = mario_get_terrain_sound_addend(m);
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
 
@@ -601,7 +601,7 @@ void apply_vertical_wind(struct MarioState *m) {
             }
 
 #ifdef VERSION_JP
-            play_sound(SOUND_ENVIRONMENT_WIND2, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_ENV_WIND2, m->marioObj->header.gfx.cameraToObject);
 #endif
         }
     }
@@ -641,7 +641,7 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
         m->peakHeight = m->pos[1];
     }
 
-    m->stepSound = mario_get_step_noise(m);
+    m->terrainSoundAddend = mario_get_terrain_sound_addend(m);
 
     if (m->action != ACT_FLYING) {
         apply_gravity(m);

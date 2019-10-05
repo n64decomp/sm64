@@ -74,7 +74,7 @@ void bhv_falling_pillar_loop(void) {
                 o->oAction = FALLING_PILLAR_ACT_TURNING;
 
                 // Play the detaching sound.
-                PlaySound2(SOUND_GENERAL_POUNDROCK);
+                PlaySound2(SOUND_GENERAL_POUND_ROCK);
             }
             break;
 
@@ -112,7 +112,7 @@ void bhv_falling_pillar_loop(void) {
                 o->activeFlags = 0;
 
                 // Play the hitting the ground sound.
-                create_sound_spawner(SOUND_GENERAL_BIGPOUND);
+                create_sound_spawner(SOUND_GENERAL_BIG_POUND);
             }
             break;
     }

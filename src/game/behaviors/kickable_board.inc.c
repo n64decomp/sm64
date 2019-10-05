@@ -21,8 +21,8 @@ s32 func_802A9A0C(UNUSED s32 sp18) {
 }
 
 void func_802A9B54(void) {
-    o->OBJECT_FIELD_S32(0x1C) = 1600;
-    o->OBJECT_FIELD_S32(0x1B) = 0;
+    o->oKickableBoardF8 = 1600;
+    o->oKickableBoardF4 = 0;
 }
 
 void bhv_kickable_board_loop(void) {
@@ -39,23 +39,23 @@ void bhv_kickable_board_loop(void) {
         case 1:
             o->oFaceAnglePitch = 0;
             load_object_collision_model();
-            o->oFaceAnglePitch = -sins(o->OBJECT_FIELD_S32(0x1B)) * o->OBJECT_FIELD_S32(0x1C);
+            o->oFaceAnglePitch = -sins(o->oKickableBoardF4) * o->oKickableBoardF8;
             if (o->oTimer > 30 && (sp24 = func_802A9A0C(0))) {
                 if (gMarioObject->oPosY > o->oPosY + 160.0f && sp24 == 2) {
                     o->oAction++;
-                    PlaySound2(SOUND_GENERAL_BUTTONPRESS_2);
+                    PlaySound2(SOUND_GENERAL_BUTTON_PRESS_2);
                 } else
                     o->oTimer = 0;
             }
             if (o->oTimer != 0) {
-                o->OBJECT_FIELD_S32(0x1C) -= 8;
-                if (o->OBJECT_FIELD_S32(0x1C) < 0)
+                o->oKickableBoardF8 -= 8;
+                if (o->oKickableBoardF8 < 0)
                     o->oAction = 0;
             } else
                 func_802A9B54();
-            if (!(o->OBJECT_FIELD_S32(0x1B) & 0x7FFF))
-                PlaySound2(SOUND_GENERAL_BUTTONPRESS_2);
-            o->OBJECT_FIELD_S32(0x1B) += 0x400;
+            if (!(o->oKickableBoardF4 & 0x7FFF))
+                PlaySound2(SOUND_GENERAL_BUTTON_PRESS_2);
+            o->oKickableBoardF4 += 0x400;
             break;
         case 2:
             obj_become_intangible();

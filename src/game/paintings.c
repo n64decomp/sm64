@@ -10,6 +10,7 @@
 #include "geo_misc.h"
 #include "area.h"
 #include "prevent_bss_reordering.h"
+#include "segment2.h"
 #include "paintings.h"
 
 s16 gPaintingMarioFloorType;
@@ -646,11 +647,11 @@ void *func_802D3CF0(u8 *img, s16 b, s16 c, s16 *d, s16 e, s16 f, u8 g) {
 
 Gfx *func_802D43FC(struct PaintingData *painting) {
     float sp4C = painting->vSize / DEFAULT_HEIGHT;
-    void *sp48 = alloc_display_list(64);
-    void *sp44 = alloc_display_list(64);
-    void *sp40 = alloc_display_list(64);
-    void *sp3C = alloc_display_list(64);
-    void *sp38 = alloc_display_list(40);
+    Mtx *sp48 = alloc_display_list(sizeof(Mtx));
+    Mtx *sp44 = alloc_display_list(sizeof(Mtx));
+    Mtx *sp40 = alloc_display_list(sizeof(Mtx));
+    Mtx *sp3C = alloc_display_list(sizeof(Mtx));
+    Gfx *sp38 = alloc_display_list(5 * sizeof(Gfx));
     Gfx *sp34 = sp38;
 
     if (sp48 == NULL || sp44 == NULL || sp40 == NULL || sp38 == NULL) {
@@ -680,7 +681,7 @@ Gfx *func_802D45FC(struct PaintingData *painting) {
     s16 tHeight = painting->textureHeight;
     s16 **meshArray = segmented_to_virtual(painting->meshData);
     u8 **tArray = segmented_to_virtual(painting->textureArray);
-    Gfx *sp48 = alloc_display_list(faceCount * 8 + 48);
+    Gfx *sp48 = alloc_display_list((faceCount + 6) * sizeof(Gfx));
     Gfx *sp44 = sp48;
 
     if (sp48 == NULL) {
@@ -713,7 +714,7 @@ Gfx *func_802D4874(struct PaintingData *painting) {
     s16 tHeight = painting->textureHeight;
     s16 **meshArray = segmented_to_virtual(painting->meshData);
     u8 **tArray = segmented_to_virtual(painting->textureArray);
-    Gfx *sp48 = alloc_display_list(56);
+    Gfx *sp48 = alloc_display_list(7 * sizeof(Gfx));
     Gfx *sp44 = sp48;
 
     if (sp48 == NULL) {
@@ -759,7 +760,7 @@ Gfx *display_painting_rippling(struct PaintingData *painting) {
 }
 
 Gfx *display_painting_not_rippling(struct PaintingData *painting) {
-    Gfx *sp2C = alloc_display_list(32);
+    Gfx *sp2C = alloc_display_list(4 * sizeof(Gfx));
     Gfx *sp28 = sp2C;
 
     if (sp2C == NULL) {

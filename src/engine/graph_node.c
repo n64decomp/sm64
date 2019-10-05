@@ -497,7 +497,8 @@ struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *poo
  */
 struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *pool,
                                                         struct GraphNodeHeldObject *graphNode,
-                                                        s32 objNode, Vec3s translation,
+                                                        struct GraphNodeObject *objNode,
+                                                        Vec3s translation,
                                                         GraphNodeFunc nodeFunc, s32 unused) {
     if (pool != NULL) {
         graphNode = alloc_only_pool_alloc(pool, sizeof(struct GraphNodeHeldObject));
@@ -506,7 +507,7 @@ struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *po
     if (graphNode != NULL) {
         init_scene_graph_node_links(&graphNode->fnNode.node, GRAPH_NODE_TYPE_HELD_OBJ);
         vec3s_copy(graphNode->translation, translation);
-        graphNode->objNode = (struct GraphNodeObject *) objNode; // assumed type
+        graphNode->objNode = objNode;
         graphNode->fnNode.func = nodeFunc;
         graphNode->unused = unused;
 
@@ -732,13 +733,13 @@ void geo_obj_init_spawninfo(struct GraphNodeObject *graphNode, struct SpawnInfo 
 /**
  * Initialize the animation of an object node
  */
-void geo_obj_init_animation(struct GraphNodeObject *graphNode, void *sp34) {
-    void **animSegmented = segmented_to_virtual(sp34);
-    struct Animation *anim = segmented_to_virtual(animSegmented[0]);
+void geo_obj_init_animation(struct GraphNodeObject *graphNode, struct Animation **animPtrAddr) {
+    struct Animation **animSegmented = segmented_to_virtual(animPtrAddr);
+    struct Animation *anim = segmented_to_virtual(*animSegmented);
 
     if (graphNode->unk38.curAnim != anim) {
         graphNode->unk38.curAnim = anim;
-        graphNode->unk38.animFrame = (anim->unk04) + ((anim->flags & ANIM_FLAG_FORWARD) ? 1 : -1);
+        graphNode->unk38.animFrame = anim->unk04 + ((anim->flags & ANIM_FLAG_FORWARD) ? 1 : -1);
         graphNode->unk38.animAccel = 0;
         graphNode->unk38.animYTrans = 0;
     }
@@ -747,9 +748,9 @@ void geo_obj_init_animation(struct GraphNodeObject *graphNode, void *sp34) {
 /**
  * Initialize the animation of an object node
  */
-void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, void *sp34, u32 animAccel) {
-    void **animSegmented = segmented_to_virtual(sp34);
-    struct Animation *anim = segmented_to_virtual(animSegmented[0]);
+void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, struct Animation **animPtrAddr, u32 animAccel) {
+    struct Animation **animSegmented = segmented_to_virtual(animPtrAddr);
+    struct Animation *anim = segmented_to_virtual(*animSegmented);
 
     if (graphNode->unk38.curAnim != anim) {
         graphNode->unk38.curAnim = anim;

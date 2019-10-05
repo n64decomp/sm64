@@ -36,7 +36,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
 
     switch (m->actionArg) {
         case 0:
-            play_sound(SOUND_MARIO_YAH2, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_MARIO_PUNCH_YAH, m->marioObj->header.gfx.cameraToObject);
             // Fall-through:
         case 1:
             set_mario_animation(m, MARIO_ANIM_FIRST_PUNCH);
@@ -76,7 +76,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             break;
 
         case 3:
-            play_sound(SOUND_MARIO_WAH4, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_MARIO_PUNCH_WAH, m->marioObj->header.gfx.cameraToObject);
             // Fall-through:
         case 4:
             set_mario_animation(m, MARIO_ANIM_SECOND_PUNCH);
@@ -111,7 +111,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             break;
 
         case 6:
-            play_mario_environment_sound(m, SOUND_MARIO_HOO6, 1);
+            play_mario_action_sound(m, SOUND_MARIO_PUNCH_HOO, 1);
             animFrame = set_mario_animation(m, MARIO_ANIM_GROUND_KICK);
             if (animFrame == 0) {
                 m->marioBodyState->unk0B = 134;
@@ -127,7 +127,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             break;
 
         case 9:
-            play_mario_environment_sound(m, SOUND_MARIO_HOO6, 1);
+            play_mario_action_sound(m, SOUND_MARIO_PUNCH_HOO, 1);
             set_mario_animation(m, MARIO_ANIM_BREAKDANCE);
             animFrame = m->marioObj->header.gfx.unk38.animFrame;
 
@@ -186,7 +186,7 @@ s32 act_picking_up(struct MarioState *m) {
         // to unload. This allows you to pick up a vacant or newly loaded object
         // slot (cloning via fake object).
         mario_grab_used_object(m);
-        play_sound_if_no_flag(m, SOUND_MARIO_HRMM, MARIO_ACTION_NOISE_PLAYED);
+        play_sound_if_no_flag(m, SOUND_MARIO_HRMM, MARIO_MARIO_SOUND_PLAYED);
         m->actionState = 1;
     }
 
@@ -259,8 +259,8 @@ s32 act_throwing(struct MarioState *m) {
 
     if (++m->actionTimer == 7) {
         mario_throw_held_object(m);
-        play_sound_if_no_flag(m, SOUND_MARIO_WAH2, MARIO_ACTION_NOISE_PLAYED);
-        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN435, MARIO_ENVIRONMENT_NOISE_PLAYED);
+        play_sound_if_no_flag(m, SOUND_MARIO_WAH2, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN435, MARIO_ACTION_SOUND_PLAYED);
     }
 
     animated_stationary_ground_step(m, MARIO_ANIM_GROUND_THROW, ACT_IDLE);
@@ -278,8 +278,8 @@ s32 act_heavy_throw(struct MarioState *m) {
 
     if (++m->actionTimer == 13) {
         mario_drop_held_object(m);
-        play_sound_if_no_flag(m, SOUND_MARIO_WAH2, MARIO_ACTION_NOISE_PLAYED);
-        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN435, MARIO_ENVIRONMENT_NOISE_PLAYED);
+        play_sound_if_no_flag(m, SOUND_MARIO_WAH2, MARIO_MARIO_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN435, MARIO_ACTION_SOUND_PLAYED);
     }
 
     animated_stationary_ground_step(m, MARIO_ANIM_HEAVY_THROW, ACT_IDLE);
@@ -327,12 +327,12 @@ s32 act_holding_bowser(struct MarioState *m) {
     if (m->input & INPUT_B_PRESSED) {
 #ifndef VERSION_JP
         if (m->angleVel[1] <= -0xE00 || m->angleVel[1] >= 0xE00) {
-            play_sound(SOUND_MARIO_SOLONGABOWSER, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_MARIO_SO_LONGA_BOWSER, m->marioObj->header.gfx.cameraToObject);
         } else {
-            play_sound(SOUND_MARIO_HEREWEGO, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
         }
 #else
-        play_sound(SOUND_MARIO_HEREWEGO, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
 #endif
         return set_mario_action(m, ACT_RELEASING_BOWSER, 0);
     }
@@ -384,10 +384,10 @@ s32 act_holding_bowser(struct MarioState *m) {
 
     // play sound on overflow
     if (m->angleVel[1] <= -0x100 && spin < m->faceAngle[1]) {
-        play_sound(SOUND_OBJECT_BOWSERSPINNING, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_OBJ_BOWSER_SPINNING, m->marioObj->header.gfx.cameraToObject);
     }
     if (m->angleVel[1] >= 0x100 && spin > m->faceAngle[1]) {
-        play_sound(SOUND_OBJECT_BOWSERSPINNING, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_OBJ_BOWSER_SPINNING, m->marioObj->header.gfx.cameraToObject);
     }
 
     stationary_ground_step(m);

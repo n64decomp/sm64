@@ -5,7 +5,7 @@ void ActionFish0(void) {
     s32 sp38;
     s16 model;
     f32 sp30;
-    u32 *sp2C;
+    struct Animation **sp2C;
     struct Object *sp28;
     switch (o->oBehParams2ndByte) {
         case 0:
@@ -116,7 +116,7 @@ void ActionFishGroup2(void) {
         else
             sp18 = (s32)(1.0 / (o->oDistanceToMario / 600.0));
         sp18 *= 127;
-        PlaySound2(SOUND_GENERAL_MOVINGWATER);
+        PlaySound2(SOUND_GENERAL_MOVING_WATER);
     }
     if (o->oTimer < LEVEL_SA)
         func_8029ED98(0, 4.0f);

@@ -56,7 +56,7 @@ static void fire_piranha_plant_act_hide(void) {
 
         if (func_8029F788()) {
             if (--o->oFirePiranhaPlantDeathSpinTimer == 0) {
-                PlaySound2(SOUND_EMEMY_DEFEAT_SHRINK);
+                PlaySound2(SOUND_OBJ_ENEMY_DEFEAT_SHRINK);
             }
         }
     } else if (approach_f32_ptr(&o->oFirePiranhaPlantScale, 0.0f,
@@ -76,7 +76,7 @@ static void fire_piranha_plant_act_hide(void) {
             }
         } else if (sNumActiveFirePiranhaPlants < 2 && o->oTimer > 100 && o->oDistanceToMario > 100.0f
                    && o->oDistanceToMario < 800.0f) {
-            PlaySound2(SOUND_OBJECT_PIRANHAPLANTAPPEAR);
+            PlaySound2(SOUND_OBJ_PIRANHA_PLANT_APPEAR);
 
             o->oFirePiranhaPlantActive = TRUE;
             sNumActiveFirePiranhaPlants += 1;
@@ -98,7 +98,7 @@ static void fire_piranha_plant_act_grow(void) {
     if (approach_f32_ptr(&o->oFirePiranhaPlantScale, o->oFirePiranhaPlantNeutralScale,
                          0.04f * o->oFirePiranhaPlantNeutralScale)) {
         if (o->oTimer > 80) {
-            PlaySound2(SOUND_OBJECT_PIRANHAPLANTSHRINK);
+            PlaySound2(SOUND_OBJ_PIRANHA_PLANT_SHRINK);
             o->oAction = FIRE_PIRANHA_PLANT_ACT_HIDE;
             set_obj_animation_and_sound_state(0);
         } else if (o->oTimer < 50) {
@@ -106,7 +106,7 @@ static void fire_piranha_plant_act_grow(void) {
         } else { // TODO: Check if we can put these conditionals on same line
             if (obj_is_rendering_enabled()) {
                 if (obj_check_anim_frame(56)) {
-                    PlaySound2(SOUND_OBJECT_FLAMEBLOWN);
+                    PlaySound2(SOUND_OBJ_FLAME_BLOWN);
                     obj_spit_fire(0, (s32)(30.0f * o->oFirePiranhaPlantNeutralScale),
                                   (s32)(140.0f * o->oFirePiranhaPlantNeutralScale),
                                   2.5f * o->oFirePiranhaPlantNeutralScale, MODEL_RED_FLAME_SHADOW,

@@ -49,7 +49,7 @@ void bhv_intro_lakitu_loop(void) {
             obj_disable_rendering();
             gCurrentObject->oIntroLakituUnkFC = 0.f;
             gCurrentObject->oIntroLakituUnkF8 = 0.f;
-            gCurrentObject->oUnk1AC_VPTR =
+            gCurrentObject->oIntroLakituUnk1AC =
                 spawn_object_relative_with_scale(1, 0, 0, 0, 2.f, gCurrentObject, MODEL_MIST, bhvCloud);
             if (gCurrLevelCamera->cutscene == CUTSCENE_END_WAVING)
                 gCurrentObject->oAction = 100;
@@ -65,7 +65,7 @@ void bhv_intro_lakitu_loop(void) {
                 gCurrentObject->oPosZ = gCurrLevelCamera->pos[2];
             }
             if (gCutsceneTimer > 52)
-                PlaySound(SOUND_CH6_LAKITUFLY_HIGHPRIO);
+                PlaySound(SOUND_AIR_LAKITU_FLY_HIGHPRIO);
             if (func_8029ACAC(gCurrentObject, D_8032E3CC, D_8032E2B4) == 1)
                 gCurrentObject->oAction += 1;
 
@@ -109,11 +109,11 @@ void bhv_intro_lakitu_loop(void) {
                 gCurrentObject->oFaceAngleYaw = gCurrentObject->oMoveAngleYaw + 0x4000;
                 gCurrentObject->oMoveAnglePitch = 0x800;
             }
-            PlaySound(SOUND_CH6_LAKITUFLY_HIGHPRIO);
+            PlaySound(SOUND_AIR_LAKITU_FLY_HIGHPRIO);
             break;
 
         case 3:
-            PlaySound(SOUND_CH6_LAKITUFLY_HIGHPRIO);
+            PlaySound(SOUND_AIR_LAKITU_FLY_HIGHPRIO);
             vec3f_set(sp58, -1128.f, 560.f, 4664.f);
             gCurrentObject->oMoveAngleYaw += 0x200;
             gCurrentObject->oIntroLakituUnk100 =
@@ -145,7 +145,7 @@ void bhv_intro_lakitu_loop(void) {
 
             if (gCurrentObject->oTimer == TIMER) {
                 mark_object_for_deletion(gCurrentObject);
-                mark_object_for_deletion(gCurrentObject->oUnk1AC_VPTR);
+                mark_object_for_deletion(gCurrentObject->oIntroLakituUnk1AC);
             }
 #ifndef VERSION_JP
             if (gCurrentObject->oTimer == 14)

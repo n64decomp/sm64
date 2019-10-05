@@ -1,31 +1,33 @@
-#ifndef _HUD_PRINT_H
-#define _HUD_PRINT_H
+#ifndef HUD_H
+#define HUD_H
 
 #include "types.h"
 
-/* Segment 3 */
-extern u8 *power_meter_seg3_health_icons_030293E0[];
-extern Gfx* power_meter_seg3_dl_03029480;     //u8 []?
-extern Gfx* power_meter_seg3_dl_03029570;     //u8 []?
-extern Gfx* power_meter_seg3_dl_030295A0;     //u8 []?
+enum PowerMeterAnimation {
+    POWER_METER_HIDDEN,
+    POWER_METER_EMPHASIZED,
+    POWER_METER_DEEMPHASIZING,
+    POWER_METER_HIDING,
+    POWER_METER_VISIBLE
+};
 
-/* Functions */
-extern void render_hud_camera(s32, s32, u8[]);
-extern void render_hud_c_buttons(s32, s32, u8[]);
-extern void func_802E21A4(s16);
-extern void func_802E2304(s16);
-extern void func_802E24A8(void);
-extern void func_802E2520(void);
-extern void func_802E25D4(void);
-extern void func_802E261C(s16 numHealthWedges);
-extern void render_hud_hp(void);
-extern void render_hud_mario_lives(void);
-extern void render_hud_coins(void);
-extern void render_hud_stars(void);
-extern void func_802E29D4(void);
-extern void render_hud_timer(void);
-extern void set_camera_status(s16);
-extern void show_camera_status(void);
+enum CameraHUDLut {
+    GLYPH_CAM_CAMERA,
+    GLYPH_CAM_MARIO_HEAD,
+    GLYPH_CAM_LAKITU_HEAD,
+    GLYPH_CAM_FIXED,
+    GLYPH_CAM_ARROW_UP,
+    GLYPH_CAM_ARROW_DOWN
+};
+
+// Segment 3
+extern u8 *power_meter_health_segments_lut[];
+extern Gfx* dl_power_meter_base;
+extern Gfx* dl_power_meter_health_segments_begin;
+extern Gfx* dl_power_meter_health_segments_end;
+
+// Functions
+extern void set_hud_camera_status(s16 status);
 extern void render_hud(void);
 
-#endif /* _HUD_PRINT_H */
+#endif /* HUD_H */

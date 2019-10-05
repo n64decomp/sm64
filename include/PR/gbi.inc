@@ -10,13 +10,19 @@
 
 /* Macros */
 
+.macro bytes4 byte1, byte2, byte3, byte4
+    .word ((\byte1 & 0xFF) << 24) | ((\byte2 & 0xFF) << 16) | ((\byte3 & 0xFF) << 8) | (\byte4 & 0xFF)
+.endm
+
 /* commands with no parameters */
 .macro f3d_noparam cmd
-   .word (\cmd << 24), 0x00000000
+   .word (\cmd << 24)
+   .word 0
 .endm
 
 .macro gsImmp1 cmd, param
-   .word (\cmd << 24), \param
+   .word (\cmd << 24)
+   .word \param
 .endm
 
 /* DMA helper */
@@ -27,14 +33,14 @@
 
 /* DMA helper 3*/
 .macro gsDma3p cmd, byte2, byte3, byte4, segAddr
-   .byte \cmd, \byte2, \byte3, \byte4
+   bytes4 \cmd, \byte2, \byte3, \byte4
    .word \segAddr
 .endm
 
 /* Helper for RGBA colors. */
 .macro sDPRGBColor cmd r, g, b, a
    .word \cmd << 24
-   .byte \r, \g, \b, \a
+   bytes4 \r, \g, \b, \a
 .endm
 
 /* Opcodes */
@@ -667,7 +673,7 @@
          .word (\v0*10 << 16) | (\v1*10 << 8) | \v2*10
    .endif
    .else /* Fast3DEX2 */
-      .byte G_TRI1, \v0*2, \v1*2, \v2*2
+      bytes4 G_TRI1, \v0*2, \v1*2, \v2*2
       .word 0
    .endif
 .endm

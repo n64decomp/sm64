@@ -30,42 +30,44 @@ static u8 sPlayingInfiniteStairs = FALSE;
 static u8 unused8032C6D8[16] = { 0 };
 static s16 sSoundMenuModeToSoundMode[] = { SOUND_MODE_STEREO, SOUND_MODE_MONO, SOUND_MODE_HEADSET };
 // Only the 20th array element is used.
-static u32 menuSoundsExtra[] = { SOUND_UNKNOWN_UNK1400,
-                                 SOUND_UNKNOWN_UNK1401,
-                                 SOUND_UNKNOWN_UNK1402,
-                                 SOUND_UNKNOWN_UNK1403,
-                                 SOUND_UNKNOWN_UNK1404,
-                                 SOUND_UNKNOWN_UNK1405,
-                                 SOUND_UNKNOWN_UNK1406,
-                                 SOUND_UNKNOWN_UNK1410,
-                                 SOUND_UNKNOWN_UNK1412,
-                                 SOUND_UNKNOWN_UNK1411,
-                                 SOUND_UNKNOWN_UNK1414,
-                                 SOUND_UNKNOWN_UNK1420,
-                                 NO_SOUND,
-                                 SOUND_ENVIRONMENT_BOATROCKING1,
-                                 SOUND_ENVIRONMENT_ELEVATOR3,
-                                 SOUND_ENVIRONMENT_UNKNOWN2,
-                                 SOUND_ENVIRONMENT_WATERFALL1,
-                                 SOUND_ENVIRONMENT_WATERFALL2,
-                                 SOUND_ENVIRONMENT_ELEVATOR1,
-                                 SOUND_ENVIRONMENT_DRONING1,
-                                 SOUND_ENVIRONMENT_DRONING2,
-                                 SOUND_ENVIRONMENT_ELEVATOR2,
-                                 SOUND_ENVIRONMENT_WIND1,
-                                 SOUND_ENVIRONMENT_WATER,
-                                 SOUND_CH6_BOWSERSPITFIRE,
-                                 SOUND_MOVING_UNKNOWN19,
-                                 SOUND_CH6_LAKITUFLY,
-                                 SOUND_CH6_AMPBUZZ,
-                                 SOUND_CH6_CASTLEOUTDOORSAMBIENT,
-                                 SOUND_CH9_UNK52,
-                                 SOUND_CH8_UNK50,
-                                 SOUND_OBJECT_BIRDS2,
-                                 SOUND_ENVIRONMENT_ELEVATOR2,
-                                 SOUND_CH6_BLOWWINDORFIRE_LOWPRIO,
-                                 SOUND_CH6_BLOWWINDORFIRE,
-                                 SOUND_ENVIRONMENT_ELEVATOR4 };
+static u32 menuSoundsExtra[] = {
+    SOUND_MOVING_TERRAIN_SLIDE + (0 << 16),
+    SOUND_MOVING_TERRAIN_SLIDE + (1 << 16),
+    SOUND_MOVING_TERRAIN_SLIDE + (2 << 16),
+    SOUND_MOVING_TERRAIN_SLIDE + (3 << 16),
+    SOUND_MOVING_TERRAIN_SLIDE + (4 << 16),
+    SOUND_MOVING_TERRAIN_SLIDE + (5 << 16),
+    SOUND_MOVING_TERRAIN_SLIDE + (6 << 16),
+    SOUND_MOVING_LAVA_BURN,
+    SOUND_MOVING_SLIDE_DOWN_TREE,
+    SOUND_MOVING_SLIDE_DOWN_POLE,
+    SOUND_MOVING_QUICKSAND_DEATH,
+    SOUND_MOVING_TERRAIN_RIDING_SHELL,
+    NO_SOUND,
+    SOUND_ENV_BOAT_ROCKING1,
+    SOUND_ENV_ELEVATOR3,
+    SOUND_ENV_UNKNOWN2,
+    SOUND_ENV_WATERFALL1,
+    SOUND_ENV_WATERFALL2,
+    SOUND_ENV_ELEVATOR1,
+    SOUND_ENV_DRONING1,
+    SOUND_ENV_DRONING2,
+    SOUND_ENV_ELEVATOR2,
+    SOUND_ENV_WIND1,
+    SOUND_ENV_WATER,
+    SOUND_AIR_BOWSER_SPIT_FIRE,
+    SOUND_MOVING_AIM_CANNON,
+    SOUND_AIR_LAKITU_FLY,
+    SOUND_AIR_AMP_BUZZ,
+    SOUND_AIR_CASTLE_OUTDOORS_AMBIENT,
+    SOUND_OBJ2_BIRD_CHIRP1,
+    SOUND_GENERAL2_BIRD_CHIRP2,
+    SOUND_OBJ_BIRD_CHIRP3,
+    SOUND_ENV_ELEVATOR2,
+    SOUND_AIR_BLOW_WIND,
+    SOUND_AIR_BLOW_FIRE,
+    SOUND_ENV_ELEVATOR4,
+};
 static s8 paintingEjectSoundPlayed = FALSE;
 
 static void play_menu_sounds_extra(int a, void *b);
@@ -94,7 +96,7 @@ void func_80248CB8(s32 a) // harden volume
             set_sound_disabled(FALSE);
             break;
         case 2:
-            func_80320040(0, 60); // unsoften?
+            sequence_player_unlower(0, 60);
             break;
     }
     D_8032C6C0 &= ~a;
@@ -128,21 +130,21 @@ void set_sound_mode(u16 soundMode) {
  */
 void play_menu_sounds(s16 soundMenuFlags) {
     if (soundMenuFlags & SOUND_MENU_FLAG_HANDAPPEAR) {
-        play_sound(SOUND_MENU_HANDAPPEAR, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_HAND_APPEAR, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_HANDISAPPEAR) {
-        play_sound(SOUND_MENU_HANDDISAPPEAR, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_HAND_DISAPPEAR, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_UNKNOWN1) {
-        play_sound(SOUND_MENU_UNKNOWN1, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_UNK0C, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_PINCHMARIOFACE) {
-        play_sound(SOUND_MENU_PINCHMARIOFACE, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_PINCH_MARIO_FACE, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_PINCHMARIOFACE2) {
-        play_sound(SOUND_MENU_PINCHMARIOFACE, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_PINCH_MARIO_FACE, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_LETGOMARIOFACE) {
-        play_sound(SOUND_MENU_LETGOMARIOFACE, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_LET_GO_MARIO_FACE, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_CAMERAZOOMIN) {
-        play_sound(SOUND_MENU_CAMERAZOOMIN, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gDefaultSoundArgs);
     } else if (soundMenuFlags & SOUND_MENU_FLAG_CAMERAZOOMOUT) {
-        play_sound(SOUND_MENU_CAMERAZOOMOUT, gDefaultSoundArgs);
+        play_sound(SOUND_MENU_CAMERA_ZOOM_OUT, gDefaultSoundArgs);
     }
 
     if (soundMenuFlags & 0x100) {
@@ -212,7 +214,7 @@ void func_802491FC(s16 fadeOutTime) {
 }
 
 void func_8024924C(s16 fadeTimer) {
-    func_8031F7CC(0, fadeTimer);
+    sequence_player_fade_out(0, fadeTimer);
     sCurrentMusic = MUSIC_NONE;
     sCurrentShellMusic = MUSIC_NONE;
     sCurrentCapMusic = MUSIC_NONE;

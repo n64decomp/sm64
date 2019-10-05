@@ -12,7 +12,7 @@ void bhv_wf_elevator_tower_platform_loop(void) {
                 o->oAction++;
             break;
         case 1:
-            PlaySound(SOUND_ENVIRONMENT_ELEVATOR1);
+            PlaySound(SOUND_ENV_ELEVATOR1);
             if (o->oTimer > 140)
                 o->oAction++;
             else
@@ -23,7 +23,7 @@ void bhv_wf_elevator_tower_platform_loop(void) {
                 o->oAction++;
             break;
         case 3:
-            PlaySound(SOUND_ENVIRONMENT_ELEVATOR1);
+            PlaySound(SOUND_ENV_ELEVATOR1);
             if (o->oTimer > 140)
                 o->oAction = 0;
             else

@@ -14,7 +14,7 @@ gsDPSetTileSize 0, 0, 0, 252, 124
 gsDPSetTextureImage G_IM_FMT_IA, G_IM_SIZ_8b, 1, castle_grounds_seg7_us_texture_0700EAE8
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x100
-gsSPTextureRectangle 464, 664, 720, 792, 0, 0, 0, 1024, 1024
+gsSPTextureRectangle 116 << 2, 166 << 2, (116 + 64) << 2, (166 + 32) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10
 gsDPPipeSync
 gsDPSetTexturePersp G_TP_PERSP
 

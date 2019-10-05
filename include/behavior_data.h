@@ -317,7 +317,7 @@ extern u32 bhvRandomAnimatedTexture[];
 extern u32 bhvYellowBackgroundInMenu[];
 extern u32 bhvMenuButton[];
 extern u32 bhvMenuButtonManager[];
-extern u32 bhvStarInActSelector[];
+extern u32 bhvActSelectorStarType[];
 extern u32 bhvActSelector[];
 extern u32 bhvMovingYellowCoin[];
 extern u32 bhvMovingBlueCoin[];

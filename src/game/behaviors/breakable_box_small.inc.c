@@ -33,10 +33,10 @@ void func_802F4DB4(void) {
 
     attack_collided_non_mario_object(o);
     if (sp1E == 1)
-        PlaySound2(SOUND_GENERAL_BOXLANDING_2);
+        PlaySound2(SOUND_GENERAL_BOX_LANDING_2);
     if (sp1E & 1) {
         if (o->oForwardVel > 20.0f) {
-            PlaySound2(SOUND_ENVIRONMENT_SLIDING);
+            PlaySound2(SOUND_ENV_SLIDING);
             func_802F4CE8();
         }
     }
@@ -45,7 +45,7 @@ void func_802F4DB4(void) {
         func_802A3004();
         spawn_triangle_break_particles(20, 138, 0.7f, 3);
         ObjSpawnYellowCoins(o, 3);
-        create_sound_spawner(SOUND_GENERAL_BREAKBOX);
+        create_sound_spawner(SOUND_GENERAL_BREAK_BOX);
         o->activeFlags = 0;
     }
 

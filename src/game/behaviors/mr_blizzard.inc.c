@@ -81,7 +81,7 @@ static void func_8030702C(void) {
 
 static void func_80307144(void) {
     if (o->oDistanceToMario < 1000.0f) {
-        PlaySound2(SOUND_OBJECT_SNOWSAND2);
+        PlaySound2(SOUND_OBJ_SNOW_SAND2);
         o->oAction = 2;
         o->oMoveAngleYaw = o->oAngleToMario;
         o->oMrBlizzardUnkFC = 42.0f;
@@ -162,7 +162,7 @@ static void func_80307650(void) {
 
     if (clamp_f32(&o->oMrBlizzardUnk104, -0x4000, 0x4000)) {
         if (o->oMrBlizzardUnk108 != 0.0f) {
-            PlaySound2(SOUND_OBJECT_SNOWSAND1);
+            PlaySound2(SOUND_OBJ_SNOW_SAND1);
             if (o->oAnimState) {
                 save_file_clear_flags(SAVE_FLAG_CAP_ON_MR_BLIZZARD);
 
@@ -190,7 +190,7 @@ static void func_80307650(void) {
 
     if (o->oTimer >= 30) {
         if (o->oTimer == 30) {
-            PlaySound2(SOUND_EMEMY_DEFEAT_SHRINK);
+            PlaySound2(SOUND_OBJ_ENEMY_DEFEAT_SHRINK);
         }
 
         if (o->oMrBlizzardUnkF4 != 0.0f) {
@@ -215,7 +215,7 @@ static void func_80307650(void) {
 
 static void func_80307990(void) {
     if (func_802F92EC(1, 7)) {
-        PlaySound2(SOUND_CH9_UNK44);
+        PlaySound2(SOUND_OBJ2_SCUTTLEBUG_ALERT);
         o->prevObj = o->oMrBlizzardUnkF8 = NULL;
     } else if (func_8029F788()) {
         o->oAction = 0;
@@ -242,7 +242,7 @@ static void func_80307AD4(void) {
         obj_rotate_yaw_toward(o->oMrBlizzardUnk1AC, 3400);
 
         if (--o->oMrBlizzardUnk100 == 0) {
-            PlaySound2(SOUND_OBJECT_ENEMYALERT);
+            PlaySound2(SOUND_OBJ_MR_BLIZZARD_ALERT);
 
             if (o->oMrBlizzardUnk110 > 700) {
                 o->oMrBlizzardUnk1AC += 0x8000;
@@ -256,7 +256,7 @@ static void func_80307AD4(void) {
             }
         }
     } else if (o->oMoveFlags & 0x00000003) {
-        PlaySound2(SOUND_OBJECT_SNOWSAND1);
+        PlaySound2(SOUND_OBJ_SNOW_SAND1);
         if (o->oMrBlizzardUnk110 != 0) {
             o->oMrBlizzardUnk110 = (s32) obj_lateral_dist_to_home();
         } else {
@@ -342,7 +342,7 @@ static void func_80307FD4(void) {
 
     if (o->oAction == -1 || o->oMoveFlags & 0x0000000B) {
         func_80306ED4(6, 0, 5, 10, 3);
-        create_sound_spawner(SOUND_GENERAL_MOVINGINSAND);
+        create_sound_spawner(SOUND_GENERAL_MOVING_IN_SAND);
         mark_object_for_deletion(o);
     }
 

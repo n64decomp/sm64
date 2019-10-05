@@ -59,8 +59,8 @@
 #define DIALOG_UNK1_AWAIT_DIALOG 3
 #define DIALOG_UNK1_DISABLE_TIME_STOP 4
 
-#define DIALOG_UNK1_FLAG_1 (1 << 1) // 0x02
-#define DIALOG_UNK1_FLAG_2 (1 << 2) // 0x04
+#define DIALOG_UNK1_FLAG_DEFAULT (1 << 1) // 0x02
+#define DIALOG_UNK1_FLAG_RESPONSE (1 << 2) // 0x04
 #define DIALOG_UNK1_FLAG_4 (1 << 4) // 0x10
 
 #define DIALOG_UNK2_ENABLE_TIME_STOP 0
@@ -351,6 +351,11 @@
     #define BOO_DEATH_STATUS_ALIVE 0
     #define BOO_DEATH_STATUS_DYING 1
     #define BOO_DEATH_STATUS_DEAD 2
+
+    /* attackStatus */
+    #define BOO_NOT_ATTACKED 0
+    #define BOO_ATTACKED 1
+    #define BOO_BOUNCED_ON -1
 
 /* Beta Boo Key */
     /* oAction */

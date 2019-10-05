@@ -12,13 +12,13 @@ void bhv_celebration_star_init(void) {
         o->oFaceAnglePitch = 0;
         o->oFaceAngleRoll = 49152;
         obj_scale(0.1f);
-        o->oUnknownUnkF4_S32 = 1;
+        o->oCelebStarUnkF4 = 1;
     } else {
         o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
         o->oFaceAnglePitch = 0;
         o->oFaceAngleRoll = 0;
         obj_scale(0.4f);
-        o->oUnknownUnkF4_S32 = 0;
+        o->oCelebStarUnkF4 = 0;
     }
 #else
     o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
@@ -48,7 +48,7 @@ void CelebrationStarFaceCameraLoop(void) {
 
     if (o->oTimer < 10) {
 #if BUGFIX_STAR_BOWSER_KEY
-        if (o->oUnknownUnkF4_S32 == 0) {
+        if (o->oCelebStarUnkF4 == 0) {
             obj_scale((f32) o->oTimer / 10.0);
         } else {
             obj_scale((f32) o->oTimer / 30.0);

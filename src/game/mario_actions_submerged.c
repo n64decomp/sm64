@@ -787,7 +787,7 @@ static s32 act_water_throw(struct MarioState *m) {
     func_80270504(m);
 
     set_mario_animation(m, MARIO_ANIM_WATER_THROW_OBJ);
-    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN433, MARIO_ENVIRONMENT_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN433, MARIO_ACTION_SOUND_PLAYED);
 
     m->marioBodyState->unk12[0] = approach_s32(m->marioBodyState->unk12[0], 0, 0x200, 0x200);
 
@@ -815,7 +815,7 @@ static s32 act_water_punch(struct MarioState *m) {
 
     m->marioBodyState->unk12[0] = approach_s32(m->marioBodyState->unk12[0], 0, 0x200, 0x200);
 
-    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN433, MARIO_ENVIRONMENT_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN433, MARIO_ACTION_SOUND_PLAYED);
 
     switch (m->actionState) {
         case 0:
@@ -875,8 +875,8 @@ static s32 act_forward_water_kb(struct MarioState *m) {
 }
 
 static s32 act_water_shocked(struct MarioState *m) {
-    play_sound_if_no_flag(m, SOUND_MARIO_WAAAOOOW, MARIO_ENVIRONMENT_NOISE_PLAYED);
-    play_sound(SOUND_UNKNOWN_UNK1416, m->marioObj->header.gfx.cameraToObject);
+    play_sound_if_no_flag(m, SOUND_MARIO_WAAAOOOW, MARIO_ACTION_SOUND_PLAYED);
+    play_sound(SOUND_MOVING_SHOCKED, m->marioObj->header.gfx.cameraToObject);
     set_camera_shake(SHAKE_SHOCK);
 
     if (set_mario_animation(m, MARIO_ANIM_SHOCKED) == 0) {
@@ -914,7 +914,7 @@ static s32 act_drowning(struct MarioState *m) {
             break;
     }
 
-    play_sound_if_no_flag(m, SOUND_MARIO_DROWNING, MARIO_ENVIRONMENT_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_MARIO_DROWNING, MARIO_ACTION_SOUND_PLAYED);
     stationary_slow_down(m);
     perform_water_step(m);
 
@@ -947,9 +947,9 @@ static s32 act_water_plunge(struct MarioState *m) {
     }
 
     if (m->flags & MARIO_METAL_CAP) {
-        stateFlags |= 0x00000004;
+        stateFlags |= 4;
     } else if ((m->prevAction & ACT_FLAG_DIVING) || (m->input & INPUT_A_DOWN)) {
-        stateFlags |= 0x00000002;
+        stateFlags |= 2;
     }
 
     m->actionTimer++;
@@ -964,7 +964,7 @@ static s32 act_water_plunge(struct MarioState *m) {
             play_sound(SOUND_MARIO_HAHA_2, m->marioObj->header.gfx.cameraToObject);
         }
 
-        m->particleFlags |= 0x00000040;
+        m->particleFlags |= PARTICLE_6;
         m->actionState = 1;
     }
 
@@ -1013,7 +1013,7 @@ static s32 act_water_plunge(struct MarioState *m) {
             break;
     }
 
-    m->particleFlags |= 0x00000200;
+    m->particleFlags |= PARTICLE_9;
     return FALSE;
 }
 
@@ -1075,18 +1075,18 @@ static s32 act_caught_in_whirlpool(struct MarioState *m) {
 }
 
 static void func_80272FA8(struct MarioState *m, u32 arg) {
-    if (!(m->flags & MARIO_ENVIRONMENT_NOISE_PLAYED)) {
-        m->particleFlags |= 0x00010000;
+    if (!(m->flags & MARIO_ACTION_SOUND_PLAYED)) {
+        m->particleFlags |= PARTICLE_16;
     }
 
     play_sound_if_no_flag(m, arg ? SOUND_ACTION_UNKNOWN451 : SOUND_ACTION_UNKNOWN450,
-                          MARIO_ENVIRONMENT_NOISE_PLAYED);
+                          MARIO_ACTION_SOUND_PLAYED);
 }
 
 static void play_metal_water_walking_sound(struct MarioState *m) {
     if (is_anim_past_frame(m, 10) || is_anim_past_frame(m, 49)) {
         play_sound(SOUND_ACTION_UNKNOWN452, m->marioObj->header.gfx.cameraToObject);
-        m->particleFlags |= 0x00000001;
+        m->particleFlags |= PARTICLE_DUST;
     }
 }
 
@@ -1176,7 +1176,7 @@ static s32 act_metal_water_standing(struct MarioState *m) {
 
     stop_and_set_height_to_floor(m);
     if (m->pos[1] >= m->waterLevel - 150) {
-        m->particleFlags |= 0x00000080;
+        m->particleFlags |= PARTICLE_7;
     }
 
     return FALSE;

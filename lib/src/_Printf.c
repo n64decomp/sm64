@@ -205,7 +205,7 @@ static void _Putfld(printf_struct *a0, va_list *args, u8 type, u8 *buff) {
             break;
 
         case 'p':
-            a0->value.s64 = (long) va_arg(*args, void *); // void*
+            a0->value.s64 = (intptr_t) va_arg(*args, void *);
             a0->buff = (char *) &buff[a0->part1_len];
             _Litob(a0, 'x');
             break;

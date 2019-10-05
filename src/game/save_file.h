@@ -34,6 +34,13 @@ struct SaveFile
     struct SaveBlockSignature signature;
 };
 
+enum SaveFileIndex {
+    SAVE_FILE_A,
+    SAVE_FILE_B,
+    SAVE_FILE_C,
+    SAVE_FILE_D
+};
+
 struct MainMenuSaveData
 {
     // Each save file has a 2 bit "age" for each course. The higher this value,

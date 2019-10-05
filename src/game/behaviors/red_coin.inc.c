@@ -34,17 +34,17 @@ void bhv_red_coin_init(void) {
 void bhv_red_coin_loop(void) {
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         if (o->parentObj != NULL) {
-            o->parentObj->oHiddenRedCoinStarCoinsCollected++;
+            o->parentObj->oHiddenStarTriggerCounter++;
 #ifdef VERSION_JP
-            create_sound_spawner(SOUND_GENERAL_REDCOIN);
+            create_sound_spawner(SOUND_GENERAL_RED_COIN);
 #endif
-            if (o->parentObj->oHiddenRedCoinStarCoinsCollected != 8) {
-                SpawnOrangeNumber(o->parentObj->oHiddenRedCoinStarCoinsCollected, 0, 0, 0);
+            if (o->parentObj->oHiddenStarTriggerCounter != 8) {
+                SpawnOrangeNumber(o->parentObj->oHiddenStarTriggerCounter, 0, 0, 0);
             }
 
 #ifndef VERSION_JP
-            play_sound(SOUND_MENU_COLLECTREDCOIN
-                           + (((u8) o->parentObj->oHiddenRedCoinStarCoinsCollected - 1) << 16),
+            play_sound(SOUND_MENU_COLLECT_RED_COIN
+                           + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
                        gDefaultSoundArgs);
 #endif
         }

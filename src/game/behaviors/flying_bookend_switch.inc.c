@@ -37,7 +37,7 @@ struct ObjectHitbox sBookSwitchHitbox = {
 
 void flying_bookend_act_0(void) {
     if (obj_is_near_to_and_facing_mario(400.0f, 0x3000)) {
-        PlaySound2(SOUND_OBJECT_DEFAULTDEATH);
+        PlaySound2(SOUND_OBJ_DEFAULT_DEATH);
         o->oAction = 1;
         o->oBookendUnkF4 = o->oFaceAnglePitch + 0x7FFF;
         o->oBookendUnkF8 = o->oFaceAngleRoll - 0x7FFF;
@@ -99,7 +99,7 @@ void flying_bookend_act_3(void) {
 
 void bhv_flying_bookend_loop(void) {
     if (!(o->activeFlags & 0x0008)) {
-        o->oDeathSound = SOUND_OBJECT_POUNDING1;
+        o->oDeathSound = SOUND_OBJ_POUNDING1;
         obj_scale(o->header.gfx.scale[0]);
 
         switch (o->oAction) {
@@ -135,7 +135,7 @@ void bhv_bookend_spawn_loop(void) {
             sp1C = spawn_object(o, MODEL_BOOKEND, bhvFlyingBookend);
             if (sp1C != NULL) {
                 sp1C->oAction = 3;
-                PlaySound2(SOUND_OBJECT_DEFAULTDEATH);
+                PlaySound2(SOUND_OBJ_DEFAULT_DEATH);
             }
             o->oTimer = 0;
         }
@@ -252,7 +252,7 @@ void bhv_book_switch_loop(void) {
 
             o->oAction = 1;
             if (o->oBookSwitchUnkF4 == 0.0f) {
-                PlaySound2(SOUND_OBJECT_DEFAULTDEATH);
+                PlaySound2(SOUND_OBJ_DEFAULT_DEATH);
             }
 
             if (approach_f32_ptr(&o->oBookSwitchUnkF4, 50.0f, 20.0f)) {
@@ -269,13 +269,13 @@ void bhv_book_switch_loop(void) {
             if (approach_f32_ptr(&o->oBookSwitchUnkF4, 0.0f, 20.0f)) {
                 if (o->oAction != 0) {
                     if (o->parentObj->oBookSwitchManagerUnkF4 == o->oBehParams2ndByte) {
-                        play_sound(SOUND_CH8_RIGHTANSWER, gDefaultSoundArgs);
+                        play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gDefaultSoundArgs);
                         o->parentObj->oBookSwitchManagerUnkF4 += 1;
                     } else {
                         sp36 = RandomU16() & 0x1;
                         sp34 = gMarioObject->oPosZ + 1.5f * gMarioStates[0].vel[2];
 
-                        play_sound(SOUND_MENU_CAMERABUZZ, gDefaultSoundArgs);
+                        play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
                         if (sp34 > 0) {
                             sp34 = 0;
                         }

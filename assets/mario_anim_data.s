@@ -1,6 +1,6 @@
 .include "macros.inc"
 
-.data
+.section .data
 
 .macro anim_file name
     .balign 4, 0
@@ -8,19 +8,20 @@
 .endm
 
 .macro anim_entry name
-    .word (\name - gMarioAnims), (\name\()_end - \name)
+    .word32 (\name - gMarioAnims)
+    .word32 (\name\()_end - \name)
 .endm
 
 .macro anim_header name, flags, unk02, unk04, unk06, length, numnodes
     \name:
     .hword \flags, \unk02, \unk04, \unk06, \length, \numnodes
-    .word \name\()_values  - \name
-    .word \name\()_indices - \name
-    .word \name\()_end     - \name
+    .word32 \name\()_values  - \name
+    .word32 \name\()_indices - \name
+    .word32 \name\()_end     - \name
 .endm
 
 glabel gMarioAnims
-.word (anim_table_end - anim_table_start) / 8 # number of entries
+.word32 (anim_table_end - anim_table_start) / 8 # number of entries
 .word 0
 
 anim_table_start:

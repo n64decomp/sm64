@@ -414,7 +414,7 @@
         .byte 0x00
     .endif
     .byte 0x00, 0x00
-    .word \scale
+    .word32 \scale
     .if (\displayList != 0)
         .word \displayList
     .endif

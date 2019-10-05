@@ -64,7 +64,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
     s16 targetMovePitch;
     s16 targetMoveYaw;
 
-    PlaySound(SOUND_CH6_LAKITUFLY);
+    PlaySound(SOUND_AIR_LAKITU_FLY);
 
     // Face toward mario
     o->oFaceAnglePitch = obj_turn_pitch_toward_mario(120.0f, 0);
@@ -115,7 +115,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                     }
                 }
             }
-        } else if (obj_update_dialog_unk2(2, DIALOG_UNK2_FLAG_0, 0xA2, 0x22) != 0) {
+        } else if (obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0, CUTSCENE_DIALOG_1, 34) != 0) {
             o->oCameraLakituFinishedDialog = TRUE;
         }
     }

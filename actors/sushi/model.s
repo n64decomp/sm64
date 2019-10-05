@@ -3,8 +3,7 @@
 # Could be a duplicate binid of the previous actor, but i'm putting it here for
 # macro reasons so I don't have to clutter the macros.inc with a new macro for this
 # case.
-.word 0
-.word 1
+.dword 1
 
 sushi_seg5_texture_05008ED0: # 0x05008ED0
 .incbin "actors/sushi/sushi_snout.rgba16"

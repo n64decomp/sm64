@@ -13,7 +13,7 @@ typedef void *DynId;
 /// as the id can be either a number or a string.
 /// @{
 #define DynIdAsStr(id) ((char *)(id))
-#define DynIdAsInt(id) ((u32)(id))
+#define DynIdAsInt(id) ((u32)(uintptr_t)(id))
 #define AsDynId(unk)   ((DynId)(unk))
 /// @}
 /// @}

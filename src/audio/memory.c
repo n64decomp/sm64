@@ -109,7 +109,7 @@ void *soundAlloc(struct SoundAllocPool *pool, u32 size) {
 }
 
 void func_80316094(struct SoundAllocPool *pool, void *arg1, u32 arg2) {
-    pool->cur = pool->start = (u8 *) (((u32) arg1 + 0xf) & -0x10);
+    pool->cur = pool->start = (u8 *) (((uintptr_t) arg1 + 0xf) & -0x10);
     pool->size = arg2;
     pool->unused = 0;
 }
@@ -376,27 +376,24 @@ void func_803168CC(void) {
 void wait_for_audio_frames(s32 frames) {
     gActiveAudioFrames = 0;
     // Sound thread will update gActiveAudioFrames
-    while (gActiveAudioFrames < frames) { /* spin */
+    while (gActiveAudioFrames < frames) {
+        // spin
     }
 }
 
-#ifdef NON_MATCHING
-#define frames s1
 void func_80316928(struct Struct80332190 *arg0) {
-    // Wrong regalloc, and a lui which is too far up.
-    s32 sp2C;
+    s8 updatesPerFrame;
     s16 *mem;
-    s32 i; // s0
+    s32 sp2C;
+    s32 i;
     s32 j;
     s32 k;
     s32 persistentMem;
     s32 temporaryMem;
     s32 totalMem;
     s32 wantMisc;
-    s32 s1;
-    s8 temp8;
-    s32 size;
-    UNUSED s32 temp;
+    s32 frames;
+    s32 remainingDmas;
 
     if (gAudioLoadLock != AUDIO_LOCK_UNINITIALIZED) {
         func_803168CC();
@@ -412,7 +409,7 @@ void func_80316928(struct Struct80332190 *arg0) {
         for (;;) {
             wait_for_audio_frames(1);
             frames++;
-            if (frames > 8 * 30) {
+            if (frames > 4 * 60) {
                 // Break after 4 seconds
                 break;
             }
@@ -433,11 +430,11 @@ void func_80316928(struct Struct80332190 *arg0) {
         gAudioLoadLock = AUDIO_LOCK_LOADING;
         wait_for_audio_frames(3);
 
-        s1 = gCurrAudioFrameDmaCount;
-        while (s1 > 0) {
+        remainingDmas = gCurrAudioFrameDmaCount;
+        while (remainingDmas > 0) {
             for (i = 0; i < gCurrAudioFrameDmaCount; i++) {
                 if (osRecvMesg(&gCurrAudioFrameDmaQueue, NULL, OS_MESG_NOBLOCK) == 0)
-                    s1--;
+                    remainingDmas--;
             }
         }
         gCurrAudioFrameDmaCount = 0;
@@ -453,8 +450,7 @@ void func_80316928(struct Struct80332190 *arg0) {
     sp2C = arg0->unk6;
     gAiFrequency = osAiSetFrequency(arg0->frequency);
     gMaxSimultaneousNotes = arg0->maxSimultaneousNotes;
-    size = gAiFrequency / 60;
-    D_80226D74 = ALIGN16(size);
+    D_80226D74 = ALIGN16(gAiFrequency / 60);
     D_802212A2 = arg0->unk5;
 
     switch (D_802212A2) {
@@ -480,21 +476,22 @@ void func_80316928(struct Struct80332190 *arg0) {
     D_802212A2 = arg0->unk5;
     D_802212A0 = arg0->volume;
     gMinAiBufferLength = D_80226D74 - 0x10;
-    temp8 = D_80226D74 / 160 + 1;
-    gAudioUpdatesPerFrame = temp8;
+    updatesPerFrame = D_80226D74 / 160 + 1;
+    gAudioUpdatesPerFrame = D_80226D74 / 160 + 1;
+
     // Compute conversion ratio from the internal unit tatums/tick to the
     // external beats/minute (JP) or tatums/minute (US). In practice this is
     // 300 on JP and 14360 on US.
 #ifdef VERSION_JP
-    gTempoInternalToExternal = temp8 * 3600 / gTatumsPerBeat;
+    gTempoInternalToExternal = updatesPerFrame * 3600 / gTatumsPerBeat;
 #else
-    gTempoInternalToExternal = (u32)(temp8 * 2880000.0f / gTatumsPerBeat / 16.713f);
+    gTempoInternalToExternal = (u32)(updatesPerFrame * 2880000.0f / gTatumsPerBeat / 16.713f);
 #endif
-    D_80226D6C = gMaxSimultaneousNotes * 20 * temp8 + 320;
+
+    D_80226D6C = gMaxSimultaneousNotes * 20 * updatesPerFrame + 320;
     persistentMem = arg0->persistentBankMem + arg0->persistentSeqMem;
     temporaryMem = arg0->temporaryBankMem + arg0->temporarySeqMem;
     totalMem = persistentMem + temporaryMem;
-    // (the address of D_802212A8.size is lui'd too far up)
     wantMisc = D_802212A8.size - totalMem - 0x100;
     D_80221898.wantSeq = wantMisc;
     D_80221898.wantCustom = totalMem;
@@ -556,9 +553,3 @@ void func_80316928(struct Struct80332190 *arg0) {
         gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;
     }
 }
-
-#elif defined(VERSION_JP)
-GLOBAL_ASM("asm/non_matchings/func_80316928_jp.s")
-#else
-GLOBAL_ASM("asm/non_matchings/func_80316928_us.s")
-#endif

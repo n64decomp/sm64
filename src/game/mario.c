@@ -64,8 +64,8 @@ s16 set_mario_animation(struct MarioState *m, s32 targetAnimID) {
     struct Animation *targetAnim = m->animation->targetAnim;
 
     if (func_80278AD4(m->animation, targetAnimID)) {
-        targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((s8 *) targetAnim + (s32) targetAnim->values);
-        targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((s8 *) targetAnim + (s32) targetAnim->index);
+        targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->values);
+        targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->index);
     }
 
     if (o->header.gfx.unk38.animID != targetAnimID) {
@@ -97,8 +97,8 @@ s16 set_mario_anim_with_accel(struct MarioState *m, s32 targetAnimID, s32 accel)
     struct Animation *targetAnim = m->animation->targetAnim;
 
     if (func_80278AD4(m->animation, targetAnimID)) {
-        targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((s8 *) targetAnim + (s32) targetAnim->values);
-        targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((s8 *) targetAnim + (s32) targetAnim->index);
+        targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->values);
+        targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->index);
     }
 
     if (o->header.gfx.unk38.animID != targetAnimID) {
@@ -183,8 +183,8 @@ s16 find_mario_anim_flags_and_translation(struct Object *obj, s32 yaw, Vec3s tra
 
     struct Animation *curAnim = (void *) obj->header.gfx.unk38.curAnim;
     s16 animFrame = geo_update_animation_frame(&obj->header.gfx.unk38, NULL);
-    u16 *animIndex = (u16 *) segmented_to_virtual(curAnim->index);
-    s16 *animValues = (s16 *) segmented_to_virtual(curAnim->values);
+    u16 *animIndex = segmented_to_virtual(curAnim->index);
+    s16 *animValues = segmented_to_virtual(curAnim->values);
 
     f32 s = (f32) sins(yaw);
     f32 c = (f32) coss(yaw);
@@ -243,23 +243,23 @@ void play_sound_if_no_flag(struct MarioState *m, u32 soundBits, u32 flags) {
 }
 
 /**
- * Plays an action sound if one has not been played since the last action change.
+ * Plays a jump sound if one has not been played since the last action change.
  */
-void play_mario_action_sound(struct MarioState *m) {
-    if (!(m->flags & MARIO_ACTION_NOISE_PLAYED)) {
+void play_mario_jump_sound(struct MarioState *m) {
+    if (!(m->flags & MARIO_MARIO_SOUND_PLAYED)) {
 #ifndef VERSION_JP
         if (m->action == ACT_TRIPLE_JUMP) {
-            play_sound(SOUND_MARIO_YAHOO2 + ((D_80226EB8 % 5) << 0x10),
+            play_sound(SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((D_80226EB8 % 5) << 16),
                        m->marioObj->header.gfx.cameraToObject);
         } else {
 #endif
-            play_sound(SOUND_MARIO_YAH + ((D_80226EB8 % 3) << 0x10),
+            play_sound(SOUND_MARIO_YAH_WAH_HOO + ((D_80226EB8 % 3) << 16),
                        m->marioObj->header.gfx.cameraToObject);
 #ifndef VERSION_JP
         }
 #endif
 
-        m->flags |= MARIO_ACTION_NOISE_PLAYED;
+        m->flags |= MARIO_MARIO_SOUND_PLAYED;
     }
 }
 
@@ -268,59 +268,61 @@ void play_mario_action_sound(struct MarioState *m) {
  */
 void adjust_sound_for_speed(struct MarioState *m) {
     s32 absForwardVel = (m->forwardVel > 0.0f) ? m->forwardVel : -m->forwardVel;
-    func_80320A4C(1, (absForwardVel >= 101) ? 100 : absForwardVel);
+    func_80320A4C(1, (absForwardVel > 100) ? 100 : absForwardVel);
 }
 
 /**
  * Spawns particles if the step sound says to, then either plays a step sound or relevant other sound.
  */
 void play_sound_and_spawn_particles(struct MarioState *m, u32 soundBits, u32 waveParticleType) {
-    if (m->stepSound == 0x20000) {
+    if (m->terrainSoundAddend == (SOUND_TERRAIN_WATER << 16)) {
         if (waveParticleType != 0) {
             m->particleFlags |= PARTICLE_12;
         } else {
             m->particleFlags |= PARTICLE_8;
         }
     } else {
-        if (m->stepSound == 0x70000) {
+        if (m->terrainSoundAddend == (SOUND_TERRAIN_SAND << 16)) {
             m->particleFlags |= PARTICLE_15;
-        } else if (m->stepSound == 0x50000) {
+        } else if (m->terrainSoundAddend == (SOUND_TERRAIN_SNOW << 16)) {
             m->particleFlags |= PARTICLE_14;
         }
     }
 
     if ((m->flags & MARIO_METAL_CAP) || soundBits == SOUND_ACTION_UNKNOWN443
-        || soundBits == SOUND_MARIO_HOO6) {
+        || soundBits == SOUND_MARIO_PUNCH_HOO) {
         play_sound(soundBits, m->marioObj->header.gfx.cameraToObject);
     } else {
-        play_sound((m->stepSound + soundBits), m->marioObj->header.gfx.cameraToObject);
+        play_sound(m->terrainSoundAddend + soundBits, m->marioObj->header.gfx.cameraToObject);
     }
 }
 
 /**
  * Plays an environmental sound if one has not been played since the last action change.
  */
-void play_mario_environment_sound(struct MarioState *m, u32 soundBits, u32 waveParticleType) {
-    if ((m->flags & MARIO_ENVIRONMENT_NOISE_PLAYED) == 0) {
+void play_mario_action_sound(struct MarioState *m, u32 soundBits, u32 waveParticleType) {
+    if ((m->flags & MARIO_ACTION_SOUND_PLAYED) == 0) {
         play_sound_and_spawn_particles(m, soundBits, waveParticleType);
-        m->flags |= MARIO_ENVIRONMENT_NOISE_PLAYED;
+        m->flags |= MARIO_ACTION_SOUND_PLAYED;
     }
-}
-
-/**
- * Plays a step sound, accounting for metal cap.
- */
-void play_mario_step_sound(struct MarioState *m, u32 soundBits) {
-    play_sound_and_spawn_particles(
-        m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_UNKNOWN429 : soundBits, 1);
 }
 
 /**
  * Plays a landing sound, accounting for metal cap.
  */
 void play_mario_landing_sound(struct MarioState *m, u32 soundBits) {
-    play_mario_environment_sound(m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_UNKNOWN429 : soundBits,
-                                 1);
+    play_sound_and_spawn_particles(
+        m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_METAL_LANDING : soundBits, 1);
+}
+
+/**
+ * Plays a landing sound, accounting for metal cap. Unlike play_mario_landing_sound,
+ * this function uses play_mario_action_sound, making sure the sound is only
+ * played once per action.
+ */
+void play_mario_landing_sound_once(struct MarioState *m, u32 soundBits) {
+    play_mario_action_sound(m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_METAL_LANDING : soundBits,
+                            1);
 }
 
 /**
@@ -328,34 +330,36 @@ void play_mario_landing_sound(struct MarioState *m, u32 soundBits) {
  */
 void play_mario_heavy_landing_sound(struct MarioState *m, u32 soundBits) {
     play_sound_and_spawn_particles(
-        m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_UNKNOWN42B : soundBits, 1);
+        m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_METAL_HEAVY_LANDING : soundBits, 1);
 }
 
 /**
- * Plays a knockback sound, accounting for metal cap.
+ * Plays a heavy landing (ground pound, etc.) sound, accounting for metal cap.
+ * Unlike play_mario_heavy_landing_sound, this function uses play_mario_action_sound,
+ * making sure the sound is only played once per action.
  */
-void play_mario_knockback_sound(struct MarioState *m, u32 soundBits) {
-    play_mario_environment_sound(m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_UNKNOWN42B : soundBits,
-                                 1);
+void play_mario_heavy_landing_sound_once(struct MarioState *m, u32 soundBits) {
+    play_mario_action_sound(
+        m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_METAL_HEAVY_LANDING : soundBits, 1);
 }
 
 /**
- * Plays an environment and action noise relevant to what was passed into the function.
+ * Plays action and mario sounds relevant to what was passed into the function.
  */
-void play_mario_sound(struct MarioState *m, s32 primarySoundBits, s32 scondarySoundBits) {
-    if (primarySoundBits == SOUND_TERRAIN_1) {
-        play_mario_environment_sound(
-            m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_UNKNOWN428 : SOUND_TERRAIN_1, 1);
+void play_mario_sound(struct MarioState *m, s32 actionSound, s32 marioSound) {
+    if (actionSound == SOUND_ACTION_TERRAIN_JUMP) {
+        play_mario_action_sound(
+            m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_METAL_JUMP : SOUND_ACTION_TERRAIN_JUMP, 1);
     } else {
-        play_sound_if_no_flag(m, primarySoundBits, MARIO_ENVIRONMENT_NOISE_PLAYED);
+        play_sound_if_no_flag(m, actionSound, MARIO_ACTION_SOUND_PLAYED);
     }
 
-    if (scondarySoundBits == 0) {
-        play_mario_action_sound(m);
+    if (marioSound == 0) {
+        play_mario_jump_sound(m);
     }
 
-    if (scondarySoundBits != -1) {
-        play_sound_if_no_flag(m, scondarySoundBits, MARIO_ACTION_NOISE_PLAYED);
+    if (marioSound != -1) {
+        play_sound_if_no_flag(m, marioSound, MARIO_MARIO_SOUND_PLAYED);
     }
 }
 
@@ -426,50 +430,62 @@ s32 mario_get_floor_class(struct MarioState *m) {
     return floorClass;
 }
 
-/**
- * The step noises organized by terrain types by surface classes.
- * See audio_defines.h for more information.
- */
-s8 sTerrainStepNoises[7][6] = { { 0, 3, 1, 1, 1, 0 }, { 3, 3, 3, 3, 1, 1 }, { 5, 6, 5, 6, 3, 3 },
-                                { 7, 3, 7, 7, 3, 3 }, { 4, 4, 4, 4, 3, 3 }, { 0, 3, 1, 6, 3, 6 },
-                                { 3, 3, 3, 3, 6, 6 } };
+// clang-format off
+s8 sTerrainSounds[7][6] = {
+    // default,              hard,                 slippery,
+    // very slippery,        noisy default,        noisy slippery
+    { SOUND_TERRAIN_DEFAULT, SOUND_TERRAIN_STONE,  SOUND_TERRAIN_GRASS,
+      SOUND_TERRAIN_GRASS,   SOUND_TERRAIN_GRASS,  SOUND_TERRAIN_DEFAULT }, // TERRAIN_GRASS
+    { SOUND_TERRAIN_STONE,   SOUND_TERRAIN_STONE,  SOUND_TERRAIN_STONE,
+      SOUND_TERRAIN_STONE,   SOUND_TERRAIN_GRASS,  SOUND_TERRAIN_GRASS }, // TERRAIN_STONE
+    { SOUND_TERRAIN_SNOW,    SOUND_TERRAIN_ICE,    SOUND_TERRAIN_SNOW,
+      SOUND_TERRAIN_ICE,     SOUND_TERRAIN_STONE,  SOUND_TERRAIN_STONE }, // TERRAIN_SNOW
+    { SOUND_TERRAIN_SAND,    SOUND_TERRAIN_STONE,  SOUND_TERRAIN_SAND,
+      SOUND_TERRAIN_SAND,    SOUND_TERRAIN_STONE,  SOUND_TERRAIN_STONE }, // TERRAIN_SAND
+    { SOUND_TERRAIN_SPOOKY,  SOUND_TERRAIN_SPOOKY, SOUND_TERRAIN_SPOOKY,
+      SOUND_TERRAIN_SPOOKY,  SOUND_TERRAIN_STONE,  SOUND_TERRAIN_STONE }, // TERRAIN_SPOOKY
+    { SOUND_TERRAIN_DEFAULT, SOUND_TERRAIN_STONE,  SOUND_TERRAIN_GRASS,
+      SOUND_TERRAIN_ICE,     SOUND_TERRAIN_STONE,  SOUND_TERRAIN_ICE }, // TERRAIN_WATER
+    { SOUND_TERRAIN_STONE,   SOUND_TERRAIN_STONE,  SOUND_TERRAIN_STONE,
+      SOUND_TERRAIN_STONE,   SOUND_TERRAIN_ICE,    SOUND_TERRAIN_ICE }, // TERRAIN_SLIDE
+};
+// clang-format on
 
 /**
- * Finds and returns Mario's step noise/type. Depends on surfaces and terrain.
+ * Computes a value that should be added to terrain sounds before playing them.
+ * This depends on surfaces and terrain.
  */
-u32 mario_get_step_noise(struct MarioState *m) {
-    s16 noiseType;
+u32 mario_get_terrain_sound_addend(struct MarioState *m) {
+    s16 floorSoundType;
     s16 terrainType = m->area->terrainType & TERRAIN_MASK;
-    s32 stepNoise = 0;
+    s32 ret = SOUND_TERRAIN_DEFAULT << 16;
     s32 floorType;
 
     if (m->floor) {
         floorType = m->floor->type;
 
-        // Sets for a water step noise, excluding LLL since it uses water in the volcano.
         if ((gCurrLevelNum != LEVEL_LLL) && (m->floorHeight < (m->waterLevel - 10))) {
-            stepNoise = 0x20000;
-        }
-        // Sets for a quicksand step noise.
-        else if (SURFACE_IS_QUICKSAND(floorType)) {
-            stepNoise = 0x70000;
+            // Water terrain sound, excluding LLL since it uses water in the volcano.
+            ret = SOUND_TERRAIN_WATER << 16;
+        } else if (SURFACE_IS_QUICKSAND(floorType)) {
+            ret = SOUND_TERRAIN_SAND << 16;
         } else {
             switch (floorType) {
                 default:
-                    noiseType = 0;
+                    floorSoundType = 0;
                     break;
 
                 case SURFACE_NOT_SLIPPERY:
                 case SURFACE_HARD:
                 case SURFACE_HARD_NOT_SLIPPERY:
                 case SURFACE_SWITCH:
-                    noiseType = 1;
+                    floorSoundType = 1;
                     break;
 
                 case SURFACE_SLIPPERY:
                 case SURFACE_HARD_SLIPPERY:
                 case SURFACE_NO_CAM_COL_SLIPPERY:
-                    noiseType = 2;
+                    floorSoundType = 2;
                     break;
 
                 case SURFACE_VERY_SLIPPERY:
@@ -479,23 +495,23 @@ u32 mario_get_step_noise(struct MarioState *m) {
                 case SURFACE_NOISE_VERY_SLIPPERY_74:
                 case SURFACE_NOISE_VERY_SLIPPERY:
                 case SURFACE_NO_CAM_COL_VERY_SLIPPERY:
-                    noiseType = 3;
+                    floorSoundType = 3;
                     break;
 
                 case SURFACE_NOISE_DEFAULT:
-                    noiseType = 4;
+                    floorSoundType = 4;
                     break;
 
                 case SURFACE_NOISE_SLIPPERY:
-                    noiseType = 5;
+                    floorSoundType = 5;
                     break;
             }
 
-            stepNoise = sTerrainStepNoises[terrainType][noiseType] << 0x10;
+            ret = sTerrainSounds[terrainType][floorSoundType] << 16;
         }
     }
 
-    return stepNoise;
+    return ret;
 }
 
 /**
@@ -890,7 +906,7 @@ static u32 set_mario_action_moving(struct MarioState *m, u32 action, UNUSED u32 
                 }
             }
 
-            m->marioObj->OBJECT_FIELD_S32(0x22) = 0;
+            m->marioObj->oMarioWalkingPitch = 0;
             break;
 
         case ACT_HOLD_WALKING:
@@ -980,7 +996,7 @@ u32 set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
     }
 
     // Resets the sound played flags, meaning Mario can play those sound types again.
-    m->flags &= ~(MARIO_ENVIRONMENT_NOISE_PLAYED | MARIO_ACTION_NOISE_PLAYED);
+    m->flags &= ~(MARIO_ACTION_SOUND_PLAYED | MARIO_MARIO_SOUND_PLAYED);
 
     if (!(m->action & ACT_FLAG_AIR)) {
         m->flags &= ~MARIO_UNKNOWN_18;
@@ -1321,7 +1337,7 @@ void update_mario_geometry_inputs(struct MarioState *m) {
 
     if (m->floor) {
         m->floorAngle = atan2s(m->floor->normal.z, m->floor->normal.x);
-        m->stepSound = mario_get_step_noise(m);
+        m->terrainSoundAddend = mario_get_terrain_sound_addend(m);
 
         if ((m->pos[1] > m->waterLevel - 40) && mario_floor_is_slippery(m)) {
             m->input |= INPUT_ABOVE_SLIDE;
@@ -1478,7 +1494,7 @@ void update_mario_health(struct MarioState *m) {
 
         // Play a noise to alert the player when Mario is close to drowning.
         if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300)) {
-            play_sound(SOUND_UNKNOWN_UNK1C18, gDefaultSoundArgs);
+            play_sound(SOUND_MOVING_ALMOST_DROWNING, gDefaultSoundArgs);
         }
     }
 }
@@ -1721,14 +1737,14 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         if (gMarioState->floor->type == SURFACE_HORIZONTAL_WIND) {
             func_802ADC20(0, (gMarioState->floor->force << 8));
 #ifndef VERSION_JP
-            play_sound(SOUND_ENVIRONMENT_WIND2, gMarioState->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_ENV_WIND2, gMarioState->marioObj->header.gfx.cameraToObject);
 #endif
         }
 
         if (gMarioState->floor->type == SURFACE_VERTICAL_WIND) {
             func_802ADC20(1, 0);
 #ifndef VERSION_JP
-            play_sound(SOUND_ENVIRONMENT_WIND2, gMarioState->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_ENV_WIND2, gMarioState->marioObj->header.gfx.cameraToObject);
 #endif
         }
 
@@ -1822,7 +1838,7 @@ void init_mario(void) {
         capObject->oPosY = capPos[1];
         capObject->oPosZ = capPos[2];
 
-        capObject->oForwardVel2 = 0;
+        capObject->oForwardVelS32 = 0;
 
         capObject->oMoveAngleYaw = 0;
     }

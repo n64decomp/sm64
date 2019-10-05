@@ -24,7 +24,7 @@ s32 osAiSetNextBuffer(void *buff, u32 len) {
         sp1c -= 0x2000;
     }
 
-    if ((((u32) buff + len) & 0x3fff) == 0x2000) {
+    if ((((uintptr_t) buff + len) & 0x3fff) == 0x2000) {
         D_80334820 = 1;
     } else {
         D_80334820 = 0;

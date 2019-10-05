@@ -80,7 +80,7 @@ static void bhvToadMessage_opaque(void) {
 }
 
 static void bhvToadMessage_talking(void) {
-    if (obj_update_dialog_unk2(3, 1, 162, gCurrentObject->oToadMessageDialogNum) != 0) {
+    if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG_1, gCurrentObject->oToadMessageDialogNum) != 0) {
         gCurrentObject->oToadMessageRecentlyTalked = 1;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
         switch (gCurrentObject->oToadMessageDialogNum) {
@@ -218,7 +218,7 @@ void bhvUnlockDoorStar_loop(void) {
             gCurrentObject->oMoveAngleYaw +=
                 gCurrentObject->oUnlockDoorStarYawVel; // Apply yaw velocity
             if (++gCurrentObject->oUnlockDoorStarTimer == 30) {
-                play_sound(SOUND_MENU_STARSOUND,
+                play_sound(SOUND_MENU_STAR_SOUND,
                            gCurrentObject->header.gfx.cameraToObject); // Play final sound
                 obj_hide();                                            // Hide the object
                 gCurrentObject->oUnlockDoorStarTimer = 0;
@@ -246,7 +246,7 @@ void bhvUnlockDoorStar_loop(void) {
     // This means that the code will execute when the star completes a full revolution.
     if (prevYaw > (s16) gCurrentObject->oMoveAngleYaw) {
         play_sound(
-            SOUND_GENERAL_SHORTSTAR,
+            SOUND_GENERAL_SHORT_STAR,
             gCurrentObject->header.gfx.cameraToObject); // Play a sound every time the star spins once
     }
 }

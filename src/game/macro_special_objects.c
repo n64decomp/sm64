@@ -74,9 +74,9 @@ void spawn_macro_abs_special(u32 model, u32 *behavior, s16 x, s16 y, s16 z, s16 
         spawn_object_abs_with_rot(&gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, 0, 0);
 
     // Are all three of these values unused?
-    newObj->oUnknownUnk108_F32 = (f32) unkA;
-    newObj->oUnknownUnk10C_F32 = (f32) unkB;
-    newObj->oUnknownUnk110_F32 = (f32) unkC;
+    newObj->oMacroUnk108 = (f32) unkA;
+    newObj->oMacroUnk10C = (f32) unkB;
+    newObj->oMacroUnk110 = (f32) unkC;
 }
 
 static void Unknown802E142C(u32 (*a0)[], s16 a1[]) {
@@ -306,13 +306,13 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
                 break;
             case SPTYPE_UNKNOWN:
                 extraParams[0] =
-                    **specialObjList; // Unknown, gets put into obj->oUnknownUnk108_F32 as a float
+                    **specialObjList; // Unknown, gets put into obj->oMacroUnk108 as a float
                 (*specialObjList)++;
                 extraParams[1] =
-                    **specialObjList; // Unknown, gets put into obj->oUnknownUnk10C_F32 as a float
+                    **specialObjList; // Unknown, gets put into obj->oMacroUnk10C as a float
                 (*specialObjList)++;
                 extraParams[2] =
-                    **specialObjList; // Unknown, gets put into obj->oUnknownUnk110_F32 as a f32
+                    **specialObjList; // Unknown, gets put into obj->oMacroUnk110 as a float
                 (*specialObjList)++;
                 spawn_macro_abs_special(model, behavior, x, y, z, extraParams[0], extraParams[1],
                                         extraParams[2]);

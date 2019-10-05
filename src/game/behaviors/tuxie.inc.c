@@ -15,9 +15,9 @@ void play_penguin_walking_sound(s32 walk) {
     s32 sound;
     if (o->oSoundStateID == 0) {
         if (walk == PENGUIN_WALK_BABY)
-            sound = SOUND_BABY_PENGUIN_WALK;
+            sound = SOUND_OBJ_BABY_PENGUIN_WALK;
         else // PENGUIN_WALK_BIG
-            sound = SOUND_BIG_PENGUIN_WALK;
+            sound = SOUND_OBJ_BIG_PENGUIN_WALK;
         func_802BE2E8(1, 11, sound);
     }
 }
@@ -46,7 +46,7 @@ void ActionTuxiesMother2(void) {
     }
     if (sp1C != NULL && sp24 < 300.0f && sp1C->oHeldState != HELD_FREE) {
         o->oAction = 1;
-        sp1C->oUnknownUnk88 = 1;
+        sp1C->oSmallPenguinUnk88 = 1;
         o->prevObj = sp1C;
     }
 }
@@ -54,7 +54,7 @@ void ActionTuxiesMother2(void) {
 void ActionTuxiesMother1(void) {
     s32 sp2C;
     s32 sp28;
-    s32 sp24;
+    s32 dialogID;
     switch (o->oSubAction) {
         case 0:
             set_obj_animation_and_sound_state(3);
@@ -62,11 +62,11 @@ void ActionTuxiesMother1(void) {
                 sp2C = (o->oBehParams >> 0x10) & 0xFF;
                 sp28 = (o->prevObj->oBehParams >> 0x10) & 0xFF;
                 if (sp2C == sp28)
-                    sp24 = 58;
+                    dialogID = 58;
                 else
-                    sp24 = 59;
-                if (obj_update_dialog_unk2(2, 1, 162, sp24)) {
-                    if (sp24 == 58)
+                    dialogID = 59;
+                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, dialogID)) {
+                    if (dialogID == 58)
                         o->oSubAction = 1;
                     else
                         o->oSubAction = 2;
@@ -77,8 +77,15 @@ void ActionTuxiesMother1(void) {
             break;
         case 1:
             if (o->prevObj->oHeldState == HELD_FREE) {
-                ((s32 *) o->prevObj)[o->oInteractionSubtype + 34] &=
-                    ~INT_SUBTYPE_DROP_IMMEDIATELY; // FIXME: find something more normal?
+                //! This line is was almost certainly supposed to be something
+                // like o->prevObj->oInteractionSubtype &= ~INT_SUBTYPE_DROP_IMMEDIATELY;
+                // however, this code uses the value of o->oInteractionSubtype
+                // rather than its offset to rawData. For this object,
+                // o->oInteractionSubtype is always 0, so the result is this:
+                // o->prevObj->oUnknownUnk88 &= ~INT_SUBTYPE_DROP_IMMEDIATELY
+                // which has no effect as o->prevObj->oUnknownUnk88 is always 0
+                // or 1, which is not affected by the bitwise AND.
+                o->prevObj->OBJECT_FIELD_S32(o->oInteractionSubtype) &= ~INT_SUBTYPE_DROP_IMMEDIATELY;
                 set_object_behavior(o->prevObj, bhvUnused20E0);
 #ifndef VERSION_JP
                 obj_spawn_star_at_y_offset(3167.0f, -4300.0f, 5108.0f, 200.0f);
@@ -90,7 +97,8 @@ void ActionTuxiesMother1(void) {
             break;
         case 2:
             if (o->prevObj->oHeldState == HELD_FREE) {
-                ((s32 *) o->prevObj)[o->oInteractionSubtype + 34] &= ~INT_SUBTYPE_DROP_IMMEDIATELY;
+                //! Same bug as above
+                o->prevObj->OBJECT_FIELD_S32(o->oInteractionSubtype) &= ~INT_SUBTYPE_DROP_IMMEDIATELY;
                 set_object_behavior(o->prevObj, bhvPenguinBaby);
                 o->oAction = 2;
             }
@@ -110,7 +118,7 @@ void ActionTuxiesMother0(void) {
         sp2C = 1;
     if (sp24 != NULL && sp28 < 300.0f && sp24->oHeldState != HELD_FREE) {
         o->oAction = 1;
-        sp24->oUnknownUnk88 = 1;
+        sp24->oSmallPenguinUnk88 = 1;
         o->prevObj = sp24;
     } else {
         switch (o->oSubAction) {
@@ -120,7 +128,7 @@ void ActionTuxiesMother0(void) {
                         o->oSubAction++;
                 break;
             case 1:
-                if (obj_update_dialog_unk2(2, 1, 162, 57))
+                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, 57))
                     o->oSubAction++;
                 break;
             case 2:
@@ -130,7 +138,7 @@ void ActionTuxiesMother0(void) {
         }
     }
     if (obj_check_anim_frame(1))
-        PlaySound2(SOUND_BIG_PENGUIN_YELL);
+        PlaySound2(SOUND_OBJ_BIG_PENGUIN_YELL);
 }
 
 void (*sTuxiesMotherActions[])(void) = { ActionTuxiesMother0, ActionTuxiesMother1,
@@ -181,7 +189,7 @@ void ActionSmallPenguin1(void) {
 void ActionSmallPenguin3(void) {
     if (o->oTimer > 5) {
         if (o->oTimer == 6)
-            PlaySound2(SOUND_BABY_PENGUIN_DIVE);
+            PlaySound2(SOUND_OBJ_BABY_PENGUIN_DIVE);
         set_obj_animation_and_sound_state(1);
         if (o->oTimer > 25)
             if (!mario_is_dive_sliding())
@@ -247,9 +255,9 @@ void (*sSmallPenguinActions[])(void) = {
 };
 
 void func_802BF048(void) {
-    if (o->oUnknownUnk88 != 0) {
+    if (o->oSmallPenguinUnk88 != 0) {
         o->oAction = 5;
-        o->oUnknownUnk88 = 0;
+        o->oSmallPenguinUnk88 = 0;
     }
     obj_update_floor_and_walls();
     obj_call_action_function(sSmallPenguinActions);
@@ -269,9 +277,9 @@ void bhv_small_penguin_loop(void) {
             copy_object_pos(o, gMarioObject);
             if (gGlobalTimer % 30 == 0)
 #ifndef VERSION_JP
-                play_sound(SOUND_BABY_PENGUIN_YELL, gMarioObject->header.gfx.cameraToObject);
+                play_sound(SOUND_OBJ2_BABY_PENGUIN_YELL, gMarioObject->header.gfx.cameraToObject);
 #else
-                play_sound(SOUND_BABY_PENGUIN_YELL, o->header.gfx.cameraToObject);
+                play_sound(SOUND_OBJ2_BABY_PENGUIN_YELL, o->header.gfx.cameraToObject);
 #endif
             break;
         case HELD_THROWN:

@@ -32,9 +32,9 @@ Gfx *Geo18_8030D93C(s32 arg0, struct GraphNode *node, UNUSED void *arg2) {
         sp4 = (struct Object *) gCurGraphNodeObject;
         sp0 = (struct GraphNodeTranslationRotation *) node->next;
 
-        sp0->translation[0] = sp4->OBJECT_FIELD_S16(0x49, 0);
-        sp0->translation[1] = sp4->OBJECT_FIELD_S16(0x49, 1);
-        sp0->translation[2] = sp4->OBJECT_FIELD_S16(0x4A, 0);
+        sp0->translation[0] = sp4->oSnufitUnk1AC;
+        sp0->translation[1] = sp4->oSnufitUnk1AE;
+        sp0->translation[2] = sp4->oSnufitUnk1B0;
     }
 
     return NULL;
@@ -48,7 +48,7 @@ Gfx *Geo18_8030D9AC(s32 arg0, struct GraphNode *node, UNUSED void *arg2) {
         sp4 = (struct Object *) gCurGraphNodeObject;
         sp0 = (struct GraphNodeScale *) node->next;
 
-        sp0->scale = sp4->OBJECT_FIELD_S16(0x4A, 1) / 1000.0f;
+        sp0->scale = sp4->oSnufitUnk1B2 / 1000.0f;
     }
 
     return NULL;
@@ -79,7 +79,7 @@ void snufit_act_1(void) {
         o->oAction = 0;
     } else if (o->oSnufitUnk10C < 3 && o->oTimer >= 3) {
         o->oSnufitUnk10C += 1;
-        PlaySound2(SOUND_OBJECT_SNUFITSHOOT);
+        PlaySound2(SOUND_OBJ_SNUFIT_SHOOT);
         spawn_object_relative(0, 0, -20, 40, o, MODEL_BOWLING_BALL, bhvSnufitBalls);
         o->oSnufitUnkF4 = -30;
         o->oTimer = 0;
@@ -88,7 +88,7 @@ void snufit_act_1(void) {
 
 void bhv_snufit_loop(void) {
     if (!(o->activeFlags & 0x0008)) {
-        o->oDeathSound = SOUND_OBJECT_SNUFITDEATH;
+        o->oDeathSound = SOUND_OBJ_SNUFIT_SKEETER_DEATH;
         if (o->oDistanceToMario < 800.0f) {
             obj_turn_pitch_toward_mario(120.0f, 2000);
 

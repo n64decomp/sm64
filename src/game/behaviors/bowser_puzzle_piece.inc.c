@@ -199,7 +199,7 @@ void bhv_lll_bowser_puzzle_piece_move(f32 xOffset, f32 zOffset, s32 duration, UN
     } else {
         // On frame 20, play the shifting sound.
         if (o->oTimer == 20)
-            PlaySound2(SOUND_BOWSER_PUZZLE_PIECE_MOVE);
+            PlaySound2(SOUND_OBJ2_BOWSER_PUZZLE_PIECE_MOVE);
 
         // For the number of frames specified by duration, move the piece.
         if (o->oTimer < duration + 20) {

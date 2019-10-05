@@ -29,7 +29,7 @@ void bhv_purple_switch_loop(void) {
         case PURPLE_SWITCH_PRESSED:
             func_802A3398(2, 3, 1.5f, 0.2f);
             if (o->oTimer == 3) {
-                PlaySound2(SOUND_CH8_UNK3E);
+                PlaySound2(SOUND_GENERAL2_PURPLE_SWITCH);
                 o->oAction = PURPLE_SWITCH_TICKING;
                 ShakeScreen(1);
             }
@@ -44,9 +44,9 @@ void bhv_purple_switch_loop(void) {
                     o->oAction++;
                 } else {
                     if (o->oTimer < 360) {
-                        play_sound(SOUND_CH8_SWITCH5, gDefaultSoundArgs);
+                        play_sound(SOUND_GENERAL2_SWITCH_TICK_FAST, gDefaultSoundArgs);
                     } else {
-                        play_sound(SOUND_CH8_SWITCH6, gDefaultSoundArgs);
+                        play_sound(SOUND_GENERAL2_SWITCH_TICK_SLOW, gDefaultSoundArgs);
                     }
                     if (o->oTimer > 400) {
                         o->oAction = PURPLE_SWITCH_WAIT_FOR_MARIO_TO_GET_OFF;

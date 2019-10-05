@@ -300,7 +300,7 @@ void thread5_game_loop(UNUSED void *arg) {
     set_vblank_handler(2, &gGameVblankHandler, &gGameVblankQueue, (OSMesg) 1);
 
     // point addr to the entry point into the level script data.
-    addr = (struct LevelCommand *) segmented_to_virtual(level_script_entry);
+    addr = segmented_to_virtual(level_script_entry);
 
     play_music(2, SEQUENCE_ARGS(0, SEQ_SOUND_PLAYER), 0);
     set_sound_mode(save_file_get_sound_mode());
@@ -330,7 +330,7 @@ void thread5_game_loop(UNUSED void *arg) {
         if (gShowDebugText) {
             // subtract the end of the gfx pool with the display list to obtain the
             // amount of free space remaining.
-            print_text_fmt_int(180, 20, "BUF %d", (s32) gGfxPoolEnd - (s32) gDisplayListHead);
+            print_text_fmt_int(180, 20, "BUF %d", gGfxPoolEnd - (u8 *) gDisplayListHead);
         }
     }
 }

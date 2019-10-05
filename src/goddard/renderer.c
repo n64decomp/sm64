@@ -21,10 +21,6 @@
 #include "gd_math.h"
 #include "shape_helper.h"
 
-// types and defines
-typedef s32 intptr_t;
-typedef u32 uintptr_t;
-
 #define MAX_GD_DLS 1000
 #define OS_MESG_SI_COMPLETE 0x33333333
 
@@ -2927,7 +2923,7 @@ void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
                        G_TX_NOMASK, G_TX_NOLOD, (G_TX_NOMIRROR | G_TX_WRAP), G_TX_NOMASK, G_TX_NOLOD);
             gDPSetTileSize(next_gfx(), 0, 0, 0, 124, 124);
             gSPTextureRectangle(next_gfx(), x << 2, (y + r) << 2, (x + 0x20) << 2, (y + r + 0x20) << 2,
-                                0, 0, 0, 1024, 1024);
+                                G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
         }
     }
 
@@ -3173,7 +3169,7 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
     }
 
     for (i = 0; i < sp34; i++) {
-        osMapTLB(i, OS_PM_64K, (void *) (0x04000000 + (i * 2 * 0x10000)),
+        osMapTLB(i, OS_PM_64K, (void *) (uintptr_t) (0x04000000 + (i * 2 * 0x10000)),
                  GD_LOWER_24(((uintptr_t) allocSegSpace) + (i * 2 * 0x10000)),
                  GD_LOWER_24(((uintptr_t) allocSegSpace) + (i * 2 * 0x10000) + 0x10000), -1);
     }

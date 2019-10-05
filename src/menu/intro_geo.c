@@ -1,9 +1,9 @@
 #include "ultra64.h"
 #include "sm64.h"
 #include "types.h"
-#include "memory.h"
-#include "segment2.h"
-#include "segment7.h"
+#include "game/memory.h"
+#include "game/segment2.h"
+#include "game/segment7.h"
 #include "intro_geo.h"
 
 // frame counts for the zoom in, hold, and zoom out of title model

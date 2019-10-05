@@ -33,7 +33,6 @@ void bhv_ukiki_cage_star_loop(void) {
                 o->oAction++;
             }
             break;
-
         case UKIKI_CAGE_STAR_ACT_SPAWN_STAR:
             mark_object_for_deletion(o);
             func_802A3004();
@@ -76,7 +75,6 @@ void ukiki_cage_act_fall(void) {
     //! (PARTIAL_UPDATE)
     obj_update_floor_and_walls();
     obj_move_standard(78);
-
     if (o->oMoveFlags & (OBJ_MOVE_LANDED | OBJ_MOVE_ENTERED_WATER)) {
         o->oAction = UKIKI_CAGE_ACT_HIDE;
     }

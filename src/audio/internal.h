@@ -220,8 +220,8 @@ struct SequencePlayer
     /*0x11C*/ OSIoMesg bankDmaIoMesg;
     /*0x130*/ u8 *bankDmaCurrMemAddr;
     /*0x134*/ struct AudioBank *loadingBank;
-    /*0x138*/ u32 bankDmaCurrDevAddr;
-    /*0x13C*/ s32 bankDmaRemaining;
+    /*0x138*/ uintptr_t bankDmaCurrDevAddr;
+    /*0x13C*/ ssize_t bankDmaRemaining;
 }; // size = 0x140
 
 struct AdsrSettings

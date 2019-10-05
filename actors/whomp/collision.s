@@ -13,23 +13,6 @@ colVertex 150, 430, -3
 colVertex 150, 50, -3
 colVertex -200, 430, -3
 
-colTriInit SURFACE_CAM_NO_COL, 12
-colTri 2, 1, 0
-colTri 3, 2, 0
-colTri 6, 5, 4
-colTri 5, 7, 4
-colTri 7, 5, 3
-colTri 5, 2, 3
-colTri 6, 4, 0
-colTri 1, 6, 0
-colTri 5, 1, 2
-colTri 6, 1, 5
-colTri 0, 7, 3
-colTri 0, 4, 7
-colTriStop
-colEnd
-.word 0
-
 .else
 
 colInit
@@ -42,6 +25,7 @@ colVertex -150, 50, -3
 colVertex 150, 430, -3
 colVertex 150, 50, -3
 colVertex -150, 430, -3
+.endif
 
 colTriInit SURFACE_CAM_NO_COL, 12
 colTri 2, 1, 0
@@ -58,5 +42,5 @@ colTri 0, 7, 3
 colTri 0, 4, 7
 colTriStop
 colEnd
+
 .word 0
-.endif

@@ -28,7 +28,7 @@ void bhv_scuttlebug_loop(void) {
     f32 sp18;
     obj_update_floor_and_walls();
     if (o->oSubAction != 0
-        && obj_set_hitbox_and_die_if_attacked(&sScuttlebugHitbox, SOUND_OBJECT_DYINGENEMY1,
+        && obj_set_hitbox_and_die_if_attacked(&sScuttlebugHitbox, SOUND_OBJ_DYING_ENEMY1,
                                               o->oScuttlebugUnkF4))
         o->oSubAction = 3;
     if (o->oSubAction != 1)
@@ -36,7 +36,7 @@ void bhv_scuttlebug_loop(void) {
     switch (o->oSubAction) {
         case 0:
             if (o->oMoveFlags & 1)
-                PlaySound2(SOUND_OBJECT_GOOMBAALERT);
+                PlaySound2(SOUND_OBJ_GOOMBA_ALERT);
             if (o->oMoveFlags & 3) {
                 o->oHomeX = o->oPosX;
                 o->oHomeY = o->oPosY;
@@ -55,7 +55,7 @@ void bhv_scuttlebug_loop(void) {
                     if (abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw) < 0x800) {
                         o->oScuttlebugUnkF8 = 1;
                         o->oVelY = 20.0f;
-                        PlaySound2(SOUND_CH9_UNK44);
+                        PlaySound2(SOUND_OBJ2_SCUTTLEBUG_ALERT);
                     }
                 } else if (o->oScuttlebugUnkF8 == 1) {
                     o->oForwardVel = 15.0f;
@@ -80,7 +80,7 @@ void bhv_scuttlebug_loop(void) {
             o->oFlags &= ~8;
             o->oForwardVel = -10.0f;
             o->oVelY = 30.0f;
-            PlaySound2(SOUND_CH9_UNK44);
+            PlaySound2(SOUND_OBJ2_SCUTTLEBUG_ALERT);
             o->oSubAction++;
             break;
         case 4:
@@ -106,12 +106,12 @@ void bhv_scuttlebug_loop(void) {
         sp18 = 3.0f;
     func_8029ED98(0, sp18);
     if (o->oMoveFlags & 3)
-        func_802BE2E8(1, 23, SOUND_CH9_UNK43);
+        func_802BE2E8(1, 23, SOUND_OBJ2_SCUTTLEBUG_WALK);
     if (o->parentObj != o) {
         if (obj_is_hidden(o))
             mark_object_for_deletion(o);
         if (o->activeFlags == 0)
-            o->parentObj->oUnknownUnk88 = 1;
+            o->parentObj->oScuttlebugSpawnerUnk88 = 1;
     }
     obj_move_standard(-50);
 }
@@ -120,7 +120,7 @@ void bhv_scuttlebug_spawn_loop(void) {
     struct Object *scuttlebug;
     if (o->oAction == 0) {
         if (o->oTimer > 30 && 500.0f < o->oDistanceToMario && o->oDistanceToMario < 1500.0f) {
-            PlaySound2(SOUND_CH9_UNK44);
+            PlaySound2(SOUND_OBJ2_SCUTTLEBUG_ALERT);
             scuttlebug = spawn_object(o, MODEL_SCUTTLEBUG, bhvScuttlebug);
             scuttlebug->oScuttlebugUnkF4 = o->oScuttlebugSpawnerUnkF4;
             scuttlebug->oForwardVel = 30.0f;
@@ -128,8 +128,8 @@ void bhv_scuttlebug_spawn_loop(void) {
             o->oAction++;
             o->oScuttlebugUnkF4 = 1;
         }
-    } else if (o->oUnknownUnk88 != 0) {
-        o->oUnknownUnk88 = 0;
+    } else if (o->oScuttlebugSpawnerUnk88 != 0) {
+        o->oScuttlebugSpawnerUnk88 = 0;
         o->oAction = 0;
     }
 }

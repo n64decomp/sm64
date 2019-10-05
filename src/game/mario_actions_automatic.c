@@ -44,11 +44,11 @@ void play_climbing_sounds(struct MarioState *m, s32 b) {
 
     if (b == 1) {
         if (is_anim_past_frame(m, 1) != 0) {
-            play_sound(isOnTree ? SOUND_ACTION_CLIMBUPTREE : SOUND_ACTION_UNKNOWN441,
+            play_sound(isOnTree ? SOUND_ACTION_CLIMB_UP_TREE : SOUND_ACTION_CLIMB_UP_POLE,
                        m->marioObj->header.gfx.cameraToObject);
         }
     } else {
-        play_sound(isOnTree ? SOUND_UNKNOWN_UNK1412 : SOUND_UNKNOWN_UNK1411,
+        play_sound(isOnTree ? SOUND_MOVING_SLIDE_DOWN_TREE : SOUND_MOVING_SLIDE_DOWN_POLE,
                    m->marioObj->header.gfx.cameraToObject);
     }
 }
@@ -220,7 +220,7 @@ s32 act_climbing_pole(struct MarioState *m) {
 }
 
 s32 act_grab_pole_slow(struct MarioState *m) {
-    play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_ACTION_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_MARIO_SOUND_PLAYED);
 
     if (set_pole_position(m, 0.0f) == POLE_NONE) {
         set_mario_animation(m, MARIO_ANIM_GRAB_POLE_SHORT);
@@ -236,7 +236,7 @@ s32 act_grab_pole_slow(struct MarioState *m) {
 s32 act_grab_pole_fast(struct MarioState *m) {
     struct Object *marioObj = m->marioObj;
 
-    play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_ACTION_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_MARIO_SOUND_PLAYED);
     m->faceAngle[1] += marioObj->oMarioPoleYawVel;
     marioObj->oMarioPoleYawVel = marioObj->oMarioPoleYawVel * 8 / 10;
 
@@ -400,7 +400,7 @@ s32 act_start_hanging(struct MarioState *m) {
     }
 
     set_mario_animation(m, MARIO_ANIM_HANG_ON_CEILING);
-    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN42D, MARIO_ENVIRONMENT_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_ACTION_HANGING_STEP, MARIO_ACTION_SOUND_PLAYED);
     update_hang_stationary(m);
 
     if (is_anim_at_end(m)) {
@@ -458,7 +458,7 @@ s32 act_hang_moving(struct MarioState *m) {
     }
 
     if (m->marioObj->header.gfx.unk38.animFrame == 12) {
-        play_sound(SOUND_ACTION_UNKNOWN42D, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_ACTION_HANGING_STEP, m->marioObj->header.gfx.cameraToObject);
     }
 
     if (is_anim_past_end(m)) {
@@ -577,7 +577,7 @@ s32 act_ledge_grab(struct MarioState *m) {
     }
 
     if (m->actionArg == 0) {
-        play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_ACTION_NOISE_PLAYED);
+        play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_MARIO_SOUND_PLAYED);
     }
 
     stop_and_set_height_to_floor(m);
@@ -599,7 +599,7 @@ s32 act_ledge_climb_slow(struct MarioState *m) {
     }
 
     if (m->actionTimer == 10) {
-        play_sound_if_no_flag(m, SOUND_MARIO_EEUH, MARIO_ACTION_NOISE_PLAYED);
+        play_sound_if_no_flag(m, SOUND_MARIO_EEUH, MARIO_MARIO_SOUND_PLAYED);
     }
 
     update_ledge_climb(m, MARIO_ANIM_SLOW_LEDGE_GRAB, ACT_IDLE);
@@ -617,7 +617,7 @@ s32 act_ledge_climb_down(struct MarioState *m) {
         return let_go_of_ledge(m);
     }
 
-    play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_ACTION_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_MARIO_WHOA, MARIO_MARIO_SOUND_PLAYED);
 
     update_ledge_climb(m, MARIO_ANIM_CLIMB_DOWN_LEDGE, ACT_LEDGE_GRAB);
     m->actionArg = 1;
@@ -630,12 +630,12 @@ s32 act_ledge_climb_fast(struct MarioState *m) {
         return let_go_of_ledge(m);
     }
 
-    play_sound_if_no_flag(m, SOUND_MARIO_UH2, MARIO_ACTION_NOISE_PLAYED);
+    play_sound_if_no_flag(m, SOUND_MARIO_UH2, MARIO_MARIO_SOUND_PLAYED);
 
     update_ledge_climb(m, MARIO_ANIM_FAST_LEDGE_GRAB, ACT_IDLE);
 
     if (m->marioObj->header.gfx.unk38.animFrame == 8) {
-        play_mario_step_sound(m, SOUND_TERRAIN_2);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
     }
     func_8025F188(m);
 
@@ -722,7 +722,7 @@ s32 act_in_cannon(struct MarioState *m) {
                 m->pos[2] += 120.0f * coss(m->faceAngle[0]) * coss(m->faceAngle[1]);
 
                 play_sound(SOUND_ACTION_UNKNOWN456, m->marioObj->header.gfx.cameraToObject);
-                play_sound(SOUND_OBJECT_POUNDINGCANNON, m->marioObj->header.gfx.cameraToObject);
+                play_sound(SOUND_OBJ_POUNDING_CANNON, m->marioObj->header.gfx.cameraToObject);
 
                 m->marioObj->header.gfx.node.flags |= 0x0001;
 
@@ -731,7 +731,7 @@ s32 act_in_cannon(struct MarioState *m) {
                 return FALSE;
             } else {
                 if (m->faceAngle[0] != startFacePitch || m->faceAngle[1] != startFaceYaw) {
-                    play_sound(SOUND_MOVING_UNKNOWN19, m->marioObj->header.gfx.cameraToObject);
+                    play_sound(SOUND_MOVING_AIM_CANNON, m->marioObj->header.gfx.cameraToObject);
                 }
             }
     }
@@ -812,7 +812,7 @@ s32 act_tornado_twirling(struct MarioState *m) {
 
     // Play sound on angle overflow
     if (prevTwirlYaw > m->twirlYaw) {
-        play_sound(SOUND_ACTION_UNKNOWN438, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_ACTION_SWISH2_2, m->marioObj->header.gfx.cameraToObject);
     }
 
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);

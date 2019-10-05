@@ -11,7 +11,7 @@ void func_802C61CC(void) {
         sp28 |= obj_check_anim_frame_in_range(23, 3);
     }
     if (sp28)
-        PlaySound2(SOUND_OBJECT_POUNDING1);
+        PlaySound2(SOUND_OBJ_POUNDING1);
 }
 
 void ActionWhomp0(void) {
@@ -28,7 +28,7 @@ void ActionWhomp0(void) {
                 obj_set_pos_to_home();
                 o->oHealth = 3;
             }
-        } else if (obj_update_dialog_unk2(2, 1, 162, 114))
+        } else if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, 114))
             o->oAction = 2;
     } else if (o->oDistanceToMario < 500.0f)
         o->oAction = 1;
@@ -123,7 +123,7 @@ void ActionWhomp4(void) {
 
 void ActionWhomp5(void) {
     if (o->oSubAction == 0 && o->oMoveFlags & 1) {
-        PlaySound2(SOUND_OBJECT_BULLYTHWOMP_LOWPRIO);
+        PlaySound2(SOUND_OBJ_WHOMP_LOWPRIO);
         ShakeScreen(1);
         o->oVelY = 0.0f;
         o->oSubAction++;
@@ -137,8 +137,8 @@ void func_802C6954(void) {
     if (o->oSubAction == 0) {
         if (obj_is_mario_ground_pounding_platform()) {
             o->oHealth--;
-            PlaySound2(SOUND_CH9_UNK5A);
-            PlaySound2(SOUND_OBJECT_KINGWHOMPDEATH);
+            PlaySound2(SOUND_OBJ2_WHOMP_SOUND_SHORT);
+            PlaySound2(SOUND_OBJ_KING_WHOMP_DEATH);
             if (o->oHealth == 0)
                 o->oAction = 8;
             else {
@@ -209,7 +209,7 @@ void ActionWhomp6(void) {
 
 void ActionWhomp8(void) {
     if (o->oBehParams2ndByte != 0) {
-        if (obj_update_dialog_unk2(2, 2, 162, 115)) {
+        if (obj_update_dialog_with_cutscene(2, 2, CUTSCENE_DIALOG_1, 115)) {
             set_object_angle(o, 0, 0, 0);
             obj_hide();
             obj_become_intangible();
@@ -218,14 +218,14 @@ void ActionWhomp8(void) {
             ShakeScreen(1);
             o->oPosY += 100.0f;
             create_star(180.0f, 3880.0f, 340.0f);
-            PlaySound2(SOUND_OBJECT_KINGWHOMPDEATH);
+            PlaySound2(SOUND_OBJ_KING_WHOMP_DEATH);
             o->oAction = 9;
         }
     } else {
         func_802AA618(0, 0, 100.0f);
         spawn_triangle_break_particles(20, 138, 3.0f, 4);
         ShakeScreen(1);
-        create_sound_spawner(SOUND_OBJECT_THWOMP);
+        create_sound_spawner(SOUND_OBJ_THWOMP);
         mark_object_for_deletion(o);
     }
 }

@@ -19,7 +19,7 @@ void bhv_end_birds_1_loop(void) {
             if (gCurrentObject->oTimer < 100)
                 func_8029A7DC(gCurrentObject, sp34, 0, 0, 0x20, 0x20);
             if ((gCurrentObject->oEndBirdUnk104 == 0.f) && (gCurrentObject->oTimer == 0))
-                PlaySound2(SOUND_GENERAL_BIRDSFLYAWAY);
+                PlaySound2(SOUND_GENERAL_BIRDS_FLY_AWAY);
             if (gCutsceneTimer == 0)
                 mark_object_for_deletion(gCurrentObject);
             break;

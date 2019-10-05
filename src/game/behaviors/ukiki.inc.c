@@ -358,9 +358,8 @@ void ukiki_act_go_to_cage(void) {
     switch(o->oSubAction) {
         case UKIKI_SUB_ACT_CAGE_RUN_TO_CAGE:
             set_obj_animation_and_sound_state(UKIKI_ANIM_RUN);
-            // TODO: Change oUkikiPath to oPathedStartWaypoint when
-            // sCageUkikiPath has been converted to waypoints.
-            o->oUkikiPath = sCageUkikiPath;
+            
+            o->oPathedWaypointsS16 = sCageUkikiPath;
 
             if (obj_follow_path(0) != PATH_REACHED_END) {
                 o->oForwardVel = 10.0f;
@@ -385,7 +384,7 @@ void ukiki_act_go_to_cage(void) {
         case UKIKI_SUB_ACT_CAGE_TALK_TO_MARIO:
             set_obj_animation_and_sound_state(UKIKI_ANIM_HANDSTAND);
 
-            if (obj_update_dialog_unk2(3, 1, 162, 80)) {
+            if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG_1, 80)) {
                 o->oSubAction++;
             }
             break;
@@ -443,17 +442,17 @@ void ukiki_act_go_to_cage(void) {
  * SoundState number.
  */
 struct SoundState sUkikiSoundStates[] = {
-    {1, 1, 10, SOUND_UKIKI_STEP_DEFAULT},
+    {1, 1, 10, SOUND_OBJ_UKIKI_STEP_DEFAULT},
     {0, 0, 0,  NO_SOUND},
     {0, 0, 0,  NO_SOUND},
     {0, 0, 0,  NO_SOUND},
-    {1, 0, -1, SOUND_UKIKI_CHATTER_SHORT},
-    {1, 0, -1, SOUND_UKIKI_CHATTER_LONG},
+    {1, 0, -1, SOUND_OBJ_UKIKI_CHATTER_SHORT},
+    {1, 0, -1, SOUND_OBJ_UKIKI_CHATTER_LONG},
     {0, 0, 0,  NO_SOUND},
     {0, 0, 0,  NO_SOUND},
-    {1, 0, -1, SOUND_UKIKI_CHATTER_LONG},
-    {1, 0, -1, SOUND_UKIKI_STEP_LEAVES},
-    {1, 0, -1, SOUND_UKIKI_CHATTER_IDLE},
+    {1, 0, -1, SOUND_OBJ_UKIKI_CHATTER_LONG},
+    {1, 0, -1, SOUND_OBJ_UKIKI_STEP_LEAVES},
+    {1, 0, -1, SOUND_OBJ_UKIKI_CHATTER_IDLE},
     {0, 0, 0,  NO_SOUND},
     {0, 0, 0,  NO_SOUND},
 };
@@ -519,7 +518,7 @@ void cage_ukiki_held_loop(void) {
         switch(o->oUkikiTextState) {
             case UKIKI_TEXT_DEFAULT:
                 if (set_mario_npc_dialog(2) == 2) {
-                    func_802D8050(79);
+                    create_dialog_box_with_response(79);
                     o->oUkikiTextState = UKIKI_TEXT_CAGE_TEXTBOX;
                 }
                 break;
@@ -569,7 +568,7 @@ void hat_ukiki_held_loop(void) {
             break;
 
         case UKIKI_TEXT_STEAL_HAT:
-            if (obj_update_dialog_unk1(2, 2, 100, 0)) {
+            if (obj_update_dialog(2, 2, 100, 0)) {
                 o->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
                 o->oUkikiTextState = UKIKI_TEXT_STOLE_HAT;
             }
@@ -579,7 +578,7 @@ void hat_ukiki_held_loop(void) {
             break;
 
         case UKIKI_TEXT_HAS_HAT:
-            if (obj_update_dialog_unk1(2, 18, 101, 0)) {
+            if (obj_update_dialog(2, 18, 101, 0)) {
                 mario_retrieve_cap();
                 set_mario_npc_dialog(0);
                 o->oUkikiHasHat &= ~UKIKI_HAT_ON;

@@ -53,7 +53,7 @@ void bhv_beta_chest_lid_loop(void) {
             if (o->oTimer == 0) {
                 // Spawn the bubble 80 units in the -Y direction and 120 units in the +Z direction.
                 spawn_object_relative(0, 0, -80, 120, o, MODEL_BUBBLE, bhvWaterAirBubble);
-                play_sound(SOUND_GENERAL_CLAMSHELL1, o->header.gfx.cameraToObject);
+                play_sound(SOUND_GENERAL_CLAM_SHELL1, o->header.gfx.cameraToObject);
             }
 
             // Rotate the lid 0x400 (1024) angle units per frame backwards.

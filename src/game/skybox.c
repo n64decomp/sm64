@@ -154,8 +154,8 @@ void *func_802CF188(s8 a) {
 }
 
 Gfx *func_802CF2A8(s8 a, s8 b, s8 c) {
-    s32 sp3C = 68;
-    void *sp38 = alloc_display_list(sp3C * 8);
+    s32 sp3C = 5 + 3*3*7;
+    void *sp38 = alloc_display_list(sp3C * sizeof(Gfx));
     Gfx *dlist = sp38;
 
     if (sp38 == NULL) {

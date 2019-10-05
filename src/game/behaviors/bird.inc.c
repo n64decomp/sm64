@@ -21,7 +21,7 @@ static void bird_act_inactive(void) {
         if (o->oBehParams2ndByte != BIRD_BP_SPAWNED) {
             s32 i;
 
-            PlaySound2(SOUND_GENERAL_BIRDSFLYAWAY);
+            PlaySound2(SOUND_GENERAL_BIRDS_FLY_AWAY);
 
             for (i = 0; i < 6; i++) {
                 spawn_object(o, MODEL_BIRDS, bhvBird);

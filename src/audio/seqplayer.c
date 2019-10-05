@@ -491,11 +491,11 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
                 }
 
                 temp_v0_11 = &layer->adsr;
-                if (((u32) gBankLoadedPool.persistent.pool.start <= (u32) inst
-                     && (u32) inst <= (u32)(gBankLoadedPool.persistent.pool.start
+                if (((uintptr_t) gBankLoadedPool.persistent.pool.start <= (uintptr_t) inst
+                     && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.persistent.pool.start
                                             + gBankLoadedPool.persistent.pool.size))
-                    || ((u32) gBankLoadedPool.temporary.pool.start <= (u32) inst
-                        && (u32) inst <= (u32)(gBankLoadedPool.temporary.pool.start
+                    || ((uintptr_t) gBankLoadedPool.temporary.pool.start <= (uintptr_t) inst
+                        && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.temporary.pool.start
                                                + gBankLoadedPool.temporary.pool.size))) {
                     temp_v0_11->envelope = inst->envelope;
                     temp_v0_11->releaseRate = inst->releaseRate;
@@ -802,11 +802,11 @@ u8 get_instrument(struct SequenceChannel *seqChannel, u8 instId, struct Instrume
         }
     }
 
-    if (((u32) gBankLoadedPool.persistent.pool.start <= (u32) inst
-         && (u32) inst
-                <= (u32)(gBankLoadedPool.persistent.pool.start + gBankLoadedPool.persistent.pool.size))
-        || ((u32) gBankLoadedPool.temporary.pool.start <= (u32) inst
-            && (u32) inst <= (u32)(gBankLoadedPool.temporary.pool.start
+    if (((uintptr_t) gBankLoadedPool.persistent.pool.start <= (uintptr_t) inst
+         && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.persistent.pool.start
+                    + gBankLoadedPool.persistent.pool.size))
+        || ((uintptr_t) gBankLoadedPool.temporary.pool.start <= (uintptr_t) inst
+            && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.temporary.pool.start
                                    + gBankLoadedPool.temporary.pool.size))) {
         adsr->envelope = inst->envelope;
         adsr->releaseRate = inst->releaseRate;

@@ -29,8 +29,8 @@
 #include "save_file.h"
 #include "room.h"
 
-extern u32 wiggler_seg5_anims_0500C874[];
-extern u32 spiny_egg_seg5_anims_050157E4[];
+extern struct Animation *wiggler_seg5_anims_0500C874[];
+extern struct Animation *spiny_egg_seg5_anims_050157E4[];
 extern struct ObjectNode *gObjectLists;
 extern u8 jrb_seg7_trajectory_unagi_1[];
 extern u8 jrb_seg7_trajectory_unagi_2[];
@@ -103,7 +103,7 @@ extern u8 rr_seg7_collision_07029924[];
 extern u8 bits_seg7_collision_0701AD54[];
 extern u8 bitfs_seg7_collision_070157E0[];
 extern u8 bitfs_seg7_collision_07015124[];
-extern u32 spiny_seg5_anims_05016EAC[];
+extern struct Animation *spiny_seg5_anims_05016EAC[];
 
 #define POS_OP_SAVE_POSITION 0
 #define POS_OP_COMPUTE_VELOCITY 1
@@ -138,9 +138,9 @@ static s16 obj_get_pitch_from_vel(void) {
  * If the player declines the race, then disable time stop and allow mario to
  * move again.
  */
-static s32 obj_update_race_proposition_dialog(s16 arg0) {
+static s32 obj_update_race_proposition_dialog(s16 dialogID) {
     s32 dialogResponse =
-        obj_update_dialog_unk2(2, DIALOG_UNK2_FLAG_0 | DIALOG_UNK2_LEAVE_TIME_STOP_ENABLED, 0xA3, arg0);
+        obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0 | DIALOG_UNK2_LEAVE_TIME_STOP_ENABLED, CUTSCENE_DIALOG_2, dialogID);
 
     if (dialogResponse == 2) {
         set_mario_npc_dialog(0);
@@ -656,7 +656,7 @@ static s32 obj_resolve_collisions_and_turn(s16 targetYaw, s16 turnSpeed) {
 static void obj_die_if_health_non_positive(void) {
     if (o->oHealth <= 0) {
         if (o->oDeathSound == 0) {
-            func_802A3034(SOUND_OBJECT_DEFAULTDEATH);
+            func_802A3034(SOUND_OBJ_DEFAULT_DEATH);
         } else if (o->oDeathSound > 0) {
             func_802A3034(o->oDeathSound);
         } else {
@@ -706,7 +706,7 @@ static void obj_set_knockback_action(s32 attackType) {
 }
 
 static void obj_set_squished_action(void) {
-    PlaySound2(SOUND_OBJECT_STOMPED);
+    PlaySound2(SOUND_OBJ_STOMPED);
     o->oAction = OBJ_ACT_SQUISHED;
 }
 
@@ -719,9 +719,9 @@ static s32 obj_die_if_above_lava_and_health_non_positive(void) {
     } else if (!(o->oMoveFlags & OBJ_MOVE_ABOVE_LAVA)) {
         if (o->oMoveFlags & OBJ_MOVE_ENTERED_WATER) {
             if (o->oWallHitboxRadius < 200.0f) {
-                PlaySound2(SOUND_OBJECT_DIVINGINTOWATER);
+                PlaySound2(SOUND_OBJ_DIVING_INTO_WATER);
             } else {
-                PlaySound2(SOUND_OBJECT_DIVINGINWATER);
+                PlaySound2(SOUND_OBJ_DIVING_IN_WATER);
             }
         }
         return FALSE;

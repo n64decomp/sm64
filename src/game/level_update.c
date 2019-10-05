@@ -224,22 +224,22 @@ void nop_802497FC(void) {
 
 void func_8024980C(u32 arg) {
     s32 gotAchievement;
-    u32 val8 = gCurrentArea->dialog[arg];
+    u32 dialogID = gCurrentArea->dialog[arg];
 
-    switch (val8) {
-        case 0x81:
+    switch (dialogID) {
+        case 129:
             gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP;
             break;
 
-        case 0x82:
+        case 130:
             gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_METAL_CAP;
             break;
 
-        case 0x83:
+        case 131:
             gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP;
             break;
 
-        case 0xFF:
+        case 255:
             gotAchievement = TRUE;
             break;
 
@@ -250,7 +250,7 @@ void func_8024980C(u32 arg) {
 
     if (!gotAchievement) {
         level_set_transition(-1, NULL);
-        func_802D7F90(val8);
+        create_dialog_box(dialogID);
     }
 }
 
@@ -428,12 +428,12 @@ void init_mario_after_warp(void) {
             && sWarpDest.nodeId == 31
 #endif
         )
-            play_sound(SOUND_MENU_MARIOCASTLEWARP, gDefaultSoundArgs);
+            play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gDefaultSoundArgs);
 #ifndef VERSION_JP
         if (sWarpDest.levelNum == 16 && sWarpDest.areaIdx == 1
             && (sWarpDest.nodeId == 7 || sWarpDest.nodeId == 10 || sWarpDest.nodeId == 20
                 || sWarpDest.nodeId == 30)) {
-            play_sound(SOUND_MENU_MARIOCASTLEWARP, gDefaultSoundArgs);
+            play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gDefaultSoundArgs);
         }
 #endif
     }
@@ -661,7 +661,7 @@ void initiate_painting_warp(void) {
 
                 gMarioState->marioObj->header.gfx.node.flags &= ~0x0001;
 
-                play_sound(SOUND_MENU_STARSOUND, gDefaultSoundArgs);
+                play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
                 func_802491FC(398);
             }
         }
@@ -713,7 +713,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, 0x30, 0x00, 0x00, 0x00);
-                play_sound(SOUND_MENU_BOWSERLAUGH, gDefaultSoundArgs);
+                play_sound(SOUND_MENU_BOWSER_LAUGH, gDefaultSoundArgs);
                 break;
 
             case WARP_OP_WARP_FLOOR:
@@ -734,7 +734,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sSourceWarpNodeId = WARP_NODE_F2;
                 play_transition(WARP_TRANSITION_FADE_INTO_COLOR, 0x1E, 0xFF, 0xFF, 0xFF);
 #ifndef VERSION_JP
-                play_sound(SOUND_MENU_STARSOUND, gDefaultSoundArgs);
+                play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
 #endif
                 break;
 
@@ -799,7 +799,7 @@ void initiate_delayed_warp(void) {
     s32 destWarpNode;
 
     if (sDelayedWarpOp != WARP_OP_NONE && --sDelayedWarpTimer == 0) {
-        func_802D8098();
+        reset_dialog_render_state();
 
         if (gDebugLevelSelect && (sDelayedWarpOp & WARP_OP_TRIGGERS_LEVEL_SELECT)) {
             func_8024975C(-9);
@@ -876,9 +876,9 @@ void update_hud_values(void) {
             if (gGlobalTimer & 0x00000001) {
                 u32 coinSound;
                 if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
-                    coinSound = SOUND_GENERAL_COINWATER1;
+                    coinSound = SOUND_GENERAL_COIN_WATER;
                 } else {
-                    coinSound = SOUND_GENERAL_COIN2;
+                    coinSound = SOUND_GENERAL_COIN;
                 }
 
                 gHudDisplay.coins += 1;
@@ -909,7 +909,7 @@ void update_hud_values(void) {
         gHudDisplay.keys = gMarioState->numKeys;
 
         if (numHealthWedges > gHudDisplay.wedges) {
-            play_sound(SOUND_MENU_POWERMETER, gDefaultSoundArgs);
+            play_sound(SOUND_MENU_POWER_METER, gDefaultSoundArgs);
         }
         gHudDisplay.wedges = numHealthWedges;
 
@@ -983,9 +983,9 @@ s32 play_mode_normal(void) {
 }
 
 s32 play_mode_paused(void) {
-    if (D_8033A75E == 0) {
-        func_802D9A14(1);
-    } else if (D_8033A75E == 1) {
+    if (gPauseScreenMode == 0) {
+        set_menu_mode(RENDER_PAUSE_SCREEN);
+    } else if (gPauseScreenMode == 1) {
         func_80248CB8(1);
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
         set_play_mode(PLAY_MODE_NORMAL);
@@ -1199,7 +1199,7 @@ s32 init_level(void) {
  * Initialize the current level if initOrUpdate is 0, or update the level if it
  * is 1.
  */
-s32 lvl_init_or_update(s16 initOrUpdate, UNUSED s32 arg1) {
+s32 lvl_init_or_update(s16 initOrUpdate, UNUSED s32 unused) {
     s32 result = 0;
 
     switch (initOrUpdate) {
@@ -1290,6 +1290,6 @@ s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
  * Play the "thank you so much for to playing my game" sound.
  */
 s32 lvl_play_the_end_screen_sound(UNUSED s16 arg0, UNUSED s32 arg1) {
-    play_sound(SOUND_MENU_THANKYOUPLAYINGMYGAME, gDefaultSoundArgs);
+    play_sound(SOUND_MENU_THANK_YOU_PLAYING_MY_GAME, gDefaultSoundArgs);
     return 1;
 }

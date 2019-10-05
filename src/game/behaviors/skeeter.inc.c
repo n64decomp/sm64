@@ -50,7 +50,7 @@ static void skeeter_act_idle(void) {
                 if (o->oSkeeterWaitTime != 0) {
                     o->oSkeeterWaitTime -= 1;
                 } else if (func_8029F788()) {
-                    PlaySound2(SOUND_OBJECT_WALKINGWATER);
+                    PlaySound2(SOUND_OBJ_WALKING_WATER);
                     o->oAction = SKEETER_ACT_LUNGE;
                     o->oForwardVel = 80.0f;
                     o->oSkeeterUnk1AC = 0;
@@ -99,7 +99,7 @@ static void skeeter_act_walk(void) {
         sp24 = 0.12f * o->oForwardVel;
 
         func_8029ED98(2, sp24);
-        func_802F9378(3, 13, SOUND_OBJECT_SKEETERWALK);
+        func_802F9378(3, 13, SOUND_OBJ_SKEETER_WALK);
 
         if (o->oSkeeterUnkF8 != 0) {
             o->oSkeeterUnkF8 = obj_resolve_collisions_and_turn(o->oSkeeterTargetAngle, 0x400);
@@ -135,7 +135,7 @@ static void skeeter_act_walk(void) {
 }
 
 void bhv_skeeter_update(void) {
-    o->oDeathSound = SOUND_OBJECT_SNUFITDEATH;
+    o->oDeathSound = SOUND_OBJ_SNUFIT_SKEETER_DEATH;
     treat_far_home_as_mario(1000.0f);
 
     obj_update_floor_and_walls();

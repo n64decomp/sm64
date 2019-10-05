@@ -112,17 +112,17 @@ u8 sDialogSpeaker[170] = {
 #undef _
 
 s32 sDialogSpeakerVoice[15] = {
-    SOUND_UKIKI_CHATTER_LONG,
-    SOUND_BIG_PENGUIN_YELL,
-    SOUND_OBJECT_BOWSERINTROLAUGH,
-    SOUND_OBJECT_KOOPA,
-    SOUND_OBJECT_KINGBOBOMB,
-    SOUND_BOO_LAUGH_LONG,
-    SOUND_OBJECT_BOBOMBBUDDY,
-    SOUND_OBJECT_BOWSERLAUGH,
-    SOUND_BOSS_DIALOG_GRUNT,
-    SOUND_WIGGLER_DIALOG,
-    SOUND_GENERAL_YOSHI,
+    SOUND_OBJ_UKIKI_CHATTER_LONG,
+    SOUND_OBJ_BIG_PENGUIN_YELL,
+    SOUND_OBJ_BOWSER_INTRO_LAUGH,
+    SOUND_OBJ_KOOPA_TALK,
+    SOUND_OBJ_KING_BOBOMB_TALK,
+    SOUND_OBJ_BOO_LAUGH_LONG,
+    SOUND_OBJ_BOBOMB_BUDDY_TALK,
+    SOUND_OBJ_BOWSER_LAUGH,
+    SOUND_OBJ2_BOSS_DIALOG_GRUNT,
+    SOUND_OBJ_WIGGLER_TALK,
+    SOUND_GENERAL_YOSHI_TALK,
     NO_SOUND,
     NO_SOUND,
     NO_SOUND,
@@ -545,7 +545,7 @@ void unused_8031E568(void) {
 /**
  * Fade out a sequence player
  */
-static void sequence_player_fade_out(s32 player, FadeT fadeOutTime) {
+static void sequence_player_fade_out_internal(s32 player, FadeT fadeOutTime) {
     struct SequencePlayer *seqPlayer = &gSequencePlayers[player];
 #ifndef VERSION_JP
     if (fadeOutTime == 0) {
@@ -694,9 +694,9 @@ struct SPTask *create_next_audio_frame_task(void) {
     task->type = M_AUDTASK;
     task->flags = flags;
     task->ucode_boot = rspF3DBootStart;
-    task->ucode_boot_size = (u32) rspF3DBootEnd - (u32) rspF3DBootStart;
+    task->ucode_boot_size = (u8 *) rspF3DBootEnd - (u8 *) rspF3DBootStart;
     task->ucode = rspAspMainStart;
-    task->ucode_size = 0x800;
+    task->ucode_size = 0x800; // (this size is ignored)
     task->ucode_data = rspAspMainDataStart;
     task->ucode_data_size = (rspAspMainDataEnd - rspAspMainDataStart) * sizeof(u64);
     task->dram_stack = NULL;
@@ -1169,7 +1169,7 @@ void update_game_sound(void) {
                                     *gSoundBanks[bankIndex][index].x, *gSoundBanks[bankIndex][index].z);
 
                                 if ((gSoundBanks[bankIndex][index].soundBits & SOUNDARGS_MASK_SOUNDID)
-                                    == (SOUND_UNKNOWN_UNK1417 & SOUNDARGS_MASK_SOUNDID)) {
+                                    == (SOUND_MOVING_FLYING & SOUNDARGS_MASK_SOUNDID)) {
                                     ret = get_sound_freq_scale(bankIndex, index);
                                     gSequencePlayers[2].channels[channelIndex]->freqScale =
                                         ((f32) D_80363808[bankIndex] / US_FLOAT(80.0)) + ret;
@@ -1261,7 +1261,7 @@ void update_game_sound(void) {
                                     *gSoundBanks[bankIndex][index].x, *gSoundBanks[bankIndex][index].z);
 
                                 if ((gSoundBanks[bankIndex][index].soundBits & SOUNDARGS_MASK_SOUNDID)
-                                    == (SOUND_UNKNOWN_UNK1417 & SOUNDARGS_MASK_SOUNDID)) {
+                                    == (SOUND_MOVING_FLYING & SOUNDARGS_MASK_SOUNDID)) {
                                     ret = get_sound_freq_scale(bankIndex, index);
                                     gSequencePlayers[2].channels[channelIndex]->freqScale =
                                         ((f32) D_80363808[bankIndex] / US_FLOAT(80.0)) + ret;
@@ -1349,11 +1349,11 @@ void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
     }
 }
 
-void func_8031F7CC(u8 player, u16 fadeTimer) {
+void sequence_player_fade_out(u8 player, u16 fadeTimer) {
     if (player == 0) {
         gPlayer0CurSeqId = SEQUENCE_NONE;
     }
-    sequence_player_fade_out(player, fadeTimer);
+    sequence_player_fade_out_internal(player, fadeTimer);
 }
 
 void fade_volume_scale(u8 player, u8 targetScale, u16 fadeTimer) {
@@ -1404,7 +1404,6 @@ void process_level_music_dynamics(void) {
     s16 dur2;               // sp38
     u32 conditionBits;      // s0
     u32 tempBits;           // v1
-    s32 numConditions;      // v1
     u16 bit;                // a1
     u8 condIndex;           // a0 (same as numConditions?)
     u8 i;                   // s1
@@ -1439,63 +1438,62 @@ void process_level_music_dynamics(void) {
             }
         }
 
-        numConditions = condIndex;
-        for (j = 0; j < numConditions; j++) {
+        for (j = 0; j < condIndex; j++) {
             // (having all 'temp' share a single variable affects regalloc)
             UNUSED s16 temp;
             switch (conditionTypes[j]) {
                 case MARIO_X_GE: {
                     s16 temp = gMarioStates[0].pos[0];
                     if (temp < conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Y_GE: {
                     s16 temp = gMarioStates[0].pos[1];
                     if (temp < conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Z_GE: {
                     s16 temp = gMarioStates[0].pos[2];
                     if (temp < conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_X_LT: {
                     s16 temp = gMarioStates[0].pos[0];
                     if (temp >= conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Y_LT: {
                     s16 temp = gMarioStates[0].pos[1];
                     if (temp >= conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Z_LT: {
                     s16 temp = gMarioStates[0].pos[2];
                     if (temp >= conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_IS_IN_AREA: {
                     s16 temp = gCurrAreaIndex;
                     if (temp != conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_IS_IN_ROOM: {
                     s16 temp = gMarioCurrentRoom;
                     if (temp != conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
             }
         }
 
-        if (j == numConditions) {
+        if (j == condIndex) {
             // The area matches. Break out of the loop.
             tempBits = 0;
         } else {
@@ -1565,7 +1563,7 @@ void func_8031FFB4(u8 player, u16 fadeTimer, u8 arg2) {
     }
 }
 
-void func_80320040(u8 player, u16 fadeTimer) {
+void sequence_player_unlower(u8 player, u16 fadeTimer) {
     sCapVolumeTo40 = FALSE;
     if (player == 0) {
         if (gSequencePlayers[player].state != SEQUENCE_PLAYER_STATE_FADE_OUT) {
@@ -1799,17 +1797,17 @@ void func_80320A4C(u8 bankIndex, u8 arg1) {
     D_80363808[bankIndex] = arg1;
 }
 
-void play_dialog_sound(u8 dialogId) {
+void play_dialog_sound(u8 dialogID) {
     u8 speaker;
 
-    if (dialogId >= 170) {
-        dialogId = 0;
+    if (dialogID >= 170) {
+        dialogID = 0;
     }
 
-    speaker = sDialogSpeaker[dialogId];
+    speaker = sDialogSpeaker[dialogID];
     if (speaker != 0xff) {
         play_sound(sDialogSpeakerVoice[speaker], gDefaultSoundArgs);
-        if (speaker == 2) // SOUND_OBJECT_BOWSERINTROLAUGH
+        if (speaker == 2) // SOUND_OBJ_BOWSER_INTRO_LAUGH
         {
             play_sequence(1, SEQ_EVENT_KOOPA_MESSAGE, 0);
         }
@@ -1817,7 +1815,7 @@ void play_dialog_sound(u8 dialogId) {
 
 #ifndef VERSION_JP
     // "You've stepped on the (Wing|Metal|Vanish) Cap Switch"
-    if (dialogId == 10 || dialogId == 11 || dialogId == 12) {
+    if (dialogID == 10 || dialogID == 11 || dialogID == 12) {
         play_puzzle_jingle();
     }
 #endif
@@ -1904,7 +1902,7 @@ void stop_background_music(u16 seqId) {
                 if (sBackgroundMusicQueueSize != 0) {
                     play_sequence(0, sBackgroundMusicQueue[1].seqId, 0);
                 } else {
-                    func_8031F7CC(0, 20);
+                    sequence_player_fade_out(0, 20);
                 }
             }
             foundIndex = i;
@@ -1925,7 +1923,7 @@ void stop_background_music(u16 seqId) {
 
 void fadeout_background_music(u16 seqId, u16 fadeOut) {
     if (sBackgroundMusicQueueSize != 0 && sBackgroundMusicQueue[0].seqId == (u8)(seqId & 0xff)) {
-        func_8031F7CC(0, fadeOut);
+        sequence_player_fade_out(0, fadeOut);
     }
 }
 
@@ -1990,7 +1988,7 @@ void func_80321080(u16 fadeTimer) {
         D_80332120 = 0;
         D_80332124 = 0;
         func_803200E4(fadeTimer);
-        func_8031F7CC(1, fadeTimer);
+        sequence_player_fade_out(1, fadeTimer);
     }
 }
 
@@ -2002,10 +2000,10 @@ void func_803210D4(u16 fadeOutTime) {
     }
 
     if (gSequencePlayers[0].enabled == TRUE) {
-        sequence_player_fade_out(0, fadeOutTime);
+        sequence_player_fade_out_internal(0, fadeOutTime);
     }
     if (gSequencePlayers[1].enabled == TRUE) {
-        sequence_player_fade_out(1, fadeOutTime);
+        sequence_player_fade_out_internal(1, fadeOutTime);
     }
 
     for (i = 0; i < SOUND_BANK_COUNT; i++) {

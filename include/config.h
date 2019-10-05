@@ -1,5 +1,5 @@
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
+#ifndef CONFIG_H
+#define CONFIG_H
 
 /**
  * @file config.h
@@ -17,6 +17,8 @@
 // --| US Version Nintendo Bug Fixes
 /// Fixes bug where obtaining over 999 coins sets the number of lives to 999 (or -25)
 #define BUGFIX_MAX_LIVES (0 || VERSION_US || VERSION_EU)
+/// Fixes bug where the Boss music won't fade out after defeating King Bob-omb 
+#define BUGFIX_KING_BOB_OMB_FADE_MUSIC (0 || VERSION_US || VERSION_EU)
 /// Fixes bug in Bob-Omb Battlefield where entering a warp stops the Koopa race music
 #define BUGFIX_KOOPA_RACE_MUSIC (0 || VERSION_US || VERSION_EU)
 /// Fixes bug where Piranha Plants do not reset their action state when the
@@ -34,11 +36,11 @@
 /// incorrect promotion of floats to doubles.
 #define BUGFIX_GODDARD_BAD_DECLARATIONS (0 || BUGFIXES_CRITICAL)
 
-//Screen Size Defines
+// Screen Size Defines
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 
-//Border Height Define for NTSC Versions
+// Border Height Define for NTSC Versions
 #define BORDER_HEIGHT 8
 
 #endif

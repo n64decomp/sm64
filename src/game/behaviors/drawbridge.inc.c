@@ -36,7 +36,7 @@ void bhv_lll_drawbridge_loop(void) {
         //  the game at regular intervals can leave the drawbridge raised indefinitely.
         if (o->oTimer >= 51 && (globalTimer % 8) == 0) {
             o->oAction = LLL_DRAWBRIDGE_ACT_LOWER;
-            PlaySound2(SOUND_GENERAL_BOATTILT1);
+            PlaySound2(SOUND_GENERAL_BOAT_TILT1);
         }
     }
 
@@ -47,7 +47,7 @@ void bhv_lll_drawbridge_loop(void) {
         //  the game at regular intervals can leave the drawbridge lowered indefinitely.
         if (o->oTimer >= 51 && (globalTimer % 8) == 0) {
             o->oAction = LLL_DRAWBRIDGE_ACT_RAISE;
-            PlaySound2(SOUND_GENERAL_BOATTILT2);
+            PlaySound2(SOUND_GENERAL_BOAT_TILT2);
         }
     }
 }

@@ -137,7 +137,7 @@ static void enemy_lakitu_sub_act_hold_spiny(void) {
  */
 static void enemy_lakitu_sub_act_throw_spiny(void) {
     if (func_802F92EC(2, 2)) {
-        PlaySound2(SOUND_OBJECT_EVILLAKITUTHROW);
+        PlaySound2(SOUND_OBJ_EVIL_LAKITU_THROW);
         o->prevObj = NULL;
     }
 
@@ -151,7 +151,7 @@ static void enemy_lakitu_sub_act_throw_spiny(void) {
  * Main update function.
  */
 static void enemy_lakitu_act_main(void) {
-    PlaySound(SOUND_CH6_LAKITUFLY);
+    PlaySound(SOUND_AIR_LAKITU_FLY);
 
     obj_update_floor_and_walls();
 

@@ -734,8 +734,8 @@ Gfx *create_shadow_circle_assuming_flat_ground(f32 xPos, f32 yPos, f32 zPos, s16
  * underneath the shadow is totally flat.
  */
 Gfx *create_shadow_rectangle(f32 halfWidth, f32 halfLength, f32 relY, u8 solidity) {
-    Vtx *verts = alloc_display_list(64);
-    Gfx *displayList = alloc_display_list(40);
+    Vtx *verts = alloc_display_list(4 * sizeof(Vtx));
+    Gfx *displayList = alloc_display_list(5 * sizeof(Gfx));
     f32 frontLeftX, frontLeftZ, frontRightX, frontRightZ, backLeftX, backLeftZ, backRightX, backRightZ;
 
     if (verts == NULL || displayList == NULL) {

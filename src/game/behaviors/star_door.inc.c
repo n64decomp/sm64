@@ -21,7 +21,7 @@ void bhv_star_door_loop(void) {
             break;
         case 1:
             if (o->oTimer == 0 && (s16)(o->oMoveAngleYaw) >= 0)
-                PlaySound2(SOUND_GENERAL_STARDOOROPEN);
+                PlaySound2(SOUND_GENERAL_STAR_DOOR_OPEN);
             obj_become_intangible();
             o->oUnkBC = -8.0f;
             func_802A4DB0();
@@ -34,7 +34,7 @@ void bhv_star_door_loop(void) {
             break;
         case 3:
             if (o->oTimer == 0 && (s16)(o->oMoveAngleYaw) >= 0)
-                PlaySound2(SOUND_GENERAL_STARDOORCLOSE);
+                PlaySound2(SOUND_GENERAL_STAR_DOOR_CLOSE);
             o->oUnkBC = 8.0f;
             func_802A4DB0();
             if (o->oTimer >= 16)

@@ -7,7 +7,7 @@ struct Struct8032FCE8 D_8032FCE8[] = { { 320, MODEL_BOB_BARS_GRILLS, bob_seg7_co
 
 void bhv_openable_cage_door_loop(void) {
     if (gCurrentObject->oAction == 0) {
-        if (gCurrentObject->parentObj->oUnknownUnk88 != 0)
+        if (gCurrentObject->parentObj->oOpenableGrillUnk88 != 0)
             gCurrentObject->oAction++;
     } else if (gCurrentObject->oAction == 1) {
         if (gCurrentObject->oTimer < 64)
@@ -40,8 +40,8 @@ void bhv_openable_grill_loop(void) {
         case 2:
             sp3C = o->oOpenableGrillUnkF4;
             if (sp3C->oAction == 2) {
-                o->oUnknownUnk88 = 2;
-                PlaySound2(SOUND_GENERAL_CAGEOPEN);
+                o->oOpenableGrillUnk88 = 2;
+                PlaySound2(SOUND_GENERAL_CAGE_OPEN);
                 o->oAction++;
                 if (o->oBehParams2ndByte != 0)
                     play_puzzle_jingle();

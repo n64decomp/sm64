@@ -2191,5 +2191,4 @@ glabel piranha_plant_seg6_anims_0601C31C # 0x0601C31C
 .word 0
 
 # huh? this isnt following the Bin ID format?
-.word 0
-.word 1
+.dword 1

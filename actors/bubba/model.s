@@ -2,8 +2,7 @@
 # It's possible that bubba and bub used to be 2 "actors" in
 # one actor file.
 
-.word 0
-.word 0 # Bin ID? What is this?
+.dword 0 # Bin ID? What is this?
 
 # Bubba
 

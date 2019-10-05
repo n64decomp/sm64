@@ -49,7 +49,7 @@ void coffin_act_0(void) {
             o->oAngleVelPitch = approach_s16_symmetric(o->oAngleVelPitch, -2000, 200);
 
             if (obj_face_pitch_approach(0, -o->oAngleVelPitch)) {
-                PlaySound2(SOUND_GENERAL_ELEVATORMOVE_2);
+                PlaySound2(SOUND_GENERAL_ELEVATOR_MOVE_2);
                 obj_perform_position_op(0);
                 o->oMoveAngleYaw = o->oFaceAngleYaw - 0x4000;
 
@@ -73,7 +73,7 @@ void coffin_act_0(void) {
                 && (o->oDistanceToMario > 100.0f || gMarioState->action == ACT_SQUISHED)) {
                 if (gMarioObject->oPosY - o->oPosY < 200.0f && absf(val04) < 140.0f) {
                     if (val00 < 150.0f && val00 > -450.0f) {
-                        PlaySound2(SOUND_GENERAL_BUTTONPRESS_2_LOWPRIO);
+                        PlaySound2(SOUND_GENERAL_BUTTON_PRESS_2_LOWPRIO);
                         o->oAction = 1;
                     }
                 }
@@ -94,7 +94,7 @@ void coffin_act_1(void) {
             o->oFaceAngleRoll = 0;
         } else if (o->oTimer > 30) {
             if (gGlobalTimer % 4 == 0) {
-                PlaySound2(SOUND_GENERAL_ELEVATORMOVE_2);
+                PlaySound2(SOUND_GENERAL_ELEVATOR_MOVE_2);
             }
             o->oFaceAngleRoll = 400 * (gGlobalTimer % 2) - 200;
         }

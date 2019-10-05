@@ -8,7 +8,8 @@ vertex     26,    -26,      0,    992,    992,  0xFF, 0xFF, 0xFF, 0xFF
 vertex     26,     26,      0,    992,      0,  0xFF, 0xFF, 0xFF, 0xFF
 vertex    -26,     26,      0,      0,      0,  0xFF, 0xFF, 0xFF, 0xFF
 
-.word 0, 0 # align but balign wont here?
+.dword 0 # align? binid?
+
 chain_ball_seg6_texture_06020AE8: # 0x06020AE8
 .incbin "actors/chain_ball/chain_ball.rgba16"
 

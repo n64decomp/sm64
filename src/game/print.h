@@ -21,6 +21,8 @@
 #define GLYPH_STAR            53
 #define GLYPH_PERIOD          54
 #define GLYPH_BETA_KEY        55
+#define GLYPH_APOSTROPHE      56
+#define GLYPH_DOUBLE_QUOTE    57
 #define GLYPH_UMLAUT          58
 
 extern void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n);

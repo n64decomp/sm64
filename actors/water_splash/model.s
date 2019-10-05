@@ -7,28 +7,28 @@ vertex     64,    256,      0,    992,      0,  0xFF, 0xFF, 0xFF, 0xFF
 vertex    -64,    256,      0,      0,      0,  0xFF, 0xFF, 0xFF, 0xFF
 
 water_splash_seg4_texture_0402A5C8: # 0x0402A5C8
-.incbin "actors/water_splash/water_splash_0.ia16"
+.incbin "actors/water_splash/water_splash_0.rgba16"
 
 water_splash_seg4_texture_0402B5C8: # 0x0402B5C8
-.incbin "actors/water_splash/water_splash_1.ia16"
+.incbin "actors/water_splash/water_splash_1.rgba16"
 
 water_splash_seg4_texture_0402C5C8: # 0x0402C5C8
-.incbin "actors/water_splash/water_splash_2.ia16"
+.incbin "actors/water_splash/water_splash_2.rgba16"
 
 water_splash_seg4_texture_0402D5C8: # 0x0402D5C8
-.incbin "actors/water_splash/water_splash_3.ia16"
+.incbin "actors/water_splash/water_splash_3.rgba16"
 
 water_splash_seg4_texture_0402E5C8: # 0x0402E5C8
-.incbin "actors/water_splash/water_splash_4.ia16"
+.incbin "actors/water_splash/water_splash_4.rgba16"
 
 water_splash_seg4_texture_0402F5C8: # 0x0402F5C8
-.incbin "actors/water_splash/water_splash_5.ia16"
+.incbin "actors/water_splash/water_splash_5.rgba16"
 
 water_splash_seg4_texture_040305C8: # 0x040305C8
-.incbin "actors/water_splash/water_splash_6.ia16"
+.incbin "actors/water_splash/water_splash_6.rgba16"
 
 water_splash_seg4_texture_040315C8: # 0x040315C8
-.incbin "actors/water_splash/water_splash_7.ia16"
+.incbin "actors/water_splash/water_splash_7.rgba16"
 
 glabel water_splash_seg4_dl_040325C8 # 0x040325C8 - 0x04032640
 gsSPClearGeometryMode G_LIGHTING

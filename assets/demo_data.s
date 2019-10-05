@@ -3,25 +3,27 @@
 .section .data
 
 .macro demo name
-.word (\name - gDemoInputs), (\name\()_end - \name)
+    .word32 (\name - gDemoInputs)
+    .word32 (\name\()_end - \name)
 .endm
 
 # Whomp's Fortress has the wrong size. The original entries probably manually
 # input the sizes, but we opt for macros for cleanliness.
 .macro demo2 name
-.word (\name - gDemoInputs), ((\name\()_end + 0x170) - \name)
+    .word32 (\name - gDemoInputs)
+    .word32 ((\name\()_end + 0x170) - \name)
 .endm
 
 .macro demofile name
-\name:
-.incbin "assets/demos/\name\().bin"
-\name\()_end:
+    \name:
+    .incbin "assets/demos/\name\().bin"
+    \name\()_end:
 .endm
 
 glabel gDemoInputs
-.word (demo_entry_end - demo_entry_start) / 8 # number of entries
+.word32 (demo_entry_end - demo_entry_start) / 8 # number of entries
+.word 0
 
-.align 3, 0x00
 demo_entry_start:
 .ifdef VERSION_US
 demo  bitdw # Bowser in the Dark World

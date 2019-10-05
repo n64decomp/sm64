@@ -15,7 +15,7 @@ void bhv_rr_cruiser_wing_loop(void) {
     }
 #ifndef VERSION_JP
     if (o->oTimer == 64) {
-        PlaySound2(SOUND_GENERAL_BOATROCK);
+        PlaySound2(SOUND_GENERAL_BOAT_ROCK);
         o->oTimer = 0;
     }
 #endif

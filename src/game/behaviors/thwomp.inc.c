@@ -2,8 +2,8 @@
 
 void ActionGrindelThwomp4(void) {
     if (o->oTimer == 0)
-        o->OBJECT_FIELD_S32(0x1B) = RandomFloat() * 10.0f + 20.0f;
-    if (o->oTimer > o->OBJECT_FIELD_S32(0x1B))
+        o->oThwompUnkF4 = RandomFloat() * 10.0f + 20.0f;
+    if (o->oTimer > o->oThwompUnkF4)
         o->oAction = 0;
 }
 
@@ -21,7 +21,7 @@ void ActionGrindelThwomp3(void) {
     if (o->oTimer == 0)
         if (o->oDistanceToMario < 1500.0f) {
             ShakeScreen(1);
-            PlaySound2(SOUND_OBJECT_THWOMP);
+            PlaySound2(SOUND_OBJ_THWOMP);
         }
     if (o->oTimer > 9)
         o->oAction = 4;
@@ -29,8 +29,8 @@ void ActionGrindelThwomp3(void) {
 
 void ActionGrindelThwomp1(void) {
     if (o->oTimer == 0)
-        o->OBJECT_FIELD_S32(0x1B) = RandomFloat() * 30.0f + 10.0f;
-    if (o->oTimer > o->OBJECT_FIELD_S32(0x1B))
+        o->oThwompUnkF4 = RandomFloat() * 30.0f + 10.0f;
+    if (o->oTimer > o->oThwompUnkF4)
         o->oAction = 2;
 }
 

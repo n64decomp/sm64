@@ -6,15 +6,15 @@ void bhv_birds_sound_loop(void) {
 
     switch (o->oBehParams2ndByte) {
         case 0:
-            PlaySound(SOUND_CH9_UNK52);
+            PlaySound(SOUND_OBJ2_BIRD_CHIRP1);
             break;
 
         case 1:
-            PlaySound(SOUND_CH8_UNK50);
+            PlaySound(SOUND_GENERAL2_BIRD_CHIRP2);
             break;
 
         case 2:
-            PlaySound(SOUND_OBJECT_BIRDS2);
+            PlaySound(SOUND_OBJ_BIRD_CHIRP3);
             break;
     }
 }

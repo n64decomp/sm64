@@ -78,7 +78,7 @@ glabel bubble_ptr_0B006848 # 0x0B006848
 effect_0B00684C: # 0x0B00684C
 .incbin "textures/effect/tiny_bubble.0684C.rgba16"
 
-.word 0 # align?
+.balign 16
 glabel tiny_bubble_dl_0B006A50 # 0x0B006A50 - 0x0B006AB0
 gsDPPipeSync
 gsSPClearGeometryMode G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH

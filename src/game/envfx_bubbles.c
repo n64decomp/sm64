@@ -182,7 +182,7 @@ void envfx_update_lava(Vec3s centerPos) {
     }
 
     if ((chance = (s32)(RandomFloat() * 16.0f)) == 8) {
-        play_sound(SOUND_GENERAL_QUIETBUBBLE2, gDefaultSoundArgs);
+        play_sound(SOUND_GENERAL_QUIET_BUBBLE2, gDefaultSoundArgs);
     }
 }
 
@@ -447,7 +447,7 @@ GLOBAL_ASM("asm/non_matchings/append_bubble_vertex_buffer_eu.s")
 void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
                                  Vtx *template) {
     s32 i = 0;
-    Vtx *vertBuf = (Vtx *) alloc_display_list(15 * sizeof(Vtx));
+    Vtx *vertBuf = alloc_display_list(15 * sizeof(Vtx));
 
     if (vertBuf == NULL) {
         return;
@@ -485,18 +485,18 @@ void envfx_set_bubble_texture(s32 mode, s16 index) {
 
     switch (mode) {
         case ENVFX_FLOWERS:
-            imageArr = (void **) segmented_to_virtual(&flower_bubbles_textures_ptr_0B002008);
+            imageArr = segmented_to_virtual(&flower_bubbles_textures_ptr_0B002008);
             frame = (gEnvFxBuffer + index)->animFrame;
             break;
 
         case ENVFX_LAVA_BUBBLES:
-            imageArr = (void **) segmented_to_virtual(&lava_bubble_ptr_0B006020);
+            imageArr = segmented_to_virtual(&lava_bubble_ptr_0B006020);
             frame = (gEnvFxBuffer + index)->animFrame;
             break;
 
         case ENVFX_WHIRLPOOL_BUBBLES:
         case ENVFX_JETSTREAM_BUBBLES:
-            imageArr = (void **) segmented_to_virtual(&bubble_ptr_0B006848);
+            imageArr = segmented_to_virtual(&bubble_ptr_0B006848);
             frame = 0;
             break;
     }
@@ -519,7 +519,7 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
 
     Gfx *gfxStart;
 
-    gfxStart = (Gfx *) alloc_display_list(
+    gfxStart = alloc_display_list(
         ((sBubbleParticleMaxCount / 5) * 10 + sBubbleParticleMaxCount + 3) * sizeof(Gfx));
     if (gfxStart == NULL) {
         return NULL;

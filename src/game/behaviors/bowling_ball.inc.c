@@ -42,23 +42,23 @@ void func_802EDA14(void) {
 void func_802EDA6C(void) {
     switch (o->oBehParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
-            o->oBowlingBallUnkFC = segmented_to_virtual(bob_seg7_metal_ball_path0);
+            o->oPathedWaypointsS16 = segmented_to_virtual(bob_seg7_metal_ball_path0);
             break;
 
         case BBALL_BP_STYPE_TTM:
-            o->oBowlingBallUnkFC = segmented_to_virtual(ttm_seg7_trajectory_070170A0);
+            o->oPathedWaypointsS16 = segmented_to_virtual(ttm_seg7_trajectory_070170A0);
             break;
 
         case BBALL_BP_STYPE_BOB_LOWER:
-            o->oBowlingBallUnkFC = segmented_to_virtual(bob_seg7_metal_ball_path1);
+            o->oPathedWaypointsS16 = segmented_to_virtual(bob_seg7_metal_ball_path1);
             break;
 
         case BBALL_BP_STYPE_THI_LARGE:
-            o->oBowlingBallUnkFC = D_803315B4;
+            o->oPathedWaypointsS16 = D_803315B4;
             break;
 
         case BBALL_BP_STYPE_THI_SMALL:
-            o->oBowlingBallUnkFC = D_80331608;
+            o->oPathedWaypointsS16 = D_80331608;
             break;
     }
 }
@@ -73,8 +73,7 @@ void bhv_bowling_ball_roll_loop(void) {
     //! Uninitialzed parameter, but the parameter is unused in the called function
     sp18 = obj_follow_path(sp18);
 
-    //! oBowlingBallInitYaw is never explicitly initialized, so it is 0.
-    o->oBowlingBallTargetYaw = o->oBowlingBallInitYaw;
+    o->oBowlingBallTargetYaw = o->oPathedTargetYaw;
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oBowlingBallTargetYaw, 0x400);
     if (o->oForwardVel > 70.0) {
         o->oForwardVel = 70.0;
@@ -92,7 +91,7 @@ void bhv_bowling_ball_roll_loop(void) {
     }
 
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) && (o->oVelY > 5.0f))
-        PlaySound2(SOUND_GENERAL_QUIETPOUND1_LOWPRIO);
+        PlaySound2(SOUND_GENERAL_QUIET_POUND1_LOWPRIO);
 }
 
 void bhv_bowling_ball_initializeLoop(void) {
@@ -103,8 +102,7 @@ void bhv_bowling_ball_initializeLoop(void) {
     //! Uninitialzed parameter, but the parameter is unused in the called function
     sp1c = obj_follow_path(sp1c);
 
-    //! oBowlingBallInitYaw is never explicitly initialized, so it is 0.
-    o->oMoveAngleYaw = o->oBowlingBallInitYaw;
+    o->oMoveAngleYaw = o->oPathedTargetYaw;
 
     switch (o->oBehParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
@@ -152,18 +150,18 @@ void bhv_bowling_ball_loop(void) {
 void bhv_generic_bowling_ball_spawner_init(void) {
     switch (o->oBehParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
-            o->oBBallSpwnrMaxSpawnDist = 7000.0f;
-            o->oBBallSpwnrSpawnOdds = 2.0f;
+            o->oBBallSpawnerMaxSpawnDist = 7000.0f;
+            o->oBBallSpawnerSpawnOdds = 2.0f;
             break;
 
         case BBALL_BP_STYPE_TTM:
-            o->oBBallSpwnrMaxSpawnDist = 8000.0f;
-            o->oBBallSpwnrSpawnOdds = 1.0f;
+            o->oBBallSpawnerMaxSpawnDist = 8000.0f;
+            o->oBBallSpawnerSpawnOdds = 1.0f;
             break;
 
         case BBALL_BP_STYPE_BOB_LOWER:
-            o->oBBallSpwnrMaxSpawnDist = 6000.0f;
-            o->oBBallSpwnrSpawnOdds = 2.0f;
+            o->oBBallSpawnerMaxSpawnDist = 6000.0f;
+            o->oBBallSpawnerSpawnOdds = 2.0f;
             break;
     }
 }
@@ -178,10 +176,10 @@ void bhv_generic_bowling_ball_spawner_loop(void) {
         || (o->oPosY < gMarioObject->header.gfx.pos[1]))
         return;
 
-    if ((o->oTimer & o->oBBallSpwnrPeriodMinus1) == 0) /* Modulus */
+    if ((o->oTimer & o->oBBallSpawnerPeriodMinus1) == 0) /* Modulus */
     {
-        if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, o->oBBallSpwnrMaxSpawnDist)) {
-            if ((s32)(RandomFloat() * o->oBBallSpwnrSpawnOdds) == 0) {
+        if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, o->oBBallSpawnerMaxSpawnDist)) {
+            if ((s32)(RandomFloat() * o->oBBallSpawnerSpawnOdds) == 0) {
                 bowlingBall = spawn_object(o, MODEL_BOWLING_BALL, bhvBowlingBall);
                 bowlingBall->oBehParams2ndByte = o->oBehParams2ndByte;
             }
@@ -225,7 +223,7 @@ void bhv_bob_pit_bowling_ball_loop(void) {
 
     func_802EDA14();
     func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
-    PlaySound(SOUND_ENVIRONMENT_UNKNOWN2);
+    PlaySound(SOUND_ENV_UNKNOWN2);
     SetObjectVisibility(o, 3000);
 }
 
@@ -246,11 +244,11 @@ void bhv_free_bowling_ball_roll_loop(void) {
 
     if (o->oForwardVel > 10.0f) {
         func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
-        PlaySound(SOUND_ENVIRONMENT_UNKNOWN2);
+        PlaySound(SOUND_ENV_UNKNOWN2);
     }
 
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) && !(collisionFlags & OBJ_COL_FLAGS_LANDED))
-        PlaySound2(SOUND_GENERAL_QUIETPOUND1_LOWPRIO);
+        PlaySound2(SOUND_GENERAL_QUIET_POUND1_LOWPRIO);
 
     if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 6000)) {
         o->header.gfx.node.flags |= 0x10; /* bit 4 */

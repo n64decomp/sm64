@@ -13,7 +13,7 @@ struct ObjectHitbox sBreakableBoxHitbox = {
 };
 
 void func_802B0E74(void) {
-    o->oUnknownUnkF4_S32 = 0;
+    o->oHiddenObjectUnkF4 = NULL;
     o->oAnimState = 1;
     switch (o->oBehParams2ndByte) {
         case 0:
@@ -40,7 +40,7 @@ void func_802B0F54(void) {
         obj_become_intangible();
         if (o->oTimer == 0)
             func_802B0E74();
-        if (o->oUnknownUnkF4_S32 == 0)
+        if (o->oHiddenObjectUnkF4 == NULL)
             o->oHiddenObjectUnkF4 = obj_nearest_object_with_behavior(bhvFloorSwitchHiddenObjects);
         if ((sp1C = o->oHiddenObjectUnkF4) != NULL)
             if (sp1C->oAction == 2) {
@@ -56,7 +56,7 @@ void func_802B0F54(void) {
             func_802A3004();
             spawn_triangle_break_particles(30, 138, 3.0f, 4);
             o->oAction++;
-            PlaySound2(SOUND_GENERAL_BREAKBOX);
+            PlaySound2(SOUND_GENERAL_BREAK_BOX);
         }
         load_object_collision_model();
     } else {

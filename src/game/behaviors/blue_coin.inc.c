@@ -77,7 +77,7 @@ void bhv_blue_coin_switch_loop(void) {
                     // Set gravity to 0 so it doesn't accelerate when receding.
                     o->oGravity = 0.0f;
 
-                    PlaySound2(SOUND_GENERAL_SWITCHDOOROPEN);
+                    PlaySound2(SOUND_GENERAL_SWITCH_DOOR_OPEN);
                 }
             }
 
@@ -97,7 +97,8 @@ void bhv_blue_coin_switch_loop(void) {
                 // ???
                 o->oPosY = gMarioObject->oPosY - 40.0f;
 
-                // Spawn particles
+                // Spawn particles. There's a function that calls this same function
+                // with the same arguments, func_802A3004, why didn't they just call that?
                 func_802AA618(0, 0, 46.0f);
             } else {
                 // Have collision while receding
@@ -110,9 +111,9 @@ void bhv_blue_coin_switch_loop(void) {
         case BLUE_COIN_SWITCH_ACT_TICKING:
             // Tick faster when the blue coins start blinking
             if (o->oTimer < 200) {
-                play_sound(SOUND_CH8_SWITCH5, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_SWITCH_TICK_FAST, gDefaultSoundArgs);
             } else {
-                play_sound(SOUND_CH8_SWITCH6, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_SWITCH_TICK_SLOW, gDefaultSoundArgs);
             }
 
             // Delete the switch (which stops the sound) after the last coin is collected,

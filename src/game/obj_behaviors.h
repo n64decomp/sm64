@@ -5,13 +5,6 @@
 #include "object_helpers2.h"
 #include "engine/surface_collision.h"
 
-struct Struct802E2F58
-{
-    s32 unk0[2];
-    s32 unk8[2];
-    u8 filler10[0x8];
-};
-
 extern struct Surface *D_803600E0;
 
 extern s8 D_80331500;
@@ -25,7 +18,7 @@ extern u8 ttm_seg7_trajectory_070170A0[];
 extern u8 bob_seg7_metal_ball_path1[];
 
 void func_802E2F40(void);
-struct Struct802E2F58 *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2); /* unused */
+Gfx *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2); /* unused */
 f32 absf_2(f32 f);
 void TurnObjAwayFromSurface(f32 objVelX, f32 objVelZ, f32 nX, UNUSED f32 nY, f32 nZ, f32 *objYawX, f32 *objYawZ);
 s32 ObjFindWall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ);
