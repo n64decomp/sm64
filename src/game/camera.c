@@ -5666,6 +5666,7 @@ static void unused_8028FE50(UNUSED struct LevelCamera *a) {
     gCutsceneTimer = func_8028FD94(2);
 }
 
+//Fade the music and start the peach dialogue sound
 CmdRet CutsceneIntroPeach0_2(UNUSED struct LevelCamera *a) {
 #ifdef VERSION_US
     func_8031FFB4(0, 60, 40);
@@ -5942,8 +5943,8 @@ CmdRet CutscenePeachEnd7(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutscenePeachEndCommon367A, c, 0, 0);
     call_cutscene_func_in_time_range(CutscenePeachEnd7_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutscenePeachEnd7_1, c, 250, -1);
-    func_80299C60(7, 300);
-    func_80299C60(9, 340);
+    set_cutscene_phase_at_frame(7, 300);
+    set_cutscene_phase_at_frame(9, 340);
     vec3f_set(c->pos, -163.f, 978.f, -1082.f);
     move_credits_camera(c, -0x800, 0x2000, -0x2000, 0x2000);
 }
@@ -5991,10 +5992,10 @@ CmdRet CutscenePeachEndA(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutscenePeachEndA_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutscenePeachEndA_2, c, 0, 499);
     call_cutscene_func_in_time_range(CutscenePeachEndA_1, c, 500, -1);
-    func_80299C60(8, 600);
-    func_80299C60(8, 608);
-    func_80299C60(8, 624);
-    func_80299C60(8, 710);
+    set_cutscene_phase_at_frame(8, 600);
+    set_cutscene_phase_at_frame(8, 608);
+    set_cutscene_phase_at_frame(8, 624);
+    set_cutscene_phase_at_frame(8, 710);
 }
 
 CmdRet CutscenePeachEndB(struct LevelCamera *c) {
@@ -6520,7 +6521,7 @@ CmdRet CutsceneEnterBowserPlatform2(struct LevelCamera *c) {
 }
 
 CmdRet CutsceneEnterBowserPlatform0(struct LevelCamera *c) {
-    func_80299C60(2, 0);
+    set_cutscene_phase_at_frame(2, 0);
 
     if (gSecondCameraFocus != NULL) {
         call_cutscene_func_in_time_range(CutsceneEnterBowserPlatform0_1, c, 0, -1);
@@ -7495,6 +7496,7 @@ CmdRet CutsceneUnlockKeyDoor0(UNUSED struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutsceneUnlockKeyDoor0_6, c, 112, 112);
 }
 
+//Updates the camera position and focus during peach intro cutscene
 s32 func_80296DDC(struct LevelCamera *a, struct CinematicCameraTable b[],
                   struct CinematicCameraTable c[]) {
     Vec3f sp24;
@@ -7578,7 +7580,7 @@ CmdRet CutsceneIntroPeach2(struct LevelCamera *c) {
 #ifndef VERSION_JP
     call_cutscene_func_in_time_range(play_sound_intro_turn_on_hud, c, 818, 818);
 #endif
-    func_80299C60(6, 1);
+    set_cutscene_phase_at_frame(6, 1);
     call_cutscene_func_in_time_range(CutsceneIntroPeach2_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutsceneIntroPeachCommon, c, 0, -1);
     call_cutscene_func_in_time_range(CutsceneIntroPeach2_2, c, 717, 717);
@@ -7612,7 +7614,7 @@ CmdRet CutsceneIntroPeach1(UNUSED struct LevelCamera *c) {
 }
 
 CmdRet CutsceneIntroPeach0(struct LevelCamera *c) {
-    func_80299C60(5, 0);
+    set_cutscene_phase_at_frame(5, 0);
     call_cutscene_func_in_time_range(CutsceneIntroPeach0_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutsceneIntroPeach0_2, c, 65, 65);
 #ifdef VERSION_EU
@@ -7682,7 +7684,7 @@ CmdRet CutsceneEndWaving0(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutsceneEndWaving0_1, c, 0, 0);
     func_80287CFC(c->pos, D_8032E4E4, &D_8033B6E0, &D_8033B6E4);
     func_80287CFC(c->focus, D_8032E52C, &D_8033B6E0, &D_8033B6E4);
-    func_80299C60(6, 120);
+    set_cutscene_phase_at_frame(6, 120);
 }
 
 CmdRet CutsceneCredits0_1(UNUSED struct LevelCamera *c) {
@@ -8639,9 +8641,9 @@ s32 call_cutscene_func_in_time_range(CameraCommandProc func, struct LevelCamera 
     return 0;
 }
 
-s32 func_80299C60(s32 a, s16 b) {
-    if (b == gCutsceneTimer) {
-        sCutscenePhase = a;
+s32 set_cutscene_phase_at_frame(s32 phase, s16 time) {
+    if (time == gCutsceneTimer) {
+        sCutscenePhase = phase;
     }
     return 0;
 }

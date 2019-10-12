@@ -831,7 +831,7 @@ extern s16 cutscene_object(u8, struct Object *);
 // extern ? CutsceneDoorAB_2(?);
 extern void handle_cutscenes(struct LevelCamera *);
 extern s32 call_cutscene_func_in_time_range(CameraCommandProc, struct LevelCamera *, s16, s16);
-extern s32 func_80299C60(s32, s16);
+extern s32 set_cutscene_phase_at_frame(s32 phase, s16 frame);
 extern void func_80299C98(s16, s16, s16);
 // extern ? func_80299D00(?);
 
