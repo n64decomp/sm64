@@ -702,9 +702,9 @@
 #define /*0x0F4*/ oOpenableGrillUnkF4 OBJECT_FIELD_OBJ(0x1B)
 
 /* Intro Cutscene Peach */
-#define /*0x108*/ oIntroPeachUnk108 OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oIntroPeachUnk10C OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oIntroPeachUnk110 OBJECT_FIELD_F32(0x22)
+#define /*0x108*/ oIntroPeachYawFromFocus OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oIntroPeachPitchFromFocus OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oIntroPeachDistToCamera OBJECT_FIELD_F32(0x22)
 
 /* Racing Penguin */
 #define /*0x0F4*/ oRacingPenguinInitTextCooldown       OBJECT_FIELD_S32(0x1B)

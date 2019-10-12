@@ -5666,7 +5666,7 @@ static void unused_8028FE50(UNUSED struct LevelCamera *a) {
     gCutsceneTimer = func_8028FD94(2);
 }
 
-//Fade the music and start the peach dialogue sound
+//Lower the volume and start the peach letter background music
 CmdRet CutsceneIntroPeach0_2(UNUSED struct LevelCamera *a) {
 #ifdef VERSION_US
     func_8031FFB4(0, 60, 40);
@@ -8641,8 +8641,8 @@ s32 call_cutscene_func_in_time_range(CameraCommandProc func, struct LevelCamera 
     return 0;
 }
 
-s32 set_cutscene_phase_at_frame(s32 phase, s16 time) {
-    if (time == gCutsceneTimer) {
+s32 set_cutscene_phase_at_frame(s32 phase, s16 frame) {
+    if (frame == gCutsceneTimer) {
         sCutscenePhase = phase;
     }
     return 0;

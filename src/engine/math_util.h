@@ -41,7 +41,7 @@ void mtxf_mul_vec3s(f32 a[4][4], Vec3s b);
 void mtxf_to_mtx(Mtx *a, f32 b[4][4]);
 void mtxf_rotate_xy(Mtx *a, s16 b);
 void get_pos_from_transform_mtx(Vec3f a, f32 b[4][4], f32 c[4][4]);
-void vec3f_get_dist_and_angle(Vec3f a, Vec3f b, f32 *c, s16 *d, s16 *e);
+void vec3f_get_dist_and_angle(Vec3f from, Vec3f to, f32 *dist, s16 *pitch, s16 *yaw);
 void vec3f_set_dist_and_angle(Vec3f a, Vec3f b, f32 c, s16 d, s16 e);
 s32 approach_s32(s32 a, s32 b, s32 c, s32 d);
 f32 approach_f32(f32 a, f32 b, f32 c, f32 d);
