@@ -255,12 +255,19 @@ struct Struct8033B230
     /*0x18*/ s16 unk18;
 };
 
-struct CinematicCameraTable
+/**
+ * Information for a control point in a spline segment.
+ */
+struct CutsceneSplinePoint
 {
-    /*0x00*/ s8 unk0;
-    /*0x01*/ u8 unk1;
-    /*0x02*/ Vec3s unk2;
-}; // size = 0x08
+    /* The index of this point in the spline. Ignored except for -1, which ends the spline.
+       An index of -1 should come four points after the start of the last segment. */
+    s8 index;
+    /* Roughly controls the number of frames it takes to progress through the spline segment.
+       See move_point_along_spline() in camera.c */
+    u8 speed;
+    Vec3s point;
+};
 
 struct PlayerGeometry
 {
@@ -400,7 +407,7 @@ extern void dummy_802877EC(struct LevelCamera *);
 extern void vec3f_sub(Vec3f, Vec3f);
 extern void object_pos_to_vec3f(Vec3f, struct Object *);
 extern void vec3f_to_object_pos(struct Object *, Vec3f); // static (ASM)
-extern s32 func_80287CFC(Vec3f, struct CinematicCameraTable[], s16 *, f32 *);
+extern s32 move_point_along_spline(Vec3f, struct CutsceneSplinePoint[], s16 *, f32 *);
 extern s32 select_or_activate_mario_cam(s32 angle);
 extern s32 test_or_set_mario_cam_active(s32);
 extern void set_spline_values(u8);

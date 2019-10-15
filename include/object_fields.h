@@ -624,14 +624,14 @@
 #define /*0x100*/ oEnemyLakituFaceForwardCountdown OBJECT_FIELD_S32(0x1E)
 
 /* Intro Cutscene Lakitu */
-#define /*0x0F8*/ oIntroLakituUnkF8  OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oIntroLakituUnkFC  OBJECT_FIELD_F32(0x1D)
-#define /*0x100*/ oIntroLakituUnk100 OBJECT_FIELD_F32(0x1E)
-#define /*0x104*/ oIntroLakituUnk104 OBJECT_FIELD_F32(0x1F)
-#define /*0x108*/ oIntroLakituUnk108 OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oIntroLakituUnk10C OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oIntroLakituUnk110 OBJECT_FIELD_F32(0x22)
-#define /*0x1AC*/ oIntroLakituUnk1AC OBJECT_FIELD_OBJ(0x49)
+#define /*0x0F8*/ oIntroLakituSplineSegmentProgress  OBJECT_FIELD_F32(0x1C)
+#define /*0x0FC*/ oIntroLakituSplineSegment          OBJECT_FIELD_F32(0x1D)
+#define /*0x100*/ oIntroLakituUnk100                 OBJECT_FIELD_F32(0x1E)
+#define /*0x104*/ oIntroLakituUnk104                 OBJECT_FIELD_F32(0x1F)
+#define /*0x108*/ oIntroLakituUnk108                 OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oIntroLakituUnk10C                 OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oIntroLakituUnk110                 OBJECT_FIELD_F32(0x22)
+#define /*0x1AC*/ oIntroLakituCloud                  OBJECT_FIELD_OBJ(0x49)
 
 /* Main Menu Button */
 #define /*0x0F4*/ oMenuButtonState       OBJECT_FIELD_S32(0x1B)
