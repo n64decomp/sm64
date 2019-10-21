@@ -112,7 +112,7 @@ struct Object *gCurrentObject;
 /**
  * The next object behavior command to be executed.
  */
-u32 *gBehCommand;
+uintptr_t *gBehCommand;
 
 /**
  * The number of objects that were processed last frame, which may miss some
@@ -471,7 +471,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
             object->oBehParams2ndByte = ((spawnInfo->behaviorArg) >> 16) & 0xFF;
 
             object->behavior = script;
-            object->unk1C8 = 0;
+            object->unused1 = 0;
 
             // Record death/collection in the SpawnInfo
             object->respawnInfoType = RESPAWN_INFO_TYPE_32;

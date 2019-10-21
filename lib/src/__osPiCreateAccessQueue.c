@@ -14,8 +14,9 @@ void __osPiCreateAccessQueue() {
 
 void __osPiGetAccess() {
     OSMesg sp1c;
-    if (!gOsPiAccessQueueCreated)
+    if (!gOsPiAccessQueueCreated) {
         __osPiCreateAccessQueue();
+    }
     osRecvMesg(&gOsPiMessageQueue, &sp1c, OS_MESG_BLOCK);
 }
 

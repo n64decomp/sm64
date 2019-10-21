@@ -26,7 +26,7 @@ done
 set -- "${POSITIONAL[@]}"
 
 BASEROM=baserom.$LANG
-MAPFILE="build/$LANG/sm64.map"
+MAPFILE="build/$LANG/sm64.$LANG.map"
 MYDUMP=sm64.$LANG.dump
 MYIMG=build/$LANG/sm64.$LANG.z64
 BASEDUMP=$BASEROM.dump

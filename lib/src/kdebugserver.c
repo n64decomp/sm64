@@ -41,8 +41,9 @@ void send_packet(u8 *a0, s32 a1) {
         sp1c.unk2[i] = a0[i];
     }
     *(volatile u32 *) 0xc0000000 = *(u32 *) &sp1c;
-    while (!(__osGetCause() & 0x2000))
+    while (!(__osGetCause() & 0x2000)) {
         ;
+    }
     *(volatile u32 *) 0xc000000c = 0;
 }
 
@@ -51,8 +52,9 @@ void send(u8 *buff, s32 len) {
     s32 end;
     s32 rem;
     if (!D_80334A44) {
-        while (!(__osGetCause() & 0x2000))
+        while (!(__osGetCause() & 0x2000)) {
             ;
+        }
         *(volatile u32 *) 0xc000000c = 0;
         D_80334A44 = 1;
     }
@@ -71,7 +73,7 @@ void process_command_memory() {
     u32 sp18;
     sp1c = string_to_u32(&D_80365E40[1]);
     sp18 = string_to_u32(&D_80365E40[5]);
-    send((u8 *) sp1c, sp18);
+    send((u8 *) (uintptr_t) sp1c, sp18);
 }
 void process_command_register() {
     send((u8 *) &gInterruptedThread.context, sizeof(__OSThreadContext));

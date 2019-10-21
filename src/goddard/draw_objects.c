@@ -100,7 +100,7 @@ static struct {
 } sUpdateViewState;
 static struct ObjLight *sPhongLight;          // material light? phong light?
 static struct GdVec3f sPhongLightPosition;    //@ 801B9D00; guess; light source unit position for light
-                                              //flagged 0x20 (sPhongLight)
+                                              // flagged 0x20 (sPhongLight)
 static struct GdVec3f sLightPositionOffset;   // @ 801B9D10
 static struct GdVec3f sLightPositionCache[8]; // @ 801B9D20; unit positions
 static s32 sNumActiveLights;                  // @ 801B9D80; maybe?
@@ -251,8 +251,9 @@ void draw_shape_2d(struct ObjShape *shape, s32 flag, UNUSED f32 c, UNUSED f32 d,
     restart_timer("drawshape2d");
     sUpdateViewState.shapesDrawn++;
 
-    if (shape == NULL)
+    if (shape == NULL) {
         return;
+    }
 
     if (flag & 2) {
         sp1C.x = f;
@@ -349,12 +350,12 @@ void check_face_bad_vtx(struct ObjFace *face) {
     for (i = 0; i < face->vtxCount; i++) {
         vtx = face->vertices[i];
         // These seem to be checks against bad conversions, or an outdated vertex structure..?
-        if ((s32) vtx == 39) {
+        if ((uintptr_t) vtx == 39) {
             gd_printf("bad1\n");
             return;
         }
-        if ((s32) vtx->gbiVerts == 0x3F800000) {
-            fatal_printf("bad2 %x,%d,%d,%d\n", (u32) vtx, vtx->unk3C, vtx->id, vtx->header.type);
+        if ((uintptr_t) vtx->gbiVerts == 0x3F800000) {
+            fatal_printf("bad2 %x,%d,%d,%d\n", (u32) (uintptr_t) vtx, vtx->unk3C, vtx->id, vtx->header.type);
         }
     }
 }
@@ -615,8 +616,9 @@ void draw_net(struct ObjNet *self) {
 void draw_gadget(struct ObjGadget *gdgt) {
     s32 colour = 0;
 
-    if (gdgt->unk5C != 0)
+    if (gdgt->unk5C != 0) {
         colour = gdgt->unk5C;
+    }
 
     draw_rect_fill(colour, gdgt->unk14.x, gdgt->unk14.y, gdgt->unk14.x + gdgt->unk28 * gdgt->unk40.x,
                    gdgt->unk14.y + gdgt->unk40.y);
@@ -671,8 +673,9 @@ void Unknown80179ACC(struct GdObj *obj) {
     if (obj->type == OBJ_TYPE_NETS) {
         if (0) {
         }
-        if (((struct ObjNet *) obj)->unk1C8 != NULL)
+        if (((struct ObjNet *) obj)->unk1C8 != NULL) {
             func_80179B64(((struct ObjNet *) obj)->unk1C8);
+        }
     } else {
         if (0) {
         }
@@ -1256,7 +1259,7 @@ void find_thisface_verts(struct ObjFace *face, struct ObjGroup *verts) {
             if (link->obj->type == OBJ_TYPE_VERTICES || link->obj->type == OBJ_TYPE_PARTICLES) {
                 // it seems that the vertices in a face are first pointer-sized indices
                 // to a given vertix or particle link in the second argument's group.
-                if (linkVtxIdx++ == (u32) face->vertices[i]) {
+                if (linkVtxIdx++ == (u32) (uintptr_t) face->vertices[i]) {
                     break;
                 }
             }

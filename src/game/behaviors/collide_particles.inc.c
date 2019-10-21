@@ -10,14 +10,14 @@ void bhv_punch_tiny_triangle_loop(void) {
     s16 sp1E;
     if (o->oTimer == 0) {
         sp1E = o->oMoveAngleYaw;
-        o->OBJECT_FIELD_F32(0x1B) = 1.28f;
+        o->oCollisionParticleUnkF4 = 1.28f;
         obj_set_pos_relative(gMarioObject, 0.0f, 60.0f, 100.0f);
         o->oMoveAngleYaw = sp1E; // does obj_set_pos_relative modify currentObject?
     }
     obj_move_using_fvel_and_gravity();
     o->oAnimState = 5;
-    obj_scale(o->OBJECT_FIELD_F32(0x1B));
-    o->OBJECT_FIELD_F32(0x1B) -= 0.2f;
+    obj_scale(o->oCollisionParticleUnkF4);
+    o->oCollisionParticleUnkF4 -= 0.2f;
     if (gDebugInfo[4][0] + 6 < o->oTimer)
         mark_object_for_deletion(o);
 }
@@ -38,14 +38,14 @@ void bhv_wall_tiny_star_particle_loop(void) {
     s16 sp1E;
     if (o->oTimer == 0) {
         sp1E = o->oMoveAngleYaw;
-        o->OBJECT_FIELD_F32(0x1B) = 0.28f;
+        o->oCollisionParticleUnkF4 = 0.28f;
         obj_set_pos_relative(gMarioObject, 0.0f, 30.0f, 110.0f);
         o->oMoveAngleYaw = sp1E;
     }
     obj_move_using_fvel_and_gravity();
     o->oAnimState = 4;
-    obj_scale(o->OBJECT_FIELD_F32(0x1B));
-    o->OBJECT_FIELD_F32(0x1B) -= 0.015f;
+    obj_scale(o->oCollisionParticleUnkF4);
+    o->oCollisionParticleUnkF4 -= 0.015f;
 }
 
 void bhv_tiny_star_particles_init(void) {
@@ -62,15 +62,15 @@ void bhv_tiny_star_particles_init(void) {
 
 void bhv_pound_tiny_star_particle_loop(void) {
     if (o->oTimer == 0) {
-        o->OBJECT_FIELD_F32(0x1B) = 0.28f;
+        o->oCollisionParticleUnkF4 = 0.28f;
         o->oForwardVel = 25.0f;
         o->oPosY -= 20.0f;
         o->oVelY = 14.0f;
     }
     obj_move_using_fvel_and_gravity();
     o->oAnimState = 4;
-    obj_scale(o->OBJECT_FIELD_F32(0x1B));
-    o->OBJECT_FIELD_F32(0x1B) -= 0.015f;
+    obj_scale(o->oCollisionParticleUnkF4);
+    o->oCollisionParticleUnkF4 -= 0.015f;
 }
 
 void bhv_pound_tiny_star_particle_init(void) {

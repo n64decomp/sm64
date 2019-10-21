@@ -97,4 +97,4 @@ glabel intro_geo_000414 # 0x0E000414
    geo_close_node
    geo_end
 
-.word 0x0
+.balign 16

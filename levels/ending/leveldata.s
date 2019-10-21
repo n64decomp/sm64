@@ -139,143 +139,143 @@ gsDPSetTileSize 0, 0, 0, 252, 124
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07000000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 32, 252, 156, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 8 << 2, (0 + 63) << 2, (8 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07001000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 32, 508, 156, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 8 << 2, (64 + 63) << 2, (8 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07002000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 32, 764, 156, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 8 << 2, (128 + 63) << 2, (8 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07003000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 32, 1020, 156, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 8 << 2, (192 + 63) << 2, (8 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07004000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 32, 1276, 156, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 8 << 2, (256 + 63) << 2, (8 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07005000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 160, 252, 284, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 40 << 2, (0 + 63) << 2, (40 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07006000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 160, 508, 284, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 40 << 2, (64 + 63) << 2, (40 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07007000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 160, 764, 284, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 40 << 2, (128 + 63) << 2, (40 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07008000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 160, 1020, 284, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 40 << 2, (192 + 63) << 2, (40 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07009000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 160, 1276, 284, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 40 << 2, (256 + 63) << 2, (40 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0700A000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 288, 252, 412, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 72 << 2, (0 + 63) << 2, (72 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0700B000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 288, 508, 412, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 72 << 2, (64 + 63) << 2, (72 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0700C000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 288, 764, 412, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 72 << 2, (128 + 63) << 2, (72 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0700D000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 288, 1020, 412, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 72 << 2, (192 + 63) << 2, (72 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0700E000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 288, 1276, 412, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 72 << 2, (256 + 63) << 2, (72 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0700F000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 416, 252, 540, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 104 << 2, (0 + 63) << 2, (104 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07010000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 416, 508, 540, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 104 << 2, (64 + 63) << 2, (104 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07011000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 416, 764, 540, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 104 << 2, (128 + 63) << 2, (104 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07012000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 416, 1020, 540, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 104 << 2, (192 + 63) << 2, (104 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07013000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 416, 1276, 540, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 104 << 2, (256 + 63) << 2, (104 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07014000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 544, 252, 668, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 136 << 2, (0 + 63) << 2, (136 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07015000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 544, 508, 668, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 136 << 2, (64 + 63) << 2, (136 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07016000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 544, 764, 668, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 136 << 2, (128 + 63) << 2, (136 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07017000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 544, 1020, 668, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 136 << 2, (192 + 63) << 2, (136 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07018000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 544, 1276, 668, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 136 << 2, (256 + 63) << 2, (136 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07019000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 672, 252, 796, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 168 << 2, (0 + 63) << 2, (168 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0701A000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 672, 508, 796, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 168 << 2, (64 + 63) << 2, (168 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0701B000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 672, 764, 796, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 168 << 2, (128 + 63) << 2, (168 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0701C000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 672, 1020, 796, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 168 << 2, (192 + 63) << 2, (168 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0701D000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 672, 1276, 796, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 168 << 2, (256 + 63) << 2, (168 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0701E000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 0, 800, 252, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 0 << 2, 200 << 2, (0 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_0701F000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 256, 800, 508, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 64 << 2, 200 << 2, (64 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07020000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 800, 764, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 200 << 2, (128 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07021000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 768, 800, 1020, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 192 << 2, 200 << 2, (192 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07022000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 1024, 800, 1276, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 256 << 2, 200 << 2, (256 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsSPEndDisplayList
 
 dl_cake_end_eu_070296D8: # 0x070296D8 - 0x070296F8
@@ -288,11 +288,11 @@ glabel dl_cake_end_screen_eu_070296F8 # 0x070296F8 - 0x07029768
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07026000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 800, 764, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 200 << 2, (128 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07023000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 500, 764, 624, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 125 << 2, (128 + 63) << 2, (125 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsSPDisplayList dl_cake_end_eu_070296D8
 gsSPEndDisplayList
 
@@ -300,11 +300,11 @@ glabel dl_cake_end_screen_eu_07029768 # 0x07029768 - 0x070297D8
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07027000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 800, 764, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 200 << 2, (128 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07024000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 500, 764, 624, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 125 << 2, (128 + 63) << 2, (125 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsSPDisplayList dl_cake_end_eu_070296D8
 gsSPEndDisplayList
 
@@ -312,11 +312,11 @@ glabel dl_cake_end_screen_eu_070297D8 # 0x070297D8 - 0x07029848
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07028000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 800, 764, 924, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 200 << 2, (128 + 63) << 2, (200 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsDPSetTextureImage G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cake_end_texture_07025000
 gsDPLoadSync
 gsDPLoadBlock 7, 0, 0, 0x7FF, 0x080
-gsSPTextureRectangle 512, 500, 764, 624, 0, 0, 0, 4096, 1024
+gsSPTextureRectangle 128 << 2, 125 << 2, (128 + 63) << 2, (125 + 31) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10
 gsSPDisplayList dl_cake_end_eu_070296D8
 gsSPEndDisplayList
 

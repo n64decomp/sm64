@@ -1,5 +1,5 @@
-#ifndef _SEGMENT2_H
-#define _SEGMENT2_H
+#ifndef SEGMENT2_H
+#define SEGMENT2_H
 
 #include "types.h"
 
@@ -36,29 +36,24 @@ extern u8 dl_skybox_end[];
 extern u8 dl_waterbox_ia16_begin[];
 extern Gfx dl_waterbox_rgba16_begin[];
 extern Gfx dl_waterbox_end[];
-// extern ? dl_paintings_draw_ripples;
-// extern ? dl_paintings_rippling_begin;
-// extern ? dl_paintings_rippling_end;
-// extern ? dl_paintings_env_mapped_begin;
-// extern ? dl_paintings_env_mapped_end;
-// extern ? seg2_dl_02014A60;
-// extern ? seg2_mesh_order;
-extern u8* seg2_hud_lut[58];
+extern u8 dl_paintings_draw_ripples[];
+extern u8 dl_paintings_rippling_begin[];
+extern u8 dl_paintings_rippling_end[];
+extern u8 dl_paintings_env_mapped_begin[];
+extern u8 dl_paintings_env_mapped_end[];
+extern u8 seg2_triangle_mesh[];
+extern u8 seg2_mesh_order[];
+extern u8* main_hud_lut[58];
 extern u8 dl_hud_img_load_tex_block[];
 extern u8 dl_hud_img_begin[];
 extern u8 dl_hud_img_end[];
-extern void *seg2_small_font_lut[];
+extern void *main_font_lut[];
 extern Gfx dl_ia8_render_char[];
 extern Gfx dl_rgba16_load_tex_block[];
-extern void *seg2_credits_font_lut[];
-extern u8* seg2_hud_camera_lut[6];
+extern void *main_credits_font_lut[];
+extern u8* main_hud_camera_lut[6];
 extern Gfx dl_draw_text_bg_box[];
-// extern ? dl_ia8_text_begin;
-// extern ? dl_ia8_text_end;
 extern Gfx dl_draw_triangle[];
 extern void *seg2_dialog_table[];
-// extern ? dl_rgba16_text_end;
-// extern ? seg2_act_name_table;
-// extern ? seg2_level_name_table;
 
-#endif /* _SEGMENT2_H */
+#endif /* SEGMENT2_H */

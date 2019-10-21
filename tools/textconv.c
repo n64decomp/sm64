@@ -254,7 +254,7 @@ static int count_line_num(const char *start, const char *pos)
     return lineNum;
 }
 
-static char *convert_string(char *pos, FILE *fout, const char *inputFileName, char *start)
+static char *convert_string(char *pos, FILE *fout, const char *inputFileName, char *start, int uncompressed)
 {
     int hasString = 0;
 
@@ -291,10 +291,11 @@ static char *convert_string(char *pos, FILE *fout, const char *inputFileName, ch
             // Find a charmap entry of longest length possible starting from this position
             while (*pos != '"')
             {
-                if (length == ARRAY_COUNT(entry->unicode))
+                if ((uncompressed && length == 1) || length == ARRAY_COUNT(entry->unicode))
                 {
                     // Stop searching after length 3; we only support strings of lengths up
-                    // to that right now.
+                    // to that right now. Unless uncompressed is set, in which we ignore multi
+                    // texts by discarding entries longer than 1.
                     break;
                 }
 
@@ -402,15 +403,21 @@ static void convert_file(const char *infilename, const char *outfilename)
             pos++;
         }
         // check for _( sequence
-        else if (*pos == '_' && (pos == in || !is_identifier_char(pos[-1])))
+        else if ((*pos == '_') && (pos == in || !is_identifier_char(pos[-1])))
         {
+            int uncompressed = 0;
             end = pos;
             pos++;
+            if (*pos == '_') // an extra _ signifies uncompressed strings. Enable uncompressed flag
+            {
+                pos++;
+                uncompressed = 1;
+            }
             if (*pos == '(')
             {
                 pos++;
                 fwrite(start, end - start, 1, fout);
-                pos = convert_string(pos, fout, infilename, in);
+                pos = convert_string(pos, fout, infilename, in, uncompressed);
                 start = pos;
             }
         }

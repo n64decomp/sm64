@@ -325,16 +325,20 @@ static struct Surface *read_surface_data(s16 *vertexData, s16 **vertexIndices) {
 
     // Could have used min_3 and max_3 for this...
     minY = y1;
-    if (y2 < minY)
+    if (y2 < minY) {
         minY = y2;
-    if (y3 < minY)
+    }
+    if (y3 < minY) {
         minY = y3;
+    }
 
     maxY = y1;
-    if (y2 > maxY)
+    if (y2 > maxY) {
         maxY = y2;
-    if (y3 > maxY)
+    }
+    if (y3 > maxY) {
         maxY = y3;
+    }
 
     // Checking to make sure no DIV/0
     if (mag < 0.0001) {
@@ -518,7 +522,7 @@ void alloc_surface_pools(void) {
     sSurfacePool = main_pool_alloc(sSurfacePoolSize * sizeof(struct Surface), MEMORY_POOL_LEFT);
 
     gCCMEnteredSlide = 0;
-    func_802DA4DC();
+    reset_red_coins_collected();
 }
 
 /**

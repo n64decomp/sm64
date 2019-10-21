@@ -7,7 +7,7 @@
 #include "sound_init.h"
 #include "profiler.h"
 #include "game.h"
-#include "buffers.h"
+#include "buffers/buffers.h"
 #include "segments.h"
 #include "main.h"
 
@@ -64,15 +64,17 @@ void handle_debug_key_sequences(void) {
     static s16 sDebugTextKey = 0;
     if (gPlayer3Controller->buttonPressed != 0) {
         if (sProfilerKeySequence[sProfilerKey++] == gPlayer3Controller->buttonPressed) {
-            if (sProfilerKey == ARRAY_COUNT(sProfilerKeySequence))
+            if (sProfilerKey == ARRAY_COUNT(sProfilerKeySequence)) {
                 sProfilerKey = 0, gShowProfiler ^= 1;
+            }
         } else {
             sProfilerKey = 0;
         }
 
         if (sDebugTextKeySequence[sDebugTextKey++] == gPlayer3Controller->buttonPressed) {
-            if (sDebugTextKey == ARRAY_COUNT(sDebugTextKeySequence))
+            if (sDebugTextKey == ARRAY_COUNT(sDebugTextKeySequence)) {
                 sDebugTextKey = 0, gShowDebugText ^= 1;
+            }
         } else {
             sDebugTextKey = 0;
         }
@@ -168,10 +170,11 @@ void receive_new_tasks(void) {
 void start_sptask(s32 taskType) {
     UNUSED s32 pad; // needed to pad the stack
 
-    if (taskType == M_AUDTASK)
+    if (taskType == M_AUDTASK) {
         gActiveSPTask = sCurrentAudioSPTask;
-    else
+    } else {
         gActiveSPTask = sCurrentDisplaySPTask;
+    }
 
     osSpTaskLoad(&gActiveSPTask->task);
     osSpTaskStartGo(&gActiveSPTask->task);
@@ -204,8 +207,9 @@ void handle_vblank(void) {
 
     Dummy802461EC();
     sNumVblanks++;
-    if (gResetTimer > 0)
+    if (gResetTimer > 0) {
         gResetTimer++;
+    }
 
     receive_new_tasks();
 
@@ -219,10 +223,11 @@ void handle_vblank(void) {
             interrupt_gfx_sptask();
         } else {
             profiler_log_vblank_time();
-            if (sAudioEnabled != 0)
+            if (sAudioEnabled != 0) {
                 start_sptask(M_AUDTASK);
-            else
+            } else {
                 pretend_audio_sptask_done();
+            }
         }
     } else {
         if (gActiveSPTask == NULL && sCurrentDisplaySPTask != NULL
@@ -233,10 +238,12 @@ void handle_vblank(void) {
     }
 
     // Notify the game loop about the vblank.
-    if (gVblankHandler1 != NULL)
+    if (gVblankHandler1 != NULL) {
         osSendMesg(gVblankHandler1->queue, gVblankHandler1->msg, OS_MESG_NOBLOCK);
-    if (gVblankHandler2 != NULL)
+    }
+    if (gVblankHandler2 != NULL) {
         osSendMesg(gVblankHandler2->queue, gVblankHandler2->msg, OS_MESG_NOBLOCK);
+    }
 }
 
 void handle_sp_complete(void) {
@@ -257,10 +264,11 @@ void handle_sp_complete(void) {
 
         // Start the audio task, as expected by handle_vblank.
         profiler_log_vblank_time();
-        if (sAudioEnabled != 0)
+        if (sAudioEnabled != 0) {
             start_sptask(M_AUDTASK);
-        else
+        } else {
             pretend_audio_sptask_done();
+        }
     } else {
         curSPTask->state = SPTASK_STATE_FINISHED;
         if (curSPTask->task.t.type == M_AUDTASK) {
@@ -268,13 +276,15 @@ void handle_sp_complete(void) {
             profiler_log_vblank_time();
             if (sCurrentDisplaySPTask != NULL
                 && sCurrentDisplaySPTask->state != SPTASK_STATE_FINISHED) {
-                if (sCurrentDisplaySPTask->state != SPTASK_STATE_INTERRUPTED)
+                if (sCurrentDisplaySPTask->state != SPTASK_STATE_INTERRUPTED) {
                     profiler_log_gfx_time(TASKS_QUEUED);
+                }
                 start_sptask(M_GFXTASK);
             }
             sCurrentAudioSPTask = NULL;
-            if (curSPTask->msgqueue != NULL)
+            if (curSPTask->msgqueue != NULL) {
                 osSendMesg(curSPTask->msgqueue, curSPTask->msg, OS_MESG_NOBLOCK);
+            }
         } else {
             // The SP process is done, but there is still a Display Processor notification
             // that needs to arrive before we can consider the task completely finished and
@@ -286,8 +296,9 @@ void handle_sp_complete(void) {
 
 void handle_dp_complete(void) {
     // Gfx SP task is completely done.
-    if (sCurrentDisplaySPTask->msgqueue != NULL)
+    if (sCurrentDisplaySPTask->msgqueue != NULL) {
         osSendMesg(sCurrentDisplaySPTask->msgqueue, sCurrentDisplaySPTask->msg, OS_MESG_NOBLOCK);
+    }
     profiler_log_gfx_time(RDP_COMPLETE);
     sCurrentDisplaySPTask->state = SPTASK_STATE_FINISHED_DP;
     sCurrentDisplaySPTask = NULL;
@@ -308,7 +319,7 @@ void thread3_main(UNUSED void *arg) {
         OSMesg msg;
 
         osRecvMesg(&gIntrMesgQueue, &msg, OS_MESG_BLOCK);
-        switch ((u32) msg) {
+        switch ((uintptr_t) msg) {
             case MESG_VI_VBLANK:
                 handle_vblank();
                 break;
@@ -351,7 +362,7 @@ void SendMessage(OSMesg *msg) {
 void dispatch_audio_sptask(struct SPTask *spTask) {
     if (sAudioEnabled != 0 && spTask != NULL) {
         osWritebackDCacheAll();
-        osSendMesg(&gSPTaskMesgQueue, (OSMesg) spTask, OS_MESG_NOBLOCK);
+        osSendMesg(&gSPTaskMesgQueue, spTask, OS_MESG_NOBLOCK);
     }
 }
 
@@ -375,8 +386,9 @@ void turn_on_audio(void) {
 
 void turn_off_audio(void) {
     sAudioEnabled = 0;
-    while (sCurrentAudioSPTask != NULL)
+    while (sCurrentAudioSPTask != NULL) {
         ;
+    }
 }
 
 /**
@@ -389,10 +401,11 @@ void thread1_idle(UNUSED void *arg) {
 
     osCreateViManager(OS_PRIORITY_VIMGR);
 #ifdef VERSION_US
-    if (sp24 == TV_TYPE_NTSC)
+    if (sp24 == TV_TYPE_NTSC) {
         osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
-    else
+    } else {
         osViSetMode(&osViModeTable[OS_VI_PAL_LAN1]);
+    }
 #else
     osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
 #endif
@@ -401,13 +414,15 @@ void thread1_idle(UNUSED void *arg) {
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreatePiManager(OS_PRIORITY_PIMGR, &gPIMesgQueue, gPIMesgBuf, ARRAY_COUNT(gPIMesgBuf));
     create_thread(&gMainThread, 3, thread3_main, NULL, gThread3Stack + 0x2000, 100);
-    if (D_8032C650 == 0)
+    if (D_8032C650 == 0) {
         osStartThread(&gMainThread);
+    }
     osSetThreadPri(NULL, 0);
 
     // halt
-    while (1)
+    while (1) {
         ;
+    }
 }
 
 void Main(void) {

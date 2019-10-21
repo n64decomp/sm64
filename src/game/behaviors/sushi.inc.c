@@ -14,6 +14,6 @@ void bhv_sushi_shark_loop(void) {
         if (o->oPosY - sp1C > -200.0f)
             spawn_object_with_scale(o, MODEL_WATER_WAVES, bhvWaterType, 4.0f);
     if ((o->oTimer & 0xF) == 0)
-        PlaySound2(SOUND_OBJECT_WATERSOUND);
+        PlaySound2(SOUND_OBJ_SUSHI_SHARK_WATER_SOUND);
     o->oInteractStatus = 0;
 }

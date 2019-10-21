@@ -1,8 +1,7 @@
 # Flyguy
 
 # ???
-.word 0
-.word 0
+.dword 0
 
 flyguy_seg8_texture_0800E088: # 0x0800E088
 .incbin "actors/flyguy/flyguy_cloth_wrinkle.rgba16"

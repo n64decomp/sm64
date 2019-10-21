@@ -34,7 +34,7 @@ void func_802B95A4(void) {
             }
             break;
         case 4:
-            PlaySound(SOUND_ENVIRONMENT_WATERDRAIN);
+            PlaySound(SOUND_ENV_WATER_DRAIN);
             if (o->oTimer < 300) {
                 gEnvironmentLevels[2] =
                     (s32) approach_f32_symmetric(gEnvironmentLevels[2], -2450.0f, 5.0f);

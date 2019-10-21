@@ -2,17 +2,17 @@
 
 void bhv_spindel_init(void) {
     o->oHomeY = o->oPosY;
-    o->oUnknownUnkF4_S32 = 0;
-    o->oUnknownUnkF8_S32 = 0;
+    o->oSpindelUnkF4 = 0;
+    o->oSpindelUnkF8 = 0;
 }
 
 void bhv_spindel_loop(void) {
     f32 sp1C;
     s32 sp18;
 
-    if (o->oUnknownUnkF4_S32 == -1) {
+    if (o->oSpindelUnkF4 == -1) {
         if (o->oTimer == 32) {
-            o->oUnknownUnkF4_S32 = 0;
+            o->oSpindelUnkF4 = 0;
             o->oTimer = 0;
         } else {
             o->oVelZ = 0.0f;
@@ -21,7 +21,7 @@ void bhv_spindel_loop(void) {
         }
     }
 
-    sp18 = 10 - o->oUnknownUnkF4_S32;
+    sp18 = 10 - o->oSpindelUnkF4;
 
     if (sp18 < 0)
         sp18 *= -1;
@@ -32,15 +32,15 @@ void bhv_spindel_loop(void) {
 
     if (o->oTimer == sp18 + 8) {
         o->oTimer = 0;
-        o->oUnknownUnkF4_S32++;
-        if (o->oUnknownUnkF4_S32 == 20) {
-            if (o->oUnknownUnkF8_S32 == 0) {
-                o->oUnknownUnkF8_S32 = 1;
+        o->oSpindelUnkF4++;
+        if (o->oSpindelUnkF4 == 20) {
+            if (o->oSpindelUnkF8 == 0) {
+                o->oSpindelUnkF8 = 1;
             } else {
-                o->oUnknownUnkF8_S32 = 0;
+                o->oSpindelUnkF8 = 0;
             }
 
-            o->oUnknownUnkF4_S32 = -1;
+            o->oSpindelUnkF4 = -1;
         }
     }
 
@@ -52,7 +52,7 @@ void bhv_spindel_loop(void) {
         sp18 = 1;
 
     if (o->oTimer < sp18 * 8) {
-        if (o->oUnknownUnkF8_S32 == 0) {
+        if (o->oSpindelUnkF8 == 0) {
             o->oVelZ = 20 / sp18;
             o->oAngleVelPitch = 1024 / sp18;
         } else {
@@ -64,7 +64,7 @@ void bhv_spindel_loop(void) {
         o->oMoveAnglePitch += o->oAngleVelPitch;
 
         if (absf_2(o->oMoveAnglePitch & 0x1fff) < 800.0f && o->oAngleVelPitch != 0) {
-            PlaySound2(SOUND_CH8_UNK48);
+            PlaySound2(SOUND_GENERAL2_SPINDEL_ROLL);
         }
 
         sp1C = sins(o->oMoveAnglePitch * 4) * 23.0;

@@ -149,7 +149,7 @@ static void fly_guy_act_shoot_fire(void) {
             } else {
                 // We have reached below scale 1.2 in the shrinking portion
                 s16 fireMovePitch = obj_turn_pitch_toward_mario(0.0f, 0);
-                PlaySound2(SOUND_OBJECT_FLAMEBLOWN);
+                PlaySound2(SOUND_OBJ_FLAME_BLOWN);
                 clamp_s16(&fireMovePitch, 0x800, 0x3000);
 
                 obj_spit_fire(
@@ -177,7 +177,7 @@ void bhv_fly_guy_update(void) {
     // PARTIAL_UPDATE (appears in non-roomed levels)
 
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
-        o->oDeathSound = SOUND_OBJECT_FLYGUYDEATH;
+        o->oDeathSound = SOUND_OBJ_KOOPA_FLYGUY_DEATH;
 
         obj_scale(o->header.gfx.scale[0]);
         treat_far_home_as_mario(2000.0f);

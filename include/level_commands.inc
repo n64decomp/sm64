@@ -21,7 +21,7 @@
 
 
 .macro execute seg, script, scriptEnd, entry
-    .byte 0x00, 0x10
+    .byte 0x00, 0x04 + 3 * PTR_WIDTH
     .hword \seg
     .word \script
     .word \scriptEnd
@@ -29,7 +29,7 @@
 .endm
 
 .macro exit_and_execute seg, script, scriptEnd, entry
-    .byte 0x01, 0x10
+    .byte 0x01, 0x04 + 3 * PTR_WIDTH
     .hword \seg
     .word \script
     .word \scriptEnd
@@ -52,13 +52,13 @@
 .endm
 
 .macro jump target
-    .byte 0x05, 0x08
+    .byte 0x05, 0x04 + PTR_WIDTH
     .hword 0
     .word \target
 .endm
 
 .macro jump_link target
-    .byte 0x06, 0x08
+    .byte 0x06, 0x04 + PTR_WIDTH
     .hword 0
     .word \target
 .endm
@@ -84,25 +84,25 @@
 .endm
 
 .macro loop_until op, arg
-    .byte 0x0B, 0x08
+    .byte 0x0B, 0x04 + PTR_WIDTH
     .byte \op
     .byte 0
     .word \arg
 .endm
 
 .macro jump_if op, arg, target
-    .byte 0x0C, 0x0C
+    .byte 0x0C, 0x08 + PTR_WIDTH
     .byte \op
     .byte 0
-    .word \arg
+    .word32 \arg
     .word \target
 .endm
 
 .macro jump_link_if op, arg, target
-    .byte 0x0D, 0x0C
+    .byte 0x0D, 0x08 + PTR_WIDTH
     .byte \op
     .byte 0
-    .word \arg
+    .word32 \arg
     .word \target
 .endm
 
@@ -110,7 +110,7 @@
     .byte 0x0E, 0x08
     .byte \op
     .byte 0
-    .word \arg
+    .word32 \arg
 .endm
 
 .macro skip
@@ -124,13 +124,13 @@
 .endm
 
 .macro call arg, func
-    .byte 0x11, 0x08
+    .byte 0x11, 0x04 + PTR_WIDTH
     .hword \arg
     .word \func
 .endm
 
 .macro call_loop arg, func
-    .byte 0x12, 0x08
+    .byte 0x12, 0x04 + PTR_WIDTH
     .hword \arg
     .word \func
 .endm
@@ -151,7 +151,7 @@
 .endm
 
 .macro fixed_load loadAddr, romStart, romEnd
-    .byte 0x16, 0x10
+    .byte 0x16, 0x04 + 3 * PTR_WIDTH
     .hword 0
     .word \loadAddr
     .word \romStart
@@ -159,14 +159,14 @@
 .endm
 
 .macro load_raw seg, romStart, romEnd
-    .byte 0x17, 0x0C
+    .byte 0x17, 0x04 + 2 * PTR_WIDTH
     .hword \seg
     .word \romStart
     .word \romEnd
 .endm
 
 .macro load_mio0 seg, romStart, romEnd
-    .byte 0x18, 0x0C
+    .byte 0x18, 0x04 + 2 * PTR_WIDTH
     .hword \seg
     .word \romStart
     .word \romEnd
@@ -178,7 +178,7 @@
 .endm
 
 .macro load_mio0_texture seg, romStart, romEnd
-    .byte 0x1A, 0x0C
+    .byte 0x1A, 0x04 + 2 * PTR_WIDTH
     .hword \seg
     .word \romStart
     .word \romEnd
@@ -205,7 +205,7 @@
 .endm
 
 .macro area index, geo
-    .byte 0x1F, 0x08
+    .byte 0x1F, 0x04 + PTR_WIDTH
     .byte \index
     .byte 0
     .word \geo
@@ -217,26 +217,26 @@
 .endm
 
 .macro load_model_from_dl model, dl, layer
-    .byte 0x21, 0x08
+    .byte 0x21, 0x04 + PTR_WIDTH
     .hword (\layer << 12) | \model
     .word \dl
 .endm
 
 .macro load_model_from_geo model, geo
-    .byte 0x22, 0x08
+    .byte 0x22, 0x04 + PTR_WIDTH
     .hword \model
     .word \geo
 .endm
 
 .macro cmd23 model, unk4, unk8
-    .byte 0x23, 0x0C
+    .byte 0x23, 0x08 + PTR_WIDTH
     .hword \model
     .word \unk4
-    .word \unk8
+    .float \unk8
 .endm
 
 .macro object model, posX, posY, posZ, angleX, angleY, angleZ, behParam, beh, acts=0x1F
-    .byte 0x24, 0x18
+    .byte 0x24, 0x14 + PTR_WIDTH
     .byte \acts
     .byte \model
     .hword \posX
@@ -245,15 +245,15 @@
     .hword \angleX
     .hword \angleY
     .hword \angleZ
-    .word \behParam
+    .word32 \behParam
     .word \beh
 .endm
 
 .macro mario unk3, behArg, beh
-    .byte 0x25, 0x0C
+    .byte 0x25, 0x08 + PTR_WIDTH
     .byte 0
     .byte \unk3
-    .word \behArg
+    .word32 \behArg
     .word \beh
 .endm
 
@@ -312,13 +312,13 @@
 .endm
 
 .macro terrain terrainData
-    .byte 0x2E, 0x08
+    .byte 0x2E, 0x04 + PTR_WIDTH
     .hword 0
     .word \terrainData
 .endm
 
 .macro rooms surfaceRooms
-    .byte 0x2F, 0x08
+    .byte 0x2F, 0x04 + PTR_WIDTH
     .hword 0
     .word \surfaceRooms
 .endm
@@ -379,7 +379,7 @@
 .endm
 
 .macro macro_objects objList
-    .byte 0x39, 0x08
+    .byte 0x39, 0x04 + PTR_WIDTH
     .hword 0
     .word \objList
 .endm

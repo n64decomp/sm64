@@ -34,9 +34,9 @@ struct GoombaProperties {
  * Properties for regular, huge, and tiny goombas.
  */
 static struct GoombaProperties sGoombaProperties[] = {
-    { 1.5f, SOUND_OBJECT_ENEMYDEATHHIGH, 4000, 1 },
-    { 3.5f, SOUND_OBJECT_ENEMYDEATHLOW, 4000, 2 },
-    { 0.5f, SOUND_OBJECT_ENEMYDEATHHIGH, 1500, 0 },
+    { 1.5f, SOUND_OBJ_ENEMY_DEATH_HIGH, 4000, 1 },
+    { 3.5f, SOUND_OBJ_ENEMY_DEATH_LOW, 4000, 2 },
+    { 0.5f, SOUND_OBJ_ENEMY_DEATH_HIGH, 1500, 0 },
 };
 
 /**
@@ -128,7 +128,7 @@ void bhv_goomba_init(void) {
  * Enter the jump action and set initial y velocity.
  */
 static void goomba_begin_jump(void) {
-    PlaySound2(SOUND_OBJECT_GOOMBAALERT);
+    PlaySound2(SOUND_OBJ_GOOMBA_ALERT);
     o->oAction = GOOMBA_ACT_JUMP;
     o->oForwardVel = 0.0f;
     o->oVelY = 50.0f / 3.0f * o->oGoombaScale;
@@ -160,7 +160,7 @@ static void goomba_act_walk(void) {
 
     // If walking fast enough, play footstep sounds
     if (o->oGoombaRelativeSpeed > 4.0f / 3.0f) {
-        func_802F9378(2, 17, SOUND_OBJECT_GOOMBAWALK);
+        func_802F9378(2, 17, SOUND_OBJ_GOOMBA_WALK);
     }
 
     //! By strategically hitting a wall, steep slope, or another goomba, we can

@@ -1,5 +1,5 @@
-#ifndef _PAINTINGS_H
-#define _PAINTINGS_H
+#ifndef PAINTINGS_H
+#define PAINTINGS_H
 
 #include "prevent_bss_reordering.h"
 
@@ -88,14 +88,6 @@ struct PaintingData
 
 extern struct MemoryPool *D_8033A124;
 
-extern u8 dl_paintings_draw_ripples[];
-extern u8 dl_paintings_rippling_begin[];
-extern u8 dl_paintings_rippling_end[];
-extern u8 dl_paintings_env_mapped_begin[];
-extern u8 dl_paintings_env_mapped_end[];
-extern u8 seg2_triangle_mesh[];
-extern u8 seg2_mesh_order[];
-
 extern struct PaintingData cotmc_painting[];
 
 extern struct PaintingData bob_painting[];
@@ -132,4 +124,4 @@ extern float (*D_8035FFA4)[3];
 extern struct PaintingData *ripplingPainting;
 extern s8 dddStatus;
 
-#endif /* _PAINTINGS_H */
+#endif /* PAINTINGS_H */

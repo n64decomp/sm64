@@ -4,7 +4,7 @@ void bhv_1up_interact(void) {
     UNUSED s32 sp1C;
 
     if (are_objects_collided(o, gMarioObject) == 1) {
-        play_sound(SOUND_GENERAL_1UP, gDefaultSoundArgs);
+        play_sound(SOUND_GENERAL_COLLECT_1UP, gDefaultSoundArgs);
         gMarioState->numLives++;
         o->activeFlags = 0;
     }
@@ -72,7 +72,7 @@ void bhv_1up_walking_loop(void) {
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
             if (o->oTimer == 0)
-                play_sound(SOUND_CH8_UNK63, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
 
             func_802F2D40();
 
@@ -109,7 +109,7 @@ void bhv_1up_running_away_loop(void) {
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
             if (o->oTimer == 0)
-                play_sound(SOUND_CH8_UNK63, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
 
             func_802F2D40();
 
@@ -215,7 +215,7 @@ void bhv_1up_hidden_loop(void) {
                 o->oVelY = 40.0f;
                 o->oAction = 3;
                 o->header.gfx.node.flags &= ~0x10;
-                play_sound(SOUND_CH8_UNK63, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
             }
             break;
 
@@ -267,7 +267,7 @@ void bhv_1up_hidden_in_pole_loop(void) {
                 o->oVelY = 40.0f;
                 o->oAction = 3;
                 o->header.gfx.node.flags &= ~0x10;
-                play_sound(SOUND_CH8_UNK63, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
             }
             break;
 

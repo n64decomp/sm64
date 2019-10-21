@@ -153,6 +153,8 @@ SECTIONS
       BUILD_DIR/src/game/object_collision.o(.text);
       BUILD_DIR/src/game/spawn_object.o(.text);
 #endif
+      BUILD_DIR/src/game*.o(.text);
+      BUILD_DIR/src/audio*.o(.text);
 #if VERSION_US
       . += 0x40;
 #endif
@@ -260,6 +262,7 @@ SECTIONS
       BUILD_DIR/libultra.a:__osGetCause.o(.text);
       BUILD_DIR/libultra.a:__osAtomicDec.o(.text);
       BUILD_DIR/libultra.a:guLookAtRef.o(.text); /* Fast3DEX2 only */
+      BUILD_DIR/libultra.a:*.o(.text);
       BUILD_DIR/lib/rsp.o(.text);
       /* data */
       BUILD_DIR/src/game/crash_screen.o(.data*);
@@ -302,8 +305,10 @@ SECTIONS
       BUILD_DIR/src/game/hud.o(.data*);
       BUILD_DIR/src/game/obj_behaviors.o(.data*);
       BUILD_DIR/src/game/obj_behaviors_2.o(.data*);
+      BUILD_DIR/src/game*.o(.data*);
       BUILD_DIR/src/audio/external.o(.data*);
       BUILD_DIR/src/audio/data.o(.data*);
+      BUILD_DIR/src/audio*.o(.data*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.data*);
       BUILD_DIR/libultra.a:osCreatePiManager.o(.data*);
       BUILD_DIR/libultra.a:osInitialize.o(.data*);
@@ -321,7 +326,8 @@ SECTIONS
       BUILD_DIR/libultra.a:osViData.o(.data*);
       BUILD_DIR/libultra.a:kdebugserver.o(.data*);
       BUILD_DIR/libultra.a:__osSyncPutChars.o(.data*);
-      BUILD_DIR/libultra.a:guRotateF.o(.data);
+      BUILD_DIR/libultra.a:guRotateF.o(.data*);
+      BUILD_DIR/libultra.a:*.o(.data*);
       /* rodata */
       BUILD_DIR/src/game/crash_screen.o(.rodata*);
       BUILD_DIR/src/game/main.o(.rodata*);
@@ -363,12 +369,14 @@ SECTIONS
       BUILD_DIR/src/game/hud.o(.rodata*);
       BUILD_DIR/src/game/obj_behaviors.o(.rodata*);
       BUILD_DIR/src/game/obj_behaviors_2.o(.rodata*);
+      BUILD_DIR/src/game*.o(.rodata*);
       BUILD_DIR/src/audio/synthesis.o(.rodata*);
       BUILD_DIR/src/audio/memory.o(.rodata*);
       BUILD_DIR/src/audio/playback.o(.rodata*);
       BUILD_DIR/src/audio/effects.o(.rodata*);
       BUILD_DIR/src/audio/seqplayer.o(.rodata*);
       BUILD_DIR/src/audio/external.o(.rodata*);
+      BUILD_DIR/src/audio*.o(.rodata*);
       BUILD_DIR/libultra.a:guPerspectiveF.o(.rodata*);
       BUILD_DIR/libultra.a:llconv.o(.rodata*);
       BUILD_DIR/libultra.a:cosf.o(.rodata*);
@@ -381,6 +389,7 @@ SECTIONS
       BUILD_DIR/libultra.a:_Ldtob.o(.rodata*);
       BUILD_DIR/libultra.a:osSetIntMask.o(.rodata*);
       BUILD_DIR/libultra.a:guLookAtRef.o(.rodata*); /* Fast3DEX2 only */
+      BUILD_DIR/libultra.a:*.o(.rodata*);
       BUILD_DIR/lib/rsp.o(.rodata*);
    }
    END_SEG(main)
@@ -421,6 +430,7 @@ SECTIONS
       BUILD_DIR/src/game/hud.o(.bss*);
       BUILD_DIR/src/game/obj_behaviors.o(.bss*);
       BUILD_DIR/src/game/obj_behaviors_2.o(.bss*);
+      BUILD_DIR/src/game*.o(.bss*);
       BUILD_DIR/src/audio/external.o(.bss*);
       BUILD_DIR/libultra.a:osSetEventMesg.o(.bss*);
       BUILD_DIR/libultra.a:osSpTaskLoadGo.o(.bss*);
@@ -436,6 +446,7 @@ SECTIONS
       BUILD_DIR/libultra.a:__osSiCreateAccessQueue.o(.bss*);
       BUILD_DIR/libultra.a:osEepromWrite.o(.bss*);
       BUILD_DIR/libultra.a:kdebugserver.o(.bss*);
+      BUILD_DIR/libultra.a:*.o(.bss*);
    }
    END_NOLOAD(main)
 
@@ -451,6 +462,7 @@ SECTIONS
       BUILD_DIR/src/engine/surface_collision.o(.text);
       BUILD_DIR/src/engine/surface_load.o(.text);
       BUILD_DIR/src/engine/behavior_script.o(.text);
+      BUILD_DIR/src/engine*.o(.text);
       /* data */
       BUILD_DIR/src/engine/graph_node.o(.data*);
       BUILD_DIR/src/engine/graph_node_manager.o(.data*);
@@ -459,11 +471,13 @@ SECTIONS
       BUILD_DIR/src/engine/geo_layout.o(.data*);
       BUILD_DIR/src/engine/level_script.o(.data*);
       BUILD_DIR/src/engine/behavior_script.o(.data*);
+      BUILD_DIR/src/engine*.o(.data*);
       /* rodata */
       BUILD_DIR/src/engine/math_util.o(.rodata*);
       BUILD_DIR/src/engine/level_script.o(.rodata*);
       BUILD_DIR/src/engine/surface_collision.o(.rodata*);
       BUILD_DIR/src/engine/surface_load.o(.rodata*);
+      BUILD_DIR/src/engine*.o(.rodata*);
    }
    END_SEG(engine)
    BEGIN_NOLOAD(engine)
@@ -474,6 +488,7 @@ SECTIONS
       BUILD_DIR/src/engine/surface_collision.o(.bss*);
       BUILD_DIR/src/engine/surface_load.o(.bss*);
       BUILD_DIR/src/engine/behavior_script.o(.bss*);
+      BUILD_DIR/src/engine*.o(.bss*);
    }
    END_NOLOAD(engine)
 
@@ -540,10 +555,11 @@ SECTIONS
    /* 0x8016F000 21D7D0-255EC0 [386F0] */
    BEGIN_SEG(goddard, SEG_GODDARD)
    {
-      BUILD_DIR/src/game/level_select_menu.o(.text);
-      BUILD_DIR/src/game/intro_geo.o(.text);
-      BUILD_DIR/src/game/file_select.o(.text);
-      BUILD_DIR/src/game/star_select.o(.text);
+      BUILD_DIR/src/menu/level_select_menu.o(.text);
+      BUILD_DIR/src/menu/intro_geo.o(.text);
+      BUILD_DIR/src/menu/file_select.o(.text);
+      BUILD_DIR/src/menu/star_select.o(.text);
+      BUILD_DIR/src/menu*.o(.text);
       BUILD_DIR/libgoddard.a:gd_main.o(.text);
       BUILD_DIR/libgoddard.a:gd_memory.o(.text);
       BUILD_DIR/libgoddard.a:sfx.o(.text);
@@ -559,14 +575,17 @@ SECTIONS
       BUILD_DIR/libgoddard.a:gd_math.o(.text);
       BUILD_DIR/libgoddard.a:shape_helper.o(.text);
       BUILD_DIR/libgoddard.a:renderer.o(.text);
+      BUILD_DIR/libgoddard.a:*.o(.text);
       /* data, rodata, per file */
-      BUILD_DIR/src/game/level_select_menu.o(.data*);
-      BUILD_DIR/src/game/level_select_menu.o(.rodata*);
-      BUILD_DIR/src/game/intro_geo.o(.data*);
-      BUILD_DIR/src/game/file_select.o(.data*);
-      BUILD_DIR/src/game/file_select.o(.rodata*);
-      BUILD_DIR/src/game/star_select.o(.data*);
-      BUILD_DIR/src/game/star_select.o(.rodata*);
+      BUILD_DIR/src/menu/level_select_menu.o(.data*);
+      BUILD_DIR/src/menu/level_select_menu.o(.rodata*);
+      BUILD_DIR/src/menu/intro_geo.o(.data*);
+      BUILD_DIR/src/menu/file_select.o(.data*);
+      BUILD_DIR/src/menu/file_select.o(.rodata*);
+      BUILD_DIR/src/menu/star_select.o(.data*);
+      BUILD_DIR/src/menu/star_select.o(.rodata*);
+      BUILD_DIR/src/menu*.o(.data*);
+      BUILD_DIR/src/menu*.o(.rodata*);
       /* goddard subsystem data */
       BUILD_DIR/libgoddard.a:gd_main.o(.data*);
       BUILD_DIR/libgoddard.a:draw_objects.o(.data*);
@@ -598,9 +617,10 @@ SECTIONS
    END_SEG(goddard)
    BEGIN_NOLOAD(goddard)
    {
-      BUILD_DIR/src/game/intro_geo.o(.bss*);
-      BUILD_DIR/src/game/file_select.o(.bss*);
-      BUILD_DIR/src/game/star_select.o(.bss*);
+      BUILD_DIR/src/menu/intro_geo.o(.bss*);
+      BUILD_DIR/src/menu/file_select.o(.bss*);
+      BUILD_DIR/src/menu/star_select.o(.bss*);
+      BUILD_DIR/src/menu*.o(.bss*);
       BUILD_DIR/libgoddard.a:gd_main.o(.bss*);
       BUILD_DIR/libgoddard.a:gd_memory.o(.bss*);
       BUILD_DIR/libgoddard.a:sfx.o(.bss*);
@@ -615,6 +635,7 @@ SECTIONS
       BUILD_DIR/libgoddard.a:skin.o(.bss*);
       BUILD_DIR/libgoddard.a:shape_helper.o(.bss*);
       BUILD_DIR/libgoddard.a:renderer.o(.bss*);
+      BUILD_DIR/libgoddard.a:*.o(.bss*);
    }
    END_NOLOAD(goddard)
 
@@ -623,13 +644,14 @@ SECTIONS
    . = SEG_BUFFERS;
    BEGIN_NOLOAD(buffers)
    {
-      BUILD_DIR/src/game/buffers.o(.bss*);
+      BUILD_DIR/src/buffers/buffers.o(.bss*);
       BUILD_DIR/src/audio/globals_start.o(.bss*);
       BUILD_DIR/src/audio/synthesis.o(.bss*);
       BUILD_DIR/src/audio/memory.o(.bss*);
       BUILD_DIR/src/audio/load.o(.bss*);
       BUILD_DIR/src/audio/data.o(.bss*);
       BUILD_DIR/src/audio/globals_end.o(.bss*);
+      BUILD_DIR/src/audio*.o(.bss*);
       BUILD_DIR/data/gfx_output_buffer.o(.bss*);
    }
    END_NOLOAD(buffers)
@@ -673,6 +695,8 @@ SECTIONS
       BUILD_DIR/libgoddard.a:anim_group_2.o(.data);
       BUILD_DIR/libgoddard.a:dynlist_test_cube.o(.rodata);
       BUILD_DIR/libgoddard.a:dynlist_unused.o(.rodata);
+      BUILD_DIR/libgoddard.a:*.o(.data);
+      BUILD_DIR/libgoddard.a:*.o(.rodata);
    }
    END_SEG(gd_dynlists)
 
@@ -769,6 +793,7 @@ SECTIONS
       gMusicData = .;
       BUILD_DIR/sound/sequences.bin.o(.data);
       . = ALIGN(0x10);
+      gBankSetsData = .;
       BUILD_DIR/sound/bank_sets.o(.data);
       . = ALIGN(0x10);
    }

@@ -43,9 +43,9 @@ void bhv_star_spawn_init(void) {
     o->oForwardVel = o->oStarSpawnDisFromHome / 30.0f;
     o->oStarSpawnUnkFC = o->oPosY;
     if (o->oBehParams2ndByte == 0 || gCurrCourseNum == 5)
-        func_8028F9E8(173, o);
+        cutscene_object(CUTSCENE_STAR_SPAWN, o);
     else
-        func_8028F9E8(176, o);
+        cutscene_object(CUTSCENE_SPECIAL_STAR_SPAWN, o);
 
     set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
     o->activeFlags |= 0x20;
@@ -66,7 +66,7 @@ void bhv_star_spawn_loop(void) {
             o->oPosY = o->oStarSpawnUnkFC + sins((o->oTimer * 0x8000) / 30) * 400.0f;
             o->oFaceAngleYaw += 0x1000;
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
-            PlaySound(SOUND_ENVIRONMENT_STAR);
+            PlaySound(SOUND_ENV_STAR);
             if (o->oTimer == 30) {
                 o->oAction = 2;
                 o->oForwardVel = 0;
@@ -83,10 +83,10 @@ void bhv_star_spawn_loop(void) {
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
             obj_move_xyz_using_fvel_and_yaw(o);
             o->oFaceAngleYaw = o->oFaceAngleYaw - o->oTimer * 0x10 + 0x1000;
-            PlaySound(SOUND_ENVIRONMENT_STAR);
+            PlaySound(SOUND_ENV_STAR);
 
             if (o->oPosY < o->oHomeY) {
-                PlaySound2(SOUND_GENERAL_STARAPPEARS);
+                PlaySound2(SOUND_GENERAL_STAR_APPEARS);
                 obj_become_tangible();
                 o->oPosY = o->oHomeY;
                 o->oAction = 3;
@@ -121,7 +121,7 @@ struct Object *func_802F1A50(struct Object *sp30, f32 sp34, f32 sp38, f32 sp3C) 
     return sp30;
 }
 
-void CreateStar(f32 sp20, f32 sp24, f32 sp28) {
+void create_star(f32 sp20, f32 sp24, f32 sp28) {
     struct Object *sp1C;
     sp1C = func_802F1A50(sp1C, sp20, sp24, sp28);
     sp1C->oBehParams2ndByte = 0;
@@ -137,7 +137,7 @@ void func_802F1BD4(f32 sp20, f32 sp24, f32 sp28) {
     struct Object *sp1C;
     sp1C = func_802F1A50(sp1C, sp20, sp24, sp28);
     sp1C->oBehParams2ndByte = 1;
-    sp1C->oUnk190 |= 0x400;
+    sp1C->oInteractionSubtype |= INT_SUBTYPE_NO_EXIT;
 }
 
 void bhv_hidden_red_coin_star_init(void) {
@@ -155,14 +155,14 @@ void bhv_hidden_red_coin_star_init(void) {
         o->activeFlags = 0;
     }
 
-    o->oHiddenRedCoinStarCoinsCollected = 8 - sp36;
+    o->oHiddenStarTriggerCounter = 8 - sp36;
 }
 
 void bhv_hidden_red_coin_star_loop(void) {
-    D_8036008E = o->oHiddenRedCoinStarCoinsCollected;
+    gRedCoinsCollected = o->oHiddenStarTriggerCounter;
     switch (o->oAction) {
         case 0:
-            if (o->oHiddenRedCoinStarCoinsCollected == 8)
+            if (o->oHiddenStarTriggerCounter == 8)
                 o->oAction = 1;
             break;
 

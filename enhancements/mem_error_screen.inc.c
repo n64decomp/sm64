@@ -143,16 +143,16 @@ Gfx *geo18_display_error_message(u32 run, UNUSED struct GraphNode *sp44, UNUSED 
             print_text(10, 210, "ERROR    Need more memory");
 
             // Init generic text rendering
-            dl_add_new_ortho_matrix();
+            create_dl_ortho_matrix();
             gSPDisplayList(gDisplayListHead++,
                            dl_ia8_text_begin); // Init rendering stuff for generic text
 
             // Set text color to white
             gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
 
-            PrintGenericText(8, 170, text_console_8mb);
-            PrintGenericText(8, 120, text_pj64);
-            PrintGenericText(8, 54, text_pj64_2);
+            print_generic_string(8, 170, text_console_8mb);
+            print_generic_string(8, 120, text_pj64);
+            print_generic_string(8, 54, text_pj64_2);
 
             // Cleanup
             gSPDisplayList(gDisplayListHead++,
@@ -173,7 +173,7 @@ void thread5_mem_error_message_loop(UNUSED void *arg) {
     setup_game_memory();
     set_vblank_handler(2, &gGameVblankHandler, &gGameVblankQueue, (OSMesg) 1);
 
-    addr = (struct LevelCommand *) segmented_to_virtual(level_script_entry_error_screen);
+    addr = segmented_to_virtual(level_script_entry_error_screen);
 
     func_80247ED8();
 

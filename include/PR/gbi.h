@@ -18,7 +18,7 @@
  **************************************************************************/
 
 #ifndef _GBI_H_
-#define	_GBI_H_
+#define _GBI_H_
 
 #include <PR/ultratypes.h>
 
@@ -91,57 +91,57 @@
 # ifndef  F3DEX_GBI
 #  define F3DEX_GBI
 # endif
-#define	G_NOOP			0x00
-#define	G_RDPHALF_2		0xf1
-#define	G_SETOTHERMODE_H	0xe3
-#define	G_SETOTHERMODE_L	0xe2
-#define	G_RDPHALF_1		0xe1
-#define	G_SPNOOP		0xe0
-#define	G_ENDDL			0xdf
-#define	G_DL			0xde
-#define	G_LOAD_UCODE		0xdd
-#define	G_MOVEMEM		0xdc
-#define	G_MOVEWORD		0xdb
-#define	G_MTX			0xda
+#define G_NOOP			0x00
+#define G_RDPHALF_2		0xf1
+#define G_SETOTHERMODE_H	0xe3
+#define G_SETOTHERMODE_L	0xe2
+#define G_RDPHALF_1		0xe1
+#define G_SPNOOP		0xe0
+#define G_ENDDL			0xdf
+#define G_DL			0xde
+#define G_LOAD_UCODE		0xdd
+#define G_MOVEMEM		0xdc
+#define G_MOVEWORD		0xdb
+#define G_MTX			0xda
 #define G_GEOMETRYMODE		0xd9
-#define	G_POPMTX		0xd8
-#define	G_TEXTURE		0xd7
-#define	G_DMA_IO		0xd6
-#define	G_SPECIAL_1		0xd5
-#define	G_SPECIAL_2		0xd4
-#define	G_SPECIAL_3		0xd3
+#define G_POPMTX		0xd8
+#define G_TEXTURE		0xd7
+#define G_DMA_IO		0xd6
+#define G_SPECIAL_1		0xd5
+#define G_SPECIAL_2		0xd4
+#define G_SPECIAL_3		0xd3
 
-#define	G_VTX			0x01
-#define	G_MODIFYVTX		0x02
-#define	G_CULLDL		0x03
-#define	G_BRANCH_Z		0x04
-#define	G_TRI1			0x05
+#define G_VTX			0x01
+#define G_MODIFYVTX		0x02
+#define G_CULLDL		0x03
+#define G_BRANCH_Z		0x04
+#define G_TRI1			0x05
 #define G_TRI2			0x06
 #define G_QUAD			0x07
 #define G_LINE3D		0x08
-#else	/* F3DEX_GBI_2 */
+#else   /* F3DEX_GBI_2 */
 
 /* DMA commands: */
-#define	G_SPNOOP		0	/* handle 0 gracefully */
-#define	G_MTX			1
+#define G_SPNOOP		0	/* handle 0 gracefully */
+#define G_MTX			1
 #define G_RESERVED0		2	/* not implemeted */
 #define G_MOVEMEM		3	/* move a block of memory (up to 4 words) to dmem */
-#define	G_VTX			4
+#define G_VTX			4
 #define G_RESERVED1		5	/* not implemeted */
-#define	G_DL			6
+#define G_DL			6
 #define G_RESERVED2		7	/* not implemeted */
 #define G_RESERVED3		8	/* not implemeted */
 #define G_SPRITE2D_BASE		9	/* sprite command */
 
 /* IMMEDIATE commands: */
-#define	G_IMMFIRST		-65
-#define	G_TRI1			(G_IMMFIRST-0)
+#define G_IMMFIRST		-65
+#define G_TRI1			(G_IMMFIRST-0)
 #define G_CULLDL		(G_IMMFIRST-1)
-#define	G_POPMTX		(G_IMMFIRST-2)
-#define	G_MOVEWORD		(G_IMMFIRST-3)
-#define	G_TEXTURE		(G_IMMFIRST-4)
-#define	G_SETOTHERMODE_H	(G_IMMFIRST-5)
-#define	G_SETOTHERMODE_L	(G_IMMFIRST-6)
+#define G_POPMTX		(G_IMMFIRST-2)
+#define G_MOVEWORD		(G_IMMFIRST-3)
+#define G_TEXTURE		(G_IMMFIRST-4)
+#define G_SETOTHERMODE_H	(G_IMMFIRST-5)
+#define G_SETOTHERMODE_L	(G_IMMFIRST-6)
 #define G_ENDDL			(G_IMMFIRST-7)
 #define G_SETGEOMETRYMODE	(G_IMMFIRST-8)
 #define G_CLEARGEOMETRYMODE	(G_IMMFIRST-9)
@@ -164,36 +164,36 @@
 #define G_SPRITE2D_DRAW         (G_IMMFIRST-2)
 
 /* RDP commands: */
-#define	G_NOOP			0xc0	/*   0 */
+#define G_NOOP			0xc0	/*   0 */
 
-#endif	/* F3DEX_GBI_2 */
+#endif  /* F3DEX_GBI_2 */
 
 /* RDP commands: */
-#define	G_SETCIMG		0xff	/*  -1 */
-#define	G_SETZIMG		0xfe	/*  -2 */
-#define	G_SETTIMG		0xfd	/*  -3 */
-#define	G_SETCOMBINE		0xfc	/*  -4 */
-#define	G_SETENVCOLOR		0xfb	/*  -5 */
-#define	G_SETPRIMCOLOR		0xfa	/*  -6 */
-#define	G_SETBLENDCOLOR		0xf9	/*  -7 */
-#define	G_SETFOGCOLOR		0xf8	/*  -8 */
-#define	G_SETFILLCOLOR		0xf7	/*  -9 */
-#define	G_FILLRECT		0xf6	/* -10 */
-#define	G_SETTILE		0xf5	/* -11 */
-#define	G_LOADTILE		0xf4	/* -12 */
-#define	G_LOADBLOCK		0xf3	/* -13 */
-#define	G_SETTILESIZE		0xf2	/* -14 */
-#define	G_LOADTLUT		0xf0	/* -16 */
-#define	G_RDPSETOTHERMODE	0xef	/* -17 */
-#define	G_SETPRIMDEPTH		0xee	/* -18 */
-#define	G_SETSCISSOR		0xed	/* -19 */
-#define	G_SETCONVERT		0xec	/* -20 */
-#define	G_SETKEYR		0xeb	/* -21 */
-#define	G_SETKEYGB		0xea	/* -22 */
-#define	G_RDPFULLSYNC		0xe9	/* -23 */
-#define	G_RDPTILESYNC		0xe8	/* -24 */
-#define	G_RDPPIPESYNC		0xe7	/* -25 */
-#define	G_RDPLOADSYNC		0xe6	/* -26 */
+#define G_SETCIMG		0xff	/*  -1 */
+#define G_SETZIMG		0xfe	/*  -2 */
+#define G_SETTIMG		0xfd	/*  -3 */
+#define G_SETCOMBINE		0xfc	/*  -4 */
+#define G_SETENVCOLOR		0xfb	/*  -5 */
+#define G_SETPRIMCOLOR		0xfa	/*  -6 */
+#define G_SETBLENDCOLOR		0xf9	/*  -7 */
+#define G_SETFOGCOLOR		0xf8	/*  -8 */
+#define G_SETFILLCOLOR		0xf7	/*  -9 */
+#define G_FILLRECT		0xf6	/* -10 */
+#define G_SETTILE		0xf5	/* -11 */
+#define G_LOADTILE		0xf4	/* -12 */
+#define G_LOADBLOCK		0xf3	/* -13 */
+#define G_SETTILESIZE		0xf2	/* -14 */
+#define G_LOADTLUT		0xf0	/* -16 */
+#define G_RDPSETOTHERMODE	0xef	/* -17 */
+#define G_SETPRIMDEPTH		0xee	/* -18 */
+#define G_SETSCISSOR		0xed	/* -19 */
+#define G_SETCONVERT		0xec	/* -20 */
+#define G_SETKEYR		0xeb	/* -21 */
+#define G_SETKEYGB		0xea	/* -22 */
+#define G_RDPFULLSYNC		0xe9	/* -23 */
+#define G_RDPTILESYNC		0xe8	/* -24 */
+#define G_RDPPIPESYNC		0xe7	/* -25 */
+#define G_RDPLOADSYNC		0xe6	/* -26 */
 #define G_TEXRECTFLIP		0xe5	/* -27 */
 #define G_TEXRECT		0xe4	/* -28 */
 
@@ -229,10 +229,10 @@
  */
 
 /* masks to build RDP triangle commands: */
-#define G_RDP_TRI_FILL_MASK	0x08
-#define G_RDP_TRI_SHADE_MASK	0x04
-#define G_RDP_TRI_TXTR_MASK	0x02		
-#define G_RDP_TRI_ZBUFF_MASK	0x01		
+#define G_RDP_TRI_FILL_MASK     0x08
+#define G_RDP_TRI_SHADE_MASK    0x04
+#define G_RDP_TRI_TXTR_MASK     0x02
+#define G_RDP_TRI_ZBUFF_MASK    0x01
 
 /*
  * HACK:
@@ -1485,7 +1485,7 @@ typedef struct {
 	int		cmd:8;
 	unsigned int	par:8;
 	unsigned int	len:16;
-	unsigned int	addr;
+	uintptr_t   	addr;
 } Gdma;
 
 /*
@@ -1570,7 +1570,7 @@ typedef struct {
                 unsigned int    siz:2;
                 unsigned int    pad:7;
                 unsigned int    wd:12;	/* really only 10 bits, extra	*/
-                unsigned int    dram;	/* to account for 1024		*/
+                uintptr_t       dram;	/* to account for 1024		*/
 } Gsetimg;
 
 typedef struct {
@@ -1667,16 +1667,21 @@ typedef struct {
  * Generic Gfx Packet
  */
 typedef struct {
-	unsigned int w0;
-	unsigned int w1;
+	uintptr_t w0;
+	uintptr_t w1;
 } Gwords;
 
 /*
  * This union is the fundamental type of the display list.
  * It is, by law, exactly 64 bits in size.
+ *
+ * (Edit: except on 64-bit, where it is exactly 128 bit. On little-endian or
+ * 64-bit systems, only the 'words' member may be accessed; the rest of the
+ * structs don't have matching layouts for now.)
  */
 typedef union {
 	Gwords		words;
+#if !defined(__x86_64__) && !defined(__i386__)
 	Gdma		dma;
 	Gtri		tri;
 	Gline3D		line;
@@ -1694,6 +1699,7 @@ typedef union {
 	Gloadtile	loadtile;	/* use for loadblock also, th is dxt */
 	Gsettilesize	settilesize;
 	Gloadtlut	loadtlut;
+#endif
         long long int	force_structure_alignment;
 } Gfx;
 
@@ -1709,12 +1715,12 @@ typedef union {
 	Gfx *_g = (Gfx *)(pkt);						\
 									\
 	_g->words.w0 = _SHIFTL((c), 24, 8) | _SHIFTL((l), 0, 24);	\
-	_g->words.w1 = (unsigned int)(s);				\
+	_g->words.w1 = (uintptr_t)(s);				\
 }
 
 #define	gsDma0p(c, s, l)						\
 {{									\
-	_SHIFTL((c), 24, 8) | _SHIFTL((l), 0, 24), (unsigned int)(s)	\
+	_SHIFTL((c), 24, 8) | _SHIFTL((l), 0, 24), (uintptr_t)(s)	\
 }}
 
 #define	gDma1p(pkt, c, s, l, p)						\
@@ -1723,14 +1729,14 @@ typedef union {
 									\
 	_g->words.w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) |	\
 			_SHIFTL((l), 0, 16));				\
-	_g->words.w1 = (unsigned int)(s);				\
+	_g->words.w1 = (uintptr_t)(s);				\
 }
 
 #define	gsDma1p(c, s, l, p)						\
 {{									\
 	(_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | 			\
 	 _SHIFTL((l), 0, 16)), 						\
-        (unsigned int)(s)						\
+        (uintptr_t)(s)						\
 }}
 
 #define	gDma2p(pkt, c, adrs, len, idx, ofs)				\
@@ -1738,13 +1744,13 @@ typedef union {
 	Gfx *_g = (Gfx *)(pkt);						\
 	_g->words.w0 = (_SHIFTL((c),24,8)|_SHIFTL(((len)-1)/8,19,5)|	\
 			_SHIFTL((ofs)/8,8,8)|_SHIFTL((idx),0,8));	\
-	_g->words.w1 = (unsigned int)(adrs);				\
+	_g->words.w1 = (uintptr_t)(adrs);				\
 }
 #define	gsDma2p(c, adrs, len, idx, ofs)					\
 {{									\
 	(_SHIFTL((c),24,8)|_SHIFTL(((len)-1)/8,19,5)|			\
 	 _SHIFTL((ofs)/8,8,8)|_SHIFTL((idx),0,8)),			\
-        (unsigned int)(adrs)						\
+        (uintptr_t)(adrs)						\
 }}
 
 #define	gSPNoOp(pkt)		gDma0p(pkt, G_SPNOOP, 0, 0)
@@ -1775,12 +1781,12 @@ typedef union {
 	Gfx *_g = (Gfx *)(pkt);						\
 	_g->words.w0 =							\
 	  _SHIFTL(G_VTX,24,8)|_SHIFTL((n),12,8)|_SHIFTL((v0)+(n),1,7);	\
-	_g->words.w1 = (unsigned int)(v);				\
+	_g->words.w1 = (uintptr_t)(v);				\
 }
 # define	gsSPVertex(v, n, v0)					\
 {{									\
 	(_SHIFTL(G_VTX,24,8)|_SHIFTL((n),12,8)|_SHIFTL((v0)+(n),1,7)),	\
-        (unsigned int)(v)						\
+        (uintptr_t)(v)						\
 }}
 #elif	(defined(F3DEX_GBI)||defined(F3DLP_GBI))
 /*
@@ -1845,12 +1851,12 @@ typedef union {
 	Gfx *_g = (Gfx *)(pkt);						\
 									\
 	_g->words.w0 = _SHIFTL((c), 24, 8);				\
-	_g->words.w1 = (unsigned int)(p0);				\
+	_g->words.w1 = (uintptr_t)(p0);				\
 }
 
 #define	gsImmp1(c, p0)							\
 {{									\
-	_SHIFTL((c), 24, 8), (unsigned int)(p0)				\
+	_SHIFTL((c), 24, 8), (uintptr_t)(p0)				\
 }}
 
 #define	gImmp2(pkt, c, p0, p1)						\
@@ -1887,13 +1893,13 @@ typedef union {
 									\
 	_g->words.w0 = (_SHIFTL((c), 24, 8)  | _SHIFTL((p0), 8, 16) |	\
 			_SHIFTL((p1), 0, 8));				\
-	_g->words.w1 = (unsigned int) (dat);				\
+	_g->words.w1 = (uintptr_t) (dat);				\
 }
 
 #define	gsImmp21(c, p0, p1, dat)					\
 {{									\
 	_SHIFTL((c), 24, 8) | _SHIFTL((p0), 8, 16) | _SHIFTL((p1), 0, 8),\
-        (unsigned int) (dat)						\
+        (uintptr_t) (dat)						\
 }}
 
 #ifdef	F3DEX_GBI_2
@@ -2332,7 +2338,7 @@ typedef union {
 {									\
 	Gfx *_g = (Gfx *)(pkt);						\
 	_g->words.w0 = _SHIFTL(G_RDPHALF_1,24,8);			\
-	_g->words.w1 = (unsigned int)(dl);				\
+	_g->words.w1 = (uintptr_t)(dl);				\
 	_g = (Gfx *)(pkt);						\
 	_g->words.w0 = (_SHIFTL(G_BRANCH_Z,24,8)|			\
 		        _SHIFTL((vtx)*5,12,12)|_SHIFTL((vtx)*2,0,12));	\
@@ -2341,7 +2347,7 @@ typedef union {
 
 #define	gsSPBranchLessZrg(dl, vtx, zval, near, far, flag, zmin, zmax)	      \
 {{	_SHIFTL(G_RDPHALF_1,24,8),					      \
-	(unsigned int)(dl),						}},    \
+	(uintptr_t)(dl),						}},    \
 {{	_SHIFTL(G_BRANCH_Z,24,8)|_SHIFTL((vtx)*5,12,12)|_SHIFTL((vtx)*2,0,12),\
 	G_DEPTOZSrg(zval, near, far, flag, zmin, zmax),			}}
 
@@ -2361,7 +2367,7 @@ typedef union {
 {									\
 	Gfx *_g = (Gfx *)(pkt);						\
 	_g->words.w0 = _SHIFTL(G_RDPHALF_1,24,8);			\
-	_g->words.w1 = (unsigned int)(dl);				\
+	_g->words.w1 = (uintptr_t)(dl);				\
 	_g = (Gfx *)(pkt);						\
 	_g->words.w0 = (_SHIFTL(G_BRANCH_Z,24,8)|			\
 		        _SHIFTL((vtx)*5,12,12)|_SHIFTL((vtx)*2,0,12));	\
@@ -2370,7 +2376,7 @@ typedef union {
 
 #define	gsSPBranchLessZraw(dl, vtx, zval)				\
 {{	_SHIFTL(G_RDPHALF_1,24,8),					      \
-	(unsigned int)(dl),						}},    \
+	(uintptr_t)(dl),						}},    \
 {{	_SHIFTL(G_BRANCH_Z,24,8)|_SHIFTL((vtx)*5,12,12)|_SHIFTL((vtx)*2,0,12),\
 	(unsigned int)(zval),						}}
 
@@ -2384,19 +2390,19 @@ typedef union {
 {									\
 	Gfx *_g = (Gfx *)(pkt);						\
 	_g->words.w0 = _SHIFTL(G_RDPHALF_1,24,8);			\
-	_g->words.w1 = (unsigned int)(uc_dstart);			\
+	_g->words.w1 = (uintptr_t)(uc_dstart);			\
 	_g = (Gfx *)(pkt);						\
 	_g->words.w0 = (_SHIFTL(G_LOAD_UCODE,24,8)|			\
 			_SHIFTL((int)(uc_dsize)-1,0,16));		\
-	_g->words.w1 = (unsigned int)(uc_start);			\
+	_g->words.w1 = (uintptr_t)(uc_start);			\
 }
 
 #define	gsSPLoadUcodeEx(uc_start, uc_dstart, uc_dsize)			\
 {{	_SHIFTL(G_RDPHALF_1,24,8),					\
-	(unsigned int)(uc_dstart),				}},	\
+	(uintptr_t)(uc_dstart),				}},	\
 {{	_SHIFTL(G_LOAD_UCODE,24,8)|					\
 	  _SHIFTL((int)(uc_dsize)-1,0,16),				\
-	(unsigned int)(uc_start),				}}
+	(uintptr_t)(uc_start),				}}
 
 #define	gSPLoadUcode(pkt, uc_start, uc_dstart)				\
         gSPLoadUcodeEx((pkt), (uc_start), (uc_dstart), SP_UCODE_DATA_SIZE)
@@ -2420,14 +2426,14 @@ typedef union {
 	Gfx *_g = (Gfx *)(pkt);						\
 	_g->words.w0 = _SHIFTL(G_DMA_IO,24,8)|_SHIFTL((flag),23,1)|	\
 	  _SHIFTL((dmem)/8,13,10)|_SHIFTL((size)-1,0,12);		\
-	_g->words.w1 = (unsigned int)(dram);				\
+	_g->words.w1 = (uintptr_t)(dram);				\
 }
 
 #define	gsSPDma_io(flag, dmem, dram, size)				\
 {{									\
 	_SHIFTL(G_DMA_IO,24,8)|_SHIFTL((flag),23,1)|			\
 	_SHIFTL((dmem)/8,13,10)|_SHIFTL((size)-1,0,12),			\
-	(unsigned int)(dram)						\
+	(uintptr_t)(dram)						\
 }}
 
 #define	gSPDmaRead(pkt,dmem,dram,size)	gSPDma_io((pkt),0,(dmem),(dram),(size))
@@ -3000,14 +3006,14 @@ typedef union {
 									\
 	_g->words.w0 = _SHIFTL(cmd, 24, 8) | _SHIFTL(fmt, 21, 3) |	\
 		       _SHIFTL(siz, 19, 2) | _SHIFTL((width)-1, 0, 12);	\
-	_g->words.w1 = (unsigned int)(i);				\
+	_g->words.w1 = (uintptr_t)(i);				\
 }
 
 #define	gsSetImage(cmd, fmt, siz, width, i)				\
 {{									\
 	_SHIFTL(cmd, 24, 8) | _SHIFTL(fmt, 21, 3) |			\
 	_SHIFTL(siz, 19, 2) | _SHIFTL((width)-1, 0, 12),		\
-	(unsigned int)(i)						\
+	(uintptr_t)(i)						\
 }}
 
 #define	gDPSetColorImage(pkt, f, s, w, i)	gSetImage(pkt, G_SETCIMG, f, s, w, i)
@@ -4542,15 +4548,15 @@ typedef union {
 }
 
 #define gsDPWord(wordhi, wordlo)			\
-    gsImmp1(G_RDPHALF_1, (unsigned int)(wordhi)),	\
-    gsImmp1(G_RDPHALF_2, (unsigned int)(wordlo))
+    gsImmp1(G_RDPHALF_1, (uintptr_t)(wordhi)),	\
+    gsImmp1(G_RDPHALF_2, (uintptr_t)(wordlo))
 
 #define gDPWord(pkt, wordhi, wordlo)      		\
 {							\
     Gfx *_g = (Gfx *)(pkt);				\
 							\
-    gImmp1(pkt, G_RDPHALF_1, (unsigned int)(wordhi));	\
-    gImmp1(pkt, G_RDPHALF_2, (unsigned int)(wordlo));	\
+    gImmp1(pkt, G_RDPHALF_1, (uintptr_t)(wordhi));	\
+    gImmp1(pkt, G_RDPHALF_2, (uintptr_t)(wordlo));	\
 }
 
 #define	gDPFullSync(pkt)	gDPNoParam(pkt, G_RDPFULLSYNC)

@@ -491,11 +491,11 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
                 }
 
                 temp_v0_11 = &layer->adsr;
-                if (((u32) gBankLoadedPool.persistent.pool.start <= (u32) inst
-                     && (u32) inst <= (u32)(gBankLoadedPool.persistent.pool.start
+                if (((uintptr_t) gBankLoadedPool.persistent.pool.start <= (uintptr_t) inst
+                     && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.persistent.pool.start
                                             + gBankLoadedPool.persistent.pool.size))
-                    || ((u32) gBankLoadedPool.temporary.pool.start <= (u32) inst
-                        && (u32) inst <= (u32)(gBankLoadedPool.temporary.pool.start
+                    || ((uintptr_t) gBankLoadedPool.temporary.pool.start <= (uintptr_t) inst
+                        && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.temporary.pool.start
                                                + gBankLoadedPool.temporary.pool.size))) {
                     temp_v0_11->envelope = inst->envelope;
                     temp_v0_11->releaseRate = inst->releaseRate;
@@ -795,17 +795,18 @@ u8 get_instrument(struct SequenceChannel *seqChannel, u8 instId, struct Instrume
 
         while (instId != 0xff) {
             inst = gCtlEntries[seqChannelCpy.bankId].instruments[instId];
-            if (inst != NULL)
+            if (inst != NULL) {
                 break;
+            }
             instId--;
         }
     }
 
-    if (((u32) gBankLoadedPool.persistent.pool.start <= (u32) inst
-         && (u32) inst
-                <= (u32)(gBankLoadedPool.persistent.pool.start + gBankLoadedPool.persistent.pool.size))
-        || ((u32) gBankLoadedPool.temporary.pool.start <= (u32) inst
-            && (u32) inst <= (u32)(gBankLoadedPool.temporary.pool.start
+    if (((uintptr_t) gBankLoadedPool.persistent.pool.start <= (uintptr_t) inst
+         && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.persistent.pool.start
+                    + gBankLoadedPool.persistent.pool.size))
+        || ((uintptr_t) gBankLoadedPool.temporary.pool.start <= (uintptr_t) inst
+            && (uintptr_t) inst <= (uintptr_t)(gBankLoadedPool.temporary.pool.start
                                    + gBankLoadedPool.temporary.pool.size))) {
         adsr->envelope = inst->envelope;
         adsr->releaseRate = inst->releaseRate;
@@ -1069,8 +1070,9 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 
                     case 0xc6: // switch bank within set
                         temp = m64_read_u8(state);
-                        // Switch to the temp's (0-indexed) bank in this
-                        // sequence's bank set, counting backwards.
+                        // Switch to the temp's (0-indexed) bank in this sequence's
+                        // bank set. Note that in the binary format (not in the JSON!)
+                        // the banks are listed backwards, so we counts from the back.
                         // (gAlBankSets[offset] is number of banks)
                         offset = ((u16 *) gAlBankSets)[seqPlayer->seqId];
                         temp = gAlBankSets[offset + gAlBankSets[offset] - temp];
@@ -1339,12 +1341,15 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
                     case 0xf9: // jump if < 0
                     case 0xf5: // jump if >= 0
                         u16v = m64_read_s16(state);
-                        if (cmd == 0xfa && value != 0)
+                        if (cmd == 0xfa && value != 0) {
                             break;
-                        if (cmd == 0xf9 && value >= 0)
+                        }
+                        if (cmd == 0xf9 && value >= 0) {
                             break;
-                        if (cmd == 0xf5 && value < 0)
+                        }
+                        if (cmd == 0xf5 && value < 0) {
                             break;
+                        }
                         state->pc = seqPlayer->seqData + u16v;
                         break;
 

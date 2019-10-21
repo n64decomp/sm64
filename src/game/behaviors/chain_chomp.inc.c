@@ -182,7 +182,7 @@ static void chain_chomp_sub_act_turn(void) {
                     if (o->oTimer > 40) {
                         // Increase the maximum distance from the pivot and enter
                         // the lunging sub-action.
-                        PlaySound2(SOUND_GENERAL_CHAINCHOMP2);
+                        PlaySound2(SOUND_GENERAL_CHAIN_CHOMP2);
 
                         o->oSubAction = CHAIN_CHOMP_SUB_ACT_LUNGE;
                         o->oChainChompMaxDistFromPivotPerChainPart = 900.0f / 5;
@@ -199,7 +199,7 @@ static void chain_chomp_sub_act_turn(void) {
                 o->oForwardVel = 0.0f;
             }
         } else {
-            PlaySound2(SOUND_GENERAL_CHAINCHOMP1);
+            PlaySound2(SOUND_GENERAL_CHAIN_CHOMP1);
             o->oForwardVel = 10.0f;
             o->oVelY = 20.0f;
         }
@@ -261,7 +261,7 @@ static void chain_chomp_released_trigger_cutscene(void) {
     //! Can delay this if we get into a cutscene-unfriendly action after the
     //  last post ground pound and before this
     if (set_mario_npc_dialog(2) == 2 && (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND)
-        && func_8028F9E8(0xAD, o) == 1) {
+        && cutscene_object(CUTSCENE_STAR_SPAWN, o) == 1) {
         o->oChainChompReleaseStatus = CHAIN_CHOMP_RELEASED_LUNGE_AROUND;
         o->oTimer = 0;
     }
@@ -289,7 +289,7 @@ static void chain_chomp_released_lunge_around(void) {
             }
         } else {
             if (++o->oChainChompNumLunges <= 5) {
-                PlaySound2(SOUND_GENERAL_CHAINCHOMP1);
+                PlaySound2(SOUND_GENERAL_CHAIN_CHOMP1);
                 o->oMoveAngleYaw = o->oAngleToMario + RandomSign() * 0x2000;
                 o->oForwardVel = 30.0f;
                 o->oVelY = 50.0f;
@@ -345,7 +345,7 @@ static void chain_chomp_released_jump_away(void) {
  * Release mario and transition to the unload chain action.
  */
 static void chain_chomp_released_end_cutscene(void) {
-    if (func_8028F9E8(0xAD, o) == -1) {
+    if (cutscene_object(CUTSCENE_STAR_SPAWN, o) == -1) {
         set_mario_npc_dialog(0);
         o->oAction = CHAIN_CHOMP_ACT_UNLOAD_CHAIN;
     }
@@ -488,7 +488,7 @@ void bhv_wooden_post_update(void) {
     // When ground pounded by mario, drop by -45 + -20
     if (!o->oWoodenPostMarioPounding) {
         if ((o->oWoodenPostMarioPounding = obj_is_mario_ground_pounding_platform())) {
-            PlaySound2(SOUND_GENERAL_POUNDWOODPOST);
+            PlaySound2(SOUND_GENERAL_POUND_WOOD_POST);
             o->oWoodenPostSpeedY = -70.0f;
         }
     } else if (approach_f32_ptr(&o->oWoodenPostSpeedY, 0.0f, 25.0f)) {
@@ -537,7 +537,7 @@ void bhv_chain_chomp_gate_init(void) {
  */
 void bhv_chain_chomp_gate_update(void) {
     if (o->parentObj->oChainChompHitGate) {
-        func_802A3034(SOUND_GENERAL_EXPLOSION3);
+        func_802A3034(SOUND_GENERAL_WALL_EXPLOSION);
         func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
         func_802AA618(0, 0x7F, 200.0f);
         spawn_triangle_break_particles(30, 0x8A, 3.0f, 4);

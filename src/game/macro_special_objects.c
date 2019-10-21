@@ -19,17 +19,21 @@ s16 convert_rotation(s16 inRotation) {
     u16 rotation = ((u16)(inRotation & 0xFF));
     rotation <<= 8;
 
-    if (rotation == 0x3F00)
+    if (rotation == 0x3F00) {
         rotation = 0x4000;
+    }
 
-    if (rotation == 0x7F00)
+    if (rotation == 0x7F00) {
         rotation = 0x8000;
+    }
 
-    if (rotation == 0xBF00)
+    if (rotation == 0xBF00) {
         rotation = 0xC000;
+    }
 
-    if (rotation == 0xFF00)
+    if (rotation == 0xFF00) {
         rotation = 0x0000;
+    }
 
     return (s16) rotation;
 }
@@ -70,9 +74,9 @@ void spawn_macro_abs_special(u32 model, u32 *behavior, s16 x, s16 y, s16 z, s16 
         spawn_object_abs_with_rot(&gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, 0, 0);
 
     // Are all three of these values unused?
-    newObj->oUnknownUnk108_F32 = (f32) unkA;
-    newObj->oUnknownUnk10C_F32 = (f32) unkB;
-    newObj->oUnknownUnk110_F32 = (f32) unkC;
+    newObj->oMacroUnk108 = (f32) unkA;
+    newObj->oMacroUnk10C = (f32) unkB;
+    newObj->oMacroUnk110 = (f32) unkC;
 }
 
 static void Unknown802E142C(u32 (*a0)[], s16 a1[]) {
@@ -112,13 +116,15 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
     gMacroObjectDefaultParent.header.gfx.unk19 = areaIndex;
 
     while (TRUE) {
-        if (*macroObjList == -1) // An encountered value of -1 means the list has ended.
+        if (*macroObjList == -1) { // An encountered value of -1 means the list has ended.
             break;
+        }
 
         presetID = (*macroObjList & 0x1FF) - 31; // Preset identifier for MacroObjectPresets array
 
-        if (presetID < 0)
+        if (presetID < 0) {
             break;
+        }
 
         // Set macro object properties from the list
         macroObject[MACRO_OBJ_Y_ROT] = ((*macroObjList++ >> 9) & 0x7F) << 1; // Y-Rotation
@@ -132,9 +138,10 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
         preset.beh = MacroObjectPresets[presetID].beh;
         preset.param = MacroObjectPresets[presetID].param;
 
-        if (preset.param != 0)
+        if (preset.param != 0) {
             macroObject[MACRO_OBJ_PARAMS] =
                 (macroObject[MACRO_OBJ_PARAMS] & 0xFF00) + (preset.param & 0x00FF);
+        }
 
         // If object has been killed, prevent it from respawning
         if (((macroObject[MACRO_OBJ_PARAMS] >> 8) & RESPAWN_INFO_DONT_RESPAWN)
@@ -183,8 +190,9 @@ void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList) {
     while (TRUE) {
         macroObjPreset = *macroObjList++;
 
-        if (macroObjPreset < 0)
+        if (macroObjPreset < 0) {
             break;
+        }
 
         macroObjX = *macroObjList++;
         macroObjY = *macroObjList++;
@@ -265,8 +273,9 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
 
         offset = 0;
         while (TRUE) {
-            if (SpecialObjectPresets[offset].preset_id == presetID)
+            if (SpecialObjectPresets[offset].preset_id == presetID) {
                 break;
+            }
 
             if (SpecialObjectPresets[offset].preset_id == 0xFF) {
             }
@@ -297,13 +306,13 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
                 break;
             case SPTYPE_UNKNOWN:
                 extraParams[0] =
-                    **specialObjList; // Unknown, gets put into obj->oUnknownUnk108_F32 as a float
+                    **specialObjList; // Unknown, gets put into obj->oMacroUnk108 as a float
                 (*specialObjList)++;
                 extraParams[1] =
-                    **specialObjList; // Unknown, gets put into obj->oUnknownUnk10C_F32 as a float
+                    **specialObjList; // Unknown, gets put into obj->oMacroUnk10C as a float
                 (*specialObjList)++;
                 extraParams[2] =
-                    **specialObjList; // Unknown, gets put into obj->oUnknownUnk110_F32 as a f32
+                    **specialObjList; // Unknown, gets put into obj->oMacroUnk110 as a float
                 (*specialObjList)++;
                 spawn_macro_abs_special(model, behavior, x, y, z, extraParams[0], extraParams[1],
                                         extraParams[2]);

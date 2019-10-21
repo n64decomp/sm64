@@ -49,7 +49,7 @@ void bhv_temp_coin_loop(void) {
 }
 
 void bhv_coin_init(void) {
-    o->oVelY = RandomFloat() * 10.0f + 30 + o->OBJECT_FIELD_F32(0x22);
+    o->oVelY = RandomFloat() * 10.0f + 30 + o->oCoinUnk110;
     o->oForwardVel = RandomFloat() * 10.0f;
     o->oMoveAngleYaw = RandomU16();
     obj_set_behavior(bhvYellowCoin);
@@ -76,9 +76,9 @@ void bhv_coin_loop(void) {
     }
     if (o->oTimer == 0)
 #ifndef VERSION_JP
-        PlaySound2(SOUND_GENERAL_COINSPURT_2);
+        PlaySound2(SOUND_GENERAL_COIN_SPURT_2);
 #else
-        PlaySound2(SOUND_GENERAL_COINSPURT);
+        PlaySound2(SOUND_GENERAL_COIN_SPURT);
 #endif
     if (o->oVelY < 0)
         obj_become_tangible();
@@ -92,13 +92,13 @@ void bhv_coin_loop(void) {
     }
 #ifndef VERSION_JP
     if (o->oMoveFlags & OBJ_MOVE_13) {
-        if (o->oUnk1B0 < 5)
+        if (o->oCoinUnk1B0 < 5)
             PlaySound2(0x30364081);
-        o->oUnk1B0++;
+        o->oCoinUnk1B0++;
     }
 #else
     if (o->oMoveFlags & OBJ_MOVE_13)
-        PlaySound2(SOUND_GENERAL_COINDROP);
+        PlaySound2(SOUND_GENERAL_COIN_DROP);
 #endif
     if (obj_wait_then_blink(400, 20))
         mark_object_for_deletion(o);
@@ -110,7 +110,7 @@ void bhv_coin_formation_spawn_loop(void) {
         obj_set_behavior(bhvYellowCoin);
         set_object_hitbox(o, &sYellowCoinHitbox);
         bhv_init_room();
-        if (o->OBJECT_FIELD_S32(0x1C)) {
+        if (o->oCoinUnkF8) {
             o->oPosY += 300.0f;
             obj_update_floor_height();
             if (o->oPosY < o->oFloorHeight || o->oFloorHeight < -10000.0f)
@@ -124,7 +124,7 @@ void bhv_coin_formation_spawn_loop(void) {
         }
     } else {
         if (bhv_coin_sparkles_init())
-            o->parentObj->OBJECT_FIELD_S32(0x1B) |= func_802A377C(o->oBehParams2ndByte);
+            o->parentObj->oCoinUnkF4 |= func_802A377C(o->oBehParams2ndByte);
         o->oAnimState++;
     }
     if (o->parentObj->oAction == 2)
@@ -170,12 +170,12 @@ void func_802AB364(s32 sp50, s32 sp54) {
     if (sp3C) {
         sp4C = spawn_object_relative(sp50, sp40[0], sp40[1], sp40[2], o, MODEL_YELLOW_COIN,
                                      bhvCoinFormationSpawn);
-        sp4C->OBJECT_FIELD_S32(0x1C) = sp38;
+        sp4C->oCoinUnkF8 = sp38;
     }
 }
 
 void bhv_coin_formation_init(void) {
-    o->OBJECT_FIELD_S32(0x1B) = (o->oBehParams >> 8) & 0xFF;
+    o->oCoinUnkF4 = (o->oBehParams >> 8) & 0xFF;
 }
 
 void bhv_coin_formation_loop(void) {
@@ -184,7 +184,7 @@ void bhv_coin_formation_loop(void) {
         case 0:
             if (o->oDistanceToMario < 2000.0f) {
                 for (bitIndex = 0; bitIndex < 8; bitIndex++) {
-                    if (!(o->OBJECT_FIELD_S32(0x1B) & (1 << bitIndex)))
+                    if (!(o->oCoinUnkF4 & (1 << bitIndex)))
                         func_802AB364(bitIndex, o->oBehParams2ndByte);
                 }
                 o->oAction++;
@@ -198,15 +198,16 @@ void bhv_coin_formation_loop(void) {
             o->oAction = 0;
             break;
     }
-    set_object_respawn_info_bits(o, o->OBJECT_FIELD_S32(0x1B)
-                                        & 0xFF); // Casting to u8 doesn't seem to match
+
+    // Casting to u8 doesn't seem to match
+    set_object_respawn_info_bits(o, o->oCoinUnkF4 & 0xFF);
 }
 
 void ActionCoinInsideBoo1(void) {
     obj_update_floor_and_walls();
     obj_if_hit_wall_bounce_away();
     if (o->oMoveFlags & OBJ_MOVE_13)
-        PlaySound2(SOUND_GENERAL_COINDROP);
+        PlaySound2(SOUND_GENERAL_COIN_DROP);
     if (o->oTimer > 90 || (o->oMoveFlags & OBJ_MOVE_LANDED)) {
         set_object_hitbox(o, &sYellowCoinHitbox);
         obj_become_tangible();

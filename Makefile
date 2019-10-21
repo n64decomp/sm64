@@ -131,7 +131,7 @@ TEXTURE_DIR := textures
 ACTOR_DIR := actors
 
 # Directories containing source files
-SRC_DIRS := src src/engine src/game src/audio
+SRC_DIRS := src src/engine src/game src/audio src/menu src/buffers
 ASM_DIRS := asm actors lib data levels assets sound text
 BIN_DIRS := bin bin/$(VERSION)
 
@@ -173,7 +173,8 @@ SOUND_SAMPLE_TABLES := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:
 SOUND_SAMPLE_AIFCS := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.aifc))
 SOUND_OBJ_FILES := $(SOUND_BIN_DIR)/sound_data.ctl.o \
                    $(SOUND_BIN_DIR)/sound_data.tbl.o \
-                   $(SOUND_BIN_DIR)/sequences.bin.o
+                   $(SOUND_BIN_DIR)/sequences.bin.o \
+                   $(SOUND_BIN_DIR)/bank_sets.o
 
 
 # Object files
@@ -206,6 +207,14 @@ else
   CROSS := mips64-elf-
 endif
 
+# check that either QEMU_IRIX is set or qemu-irix package installed
+ifndef QEMU_IRIX
+  QEMU_IRIX := $(shell which qemu-irix)
+  ifeq (, $(QEMU_IRIX))
+    $(error Please install qemu-irix package or set QEMU_IRIX env var to the full qemu-irix binary path)
+  endif
+endif
+
 AS        := $(CROSS)as
 CC        := $(QEMU_IRIX) -silent -L $(IRIX_ROOT) $(IRIX_ROOT)/usr/bin/cc
 CPP       := cpp -P
@@ -222,7 +231,7 @@ ASFLAGS := -march=vr4300 -mabi=32 -I include -I $(BUILD_DIR) $(VERSION_ASFLAGS) 
 CFLAGS = -Wab,-r4300_mul -non_shared -G 0 -Xcpluscomm -Xfullwarn $(OPT_FLAGS) -signed -I include -I $(BUILD_DIR)/include -I src -D_LANGUAGE_C $(VERSION_CFLAGS) $(MIPSISET) $(GRUCODE_CFLAGS)
 OBJCOPYFLAGS := --pad-to=0x800000 --gap-fill=0xFF
 SYMBOL_LINKING_FLAGS := $(addprefix -R ,$(SEG_FILES))
-LDFLAGS := -T undefined_syms.txt -T $(BUILD_DIR)/$(LD_SCRIPT) -Map $(BUILD_DIR)/sm64.map --no-check-sections $(SYMBOL_LINKING_FLAGS)
+LDFLAGS := -T undefined_syms.txt -T $(BUILD_DIR)/$(LD_SCRIPT) -Map $(BUILD_DIR)/sm64.$(VERSION).map --no-check-sections $(SYMBOL_LINKING_FLAGS)
 
 ifeq ($(shell getconf LONG_BIT), 32)
   # Work around memory allocation bug in QEMU
@@ -259,15 +268,11 @@ ifeq ($(BINUTILS_DEPEND),0)
 $(error binutils version 2.27 required, version $(BINUTILS_VER_MAJOR).$(BINUTILS_VER_MINOR) detected)
 endif
 
-ifndef QEMU_IRIX
-$(error env variable QEMU_IRIX should point to the qemu-mips binary)
-endif
-
 ######################## Targets #############################
 
 all: $(ROM)
 ifeq ($(COMPARE),1)
-	@$(SHA1SUM) -c $(TARGET).sha1
+	@$(SHA1SUM) -c $(TARGET).sha1 || (echo 'The build succeeded, but did not match the official ROM. This is expected if you are making changes to the game.\nTo silence this message, use "make COMPARE=0"'. && false)
 endif
 
 clean:
@@ -287,13 +292,16 @@ libultra: $(BUILD_DIR)/libultra.a
 
 asm/boot.s: $(BUILD_DIR)/lib/bin/ipl3_font.bin
 
-$(BUILD_DIR)/lib/bin/ipl3_font.bin: lib/ipl3_font.png | $(BUILD_DIR)
+$(BUILD_DIR)/lib/bin/ipl3_font.bin: lib/ipl3_font.png
 	$(IPLFONTUTIL) e $< $@
 
-$(BUILD_DIR)/include/text_strings.h: include/text_strings.h.in | $(BUILD_DIR)
+$(BUILD_DIR)/include/text_strings.h: include/text_strings.h.in
 	$(TEXTCONV) charmap.txt $< $@
 
-$(BUILD_DIR)/text/%.s: text/$(VERSION)/%.s.in | $(BUILD_DIR)
+$(BUILD_DIR)/include/text_menu_strings.h: include/text_menu_strings.h.in
+	$(TEXTCONV) charmap_menu.txt $< $@
+
+$(BUILD_DIR)/text/%.s: text/$(VERSION)/%.s.in
 	$(TEXTCONV) charmap.txt $< $@
 
 ifeq ($(VERSION),eu)
@@ -312,8 +320,9 @@ ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS) $(GOD
 # Make sure build directory exists before compiling anything
 DUMMY != mkdir -p $(ALL_DIRS)
 
-$(BUILD_DIR)/src/game/star_select.o: $(BUILD_DIR)/include/text_strings.h
-$(BUILD_DIR)/src/game/file_select.o: $(BUILD_DIR)/include/text_strings.h
+$(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
+$(BUILD_DIR)/src/menu/file_select.o: $(BUILD_DIR)/include/text_strings.h
+$(BUILD_DIR)/src/menu/star_select.o: $(BUILD_DIR)/include/text_strings.h
 $(BUILD_DIR)/src/game/ingame_menu.o: $(BUILD_DIR)/include/text_strings.h
 
 ################################################################
@@ -375,14 +384,17 @@ $(BUILD_DIR)/%.table: %.aiff
 $(BUILD_DIR)/%.aifc: $(BUILD_DIR)/%.table %.aiff
 	$(VADPCM_ENC) -c $^ $@
 
-$(SOUND_BIN_DIR)/sound_data.ctl: $(SOUND_BANK_FILES) $(SOUND_SAMPLE_AIFCS)
+$(SOUND_BIN_DIR)/sound_data.ctl: sound/sound_banks/ $(SOUND_BANK_FILES) $(SOUND_SAMPLE_AIFCS)
 	$(PYTHON) tools/assemble_sound.py $(BUILD_DIR)/sound/samples/ sound/sound_banks/ $(SOUND_BIN_DIR)/sound_data.ctl $(SOUND_BIN_DIR)/sound_data.tbl $(VERSION_CFLAGS)
 
 $(SOUND_BIN_DIR)/sound_data.tbl: $(SOUND_BIN_DIR)/sound_data.ctl
 	touch $@
 
-$(SOUND_BIN_DIR)/sequences.bin: $(SOUND_SEQUENCE_FILES)
-	$(PYTHON) tools/assemble_sound.py --sequences $@ $^
+$(SOUND_BIN_DIR)/sequences.bin: $(SOUND_BANK_FILES) sound/sequences.json sound/sequences/ sound/sequences/$(VERSION)/ $(SOUND_SEQUENCE_FILES)
+	$(PYTHON) tools/assemble_sound.py --sequences $@ $(SOUND_BIN_DIR)/bank_sets sound/sound_banks/ sound/sequences.json $(SOUND_SEQUENCE_FILES) $(VERSION_CFLAGS)
+
+$(SOUND_BIN_DIR)/bank_sets: $(SOUND_BIN_DIR)/sequences.bin
+	touch $@
 
 $(SOUND_BIN_DIR)/%.m64: $(SOUND_BIN_DIR)/%.o
 	$(OBJCOPY) -j .rodata $< -O binary $@

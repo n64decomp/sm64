@@ -1,3 +1,9 @@
+struct RacingPenguinData {
+    s16 text;
+    f32 radius;
+    f32 height;
+};
+
 static struct RacingPenguinData sRacingPenguinData[] = {
     { 55, 200.0f, 200.0f },
     { 164, 350.0f, 250.0f },
@@ -63,7 +69,7 @@ static void racing_penguin_act_race(void) {
         targetSpeed = o->oPosY - gMarioObject->oPosY;
         minSpeed = 70.0f;
 
-        PlaySound(SOUND_CH6_ROUGHSLIDE);
+        PlaySound(SOUND_AIR_ROUGH_SLIDE);
 
         if (targetSpeed < 100.0f || (o->oPathedPrevWaypointFlags & WAYPOINT_MASK_00FF) >= 35) {
             if ((o->oPathedPrevWaypointFlags & WAYPOINT_MASK_00FF) >= 35) {
@@ -99,7 +105,7 @@ static void racing_penguin_act_race(void) {
 static void racing_penguin_act_finish_race(void) {
     if (o->oForwardVel != 0.0f) {
         if (o->oTimer > 5 && (o->oMoveFlags & 0x00000200)) {
-            PlaySound2(SOUND_OBJECT_POUNDINGLOUD);
+            PlaySound2(SOUND_OBJ_POUNDING_LOUD);
             func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
             o->oForwardVel = 0.0f;
         }
@@ -138,13 +144,13 @@ static void racing_penguin_act_show_final_text(void) {
             o->oForwardVel = 4.0f;
         }
     } else if (o->oRacingPenguinFinalTextbox > 0) {
-        if ((textResult = obj_update_dialog_unk2(2, 1, 0xA2, o->oRacingPenguinFinalTextbox)) != 0) {
+        if ((textResult = obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, o->oRacingPenguinFinalTextbox)) != 0) {
             o->oRacingPenguinFinalTextbox = -1;
             o->oTimer = 0;
         }
     } else if (o->oRacingPenguinMarioWon) {
 #ifdef VERSION_JP
-        CreateStar(-7339.0f, -5700.0f, -6774.0f);
+        create_star(-7339.0f, -5700.0f, -6774.0f);
 #else
         obj_spawn_star_at_y_offset(-7339.0f, -5700.0f, -6774.0f, 200.0f);
 #endif

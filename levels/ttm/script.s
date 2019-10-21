@@ -18,17 +18,17 @@ script_func_local_2:
     object /*model*/ MODEL_MONTY_MOLE,         /*pos*/     0,     0,     0, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvMontyMole
     object /*model*/ MODEL_MONTY_MOLE,         /*pos*/     0,     0,     0, /*angle*/ 0,   0, 0, /*behParam*/ 0x00010000, /*beh*/ bhvMontyMole
     object /*model*/ MODEL_NONE,               /*pos*/  3625,   560,   165, /*angle*/ 0, 330, 0, /*behParam*/ 0x00000000, /*beh*/ bhvCloud
-    object /*model*/ MODEL_UKIKI,              /*pos*/   729,  2307,   335, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvUkiki, /*acts*/ ACT_2
-    object /*model*/ MODEL_UKIKI,              /*pos*/  1992, -1548,  2944, /*angle*/ 0,   0, 0, /*behParam*/ 0x00010000, /*beh*/ bhvUkiki, /*acts*/ ALL_ACTS
+    object /*model*/ MODEL_UKIKI,              /*pos*/   729,  2307,   335, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvUkiki,       /*acts*/ ACT_2
+    object /*model*/ MODEL_UKIKI,              /*pos*/  1992, -1548,  2944, /*angle*/ 0,   0, 0, /*behParam*/ 0x00010000, /*beh*/ bhvUkiki,       /*acts*/ ALL_ACTS
     return
 
 script_func_local_3:
-    object /*model*/ MODEL_STAR,          /*pos*/  1200,  2600,   150, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStar,                 /*acts*/ ACT_1
-    object /*model*/ MODEL_TTM_STAR_CAGE, /*pos*/  2496,  1670,  1492, /*angle*/ 0, 0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvLittleCage,          /*acts*/ ACT_2
-    object /*model*/ MODEL_NONE,          /*pos*/ -3250, -2500, -3700, /*angle*/ 0, 0, 0, /*behParam*/ 0x02000000, /*beh*/ bhvHiddenRedCoinStar, /*acts*/ ALL_ACTS
-    object /*model*/ MODEL_STAR,          /*pos*/ -2900, -2700,  3650, /*angle*/ 0, 0, 0, /*behParam*/ 0x03000000, /*beh*/ bhvStar,                 /*acts*/ ALL_ACTS
-    object /*model*/ MODEL_STAR,          /*pos*/  1800,  1200,  1050, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvStar,                 /*acts*/ ALL_ACTS
-    object /*model*/ MODEL_STAR,          /*pos*/  7300, -3100,  1300, /*angle*/ 0, 0, 0, /*behParam*/ 0x05000000, /*beh*/ bhvStar,                 /*acts*/ ALL_ACTS
+    object /*model*/ MODEL_STAR,           /*pos*/  1200,  2600,   150, /*angle*/ 0, 0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStar,              /*acts*/ ACT_1
+    object /*model*/ MODEL_TTM_STAR_CAGE,  /*pos*/  2496,  1670,  1492, /*angle*/ 0, 0, 0, /*behParam*/ 0x01000000, /*beh*/ bhvUkikiCage,         /*acts*/ ACT_2
+    object /*model*/ MODEL_NONE,           /*pos*/ -3250, -2500, -3700, /*angle*/ 0, 0, 0, /*behParam*/ 0x02000000, /*beh*/ bhvHiddenRedCoinStar, /*acts*/ ALL_ACTS
+    object /*model*/ MODEL_STAR,           /*pos*/ -2900, -2700,  3650, /*angle*/ 0, 0, 0, /*behParam*/ 0x03000000, /*beh*/ bhvStar,              /*acts*/ ALL_ACTS
+    object /*model*/ MODEL_STAR,           /*pos*/  1800,  1200,  1050, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvStar,              /*acts*/ ALL_ACTS
+    object /*model*/ MODEL_STAR,           /*pos*/  7300, -3100,  1300, /*angle*/ 0, 0, 0, /*behParam*/ 0x05000000, /*beh*/ bhvStar,              /*acts*/ ALL_ACTS
     return
 
 script_func_local_4:
@@ -71,7 +71,7 @@ glabel level_ttm_entry
     jump_link /*target*/ script_func_global_7
     load_model_from_geo /*model*/ MODEL_TTM_SLIDE_EXIT_PODIUM, /*geo*/ ttm_geo_000DF4
     load_model_from_geo /*model*/ MODEL_TTM_ROLLING_LOG,       /*geo*/ ttm_geo_000730
-    load_model_from_geo /*model*/ MODEL_TTM_STAR_CAGE,         /*geo*/ ttm_geo_000710
+    load_model_from_geo /*model*/ MODEL_TTM_STAR_CAGE,        /*geo*/ ttm_geo_000710
     load_model_from_geo /*model*/ MODEL_TTM_BLUE_SMILEY,       /*geo*/ ttm_geo_000D14
     load_model_from_geo /*model*/ MODEL_TTM_YELLOW_SMILEY,     /*geo*/ ttm_geo_000D4C
     load_model_from_geo /*model*/ MODEL_TTM_STAR_SMILEY,       /*geo*/ ttm_geo_000D84

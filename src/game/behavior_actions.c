@@ -101,15 +101,15 @@ extern s32 gDialogResponse;
 extern s32 gCutsceneActive;
 extern u8 gCutsceneNumber;
 extern s8 *D_8032F96C[];
-extern u32 bowser_seg6_unkmoveshorts_060576FC[];
-extern u32 blue_fish_seg3_anims_0301C2B0[];
-extern u32 cyan_fish_seg6_anims_0600E264[];
-extern u32 blue_fish_seg3_anims_0301C2B0[];
+extern s16 bowser_seg6_unkmoveshorts_060576FC[];
+extern struct Animation *blue_fish_seg3_anims_0301C2B0[];
+extern struct Animation *cyan_fish_seg6_anims_0600E264[];
+extern struct Animation *blue_fish_seg3_anims_0301C2B0[];
 
 void func_802A8D18(f32, f32, s32);
 
 s32 mario_moving_fast_enough_to_make_piranha_plant_bite(void);
-void func_802C49E0(void);
+void obj_set_secondary_camera_focus(void);
 
 s32 D_8032F0C0[] = { SAVE_FLAG_HAVE_WING_CAP, SAVE_FLAG_HAVE_METAL_CAP, SAVE_FLAG_HAVE_VANISH_CAP };
 
@@ -144,12 +144,13 @@ void func_802AA618(s32 sp18, s32 sp1C, f32 sp20) {
     D_8032F270.sizeBase = sp20;
     D_8032F270.sizeRange = sp20 / 20.0;
     D_8032F270.offsetY = sp1C;
-    if (sp18 == 0)
+    if (sp18 == 0) {
         D_8032F270.count = 20;
-    else if (sp18 > 20)
+    } else if (sp18 > 20) {
         D_8032F270.count = sp18;
-    else
+    } else {
         D_8032F270.count = 4;
+    }
     obj_spawn_particles(&D_8032F270);
 }
 
@@ -166,7 +167,7 @@ void func_802AA618(s32 sp18, s32 sp1C, f32 sp20) {
 #include "behaviors/ground_particles.inc.c"
 #include "behaviors/wind.inc.c"
 #include "behaviors/unused_particle_spawn.inc.c"
-#include "behaviors/little_cage.inc.c"
+#include "behaviors/ukiki_cage.inc.c"
 #include "behaviors/falling_rising_platform.inc.c"
 #include "behaviors/fishing_boo.inc.c"
 #include "behaviors/flamethrower.inc.c"
@@ -214,9 +215,10 @@ void func_802B2328(
 {
     s32 i;
     s16 separation = 0x10000 / n; // Evenly spread around a circle
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; i++) {
         spawn_object_relative(0, sins(D_8035FF10 + i * separation) * a1, (i + 1) * a2,
                               coss(D_8035FF10 + i * separation) * a1, o, MODEL_NONE, bhvSparkleSpawn);
+    }
 
     D_8035FF10 += r * 0x100;
 }
@@ -234,7 +236,7 @@ void func_802B2328(
 #include "behaviors/bowser_key_cutscene.inc.c"
 #include "behaviors/moat_grill.inc.c"
 #include "behaviors/clock_arm.inc.c"
-#include "behaviors/ukiki_cage.inc.c"
+#include "behaviors/ukiki.inc.c"
 #include "behaviors/lll_octagonal_rotating_mesh.inc.c"
 #include "behaviors/lll_sinking_rock_block.inc.c"
 #include "behaviors/lll_rotating_hex_flame.inc.c"
@@ -271,16 +273,7 @@ void func_802B2328(
 #include "behaviors/music_touch.inc.c"
 #endif
 #include "behaviors/castle_floor_trap.inc.c"
-
-// not in behavior file
-void BehClimbDetectLoop(void) {
-    if (o->oPosY - 10.0f < gMarioObject->oPosY
-        && gMarioObject->oPosY < o->oPosY + o->hitboxHeight + 30.0f)
-        if (o->oTimer > 10)
-            if (!(gMarioStates->action & MARIO_PUNCHING))
-                obj_push_mario_away(70.0f);
-}
-
+#include "behaviors/pole_base.inc.c"
 #include "behaviors/sparkle_spawn.inc.c"
 #include "behaviors/scuttlebug.inc.c" // :scuttleeyes:
 #include "behaviors/whomp.inc.c"

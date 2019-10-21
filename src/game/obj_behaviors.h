@@ -5,13 +5,6 @@
 #include "object_helpers2.h"
 #include "engine/surface_collision.h"
 
-struct Struct802E2F58
-{
-    s32 unk0[2];
-    s32 unk8[2];
-    u8 filler10[0x8];
-};
-
 extern struct Surface *D_803600E0;
 
 extern s8 D_80331500;
@@ -25,7 +18,7 @@ extern u8 ttm_seg7_trajectory_070170A0[];
 extern u8 bob_seg7_metal_ball_path1[];
 
 void func_802E2F40(void);
-struct Struct802E2F58 *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2); /* unused */
+Gfx *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2); /* unused */
 f32 absf_2(f32 f);
 void TurnObjAwayFromSurface(f32 objVelX, f32 objVelZ, f32 nX, UNUSED f32 nY, f32 nZ, f32 *objYawX, f32 *objYawZ);
 s32 ObjFindWall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ);
@@ -36,8 +29,8 @@ void CalcNewObjVelAndPosY(struct Surface* objFloor, f32 objFloorY, f32 objVelX, 
 void CalcNewObjVelAndPosYUnderwater(struct Surface* objFloor, f32 floorY, f32 objVelX, f32 objVelZ, f32 waterY);
 void ObjUpdatePosVelXZ(void);
 void ObjSplash(s32 waterY, s32 objY);
-s16 ObjectStep(void);
-s16 func_802E4204(void);
+s32 ObjectStep(void);
+s32 func_802E4204(void);
 void obj_move_xyz_using_fvel_and_yaw(struct Object* obj);
 s32 is_point_within_radius_of_mario(f32 x, f32 y, f32 z, s32 dist);
 s32 IsPointCloseToObject(struct Object* obj, f32 x, f32 y, f32 z, s32 dist);
@@ -46,7 +39,7 @@ s32 ObjLeaveIfMarioIsNearHome(struct Object* obj, f32 arg1, f32 arg2, f32 arg3, 
 void ObjDisplaceHome(struct Object* obj, f32 homeX, UNUSED f32 homeY, f32 homeZ, s32 baseDisp);
 s32 func_802E46C0(u32 arg0, u32 arg1, s16 arg2);
 s32 func_802E478C(Vec3f dist, f32 x, f32 y, f32 z, f32 arg4);
-void ObjSpawnYellowCoins(struct Object *obj, s32 nCoins);
+void ObjSpawnYellowCoins(struct Object *obj, s8 nCoins);
 s32 ObjFlickerAndDisappear(struct Object *obj, s16 arg1);
 s8 func_802E49A4(s16 arg0);
 s16 func_802E4A38(s32 *arg0, s16 arg1, f32 arg2, s32 arg3);
@@ -216,6 +209,6 @@ void bhv_free_bowling_ball_roll_loop(void); /* likely unused */
 void bhv_free_bowling_ball_loop(void); /* likely unused */
 void bhv_rr_cruiser_wing_init(void);
 void bhv_rr_cruiser_wing_loop(void);
-extern void CreateStar(f32, f32, f32);
+extern void create_star(f32, f32, f32);
 
 #endif /* _OBJ_BEHAVIORS_H */

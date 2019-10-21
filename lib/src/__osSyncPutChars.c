@@ -20,14 +20,16 @@ void __osSyncPutChars(s32 a0, s32 a1, u8 *a2) {
         sp24.unk2[sp20] = a2[sp20];
     }
 
-    while (!__osAtomicDec(&D_80334A44))
+    while (!__osAtomicDec(&D_80334A44)) {
         ;
+    }
 
     sp1c = __osDisableInt();
 
     *(u32 *) 0xC0000000 = *(u32 *) &sp24;
-    while (!(__osGetCause() & 0x2000))
+    while (!(__osGetCause() & 0x2000)) {
         ;
+    }
     *(u32 *) 0xC000000C = 0;
     D_80334A44++;
 

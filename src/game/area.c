@@ -30,8 +30,8 @@ s16 gCurrCourseNum;
 s16 gCurrActNum;
 s16 gCurrAreaIndex;
 s16 gSavedCourseNum;
-s16 D_8033A75E;
-s16 D_8033A760;
+s16 gPauseScreenMode;
+s16 gSaveOptSelectIndex;
 
 struct SpawnInfo *gMarioSpawnInfo = &gPlayerSpawnInfos[0];
 struct GraphNode **gLoadedGraphNodes = D_8033A160;
@@ -120,8 +120,9 @@ u32 get_mario_spawn_type(struct Object *o) {
     void *behavior = virtual_to_segmented(0x13, o->behavior);
 
     for (i = 0; i < 20; i++) {
-        if (D_8032CE9C[i] == behavior)
+        if (D_8032CE9C[i] == behavior) {
             return D_8032CEEC[i];
+        }
     }
     return 0;
 }
@@ -130,8 +131,9 @@ struct ObjectWarpNode *area_get_warp_node(u8 id) {
     struct ObjectWarpNode *node = NULL;
 
     for (node = gCurrentArea->warpNodes; node != NULL; node = node->next) {
-        if (node->node.id == id)
+        if (node->node.id == id) {
             break;
+        }
     }
     return node;
 }
@@ -151,8 +153,9 @@ void func_8027A4C4(void) {
 
         if (sp1C->activeFlags && get_mario_spawn_type(sp1C) != 0) {
             sp24 = func_8027A478(sp1C);
-            if (sp24 != NULL)
+            if (sp24 != NULL) {
                 sp24->object = sp1C;
+            }
         }
     } while ((sp20 = (struct Object *) sp20->header.gfx.node.next)
              != (struct Object *) gObjParentGraphNode.children);
@@ -216,8 +219,9 @@ void load_area(s32 index) {
                               gCurrentArea->macroObjects);
         }
 
-        if (gCurrentArea->objectSpawnInfos != NULL)
+        if (gCurrentArea->objectSpawnInfos != NULL) {
             spawn_objects_from_info(0, gCurrentArea->objectSpawnInfos);
+        }
 
         func_8027A4C4();
         geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_LOAD);
@@ -250,8 +254,9 @@ void func_8027AA88(void) {
         unload_objects_from_area(0, gMarioSpawnInfo->activeAreaIndex);
 
         gCurrentArea->flags &= ~0x01;
-        if (gCurrentArea->flags == 0)
+        if (gCurrentArea->flags == 0) {
             func_8027A998();
+        }
     }
 }
 
@@ -316,16 +321,18 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
         if (transType & 1) // Is the image fading in?
         {
             gWarpTransition.data.startCircleRadius = 320;
-            if (transType >= 0x0F)
+            if (transType >= 0x0F) {
                 gWarpTransition.data.endCircleRadius = 16;
-            else
+            } else {
                 gWarpTransition.data.endCircleRadius = 0;
+            }
         } else // The image is fading out. (Reverses start & end circles)
         {
-            if (transType >= 0x0E)
+            if (transType >= 0x0E) {
                 gWarpTransition.data.startCircleRadius = 16;
-            else
+            } else {
                 gWarpTransition.data.startCircleRadius = 0;
+            }
             gWarpTransition.data.endCircleRadius = 320;
         }
     }
@@ -347,36 +354,38 @@ void render_game(void) {
 
         gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&D_8032CF00));
 
-        gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, 320,
-                      240 - BORDER_HEIGHT);
+        gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
+                      SCREEN_HEIGHT - BORDER_HEIGHT);
         render_hud();
 
-        gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, 320, 240);
+        gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         render_text_labels();
         do_cutscene_handler();
         print_displaying_credits_entry();
-        gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, 320,
-                      240 - BORDER_HEIGHT);
-        D_8033A75E = func_802DCD98();
+        gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
+                      SCREEN_HEIGHT - BORDER_HEIGHT);
+        gPauseScreenMode = render_menus_and_dialogs();
 
-        if (D_8033A75E != 0)
-            D_8033A760 = D_8033A75E;
-
-        if (D_8032CE78 != NULL)
+        if (gPauseScreenMode != 0) {
+            gSaveOptSelectIndex = gPauseScreenMode;
+        }
+        
+        if (D_8032CE78 != NULL) {
             make_viewport_clip_rect(D_8032CE78);
-        else
-            gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, 320,
-                          240 - BORDER_HEIGHT);
+        } else
+            gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
+                          SCREEN_HEIGHT - BORDER_HEIGHT);
 
         if (gWarpTransition.isActive) {
             if (gWarpTransDelay == 0) {
                 gWarpTransition.isActive = !func_802CC108(0, gWarpTransition.type, gWarpTransition.time,
                                                           &gWarpTransition.data);
                 if (!gWarpTransition.isActive) {
-                    if (gWarpTransition.type & 1)
+                    if (gWarpTransition.type & 1) {
                         gWarpTransition.pauseRendering = TRUE;
-                    else
+                    } else {
                         set_warp_transition_rgb(0, 0, 0);
+                    }
                 }
             } else {
                 gWarpTransDelay--;
@@ -384,10 +393,11 @@ void render_game(void) {
         }
     } else {
         render_text_labels();
-        if (D_8032CE78 != 0)
+        if (D_8032CE78 != 0) {
             clear_viewport(D_8032CE78, gWarpTransFBSetColor);
-        else
+        } else {
             clear_frame_buffer(gWarpTransFBSetColor);
+        }
     }
 
     D_8032CE74 = NULL;

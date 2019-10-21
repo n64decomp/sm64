@@ -21,10 +21,6 @@
 #include "gd_math.h"
 #include "shape_helper.h"
 
-// types and defines
-typedef s32 intptr_t;
-typedef u32 uintptr_t;
-
 #define MAX_GD_DLS 1000
 #define OS_MESG_SI_COMPLETE 0x33333333
 
@@ -1340,12 +1336,14 @@ Vtx *make_Vtx_if_new(f32 x, f32 y, f32 z, f32 alpha) {
 
     for (i = D_801BB0CC; i < (D_801BB0CC + D_801BB0BC); i++) {
         // the ifs need to be separate to match...
-        if (sCurrentGdDl->vtx[i].n.ob[0] == (s16) x)
-            if (sCurrentGdDl->vtx[i].n.ob[1] == (s16) y)
+        if (sCurrentGdDl->vtx[i].n.ob[0] == (s16) x) {
+            if (sCurrentGdDl->vtx[i].n.ob[1] == (s16) y) {
                 if (sCurrentGdDl->vtx[i].n.ob[2] == (s16) z) {
                     D_801BAF30[D_801BB0C4][D_801BB0B4++] = (s16) i;
                     return NULL;
                 }
+            }
+        }
     }
 
     D_801BB0BC++;
@@ -2348,8 +2346,9 @@ void Unknown801A47F4(UNUSED u32 arg0) {
 
 /* 252FD8 -> 253018 */
 void func_801A4808(void) {
-    while (D_801A8674 != 0)
+    while (D_801A8674 != 0) {
         ;
+    }
 
     return;
 }
@@ -2924,7 +2923,7 @@ void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
                        G_TX_NOMASK, G_TX_NOLOD, (G_TX_NOMIRROR | G_TX_WRAP), G_TX_NOMASK, G_TX_NOLOD);
             gDPSetTileSize(next_gfx(), 0, 0, 0, 124, 124);
             gSPTextureRectangle(next_gfx(), x << 2, (y + r) << 2, (x + 0x20) << 2, (y + r + 0x20) << 2,
-                                0, 0, 0, 1024, 1024);
+                                G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
         }
     }
 
@@ -3170,7 +3169,7 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
     }
 
     for (i = 0; i < sp34; i++) {
-        osMapTLB(i, OS_PM_64K, (void *) (0x04000000 + (i * 2 * 0x10000)),
+        osMapTLB(i, OS_PM_64K, (void *) (uintptr_t) (0x04000000 + (i * 2 * 0x10000)),
                  GD_LOWER_24(((uintptr_t) allocSegSpace) + (i * 2 * 0x10000)),
                  GD_LOWER_24(((uintptr_t) allocSegSpace) + (i * 2 * 0x10000) + 0x10000), -1);
     }

@@ -644,8 +644,9 @@ char *sprint_val_withspecifiers(char *str, union PrintVal val, char *specifiers)
 
 /* 23C468 -> 23C4AC; orig name: func_8018DC98 */
 void gd_strcpy(char *dst, const char *src) {
-    while ((*dst++ = *src++))
+    while ((*dst++ = *src++)) {
         ;
+    }
 }
 
 /* 23C4AC -> 23C52C; not called; orig name: Unknown8018DCDC */
@@ -687,13 +688,15 @@ u32 gd_strlen(const char *str) {
 
 /* 23C5FC -> 23C680; orig name: func_8018DE2C */
 char *gd_strcat(char *dst, const char *src) {
-    while (*dst++)
+    while (*dst++) {
         ;
+    }
 
     if (*src) {
         dst--;
-        while ((*dst++ = *src++))
+        while ((*dst++ = *src++)) {
             ;
+        }
     }
 
     return --dst;

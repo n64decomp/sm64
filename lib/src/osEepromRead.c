@@ -40,8 +40,9 @@ s32 osEepromRead(OSMesgQueue *mq, u8 address, u8 *buffer) {
     sp34 = 0;
     sp30 = 0;
     sp2c = (u8 *) &D_80365E00;
-    if (address > 0x40)
+    if (address > 0x40) {
         return -1;
+    }
     __osSiGetAccess();
     sp34 = __osEepStatus(mq, &sp28);
     if (sp34 != 0 || sp28.unk00 != 0x8000) {

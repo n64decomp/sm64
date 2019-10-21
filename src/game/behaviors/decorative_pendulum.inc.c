@@ -27,5 +27,5 @@ void bhv_decorative_pendulum_loop(void) {
      * actually one sound played twice in rapid succession.
      */
     if (o->oAngleVelRoll == 0x10 || o->oAngleVelRoll == -0x10)
-        PlaySound2(SOUND_GENERAL_BIGCLOCK);
+        PlaySound2(SOUND_GENERAL_BIG_CLOCK);
 }

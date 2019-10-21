@@ -21,10 +21,12 @@ void sequence_player_process_sound(struct SequencePlayer *seqPlayer) {
     if (seqPlayer->fadeTimer != 0) {
         seqPlayer->fadeVolume += seqPlayer->fadeVelocity;
 
-        if (seqPlayer->fadeVolume > US_FLOAT2(1))
+        if (seqPlayer->fadeVolume > US_FLOAT2(1)) {
             seqPlayer->fadeVolume = US_FLOAT2(1);
-        if (seqPlayer->fadeVolume < 0)
+        }
+        if (seqPlayer->fadeVolume < 0) {
             seqPlayer->fadeVolume = 0;
+        }
 
         if (--seqPlayer->fadeTimer == 0) {
             switch (seqPlayer->state) {
@@ -55,8 +57,9 @@ void sequence_player_process_sound(struct SequencePlayer *seqPlayer) {
 
             channelVolume =
                 seqChannel->seqPlayer->fadeVolume * (seqChannel->volume * seqChannel->volumeScale);
-            if (seqChannel->seqPlayer->muted && (seqChannel->muteBehavior & MUTE_BEHAVIOR_20) != 0)
+            if (seqChannel->seqPlayer->muted && (seqChannel->muteBehavior & MUTE_BEHAVIOR_20) != 0) {
                 channelVolume *= seqChannel->seqPlayer->muteVolumeScale;
+            }
 
             panFromChannel = seqChannel->panChannelWeight * seqChannel->pan;
             panLayerWeight = US_FLOAT(1.0) - seqChannel->panChannelWeight;
@@ -76,14 +79,16 @@ void sequence_player_process_sound(struct SequencePlayer *seqPlayer) {
 f32 get_portamento_freq_scale(struct Portamento *p) {
     u32 v0;
     f32 result;
-    if (p->mode == 0)
+    if (p->mode == 0) {
         return 1.0f;
+    }
 
     p->cur += p->speed;
     v0 = (u32) p->cur;
 
-    if (v0 >= 127)
+    if (v0 >= 127) {
         v0 = 127;
+    }
 
     result = US_FLOAT(1.0) + p->extent * (gPitchBendFrequencyScale[v0 + 127] - US_FLOAT(1.0));
     return result;
@@ -136,8 +141,9 @@ f32 get_vibrato_freq_scale(struct VibratoState *vib) {
     } else {
         if (vib->extent != vib->seqChannel->vibratoExtentTarget) {
             vib->extentChangeTimer = vib->seqChannel->vibratoExtentChangeDelay;
-            if (vib->extentChangeTimer == 0)
+            if (vib->extentChangeTimer == 0) {
                 vib->extent = vib->seqChannel->vibratoExtentTarget;
+            }
         }
     }
 
@@ -152,8 +158,9 @@ f32 get_vibrato_freq_scale(struct VibratoState *vib) {
     } else {
         if (vib->rate != vib->seqChannel->vibratoRateTarget) {
             vib->rateChangeTimer = vib->seqChannel->vibratoRateChangeDelay;
-            if (vib->rateChangeTimer == 0)
+            if (vib->rateChangeTimer == 0) {
                 vib->rate = vib->seqChannel->vibratoRateTarget;
+            }
         }
     }
 

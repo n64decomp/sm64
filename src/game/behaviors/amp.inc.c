@@ -213,7 +213,7 @@ void bhv_homing_amp_loop(void) {
 
         case HOMING_AMP_ACT_CHASE:
             homing_amp_chase_loop();
-            PlaySound(SOUND_CH6_AMPBUZZ);
+            PlaySound(SOUND_AIR_AMP_BUZZ);
             break;
 
         case HOMING_AMP_ACT_GIVE_UP:
@@ -318,7 +318,7 @@ static void circling_amp_idle_loop(void) {
     // Oscillate
     o->oAmpYPhase++;
 
-    PlaySound(SOUND_CH6_AMPBUZZ);
+    PlaySound(SOUND_AIR_AMP_BUZZ);
 }
 
 /**

@@ -19,12 +19,15 @@
 #define cur_geo_cmd_u32(offset) \
     (*(u32 *) &gGeoLayoutCommand[offset])
 
+#define cur_geo_cmd_ptr(offset) \
+    (*(void **) &gGeoLayoutCommand[offset])
+
 extern struct AllocOnlyPool *gGraphNodePool;
 extern struct GraphNode *gCurRootGraphNode;
 extern UNUSED s32 D_8038BCA8;
 extern struct GraphNode **gGeoViews;
 extern u16 gGeoNumViews;
-extern u32 gGeoLayoutStack[];
+extern uintptr_t gGeoLayoutStack[];
 extern struct GraphNode *gCurGraphNodeList[];
 extern s16 gCurGraphNodeIndex;
 extern s16 gGeoLayoutStackIndex;

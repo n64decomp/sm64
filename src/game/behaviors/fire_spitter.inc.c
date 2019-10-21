@@ -20,7 +20,7 @@ static void fire_spitter_act_spit_fire(void) {
         if (scaleStatus < 0) {
             o->oAction = FIRE_SPITTER_ACT_IDLE;
         } else {
-            PlaySound2(SOUND_OBJECT_FLAMEBLOWN);
+            PlaySound2(SOUND_OBJ_FLAME_BLOWN);
             obj_spit_fire(0, 0, 0, 5.0f, MODEL_RED_FLAME_SHADOW, 20.0f, 15.0f, 0x1000);
         }
     }

@@ -10,18 +10,17 @@
 
 #define aSetLoadBufferPair(pkt, c, off)                                                                \
     aSetBuffer(pkt, 0, c + 0x740, 0, 0x140 - c);                                                       \
-    aLoadBuffer(pkt, FIX(&D_802211B0.unk14.unk00[off]));                                               \
+    aLoadBuffer(pkt, VIRTUAL_TO_PHYSICAL2(&D_802211B0.unk14.unk00[off]));                                               \
     aSetBuffer(pkt, 0, c + 0x880, 0, 0x140 - c);                                                       \
-    aLoadBuffer(pkt, FIX(&D_802211B0.unk14.unk04[off]));
+    aLoadBuffer(pkt, VIRTUAL_TO_PHYSICAL2(&D_802211B0.unk14.unk04[off]));
 
 #define aSetSaveBufferPair(pkt, c, d, off)                                                             \
     aSetBuffer(pkt, 0, 0, c + 0x740, d);                                                               \
-    aSaveBuffer(pkt, FIX(&D_802211B0.unk14.unk00[off]));                                               \
+    aSaveBuffer(pkt, VIRTUAL_TO_PHYSICAL2(&D_802211B0.unk14.unk00[off]));                                               \
     aSetBuffer(pkt, 0, 0, c + 0x880, d);                                                               \
-    aSaveBuffer(pkt, FIX(&D_802211B0.unk14.unk04[off]));
+    aSaveBuffer(pkt, VIRTUAL_TO_PHYSICAL2(&D_802211B0.unk14.unk04[off]));
 
 #define ALIGN(val, amnt) (((val) + (1 << amnt) - 1) & ~((1 << amnt) - 1))
-#define FIX(a) (u16 *) ((u8 *) (a) + 0x80000000U)
 
 struct Struct802211B0 D_802211B0;
 u8 sAudioSynthesisPad[0x20];
@@ -123,8 +122,9 @@ u64 *func_80313CD4(u64 *cmdBuf, s32 *writtenCmds, u16 *aiBuf, s32 bufLen) {
             // chunkLen = v0 rounded to nearest multiple of 8
             chunkLen = v0 - (v0 & 7);
 
-            if ((v0 & 7) >= 4)
+            if ((v0 & 7) >= 4) {
                 chunkLen += 8;
+            }
         }
         process_sequences(i - 1);
         if (D_802211B0.unk1 != 0) {
@@ -134,8 +134,9 @@ u64 *func_80313CD4(u64 *cmdBuf, s32 *writtenCmds, u16 *aiBuf, s32 bufLen) {
         remaining -= chunkLen;
         aiBufPtr += chunkLen;
     }
-    if (D_802211B0.unk2 != 0)
+    if (D_802211B0.unk2 != 0) {
         D_802211B0.unk2--;
+    }
     D_802211B0.unk3 ^= 1;
     *writtenCmds = cmd - cmdBuf;
     return cmd;
@@ -172,9 +173,9 @@ u64 *func_80313E54(u16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateIndex) {
                 aSetLoadBufferPair(cmd++, ra, 0);
             }
             aSetBuffer(cmd++, 0, t4 + 0x740, 0x4c0, bufLen << 1);
-            aResample(cmd++, D_802211B0.unk0, (u16) D_802211B0.unk6, FIX(D_802211B0.unk1C));
+            aResample(cmd++, D_802211B0.unk0, (u16) D_802211B0.unk6, VIRTUAL_TO_PHYSICAL2(D_802211B0.unk1C));
             aSetBuffer(cmd++, 0, t4 + 0x880, 0x600, bufLen << 1);
-            aResample(cmd++, D_802211B0.unk0, (u16) D_802211B0.unk6, FIX(D_802211B0.unk20));
+            aResample(cmd++, D_802211B0.unk0, (u16) D_802211B0.unk6, VIRTUAL_TO_PHYSICAL2(D_802211B0.unk20));
             aSetBuffer(cmd++, 0, 0, 0, 0x280);
             aMix(cmd++, 0, /*gain*/ D_802211B0.unk4 + 32768, /*in*/ 0x4c0, /*out*/ 0x4c0);
             aDMEMMove(cmd++, 0x4c0, 0x740, 0x280);
@@ -187,7 +188,7 @@ u64 *func_80313E54(u16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateIndex) {
             }
         } else {
             aSetBuffer(cmd++, 0, 0, 0x740, 0x280);
-            aSaveBuffer(cmd++, FIX(D_802211B0.unk2C[D_802211B0.unk3][updateIndex].unk4));
+            aSaveBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(D_802211B0.unk2C[D_802211B0.unk3][updateIndex].unk4));
             D_802211B0.unk0 = 0;
         }
     }
@@ -322,7 +323,7 @@ u64 *func_80314480(u16 *aiBuf, s32 bufLen, u64 *cmd) {
                         u32 v1;
                         sp15C = sp164->book->book;
                         v1 = sp164->book->order * sp164->book->npredictors;
-                        aLoadADPCM(cmd++, v1 * 16, FIX(sp15C));
+                        aLoadADPCM(cmd++, v1 * 16, VIRTUAL_TO_PHYSICAL2(sp15C));
                     }
 
                     while (fp != t5) {
@@ -367,27 +368,27 @@ u64 *func_80314480(u16 *aiBuf, s32 bufLen, u64 *cmd) {
                             // maybe keep a var for t0 * 9?
                             v0_2 = dma_sample_data(sp120 + (s7->unk14 - s2 + 0x10) / 16 * 9, t0 * 9,
                                                    sp148, &s7->sampleDmaIndex);
-                            a3 = (u32) v0_2 & 0xf;
+                            a3 = (u32)((uintptr_t) v0_2 & 0xf);
                             aSetBuffer(cmd++, 0, 0x3f0, 0, t0 * 9 + a3);
-                            aLoadBuffer(cmd++, FIX(v0_2 - a3));
+                            aLoadBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(v0_2 - a3));
                         } else {
                             s0 = 0;
                             a3 = 0;
                         }
 
                         if (s7->unk0b20 != 0) {
-                            aSetLoop(cmd++, FIX(sp164->loop->state));
+                            aSetLoop(cmd++, VIRTUAL_TO_PHYSICAL2(sp164->loop->state));
                             sp148 = A_LOOP; // = 2
                             s7->unk0b20 = 0;
                         }
 
                         if (fp == 0) {
                             aSetBuffer(cmd++, 0, a3 + 0x3f0, 0x180, s0 * 2);
-                            aADPCMdec(cmd++, sp148, FIX(s7->unk34->unk00));
+                            aADPCMdec(cmd++, sp148, VIRTUAL_TO_PHYSICAL2(s7->unk34->unk00));
                             sp130 = s2 * 2;
                         } else {
                             aSetBuffer(cmd++, 0, a3 + 0x3f0, ALIGN(s5, 5) + 0x180, s0 * 2);
-                            aADPCMdec(cmd++, sp148, FIX(s7->unk34->unk00));
+                            aADPCMdec(cmd++, sp148, VIRTUAL_TO_PHYSICAL2(s7->unk34->unk00));
                             aDMEMMove(cmd++, ALIGN(s5, 5) + (s2 * 2) + 0x180, s5 + 0x180,
                                       (s0 + s6_2 - s3) * 2);
                         }
@@ -438,7 +439,7 @@ u64 *func_80314480(u16 *aiBuf, s32 bufLen, u64 *cmd) {
                             switch (spE4) {
                                 case 0:
                                     aSetBuffer(cmd++, 0, sp130 + 0x180, 0x20, t5 + 4);
-                                    aResample(cmd++, 0x1, 0xff60, FIX(s7->unk34->unkF0));
+                                    aResample(cmd++, 0x1, 0xff60, VIRTUAL_TO_PHYSICAL2(s7->unk34->unkF0));
                                     spD8 = t5 + 4;
                                     spD6 = 36;
                                     if (s7->unk0b10 != 0) {
@@ -448,7 +449,7 @@ u64 *func_80314480(u16 *aiBuf, s32 bufLen, u64 *cmd) {
 
                                 case 1:
                                     aSetBuffer(cmd++, 0, sp130 + 0x180, 0x160, t5 + 8);
-                                    aResample(cmd++, 0x1, 0xff60, FIX(s7->unk34->unkF0));
+                                    aResample(cmd++, 0x1, 0xff60, VIRTUAL_TO_PHYSICAL2(s7->unk34->unkF0));
                                     aDMEMMove(cmd++, 0x164, spD8 + 0x20, t5 + 4);
                                     break;
                             }
@@ -492,7 +493,7 @@ u64 *func_80314480(u16 *aiBuf, s32 bufLen, u64 *cmd) {
     aInterleave(cmd++, 0x4c0, 0x600);
     t9 *= 2;
     aSetBuffer(cmd++, 0, 0, 0, t9);
-    aSaveBuffer(cmd++, FIX(aiBuf));
+    aSaveBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(aiBuf));
     return cmd;
 }
 
@@ -507,7 +508,7 @@ u64 *func_80314F08(u64 *cmd, struct Note *note, s32 arg2) {
     s32 i;
     aSetBuffer(cmd++, /*flags*/ 0, /*dmemin*/ 0x180, /*dmemout*/ 0,
                /*count*/ sizeof(note->unk34->samples)); // interesting that it's 128...
-    aLoadBuffer(cmd++, FIX(note->unk34->samples));
+    aLoadBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(note->unk34->samples));
     note->unk14 = (note->sampleCount - 1) & note->unk14;
     a3 = 64 - note->unk14;
     if (a3 < arg2) {
@@ -523,7 +524,7 @@ u64 *func_80314F08(u64 *cmd, struct Note *note, s32 arg2) {
 
 u64 *func_80314FD4(u64 *cmd, struct Note *note, s32 arg2, u16 arg3, u16 arg4, u32 arg5) {
     aSetBuffer(cmd++, 0, arg4, 0, arg2);
-    aResample(cmd++, arg5, arg3, FIX(note->unk34->unk20));
+    aResample(cmd++, arg5, arg3, VIRTUAL_TO_PHYSICAL2(note->unk34->unk20));
     return cmd;
 }
 
@@ -591,7 +592,7 @@ u64 *func_80315094(u64 *cmd, struct Note *note, s32 arg2, u16 arg3, s32 arg4,
         aSetVolume(cmd++, A_AUX, D_802212A0, 0, note->reverbVol);
     }
     if (D_802211B0.unk1 && note->reverb) {
-        aEnvMixer(cmd++, mixerFlags | A_AUX, FIX(note->unk34->unk40));
+        aEnvMixer(cmd++, mixerFlags | A_AUX, VIRTUAL_TO_PHYSICAL2(note->unk34->unk40));
         if (note->stereoStrongRight) {
             aSetBuffer(cmd++, 0, 0, 0, arg2 * 2);
             aMix(cmd++, 0, /*gain*/ 0x8000, /*in*/ 0x200, /*out*/ 0x4c0);
@@ -602,7 +603,7 @@ u64 *func_80315094(u64 *cmd, struct Note *note, s32 arg2, u16 arg3, s32 arg4,
             aMix(cmd++, 0, /*gain*/ 0x8000, /*in*/ 0x340, /*out*/ 0x880);
         }
     } else {
-        aEnvMixer(cmd++, mixerFlags, FIX(note->unk34->unk40));
+        aEnvMixer(cmd++, mixerFlags, VIRTUAL_TO_PHYSICAL2(note->unk34->unk40));
         if (note->stereoStrongRight) {
             aSetBuffer(cmd++, 0, 0, 0, arg2 * 2);
             aMix(cmd++, 0, /*gain*/ 0x8000, /*in*/ 0x200, /*out*/ 0x4c0);
@@ -647,20 +648,20 @@ u64 *func_803155F4(u64 *cmd, struct Note *note, s32 arg2, s32 arg3, s32 leftRigh
             aClearBuffer(cmd++, 8, 8);
             aDMEMMove(cmd++, 0x200, 0x10, 0x10);
             aSetBuffer(cmd++, 0, 0, 0, 32);
-            aSaveBuffer(cmd++, FIX(note->unk34->unk90));
+            aSaveBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(note->unk34->unk90));
             pitch = (arg2 << 0xf) / (panVolume + arg2 - prevPanVolume + 8);
             aSetBuffer(cmd++, 0, 0x208, 0, panVolume + arg2 - prevPanVolume);
-            aResample(cmd++, 0, pitch, FIX(note->unk34->unk90));
+            aResample(cmd++, 0, pitch, VIRTUAL_TO_PHYSICAL2(note->unk34->unk90));
         } else {
             pitch = (panVolume == 0) ? (arg2 << 0xf) / (arg2 - prevPanVolume - 4)
                                      : (arg2 << 0xf) / (arg2 + panVolume - prevPanVolume);
             aSetBuffer(cmd++, 0, 0x200, 0, panVolume + arg2 - prevPanVolume);
-            aResample(cmd++, 0, pitch, FIX(note->unk34->unk90));
+            aResample(cmd++, 0, pitch, VIRTUAL_TO_PHYSICAL2(note->unk34->unk90));
         }
 
         if (prevPanVolume != 0) {
             aSetBuffer(cmd++, 0, 0x200, 0, prevPanVolume);
-            aLoadBuffer(cmd++, FIX(note->unk34->unkB0));
+            aLoadBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(note->unk34->unkB0));
             aDMEMMove(cmd++, 0, prevPanVolume + 0x200, panVolume + arg2 - prevPanVolume);
         } else {
             aDMEMMove(cmd++, 0, 0x200, panVolume + arg2 - prevPanVolume);
@@ -673,7 +674,7 @@ u64 *func_803155F4(u64 *cmd, struct Note *note, s32 arg2, s32 arg3, s32 leftRigh
 
     if (panVolume) {
         aSetBuffer(cmd++, 0, 0, arg2 + 0x200, panVolume);
-        aSaveBuffer(cmd++, FIX(note->unk34->unkB0));
+        aSaveBuffer(cmd++, VIRTUAL_TO_PHYSICAL2(note->unk34->unkB0));
     }
 
     aSetBuffer(cmd++, 0, 0, 0, arg2);

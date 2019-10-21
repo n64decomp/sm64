@@ -14,12 +14,12 @@ struct ObjectHitbox sSparkleSpawnStarHitbox = {
 
 void bhv_unused_080c_init(void) {
     s32 sp24;
-    if (!(o->oUnk190 & 0x400))
+    if (!(o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT))
         o->oBehParams = o->parentObj->oBehParams;
     sp24 = (o->oBehParams >> 24) & 0xFF;
     if (func_802A377C(sp24) & save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1))
         obj_set_model(MODEL_TRANSPARENT_STAR);
-    PlaySound2(SOUND_CH8_UNK57);
+    PlaySound2(SOUND_GENERAL2_STAR_APPEARS);
 }
 
 void func_802AA788(void) {
@@ -56,7 +56,7 @@ void func_802AA918(void) {
 void bhv_unused_080c_loop(void) {
     if (o->oAction == 0) {
         if (o->oTimer == 0) {
-            func_8028F9E8(173, o);
+            cutscene_object(CUTSCENE_STAR_SPAWN, o);
             set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
             o->activeFlags |= 0x20;
             o->oAngleVelYaw = 0x800;
@@ -69,14 +69,14 @@ void bhv_unused_080c_loop(void) {
             o->oGravity = -4.0f;
             func_802A3004();
         }
-        PlaySound(SOUND_ENVIRONMENT_STAR);
+        PlaySound(SOUND_ENV_STAR);
         spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
         if (o->oVelY < 0 && o->oPosY < o->oHomeY) {
             o->oAction++;
             o->oForwardVel = 0;
             o->oVelY = 20.0f;
             o->oGravity = -1.0f;
-            if (o->oUnk190 & 0x400)
+            if (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT)
 #ifdef VERSION_JP
                 play_power_star_jingle(FALSE);
 #else
@@ -113,6 +113,6 @@ void bhv_unused_080c_loop(void) {
 void bhv_spawn_star_objects(u32 sp20) {
     struct Object *sp1C = spawn_object(o, MODEL_STAR, bhvUnused080C);
     sp1C->oBehParams = sp20 << 24;
-    sp1C->oUnk190 = 0x400;
+    sp1C->oInteractionSubtype = INT_SUBTYPE_NO_EXIT;
     set_object_angle(sp1C, 0, 0, 0);
 }

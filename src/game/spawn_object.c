@@ -247,7 +247,7 @@ static struct Object *allocate_object(struct ObjectNode *objList) {
         obj->rawData.asU32[i] = 0;
     }
 
-    obj->unk1C8 = 0;
+    obj->unused1 = 0;
     obj->stackIndex = 0;
     obj->unk1F4 = 0;
 
@@ -256,7 +256,7 @@ static struct Object *allocate_object(struct ObjectNode *objList) {
     obj->hurtboxRadius = 0.0f;
     obj->hurtboxHeight = 0.0f;
     obj->hitboxDownOffset = 0.0f;
-    obj->unk210 = 0;
+    obj->unused2 = 0;
 
     obj->platform = NULL;
     obj->collisionData = NULL;
@@ -307,7 +307,7 @@ static void snap_object_to_floor(struct Object *obj) {
  * Spawn an object at the origin with the behavior script at virtual address
  * behScript.
  */
-struct Object *create_object(u32 *behScript) {
+struct Object *create_object(uintptr_t *behScript) {
     s32 objListIndex;
     struct Object *obj;
     struct ObjectNode *objList;

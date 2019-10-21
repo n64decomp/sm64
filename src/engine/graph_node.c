@@ -18,8 +18,9 @@ Vec3s gVec3sZero = { 0, 0, 0 };
 Vec3f gVec3fOne = { 1.0f, 1.0f, 1.0f };
 UNUSED Vec3s gVec3sOne = { 1, 1, 1 };
 
-/** Initialize a geo node with a given type. Sets all links such that there
- *  are no siblings, parent or children for this node.
+/**
+ * Initialize a geo node with a given type. Sets all links such that there
+ * are no siblings, parent or children for this node.
  */
 void init_scene_graph_node_links(struct GraphNode *graphNode, s32 type) {
     graphNode->type = type;
@@ -30,7 +31,8 @@ void init_scene_graph_node_links(struct GraphNode *graphNode, s32 type) {
     graphNode->children = NULL;
 }
 
-/** Allocated and returns a newly created root node
+/**
+ * Allocated and returns a newly created root node
  */
 struct GraphNodeRoot *init_graph_node_root(struct AllocOnlyPool *pool, struct GraphNodeRoot *graphNode,
                                            s16 areaIndex, s16 x, s16 y, s16 width, s16 height) {
@@ -54,7 +56,8 @@ struct GraphNodeRoot *init_graph_node_root(struct AllocOnlyPool *pool, struct Gr
     return graphNode;
 }
 
-/** Allocates and returns a newly created otrhographic projection node
+/**
+ * Allocates and returns a newly created otrhographic projection node
  */
 struct GraphNodeOrthoProjection *
 init_graph_node_ortho_projection(struct AllocOnlyPool *pool, struct GraphNodeOrthoProjection *graphNode,
@@ -71,7 +74,8 @@ init_graph_node_ortho_projection(struct AllocOnlyPool *pool, struct GraphNodeOrt
     return graphNode;
 }
 
-/** Allocates and returns a newly created perspective node
+/**
+ * Allocates and returns a newly created perspective node
  */
 struct GraphNodePerspective *init_graph_node_perspective(struct AllocOnlyPool *pool,
                                                          struct GraphNodePerspective *graphNode,
@@ -98,7 +102,8 @@ struct GraphNodePerspective *init_graph_node_perspective(struct AllocOnlyPool *p
     return graphNode;
 }
 
-/** Allocates and returns a newly created start node
+/**
+ * Allocates and returns a newly created start node
  */
 struct GraphNodeStart *init_graph_node_start(struct AllocOnlyPool *pool,
                                              struct GraphNodeStart *graphNode) {
@@ -113,7 +118,8 @@ struct GraphNodeStart *init_graph_node_start(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created master list node
+/**
+ * Allocates and returns a newly created master list node
  */
 struct GraphNodeMasterList *init_graph_node_master_list(struct AllocOnlyPool *pool,
                                                         struct GraphNodeMasterList *graphNode, s16 on) {
@@ -132,7 +138,8 @@ struct GraphNodeMasterList *init_graph_node_master_list(struct AllocOnlyPool *po
     return graphNode;
 }
 
-/** Allocates and returns a newly created render range node
+/**
+ * Allocates and returns a newly created render range node
  */
 struct GraphNodeLevelOfDetail *init_graph_node_render_range(struct AllocOnlyPool *pool,
                                                             struct GraphNodeLevelOfDetail *graphNode,
@@ -150,7 +157,8 @@ struct GraphNodeLevelOfDetail *init_graph_node_render_range(struct AllocOnlyPool
     return graphNode;
 }
 
-/** Allocates and returns a newly created switch case node
+/**
+ * Allocates and returns a newly created switch case node
  */
 struct GraphNodeSwitchCase *init_graph_node_switch_case(struct AllocOnlyPool *pool,
                                                         struct GraphNodeSwitchCase *graphNode,
@@ -175,7 +183,8 @@ struct GraphNodeSwitchCase *init_graph_node_switch_case(struct AllocOnlyPool *po
     return graphNode;
 }
 
-/** Allocates and returns a newly created camera node
+/**
+ * Allocates and returns a newly created camera node
  */
 struct GraphNodeCamera *init_graph_node_camera(struct AllocOnlyPool *pool,
                                                struct GraphNodeCamera *graphNode, f32 *fromPos,
@@ -201,7 +210,8 @@ struct GraphNodeCamera *init_graph_node_camera(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created translation rotation node
+/**
+ * Allocates and returns a newly created translation rotation node
  */
 struct GraphNodeTranslationRotation *
 init_graph_node_translation_rotation(struct AllocOnlyPool *pool,
@@ -223,7 +233,8 @@ init_graph_node_translation_rotation(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created translation node
+/**
+ * Allocates and returns a newly created translation node
  */
 struct GraphNodeTranslation *init_graph_node_translation(struct AllocOnlyPool *pool,
                                                          struct GraphNodeTranslation *graphNode,
@@ -244,7 +255,8 @@ struct GraphNodeTranslation *init_graph_node_translation(struct AllocOnlyPool *p
     return graphNode;
 }
 
-/** Allocates and returns a newly created rotation node
+/**
+ * Allocates and returns a newly created rotation node
  */
 struct GraphNodeRotation *init_graph_node_rotation(struct AllocOnlyPool *pool,
                                                    struct GraphNodeRotation *graphNode,
@@ -264,7 +276,8 @@ struct GraphNodeRotation *init_graph_node_rotation(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created scaling node
+/**
+ * Allocates and returns a newly created scaling node
  */
 struct GraphNodeScale *init_graph_node_scale(struct AllocOnlyPool *pool,
                                              struct GraphNodeScale *graphNode, s32 drawingLayer,
@@ -283,7 +296,8 @@ struct GraphNodeScale *init_graph_node_scale(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created object node
+/**
+ * Allocates and returns a newly created object node
  */
 struct GraphNodeObject *init_graph_node_object(struct AllocOnlyPool *pool,
                                                struct GraphNodeObject *graphNode,
@@ -312,7 +326,8 @@ struct GraphNodeObject *init_graph_node_object(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created frustum culling radius node
+/**
+ * Allocates and returns a newly created frustum culling radius node
  */
 struct GraphNodeCullingRadius *init_graph_node_culling_radius(struct AllocOnlyPool *pool,
                                                               struct GraphNodeCullingRadius *graphNode,
@@ -329,7 +344,8 @@ struct GraphNodeCullingRadius *init_graph_node_culling_radius(struct AllocOnlyPo
     return graphNode;
 }
 
-/** Allocates and returns a newly created animated part node
+/**
+ * Allocates and returns a newly created animated part node
  */
 struct GraphNodeAnimatedPart *init_graph_node_animated_part(struct AllocOnlyPool *pool,
                                                             struct GraphNodeAnimatedPart *graphNode,
@@ -349,7 +365,8 @@ struct GraphNodeAnimatedPart *init_graph_node_animated_part(struct AllocOnlyPool
     return graphNode;
 }
 
-/** Allocates and returns a newly created billboard node
+/**
+ * Allocates and returns a newly created billboard node
  */
 struct GraphNodeBillboard *init_graph_node_billboard(struct AllocOnlyPool *pool,
                                                      struct GraphNodeBillboard *graphNode,
@@ -369,7 +386,8 @@ struct GraphNodeBillboard *init_graph_node_billboard(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created displaylist node
+/**
+ * Allocates and returns a newly created displaylist node
  */
 struct GraphNodeDisplayList *init_graph_node_display_list(struct AllocOnlyPool *pool,
                                                           struct GraphNodeDisplayList *graphNode,
@@ -387,7 +405,8 @@ struct GraphNodeDisplayList *init_graph_node_display_list(struct AllocOnlyPool *
     return graphNode;
 }
 
-/** Allocates and returns a newly created shadow node
+/**
+ * Allocates and returns a newly created shadow node
  */
 struct GraphNodeShadow *init_graph_node_shadow(struct AllocOnlyPool *pool,
                                                struct GraphNodeShadow *graphNode, s16 shadowScale,
@@ -406,7 +425,8 @@ struct GraphNodeShadow *init_graph_node_shadow(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created object parent node
+/**
+ * Allocates and returns a newly created object parent node
  */
 struct GraphNodeObjectParent *init_graph_node_object_parent(struct AllocOnlyPool *pool,
                                                             struct GraphNodeObjectParent *graphNode,
@@ -423,7 +443,8 @@ struct GraphNodeObjectParent *init_graph_node_object_parent(struct AllocOnlyPool
     return graphNode;
 }
 
-/** Allocates and returns a newly created generated node
+/**
+ * Allocates and returns a newly created generated node
  */
 struct GraphNodeGenerated *init_graph_node_generated(struct AllocOnlyPool *pool,
                                                      struct GraphNodeGenerated *graphNode,
@@ -445,7 +466,8 @@ struct GraphNodeGenerated *init_graph_node_generated(struct AllocOnlyPool *pool,
     return graphNode;
 }
 
-/** Allocates and returns a newly created background node
+/**
+ * Allocates and returns a newly created background node
  */
 struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *pool,
                                                        struct GraphNodeBackground *graphNode,
@@ -470,11 +492,13 @@ struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *poo
     return graphNode;
 }
 
-/** Allocates and returns a newly created held object node
+/**
+ * Allocates and returns a newly created held object node
  */
 struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *pool,
                                                         struct GraphNodeHeldObject *graphNode,
-                                                        s32 objNode, Vec3s translation,
+                                                        struct GraphNodeObject *objNode,
+                                                        Vec3s translation,
                                                         GraphNodeFunc nodeFunc, s32 unused) {
     if (pool != NULL) {
         graphNode = alloc_only_pool_alloc(pool, sizeof(struct GraphNodeHeldObject));
@@ -483,7 +507,7 @@ struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *po
     if (graphNode != NULL) {
         init_scene_graph_node_links(&graphNode->fnNode.node, GRAPH_NODE_TYPE_HELD_OBJ);
         vec3s_copy(graphNode->translation, translation);
-        graphNode->objNode = (struct GraphNodeObject *) objNode; // assumed type
+        graphNode->objNode = objNode;
         graphNode->fnNode.func = nodeFunc;
         graphNode->unused = unused;
 
@@ -495,7 +519,8 @@ struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *po
     return graphNode;
 }
 
-/** Adds 'childNode' to the end of the list children from 'parent'
+/**
+ * Adds 'childNode' to the end of the list children from 'parent'
  */
 struct GraphNode *geo_add_child(struct GraphNode *parent, struct GraphNode *childNode) {
     struct GraphNode *parentFirstChild;
@@ -521,10 +546,11 @@ struct GraphNode *geo_add_child(struct GraphNode *parent, struct GraphNode *chil
     return childNode;
 }
 
-/** Remove a node from the scene graph. It changes the links with its
- *  siblings and with its parent, it doesn't deallocate the memory
- *  since geo nodes are allocated in a pointer-bumping pool that
- *  gets thrown out when changing areas.
+/**
+ * Remove a node from the scene graph. It changes the links with its
+ * siblings and with its parent, it doesn't deallocate the memory
+ * since geo nodes are allocated in a pointer-bumping pool that
+ * gets thrown out when changing areas.
  */
 struct GraphNode *geo_remove_child(struct GraphNode *graphNode) {
     struct GraphNode *parent;
@@ -550,10 +576,11 @@ struct GraphNode *geo_remove_child(struct GraphNode *graphNode) {
     return parent;
 }
 
-/** Reorders the given node so it's the first child of its parent.
- *  This is called on the Mario object when he is spawned. That's why Mario's
- *  object is always drawn before any other objects. (Note that the geo order
- *  is independent from processing group order, where Mario is not first.)
+/**
+ * Reorders the given node so it's the first child of its parent.
+ * This is called on the Mario object when he is spawned. That's why Mario's
+ * object is always drawn before any other objects. (Note that the geo order
+ * is independent from processing group order, where Mario is not first.)
  */
 struct GraphNode *geo_make_first_child(struct GraphNode *newFirstChild) {
     struct GraphNode *lastSibling;
@@ -579,8 +606,9 @@ struct GraphNode *geo_make_first_child(struct GraphNode *newFirstChild) {
     return parent;
 }
 
-/** Helper function for geo_call_global_function_nodes that recursively
- *  traverses the scene graph and calls the functions of global nodes.
+/**
+ * Helper function for geo_call_global_function_nodes that recursively
+ * traverses the scene graph and calls the functions of global nodes.
  */
 void geo_call_global_function_nodes_helper(struct GraphNode *graphNode, s32 callContext) {
     struct GraphNode **globalPtr;
@@ -630,11 +658,12 @@ void geo_call_global_function_nodes_helper(struct GraphNode *graphNode, s32 call
     } while ((curNode = curNode->next) != graphNode);
 }
 
-/** Call the update functions of geo nodes that are stored in global variables.
- *  These variables include gCurGraphNodeMasterList, gCurGraphNodeCamFrustum,
- *  gCurGraphNodeCamera and gCurGraphNodeObject.
- *  callContext is one of the GEO_CONTEXT_ defines.
- *  The graphNode argument should be of type GraphNodeRoot.
+/**
+ * Call the update functions of geo nodes that are stored in global variables.
+ * These variables include gCurGraphNodeMasterList, gCurGraphNodeCamFrustum,
+ * gCurGraphNodeCamera and gCurGraphNodeObject.
+ * callContext is one of the GEO_CONTEXT_ defines.
+ * The graphNode argument should be of type GraphNodeRoot.
  */
 void geo_call_global_function_nodes(struct GraphNode *graphNode, s32 callContext) {
     if (graphNode->flags & GRAPH_RENDER_ACTIVE) {
@@ -648,7 +677,8 @@ void geo_call_global_function_nodes(struct GraphNode *graphNode, s32 callContext
     }
 }
 
-/** When objects are cleared, this is called on all object nodes (loaded or unloaded).
+/**
+ * When objects are cleared, this is called on all object nodes (loaded or unloaded).
  */
 void geo_reset_object_node(struct GraphNodeObject *graphNode) {
     init_graph_node_object(NULL, graphNode, 0, gVec3fZero, gVec3sZero, gVec3fOne);
@@ -657,7 +687,8 @@ void geo_reset_object_node(struct GraphNodeObject *graphNode) {
     graphNode->node.flags &= ~GRAPH_RENDER_ACTIVE;
 }
 
-/** Initialize an object node using the given parameters
+/**
+ * Initialize an object node using the given parameters
  */
 void geo_obj_init(struct GraphNodeObject *graphNode, void *sharedChild, Vec3f pos, Vec3s angle) {
     vec3f_set(graphNode->scale, 1.0f, 1.0f, 1.0f);
@@ -675,7 +706,8 @@ void geo_obj_init(struct GraphNodeObject *graphNode, void *sharedChild, Vec3f po
     graphNode->node.flags &= ~GRAPH_RENDER_BILLBOARD;
 }
 
-/** Initialize and object node using the given SpawnInfo struct
+/**
+ * Initialize and object node using the given SpawnInfo struct
  */
 void geo_obj_init_spawninfo(struct GraphNodeObject *graphNode, struct SpawnInfo *spawn) {
     vec3f_set(graphNode->scale, 1.0f, 1.0f, 1.0f);
@@ -698,25 +730,27 @@ void geo_obj_init_spawninfo(struct GraphNodeObject *graphNode, struct SpawnInfo 
     graphNode->node.flags &= ~GRAPH_RENDER_BILLBOARD;
 }
 
-/** Initialize the animation of an object node
+/**
+ * Initialize the animation of an object node
  */
-void geo_obj_init_animation(struct GraphNodeObject *graphNode, void *sp34) {
-    void **animSegmented = segmented_to_virtual(sp34);
-    struct Animation *anim = segmented_to_virtual(animSegmented[0]);
+void geo_obj_init_animation(struct GraphNodeObject *graphNode, struct Animation **animPtrAddr) {
+    struct Animation **animSegmented = segmented_to_virtual(animPtrAddr);
+    struct Animation *anim = segmented_to_virtual(*animSegmented);
 
     if (graphNode->unk38.curAnim != anim) {
         graphNode->unk38.curAnim = anim;
-        graphNode->unk38.animFrame = (anim->unk04) + ((anim->flags & ANIM_FLAG_FORWARD) ? 1 : -1);
+        graphNode->unk38.animFrame = anim->unk04 + ((anim->flags & ANIM_FLAG_FORWARD) ? 1 : -1);
         graphNode->unk38.animAccel = 0;
         graphNode->unk38.animYTrans = 0;
     }
 }
 
-/** Initialize the animation of an object node
+/**
+ * Initialize the animation of an object node
  */
-void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, void *sp34, u32 animAccel) {
-    void **animSegmented = segmented_to_virtual(sp34);
-    struct Animation *anim = segmented_to_virtual(animSegmented[0]);
+void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, struct Animation **animPtrAddr, u32 animAccel) {
+    struct Animation **animSegmented = segmented_to_virtual(animPtrAddr);
+    struct Animation *anim = segmented_to_virtual(*animSegmented);
 
     if (graphNode->unk38.curAnim != anim) {
         graphNode->unk38.curAnim = anim;
@@ -729,11 +763,12 @@ void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, void *sp34,
     graphNode->unk38.animAccel = animAccel;
 }
 
-/** Retrieves an index into animation data based on the attribute pointer
- *  An attribute is an x-, y- or z-component of the translation / rotation for a part
- *  Each attribute is a pair of s16's, where the first s16 represents the maximum frame
- *  and the second s16 the actual index. This index can be used to index in the array
- *  with actual animation values.
+/**
+ * Retrieves an index into animation data based on the attribute pointer
+ * An attribute is an x-, y- or z-component of the translation / rotation for a part
+ * Each attribute is a pair of s16's, where the first s16 represents the maximum frame
+ * and the second s16 the actual index. This index can be used to index in the array
+ * with actual animation values.
  */
 s32 retrieve_animation_index(s32 frame, u16 **attributes) {
     s32 result;
@@ -749,9 +784,10 @@ s32 retrieve_animation_index(s32 frame, u16 **attributes) {
     return result;
 }
 
-/** Update the animation frame of an object. The animation flags determine
- *  whether it plays forwards or backwards, and whether it stops or loops at
- *  the end etc.
+/**
+ * Update the animation frame of an object. The animation flags determine
+ * whether it plays forwards or backwards, and whether it stops or loops at
+ * the end etc.
  */
 s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist) {
     s32 result;
@@ -804,12 +840,13 @@ s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist
     return GET_HIGH_S16_OF_32(result);
 }
 
-/** Unused function to retrieve an object's current animation translation
- *  Assumes that it has x, y and z data in animations, which isn't always the
- *  case since some animation types only have vertical or lateral translation.
- *  This might have been used for positioning the shadow under an object, which
- *  currently happens in-line in geo_process_shadow where it also accounts for
- *  animations without lateral translation.
+/**
+ * Unused function to retrieve an object's current animation translation
+ * Assumes that it has x, y and z data in animations, which isn't always the
+ * case since some animation types only have vertical or lateral translation.
+ * This might have been used for positioning the shadow under an object, which
+ * currently happens in-line in geo_process_shadow where it also accounts for
+ * animations without lateral translation.
  */
 void geo_retreive_animation_translation(struct GraphNodeObject *obj, Vec3f position) {
     struct Animation *animation = obj->unk38.curAnim;
@@ -838,8 +875,9 @@ void geo_retreive_animation_translation(struct GraphNodeObject *obj, Vec3f posit
     }
 }
 
-/** Unused function to find the root of the geo node tree, which should be a
- *  GraphNodeRoot. If it is not for some reason, null is returned.
+/**
+ * Unused function to find the root of the geo node tree, which should be a
+ * GraphNodeRoot. If it is not for some reason, null is returned.
  */
 struct GraphNodeRoot *geo_find_root(struct GraphNode *graphNode) {
     struct GraphNodeRoot *resGraphNode = NULL;

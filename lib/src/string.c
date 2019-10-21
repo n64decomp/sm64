@@ -11,16 +11,18 @@ void *memcpy(void *dst, const void *src, size_t size) {
 }
 size_t strlen(const u8 *str) {
     const u8 *ptr = str;
-    while (*ptr)
+    while (*ptr) {
         ptr++;
+    }
     return ptr - str;
 }
 
 const u8 *strchr(const u8 *str, s32 ch) {
     u8 c = ch;
     while (*str != c) {
-        if (*str == 0)
+        if (*str == 0) {
             return NULL;
+        }
         str++;
     }
     return str;

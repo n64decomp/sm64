@@ -27,7 +27,7 @@ struct GdControl gGdCtrlPrev; // @ 801B9A18; previous frame's controller info
 u32 __main__(void) {
     UNUSED u32 pad1C;
 
-    gd_printf("%x, %x\n", (u32) &D_801A8058, (u32) &gGdMoveScene);
+    gd_printf("%x, %x\n", (u32) (uintptr_t) &D_801A8058, (u32) (uintptr_t) &gGdMoveScene);
     add_to_stacktrace("main");
     gd_init();
 
@@ -50,8 +50,9 @@ u32 __main__(void) {
     stop_timer("dlgen");
     mem_stats();
 
-    while (TRUE)
+    while (TRUE) {
         func_801A520C();
+    }
 
     imout();
     return 0;

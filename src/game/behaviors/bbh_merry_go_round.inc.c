@@ -57,7 +57,7 @@ static void handle_merry_go_round_music(void) {
             func_80321080(300); // Switch to BBH music? FIXME: Audio needs labelling
             o->oMerryGoRoundMusicShouldPlay = FALSE;
         } else {
-            PlaySound(SOUND_ENVIRONMENT_MERRYGOROUNDCREAKING);
+            PlaySound(SOUND_ENV_MERRY_GO_ROUND_CREAKING);
         }
     }
 }
@@ -68,13 +68,13 @@ static void handle_merry_go_round_music(void) {
 void bhv_merry_go_round_loop(void) {
     // Surprisingly, the merry-go-round is what's responsible
     // for playing the howling wind sound in BBH.
-    if (o->oMerryGoRoundMarioIsOutside == FALSE) {
+    if (!o->oMerryGoRoundMarioIsOutside) {
         if (gMarioCurrentRoom == BBH_OUTSIDE_ROOM) {
             // Set to TRUE
             o->oMerryGoRoundMarioIsOutside++;
         }
     } else {
-        play_sound(SOUND_CH6_HOWLINGWIND, gDefaultSoundArgs);
+        play_sound(SOUND_AIR_HOWLING_WIND, gDefaultSoundArgs);
 
         if (
             // There are objects outside BBH, such as corkboxes.

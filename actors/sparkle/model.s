@@ -7,22 +7,22 @@ vertex     32,     64,      0,   1984,      0,  0x00, 0x00, 0x7F, 0x00
 vertex    -32,     64,      0,      0,      0,  0x00, 0x00, 0x7F, 0x00
 
 sparkles_seg4_texture_04027490: # 0x04027490
-.incbin "actors/sparkle/sparkle_0.ia16"
+.incbin "actors/sparkle/sparkle_0.rgba16"
 
 sparkles_seg4_texture_04027C90: # 0x04027C90
-.incbin "actors/sparkle/sparkle_1.ia16"
+.incbin "actors/sparkle/sparkle_1.rgba16"
 
 sparkles_seg4_texture_04028490: # 0x04028490
-.incbin "actors/sparkle/sparkle_2.ia16"
+.incbin "actors/sparkle/sparkle_2.rgba16"
 
 sparkles_seg4_texture_04028C90: # 0x04028C90
-.incbin "actors/sparkle/sparkle_3.ia16"
+.incbin "actors/sparkle/sparkle_3.rgba16"
 
 sparkles_seg4_texture_04029490: # 0x04029490
-.incbin "actors/sparkle/sparkle_4.ia16"
+.incbin "actors/sparkle/sparkle_4.rgba16"
 
 sparkles_seg4_texture_04029C90: # 0x04029C90
-.incbin "actors/sparkle/sparkle_5.ia16"
+.incbin "actors/sparkle/sparkle_5.rgba16"
 
 glabel sparkles_seg4_dl_0402A490 # 0x0402A490 - 0x0402A4F8
 gsDPSetCombineModeLERP1Cycle G_CCMUX_0, G_CCMUX_0, G_CCMUX_0, G_CCMUX_TEXEL0, G_ACMUX_0, G_ACMUX_0, G_ACMUX_0, G_ACMUX_TEXEL0

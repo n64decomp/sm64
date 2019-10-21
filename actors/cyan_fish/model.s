@@ -1,8 +1,7 @@
 # Cyan Fish
 
 # ???
-.word 0
-.word 0
+.dword 0
 
 cyan_fish_seg6_texture_0600D468: # 0x0600D468
 .incbin "actors/cyan_fish/cyan_fish.rgba16"

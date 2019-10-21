@@ -108,7 +108,7 @@ static void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s
  * Enter the drop action with -40 y vel.
  */
 static void water_bomb_act_init(void) {
-    PlaySound2(SOUND_OBJECT_SOMETHINGLANDING);
+    PlaySound2(SOUND_OBJ_SOMETHING_LANDING);
 
     o->oAction = WATER_BOMB_ACT_DROP;
     o->oMoveFlags = 0;
@@ -126,7 +126,7 @@ static void water_bomb_act_drop(void) {
 
     // Explode if touched or if hit water
     if ((o->oInteractStatus & INT_STATUS_INTERACTED) || (o->oMoveFlags & OBJ_MOVE_ENTERED_WATER)) {
-        create_sound_spawner(SOUND_OBJECT_DIVINGINWATER);
+        create_sound_spawner(SOUND_OBJ_DIVING_IN_WATER);
         func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
         o->oAction = WATER_BOMB_ACT_EXPLODE;
     } else if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
@@ -135,9 +135,9 @@ static void water_bomb_act_drop(void) {
             o->oWaterBombOnGround = TRUE;
 
             if ((o->oWaterBombNumBounces += 1.0f) < 3.0f) {
-                PlaySound2(SOUND_OBJECT_WATERBOMBBOUNCING);
+                PlaySound2(SOUND_OBJ_WATER_BOMB_BOUNCING);
             } else {
-                create_sound_spawner(SOUND_OBJECT_DIVINGINWATER);
+                create_sound_spawner(SOUND_OBJ_DIVING_IN_WATER);
             }
 
             func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);

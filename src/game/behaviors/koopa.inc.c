@@ -92,9 +92,9 @@ void bhv_koopa_init(void) {
 static void koopa_play_footstep_sound(s8 animFrame1, s8 animFrame2) {
     s32 sound;
     if (o->header.gfx.scale[0] > 1.5f) {
-        sound = SOUND_OBJECT_UNK50342081;
+        sound = SOUND_OBJ_KOOPA_THE_QUICK_WALK;
     } else {
-        sound = SOUND_OBJECT_UNK50350081;
+        sound = SOUND_OBJ_KOOPA_WALK;
     }
 
     func_802F9378(animFrame1, animFrame2, sound);
@@ -257,7 +257,7 @@ static void koopa_shelled_act_lying(void) {
  */
 void shelled_koopa_attack_handler(s32 attackType) {
     if (o->header.gfx.scale[0] > 0.8f) {
-        PlaySound2(SOUND_OBJECT_KOOPADAMAGE);
+        PlaySound2(SOUND_OBJ_KOOPA_DAMAGE);
 
         o->oKoopaMovementType = KOOPA_BP_UNSHELLED;
         o->oAction = KOOPA_UNSHELLED_ACT_LYING;
@@ -470,7 +470,7 @@ static void koopa_unshelled_update(void) {
  */
 s32 obj_begin_race(s32 noTimer) {
     if (o->oTimer == 50) {
-        PlaySound2(SOUND_GENERAL_RACEGUNSHOT);
+        PlaySound2(SOUND_GENERAL_RACE_GUN_SHOT);
 
         if (!noTimer) {
             play_music(0, SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE), 0);
@@ -503,7 +503,7 @@ static void koopa_the_quick_act_wait_before_race(void) {
         //! The next action doesn't execute until next frame, giving mario one
         //  frame where he can jump, and thus no longer be ready to speak.
         //  (On J, he has two frames and doing this enables time stop - see
-        //  obj_update_dialog_unk2 for that glitch)
+        //  obj_update_dialog_with_cutscene for that glitch)
         o->oAction = KOOPA_THE_QUICK_ACT_SHOW_INIT_TEXT;
         o->oForwardVel = 0.0f;
         set_obj_animation_and_sound_state(7);
@@ -731,13 +731,13 @@ static void koopa_the_quick_act_after_race(void) {
             o->oFlags &= ~OBJ_FLAG_ACTIVE_FROM_AFAR;
         }
     } else if (o->parentObj->oKoopaRaceEndpointUnk100 > 0) {
-        s32 dialogResponse = obj_update_dialog_unk2(2, 1, 0xA2, o->parentObj->oKoopaRaceEndpointUnk100);
+        s32 dialogResponse = obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, o->parentObj->oKoopaRaceEndpointUnk100);
         if (dialogResponse != 0) {
             o->parentObj->oKoopaRaceEndpointUnk100 = -1;
             o->oTimer = 0;
         }
     } else if (o->parentObj->oKoopaRaceEndpointRaceStatus != 0) {
-        CreateStar(sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[0],
+        create_star(sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[0],
                    sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[1],
                    sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].starPos[2]);
 
@@ -789,7 +789,7 @@ static void koopa_the_quick_update(void) {
  */
 void bhv_koopa_update(void) {
     // PARTIAL_UPDATE
-    o->oDeathSound = SOUND_OBJECT_KOOPADEATH;
+    o->oDeathSound = SOUND_OBJ_KOOPA_FLYGUY_DEATH;
 
     if (o->oKoopaMovementType >= KOOPA_BP_KOOPA_THE_QUICK_BASE) {
         koopa_the_quick_update();

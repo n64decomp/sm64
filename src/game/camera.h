@@ -56,6 +56,9 @@
 #define CAM_MODE_LAKITU_WAS_ZOOMED_OUT  0x02
 #define CAM_MODE_MARIO_SELECTED         0x04
 
+#define CAM_ANGLE_LAKITU_MARIO 1
+#define CAM_ANGLE_LAKITU_FIXED 2
+
 #define CAM_MOVE_RETURN_TO_MIDDLE       0x0001
 #define CAM_MOVE_ZOOMED_OUT             0x0002
 #define CAM_MOVE_ROTATE_RIGHT           0x0004
@@ -96,6 +99,16 @@
 #define CAM_FLAG_2_UNUSED_13              0x2000
 #define CAM_FLAG_2_UNUSED_CUTSCENE_ACTIVE 0x4000
 #define CAM_FLAG_2_BEHIND_MARIO_POST_DOOR 0x8000
+
+#define CAM_STATUS_NONE   0
+#define CAM_STATUS_MARIO  1 << 0
+#define CAM_STATUS_LAKITU 1 << 1
+#define CAM_STATUS_FIXED  1 << 2
+#define CAM_STATUS_C_DOWN 1 << 3
+#define CAM_STATUS_C_UP   1 << 4
+
+#define CAM_STATUS_MODE_GROUP   (CAM_STATUS_MARIO | CAM_STATUS_LAKITU | CAM_STATUS_FIXED)
+#define CAM_STATUS_C_MODE_GROUP (CAM_STATUS_C_DOWN | CAM_STATUS_C_UP)
 
 #define SHAKE_ATTACK         1
 #define SHAKE_GROUND_POUND   2
@@ -198,16 +211,6 @@ struct Struct8033B2B8
 }; // size = 0x10
 
 // unsorted
-
-struct Struct80287404
-{
-    u8 filler0[0x18];
-    s32 unk18;
-    Vec3f unk1C;
-    Vec3f unk28;
-    u8 filler34[0x3A-0x34];
-    s16 unk3A;
-};
 
 // Camera command procedures are marked as returning s32, but none of them
 // actually return a value. This causes undefined behavior, which we'd rather
@@ -398,7 +401,7 @@ extern void vec3f_sub(Vec3f, Vec3f);
 extern void object_pos_to_vec3f(Vec3f, struct Object *);
 extern void vec3f_to_object_pos(struct Object *, Vec3f); // static (ASM)
 extern s32 func_80287CFC(Vec3f, struct CinematicCameraTable[], s16 *, f32 *);
-extern s32 select_or_activate_mario_cam(s32);
+extern s32 select_or_activate_mario_cam(s32 angle);
 extern s32 test_or_set_mario_cam_active(s32);
 extern void set_spline_values(u8);
 extern void set_face_angle_from_spline(Vec3f, Vec3f);
@@ -559,9 +562,9 @@ extern s32 func_8028F2F0(struct LevelCamera *, Vec3f, s16 *, s16);
 extern void find_mario_relative_geometry(struct PlayerGeometry *); // postdefined
 // extern ? func_8028F800(?);
 extern u8 func_8028F834(u8);
-extern s16 func_8028F8E0(u8, struct Object *, s16);
-extern s16 func_8028F9A4(u8, struct Object *);
-extern s16 func_8028F9E8(u8, struct Object *);
+extern s16 cutscene_object_with_dialog(u8 cutsceneTable, struct Object *, s16);
+extern s16 cutscene_object_without_dialog(u8, struct Object *);
+extern s16 cutscene_object(u8, struct Object *);
 // extern ? set_cam_yaw_from_focus_and_pos(?);
 // extern ? func_8028FABC(?);
 // extern ? func_8028FAE0(?);
@@ -839,14 +842,14 @@ extern void func_8029A514(u8, f32, f32, f32);
 // extern ? Unknown8029A724(?);
 extern void func_8029A7DC(struct Object *, Vec3f, s16, s16, s16, s16);
 // extern ? func_8029A87C(?);
-// extern ? BehBeginningPeachLoop(?);
+// extern ? bhv_intro_peach_loop(?);
 // extern ? func_8029AB70(?);
 // extern ? func_8029AC3C(?);
 // extern ? func_8029ACAC(?);
-// extern ? BehBeginningLakituLoop(?);
-// extern ? BehEndBirds1Loop(?);
-// extern ? BehEndBirds2Loop(?);
+// extern ? bhv_intro_lakitu_loop(?);
+// extern ? bhv_end_birds_1_loop(?);
+// extern ? bhv_end_birds_2_loop(?);
 // extern ? func_8029B964(?);
-// extern ? BehIntroSceneLoop(?);
+// extern ? bhv_intro_scene_loop(?);
 
 #endif /* _CAMERA_H */

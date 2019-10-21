@@ -1,7 +1,6 @@
 # Possible Removed Actor File
 
-.word 0
-.word 0 # Bin ID? What is this?
+.dword 0 # Bin ID? What is this?
 
 # Klepto
 

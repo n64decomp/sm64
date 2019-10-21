@@ -64,9 +64,9 @@ void CheckWaterRingCollection(f32 avgScale, struct Object *ringManager) {
                 if (ringSpawner->oWaterRingSpawnerRingsCollected < 6) {
                     SpawnOrangeNumber(ringSpawner->oWaterRingSpawnerRingsCollected, 0, -40, 0);
 #ifdef VERSION_JP
-                    play_sound(SOUND_MENU_STARSOUND, gDefaultSoundArgs);
+                    play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
 #else
-                    play_sound(SOUND_MENU_COLLECTSECRET
+                    play_sound(SOUND_MENU_COLLECT_SECRET
                                    + (((u8) ringSpawner->oWaterRingSpawnerRingsCollected - 1) << 16),
                                gDefaultSoundArgs);
 #endif
@@ -180,7 +180,7 @@ void bhv_jet_stream_ring_spawner_loop(void) {
             if (o->oWaterRingSpawnerRingsCollected == 5) {
                 func_802A3004();
 
-                CreateStar(3400.0f, -3200.0f, -500.0f);
+                create_star(3400.0f, -3200.0f, -500.0f);
 
                 o->oAction = JS_RING_SPAWNER_ACT_INACTIVE;
             }

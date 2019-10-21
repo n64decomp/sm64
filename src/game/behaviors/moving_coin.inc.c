@@ -33,7 +33,7 @@ s32 CoinStep(s16 *collisionFlagsPtr) {
 
     if ((*collisionFlagsPtr & 0x1) != 0 && (*collisionFlagsPtr & 0x8) == 0) /* bit 0, bit 3 */
     {
-        PlaySound2(SOUND_GENERAL_COINDROP);
+        PlaySound2(SOUND_GENERAL_COIN_DROP);
         return 1;
     }
 
@@ -104,7 +104,11 @@ void bhv_moving_blue_coin_init(void) {
 }
 
 void bhv_moving_blue_coin_loop(void) {
+#ifdef VERSION_EU
+    s32 collisionFlags;
+#else
     s16 collisionFlags;
+#endif
 
     switch (o->oAction) {
         case MOV_BCOIN_ACT_STILL:
@@ -118,7 +122,7 @@ void bhv_moving_blue_coin_loop(void) {
             {
                 o->oForwardVel += 25.0f;
                 if ((collisionFlags & 0x8) == 0)
-                    PlaySound2(SOUND_GENERAL_COINDROP); /* bit 3 */
+                    PlaySound2(SOUND_GENERAL_COIN_DROP); /* bit 3 */
             } else
                 o->oForwardVel *= 0.98;
 

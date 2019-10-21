@@ -49,7 +49,7 @@ void bhv_ttc_treadmill_update(void) {
     if (sMasterTreadmill == o || sMasterTreadmill == NULL) {
         sMasterTreadmill = o;
 
-        PlaySound(SOUND_ENVIRONMENT_ELEVATOR2);
+        PlaySound(SOUND_ENV_ELEVATOR2);
 
         if (gTTCSpeedSetting == TTC_SPEED_RANDOM) {
             // Stay still for 5 frames, then accelerate toward the target speed

@@ -57,8 +57,9 @@ void func_80181760(struct ObjGroup *a0) {
             (*mtx)[2][0] = (*mtx)[1][1] * sp1C;
             (*mtx)[2][1] = (*mtx)[1][2] * sp1C;
             (*mtx)[2][2] = (*mtx)[1][3] * sp1C;
-        } else
+        } else {
             (*mtx)[2][0] = (*mtx)[2][1] = (*mtx)[2][2] = 0.0f;
+        }
     }
 }
 
@@ -66,8 +67,9 @@ void func_80181760(struct ObjGroup *a0) {
 void move_skin(struct ObjNet *net) {
     UNUSED u8 pad1C[8];
 
-    if (net->unk1A8 != NULL)
+    if (net->unk1A8 != NULL) {
         func_80181760(net->unk1A8->unk24);
+    }
 }
 
 /* @ 230064 for 0x13C*/
@@ -132,14 +134,16 @@ void reset_weight(struct ObjWeight *weight) {
 
     sSkinNetCurWeight = weight;
     sTargetWeightID = 0;
-    if ((skinGroup = gGdSkinNet->skinGrp) != NULL)
+    if ((skinGroup = gGdSkinNet->skinGrp) != NULL) {
         vtxCount =
             apply_to_obj_types_in_group(OBJ_TYPE_VERTICES, (applyproc_t) Unknown801819D0, skinGroup);
-    else
+    } else {
         fatal_printf("reset_weight(): Skin net has no SkinGroup");
+    }
 
-    if (weight->unk3C == NULL)
+    if (weight->unk3C == NULL) {
         fatal_printf("reset_weight(): Skin vertex ID %d not found", weight->id);
+    }
 }
 
 /* @ 230358 for 0x78; rename to reset_joint_weight? */
@@ -148,6 +152,7 @@ void Unknown80181B88(struct ObjJoint *joint) {
 
     inverse_mat4(&joint->matE8, &D_801B9EA8);
     D_801B9EE8 = joint;
-    if ((group = joint->unk1F4) != NULL)
+    if ((group = joint->unk1F4) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_WEIGHTS, (applyproc_t) reset_weight, group);
+    }
 }

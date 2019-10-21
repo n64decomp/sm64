@@ -71,11 +71,11 @@ void bhv_controllable_platform_init(void) {
 }
 
 void func_802F3F80(s8 sp1B) {
-    o->oUnknownUnkF8_S32 = sp1B;
+    o->oControllablePlatformUnkF8 = sp1B;
     o->oTimer = 0;
     D_80331694 = 5;
 
-    PlaySound2(SOUND_GENERAL_QUIETPOUND1);
+    PlaySound2(SOUND_GENERAL_QUIET_POUND1);
 }
 
 void func_802F3FD8(s8 sp1B, s8 sp1C[3], Vec3f sp20, UNUSED Vec3f sp24, Vec3f sp28) {
@@ -105,25 +105,25 @@ void func_802F3FD8(s8 sp1B, s8 sp1C[3], Vec3f sp20, UNUSED Vec3f sp24, Vec3f sp2
 
     if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 400)) {
         D_80331694 = 6;
-        o->oUnknownUnk100_S32 = 1;
+        o->oControllablePlatformUnk100 = 1;
         o->oTimer = 0;
     }
 }
 
 void func_802F4230(void) {
-    if (o->oUnknownUnkF8_S32 == 1 || o->oUnknownUnkF8_S32 == 2) {
+    if (o->oControllablePlatformUnkF8 == 1 || o->oControllablePlatformUnkF8 == 2) {
         o->oFaceAnglePitch = sins(o->oTimer * 0x1000) * 182.04444 * 10.0;
-        o->oPosY = o->oUnknownUnkFC_F32 + sins(o->oTimer * 0x2000) * 20.0f;
+        o->oPosY = o->oControllablePlatformUnkFC + sins(o->oTimer * 0x2000) * 20.0f;
     } else {
         o->oFaceAngleRoll = sins(o->oTimer * 0x1000) * 182.04444 * 10.0;
-        o->oPosY = o->oUnknownUnkFC_F32 + sins(o->oTimer * 0x2000) * 20.0f;
+        o->oPosY = o->oControllablePlatformUnkFC + sins(o->oTimer * 0x2000) * 20.0f;
     }
 
     if (o->oTimer == 32) {
-        D_80331694 = o->oUnknownUnkF8_S32;
+        D_80331694 = o->oControllablePlatformUnkF8;
         o->oFaceAnglePitch = 0;
         o->oFaceAngleRoll = 0;
-        o->oPosY = o->oUnknownUnkFC_F32;
+        o->oPosY = o->oControllablePlatformUnkFC;
     }
 }
 
@@ -213,5 +213,5 @@ void bhv_controllable_platform_loop(void) {
     o->oPosX += o->oVelX;
     o->oPosZ += o->oVelZ;
     if (D_80331694 != 0 && D_80331694 != 6)
-        PlaySound(SOUND_ENVIRONMENT_ELEVATOR2);
+        PlaySound(SOUND_ENV_ELEVATOR2);
 }

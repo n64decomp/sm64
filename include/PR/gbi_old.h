@@ -1,6 +1,8 @@
 #ifndef _ULTRA64_GBI_H_
 #define _ULTRA64_GBI_H_
 
+#include <PR/ultratypes.h>
+
 /* Types */
 
 /* Vertex (set up for use with colors) */
@@ -51,8 +53,8 @@ typedef union
 
 typedef struct
 {
-    unsigned int w0;
-    unsigned int w1;
+    uintptr_t w0;
+    uintptr_t w1;
 } Gwords;
 
 /* TODO: fill in the rest of the members */
@@ -256,35 +258,35 @@ typedef union
 
 /* G_SETOTHERMODE_L render modes */
 
-#define	AA_EN		    0x8
-#define	Z_CMP		    0x10
-#define	Z_UPD		    0x20
-#define	IM_RD		    0x40
-#define	CLR_ON_CVG	    0x80
-#define	CVG_DST_CLAMP	0
-#define	CVG_DST_WRAP	0x100
-#define	CVG_DST_FULL	0x200
-#define	CVG_DST_SAVE	0x300
-#define	ZMODE_OPA       0
-#define	ZMODE_INTER     0x400
-#define	ZMODE_XLU       0x800
-#define	ZMODE_DEC       0xc00
-#define	CVG_X_ALPHA     0x1000
-#define	ALPHA_CVG_SEL   0x2000
-#define	FORCE_BL        0x4000
-#define	TEX_EDGE        0x0000
+#define AA_EN           0x8
+#define Z_CMP           0x10
+#define Z_UPD           0x20
+#define IM_RD           0x40
+#define CLR_ON_CVG      0x80
+#define CVG_DST_CLAMP   0
+#define CVG_DST_WRAP    0x100
+#define CVG_DST_FULL    0x200
+#define CVG_DST_SAVE    0x300
+#define ZMODE_OPA       0
+#define ZMODE_INTER     0x400
+#define ZMODE_XLU       0x800
+#define ZMODE_DEC       0xc00
+#define CVG_X_ALPHA     0x1000
+#define ALPHA_CVG_SEL   0x2000
+#define FORCE_BL        0x4000
+#define TEX_EDGE        0x0000
 
-#define	G_BL_CLR_IN     0
-#define	G_BL_CLR_MEM    1
-#define	G_BL_CLR_BL     2
-#define	G_BL_CLR_FOG    3
-#define	G_BL_1MA        0
-#define	G_BL_A_MEM      1
-#define	G_BL_A_IN       0
-#define	G_BL_A_FOG      1
-#define	G_BL_A_SHADE	2
-#define	G_BL_1          2
-#define	G_BL_0          3
+#define G_BL_CLR_IN     0
+#define G_BL_CLR_MEM    1
+#define G_BL_CLR_BL     2
+#define G_BL_CLR_FOG    3
+#define G_BL_1MA        0
+#define G_BL_A_MEM      1
+#define G_BL_A_IN       0
+#define G_BL_A_FOG      1
+#define G_BL_A_SHADE    2
+#define G_BL_1          2
+#define G_BL_0          3
 
 #define	GBL_c1(m1a, m1b, m2a, m2b)	\
 	(m1a) << 30 | (m1b) << 26 | (m2a) << 22 | (m2b) << 18
@@ -509,93 +511,93 @@ typedef union
 
 
 
-#define	G_RM_AA_ZB_OPA_SURF	RM_AA_ZB_OPA_SURF(1)
-#define	G_RM_AA_ZB_OPA_SURF2	RM_AA_ZB_OPA_SURF(2)
-#define	G_RM_AA_ZB_XLU_SURF	RM_AA_ZB_XLU_SURF(1)
-#define	G_RM_AA_ZB_XLU_SURF2	RM_AA_ZB_XLU_SURF(2)
-#define	G_RM_AA_ZB_OPA_DECAL	RM_AA_ZB_OPA_DECAL(1)
-#define	G_RM_AA_ZB_OPA_DECAL2	RM_AA_ZB_OPA_DECAL(2)
-#define	G_RM_AA_ZB_XLU_DECAL	RM_AA_ZB_XLU_DECAL(1)
-#define	G_RM_AA_ZB_XLU_DECAL2	RM_AA_ZB_XLU_DECAL(2)
-#define	G_RM_AA_ZB_OPA_INTER	RM_AA_ZB_OPA_INTER(1)
-#define	G_RM_AA_ZB_OPA_INTER2	RM_AA_ZB_OPA_INTER(2)
-#define	G_RM_AA_ZB_XLU_INTER	RM_AA_ZB_XLU_INTER(1)
-#define	G_RM_AA_ZB_XLU_INTER2	RM_AA_ZB_XLU_INTER(2)
-#define	G_RM_AA_ZB_XLU_LINE	RM_AA_ZB_XLU_LINE(1)
-#define	G_RM_AA_ZB_XLU_LINE2	RM_AA_ZB_XLU_LINE(2)
-#define	G_RM_AA_ZB_DEC_LINE	RM_AA_ZB_DEC_LINE(1)
-#define	G_RM_AA_ZB_DEC_LINE2	RM_AA_ZB_DEC_LINE(2)
-#define	G_RM_AA_ZB_TEX_EDGE	RM_AA_ZB_TEX_EDGE(1)
-#define	G_RM_AA_ZB_TEX_EDGE2	RM_AA_ZB_TEX_EDGE(2)
-#define	G_RM_AA_ZB_TEX_INTER	RM_AA_ZB_TEX_INTER(1)
-#define	G_RM_AA_ZB_TEX_INTER2	RM_AA_ZB_TEX_INTER(2)
-#define	G_RM_AA_ZB_SUB_SURF	RM_AA_ZB_SUB_SURF(1)
-#define	G_RM_AA_ZB_SUB_SURF2	RM_AA_ZB_SUB_SURF(2)
-#define	G_RM_AA_ZB_PCL_SURF	RM_AA_ZB_PCL_SURF(1)
-#define	G_RM_AA_ZB_PCL_SURF2	RM_AA_ZB_PCL_SURF(2)
-#define	G_RM_AA_ZB_OPA_TERR	RM_AA_ZB_OPA_TERR(1)
-#define	G_RM_AA_ZB_OPA_TERR2	RM_AA_ZB_OPA_TERR(2)
-#define	G_RM_AA_ZB_TEX_TERR	RM_AA_ZB_TEX_TERR(1)
-#define	G_RM_AA_ZB_TEX_TERR2	RM_AA_ZB_TEX_TERR(2)
-#define	G_RM_AA_ZB_SUB_TERR	RM_AA_ZB_SUB_TERR(1)
-#define	G_RM_AA_ZB_SUB_TERR2	RM_AA_ZB_SUB_TERR(2)
+#define G_RM_AA_ZB_OPA_SURF	RM_AA_ZB_OPA_SURF(1)
+#define G_RM_AA_ZB_OPA_SURF2	RM_AA_ZB_OPA_SURF(2)
+#define G_RM_AA_ZB_XLU_SURF	RM_AA_ZB_XLU_SURF(1)
+#define G_RM_AA_ZB_XLU_SURF2	RM_AA_ZB_XLU_SURF(2)
+#define G_RM_AA_ZB_OPA_DECAL	RM_AA_ZB_OPA_DECAL(1)
+#define G_RM_AA_ZB_OPA_DECAL2	RM_AA_ZB_OPA_DECAL(2)
+#define G_RM_AA_ZB_XLU_DECAL	RM_AA_ZB_XLU_DECAL(1)
+#define G_RM_AA_ZB_XLU_DECAL2	RM_AA_ZB_XLU_DECAL(2)
+#define G_RM_AA_ZB_OPA_INTER	RM_AA_ZB_OPA_INTER(1)
+#define G_RM_AA_ZB_OPA_INTER2	RM_AA_ZB_OPA_INTER(2)
+#define G_RM_AA_ZB_XLU_INTER	RM_AA_ZB_XLU_INTER(1)
+#define G_RM_AA_ZB_XLU_INTER2	RM_AA_ZB_XLU_INTER(2)
+#define G_RM_AA_ZB_XLU_LINE	RM_AA_ZB_XLU_LINE(1)
+#define G_RM_AA_ZB_XLU_LINE2	RM_AA_ZB_XLU_LINE(2)
+#define G_RM_AA_ZB_DEC_LINE	RM_AA_ZB_DEC_LINE(1)
+#define G_RM_AA_ZB_DEC_LINE2	RM_AA_ZB_DEC_LINE(2)
+#define G_RM_AA_ZB_TEX_EDGE	RM_AA_ZB_TEX_EDGE(1)
+#define G_RM_AA_ZB_TEX_EDGE2	RM_AA_ZB_TEX_EDGE(2)
+#define G_RM_AA_ZB_TEX_INTER	RM_AA_ZB_TEX_INTER(1)
+#define G_RM_AA_ZB_TEX_INTER2	RM_AA_ZB_TEX_INTER(2)
+#define G_RM_AA_ZB_SUB_SURF	RM_AA_ZB_SUB_SURF(1)
+#define G_RM_AA_ZB_SUB_SURF2	RM_AA_ZB_SUB_SURF(2)
+#define G_RM_AA_ZB_PCL_SURF	RM_AA_ZB_PCL_SURF(1)
+#define G_RM_AA_ZB_PCL_SURF2	RM_AA_ZB_PCL_SURF(2)
+#define G_RM_AA_ZB_OPA_TERR	RM_AA_ZB_OPA_TERR(1)
+#define G_RM_AA_ZB_OPA_TERR2	RM_AA_ZB_OPA_TERR(2)
+#define G_RM_AA_ZB_TEX_TERR	RM_AA_ZB_TEX_TERR(1)
+#define G_RM_AA_ZB_TEX_TERR2	RM_AA_ZB_TEX_TERR(2)
+#define G_RM_AA_ZB_SUB_TERR	RM_AA_ZB_SUB_TERR(1)
+#define G_RM_AA_ZB_SUB_TERR2	RM_AA_ZB_SUB_TERR(2)
 
-#define	G_RM_RA_ZB_OPA_SURF	RM_RA_ZB_OPA_SURF(1)
-#define	G_RM_RA_ZB_OPA_SURF2	RM_RA_ZB_OPA_SURF(2)
-#define	G_RM_RA_ZB_OPA_DECAL	RM_RA_ZB_OPA_DECAL(1)
-#define	G_RM_RA_ZB_OPA_DECAL2	RM_RA_ZB_OPA_DECAL(2)
-#define	G_RM_RA_ZB_OPA_INTER	RM_RA_ZB_OPA_INTER(1)
-#define	G_RM_RA_ZB_OPA_INTER2	RM_RA_ZB_OPA_INTER(2)
+#define G_RM_RA_ZB_OPA_SURF	RM_RA_ZB_OPA_SURF(1)
+#define G_RM_RA_ZB_OPA_SURF2	RM_RA_ZB_OPA_SURF(2)
+#define G_RM_RA_ZB_OPA_DECAL	RM_RA_ZB_OPA_DECAL(1)
+#define G_RM_RA_ZB_OPA_DECAL2	RM_RA_ZB_OPA_DECAL(2)
+#define G_RM_RA_ZB_OPA_INTER	RM_RA_ZB_OPA_INTER(1)
+#define G_RM_RA_ZB_OPA_INTER2	RM_RA_ZB_OPA_INTER(2)
 
-#define	G_RM_AA_OPA_SURF	RM_AA_OPA_SURF(1)
-#define	G_RM_AA_OPA_SURF2	RM_AA_OPA_SURF(2)
-#define	G_RM_AA_XLU_SURF	RM_AA_XLU_SURF(1)
-#define	G_RM_AA_XLU_SURF2	RM_AA_XLU_SURF(2)
-#define	G_RM_AA_XLU_LINE	RM_AA_XLU_LINE(1)
-#define	G_RM_AA_XLU_LINE2	RM_AA_XLU_LINE(2)
-#define	G_RM_AA_DEC_LINE	RM_AA_DEC_LINE(1)
-#define	G_RM_AA_DEC_LINE2	RM_AA_DEC_LINE(2)
-#define	G_RM_AA_TEX_EDGE	RM_AA_TEX_EDGE(1)
-#define	G_RM_AA_TEX_EDGE2	RM_AA_TEX_EDGE(2)
-#define	G_RM_AA_SUB_SURF	RM_AA_SUB_SURF(1)
-#define	G_RM_AA_SUB_SURF2	RM_AA_SUB_SURF(2)
-#define	G_RM_AA_PCL_SURF	RM_AA_PCL_SURF(1)
-#define	G_RM_AA_PCL_SURF2	RM_AA_PCL_SURF(2)
-#define	G_RM_AA_OPA_TERR	RM_AA_OPA_TERR(1)
-#define	G_RM_AA_OPA_TERR2	RM_AA_OPA_TERR(2)
-#define	G_RM_AA_TEX_TERR	RM_AA_TEX_TERR(1)
-#define	G_RM_AA_TEX_TERR2	RM_AA_TEX_TERR(2)
-#define	G_RM_AA_SUB_TERR	RM_AA_SUB_TERR(1)
-#define	G_RM_AA_SUB_TERR2	RM_AA_SUB_TERR(2)
+#define G_RM_AA_OPA_SURF	RM_AA_OPA_SURF(1)
+#define G_RM_AA_OPA_SURF2	RM_AA_OPA_SURF(2)
+#define G_RM_AA_XLU_SURF	RM_AA_XLU_SURF(1)
+#define G_RM_AA_XLU_SURF2	RM_AA_XLU_SURF(2)
+#define G_RM_AA_XLU_LINE	RM_AA_XLU_LINE(1)
+#define G_RM_AA_XLU_LINE2	RM_AA_XLU_LINE(2)
+#define G_RM_AA_DEC_LINE	RM_AA_DEC_LINE(1)
+#define G_RM_AA_DEC_LINE2	RM_AA_DEC_LINE(2)
+#define G_RM_AA_TEX_EDGE	RM_AA_TEX_EDGE(1)
+#define G_RM_AA_TEX_EDGE2	RM_AA_TEX_EDGE(2)
+#define G_RM_AA_SUB_SURF	RM_AA_SUB_SURF(1)
+#define G_RM_AA_SUB_SURF2	RM_AA_SUB_SURF(2)
+#define G_RM_AA_PCL_SURF	RM_AA_PCL_SURF(1)
+#define G_RM_AA_PCL_SURF2	RM_AA_PCL_SURF(2)
+#define G_RM_AA_OPA_TERR	RM_AA_OPA_TERR(1)
+#define G_RM_AA_OPA_TERR2	RM_AA_OPA_TERR(2)
+#define G_RM_AA_TEX_TERR	RM_AA_TEX_TERR(1)
+#define G_RM_AA_TEX_TERR2	RM_AA_TEX_TERR(2)
+#define G_RM_AA_SUB_TERR	RM_AA_SUB_TERR(1)
+#define G_RM_AA_SUB_TERR2	RM_AA_SUB_TERR(2)
 
-#define	G_RM_RA_OPA_SURF	RM_RA_OPA_SURF(1)
-#define	G_RM_RA_OPA_SURF2	RM_RA_OPA_SURF(2)
+#define G_RM_RA_OPA_SURF	RM_RA_OPA_SURF(1)
+#define G_RM_RA_OPA_SURF2	RM_RA_OPA_SURF(2)
 
-#define	G_RM_ZB_OPA_SURF	RM_ZB_OPA_SURF(1)
-#define	G_RM_ZB_OPA_SURF2	RM_ZB_OPA_SURF(2)
-#define	G_RM_ZB_XLU_SURF	RM_ZB_XLU_SURF(1)
-#define	G_RM_ZB_XLU_SURF2	RM_ZB_XLU_SURF(2)
-#define	G_RM_ZB_OPA_DECAL	RM_ZB_OPA_DECAL(1)
-#define	G_RM_ZB_OPA_DECAL2	RM_ZB_OPA_DECAL(2)
-#define	G_RM_ZB_XLU_DECAL	RM_ZB_XLU_DECAL(1)
-#define	G_RM_ZB_XLU_DECAL2	RM_ZB_XLU_DECAL(2)
-#define	G_RM_ZB_CLD_SURF	RM_ZB_CLD_SURF(1)
-#define	G_RM_ZB_CLD_SURF2	RM_ZB_CLD_SURF(2)
-#define	G_RM_ZB_OVL_SURF	RM_ZB_OVL_SURF(1)
-#define	G_RM_ZB_OVL_SURF2	RM_ZB_OVL_SURF(2)
-#define	G_RM_ZB_PCL_SURF	RM_ZB_PCL_SURF(1)
-#define	G_RM_ZB_PCL_SURF2	RM_ZB_PCL_SURF(2)
+#define G_RM_ZB_OPA_SURF	RM_ZB_OPA_SURF(1)
+#define G_RM_ZB_OPA_SURF2	RM_ZB_OPA_SURF(2)
+#define G_RM_ZB_XLU_SURF	RM_ZB_XLU_SURF(1)
+#define G_RM_ZB_XLU_SURF2	RM_ZB_XLU_SURF(2)
+#define G_RM_ZB_OPA_DECAL	RM_ZB_OPA_DECAL(1)
+#define G_RM_ZB_OPA_DECAL2	RM_ZB_OPA_DECAL(2)
+#define G_RM_ZB_XLU_DECAL	RM_ZB_XLU_DECAL(1)
+#define G_RM_ZB_XLU_DECAL2	RM_ZB_XLU_DECAL(2)
+#define G_RM_ZB_CLD_SURF	RM_ZB_CLD_SURF(1)
+#define G_RM_ZB_CLD_SURF2	RM_ZB_CLD_SURF(2)
+#define G_RM_ZB_OVL_SURF	RM_ZB_OVL_SURF(1)
+#define G_RM_ZB_OVL_SURF2	RM_ZB_OVL_SURF(2)
+#define G_RM_ZB_PCL_SURF	RM_ZB_PCL_SURF(1)
+#define G_RM_ZB_PCL_SURF2	RM_ZB_PCL_SURF(2)
 
-#define	G_RM_OPA_SURF		RM_OPA_SURF(1)
-#define	G_RM_OPA_SURF2		RM_OPA_SURF(2)
-#define	G_RM_XLU_SURF		RM_XLU_SURF(1)
-#define	G_RM_XLU_SURF2		RM_XLU_SURF(2)
-#define	G_RM_CLD_SURF		RM_CLD_SURF(1)
-#define	G_RM_CLD_SURF2		RM_CLD_SURF(2)
-#define	G_RM_TEX_EDGE		RM_TEX_EDGE(1)
-#define	G_RM_TEX_EDGE2		RM_TEX_EDGE(2)
-#define	G_RM_PCL_SURF		RM_PCL_SURF(1)
-#define	G_RM_PCL_SURF2		RM_PCL_SURF(2)
+#define G_RM_OPA_SURF		RM_OPA_SURF(1)
+#define G_RM_OPA_SURF2		RM_OPA_SURF(2)
+#define G_RM_XLU_SURF		RM_XLU_SURF(1)
+#define G_RM_XLU_SURF2		RM_XLU_SURF(2)
+#define G_RM_CLD_SURF		RM_CLD_SURF(1)
+#define G_RM_CLD_SURF2		RM_CLD_SURF(2)
+#define G_RM_TEX_EDGE		RM_TEX_EDGE(1)
+#define G_RM_TEX_EDGE2		RM_TEX_EDGE(2)
+#define G_RM_PCL_SURF		RM_PCL_SURF(1)
+#define G_RM_PCL_SURF2		RM_PCL_SURF(2)
 #define G_RM_ADD       		RM_ADD(1)
 #define G_RM_ADD2      		RM_ADD(2)
 #define G_RM_NOOP       	RM_NOOP(1)
@@ -606,14 +608,14 @@ typedef union
 #define G_RM_OPA_CI2        RM_OPA_CI(2)
 
 
-#define	G_RM_FOG_SHADE_A	GBL_c1(G_BL_CLR_FOG, G_BL_A_SHADE, G_BL_CLR_IN, G_BL_1MA)
-#define	G_RM_FOG_PRIM_A		GBL_c1(G_BL_CLR_FOG, G_BL_A_FOG, G_BL_CLR_IN, G_BL_1MA)
-#define	G_RM_PASS		GBL_c1(G_BL_CLR_IN, G_BL_0, G_BL_CLR_IN, G_BL_1)
+#define G_RM_FOG_SHADE_A	GBL_c1(G_BL_CLR_FOG, G_BL_A_SHADE, G_BL_CLR_IN, G_BL_1MA)
+#define G_RM_FOG_PRIM_A		GBL_c1(G_BL_CLR_FOG, G_BL_A_FOG, G_BL_CLR_IN, G_BL_1MA)
+#define G_RM_PASS		GBL_c1(G_BL_CLR_IN, G_BL_0, G_BL_CLR_IN, G_BL_1)
 
 #define G_MWO_NUMLIGHT 0x00
 #define G_MW_NUMLIGHT 0x02
 #define NUML(n)         (((n)+1)*32 + 0x80000000)
-#define	G_MW_PERSPNORM		0x0e
+#define G_MW_PERSPNORM		0x0e
 
 #ifndef MAX
 #define MAX(a, b)               ((a) > (b) ? (a) : (b))
@@ -628,16 +630,16 @@ typedef union
 #define gDma1p(pkt, c, s, l, p)                                         \
 {                                                                       \
         Gfx *_g = (Gfx *)(pkt);                                         \
-        _g->words.w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) |     \
-        _SHIFTL((l), 0, 16));                                           \
-        _g->words.w1 = (unsigned int)(s);                               \
+        _g->words.w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8)       \
+                     | _SHIFTL((l), 0, 16));                            \
+        _g->words.w1 = (uintptr_t)(s);                                  \
 }
 
 #define gsDma1p(c, s, l, p)                                             \
 {                                                                       \
-        _g->words.w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) |     \
-        _SHIFTL((l), 0, 16));                                           \
-        _g->words.w1 = (unsigned int)(s);                               \
+        _g->words.w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8)       \
+                     | _SHIFTL((l), 0, 16));                            \
+        _g->words.w1 = (uintptr_t)(s);                                  \
 }
 
 /* Matrix */
@@ -648,7 +650,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_MTX,        24,  8) \
                  | _SHIFTL((p),         16,  8)  \
                  | _SHIFTL(sizeof(Mtx),  0, 16); \
-    _g->words.w1 = (u32)(m);                     \
+    _g->words.w1 = (uintptr_t)(m);                     \
 }
 
 #define gsSPMatrix(m, p)                         \
@@ -656,7 +658,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_MTX,        24,  8) \
                  | _SHIFTL((p),         16,  8)  \
                  | _SHIFTL(sizeof(Mtx),  0, 16); \
-    _g->words.w1 = (u32)(m);                     \
+    _g->words.w1 = (uintptr_t)(m);                     \
 }
 
 /* Vertex */
@@ -669,7 +671,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_VTX,                24,  8) \
                  | _SHIFTL(((n)-1) << 4 | (v0), 16,  8)  \
                  | _SHIFTL(sizeof(Vtx)*(n),      0, 16); \
-    _g->words.w1 = (u32)(v);                             \
+    _g->words.w1 = (uintptr_t)(v);                             \
 }
 
 #define gsSPVertex(v, n, v0)                             \
@@ -677,7 +679,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_VTX,                24,  8) \
                  | _SHIFTL(((n)-1) << 4 | (v0), 16,  8)  \
                  | _SHIFTL(sizeof(Vtx)*(n),      0, 16); \
-    _g->words.w1 = (u32)(v);                             \
+    _g->words.w1 = (uintptr_t)(v);                             \
 }
 
 #else /* Fast3DEX */
@@ -687,7 +689,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_VTX,                             24,  8) \
                  | _SHIFTL(((v0)*2),                          16,  8) \
                  | _SHIFTL((n << 10) | ((sizeof(Vtx)*(n))-1), 0, 16); \
-    _g->words.w1 = (u32)(v);                                          \
+    _g->words.w1 = (uintptr_t)(v);                                          \
 }
 
 #define gsSPVertex(v, n, v0)                                          \
@@ -695,7 +697,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_VTX,                             24,  8) \
                  | _SHIFTL(((v0)*2),                          16,  8) \
                  | _SHIFTL((n << 10) | ((sizeof(Vtx)*(n))-1), 0, 16); \
-    _g->words.w1 = (u32)(v);                                          \
+    _g->words.w1 = (uintptr_t)(v);                                          \
 }
 #endif
 
@@ -765,13 +767,13 @@ typedef union
 {                                        \
     Gfx *_g = (Gfx *) (pkt);             \
     _g->words.w0 = _SHIFTL(G_DL, 24, 8); \
-    _g->words.w1 = (u32)(dl);            \
+    _g->words.w1 = (uintptr_t)(dl);            \
 }
 
 #define gsSPDisplayList(dl)              \
 {                                        \
     _g->words.w0 = _SHIFTL(G_DL, 24, 8); \
-    _g->words.w1 = (u32)(dl);            \
+    _g->words.w1 = (uintptr_t)(dl);            \
 }
 
 /* BranchList */
@@ -1184,7 +1186,7 @@ typedef union
 
 /* SetPrimColor */
 
-#define	gDPSetPrimColor(pkt, m, l, r, g, b, a)     \
+#define gDPSetPrimColor(pkt, m, l, r, g, b, a)     \
 {                                                  \
     Gfx *_g = (Gfx *)(pkt);                        \
     _g->words.w0 = _SHIFTL(G_SETPRIMCOLOR, 24, 8)  \
@@ -1196,7 +1198,7 @@ typedef union
                  | _SHIFTL(a,  0, 8);              \
 }
 
-#define	gsDPSetPrimColor(m, l, r, g, b, a)         \
+#define gsDPSetPrimColor(m, l, r, g, b, a)         \
 {                                                  \
     _g->words.w0 = _SHIFTL(G_SETPRIMCOLOR, 24, 8)  \
                  | _SHIFTL(m,  8, 8)               \
@@ -1237,7 +1239,7 @@ typedef union
                  | _SHIFTL((fmt),     21,  3)          \
                  | _SHIFTL((size),    19,  2)          \
                  | _SHIFTL((width)-1,  0, 12);         \
-    _g->words.w1 = (u32)(img);                         \
+    _g->words.w1 = (uintptr_t)(img);                   \
 }
 
 #define gsDPSetTextureImage(fmt, size, width, img)     \
@@ -1246,7 +1248,7 @@ typedef union
                  | _SHIFTL((fmt),     21,  3)          \
                  | _SHIFTL((size),    19,  2)          \
                  | _SHIFTL((width)-1,  0, 12);         \
-    _g->words.w1 = (u32)(img);                         \
+    _g->words.w1 = (uintptr_t)(img);                   \
 }
 
 /* MoveWd */
@@ -1257,7 +1259,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_MOVEWORD,     24,  8)  \
                  | _SHIFTL((offset),  8, 16)        \
                  | _SHIFTL((index),   0,  8);       \
-    _g->words.w1 = (u32)(data);                     \
+    _g->words.w1 = (uintptr_t)(data);               \
 }
 
 #define gsMoveWd(index, offset, data)               \
@@ -1265,7 +1267,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_MOVEWORD,     24,  8)  \
                  | _SHIFTL((offset),  8, 16)        \
                  | _SHIFTL((index),   0,  8);       \
-    _g->words.w1 = (u32)(data);                     \
+    _g->words.w1 = (uintptr_t)(data);               \
 }
 
 /* Matrix Operations */
@@ -1300,7 +1302,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_MOVEMEM,          24,  8)  \
                  | _SHIFTL(G_MV_VIEWPORT, 16,  8)       \
                  | _SHIFTL(sizeof(Vp),     0, 16);      \
-    _g->words.w1 = (u32)(v);                            \
+    _g->words.w1 = (uintptr_t)(v);                      \
 }
 
 #define gsSPViewport(v)                                 \
@@ -1308,7 +1310,7 @@ typedef union
     _g->words.w0 = _SHIFTL(G_MOVEMEM,          24,  8)  \
                  | _SHIFTL(G_MV_VIEWPORT, 16,  8)       \
                  | _SHIFTL(sizeof(Vp),     0, 16);      \
-    _g->words.w1 = (u32)(v);                            \
+    _g->words.w1 = (uintptr_t)(v);                      \
 }
 
 /* 1Triangle */
@@ -1427,7 +1429,7 @@ typedef union
                  | _SHIFTL((dtdy),  0, 16);                              \
 }
 
-#define gsSPTextureRectangle(xl, yl, xh, yh, tile, s, t, dsdx, dtdy)      \
+#define gsSPTextureRectangle(xl, yl, xh, yh, tile, s, t, dsdx, dtdy)     \
 {                                                                        \
     _g->words.w0 = _SHIFTL(G_TEXRECT,   24,  8)                          \
                  | _SHIFTL((xh),   12, 12)                               \
@@ -1509,7 +1511,7 @@ typedef union {
 #define LIGHT_2 2
 #define LIGHT_3 3
 #define LIGHT_4 4
-#define LIGHT_5 5	
+#define LIGHT_5 5
 #define LIGHT_6 6
 #define LIGHT_7 7
 #define LIGHT_8 8
@@ -1522,7 +1524,7 @@ typedef union {
     _g->words.w0 = _SHIFTL(G_MOVEMEM,         24, 8)  \
                  | _SHIFTL(((n)-1)*2+G_MV_L0, 16, 8)  \
                  | _SHIFTL(sizeof(Light),     0, 16); \
-    _g->words.w1 = (u32)(l);                          \
+    _g->words.w1 = (uintptr_t)(l);                    \
 }
 
 #define gsSPLight(l, n)                               \
@@ -1530,7 +1532,7 @@ typedef union {
     _g->words.w0 = _SHIFTL(G_MOVEMEM,         24, 8)  \
                  | _SHIFTL(((n)-1)*2+G_MV_L0, 16, 8)  \
                  | _SHIFTL(sizeof(Light),     0, 16); \
-    _g->words.w1 = (u32)(l);                          \
+    _g->words.w1 = (uintptr_t)(l);                    \
 }
 
 /* LookAtX */
@@ -1541,7 +1543,7 @@ typedef union {
     _g->words.w0 = _SHIFTL(G_MOVEMEM,    24,  8)  \
                  | _SHIFTL(G_MV_LOOKATX, 16,  8)  \
                  | _SHIFTL(sizeof(Light), 0, 16); \
-    _g->words.w1 = (u32)(la);                     \
+    _g->words.w1 = (uintptr_t)(la);               \
 }
 
 #define gsSPLookAtX(la)                           \
@@ -1549,7 +1551,7 @@ typedef union {
     _g->words.w0 = _SHIFTL(G_MOVEMEM,    24,  8)  \
                  | _SHIFTL(G_MV_LOOKATX, 16,  8)  \
                  | _SHIFTL(sizeof(Light), 0, 16); \
-    _g->words.w1 = (u32)(la);                     \
+    _g->words.w1 = (uintptr_t)(la);               \
 }
 
 /* LookAtY */
@@ -1560,7 +1562,7 @@ typedef union {
     _g->words.w0 = _SHIFTL(G_MOVEMEM,    24,  8)  \
                  | _SHIFTL(G_MV_LOOKATY, 16,  8)  \
                  | _SHIFTL(sizeof(Light), 0, 16); \
-    _g->words.w1 = (u32)(la);                     \
+    _g->words.w1 = (uintptr_t)(la);               \
 }
 
 #define gsSPLookAtY(la)                           \
@@ -1568,7 +1570,7 @@ typedef union {
     _g->words.w0 = _SHIFTL(G_MOVEMEM,    24,  8)  \
                  | _SHIFTL(G_MV_LOOKATY, 16,  8)  \
                  | _SHIFTL(sizeof(Light), 0, 16); \
-    _g->words.w1 = (u32)(la);                     \
+    _g->words.w1 = (uintptr_t)(la);               \
 }
 
 /* LookAt */
@@ -1603,10 +1605,10 @@ typedef union {
 
 #else
 #define gSPPerspNormalize(pkt, s)       \
-	gMoveWd(pkt, G_MW_PERSPNORM, 0, (s))
+    gMoveWd(pkt, G_MW_PERSPNORM, 0, (s))
 
 #define gsSPPerspNormalize(s)            \
-	gsMoveWd(G_MW_PERSPNORM, 0, (s))
+    gsMoveWd(G_MW_PERSPNORM, 0, (s))
 #endif
 
 #endif

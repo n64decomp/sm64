@@ -1,0 +1,60 @@
+Refresh #2a (hotfix)
+Changes from Refresh #2:
+
+1.) Fixed text Makefile dependencies"
+
+Refresh #2
+Changes from Refresh #1:
+
+1.) Label src/game/behaviors/boo.inc.c
+2.) Verify half of audio_defines.h
+3.) Label ingame_menu.c and some dialog stuff
+4.) Improve handle_dialog_text_and_pages EU non-matching
+5.) Fix texture format for water splash/sparkle
+6.) Merge ucode.bin and ucode_unk.bin
+7.) 64-bit fixes
+8.) [AUDIO] Match func_80316928
+9.) Documented bug in Tuxie's mother's code 
+10.) [AUDIO] Slightly closer matching for process_level_music_dynamics
+11.) Name channel scripts in sequence 0
+12.) Nicer error message when sha1sum doesn't match
+13.) Refactor object fields
+14.) Document file_select.c
+15.) Document star_select.c
+16.) Add uncompressed string support to textconv
+17.) Document main_menu geo and leveldata
+18.) Document hud.c and rename char textures
+19.) Correct gSPTextureRectangle values
+20.) Linker script wildcard
+     - Fixes "undefined reference to x in discarded section y" linker errors.
+     - Also means that you no longer have to add linker script entries for source files.
+21.) Reference qemu-irix package and add project structure
+     - Installing qemu-irix is as simple as installing the provided Debian package on the GitHub "Releases" tab
+       (https://github.com/n64decomp/qemu-irix).
+     - Old qemu-irix installs are unaffected by this change, and it is still possible to install qemu-irix with the older method.
+
+Refresh #1
+Changes from initial release:
+
+1.) More README cleanups and documentation
+2.) Fix .gitignore in tools/
+3.) More README cleanups and corrections
+4.) oUnk190 -> oInteractionSubtype
+5.) Normalize line endings
+6.) Replace bank_sets.s by sequences.json + build magic
+7.) Fix tabledesign in .gitignore
+8.) Cleaned and documented arrays in audio/
+9.) Change minimum Python 3 requirement in README.md to 3.6
+10.) Remove whitespace in ingame_menu.c, save_file.c, and star_select.c
+11.) Documentation comment style fixed
+12.) sm64.map -> sm64.version.map (ex: sm64.us.map)
+13.) Decompile EU versions of HUD and obj behaviors
+14.) Label ukiki.inc.c and ukiki_cage.inc.c
+15.) Add missing OS header includes
+16.) Fix alignment issue in model_ids.h
+17.) A bunch of behavior changes:
+     a.) Made styles consistent with function names (ex: BehBehaviorLoop -> beh_behavior_loop)
+     b.) Split obj_behaviors_2.c into multiple .inc.c files in behaviors/
+     c.) bhvHauntedRoomCheck -> bhvCoffinManager
+18.) Update README.md notes on WSL and add links
+19.) Added tidy.sh and also bracing around single-line ifs and loops

@@ -33,7 +33,7 @@ void bhv_seesaw_platform_update(void) {
     o->oFaceAnglePitch += (s32) o->oSeesawPlatformPitchVel;
 
     if (absf(o->oSeesawPlatformPitchVel) > 10.0f) {
-        PlaySound(SOUND_ENVIRONMENT_BOATROCKING1);
+        PlaySound(SOUND_ENV_BOAT_ROCKING1);
     }
 
     if (gMarioObject->platform == o) {

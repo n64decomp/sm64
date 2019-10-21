@@ -1,13 +1,16 @@
-#ifndef _SEGMENT_7_H
-#define _SEGMENT_7_H
+#ifndef SEGMENT_7_H
+#define SEGMENT_7_H
 
 #include "types.h"
 
 // from main menu segment 7
-extern u32 main_menu_seg7_table_0700CD08[];
-extern u8 main_menu_seg7_dl_0700D108[];
-extern u8 main_menu_seg7_dl_0700D160[];
-extern u8 main_menu_seg7_dl_0700F228[];
+extern u8 dl_menu_idle_hand[];
+extern u8 dl_menu_grabbing_hand[];
+extern u8 menu_hud_lut[];
+extern u8 menu_font_lut[];
+extern u8 dl_menu_ia8_text_begin[];
+extern u8 dl_menu_ia8_text_end[];
+extern u8 dl_menu_rgba16_wood_course[];
 
 // from intro_segment7
 extern Gfx *intro_seg7_dl_0700B3A0;
@@ -15,4 +18,4 @@ extern Gfx *intro_seg7_dl_0700C6A0;
 extern f32 intro_seg7_table_0700C790[];
 extern f32 intro_seg7_table_0700C880[];
 
-#endif /* _SEGMENT_7_H */
+#endif /* SEGMENT_7_H */

@@ -1,8 +1,7 @@
 # Whomp
 
 # ???
-.word 0
-.word 2
+.dword 2
 
 .balign 8
 
@@ -571,4 +570,3 @@ whomp_seg6_anim_060209EC: # 0x060209EC
 glabel whomp_seg6_anims_06020A04 # 0x06020A04
 .word whomp_seg6_anim_060209EC
 .word whomp_seg6_anim_060202DC
-# no terminator? TODO: What does the 0 at the end of these structs actually do?

@@ -112,17 +112,17 @@ u8 sDialogSpeaker[170] = {
 #undef _
 
 s32 sDialogSpeakerVoice[15] = {
-    SOUND_UKIKI_CHATTER_LONG,
-    SOUND_BIG_PENGUIN_YELL,
-    SOUND_OBJECT_BOWSERINTROLAUGH,
-    SOUND_OBJECT_KOOPA,
-    SOUND_OBJECT_KINGBOBOMB,
-    SOUND_BOO_LAUGH_LONG,
-    SOUND_OBJECT_BOBOMBBUDDY,
-    SOUND_OBJECT_BOWSERLAUGH,
-    SOUND_BOSS_DIALOG_GRUNT,
-    SOUND_WIGGLER_DIALOG,
-    SOUND_GENERAL_YOSHI,
+    SOUND_OBJ_UKIKI_CHATTER_LONG,
+    SOUND_OBJ_BIG_PENGUIN_YELL,
+    SOUND_OBJ_BOWSER_INTRO_LAUGH,
+    SOUND_OBJ_KOOPA_TALK,
+    SOUND_OBJ_KING_BOBOMB_TALK,
+    SOUND_OBJ_BOO_LAUGH_LONG,
+    SOUND_OBJ_BOBOMB_BUDDY_TALK,
+    SOUND_OBJ_BOWSER_LAUGH,
+    SOUND_OBJ2_BOSS_DIALOG_GRUNT,
+    SOUND_OBJ_WIGGLER_TALK,
+    SOUND_GENERAL_YOSHI_TALK,
     NO_SOUND,
     NO_SOUND,
     NO_SOUND,
@@ -155,46 +155,94 @@ u8 sSoundRequestCount = 0;
 #define DYN3(cond1, val1, cond2, val2, cond3, val3, res)                                               \
     1 << (15 - cond1) | 1 << (15 - cond2) | 1 << (15 - cond3) | res, val1, val2, val3
 
-s16 sDynBbh[] = { // BBH
-    SEQ_LEVEL_SPOOKY, DYN1(MARIO_IS_IN_ROOM, BBH_OUTSIDE_ROOM, 6),
-    DYN1(MARIO_IS_IN_ROOM, BBH_NEAR_MERRY_GO_ROUND_ROOM, 6), 5
+s16 sDynBbh[] = {
+    SEQ_LEVEL_SPOOKY,
+    DYN1(MARIO_IS_IN_ROOM, BBH_OUTSIDE_ROOM, 6),
+    DYN1(MARIO_IS_IN_ROOM, BBH_NEAR_MERRY_GO_ROUND_ROOM, 6),
+    5,
 };
-s16 sDynDdd[] = { // DDD
-    SEQ_LEVEL_WATER, DYN2(MARIO_X_LT, -800, MARIO_IS_IN_AREA, AREA_DDD_WHIRLPOOL & 0xf, 0),
+s16 sDynDdd[] = {
+    SEQ_LEVEL_WATER,
+    DYN2(MARIO_X_LT, -800, MARIO_IS_IN_AREA, AREA_DDD_WHIRLPOOL & 0xf, 0),
     DYN3(MARIO_Y_GE, -2000, MARIO_X_LT, 470, MARIO_IS_IN_AREA, AREA_DDD_WHIRLPOOL & 0xf, 0),
-    DYN2(MARIO_Y_GE, 100, MARIO_IS_IN_AREA, AREA_DDD_SUB & 0xf, 2), 1
+    DYN2(MARIO_Y_GE, 100, MARIO_IS_IN_AREA, AREA_DDD_SUB & 0xf, 2),
+    1,
 };
 s16 sDynJrb[] = {
-    // JRB
     SEQ_LEVEL_WATER,
     DYN2(MARIO_Y_GE, 945, MARIO_X_LT, -5260, 0),
     DYN1(MARIO_IS_IN_AREA, AREA_JRB_SHIP & 0xf, 0),
     DYN1(MARIO_Y_GE, 1000, 0),
     DYN2(MARIO_Y_GE, -3100, MARIO_Z_LT, -900, 2),
     1,
-    5 // bogus entry, ignored
+    5, // bogus entry, ignored (was JRB originally intended to have spooky music?)
 };
-s16 sDynWdw[] = { // WDW
-    SEQ_LEVEL_UNDERGROUND, DYN2(MARIO_Y_LT, -670, MARIO_IS_IN_AREA, AREA_WDW_MAIN & 0xf, 4),
-    DYN1(MARIO_IS_IN_AREA, AREA_WDW_TOWN & 0xf, 4), 3
+s16 sDynWdw[] = {
+    SEQ_LEVEL_UNDERGROUND,
+    DYN2(MARIO_Y_LT, -670, MARIO_IS_IN_AREA, AREA_WDW_MAIN & 0xf, 4),
+    DYN1(MARIO_IS_IN_AREA, AREA_WDW_TOWN & 0xf, 4),
+    3,
 };
-s16 sDynHmc[] = { // HMC
-    SEQ_LEVEL_UNDERGROUND, DYN2(MARIO_X_GE, 0, MARIO_Y_LT, -203, 4),
-    DYN2(MARIO_X_LT, 0, MARIO_Y_LT, -2400, 4), 3
+s16 sDynHmc[] = {
+    SEQ_LEVEL_UNDERGROUND,
+    DYN2(MARIO_X_GE, 0, MARIO_Y_LT, -203, 4),
+    DYN2(MARIO_X_LT, 0, MARIO_Y_LT, -2400, 4),
+    3,
 };
-s16 sDynUnk38[] = { // LEVEL_UNKNOWN_38
-    SEQ_LEVEL_UNDERGROUND, DYN1(MARIO_IS_IN_AREA, 1, 3), DYN1(MARIO_IS_IN_AREA, 2, 4),
-    DYN1(MARIO_IS_IN_AREA, 3, 7), 0
+s16 sDynUnk38[] = {
+    SEQ_LEVEL_UNDERGROUND,
+    DYN1(MARIO_IS_IN_AREA, 1, 3),
+    DYN1(MARIO_IS_IN_AREA, 2, 4),
+    DYN1(MARIO_IS_IN_AREA, 3, 7),
+    0,
 };
-s16 D_80331EA8[] = { 0, 0 };
+s16 sDynNone[] = { SEQ_SOUND_PLAYER, 0 };
 
 u8 sCurrentMusicDynamic = 0xff;
 u8 sBackgroundMusicForDynamics = SEQUENCE_NONE;
 
-#define _ D_80331EA8
-s16 *sLevelDynamics[] = { _, _, _, _, sDynBbh, _, _, sDynHmc, _, _, _,       sDynWdw, sDynJrb,
-                          _, _, _, _, _,       _, _, _,       _, _, sDynDdd, _,       _,
-                          _, _, _, _, _,       _, _, _,       _, _, _,       _,       sDynUnk38 };
+#define _ sDynNone
+s16 *sLevelDynamics[] = {
+    _,         // LEVEL_NONE
+    _,         // LEVEL_UNKNOWN_1
+    _,         // LEVEL_UNKNOWN_2
+    _,         // LEVEL_UNKNOWN_3
+    sDynBbh,   // LEVEL_BBH
+    _,         // LEVEL_CCM
+    _,         // LEVEL_CASTLE
+    sDynHmc,   // LEVEL_HMC
+    _,         // LEVEL_SSL
+    _,         // LEVEL_BOB
+    _,         // LEVEL_SL
+    sDynWdw,   // LEVEL_WDW
+    sDynJrb,   // LEVEL_JRB
+    _,         // LEVEL_THI
+    _,         // LEVEL_TTC
+    _,         // LEVEL_RR
+    _,         // LEVEL_CASTLE_GROUNDS
+    _,         // LEVEL_BITDW
+    _,         // LEVEL_VCUTM
+    _,         // LEVEL_BITFS
+    _,         // LEVEL_SA
+    _,         // LEVEL_BITS
+    _,         // LEVEL_LLL
+    sDynDdd,   // LEVEL_DDD
+    _,         // LEVEL_WF
+    _,         // LEVEL_ENDING
+    _,         // LEVEL_CASTLE_COURTYARD
+    _,         // LEVEL_PSS
+    _,         // LEVEL_COTMC
+    _,         // LEVEL_TOTWC
+    _,         // LEVEL_BOWSER_1
+    _,         // LEVEL_WMOTR
+    _,         // LEVEL_UNKNOWN_32
+    _,         // LEVEL_BOWSER_2
+    _,         // LEVEL_BOWSER_3
+    _,         // LEVEL_UNKNOWN_35
+    _,         // LEVEL_TTM
+    _,         // LEVEL_UNKNOWN_37
+    sDynUnk38, // LEVEL_UNKNOWN_38
+};
 STATIC_ASSERT(ARRAY_COUNT(sLevelDynamics) == LEVEL_COUNT, "change this array if you are adding levels");
 #undef _
 
@@ -210,10 +258,14 @@ struct MusicDynamic {
 }; // size = 0xC
 
 struct MusicDynamic sMusicDynamics[8] = {
-    { 0x0000, 0, 127, 100, 0x0e43, 0, 0, 100 }, { 0x0003, 0, 127, 100, 0x0e40, 0, 0, 100 },
-    { 0x0e43, 0, 127, 200, 0x0000, 0, 0, 200 }, { 0x02ff, 0, 127, 100, 0x0100, 0, 0, 100 },
-    { 0x03f7, 0, 127, 100, 0x0008, 0, 0, 100 }, { 0x0070, 0, 127, 10, 0x0000, 0, 0, 100 },
-    { 0x0000, 0, 127, 100, 0x0070, 0, 0, 10 },  { 0xffff, 0, 127, 100, 0x0000, 0, 0, 100 }
+    { 0x0000, 0, 127, 100, 0x0e43, 0, 0, 100 }, // SEQ_LEVEL_WATER
+    { 0x0003, 0, 127, 100, 0x0e40, 0, 0, 100 }, // SEQ_LEVEL_WATER
+    { 0x0e43, 0, 127, 200, 0x0000, 0, 0, 200 }, // SEQ_LEVEL_WATER
+    { 0x02ff, 0, 127, 100, 0x0100, 0, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
+    { 0x03f7, 0, 127, 100, 0x0008, 0, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
+    { 0x0070, 0, 127, 10, 0x0000, 0, 0, 100 },  // SEQ_LEVEL_SPOOKY
+    { 0x0000, 0, 127, 100, 0x0070, 0, 0, 10 },  // SEQ_LEVEL_SPOOKY
+    { 0xffff, 0, 127, 100, 0x0000, 0, 0, 100 }, // any (unused)
 };
 
 u8 gAreaEchoLevel[][3] = {
@@ -313,7 +365,8 @@ STATIC_ASSERT(ARRAY_COUNT(D_80332028) == LEVEL_COUNT, "change this array if you 
 
 #define AUDIO_MAX_DISTANCE US_FLOAT(22000.0)
 
-u8 sBackgroundMusicDefaultVolume[35] = {
+// Default volume for background music sequences (playing on player 0).
+u8 sBackgroundMusicDefaultVolume[] = {
     127, // SEQ_SOUND_PLAYER
     80,  // SEQ_EVENT_CUTSCENE_COLLECT_STAR
     80,  // SEQ_MENU_TITLE_SCREEN
@@ -348,8 +401,11 @@ u8 sBackgroundMusicDefaultVolume[35] = {
     80,  // SEQ_EVENT_CUTSCENE_VICTORY
     70,  // SEQ_EVENT_CUTSCENE_ENDING
     65,  // SEQ_MENU_FILE_SELECT
-    0    // SEQ_EVENT_CUTSCENE_LAKITU
+    0,   // SEQ_EVENT_CUTSCENE_LAKITU (not in JP)
 };
+
+STATIC_ASSERT(ARRAY_COUNT(sBackgroundMusicDefaultVolume) == SEQ_COUNT,
+              "change this array if you are adding sequences");
 
 u8 gPlayer0CurSeqId = SEQUENCE_NONE;
 u8 sMusicDynamicDelay = 0;
@@ -357,14 +413,18 @@ u8 D_803320A4[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // pointers 
 u8 D_803320B0[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // pointers to head of list
 u8 D_803320BC[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 u8 D_803320C8[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // sizes of D_80360C38
+
+// Banks 2 and 7 both grew from 0x30 sounds to 0x40 in size in US.
 #ifdef VERSION_JP
-#define NUM_DIFF 0x30
+#define BANK27_SIZE 0x30
 #else
-#define NUM_DIFF 0x40
+#define BANK27_SIZE 0x40
 #endif
-u8 sNumSoundsPerBank[SOUND_BANK_COUNT] = { 0x70, 0x30, NUM_DIFF, 0x80, 0x20,
-                                           0x80, 0x20, NUM_DIFF, 0x80, 0x80 };
-#undef NUM_DIFF
+u8 sNumSoundsPerBank[SOUND_BANK_COUNT] = {
+    0x70, 0x30, BANK27_SIZE, 0x80, 0x20, 0x80, 0x20, BANK27_SIZE, 0x80, 0x80,
+};
+#undef BANK27_SIZE
+
 f32 gDefaultSoundArgs[3] = { 0.0f, 0.0f, 0.0f };
 f32 gUnusedSoundArgs[3] = { 1.0f, 1.0f, 1.0f };
 u8 gSoundBankDisabled[16] = { 0 };
@@ -387,8 +447,8 @@ struct Sound sSoundRequests[0x100];
 struct ChannelVolumeScaleFade D_80360928[SEQUENCE_PLAYERS][CHANNELS_MAX];
 u8 D_80360C28[SOUND_BANK_COUNT];
 u8 D_80360C38[SOUND_BANK_COUNT][1];
-struct SoundCharacteristics gSoundBanks[SOUND_BANK_COUNT]
-                                       [40]; // list item memory for D_803320A4 and D_803320B0
+// list item memory for D_803320A4 and D_803320B0
+struct SoundCharacteristics gSoundBanks[SOUND_BANK_COUNT][40];
 u8 D_80363808[SOUND_BANK_COUNT];
 u8 D_80363812;
 static u8 sCapVolumeTo40;
@@ -485,7 +545,7 @@ void unused_8031E568(void) {
 /**
  * Fade out a sequence player
  */
-static void sequence_player_fade_out(s32 player, FadeT fadeOutTime) {
+static void sequence_player_fade_out_internal(s32 player, FadeT fadeOutTime) {
     struct SequencePlayer *seqPlayer = &gSequencePlayers[player];
 #ifndef VERSION_JP
     if (fadeOutTime == 0) {
@@ -634,9 +694,9 @@ struct SPTask *create_next_audio_frame_task(void) {
     task->type = M_AUDTASK;
     task->flags = flags;
     task->ucode_boot = rspF3DBootStart;
-    task->ucode_boot_size = (u32) rspF3DBootEnd - (u32) rspF3DBootStart;
+    task->ucode_boot_size = (u8 *) rspF3DBootEnd - (u8 *) rspF3DBootStart;
     task->ucode = rspAspMainStart;
-    task->ucode_size = 0x800;
+    task->ucode_size = 0x800; // (this size is ignored)
     task->ucode_data = rspAspMainDataStart;
     task->ucode_data_size = (rspAspMainDataEnd - rspAspMainDataStart) * sizeof(u64);
     task->dram_stack = NULL;
@@ -916,12 +976,14 @@ static f32 get_sound_pan(f32 x, f32 z) {
     f32 pan;
 
     absX = (x < 0 ? -x : x);
-    if (absX > AUDIO_MAX_DISTANCE)
+    if (absX > AUDIO_MAX_DISTANCE) {
         absX = AUDIO_MAX_DISTANCE;
+    }
 
     absZ = (z < 0 ? -z : z);
-    if (absZ > AUDIO_MAX_DISTANCE)
+    if (absZ > AUDIO_MAX_DISTANCE) {
         absZ = AUDIO_MAX_DISTANCE;
+    }
 
     // There are 4 panning equations (12-hr clock used for angles)
     // 1. (0,0) fully-centered pan
@@ -1024,8 +1086,9 @@ static u8 get_sound_reverb(UNUSED u8 bankIndex, UNUSED u8 item, u8 channelIndex)
 #endif
         level = (gCurrLevelNum > LEVEL_MAX ? LEVEL_MAX : gCurrLevelNum);
         area = gCurrAreaIndex - 1;
-        if (area > 2)
+        if (area > 2) {
             area = 2;
+        }
 #ifndef VERSION_JP
     }
 #endif
@@ -1106,7 +1169,7 @@ void update_game_sound(void) {
                                     *gSoundBanks[bankIndex][index].x, *gSoundBanks[bankIndex][index].z);
 
                                 if ((gSoundBanks[bankIndex][index].soundBits & SOUNDARGS_MASK_SOUNDID)
-                                    == (SOUND_UNKNOWN_UNK1417 & SOUNDARGS_MASK_SOUNDID)) {
+                                    == (SOUND_MOVING_FLYING & SOUNDARGS_MASK_SOUNDID)) {
                                     ret = get_sound_freq_scale(bankIndex, index);
                                     gSequencePlayers[2].channels[channelIndex]->freqScale =
                                         ((f32) D_80363808[bankIndex] / US_FLOAT(80.0)) + ret;
@@ -1198,7 +1261,7 @@ void update_game_sound(void) {
                                     *gSoundBanks[bankIndex][index].x, *gSoundBanks[bankIndex][index].z);
 
                                 if ((gSoundBanks[bankIndex][index].soundBits & SOUNDARGS_MASK_SOUNDID)
-                                    == (SOUND_UNKNOWN_UNK1417 & SOUNDARGS_MASK_SOUNDID)) {
+                                    == (SOUND_MOVING_FLYING & SOUNDARGS_MASK_SOUNDID)) {
                                     ret = get_sound_freq_scale(bankIndex, index);
                                     gSequencePlayers[2].channels[channelIndex]->freqScale =
                                         ((f32) D_80363808[bankIndex] / US_FLOAT(80.0)) + ret;
@@ -1286,11 +1349,11 @@ void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
     }
 }
 
-void func_8031F7CC(u8 player, u16 fadeTimer) {
+void sequence_player_fade_out(u8 player, u16 fadeTimer) {
     if (player == 0) {
         gPlayer0CurSeqId = SEQUENCE_NONE;
     }
-    sequence_player_fade_out(player, fadeTimer);
+    sequence_player_fade_out_internal(player, fadeTimer);
 }
 
 void fade_volume_scale(u8 player, u8 targetScale, u16 fadeTimer) {
@@ -1341,7 +1404,6 @@ void process_level_music_dynamics(void) {
     s16 dur2;               // sp38
     u32 conditionBits;      // s0
     u32 tempBits;           // v1
-    s32 numConditions;      // v1
     u16 bit;                // a1
     u8 condIndex;           // a0 (same as numConditions?)
     u8 i;                   // s1
@@ -1376,63 +1438,62 @@ void process_level_music_dynamics(void) {
             }
         }
 
-        numConditions = condIndex;
-        for (j = 0; j < numConditions; j++) {
+        for (j = 0; j < condIndex; j++) {
             // (having all 'temp' share a single variable affects regalloc)
             UNUSED s16 temp;
             switch (conditionTypes[j]) {
                 case MARIO_X_GE: {
                     s16 temp = gMarioStates[0].pos[0];
                     if (temp < conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Y_GE: {
                     s16 temp = gMarioStates[0].pos[1];
                     if (temp < conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Z_GE: {
                     s16 temp = gMarioStates[0].pos[2];
                     if (temp < conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_X_LT: {
                     s16 temp = gMarioStates[0].pos[0];
                     if (temp >= conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Y_LT: {
                     s16 temp = gMarioStates[0].pos[1];
                     if (temp >= conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_Z_LT: {
                     s16 temp = gMarioStates[0].pos[2];
                     if (temp >= conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_IS_IN_AREA: {
                     s16 temp = gCurrAreaIndex;
                     if (temp != conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
                 case MARIO_IS_IN_ROOM: {
                     s16 temp = gMarioCurrentRoom;
                     if (temp != conditionValues[j])
-                        j = numConditions + 1;
+                        j = condIndex + 1;
                     break;
                 }
             }
         }
 
-        if (j == numConditions) {
+        if (j == condIndex) {
             // The area matches. Break out of the loop.
             tempBits = 0;
         } else {
@@ -1502,7 +1563,7 @@ void func_8031FFB4(u8 player, u16 fadeTimer, u8 arg2) {
     }
 }
 
-void func_80320040(u8 player, u16 fadeTimer) {
+void sequence_player_unlower(u8 player, u16 fadeTimer) {
     sCapVolumeTo40 = FALSE;
     if (player == 0) {
         if (gSequencePlayers[player].state != SEQUENCE_PLAYER_STATE_FADE_OUT) {
@@ -1736,17 +1797,17 @@ void func_80320A4C(u8 bankIndex, u8 arg1) {
     D_80363808[bankIndex] = arg1;
 }
 
-void play_dialog_sound(u8 dialogId) {
+void play_dialog_sound(u8 dialogID) {
     u8 speaker;
 
-    if (dialogId >= 170) {
-        dialogId = 0;
+    if (dialogID >= 170) {
+        dialogID = 0;
     }
 
-    speaker = sDialogSpeaker[dialogId];
+    speaker = sDialogSpeaker[dialogID];
     if (speaker != 0xff) {
         play_sound(sDialogSpeakerVoice[speaker], gDefaultSoundArgs);
-        if (speaker == 2) // SOUND_OBJECT_BOWSERINTROLAUGH
+        if (speaker == 2) // SOUND_OBJ_BOWSER_INTRO_LAUGH
         {
             play_sequence(1, SEQ_EVENT_KOOPA_MESSAGE, 0);
         }
@@ -1754,7 +1815,7 @@ void play_dialog_sound(u8 dialogId) {
 
 #ifndef VERSION_JP
     // "You've stepped on the (Wing|Metal|Vanish) Cap Switch"
-    if (dialogId == 10 || dialogId == 11 || dialogId == 12) {
+    if (dialogID == 10 || dialogID == 11 || dialogID == 12) {
         play_puzzle_jingle();
     }
 #endif
@@ -1774,8 +1835,9 @@ void play_music(u8 player, u16 seqArgs, s16 fadeTimer) {
     }
 
     // Abort if the queue is already full.
-    if (sBackgroundMusicQueueSize == MAX_BG_MUSIC_QUEUE_SIZE)
+    if (sBackgroundMusicQueueSize == MAX_BG_MUSIC_QUEUE_SIZE) {
         return;
+    }
 
     // If already in the queue, abort, after first restarting the sequence if
     // it is first, and handling disabled music somehow.
@@ -1822,8 +1884,9 @@ void stop_background_music(u16 seqId) {
     u8 foundIndex;
     u8 i;
 
-    if (sBackgroundMusicQueueSize == 0)
+    if (sBackgroundMusicQueueSize == 0) {
         return;
+    }
 
     // If sequence is not found, remove an empty queue item (the next empty
     // queue slot).
@@ -1839,7 +1902,7 @@ void stop_background_music(u16 seqId) {
                 if (sBackgroundMusicQueueSize != 0) {
                     play_sequence(0, sBackgroundMusicQueue[1].seqId, 0);
                 } else {
-                    func_8031F7CC(0, 20);
+                    sequence_player_fade_out(0, 20);
                 }
             }
             foundIndex = i;
@@ -1860,7 +1923,7 @@ void stop_background_music(u16 seqId) {
 
 void fadeout_background_music(u16 seqId, u16 fadeOut) {
     if (sBackgroundMusicQueueSize != 0 && sBackgroundMusicQueue[0].seqId == (u8)(seqId & 0xff)) {
-        func_8031F7CC(0, fadeOut);
+        sequence_player_fade_out(0, fadeOut);
     }
 }
 
@@ -1925,7 +1988,7 @@ void func_80321080(u16 fadeTimer) {
         D_80332120 = 0;
         D_80332124 = 0;
         func_803200E4(fadeTimer);
-        func_8031F7CC(1, fadeTimer);
+        sequence_player_fade_out(1, fadeTimer);
     }
 }
 
@@ -1937,10 +2000,10 @@ void func_803210D4(u16 fadeOutTime) {
     }
 
     if (gSequencePlayers[0].enabled == TRUE) {
-        sequence_player_fade_out(0, fadeOutTime);
+        sequence_player_fade_out_internal(0, fadeOutTime);
     }
     if (gSequencePlayers[1].enabled == TRUE) {
-        sequence_player_fade_out(1, fadeOutTime);
+        sequence_player_fade_out_internal(1, fadeOutTime);
     }
 
     for (i = 0; i < SOUND_BANK_COUNT; i++) {

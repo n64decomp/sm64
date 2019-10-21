@@ -290,7 +290,7 @@ static void pokey_act_unload_parts(void) {
 void bhv_pokey_update(void) {
     // PARTIAL_UPDATE
 
-    o->oDeathSound = SOUND_OBJECT_POKEYDEATH;
+    o->oDeathSound = SOUND_OBJ_POKEY_DEATH;
 
     switch (o->oAction) {
         case POKEY_ACT_UNINITIALIZED:

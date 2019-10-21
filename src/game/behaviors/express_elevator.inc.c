@@ -8,7 +8,7 @@ void bhv_wdw_express_elevator_loop(void) {
     } else if (o->oAction == 1) {
         o->oVelY = -20.0f;
         o->oPosY += o->oVelY;
-        PlaySound(SOUND_ENVIRONMENT_ELEVATOR4);
+        PlaySound(SOUND_ENV_ELEVATOR4);
         if (o->oTimer > 132)
             o->oAction++;
     } else if (o->oAction == 2) {
@@ -17,7 +17,7 @@ void bhv_wdw_express_elevator_loop(void) {
     } else if (o->oAction == 3) {
         o->oVelY = 10.0f;
         o->oPosY += o->oVelY;
-        PlaySound(SOUND_ENVIRONMENT_ELEVATOR4);
+        PlaySound(SOUND_ENV_ELEVATOR4);
         if (o->oPosY >= o->oHomeY) {
             o->oPosY = o->oHomeY;
             o->oAction++;

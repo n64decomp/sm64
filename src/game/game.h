@@ -2,14 +2,14 @@
 #define _GAME_H_
 
 #include "memory.h"
+
 struct DemoInput
-{ // TODO: see if timer matches with s8
- /*0x00*/ u8 timer; // until next input: if this value
-                    // is 0 proceeding on the demo input, it
-                    // means the demo is over.
- /*0x01*/ s8 rawStickX;
- /*0x02*/ s8 rawStickY;
- /*0x03*/ u8 button;
+{
+    u8 timer; // until next input: if this value is 0 proceeding on the demo
+              // input, it means the demo is over.
+    s8 rawStickX;
+    s8 rawStickY;
+    u8 button;
 };
 
 extern struct Controller gControllers[3];

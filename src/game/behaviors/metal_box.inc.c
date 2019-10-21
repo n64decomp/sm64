@@ -35,7 +35,7 @@ void bhv_pushable_loop(void) {
             o->oMoveAngleYaw = (s16)((gMarioObject->oMoveAngleYaw + 0x2000) & 0xc000);
             if (func_802B0C54(8.0f, 150.0f)) {
                 o->oForwardVel = 4.0f;
-                PlaySound(SOUND_ENVIRONMENT_METALBOXPUSH);
+                PlaySound(SOUND_ENV_METAL_BOX_PUSH);
             }
         }
     }

@@ -136,7 +136,8 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
     return sp3C;
 }
 
-/** @bug Every geo function declares the 3 parameters of run, node, and the matrix array.
+/**
+ * @bug Every geo function declares the 3 parameters of run, node, and the matrix array.
  * This one (see also geo_switch_area) doesn't. When executed, the node function
  * executor passes the 3rd argument to a function that doesn't declare it. This is
  * undefined behavior, but harmless in practice due to the o32 calling convention.
@@ -301,7 +302,7 @@ f32 dist_between_objects(struct Object *obj1, struct Object *obj2) {
     return sqrtf(dx * dx + dy * dy + dz * dz);
 }
 
-void obj_obj_forward_vel_approach_upward(f32 target, f32 increment) {
+void obj_forward_vel_approach_upward(f32 target, f32 increment) {
     if (o->oForwardVel >= target) {
         o->oForwardVel = target;
     } else {
@@ -527,9 +528,9 @@ struct Object *spawn_water_splash(struct Object *parent, struct WaterSplashParam
 struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedArg, u32 model,
                                       void *behavior) {
     struct Object *obj;
-    u32 *behaviorAddr;
+    uintptr_t *behaviorAddr;
 
-    behaviorAddr = (u32 *) segmented_to_virtual(behavior);
+    behaviorAddr = segmented_to_virtual(behavior);
     obj = create_object(behaviorAddr);
 
     obj->parentObj = parent;
@@ -645,7 +646,7 @@ void func_8029EA0C(struct Object *a0) {
 }
 
 void Unknown8029EA34(struct Object *sp20, u32 sp24) {
-    u32 *sp1C;
+    struct Animation **sp1C;
 
     sp1C = o->oAnimations;
     geo_obj_init_animation(&sp20->header.gfx, sp24 + sp1C);
@@ -726,25 +727,25 @@ void obj_scale(f32 scale) {
 }
 
 void SetObjAnimation(s32 arg0) {
-    u32 *sp1C = o->oAnimations;
+    struct Animation **sp1C = o->oAnimations;
     geo_obj_init_animation(&o->header.gfx, sp1C + arg0);
 }
 
 void set_obj_animation_and_sound_state(s32 arg0) {
-    u32 *sp1C = o->oAnimations;
+    struct Animation **sp1C = o->oAnimations;
     geo_obj_init_animation(&o->header.gfx, sp1C + arg0);
     o->oSoundStateID = arg0;
 }
 
 void func_8029ED98(u32 a0, f32 a1) {
-    u32 *sp1C = o->oAnimations;
+    struct Animation **sp1C = o->oAnimations;
     s32 sp18 = (s32)(a1 * 65536.0f);
     geo_obj_init_animation_accel(&o->header.gfx, sp1C + a0, sp18);
     o->oSoundStateID = a0;
 }
 
-void func_8029EE20(struct Object *a0, u32 *a1, u32 a2) {
-    u32 *sp1C = a1;
+void func_8029EE20(struct Object *a0, struct Animation **a1, u32 a2) {
+    struct Animation **sp1C = a1;
     a0->oAnimations = a1;
     geo_obj_init_animation(&a0->header.gfx, sp1C + a2);
     a0->oSoundStateID = a2;
@@ -814,7 +815,7 @@ void obj_set_facing_to_move_angles(struct Object *a0) {
     a0->oFaceAngleRoll = a0->oMoveAngleRoll;
 }
 
-u32 get_object_list_from_behavior(u32 *behavior) {
+u32 get_object_list_from_behavior(uintptr_t *behavior) {
     u32 objectList;
 
     // If the first behavior command is "begin", then get the object list header
@@ -850,7 +851,7 @@ f32 obj_dist_to_nearest_object_with_behavior(void *behavior) {
 }
 
 struct Object *obj_find_nearest_object_with_behavior(void *behavior, f32 *dist) {
-    u32 *behaviorAddr = (u32 *) segmented_to_virtual(behavior);
+    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
     struct Object *closestObj = NULL;
     struct Object *obj;
     struct ObjectNode *listHead;
@@ -901,7 +902,7 @@ s32 count_unimportant_objects(void) {
 }
 
 s32 count_objects_with_behavior(void *behavior) {
-    u32 *behaviorAddr = (u32 *) segmented_to_virtual(behavior);
+    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
     struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
     struct ObjectNode *obj = listHead->next;
     s32 count = 0;
@@ -918,7 +919,7 @@ s32 count_objects_with_behavior(void *behavior) {
 }
 
 struct Object *obj_find_nearby_held_actor(void *behavior, f32 maxDist) {
-    u32 *behaviorAddr = (u32 *) segmented_to_virtual(behavior);
+    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
     struct ObjectNode *listHead;
     struct Object *obj;
     struct Object *foundObj;
@@ -1114,7 +1115,7 @@ void obj_get_thrown_or_placed(f32 forwardVel, f32 velY, s32 thrownAction) {
 
     o->oHeldState = HELD_FREE;
 
-    if ((o->oUnk190 & 0x10) || forwardVel == 0.0f) {
+    if ((o->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC) || forwardVel == 0.0f) {
         obj_move_after_thrown_or_dropped(0.0f, 0.0f);
     } else {
         o->oAction = thrownAction;
@@ -1624,7 +1625,7 @@ static void spawn_object_loot_coins(struct Object *obj, s32 numCoins, f32 sp30, 
         coin = spawn_object(obj, model, coinBehavior);
         translate_object_xz_random(coin, posJitter);
         coin->oPosY = spawnHeight;
-        coin->oUnknownUnk110_F32 = sp30;
+        coin->oCoinUnk110 = sp30;
     }
 }
 
@@ -2239,34 +2240,34 @@ void BehDustSmokeLoop(void) {
     o->oPosY += o->oVelY;
     o->oPosZ += o->oVelZ;
 
-    if (o->oUnknownUnkF4_S32 == 10) {
+    if (o->oSmokeTimer == 10) {
         mark_object_for_deletion(o);
     }
 
-    o->oUnknownUnkF4_S32++;
+    o->oSmokeTimer++;
 }
 
 static void nop_802A3294(void) {
 }
 
 s32 func_802A32A4(s8 *a0) {
-    o->oUnk1AC_VPTR = a0;
-    o->oUnk1B0 = 0;
+    o->oToxBoxUnk1AC = a0;
+    o->oToxBoxUnk1B0 = 0;
 
-    return *(s8 *) o->oUnk1AC_VPTR;
+    return *(s8 *) o->oToxBoxUnk1AC;
 }
 
 s32 func_802A32E0(void) {
     s8 spF;
-    s8 *sp8 = o->oUnk1AC_VPTR;
-    s32 sp4 = o->oUnk1B0 + 1;
+    s8 *sp8 = o->oToxBoxUnk1AC;
+    s32 sp4 = o->oToxBoxUnk1B0 + 1;
 
     if (sp8[sp4] != -1) {
         spF = sp8[sp4];
-        o->oUnk1B0++;
+        o->oToxBoxUnk1B0++;
     } else {
         spF = sp8[0];
-        o->oUnk1B0 = 0;
+        o->oToxBoxUnk1B0 = 0;
     }
 
     return spF;
@@ -2340,7 +2341,7 @@ s32 obj_call_action_function(void (*actionFunctions[])(void)) {
 
 static struct Object *func_802A36D8(s32 sp20, s32 sp24) {
     struct Object *sp1C = spawn_object(o, MODEL_STAR, bhvUnused080C);
-    sp1C->oUnk1B0 = sp24;
+    sp1C->oSparkleSpawnUnk1B0 = sp24;
     sp1C->oBehParams = o->oBehParams;
     sp1C->oBehParams2ndByte = sp20;
 
@@ -2583,7 +2584,7 @@ static void obj_end_dialog(s32 dialogFlags, s32 dialogResult) {
     }
 }
 
-s32 obj_update_dialog_unk1(s32 arg0, s32 dialogFlags, s32 dialogID, UNUSED s32 unusedArg) {
+s32 obj_update_dialog(s32 actionArg, s32 dialogFlags, s32 dialogID, UNUSED s32 unused) {
     s32 dialogResponse = 0;
     UNUSED s32 doneTurning = TRUE;
 
@@ -2615,26 +2616,26 @@ s32 obj_update_dialog_unk1(s32 arg0, s32 dialogFlags, s32 dialogID, UNUSED s32 u
 #endif
 
         case DIALOG_UNK1_INTERRUPT_MARIO_ACTION:
-            if (set_mario_npc_dialog(arg0) == 2) {
+            if (set_mario_npc_dialog(actionArg) == 2) {
                 o->oDialogState++;
             }
             break;
 
         case DIALOG_UNK1_BEGIN_DIALOG:
-            if (dialogFlags & DIALOG_UNK1_FLAG_2) {
-                func_802D8050(dialogID);
-            } else if (dialogFlags & DIALOG_UNK1_FLAG_1) {
-                func_802D7F90(dialogID);
+            if (dialogFlags & DIALOG_UNK1_FLAG_RESPONSE) {
+                create_dialog_box_with_response(dialogID);
+            } else if (dialogFlags & DIALOG_UNK1_FLAG_DEFAULT) {
+                create_dialog_box(dialogID);
             }
             o->oDialogState++;
             break;
 
         case DIALOG_UNK1_AWAIT_DIALOG:
-            if (dialogFlags & DIALOG_UNK1_FLAG_2) {
+            if (dialogFlags & DIALOG_UNK1_FLAG_RESPONSE) {
                 if (gDialogResponse != 0) {
                     obj_end_dialog(dialogFlags, gDialogResponse);
                 }
-            } else if (dialogFlags & DIALOG_UNK1_FLAG_1) {
+            } else if (dialogFlags & DIALOG_UNK1_FLAG_DEFAULT) {
                 if (get_dialog_id() == -1) {
                     obj_end_dialog(dialogFlags, 3);
                 }
@@ -2660,7 +2661,7 @@ s32 obj_update_dialog_unk1(s32 arg0, s32 dialogFlags, s32 dialogID, UNUSED s32 u
     return dialogResponse;
 }
 
-s32 obj_update_dialog_unk2(s32 arg0, s32 dialogFlags, s32 dialogID, s32 arg3) {
+s32 obj_update_dialog_with_cutscene(s32 actionArg, s32 dialogFlags, s32 cutsceneTable, s32 dialogID) {
     s32 dialogResponse = 0;
     s32 doneTurning = TRUE;
 
@@ -2700,7 +2701,7 @@ s32 obj_update_dialog_unk2(s32 arg0, s32 dialogFlags, s32 dialogID, s32 arg3) {
                 }
             }
 
-            if (set_mario_npc_dialog(arg0) == 2 && doneTurning) {
+            if (set_mario_npc_dialog(actionArg) == 2 && doneTurning) {
                 o->oDialogResponse = 0;
                 o->oDialogState++;
             } else {
@@ -2709,12 +2710,12 @@ s32 obj_update_dialog_unk2(s32 arg0, s32 dialogFlags, s32 dialogID, s32 arg3) {
             break;
 
         case DIALOG_UNK2_AWAIT_DIALOG:
-            if (dialogID == 0xA1) {
-                if ((o->oDialogResponse = func_8028F9A4(dialogID, o)) != 0) {
+            if (cutsceneTable == CUTSCENE_CAP_SWITCH_PRESS) {
+                if ((o->oDialogResponse = cutscene_object_without_dialog(cutsceneTable, o)) != 0) {
                     o->oDialogState++;
                 }
             } else {
-                if ((o->oDialogResponse = func_8028F8E0(dialogID, o, arg3)) != 0) {
+                if ((o->oDialogResponse = cutscene_object_with_dialog(cutsceneTable, o, dialogID)) != 0) {
                     o->oDialogState++;
                 }
             }
@@ -2839,7 +2840,7 @@ void func_802A4AEC(s32 sp18) {
 
 s32 obj_check_grabbed_mario(void) {
     if (o->oInteractStatus & INT_STATUS_GRABBED_MARIO) {
-        o->oUnknownUnk88 = 1;
+        o->oKingBobombUnk88 = 1;
         obj_become_intangible();
         return TRUE;
     }
@@ -2902,7 +2903,7 @@ void obj_spawn_loot_blue_coin(void) {
 void obj_spawn_star_at_y_offset(f32 targetX, f32 targetY, f32 targetZ, f32 offsetY) {
     f32 objectPosY = o->oPosY;
     o->oPosY += offsetY + gDebugInfo[5][0];
-    CreateStar(targetX, targetY, targetZ);
+    create_star(targetX, targetY, targetZ);
     o->oPosY = objectPosY;
 }
 #endif

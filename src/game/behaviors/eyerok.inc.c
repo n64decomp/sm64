@@ -34,7 +34,7 @@ static void eyerok_boss_act_sleep(void) {
         eyerok_spawn_hand(-1, MODEL_EYEROK_LEFT_HAND, bhvEyerokHand);
         eyerok_spawn_hand(1, MODEL_EYEROK_RIGHT_HAND, bhvEyerokHand);
     } else if (o->oDistanceToMario < 500.0f) {
-        PlaySound2(SOUND_OBJECT_EYEROKEXPLODE);
+        PlaySound2(SOUND_OBJ_EYEROK_EXPLODE);
         o->oAction = EYEROK_BOSS_ACT_WAKE_UP;
     }
 }
@@ -63,7 +63,7 @@ static void eyerok_boss_act_wake_up(void) {
 }
 
 static void eyerok_boss_act_show_intro_text(void) {
-    if (obj_update_dialog_unk2(2, 0, 0xA2, 0x75)) {
+    if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG_1, 117)) {
         o->oAction = EYEROK_BOSS_ACT_FIGHT;
     }
 }
@@ -117,8 +117,8 @@ static void eyerok_boss_act_fight(void) {
 
 static void eyerok_boss_act_die(void) {
     if (o->oTimer == 60) {
-        if (obj_update_dialog_unk2(2, 0, 0xA2, 0x76)) {
-            CreateStar(0.0f, -900.0f, -3700.0f);
+        if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG_1, 118)) {
+            create_star(0.0f, -900.0f, -3700.0f);
         } else {
             o->oTimer -= 1;
         }
@@ -150,7 +150,7 @@ void bhv_eyerok_boss_loop(void) {
 
 static s32 eyerok_hand_check_attacked(void) {
     if (o->oEyerokReceivedAttack != 0 && abs_angle_diff(o->oAngleToMario, o->oFaceAngleYaw) < 0x3000) {
-        PlaySound2(SOUND_CH9_UNK5A_LOWPRIO);
+        PlaySound2(SOUND_OBJ2_EYEROK_SOUND_SHORT);
 
         if (--o->oHealth >= 2) {
             o->oAction = EYEROK_HAND_ACT_ATTACKED;
@@ -174,7 +174,7 @@ static s32 eyerok_hand_check_attacked(void) {
 }
 
 static void func_8030DBA8(void) {
-    PlaySound2(SOUND_OBJECT_POUNDINGLOUD);
+    PlaySound2(SOUND_OBJ_POUNDING_LOUD);
     func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
     func_802ADA94();
 }
@@ -268,7 +268,7 @@ static void eyerok_hand_act_show_eye(void) {
     UNUSED s16 val06;
 
     set_obj_animation_and_sound_state(5);
-    func_802F9378(0, 0, SOUND_OBJECT_BRIDGEEXPLODE);
+    func_802F9378(0, 0, SOUND_OBJ_EYEROK_SHOW_EYE);
 
     if (!eyerok_hand_check_attacked()) {
         if (o->parentObj->oEyerokBossActiveHand == 0) {
@@ -343,11 +343,11 @@ static void eyerok_hand_act_die(void) {
     if (func_802F92B0(1)) {
         o->parentObj->oEyerokBossUnk1AC = 0;
         func_802A3C98(150.0f, 1);
-        create_sound_spawner(SOUND_CH9_UNK5B);
+        create_sound_spawner(SOUND_OBJ2_EYEROK_SOUND_LONG);
     }
 
     if (o->oMoveFlags & 0x00000003) {
-        PlaySound2(SOUND_OBJECT_POUNDINGLOUD);
+        PlaySound2(SOUND_OBJ_POUNDING_LOUD);
         o->oForwardVel = 0.0f;
     }
 }

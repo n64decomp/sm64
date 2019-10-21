@@ -32,10 +32,10 @@ s8 D_8032F4FC[] = { 7, 8, 9, 12, 13, 14, 15, 4, 3, 16, 17, 19, 3, 3, 3, 3 };
 s16 D_8032F50C[] = { 60, 0 };
 s16 D_8032F510[] = { 50, 0 };
 s8 D_8032F514[] = { 24, 42, 60, -1 };
-s16 D_8032F518[3] = { 119, 120, 121 };
+s16 sBowserDefeatedDialogText[3] = { 119, 120, 121 };
 s16 D_8032F520[][3] = { { 1, 10, 40 },   { 0, 0, 74 },    { -1, -10, 114 },  { 1, -20, 134 },
                         { -1, 20, 154 }, { 1, 40, 164 },  { -1, -40, 174 },  { 1, -80, 179 },
-                        { -1, 80, 184 }, { 1, 160, 186 }, { -1, -160, 186 }, { 1, 0, 0 } };
+                        { -1, 80, 184 }, { 1, 160, 186 }, { -1, -160, 186 }, { 1, 0, 0 }, };
 
 void bhv_bowser_tail_anchor_loop(void) {
     obj_call_action_function(sBowserTailAnchorActions);
@@ -58,7 +58,7 @@ void bhv_bowser_flame_spawn_loop(void) {
         if (bowser->header.gfx.unk38.curAnim->unk08 == sp30)
             sp30 = 0;
         if (sp30 > 45 && sp30 < 85) {
-            PlaySound(SOUND_CH6_BOWSERSPITFIRE);
+            PlaySound(SOUND_AIR_BOWSER_SPIT_FIRE);
             sp2C = sp1C[5 * sp30];
             sp28 = sp1C[5 * sp30 + 2];
             o->oPosX = bowser->oPosX + (sp28 * sp20 + sp2C * sp24);
@@ -111,7 +111,7 @@ void func_802B392C(s32 *a) {
         if (a[0] < 4) {
             func_802A11B4(o, 8);
             func_802AA618(0, 0, 60.0f);
-            PlaySound2(SOUND_OBJECT_BOWSERWALK);
+            PlaySound2(SOUND_OBJ_BOWSER_WALK);
         }
     }
 }
@@ -150,9 +150,9 @@ s32 func_802B3A98(void) {
 }
 
 void func_802B3B0C(void) {
-    if (o->oUnknownUnk88 == 0)
+    if (o->oBowserUnk88 == 0)
         o->oAction = 5;
-    else if (o->oUnknownUnk88 == 1)
+    else if (o->oBowserUnk88 == 1)
         o->oAction = 6;
     else if (o->oBehParams2ndByte == 1)
         o->oAction = 13;
@@ -175,8 +175,8 @@ void ActionBowser6(void) {
         if (func_802B3A30())
             o->oSubAction++;
     } else if (func_802B3A98()) {
-        if (o->oUnknownUnk88 == 1)
-            o->oUnknownUnk88 = 0;
+        if (o->oBowserUnk88 == 1)
+            o->oBowserUnk88 = 0;
         func_802B3B0C();
     }
 }
@@ -303,7 +303,7 @@ void ActionBowser18() // unused?
 
 void ActionBowser0() // only lasts one frame
 {
-    o->oEyesShut = 0;
+    o->oBowserEyesShut = 0;
     set_obj_animation_and_sound_state(12);
     // stop him still
     o->oAngleVelYaw = 0;
@@ -321,7 +321,7 @@ void ActionBowser0() // only lasts one frame
 void ActionBowser15(void) {
     o->oForwardVel = 0.0f;
     if (o->oTimer == 0)
-        PlaySound2(SOUND_OBJECT_BOWSERINHALING);
+        PlaySound2(SOUND_OBJ_BOWSER_INHALING);
     if (func_802A4AB0(6))
         o->oAction = 0;
 }
@@ -361,10 +361,10 @@ void ActionBowser16(void) {
     switch (o->oSubAction) {
         case 0:
             obj_become_intangible();
-            o->oUnk1AC_S16 = 0;
+            o->oBowserUnk1AC = 0;
             o->oBowserUnkF8 = 30;
             if (o->oTimer == 0)
-                PlaySound2(SOUND_CH9_UNK66);
+                PlaySound2(SOUND_OBJ2_BOWSER_TELEPORT);
             if (o->oOpacity == 0) {
                 o->oSubAction++;
                 o->oMoveAngleYaw = o->oAngleToMario;
@@ -381,12 +381,12 @@ void ActionBowser16(void) {
                 if (o->oDistanceToMario > 500.0f) {
                     o->oSubAction = 2;
                     o->oMoveAngleYaw = o->oAngleToMario; // large change in angle?
-                    PlaySound2(SOUND_CH9_UNK66);
+                    PlaySound2(SOUND_OBJ2_BOWSER_TELEPORT);
                 }
             break;
         case 2:
             o->oForwardVel = 0.0f;
-            o->oUnk1AC_S16 = 0xFF;
+            o->oBowserUnk1AC = 0xFF;
             if (o->oOpacity == 0xFF)
                 o->oAction = 0;
             obj_become_tangible();
@@ -400,7 +400,7 @@ void ActionBowser8(void) // only in sky
     set_obj_animation_and_sound_state(11);
     frame = o->header.gfx.unk38.animFrame;
     if (frame > 24 && frame < 36) {
-        PlaySound(SOUND_CH6_BOWSERSPITFIRE);
+        PlaySound(SOUND_AIR_BOWSER_SPIT_FIRE);
         if (frame == 35)
             spawn_object_relative(1, 0, 0x190, 0x64, o, MODEL_RED_FLAME, bhvBlueBowserFlame);
         else
@@ -416,7 +416,7 @@ void ActionBowser12(void) {
         o->oForwardVel = -400.0f;
         o->oVelY = 100.0f;
         o->oMoveAngleYaw = o->oBowserAngleToCentre + 0x8000;
-        o->oEyesShut = 1;
+        o->oBowserEyesShut = 1;
     }
     if (o->oSubAction == 0) {
         set_obj_animation_and_sound_state(25);
@@ -438,7 +438,7 @@ void ActionBowser12(void) {
                 o->oAction = 3;
             else
                 o->oAction = 0;
-            o->oEyesShut = 0;
+            o->oBowserEyesShut = 0;
         }
     } else {
     }
@@ -491,7 +491,7 @@ void ActionBowser13(void) {
         }
     } else if (o->oSubAction == 1) {
 #ifndef VERSION_JP
-        if (o->oBehParams2ndByte == 2 && o->oUnknownUnkF4_S32 & 0x10000)
+        if (o->oBehParams2ndByte == 2 && o->oBowserUnkF4 & 0x10000)
             func_u_802B4AF4();
         if (func_802B4A94()) {
             o->oBowserUnkF4 &= 0xfffeffff;
@@ -676,7 +676,7 @@ void ActionBowser1(void) // unused?
 }
 
 void func_802B5738(void) {
-    o->oUnk1AC_S16 = 0;
+    o->oBowserUnk1AC = 0;
     if (o->oOpacity == 0) {
         o->oForwardVel = 0.0f;
         o->oVelY = 0.0f;
@@ -710,7 +710,7 @@ void ActionBowser2(void) {
             if (obj_check_anim_frame(11)) {
                 o->oMoveAngleYaw = o->oBowserAngleToCentre;
                 o->oVelY = 150.0f;
-                o->oUnk1AC_S16 = 0xFF;
+                o->oBowserUnk1AC = 0xFF;
                 o->oBowserUnkF8 = 0;
                 o->oSubAction++;
             } else
@@ -723,9 +723,9 @@ void ActionBowser2(void) {
                     if (absf(o->oFloorHeight - o->oHomeY) < 100.0f)
                         approach_f32_signed(&o->oForwardVel, 0, -5.0f);
                     else
-                        obj_obj_forward_vel_approach_upward(150.0f, 2.0f);
+                        obj_forward_vel_approach_upward(150.0f, 2.0f);
                 } else
-                    obj_obj_forward_vel_approach_upward(150.0f, 2.0f);
+                    obj_forward_vel_approach_upward(150.0f, 2.0f);
             }
             if (func_802B4A94()) {
                 o->oDragStrength = 10.0f;
@@ -760,7 +760,7 @@ void ActionBowser2(void) {
 
 void ActionBowser3(void) {
     if (item_in_array(o->oTimer, D_8032F514))
-        PlaySound2(SOUND_OBJECT_BOWSERWALK);
+        PlaySound2(SOUND_OBJ_BOWSER_WALK);
     if (func_802A4AB0(10))
         o->oAction = 0;
 }
@@ -770,7 +770,7 @@ void func_802B5C78(void) {
         gSecondCameraFocus = spawn_object(o, MODEL_STAR, &bhvGrandStar);
     else {
         gSecondCameraFocus = spawn_object(o, MODEL_BOWSER_KEY, &bhvBowserKey);
-        PlaySound2(SOUND_CH8_UNK61);
+        PlaySound2(SOUND_GENERAL2_BOWSER_KEY);
     }
     gSecondCameraFocus->oAngleVelYaw = o->oAngleVelYaw;
 }
@@ -788,10 +788,10 @@ void func_802B5D18(void) {
 }
 
 void func_802B5DD8(void) {
-    o->oEyesShut = 1;
+    o->oBowserEyesShut = 1;
     func_802B392C(&o->oBowserUnkF8);
     if (o->oMoveFlags & 1)
-        PlaySound2(SOUND_OBJECT_BOWSERWALK);
+        PlaySound2(SOUND_OBJ_BOWSER_WALK);
     if (o->oMoveFlags & 2) {
         o->oForwardVel = 0.0f;
         o->oSubAction++;
@@ -843,11 +843,11 @@ s32 func_802B6120(void) {
             func_8031FFB4(0, 60, 40);
             o->oBowserUnkF8++;
         }
-        if (obj_update_dialog_unk1(2, 18, D_8032F518[o->oBehParams2ndByte], 0)) {
+        if (obj_update_dialog(2, 18, sBowserDefeatedDialogText[o->oBehParams2ndByte], 0)) {
             o->oBowserUnkF8++;
-            PlaySound2(SOUND_CH8_UNK60);
-            func_80320040(0, 60);
-            func_8031F7CC(0, 1);
+            PlaySound2(SOUND_GENERAL2_BOWSER_EXPLODE);
+            sequence_player_unlower(0, 60);
+            sequence_player_fade_out(0, 1);
         }
     } else if (func_802B5F20()) {
         func_802B60B8();
@@ -862,20 +862,20 @@ s32 func_802B6120(void) {
 s32 func_802B6254(void) {
     UNUSED s32 unused;
     s32 ret = 0;
-    s32 sp1C;
+    s32 dialogID;
     if (o->oBowserUnkF8 < 2) {
         if (gHudDisplay.stars < 120)
-            sp1C = 121;
+            dialogID = 121;
         else
-            sp1C = 163;
+            dialogID = 163;
         if (o->oBowserUnkF8 == 0) {
             func_8031FFB4(0, 60, 40);
             o->oBowserUnkF8++;
         }
-        if (obj_update_dialog_unk1(2, 18, sp1C, 0)) {
+        if (obj_update_dialog(2, 18, dialogID, 0)) {
             obj_set_model(MODEL_BOWSER2);
-            func_80320040(0, 60);
-            func_8031F7CC(0, 1);
+            sequence_player_unlower(0, 60);
+            sequence_player_fade_out(0, 1);
             func_802B5C78();
             o->oBowserUnkF8++;
         }
@@ -950,7 +950,7 @@ void ActionBowser19(void) {
                     sp28 = (o->oTimer - D_8032F520[i - 1][2]) * sp28;
                 func_802B64E8(platform, sp28);
                 if (sp28 != 0)
-                    play_sound(SOUND_ENVIRONMENT_UNKNOWN4, platform->header.gfx.cameraToObject);
+                    play_sound(SOUND_ENV_UNKNOWN4, platform->header.gfx.cameraToObject);
                 sp1C = 0;
                 break;
             }
@@ -995,25 +995,25 @@ struct SoundState D_8032F5B8[] = { { 0, 0, 0, NO_SOUND },
                                    { 0, 0, 0, NO_SOUND },
                                    { 0, 0, 0, NO_SOUND },
                                    { 0, 0, 0, NO_SOUND },
-                                   { 1, 0, -1, SOUND_OBJECT_BOWSERWALK },
-                                   { 1, 0, -1, SOUND_CH9_UNK04 },
-                                   { 1, 0, -1, SOUND_CH9_UNK04 },
+                                   { 1, 0, -1, SOUND_OBJ_BOWSER_WALK },
+                                   { 1, 0, -1, SOUND_OBJ2_BOWSER_ROAR },
+                                   { 1, 0, -1, SOUND_OBJ2_BOWSER_ROAR },
                                    { 0, 0, 0, NO_SOUND },
                                    { 0, 0, 0, NO_SOUND },
-                                   { 1, 20, 40, SOUND_OBJECT_BOWSERWALK },
-                                   { 1, 20, -1, SOUND_OBJECT_BOWSERWALK },
-                                   { 1, 20, 40, SOUND_OBJECT_BOWSERWALK },
-                                   { 1, 0, -1, SOUND_OBJECT_BOWSERTAILPICKUP },
-                                   { 1, 0, -1, SOUND_OBJECT_BOWSERDEFEATED },
-                                   { 1, 8, -1, SOUND_OBJECT_BOWSERWALK },
-                                   { 1, 8, 17, SOUND_OBJECT_BOWSERWALK },
-                                   { 1, 8, -10, SOUND_OBJECT_BOWSERWALK },
+                                   { 1, 20, 40, SOUND_OBJ_BOWSER_WALK },
+                                   { 1, 20, -1, SOUND_OBJ_BOWSER_WALK },
+                                   { 1, 20, 40, SOUND_OBJ_BOWSER_WALK },
+                                   { 1, 0, -1, SOUND_OBJ_BOWSER_TAIL_PICKUP },
+                                   { 1, 0, -1, SOUND_OBJ_BOWSER_DEFEATED },
+                                   { 1, 8, -1, SOUND_OBJ_BOWSER_WALK },
+                                   { 1, 8, 17, SOUND_OBJ_BOWSER_WALK },
+                                   { 1, 8, -10, SOUND_OBJ_BOWSER_WALK },
                                    { 0, 0, 0, NO_SOUND },
-                                   { 1, 5, -1, SOUND_OBJECT_FLAMEBLOWN },
+                                   { 1, 5, -1, SOUND_OBJ_FLAME_BLOWN },
                                    { 0, 0, 0, NO_SOUND },
                                    { 0, 0, 0, NO_SOUND },
-                                   { 1, 0, -1, SOUND_OBJECT_BOWSERTAILPICKUP },
-                                   { 1, 0, -1, SOUND_CH9_UNK04 } };
+                                   { 1, 0, -1, SOUND_OBJ_BOWSER_TAIL_PICKUP },
+                                   { 1, 0, -1, SOUND_OBJ2_BOWSER_ROAR } };
 s8 D_8032F690[4] = { 0, 0, 1, 0 };
 s8 D_8032F694[4] = { 1, 1, 3, 0 };
 extern u8 bowser_3_seg7_collision_07004B94[];
@@ -1063,7 +1063,7 @@ void func_802B697C(void) {
     obj_become_intangible();
     switch (o->oBowserUnk10E) {
         case 0:
-            PlaySound2(SOUND_OBJECT_BOWSERTAILPICKUP);
+            PlaySound2(SOUND_OBJ_BOWSER_TAIL_PICKUP);
             func_8029FA5C(3, 1);
             o->oBowserUnk10E++;
             break;
@@ -1134,8 +1134,8 @@ void bhv_bowser_loop(void) {
     }
     obj_align_gfx_with_floor();
     if (o->oAction != 4)
-        if (o->oUnk1AC_S16 != o->oOpacity) {
-            if (o->oUnk1AC_S16 > o->oOpacity) {
+        if (o->oBowserUnk1AC != o->oOpacity) {
+            if (o->oBowserUnk1AC > o->oOpacity) {
                 o->oOpacity += 20;
                 if (o->oOpacity >= 0x100)
                     o->oOpacity = 0xFF;
@@ -1151,7 +1151,7 @@ void bhv_bowser_init(void) {
     s32 level; // 0 is dw, 1 is fs, 2 is sky
     o->oBowserUnk110 = 1;
     o->oOpacity = 0xFF;
-    o->oUnk1AC_S16 = 0xFF;
+    o->oBowserUnk1AC = 0xFF;
     if (gCurrLevelNum == LEVEL_BOWSER_2)
         level = 1;
     else if (gCurrLevelNum == LEVEL_BOWSER_3)
@@ -1159,12 +1159,12 @@ void bhv_bowser_init(void) {
     else
         level = 0;
     o->oBehParams2ndByte = level;
-    o->oUnk1B2 = D_8032F690[level];
+    o->oBowserUnk1B2 = D_8032F690[level];
     o->oHealth = D_8032F694[level];
     func_802A11B4(o, 4);
     o->oAction = 5;
-    o->oUnk1AE = 0;
-    o->oEyesShut = 0;
+    o->oBowserUnk1AE = 0;
+    o->oBowserEyesShut = 0;
 }
 
 #undef BITDW
@@ -1199,23 +1199,23 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
                 if (a0->oAngleVelYaw < 0)
                     switchCase->selectedCase = 3;
             }
-            if (a0->oUnk1AE > 50)
+            if (a0->oBowserUnk1AE > 50)
                 switchCase->selectedCase = 1;
             break;
         case 1:
-            if (a0->oUnk1AE > 2)
+            if (a0->oBowserUnk1AE > 2)
                 switchCase->selectedCase = 2;
             break;
         case 2:
-            if (a0->oUnk1AE > 2)
+            if (a0->oBowserUnk1AE > 2)
                 switchCase->selectedCase = 9;
             break;
         case 9:
-            if (a0->oUnk1AE > 2)
+            if (a0->oBowserUnk1AE > 2)
                 switchCase->selectedCase = 0;
             break;
         case 5:
-            if (a0->oUnk1AE > 2) {
+            if (a0->oBowserUnk1AE > 2) {
                 switchCase->selectedCase = 6;
                 if (a0->oAngleVelYaw <= 0)
                     switchCase->selectedCase = 0;
@@ -1226,7 +1226,7 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
                 switchCase->selectedCase = 5;
             break;
         case 3:
-            if (a0->oUnk1AE > 2) {
+            if (a0->oBowserUnk1AE > 2) {
                 switchCase->selectedCase = 4;
                 if (a0->oAngleVelYaw >= 0)
                     switchCase->selectedCase = 0;
@@ -1240,11 +1240,11 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
             switchCase->selectedCase = 0;
     }
     if (switchCase->selectedCase != sp1C)
-        a0->oUnk1AE = -1;
+        a0->oBowserUnk1AE = -1;
 }
 
 /** Geo switch for controlling the state of bowser's eye direction and open/closed
- * state. Checks whether oEyesShut is TRUE and closes eyes if so and processes
+ * state. Checks whether oBowserEyesShut is TRUE and closes eyes if so and processes
  * direction otherwise.
  */
 s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
@@ -1255,7 +1255,7 @@ s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
     if (run == TRUE) {
         if (gCurGraphNodeHeldObject != NULL)
             obj = (struct Object *) gCurGraphNodeHeldObject->objNode;
-        switch (sp36 = obj->oEyesShut) {
+        switch (sp36 = obj->oBowserEyesShut) {
             case 0: // eyes open, handle eye looking direction
                 func_802B70C8(obj, switchCase);
                 break;
@@ -1263,7 +1263,7 @@ s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
                 switchCase->selectedCase = 2;
                 break;
         }
-        obj->oUnk1AE++;
+        obj->oBowserUnk1AE++;
     }
     return 0;
 }
@@ -1283,9 +1283,9 @@ Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
             sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | 0x100;
         else
             sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | (0x100 | 0x400);
-        sp28 = sp2C = alloc_display_list(16);
+        sp28 = sp2C = alloc_display_list(2 * sizeof(Gfx));
 
-        if (sp24->oUnk1B2 != 0) {
+        if (sp24->oBowserUnk1B2 != 0) {
             gSPClearGeometryMode(sp28++, G_LIGHTING);
         }
         gSPEndDisplayList(sp28);
@@ -1304,7 +1304,7 @@ void ActionFallingBowserPlatform1(void) {
     UNUSED s32 unused;
     struct Object *sp0 = o->oPlatformUnkF8;
     if (sp0->platform == o)
-        if (sp0->oAction == 13 && sp0->oUnknownUnkF4_S32 & 0x10000)
+        if (sp0->oAction == 13 && sp0->oBowserUnkF4 & 0x10000)
             o->oAction = 2;
     if (sp0->oHealth == 1 && (sp0->oAction == 3 || sp0->oHeldState != HELD_FREE))
         o->oSubAction = 1;
@@ -1323,7 +1323,7 @@ void ActionFallingBowserPlatform2(void) {
     f32 sp1C;
     UNUSED struct Object *sp18 = o->oPlatformUnkF8;
     if (o->oTimer == 0 || o->oTimer == 22)
-        PlaySound2(SOUND_GENERAL_BOWSERPLATFORM_2);
+        PlaySound2(SOUND_GENERAL_BOWSER_PLATFORM_2);
     if (o->oTimer < 22) {
         set_camera_shake_2(SHAKE_2_FALLING_BITS_PLAT);
         o->oVelY = 8.0f;

@@ -29,7 +29,7 @@ void func_8018BCB8(struct ObjGadget *);
 
 /* 239EC0 -> 239F78 */
 void get_objvalue(union ObjVarVal *dst, enum ValPtrType type, void *base, s32 offset) {
-    union ObjVarVal *objAddr = (void *) ((u32) base + offset);
+    union ObjVarVal *objAddr = (void *) ((u8 *) base + offset);
 
     switch (type) {
         case OBJ_VALUE_INT:
@@ -68,7 +68,7 @@ void cat_grp_name_to_buf(struct ObjGroup *group) {
     char buf[0x100]; // sp18
 
     if (group->debugPrint == 1) {
-        sprintf(buf, "| %s %%x%d", group->name, (u32) group);
+        sprintf(buf, "| %s %%x%d", group->name, (u32) (uintptr_t) group);
         gd_strcat(sMenuStrBuf, buf); // gd_strcat?
     }
 }
@@ -125,7 +125,7 @@ struct ObjGadget *make_gadget(UNUSED s32 a0, s32 a1) {
 
 /* 23A32C -> 23A3E4 */
 void set_objvalue(union ObjVarVal *src, enum ValPtrType type, void *base, s32 offset) {
-    union ObjVarVal *dst = (void *) ((u32) base + offset);
+    union ObjVarVal *dst = (void *) ((u8 *) base + offset);
     switch (type) {
         case OBJ_VALUE_INT:
             dst->i = src->i;
@@ -164,10 +164,11 @@ void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
     f32 sp2C;
     struct ObjValPtrs *vp;
 
-    if (gdgt->unk24 == 1)
+    if (gdgt->unk24 == 1) {
         gdgt->unk28 += a2 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
-    else if (gdgt->unk24 == 2)
+    } else if (gdgt->unk24 == 2) {
         gdgt->unk28 += a1 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
+    }
 
     if (gdgt->unk28 < 0.0f) {
         gdgt->unk28 = 0.0f;
@@ -201,8 +202,9 @@ void reset_gadget(struct ObjGadget *gdgt) {
     f32 sp34;
     struct ObjValPtrs *vp;
 
-    if (gdgt->unk3C - gdgt->unk38 == 0.0f)
+    if (gdgt->unk3C - gdgt->unk38 == 0.0f) {
         fatal_printf("gadget has zero range (%f -> %f)\n", gdgt->unk38, gdgt->unk3C);
+    }
 
     sp34 = (f32)(1.0 / (gdgt->unk3C - gdgt->unk38));
 

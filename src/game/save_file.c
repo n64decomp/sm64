@@ -80,11 +80,9 @@ static void no_op(void) {
 
 /**
  * Read from EEPROM to a given address.
- * The EEPROM address is computed using the offset of the destination address
- * from gSaveBuffer.
- * Try at most 4 times, and return 0 on success. On failure, return the status
- * returned from osEepromLongRead. It also returns 0 if EEPROM isn't loaded
- * correctly in the system.
+ * The EEPROM address is computed using the offset of the destination address from gSaveBuffer.
+ * Try at most 4 times, and return 0 on success. On failure, return the status returned from
+ * osEepromLongRead. It also returns 0 if EEPROM isn't loaded correctly in the system.
  */
 static s32 read_eeprom_data(void *buffer, s32 size) {
     s32 status = 0;
@@ -104,11 +102,9 @@ static s32 read_eeprom_data(void *buffer, s32 size) {
 
 /**
  * Write data to EEPROM.
- * The EEPROM address is computed using the offset of the source address from
- * gSaveBuffer.
- * Try at most 4 times, and return 0 on success. On failure, return the status
- * returned from osEepromLongWrite.
- * Unlike read_eeprom_data, return 1 if EEPROM isn't loaded.
+ * The EEPROM address is computed using the offset of the source address from gSaveBuffer.
+ * Try at most 4 times, and return 0 on success. On failure, return the status returned from
+ * osEepromLongWrite. Unlike read_eeprom_data, return 1 if EEPROM isn't loaded.
  */
 static s32 write_eeprom_data(void *buffer, s32 size) {
     s32 status = 1;
@@ -133,8 +129,9 @@ static s32 write_eeprom_data(void *buffer, s32 size) {
 static s32 calc_checksum(u8 *data, s32 size) {
     u16 chksum = 0;
 
-    while (size-- > 2)
+    while (size-- > 2) {
         chksum += *data++;
+    }
     return chksum;
 }
 
@@ -144,10 +141,12 @@ static s32 calc_checksum(u8 *data, s32 size) {
 static s32 verify_save_block_signature(void *buffer, s32 size, u16 magic) {
     struct SaveBlockSignature *sig = (struct SaveBlockSignature *) ((size - 4) + (u8 *) buffer);
 
-    if (sig->magic != magic)
+    if (sig->magic != magic) {
         return FALSE;
-    if (sig->chksum != calc_checksum(buffer, size))
+    }
+    if (sig->chksum != calc_checksum(buffer, size)) {
         return FALSE;
+    }
     return TRUE;
 }
 
@@ -168,27 +167,24 @@ static void restore_main_menu_data(s32 srcSlot) {
     s32 destSlot = srcSlot ^ 1;
 
     // Compute checksum on source data
-    add_save_block_signature(&gSaveBuffer.menuData[srcSlot], sizeof(gSaveBuffer.menuData[srcSlot]),
-                             MENU_DATA_MAGIC);
+    add_save_block_signature(&gSaveBuffer.menuData[srcSlot], sizeof(gSaveBuffer.menuData[srcSlot]), MENU_DATA_MAGIC);
 
     // Copy source data to destination
-    bcopy(&gSaveBuffer.menuData[srcSlot], &gSaveBuffer.menuData[destSlot],
-          sizeof(gSaveBuffer.menuData[destSlot]));
+    bcopy(&gSaveBuffer.menuData[srcSlot], &gSaveBuffer.menuData[destSlot], sizeof(gSaveBuffer.menuData[destSlot]));
 
-    // Write destination data to eeprom
+    // Write destination data to EEPROM
     write_eeprom_data(&gSaveBuffer.menuData[destSlot], sizeof(gSaveBuffer.menuData[destSlot]));
 }
 
 static void save_main_menu_data(void) {
     if (gMainMenuDataModified) {
         // Compute checksum
-        add_save_block_signature(&gSaveBuffer.menuData[0], sizeof(gSaveBuffer.menuData[0]),
-                                 MENU_DATA_MAGIC);
+        add_save_block_signature(&gSaveBuffer.menuData[0], sizeof(gSaveBuffer.menuData[0]), MENU_DATA_MAGIC);
 
         // Back up data
         bcopy(&gSaveBuffer.menuData[0], &gSaveBuffer.menuData[1], sizeof(gSaveBuffer.menuData[1]));
 
-        // Write to eeprom
+        // Write to EEPROM
         write_eeprom_data(gSaveBuffer.menuData, sizeof(gSaveBuffer.menuData));
 
         gMainMenuDataModified = FALSE;
@@ -229,8 +225,9 @@ static void touch_coin_score_age(s32 fileIndex, s32 courseIndex) {
     if (currentAge != 0) {
         for (i = 0; i < NUM_SAVE_FILES; i++) {
             age = get_coin_score_age(i, courseIndex);
-            if (age < currentAge)
+            if (age < currentAge) {
                 set_coin_score_age(i, courseIndex, age + 1);
+            }
         }
 
         set_coin_score_age(fileIndex, courseIndex, 0);
@@ -244,8 +241,9 @@ static void touch_coin_score_age(s32 fileIndex, s32 courseIndex) {
 static void touch_high_score_ages(s32 fileIndex) {
     s32 i;
 
-    for (i = 0; i < 15; i++)
+    for (i = 0; i < 15; i++) {
         touch_coin_score_age(fileIndex, i);
+    }
 }
 
 /**
@@ -262,7 +260,7 @@ static void restore_save_file_data(s32 fileIndex, s32 srcSlot) {
     bcopy(&gSaveBuffer.files[fileIndex][srcSlot], &gSaveBuffer.files[fileIndex][destSlot],
           sizeof(gSaveBuffer.files[fileIndex][destSlot]));
 
-    // Write destination data to eeprom
+    // Write destination data to EEPROM
     write_eeprom_data(&gSaveBuffer.files[fileIndex][destSlot],
                       sizeof(gSaveBuffer.files[fileIndex][destSlot]));
 }
@@ -277,7 +275,7 @@ void save_file_do_save(s32 fileIndex) {
         bcopy(&gSaveBuffer.files[fileIndex][0], &gSaveBuffer.files[fileIndex][1],
               sizeof(gSaveBuffer.files[fileIndex][1]));
 
-        // Write to eeprom
+        // Write to EEPROM
         write_eeprom_data(gSaveBuffer.files[fileIndex], sizeof(gSaveBuffer.files[fileIndex]));
 
         gSaveFileModified = FALSE;
@@ -316,11 +314,8 @@ void save_file_load_all(void) {
     read_eeprom_data(&gSaveBuffer, sizeof(gSaveBuffer));
 
     // Verify the main menu data and create a backup copy if only one of the slots is valid.
-    validSlots = verify_save_block_signature(&gSaveBuffer.menuData[0], sizeof(gSaveBuffer.menuData[0]),
-                                             MENU_DATA_MAGIC);
-    validSlots |= verify_save_block_signature(&gSaveBuffer.menuData[1], sizeof(gSaveBuffer.menuData[1]),
-                                              MENU_DATA_MAGIC)
-                  << 1;
+    validSlots = verify_save_block_signature(&gSaveBuffer.menuData[0], sizeof(gSaveBuffer.menuData[0]), MENU_DATA_MAGIC);
+    validSlots |= verify_save_block_signature(&gSaveBuffer.menuData[1], sizeof(gSaveBuffer.menuData[1]),MENU_DATA_MAGIC) << 1;
     switch (validSlots) {
         case 0: // Neither copy is correct
             wipe_main_menu_data();
@@ -335,11 +330,8 @@ void save_file_load_all(void) {
 
     for (file = 0; file < NUM_SAVE_FILES; file++) {
         // Verify the save file and create a backup copy if only one of the slots is valid.
-        validSlots = verify_save_block_signature(&gSaveBuffer.files[file][0],
-                                                 sizeof(gSaveBuffer.files[file][0]), SAVE_FILE_MAGIC);
-        validSlots |= verify_save_block_signature(&gSaveBuffer.files[file][1],
-                                                  sizeof(gSaveBuffer.files[file][1]), SAVE_FILE_MAGIC)
-                      << 1;
+        validSlots = verify_save_block_signature(&gSaveBuffer.files[file][0], sizeof(gSaveBuffer.files[file][0]), SAVE_FILE_MAGIC);
+        validSlots |= verify_save_block_signature(&gSaveBuffer.files[file][1], sizeof(gSaveBuffer.files[file][1]), SAVE_FILE_MAGIC) << 1;
         switch (validSlots) {
             case 0: // Neither copy is correct
                 save_file_erase(file);
@@ -393,8 +385,9 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
         //! Compares the coin score as a 16 bit value, but only writes the 8 bit
         // truncation. This can allow a high score to decrease.
 
-        if (coinScore > ((u16) save_file_get_max_coin_score(courseIndex) & 0xFFFF))
+        if (coinScore > ((u16) save_file_get_max_coin_score(courseIndex) & 0xFFFF)) {
             sUnusedGotGlobalCoinHiScore = 1;
+        }
 
         if (coinScore > save_file_get_course_coin_score(fileIndex, courseIndex)) {
             gSaveBuffer.files[fileIndex][0].courseCoinScores[courseIndex] = coinScore;
@@ -407,21 +400,24 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
 
     switch (gCurrLevelNum) {
         case LEVEL_BOWSER_1:
-            if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)))
+            if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
                 save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
+            }
             break;
 
         case LEVEL_BOWSER_2:
-            if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)))
+            if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
                 save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
+            }
             break;
 
         case LEVEL_BOWSER_3:
             break;
 
         default:
-            if (!(save_file_get_star_flags(fileIndex, courseIndex) & starFlag))
+            if (!(save_file_get_star_flags(fileIndex, courseIndex) & starFlag)) {
                 save_file_set_star_flags(fileIndex, courseIndex, starFlag);
+            }
             break;
     }
 }
@@ -463,8 +459,9 @@ s32 save_file_get_course_star_count(s32 fileIndex, s32 courseIndex) {
     u8 starFlags = save_file_get_star_flags(fileIndex, courseIndex);
 
     for (i = 0; i < 7; i++, flag <<= 1) {
-        if (starFlags & flag)
+        if (starFlags & flag) {
             count++;
+        }
     }
     return count;
 }
@@ -473,8 +470,9 @@ s32 save_file_get_total_star_count(s32 fileIndex, s32 minCourse, s32 maxCourse) 
     s32 count = 0;
 
     // Get standard course star count.
-    for (; minCourse <= maxCourse; minCourse++)
+    for (; minCourse <= maxCourse; minCourse++) {
         count += save_file_get_course_star_count(fileIndex, minCourse);
+    }
 
     // Add castle secret star count.
     return save_file_get_course_star_count(fileIndex, -1) + count;
@@ -492,8 +490,9 @@ void save_file_clear_flags(s32 flags) {
 }
 
 s32 save_file_get_flags(void) {
-    if (gCurrCreditsEntry != 0 || gCurrDemoInput != NULL)
+    if (gCurrCreditsEntry != 0 || gCurrDemoInput != NULL) {
         return 0;
+    }
     return gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags;
 }
 
@@ -504,10 +503,11 @@ s32 save_file_get_flags(void) {
 s32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
     s32 starFlags;
 
-    if (courseIndex == -1)
+    if (courseIndex == -1) {
         starFlags = (gSaveBuffer.files[fileIndex][0].flags >> 24) & 0x7F;
-    else
+    } else {
         starFlags = gSaveBuffer.files[fileIndex][0].courseStars[courseIndex] & 0x7F;
+    }
 
     return starFlags;
 }
@@ -517,10 +517,11 @@ s32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
  * If course is -1, add ot the bitset of obtained castle secret stars.
  */
 void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, s32 starFlags) {
-    if (courseIndex == -1)
+    if (courseIndex == -1) {
         gSaveBuffer.files[fileIndex][0].flags |= starFlags << 24;
-    else
+    } else {
         gSaveBuffer.files[fileIndex][0].courseStars[courseIndex] |= starFlags;
+    }
 
     gSaveBuffer.files[fileIndex][0].flags |= SAVE_FLAG_FILE_EXISTS;
     gSaveFileModified = TRUE;

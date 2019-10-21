@@ -23,7 +23,7 @@ struct MemoryPool;
 extern struct MemoryPool *D_8033A124;
 #endif
 
-u32 set_segment_base_addr(s32 segment, void *addr);
+uintptr_t set_segment_base_addr(s32 segment, void *addr);
 void *get_segment_base_addr(s32 segment);
 void *segmented_to_virtual(void *addr);
 void *virtual_to_segmented(s32 segment, void *addr);
@@ -52,7 +52,7 @@ void *mem_pool_alloc(struct MemoryPool *pool, u32 size);
 void mem_pool_free(struct MemoryPool *pool, void *addr);
 
 void *alloc_display_list(u32 size);
-void func_80278A78(struct MarioAnimation *a, void *b, void *c);
+void func_80278A78(struct MarioAnimation *a, void *b, struct Animation *target);
 s32 func_80278AD4(struct MarioAnimation *a, u32 b);
 
 #endif

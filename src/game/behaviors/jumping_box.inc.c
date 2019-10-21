@@ -63,7 +63,7 @@ void bhv_jumping_box_loop(void) {
             break;
     }
     if (o->oInteractStatus & INTERACT_HIT_FROM_BELOW) {
-        create_sound_spawner(SOUND_GENERAL_BREAKBOX);
+        create_sound_spawner(SOUND_GENERAL_BREAK_BOX);
         func_802A3C98(46.0f, 1);
     }
     o->oInteractStatus = 0;

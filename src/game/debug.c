@@ -138,26 +138,31 @@ void set_text_array_x_y(s32 xOffset, s32 yOffset) {
  * current debug mode as well as the printer array (down to up vs up to down).
  */
 void print_debug_bottom_up(const char *str, s32 number) {
-    if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT)
+    if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT) {
         print_text_array_info(gDebugPrintState2, str, number);
+    }
 }
 
 void print_debug_top_down_objectinfo(const char *str, s32 number) {
-    if ((gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT) && sDebugPage == DEBUG_PAGE_OBJECTINFO)
+    if ((gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT) && sDebugPage == DEBUG_PAGE_OBJECTINFO) {
         print_text_array_info(gDebugPrintState1, str, number);
+    }
 }
 
 void print_debug_top_down_mapinfo(const char *str, s32 number) {
-    if (sNoExtraDebug) // how come this is the only instance of the sNoExtraDebug check?
+    if (sNoExtraDebug) { // how come this is the only instance of the sNoExtraDebug check?
         return;
+    }
 
-    if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT)
+    if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT) {
         print_text_array_info(gDebugPrintState1, str, number);
+    }
 }
 
 void print_debug_top_down_normal(const char *str, s32 number) {
-    if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT)
+    if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT) {
         print_text_array_info(gDebugPrintState1, str, number);
+    }
 }
 
 #ifndef VERSION_EU
@@ -193,8 +198,9 @@ void print_mapinfo(void) {
         print_debug_top_down_mapinfo("bgarea   %d", pfloor->room);
     }
 
-    if (gCurrentObject->oPosY < water)
+    if (gCurrentObject->oPosY < water) {
         print_debug_top_down_mapinfo("water %d", water);
+    }
 }
 #else
 void print_mapinfo(void) {
@@ -304,10 +310,11 @@ void debug_unknown_level_select_check(void) {
     if (!sDebugLvSelectCheckFlag) {
         sDebugLvSelectCheckFlag += 1; // again, just do = TRUE...
 
-        if (!gDebugLevelSelect)
+        if (!gDebugLevelSelect) {
             gDebugInfoFlags = DEBUG_INFO_NOFLAGS;
-        else
+        } else {
             gDebugInfoFlags = DEBUG_INFO_FLAG_LSELECT;
+        }
 
         gNumCalls.floor = 0;
         gNumCalls.ceil = 0;
@@ -339,9 +346,9 @@ static void check_debug_button_seq(void) {
 
     buttonArr = sDebugInfoButtonSeq;
 
-    if (!(gPlayer1Controller->buttonDown & L_TRIG))
+    if (!(gPlayer1Controller->buttonDown & L_TRIG)) {
         sDebugInfoButtonSeqID = 0;
-    else {
+    } else {
         if ((s16)(cButtonMask = (gPlayer1Controller->buttonPressed & C_BUTTONS))) {
             if (buttonArr[sDebugInfoButtonSeqID] == cButtonMask) {
                 sDebugInfoButtonSeqID += 1;
@@ -396,30 +403,34 @@ static void try_modify_debug_controls(void) {
     }
     if (!(gPlayer1Controller->buttonDown & (L_TRIG | R_TRIG)) && sNoExtraDebug == FALSE) {
         sp4 = 1;
-        if (gPlayer1Controller->buttonDown & B_BUTTON)
+        if (gPlayer1Controller->buttonDown & B_BUTTON) {
             sp4 = 100;
+        }
 
         if (sDebugInfoDPadMask & U_JPAD) {
             sDebugSysCursor -= 1;
-            if (sDebugSysCursor < 0)
+            if (sDebugSysCursor < 0) {
                 sDebugSysCursor = 0;
+            }
         }
 
         if (sDebugInfoDPadMask & D_JPAD) {
             sDebugSysCursor += 1;
-            if (sDebugSysCursor >= 8)
+            if (sDebugSysCursor >= 8) {
                 sDebugSysCursor = 7;
+            }
         }
 
         if (sDebugInfoDPadMask & L_JPAD) {
             // we allow the player while in this mode to modify the debug controls. This is
             // so the playtester can adjust enemy behavior and parameters on the fly, since
             // various behaviors try to update their behaviors from gDebugInfo[4] and [5].
-            if (gPlayer1Controller->buttonDown & A_BUTTON)
+            if (gPlayer1Controller->buttonDown & A_BUTTON) {
                 gDebugInfo[sDebugPage][sDebugSysCursor] =
                     gDebugInfoOverwrite[sDebugPage][sDebugSysCursor];
-            else
+            } else {
                 gDebugInfo[sDebugPage][sDebugSysCursor] = gDebugInfo[sDebugPage][sDebugSysCursor] - sp4;
+            }
         }
 
         if (sDebugInfoDPadMask & R_JPAD) {
@@ -456,11 +467,13 @@ void try_print_debug_mario_object_info(void) {
 
     print_debug_top_down_mapinfo("obj  %d", gObjectCounter);
 
-    if (gNumFindFloorMisses)
+    if (gNumFindFloorMisses) {
         print_debug_bottom_up("NULLBG %d", gNumFindFloorMisses);
+    }
 
-    if (gUnknownWallCount)
+    if (gUnknownWallCount) {
         print_debug_bottom_up("WALL   %d", gUnknownWallCount);
+    }
 }
 
 /*
@@ -497,37 +510,49 @@ void try_do_mario_debug_object_spawn(void) {
     UNUSED s32 unused;
 
     if (sDebugPage == DEBUG_PAGE_STAGEINFO && gDebugInfo[DEBUG_PAGE_ENEMYINFO][7] == 1) {
-        if (gPlayer1Controller->buttonPressed & R_JPAD)
+        if (gPlayer1Controller->buttonPressed & R_JPAD) {
             spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_KOOPA_SHELL, bhvKoopaShell);
-        if (gPlayer1Controller->buttonPressed & L_JPAD)
+        }
+        if (gPlayer1Controller->buttonPressed & L_JPAD) {
             spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_BREAKABLE_BOX_SMALL,
                                   bhvJumpingBox);
-        if (gPlayer1Controller->buttonPressed & D_JPAD)
+        }
+        if (gPlayer1Controller->buttonPressed & D_JPAD) {
             spawn_object_relative(0, 0, 100, 200, gCurrentObject, MODEL_KOOPA_SHELL,
                                   bhvKoopaShellUnderwater);
+        }
     }
 }
 
 // TODO: figure out what this is
 static void Unknown802CA8B4(void) {
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED)
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED) {
         print_debug_top_down_objectinfo("BOUND   %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_ON_GROUND)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_ON_GROUND) {
         print_debug_top_down_objectinfo("TOUCH   %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_LEFT_GROUND)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_LEFT_GROUND) {
         print_debug_top_down_objectinfo("TAKEOFF %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_ENTERED_WATER)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_ENTERED_WATER) {
         print_debug_top_down_objectinfo("DIVE    %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_AT_WATER_SURFACE)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_AT_WATER_SURFACE) {
         print_debug_top_down_objectinfo("S WATER %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_UNDERWATER_OFF_GROUND)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_UNDERWATER_OFF_GROUND) {
         print_debug_top_down_objectinfo("U WATER %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_UNDERWATER_ON_GROUND)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_UNDERWATER_ON_GROUND) {
         print_debug_top_down_objectinfo("B WATER %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_IN_AIR)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_IN_AIR) {
         print_debug_top_down_objectinfo("SKY     %x", gCurrentObject->oMoveFlags);
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_8)
+    }
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_8) {
         print_debug_top_down_objectinfo("OUT SCOPE %x", gCurrentObject->oMoveFlags);
+    }
 }
 
 // unused, what is this?

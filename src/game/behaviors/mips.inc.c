@@ -30,8 +30,7 @@ void bhv_mips_init(void) {
         o->activeFlags = 0;
     }
 
-    // This flag seems to make MIPS fall straight down when thrown.
-    o->oUnk190 = 0x10;
+    o->oInteractionSubtype = INT_SUBTYPE_HOLDABLE_NPC;
 
 #ifndef VERSION_JP
     o->oGravity = 15.0f;
@@ -54,14 +53,14 @@ s16 bhv_mips_find_furthest_waypoint_to_mario(void) {
     s16 furthestWaypointIndex = -1;
     f32 furthestWaypointDistance = -10000.0f;
     f32 distanceToMario;
-    void **pathBase;
+    struct Waypoint **pathBase;
     struct Waypoint *waypoint;
 
     pathBase = segmented_to_virtual(&inside_castle_seg7_trajectory_mips);
 
     // For each waypoint in MIPS path...
     for (i = 0; i < 10; i++) {
-        waypoint = (struct Waypoint *) segmented_to_virtual(*(pathBase + i));
+        waypoint = segmented_to_virtual(*(pathBase + i));
         x = waypoint->pos[0];
         y = waypoint->pos[1];
         z = waypoint->pos[2];
@@ -112,12 +111,12 @@ void bhv_mips_act_wait_for_nearby_mario(void) {
 void bhv_mips_act_follow_path(void) {
     s16 collisionFlags = 0;
     s32 followStatus;
-    void **pathBase;
+    struct Waypoint **pathBase;
     struct Waypoint *waypoint;
 
     // Retrieve current waypoint.
     pathBase = segmented_to_virtual(&inside_castle_seg7_trajectory_mips);
-    waypoint = (struct Waypoint *) segmented_to_virtual(*(pathBase + o->oMipsStartWaypointIndex));
+    waypoint = segmented_to_virtual(*(pathBase + o->oMipsStartWaypointIndex));
 
     // Set start waypoint and follow the path from there.
     o->oPathedStartWaypoint = waypoint;
@@ -140,10 +139,10 @@ void bhv_mips_act_follow_path(void) {
 
     // Play sounds during walk animation.
     if (func_8029F788() == 1 && (collisionFlags & OBJ_COL_FLAG_UNDERWATER)) {
-        PlaySound2(SOUND_OBJECT_MIPSRABBITWATER);
+        PlaySound2(SOUND_OBJ_MIPS_RABBIT_WATER);
         spawn_object(o, MODEL_NONE, bhvSurfaceWaveShrinking);
     } else if (func_8029F788() == 1) {
-        PlaySound2(SOUND_OBJECT_MIPSRABBIT);
+        PlaySound2(SOUND_OBJ_MIPS_RABBIT);
     }
 }
 
@@ -161,7 +160,11 @@ void bhv_mips_act_wait_for_animation_done(void) {
  * Handles MIPS falling down after being thrown.
  */
 void bhv_mips_act_fall_down(void) {
+#ifdef VERSION_EU
+    s32 collisionFlags = 0;
+#else
     s16 collisionFlags = 0;
+#endif
 
     collisionFlags = ObjectStep();
     o->header.gfx.unk38.animFrame = 0;
@@ -224,7 +227,7 @@ void bhv_mips_free(void) {
  * Handles MIPS being held by Mario.
  */
 void bhv_mips_held(void) {
-    s16 dialogId;
+    s16 dialogID;
 
     o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
     SetObjAnimation(4); // Held animation.
@@ -235,14 +238,14 @@ void bhv_mips_held(void) {
     if (o->oMipsStarStatus == MIPS_STAR_STATUS_HAVENT_SPAWNED_STAR) {
         // Choose dialog based on which MIPS encounter this is.
         if (o->oBehParams2ndByte == 0)
-            dialogId = 84;
+            dialogID = 84;
         else
-            dialogId = 162;
+            dialogID = 162;
 
         if (set_mario_npc_dialog(1) == 2) {
             o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
-            if (func_8028F8E0(162, o, dialogId)) {
-                o->oUnk190 |= 0x40;
+            if (cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, dialogID)) {
+                o->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
                 o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
                 o->oMipsStarStatus = MIPS_STAR_STATUS_SHOULD_SPAWN_STAR;
                 set_mario_npc_dialog(0);

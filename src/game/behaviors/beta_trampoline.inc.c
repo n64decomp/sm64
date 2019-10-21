@@ -1,7 +1,7 @@
 /**
  * Behavior for bhvBetaTrampolineTop and bhvBetaTrampolineSpring.
  * This was a trampoline that was never finished. The model and collision
- * are nearly complete finished, but the code was abandoned very early on
+ * are nearly finished, but the code was abandoned very early on
  * in its development. The trampoline consists of 3 objects: the top,
  * the spring, and the base. The base is a static object with no behavior.
  */

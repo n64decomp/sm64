@@ -32,22 +32,27 @@ void osSpTaskLoad(OSTask *task) {
     osWritebackDCache(physicalTask, sizeof(OSTask));
     __osSpSetStatus(SPSTATUS_CLEAR_SIGNAL0 | SPSTATUS_CLEAR_SIGNAL1 | SPSTATUS_CLEAR_SIGNAL2
                     | SPSTATUS_SET_INTR_ON_BREAK);
-    while (__osSpSetPc((void *) SP_IMEM_START) == -1)
+    while (__osSpSetPc((void *) SP_IMEM_START) == -1) {
         ;
+    }
     while (__osSpRawStartDma(1, (void *) (SP_IMEM_START - sizeof(*physicalTask)), physicalTask,
                              sizeof(OSTask))
-           == -1)
+           == -1) {
         ;
-    while (__osSpDeviceBusy())
+    }
+    while (__osSpDeviceBusy()) {
         ;
+    }
     while (__osSpRawStartDma(1, (void *) SP_IMEM_START, physicalTask->t.ucode_boot,
                              physicalTask->t.ucode_boot_size)
-           == -1)
+           == -1) {
         ;
+    }
 }
 void osSpTaskStartGo(UNUSED OSTask *task) {
-    while (__osSpDeviceBusy())
+    while (__osSpDeviceBusy()) {
         ;
+    }
     __osSpSetStatus(SPSTATUS_SET_INTR_ON_BREAK | SPSTATUS_CLEAR_SSTEP | SPSTATUS_CLEAR_BROKE
                     | SPSTATUS_CLEAR_HALT);
 }

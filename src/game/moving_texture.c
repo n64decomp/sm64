@@ -14,39 +14,40 @@
 #include "rendering_graph_node.h"
 #include "room.h"
 
-/** This file contains functions for generating display lists with moving textures
- *  (abbreviated movtex). This is used for water, sand, haze, mist and treadmills.
- *  Each mesh using this system has the animated vertices stored as an array of shorts.
- *  The first entry is the texture movement speed. After that the vertices are stored
- *  in one of two layouts: one without per-vertex color attributes and one with.
- *  [speed, v0(x,y,z, s,t)      , v1(x,y,z, s,t)      , ...]
- *  [speed, v0(x,y,z, r,g,b s,t), v1(x,y,z, r,g,b s,t), ...]
- *  x, y, z = vertex position as integers
- *  s, t = texture coordinatea as 6.10 fixed point number. That means coordinates in
- *  range [0, 1024] are a unique part of the image, after that it repeats the image.
+/**
+ * This file contains functions for generating display lists with moving textures
+ * (abbreviated movtex). This is used for water, sand, haze, mist and treadmills.
+ * Each mesh using this system has the animated vertices stored as an array of shorts.
+ * The first entry is the texture movement speed. After that the vertices are stored
+ * in one of two layouts: one without per-vertex color attributes and one with.
+ * [speed, v0(x,y,z, s,t)      , v1(x,y,z, s,t)      , ...]
+ * [speed, v0(x,y,z, r,g,b s,t), v1(x,y,z, r,g,b s,t), ...]
+ * x, y, z = vertex position as integers
+ * s, t = texture coordinates as 6.10 fixed point number. That means coordinates in
+ * range [0, 1024] are a unique part of the image, after that it repeats the image.
  *
- *  The first vertex 'v0' is special because all subsequent vertices inherit its
- *  texture offset. So to animate e.g. a treadmill, the speed component arr[0] is
- *  simply added to the s component arr[7] every frame and the texture scrolls
- *  horizontally over the entire mesh without changing the rest of the array.
- *  Note that while the system allows many kinds of vertex animations, in
- *  practice the only animation used is horizontally scrolling textures.
+ * The first vertex 'v0' is special because all subsequent vertices inherit its
+ * texture offset. So to animate e.g. a treadmill, the speed component arr[0] is
+ * simply added to the s component arr[7] every frame and the texture scrolls
+ * horizontally over the entire mesh without changing the rest of the array.
+ * Note that while the system allows many kinds of vertex animations, in
+ * practice the only animation used is horizontally scrolling textures.
  *
- *  After updating the base mesh, the vertices are converted to the format the RSP
- *  understands and a display list is generated. The RSP can buffer 16 vertices at
- *  a time, and this code assumes everything fits in one buffer, so every moving
- *  texture mesh must have at most 16 vertices. As a result some meshes are split
- *  up into multiple parts, like the sand pathway inside the pyramid which has 3
- *  parts. The water stream in the Cavern of the Metal Cap fits in one mesh.
+ * After updating the base mesh, the vertices are converted to the format the RSP
+ * understands and a display list is generated. The RSP can buffer 16 vertices at
+ * a time, and this code assumes everything fits in one buffer, so every moving
+ * texture mesh must have at most 16 vertices. As a result some meshes are split
+ * up into multiple parts, like the sand pathway inside the pyramid which has 3
+ * parts. The water stream in the Cavern of the Metal Cap fits in one mesh.
  *
- *  Apart from this general system, there is also a simpler system for flat
- *  quads with a rotating texture. This is often used for water, but also
- *  for mist, toxic haze and lava inside the volcano. One quad is described
- *  by the struct MovtexQuad, and multiple MovtexQuads form a MovtexQuadCollection.
- *  A geo node has an id that corresponds to the id of a certain MovtexQuadCollection,
- *  which will then be matched with the id of entries in gEnvironmentRegions to get the
- *  y-position. The x and z coordinates are stored in the MovtexQuads themself,
- *  so the water rectangle is separate from the actually drawn rectangle.
+ * Apart from this general system, there is also a simpler system for flat
+ * quads with a rotating texture. This is often used for water, but also
+ * for mist, toxic haze and lava inside the volcano. One quad is described
+ * by the struct MovtexQuad, and multiple MovtexQuads form a MovtexQuadCollection.
+ * A geo node has an id that corresponds to the id of a certain MovtexQuadCollection,
+ * which will then be matched with the id of entries in gEnvironmentRegions to get the
+ * y-position. The x and z coordinates are stored in the MovtexQuads themself,
+ * so the water rectangle is separate from the actually drawn rectangle.
  */
 
 // First entry in array is texture movement speed for both layouts
@@ -72,10 +73,11 @@
 #define MOVTEX_ATTR_COLORED_S 7
 #define MOVTEX_ATTR_COLORED_T 8
 
-/** An object containing all info for a mesh with moving textures.
- *  Contains the vertices that are animated, but also the display list which
- *  determines the connectivity, as well as the texture, texture blend color
- *  and drawing layer.
+/**
+ * An object containing all info for a mesh with moving textures.
+ * Contains the vertices that are animated, but also the display list which
+ * determines the connectivity, as well as the texture, texture blend color
+ * and drawing layer.
  */
 struct MovtexObject {
     /// number that geo nodes have as parameter to refer to this mesh
@@ -122,8 +124,9 @@ extern u8 ssl_quicksand[];
 extern u8 ssl_pyramid_sand[];
 extern u8 ttc_yellow_triangle[];
 
-/** An array for converting a movtex texture id to a pointer that can
- *  be passed to gDPSetTextureImage.
+/**
+ * An array for converting a movtex texture id to a pointer that can
+ * be passed to gDPSetTextureImage.
  */
 u8 *gMovtexIdToTexture[] = { texture_waterbox_water,     texture_waterbox_mist,
                              texture_waterbox_jrb_water, texture_waterbox_unknown_water,
@@ -183,8 +186,9 @@ extern s16 ssl_movtex_tris_pyramid_quicksand_pit[];
 extern Gfx ssl_dl_pyramid_quicksand_pit_begin[];
 extern Gfx ssl_dl_pyramid_quicksand_pit_end[];
 
-/** MovtexObjects that have no color attributes per vertex (though the mesh
- *  as a whole can have a blend color).
+/**
+ * MovtexObjects that have no color attributes per vertex (though the mesh
+ * as a whole can have a blend color).
  */
 struct MovtexObject gMovtexNonColored[] = {
     // Inside the pyramid there is a sand pathway with the 5 secrets on it.
@@ -258,7 +262,8 @@ struct MovtexObject gMovtexNonColored[] = {
     { 0x00000000, 0x00000000, 0, NULL, NULL, NULL, NULL, 0x00, 0x00, 0x00, 0x00, 0x00000000 },
 };
 
-/** MovtexObjects that have color attributes per vertex.
+/**
+ * MovtexObjects that have color attributes per vertex.
  */
 struct MovtexObject gMovtexColored[] = {
     { MOVTEX_SSL_PYRAMID_SIDE, TEX_QUICKSAND_SSL, 12, ssl_movtex_tris_pyramid_quicksand,
@@ -279,7 +284,8 @@ struct MovtexObject gMovtexColored[] = {
     { 0x00000000, 0x00000000, 0, NULL, NULL, NULL, NULL, 0x00, 0x00, 0x00, 0x00, 0x00000000 },
 };
 
-/** Treated identically to gMovtexColored.
+/**
+ * Treated identically to gMovtexColored.
  */
 struct MovtexObject gMovtexColored2[] = {
     { MOVTEX_SSL_SAND_PIT_OUTSIDE, TEX_QUICKSAND_SSL, 8, ssl_movtex_tris_quicksand_pit,
@@ -291,8 +297,9 @@ struct MovtexObject gMovtexColored2[] = {
     { 0x00000000, 0x00000000, 0, NULL, NULL, NULL, NULL, 0x00, 0x00, 0x00, 0x00, 0x00000000 },
 };
 
-/** Sets the initial water level in Wet-Dry World based on how high Mario
- *  jumped into the painting.
+/**
+ * Sets the initial water level in Wet-Dry World based on how high Mario
+ * jumped into the painting.
  */
 Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *node,
                                      UNUSED f32 mtx[4][4]) {
@@ -305,12 +312,13 @@ Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *n
         gWdwWaterLevelSet = 0;
     } else if (callContext == GEO_CONTEXT_RENDER && gEnvironmentRegions != NULL
                && gWdwWaterLevelSet == 0) {
-        if (gPaintingMarioYEntry <= 1382.4)
+        if (gPaintingMarioYEntry <= 1382.4) {
             wdwWaterHeight = 31;
-        else if (gPaintingMarioYEntry >= 1600.0)
+        } else if (gPaintingMarioYEntry >= 1600.0) {
             wdwWaterHeight = 2816;
-        else
+        } else {
             wdwWaterHeight = 1024;
+        }
         for (i = 0; i < *gEnvironmentRegions; i++) {
             gEnvironmentRegions[i * 6 + 6] = wdwWaterHeight;
         }
@@ -319,9 +327,10 @@ Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *n
     return NULL;
 }
 
-/** Update moving texture counters that determine when to update the coordinates.
- *  Textures update when gMovtexCounterPrev != gMovtexCounter.
- *  This ensures water / sand flow stops when the game pauses.
+/**
+ * Update moving texture counters that determine when to update the coordinates.
+ * Textures update when gMovtexCounterPrev != gMovtexCounter.
+ * This ensures water / sand flow stops when the game pauses.
  */
 Gfx *geo_movtex_pause_control(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     if (callContext != GEO_CONTEXT_RENDER) {
@@ -334,30 +343,33 @@ Gfx *geo_movtex_pause_control(s32 callContext, UNUSED struct GraphNode *node, UN
     return NULL;
 }
 
-/** Make a vertex that's part of a quad with rotating texture.
- *  verts: array of RSP vertices
- *  n: index in 'verts' where the vertex is written
- *  x, y, z: position
- *  rot: base rotation of the texture
- *  rotOffset: gets added to base rotation
- *  scale: how often the texture repeats, 1 = no repeat
+/**
+ * Make a vertex that's part of a quad with rotating texture.
+ * verts: array of RSP vertices
+ * n: index in 'verts' where the vertex is written
+ * x, y, z: position
+ * rot: base rotation of the texture
+ * rotOffset: gets added to base rotation
+ * scale: how often the texture repeats, 1 = no repeat
  */
 void movtex_make_quad_vertex(Vtx *verts, s32 index, s16 x, s16 y, s16 z, s16 rot, s16 rotOffset,
                              f32 scale, u8 alpha) {
     s16 s = 32.0 * (32.0 * scale - 1.0) * sins(rot + rotOffset);
     s16 t = 32.0 * (32.0 * scale - 1.0) * coss(rot + rotOffset);
 
-    if (gMovtexVtxColor == MOVTEX_VTX_COLOR_YELLOW)
+    if (gMovtexVtxColor == MOVTEX_VTX_COLOR_YELLOW) {
         make_vertex(verts, index, x, y, z, s, t, 255, 255, 0, alpha);
-    else if (gMovtexVtxColor == MOVTEX_VTX_COLOR_RED)
+    } else if (gMovtexVtxColor == MOVTEX_VTX_COLOR_RED) {
         make_vertex(verts, index, x, y, z, s, t, 255, 0, 0, alpha);
-    else
+    } else {
         make_vertex(verts, index, x, y, z, s, t, 255, 255, 255, alpha);
+    }
 }
 
-/** Represents a single flat quad with a rotating texture
- *  Stores x and z for 4 vertices, though it is often just a rectangle.
- *  Does not store the y-position, since that can be dynamic for water levels.
+/**
+ * Represents a single flat quad with a rotating texture
+ * Stores x and z for 4 vertices, though it is often just a rectangle.
+ * Does not store the y-position, since that can be dynamic for water levels.
  */
 struct MovtexQuad {
     /// the current texture rotation in this quad
@@ -380,8 +392,8 @@ struct MovtexQuad {
     s16 textureId; /// texture id
 };
 
-/** Contains an id and an array of MovtexQuad structs.
- *
+/**
+ * Contains an id and an array of MovtexQuad structs.
  */
 struct MovtexQuadCollection {
     /// identifier for geo nodes to refer to this MovtexQuad collection
@@ -394,7 +406,8 @@ struct MovtexQuadCollection {
 /// Variable for a little optimization: only set the texture when it differs from the previous texture
 s16 gMovetexLastTextureId;
 
-/** Generates and returns a display list for a single MovtexQuad at height y.
+/**
+ * Generates and returns a display list for a single MovtexQuad at height y.
  */
 Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
     s16 rot;
@@ -415,24 +428,26 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
     Gfx *gfxHead;
     Gfx *gfx;
 
-    if (textureId == gMovetexLastTextureId)
+    if (textureId == gMovetexLastTextureId) {
         gfxHead = alloc_display_list(3 * sizeof(*gfxHead));
-    else
+    } else {
         gfxHead = alloc_display_list(8 * sizeof(*gfxHead));
+    }
 
-    if (gfxHead == NULL || verts == NULL)
+    if (gfxHead == NULL || verts == NULL) {
         return NULL;
+    }
     gfx = gfxHead;
-    if (gMovtexCounter != gMovtexCounterPrev)
+    if (gMovtexCounter != gMovtexCounterPrev) {
         quad->rot += rotspeed;
+    }
     rot = quad->rot;
     if (rotDir == ROTATE_CLOCKWISE) {
         movtex_make_quad_vertex(verts, 0, x1, y, z1, rot, 0, scale, alpha);
         movtex_make_quad_vertex(verts, 1, x2, y, z2, rot, 16384, scale, alpha);
         movtex_make_quad_vertex(verts, 2, x3, y, z3, rot, -32768, scale, alpha);
         movtex_make_quad_vertex(verts, 3, x4, y, z4, rot, -16384, scale, alpha);
-    } else // ROTATE_COUNTER_CLOCKWISE
-    {
+    } else { // ROTATE_COUNTER_CLOCKWISE
         movtex_make_quad_vertex(verts, 0, x1, y, z1, rot, 0, scale, alpha);
         movtex_make_quad_vertex(verts, 1, x2, y, z2, rot, -16384, scale, alpha);
         movtex_make_quad_vertex(verts, 2, x3, y, z3, rot, -32768, scale, alpha);
@@ -441,34 +456,38 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
 
     // Only add commands to change the texture when necessary
     if (textureId != gMovetexLastTextureId) {
-        if (textureId == TEXTURE_MIST) // an G_IM_FMT_IA texture
-        {
+        if (textureId == TEXTURE_MIST) { // an G_IM_FMT_IA texture
             if (0) {
             }
-            gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId])
-                gDPTileSync(gfx++)
-                    gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
-                               G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD) gDPLoadSync(gfx++)
-                        gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256)
-        } else // any rgba16 texture
-        {
-            gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId])
-                gDPTileSync(gfx++)
-                    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
-                               G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD) gDPLoadSync(gfx++)
-                        gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256) if (0) {
+            gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
+            gDPTileSync(gfx++);
+            gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
+                    G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+            gDPLoadSync(gfx++);
+            gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+        } else { // any rgba16 texture
+            gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
+            gDPTileSync(gfx++);
+            gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
+                    G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+            gDPLoadSync(gfx++);
+            gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+            if (0) {
             }
         }
         gMovetexLastTextureId = textureId;
     }
-    gSPVertex(gfx++, 0x80000000 + (u32) verts, 4, 0) gSPDisplayList(gfx++, dl_draw_quad_verts_0123)
-        gSPEndDisplayList(gfx) return gfxHead;
+    gSPVertex(gfx++, VIRTUAL_TO_PHYSICAL2(verts), 4, 0);
+    gSPDisplayList(gfx++, dl_draw_quad_verts_0123);
+    gSPEndDisplayList(gfx);
+    return gfxHead;
 }
 
-/** Generate a display list drawing an array of MoxtexQuad at height 'y'.
- *  y: y position of the quads
- *  quadArrSegmented: a segmented address to an array of s16. The first number
- *  is the number of entries, followed by that number of MovtexQuad structs.
+/**
+ * Generate a display list drawing an array of MoxtexQuad at height 'y'.
+ * y: y position of the quads
+ * quadArrSegmented: a segmented address to an array of s16. The first number
+ * is the number of entries, followed by that number of MovtexQuad structs.
  */
 Gfx *movtex_gen_from_quad_array(s16 y, void *quadArrSegmented) {
     s16 *quadArr = segmented_to_virtual(quadArrSegmented);
@@ -478,33 +497,37 @@ Gfx *movtex_gen_from_quad_array(s16 y, void *quadArrSegmented) {
     Gfx *subList;
     s32 i;
 
-    if (gfxHead == NULL)
+    if (gfxHead == NULL) {
         return NULL;
+    }
     for (i = 0; i < numLists; i++) {
         // quadArr is an array of s16, so sizeof(MovtexQuad) gets divided by 2
         subList = movtex_gen_from_quad(
             y, (struct MovtexQuad *) (&quadArr[i * (sizeof(struct MovtexQuad) / 2) + 1]));
-        if (subList != NULL)
-            gSPDisplayList(gfx++, VIRTUAL_TO_PHYSICAL(subList))
+        if (subList != NULL) {
+            gSPDisplayList(gfx++, VIRTUAL_TO_PHYSICAL(subList));
+        }
     }
     gSPEndDisplayList(gfx);
     return gfxHead;
 }
 
-/** Generate the display list for a list of quads by searching through a collection
- *  for a given id.
- *  id: id of quad array to generate a list for
- *  y: height at which the quads are drawn
- *  movetexQuadsSegmented: segmented address to the MovtexQuadCollection array
- *  that will be searched.
+/**
+ * Generate the display list for a list of quads by searching through a collection
+ * for a given id.
+ * id: id of quad array to generate a list for
+ * y: height at which the quads are drawn
+ * movetexQuadsSegmented: segmented address to the MovtexQuadCollection array
+ * that will be searched.
  */
 Gfx *movtex_gen_quads_id(s16 id, s16 y, void *movetexQuadsSegmented) {
     struct MovtexQuadCollection *collection = segmented_to_virtual(movetexQuadsSegmented);
     s32 i = 0;
 
     while (collection[i].id != -1) {
-        if (collection[i].id == id)
+        if (collection[i].id == id) {
             return movtex_gen_from_quad_array(y, collection[i].quadArraySegmented);
+        }
         i++;
     }
     return NULL;
@@ -535,7 +558,8 @@ extern u8 wf_movtex_water[];
 extern u8 castle_courtyard_movtex_star_statue_water[];
 extern u8 ttm_movtex_puddle[];
 
-/** Find the quadCollection for a given quad collection id.
+/**
+ * Find the quadCollection for a given quad collection id.
  */
 void *get_quad_collection_from_id(u32 id) {
     switch (id) {
@@ -592,25 +616,31 @@ void *get_quad_collection_from_id(u32 id) {
     }
 }
 
-/** Write to 'gfx' a command to set the current texture format for the given
- *  quadCollection.
+/**
+ * Write to 'gfx' a command to set the current texture format for the given
+ * quadCollection.
  */
 void movtex_change_texture_format(u32 quadCollectionId, Gfx **gfx) {
     switch (quadCollectionId) {
         case HMC_MOVTEX_TOXIC_MAZE_MIST:
-            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
+            break;
         case SSL_MOVTEX_TOXBOX_QUICKSAND_MIST:
-            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
+            break;
         case JRB_MOVTEX_INTIAL_MIST:
-            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
+            break;
         default:
-            gSPDisplayList((*gfx)++, dl_waterbox_rgba16_begin) break;
+            gSPDisplayList((*gfx)++, dl_waterbox_rgba16_begin);
+            break;
     }
 }
 
-/** Geo script responsible for drawing quads with a moving texture at the height
- *  of the corresponding water region. The node's parameter determines which quad
- *  collection is drawn, see moving_texture.h.
+/**
+ * Geo script responsible for drawing quads with a moving texture at the height
+ * of the corresponding water region. The node's parameter determines which quad
+ * collection is drawn, see moving_texture.h.
  */
 Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     Gfx *gfxHead = NULL;
@@ -625,28 +655,33 @@ Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUS
 
     if (callContext == GEO_CONTEXT_RENDER) {
         gMovtexVtxColor = MOVTEX_VTX_COLOR_DEFAULT;
-        if (gEnvironmentRegions == NULL)
+        if (gEnvironmentRegions == NULL) {
             return NULL;
+        }
         numWaterBoxes = gEnvironmentRegions[0];
         gfxHead = alloc_display_list((numWaterBoxes + 3) * sizeof(*gfxHead));
-        if (gfxHead == NULL)
+        if (gfxHead == NULL) {
             return NULL;
-        else
+        } else {
             gfx = gfxHead;
+        }
         asGenerated = (struct GraphNodeGenerated *) node;
         if (asGenerated->parameter == JRB_MOVTEX_INTIAL_MIST) {
-            if (gCameraStatus.camFocAndPosCurrAndGoal[3][1] < 1024.0) // if camera under water
+            if (gCameraStatus.camFocAndPosCurrAndGoal[3][1] < 1024.0) { // if camera under water
                 return NULL;
-            if (save_file_get_star_flags(gCurrSaveFileNum - 1, 2) & 1) // first level in JRB complete
+            }
+            if (save_file_get_star_flags(gCurrSaveFileNum - 1, 2) & 1) { // first level in JRB complete
                 return NULL;
+            }
         } else if (asGenerated->parameter == HMC_MOVTEX_TOXIC_MAZE_MIST) {
             gMovtexVtxColor = MOVTEX_VTX_COLOR_YELLOW;
         } else if (asGenerated->parameter == SSL_MOVTEX_TOXBOX_QUICKSAND_MIST) {
             gMovtexVtxColor = MOVTEX_VTX_COLOR_RED;
         }
         quadCollection = get_quad_collection_from_id(asGenerated->parameter);
-        if (quadCollection == NULL)
+        if (quadCollection == NULL) {
             return NULL;
+        }
 
         asGenerated->fnNode.node.flags =
             (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_TRANSPARENT_INTER << 8);
@@ -666,10 +701,11 @@ Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUS
     return gfxHead;
 }
 
-/** Updates a movtex mesh by adding the movtex's speed to the horizontal or
- *  vertical texture coordinates depending on 'attr'.
- *  movtexVerts: vertices to update
- *  attr: which attribute to change
+/**
+ * Updates a movtex mesh by adding the movtex's speed to the horizontal or
+ * vertical texture coordinates depending on 'attr'.
+ * movtexVerts: vertices to update
+ * attr: which attribute to change
  */
 void update_moving_texture_offset(s16 *movtexVerts, s32 attr) {
     s16 movSpeed = movtexVerts[MOVTEX_ATTR_SPEED];
@@ -678,17 +714,20 @@ void update_moving_texture_offset(s16 *movtexVerts, s32 attr) {
     if (gMovtexCounter != gMovtexCounterPrev) {
         *curOffset += movSpeed;
         // note that texture coordinates are 6.10 fixed point, so this does modulo 1
-        if (*curOffset >= 1024)
+        if (*curOffset >= 1024) {
             *curOffset -= 1024;
-        if (*curOffset <= -1024)
+        }
+        if (*curOffset <= -1024) {
             *curOffset += 1024;
+        }
     }
 }
 
-/** Make the first vertex of a moving texture with index 0.
- *  This vertex is the base of all vertices with index > 0, which use this
- *  vertex's coordinates as base on which to apply offset.
- *  The first vertex has offset 0 by definition, simplifying the calculations a bit.
+/**
+ * Make the first vertex of a moving texture with index 0.
+ * This vertex is the base of all vertices with index > 0, which use this
+ * vertex's coordinates as base on which to apply offset.
+ * The first vertex has offset 0 by definition, simplifying the calculations a bit.
  */
 void movtex_write_vertex_first(Vtx *vtx, s16 *movtexVerts, struct MovtexObject *c, s8 attrLayout) {
     s16 x = movtexVerts[MOVTEX_ATTR_X];
@@ -724,9 +763,10 @@ void movtex_write_vertex_first(Vtx *vtx, s16 *movtexVerts, struct MovtexObject *
     }
 }
 
-/** Make a vertex with index > 0. The vertex with index 0 is made in
- *  movtex_write_vertex_first and subsequent vertices use vertex 0 as a base
- *  for their texture coordinates.
+/**
+ * Make a vertex with index > 0. The vertex with index 0 is made in
+ * movtex_write_vertex_first and subsequent vertices use vertex 0 as a base
+ * for their texture coordinates.
  */
 void movtex_write_vertex_index(Vtx *verts, s32 index, s16 *movtexVerts, struct MovtexObject *d,
                                s8 attrLayout) {
@@ -781,8 +821,9 @@ void movtex_write_vertex_index(Vtx *verts, s32 index, s16 *movtexVerts, struct M
     }
 }
 
-/** Generate a displaylist for a MovtexObject.
- *  'attrLayout' is one of MOVTEX_LAYOUT_NOCOLOR and MOVTEX_LAYOUT_COLORED.
+/**
+ * Generate a displaylist for a MovtexObject.
+ * 'attrLayout' is one of MOVTEX_LAYOUT_NOCOLOR and MOVTEX_LAYOUT_COLORED.
  */
 Gfx *movtex_gen_list(s16 *movtexVerts, struct MovtexObject *movtexList, s8 attrLayout) {
     Vtx *verts = alloc_display_list(movtexList->vtx_count * sizeof(*verts));
@@ -790,24 +831,32 @@ Gfx *movtex_gen_list(s16 *movtexVerts, struct MovtexObject *movtexList, s8 attrL
     Gfx *gfx = gfxHead;
     s32 i;
 
-    if (verts == NULL || gfxHead == NULL)
+    if (verts == NULL || gfxHead == NULL) {
         return NULL;
+    }
 
     movtex_write_vertex_first(verts, movtexVerts, movtexList, attrLayout);
-    for (i = 1; i < movtexList->vtx_count; i++)
+    for (i = 1; i < movtexList->vtx_count; i++) {
         movtex_write_vertex_index(verts, i, movtexVerts, movtexList, attrLayout);
+    }
 
-    gSPDisplayList(gfx++, movtexList->beginDl) gDPSetTextureImage(
-        gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId])
-        gDPTileSync(gfx++) gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP,
-                                      G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD)
-            gDPLoadSync(gfx++) gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256)
-                gSPVertex(gfx++, 0x80000000 + (u32) verts, movtexList->vtx_count, 0)
-                    gSPDisplayList(gfx++, movtexList->triDl) gSPDisplayList(gfx++, movtexList->endDl)
-                        gSPEndDisplayList(gfx) return gfxHead;
+    gSPDisplayList(gfx++, movtexList->beginDl);
+    gDPSetTextureImage(
+        gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId]);
+    gDPTileSync(gfx++);
+    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP,
+            G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+    gDPLoadSync(gfx++);
+    gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+    gSPVertex(gfx++, VIRTUAL_TO_PHYSICAL2(verts), movtexList->vtx_count, 0);
+    gSPDisplayList(gfx++, movtexList->triDl);
+    gSPDisplayList(gfx++, movtexList->endDl);
+    gSPEndDisplayList(gfx);
+    return gfxHead;
 }
 
-/** Function for a geo node that draws a MovtexObject in the gMovtexNonColored list.
+/**
+ * Function for a geo node that draws a MovtexObject in the gMovtexNonColored list.
  */
 Gfx *geo_movtex_draw_nocolor(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     s32 i;
@@ -834,7 +883,8 @@ Gfx *geo_movtex_draw_nocolor(s32 callContext, struct GraphNode *node, UNUSED f32
     return gfx;
 }
 
-/** Function for a geo node that draws a MovtexObject in the gMovtexColored list.
+/**
+ * Function for a geo node that draws a MovtexObject in the gMovtexColored list.
  */
 Gfx *geo_movtex_draw_colored(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     s32 i;
@@ -860,11 +910,12 @@ Gfx *geo_movtex_draw_colored(s32 callContext, struct GraphNode *node, UNUSED f32
     return gfx;
 }
 
-/** Function for a geo node that draws a MovtexObject in the gMovtexColored list,
- *  but it doesn't call update_moving_texture_offset since that happens in
- *  geo_movtex_update_horizontal. This is for when a MovtexObject has multiple
- *  instances (like TTC treadmills) so you don't want the animation speed to
- *  increase the more instances there are.
+/**
+ * Function for a geo node that draws a MovtexObject in the gMovtexColored list,
+ * but it doesn't call update_moving_texture_offset since that happens in
+ * geo_movtex_update_horizontal. This is for when a MovtexObject has multiple
+ * instances (like TTC treadmills) so you don't want the animation speed to
+ * increase the more instances there are.
  */
 Gfx *geo_movtex_draw_colored_no_update(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     s32 i;
@@ -889,8 +940,9 @@ Gfx *geo_movtex_draw_colored_no_update(s32 callContext, struct GraphNode *node, 
     return gfx;
 }
 
-/** Exact copy of geo_movtex_draw_colored_no_update, but now using the gMovtexColored2 array.
- *  Used for the sand pits in SSL, both outside and inside the pyramid.
+/**
+ * Exact copy of geo_movtex_draw_colored_no_update, but now using the gMovtexColored2 array.
+ * Used for the sand pits in SSL, both outside and inside the pyramid.
  */
 Gfx *geo_movtex_draw_colored_2_no_update(s32 callContext, struct GraphNode *node,
                                          UNUSED f32 mtx[4][4]) {
@@ -916,16 +968,17 @@ Gfx *geo_movtex_draw_colored_2_no_update(s32 callContext, struct GraphNode *node
     return gfx;
 }
 
-/** Make textures move horizontally by simply adding a number to the 's' texture coordinate.
- *  Used for:
- *  - treadmills in Tick Tock Clock
- *  - sand pits outside and inside the pyramid in Shifting Sand
- *  Note that the drawing for these happen in different nodes with functions
- *  geo_movtex_draw_colored_no_update and geo_movtex_draw_colored_2_no_update.
- *  Usually the updating happens in the same function that draws it, but in
- *  these cases the same model has multiple instances, and you don't want the
- *  model to update multiple times.
- *  Note that the final TTC only has one big treadmill though.
+/**
+ * Make textures move horizontally by simply adding a number to the 's' texture coordinate.
+ * Used for:
+ * - treadmills in Tick Tock Clock
+ * - sand pits outside and inside the pyramid in Shifting Sand
+ * Note that the drawing for these happen in different nodes with functions
+ * geo_movtex_draw_colored_no_update and geo_movtex_draw_colored_2_no_update.
+ * Usually the updating happens in the same function that draws it, but in
+ * these cases the same model has multiple instances, and you don't want the
+ * model to update multiple times.
+ * Note that the final TTC only has one big treadmill though.
  */
 Gfx *geo_movtex_update_horizontal(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     void *movtexVerts;

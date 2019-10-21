@@ -42,7 +42,7 @@ void ActionBulletBill2(void) {
         if (o->oDistanceToMario > 300.0f)
             obj_rotate_yaw_toward(o->oAngleToMario, 0x100);
         if (o->oTimer == 50) {
-            PlaySound2(SOUND_OBJECT_POUNDINGCANNON);
+            PlaySound2(SOUND_OBJ_POUNDING_CANNON);
             ShakeScreen(1);
         }
         if (o->oTimer > 150 || o->oMoveFlags & 0x200) {

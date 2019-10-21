@@ -18,7 +18,7 @@ void bhv_cannon_closed_init(void) {
 
 void CannonTrapDoorOpeningLoop(void) {
     if (o->oTimer == 0)
-        PlaySound2(SOUND_GENERAL_CANNONUP);
+        PlaySound2(SOUND_GENERAL_CANNON_UP);
 
     if (o->oTimer < 30) {
         o->oVelY = -0.5f;

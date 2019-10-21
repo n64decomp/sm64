@@ -8,7 +8,7 @@
 #define PRELOAD_BANKS 2
 #define PRELOAD_SEQUENCE 1
 
-#define IS_SEQUENCE_CHANNEL_VALID(ptr) ((u32)(ptr) != (u32)&gSequenceChannelNone)
+#define IS_SEQUENCE_CHANNEL_VALID(ptr) ((uintptr_t)(ptr) != (uintptr_t)&gSequenceChannelNone)
 
 extern struct Note *gNotes;
 
@@ -36,11 +36,11 @@ extern u32 gSampleDmaNumListItems;
 extern ALSeqFile *gAlTbl;
 extern u8 *gAlBankSets;
 
-void audio_dma_partial_copy_async(u32 *devAddr, u8 **vAddr, s32 *remaining, OSMesgQueue *queue, OSIoMesg *mesg);
+void audio_dma_partial_copy_async(uintptr_t *devAddr, u8 **vAddr, ssize_t *remaining, OSMesgQueue *queue, OSIoMesg *mesg);
 void decrease_sample_dma_ttls(void);
-void *dma_sample_data(u8 *arg0, u32 arg1, s32 arg2, u8 *arg3);
+void *dma_sample_data(u8 *devAddr, u32 size, s32 arg2, u8 *arg3);
 void func_8031758C(s32 arg0);
-void func_8031784C(struct AudioBank *arg0, u8 *offset, u32 arg2, u32 arg3);
+void func_8031784C(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32 numDrums);
 void preload_sequence(u32 seqId, u8 preloadMask);
 void load_sequence(u32 player, u32 seqId, s32 loadAsync);
 

@@ -73,7 +73,7 @@ void HootFreeStep(s16 fastOscY, s32 speed) {
     }
 
     if (sp26 == 0)
-        PlaySound2(SOUND_GENERAL_SWISHWATER);
+        PlaySound2(SOUND_GENERAL_SWISH_WATER);
 }
 
 void PlayerSetHootYaw(void) {
@@ -108,7 +108,7 @@ void HootCarryStep(s32 speed, UNUSED f32 xPrev, UNUSED f32 zPrev) {
     o->oPosZ += o->oVelZ;
 
     if (sp22 == 0)
-        PlaySound2(SOUND_GENERAL_SWISHWATER);
+        PlaySound2(SOUND_GENERAL_SWISH_WATER);
 }
 
 // sp48 = xPrev
@@ -160,7 +160,7 @@ void HootAscentLoop(f32 xPrev, f32 zPrev) {
     o->oMoveAnglePitch = 0xCE38;
 
     if (o->oTimer >= 29) {
-        PlaySound(SOUND_ENVIRONMENT_WIND2);
+        PlaySound(SOUND_ENV_WIND2);
         o->header.gfx.unk38.animFrame = 1;
     }
 
@@ -188,7 +188,7 @@ void HootActionLoop(void) {
             if (o->oPosY < 2700.0f) {
                 set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
 
-                if (func_8028F8E0(162, o, 45)) {
+                if (cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, 45)) {
                     clear_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
 
                     o->oAction = HOOT_ACT_TIRED;
@@ -255,7 +255,7 @@ void bhv_hoot_loop(void) {
         case HOOT_AVAIL_WANTS_TO_TALK:
             HootAwakeLoop();
 
-            if (set_mario_npc_dialog(2) == 2 && func_8028F8E0(162, o, 44)) {
+            if (set_mario_npc_dialog(2) == 2 && cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, 44)) {
                 set_mario_npc_dialog(0);
 
                 obj_become_tangible();

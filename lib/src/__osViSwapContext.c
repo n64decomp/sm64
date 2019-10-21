@@ -29,8 +29,9 @@ void __osViSwapContext() {
         s1->unk2c = s0->fldRegs[field].yScale;
     }
     hStart = s0->comRegs.hStart;
-    if (s1->unk00 & 0x20)
+    if (s1->unk00 & 0x20) {
         hStart = 0;
+    }
     if (s1->unk00 & 0x40) {
         s1->unk2c = 0;
         origin = osVirtualToPhysical(s1->buffer);

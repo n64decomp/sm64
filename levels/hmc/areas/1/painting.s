@@ -481,7 +481,9 @@ hmc_seg7_triangles_070246A0: # 0x070246A0 - 0x07024CD2
 .balign 4
 hmc_seg7_painting_data_07024CD4: # 0x07024CD4
 .word hmc_seg7_pool_points_070242F0
-.word 0, 0
+.word 0
+
+.balign 8
 
 hmc_seg7_texture_07024CE0: # 0x07024CE0 - 0x070254E0
 .incbin "levels/hmc/7.rgba16"

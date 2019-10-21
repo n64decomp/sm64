@@ -55,7 +55,7 @@ void bhv_pyramid_top_spinning(void) {
         pyramidFragment = spawn_object(o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment);
         pyramidFragment->oForwardVel = RandomFloat() * 10.0f + 20.0f;
         pyramidFragment->oMoveAngleYaw = RandomU16();
-        pyramidFragment->oUnknownUnkF4_F32 = 0.8f;
+        pyramidFragment->oPyramidTopFragmentsScale = 0.8f;
         pyramidFragment->oGravity = RandomFloat() + 2.0f;
     }
 
@@ -72,16 +72,18 @@ void bhv_pyramid_top_explode(void) {
     struct Object *pyramidFragment;
     s16 i;
 
-    func_802AA618(0, 0, 690.0f);
+    func_802AA618(0, 0, 690);
 
     // Generate 30 pyramid fragments with random properties.
     for (i = 0; i < 30; i++) {
-        pyramidFragment = spawn_object(o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment);
-        pyramidFragment->oForwardVel = RandomFloat() * 50.0f + 80.0f;
-        pyramidFragment->oVelY = RandomFloat() * 80.0f + 20.0f;
+        pyramidFragment = spawn_object(
+            o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment
+        );
+        pyramidFragment->oForwardVel = RandomFloat() * 50 + 80;
+        pyramidFragment->oVelY = RandomFloat() * 80 + 20;
         pyramidFragment->oMoveAngleYaw = RandomU16();
-        pyramidFragment->oUnknownUnkF4_F32 = 3.0f;
-        pyramidFragment->oGravity = RandomFloat() * 2.0f + 5.0f;
+        pyramidFragment->oPyramidTopFragmentsScale = 3;
+        pyramidFragment->oGravity = RandomFloat() * 2 + 5;
     }
 
     // Deactivate the pyramid top.
@@ -99,7 +101,7 @@ void bhv_pyramid_top_loop(void) {
 
         case PYRAMID_TOP_ACT_SPINNING:
             if (o->oTimer == 0) {
-                PlaySound2(SOUND_CH8_UNK4B);
+                PlaySound2(SOUND_GENERAL2_PYRAMID_TOP_SPIN);
             }
 
             bhv_pyramid_top_spinning();
@@ -107,7 +109,7 @@ void bhv_pyramid_top_loop(void) {
 
         case PYRAMID_TOP_ACT_EXPLODE:
             if (o->oTimer == 0) {
-                create_sound_spawner(SOUND_CH8_UNK4C);
+                create_sound_spawner(SOUND_GENERAL2_PYRAMID_TOP_EXPLOSION);
             }
 
             bhv_pyramid_top_explode();

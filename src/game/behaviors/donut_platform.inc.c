@@ -50,7 +50,7 @@ void bhv_donut_platform_update(void) {
             mark_object_for_deletion(o);
         } else {
             func_802A3C98(150.0f, 1);
-            create_sound_spawner(SOUND_GENERAL_EXPLOSION4);
+            create_sound_spawner(SOUND_GENERAL_DONUT_PLATFORM_EXPLOSION);
         }
     } else {
         if (o->oGravity == 0.0f) {

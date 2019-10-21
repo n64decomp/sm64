@@ -181,8 +181,9 @@ struct GraphNodeSwitchCase
     /*0x1E*/ s16 selectedCase;
 };
 
-/** GraphNode that specifies the location and aim of the camera.
- *  When the roll is 0, the up vector is (0, 1, 0).
+/**
+ * GraphNode that specifies the location and aim of the camera.
+ * When the roll is 0, the up vector is (0, 1, 0).
  */
 struct GraphNodeCamera
 {
@@ -386,7 +387,7 @@ struct GraphNodeObject *init_graph_node_object(struct AllocOnlyPool *pool, struc
     struct GraphNode *sp20, Vec3f pos, Vec3s angle, Vec3f scale);
 struct GraphNodeCullingRadius *init_graph_node_culling_radius(struct AllocOnlyPool *pool, struct GraphNodeCullingRadius *sp1c,
     s16 sp22);
-struct GraphNodeAnimatedPart *init_graph_node_animated_part(struct AllocOnlyPool *pool, struct GraphNodeAnimatedPart * graphNode,
+struct GraphNodeAnimatedPart *init_graph_node_animated_part(struct AllocOnlyPool *pool, struct GraphNodeAnimatedPart *graphNode,
     s32 drawingLayer, void *displayList, Vec3s relativePos);
 struct GraphNodeBillboard *init_graph_node_billboard(struct AllocOnlyPool *pool,
     struct GraphNodeBillboard *graphNode, s32 drawingLayer, void *displayList, Vec3s sp28);
@@ -401,7 +402,7 @@ struct GraphNodeGenerated *init_graph_node_generated(struct AllocOnlyPool *pool,
 struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *pool, struct GraphNodeBackground *sp1c,
     u16 sp22, GraphNodeFunc sp24, s32 sp28);
 struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *pool, struct GraphNodeHeldObject *sp1c,
-    s32 sp20, Vec3s sp24, GraphNodeFunc sp28, s32 sp2c);
+    struct GraphNodeObject *objNode, Vec3s translation, GraphNodeFunc nodeFunc, s32 unused);
 
 struct GraphNode *geo_add_child(struct GraphNode *, struct GraphNode *);
 struct GraphNode *geo_remove_child(struct GraphNode *);
@@ -413,8 +414,8 @@ void geo_call_global_function_nodes(struct GraphNode *graphNode, s32 sp1c);
 void geo_reset_object_node(struct GraphNodeObject *sp20);
 void geo_obj_init(struct GraphNodeObject *sp18, void *sp1c, Vec3f sp20, Vec3s sp24);
 void geo_obj_init_spawninfo(struct GraphNodeObject *sp18, struct SpawnInfo *sp1c);
-void geo_obj_init_animation(struct GraphNodeObject *, void *);
-void geo_obj_init_animation_accel(struct GraphNodeObject *sp30, void *sp34, u32 sp38);
+void geo_obj_init_animation(struct GraphNodeObject *graphNode, struct Animation **animPtrAddr);
+void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, struct Animation **animPtrAddr, u32 animAccel);
 
 s32 retrieve_animation_index(s32 a0, u16 **a1);
 

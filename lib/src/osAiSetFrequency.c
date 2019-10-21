@@ -12,12 +12,14 @@ s32 osAiSetFrequency(u32 freq) {
 
     a1 = ftmp;
 
-    if (a1 < 0x84)
+    if (a1 < 0x84) {
         return -1;
+    }
 
     a2 = (a1 / 66) & 0xff;
-    if (a2 > 16)
+    if (a2 > 16) {
         a2 = 16;
+    }
 
     HW_REG(AI_DACRATE_REG, u32) = a1 - 1;
     HW_REG(AI_BITRATE_REG, u32) = a2 - 1;

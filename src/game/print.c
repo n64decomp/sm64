@@ -117,8 +117,9 @@ void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 
     {
         numDigits = 1;
         if (width > numDigits) {
-            for (len = 0; len < width - numDigits; len++)
+            for (len = 0; len < width - numDigits; len++) {
                 dest[len] = pad;
+            }
         }
         dest[len] = '0';
     }
@@ -291,50 +292,65 @@ void print_text_centered(s32 x, s32 y, const char *str) {
  * Converts a char into the proper colorful glyph for the char.
  */
 s8 char_to_glyph_index(char c) {
-    if (c >= 'A' && c <= 'Z')
+    if (c >= 'A' && c <= 'Z') {
         return c - 55;
+    }
 
-    if (c >= 'a' && c <= 'z')
+    if (c >= 'a' && c <= 'z') {
         return c - 87;
+    }
 
-    if (c >= '0' && c <= '9')
+    if (c >= '0' && c <= '9') {
         return c - 48;
+    }
 
-    if (c == ' ')
+    if (c == ' ') {
         return GLYPH_SPACE;
+    }
 
-    if (c == '!')
+    if (c == '!') {
         return GLYPH_EXCLAMATION_PNT; // !, JP only
+    }
 
-    if (c == '#')
+    if (c == '#') {
         return GLYPH_TWO_EXCLAMATION; // !!, JP only
+    }
 
-    if (c == '?')
+    if (c == '?') {
         return GLYPH_QUESTION_MARK; // ?, JP only
+    }
 
-    if (c == '&')
+    if (c == '&') {
         return GLYPH_AMPERSAND; // &, JP only
+    }
 
-    if (c == '%')
+    if (c == '%') {
         return GLYPH_PERCENT; // %, JP only
+    }
 
-    if (c == '*')
+    if (c == '*') {
         return GLYPH_MULTIPLY; // x
+    }
 
-    if (c == '+')
+    if (c == '+') {
         return GLYPH_COIN; // coin
+    }
 
-    if (c == ',')
+    if (c == ',') {
         return GLYPH_MARIO_HEAD; // Imagine I drew Mario's head
+    }
 
-    if (c == '-')
+    if (c == '-') {
         return GLYPH_STAR; // star
+    }
 
-    if (c == '.')
+    if (c == '.') {
         return GLYPH_PERIOD; // large shaded dot, JP only
+    }
 
-    if (c == '/')
+    if (c == '/') {
         return GLYPH_BETA_KEY; // beta key, JP only. Reused for Ü in EU.
+    }
 
     return GLYPH_SPACE;
 }
@@ -343,7 +359,7 @@ s8 char_to_glyph_index(char c) {
  * Adds an individual glyph to be rendered.
  */
 void add_glyph_texture(s8 glyphIndex) {
-    u32 *glyphs = segmented_to_virtual(seg2_hud_lut);
+    u32 *glyphs = segmented_to_virtual(main_hud_lut);
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, glyphs[glyphIndex]);
@@ -354,17 +370,21 @@ void add_glyph_texture(s8 glyphIndex) {
  * Clips textrect into the boundaries defined.
  */
 void clip_to_bounds(s32 *x, s32 *y) {
-    if (*x < TEXRECT_MIN_X)
+    if (*x < TEXRECT_MIN_X) {
         *x = TEXRECT_MIN_X;
+    }
 
-    if (*x > TEXRECT_MAX_X)
+    if (*x > TEXRECT_MAX_X) {
         *x = TEXRECT_MAX_X;
+    }
 
-    if (*y < TEXRECT_MIN_Y)
+    if (*y < TEXRECT_MIN_Y) {
         *y = TEXRECT_MIN_Y;
+    }
 
-    if (*y > TEXRECT_MAX_Y)
+    if (*y > TEXRECT_MAX_Y) {
         *y = TEXRECT_MAX_Y;
+    }
 }
 
 /**
@@ -380,7 +400,7 @@ void render_textrect(s32 x, s32 y, s32 pos) {
     rectX = rectBaseX;
     rectY = rectBaseY;
     gSPTextureRectangle(gDisplayListHead++, rectX << 2, rectY << 2, (rectX + 15) << 2,
-                        (rectY + 15) << 2, 0, 0, 0, 4096, 1024);
+                        (rectY + 15) << 2, G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
 }
 
 /**
@@ -404,7 +424,7 @@ void render_text_labels(void) {
         return;
     }
 
-    guOrtho(mtx, 0.0f, 320.0f, 0.0f, 240.0f, -10.0f, 10.0f, 1.0f);
+    guOrtho(mtx, 0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, -10.0f, 10.0f, 1.0f);
     gSPPerspNormalize((Gfx *) (gDisplayListHead++), 0x0000FFFF);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD);
     gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);

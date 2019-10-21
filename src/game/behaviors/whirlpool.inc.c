@@ -57,7 +57,7 @@ void bhv_whirlpool_loop(void) {
         gEnvFxBubbleConfig[ENVFX_STATE_PARTICLECOUNT] = 0;
     }
 
-    PlaySound(SOUND_ENVIRONMENT_WATER);
+    PlaySound(SOUND_ENV_WATER);
 
     func_802E70A8();
 }
@@ -71,5 +71,5 @@ void bhv_jet_stream_loop(void) {
     } else
         gEnvFxBubbleConfig[ENVFX_STATE_PARTICLECOUNT] = 0;
 
-    PlaySound(SOUND_ENVIRONMENT_WATER);
+    PlaySound(SOUND_ENV_WATER);
 }

@@ -209,7 +209,7 @@ static void monty_mole_act_select_hole(void) {
 
     // Select a hole to pop out of
     if ((o->oMontyMoleCurrentHole = monty_mole_select_available_hole(minDistToMario)) != NULL) {
-        PlaySound2(SOUND_CH9_UNK67);
+        PlaySound2(SOUND_OBJ2_MONTY_MOLE_APPEAR);
 
         // Mark hole as unavailable
         o->oMontyMoleCurrentHole->oMontyMoleHoleCooldown = -1;
@@ -291,7 +291,7 @@ static void monty_mole_act_begin_jump_into_hole(void) {
  */
 static void monty_mole_act_throw_rock(void) {
     if (func_802F92EC(8, 10)) {
-        PlaySound2(SOUND_OBJECT_MONTYMOLEATTACK);
+        PlaySound2(SOUND_OBJ_MONTY_MOLE_ATTACK);
         o->prevObj = NULL;
     }
 
@@ -371,7 +371,7 @@ static void monty_mole_act_jump_out_of_hole(void) {
 void bhv_monty_mole_update(void) {
     // PARTIAL_UPDATE
 
-    o->oDeathSound = SOUND_OBJECT_DYINGENEMY1;
+    o->oDeathSound = SOUND_OBJ_DYING_ENEMY1;
     obj_update_floor_and_walls();
 
     o->oMontyMoleHeightRelativeToFloor = o->oPosY - o->oFloorHeight;

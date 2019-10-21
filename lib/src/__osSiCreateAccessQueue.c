@@ -12,8 +12,9 @@ void __osSiCreateAccessQueue() {
 
 void __osSiGetAccess(void) {
     OSMesg sp1c;
-    if (!gOsSiAccessQueueCreated)
+    if (!gOsSiAccessQueueCreated) {
         __osSiCreateAccessQueue();
+    }
     osRecvMesg(&gOsSiMessageQueue, &sp1c, OS_MESG_BLOCK);
 }
 

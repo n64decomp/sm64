@@ -58,16 +58,18 @@ void func_80181C00(struct ObjVertex *vtx1, struct ObjVertex *vtx2) {
     struct GdObj *sp2C;
     register struct Links *link;
 
-    if (vtx1 == vtx2)
+    if (vtx1 == vtx2) {
         return;
+    }
     link = gGdSkinNet->unk1C0->link1C;
     while (link != NULL) {
         // FIXME: types
         struct Connection *sp24 = (void *) link->obj;
 
         if ((sp24->unk1C.vtx == vtx1 || sp24->unk1C.vtx == vtx2)
-            && (sp24->unk20.vtx == vtx1 || sp24->unk20.vtx == vtx2))
+            && (sp24->unk20.vtx == vtx1 || sp24->unk20.vtx == vtx2)) {
             break;
+        }
         link = link->next;
     }
     if (link == NULL) {
@@ -228,8 +230,9 @@ struct Connection *func_801825FC(struct ObjVertex *vtx1, struct ObjVertex *vtx2)
     struct GdVec3f sp28;
     struct GdVec3f sp1C;
 
-    if (sp34 == NULL)
+    if (sp34 == NULL) {
         fatal_print("Cant allocate connection memory!");
+    }
     sp34->unk1C.vtx = vtx1;
     sp34->unk20.vtx = vtx2;
     push_dynobj_stash();
@@ -244,8 +247,9 @@ struct Connection *func_801825FC(struct ObjVertex *vtx1, struct ObjVertex *vtx2)
     // Duplicate conditional. Possibly should've checked `vtx2`;
     // Also, this shouldn't be called with particle types...
     if (vtx1->header.type == OBJ_TYPE_PARTICLES && vtx1->header.type == OBJ_TYPE_PARTICLES) {
-        if ((((struct ObjParticle *) vtx1)->unk54 & 4) && (((struct ObjParticle *) vtx2)->unk54 & 4))
+        if ((((struct ObjParticle *) vtx1)->unk54 & 4) && (((struct ObjParticle *) vtx2)->unk54 & 4)) {
             sp34->unk28 |= 1;
+        }
     }
     pop_dynobj_stash();
     return sp34;
@@ -325,10 +329,12 @@ void move_particle(struct ObjParticle *ptc) {
     struct GdVec3f sp40;
     struct GdVec3f sp34;
 
-    if (ptc->unk54 & 2)
+    if (ptc->unk54 & 2) {
         return;
-    if (!(ptc->unk54 & 8))
+    }
+    if (!(ptc->unk54 & 8)) {
         return;
+    }
     if (ptc->unk60 == 3) {
         sp40.x = -gViewUpdateCamera->unkE8[2][0] * 50.0f;
         sp40.y = -gViewUpdateCamera->unkE8[2][1] * 50.0f;
@@ -362,8 +368,9 @@ void move_particle(struct ObjParticle *ptc) {
     ptc->unk20.x += ptc->unk38.x;
     ptc->unk20.y += ptc->unk38.y;
     ptc->unk20.z += ptc->unk38.z;
-    if (ptc->unk54 & 1)
+    if (ptc->unk54 & 1) {
         ptc->unk38.y += sp7C;
+    }
     func_801838D0(ptc);
     if (ptc->unkB0 == 1) {
         if (0) {

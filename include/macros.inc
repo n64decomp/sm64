@@ -9,10 +9,16 @@
 .set K2BASE, 0xC0000000
 .set SCREEN_WIDTH, 320
 .set SCREEN_HEIGHT, 240
+.set PTR_WIDTH, 4
 
 .macro glabel label
     .global \label
+    .balign 4
     \label:
+.endm
+
+.macro .word32 x
+    .word \x
 .endm
 
 # F3D vertex
@@ -105,8 +111,8 @@ binid
 .endm
 
 .macro dialog_entry w1, w2, w3, w4
-    .word \w1
+    .word32 \w1
     .byte (\w2 >> 24), 0x00
     .hword (\w2 & 0xFFFF), (\w3 >> 16), 0x0000
-    .long \w4
+    .word \w4
 .endm

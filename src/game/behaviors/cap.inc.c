@@ -109,11 +109,11 @@ void bhv_wing_cap_init(void) {
 }
 
 void func_802F0D70(void) {
-    o->oUnknownUnkF8_S32 += 0x2000;
-    o->header.gfx.scale[1] = coss(o->oUnknownUnkF8_S32) * 0.3 + 0.7;
-    if (o->oUnknownUnkF8_S32 == 0x10000) {
-        o->oUnknownUnkF8_S32 = 0;
-        o->oUnknownUnkF4_S32 = 2;
+    o->oCapUnkF8 += 0x2000;
+    o->header.gfx.scale[1] = coss(o->oCapUnkF8) * 0.3 + 0.7;
+    if (o->oCapUnkF8 == 0x10000) {
+        o->oCapUnkF8 = 0;
+        o->oCapUnkF4 = 2;
     }
 }
 
@@ -125,12 +125,12 @@ void func_802F0E0C(void) {
     if (sp1E & 0x01) {
         func_802F09C0();
         if (o->oVelY != 0.0f) {
-            o->oUnknownUnkF4_S32 = 1;
+            o->oCapUnkF4 = 1;
             o->oVelY = 0.0f;
         }
     }
 
-    if (o->oUnknownUnkF4_S32 == 1)
+    if (o->oCapUnkF4 == 1)
         func_802F0D70();
 }
 
@@ -229,13 +229,13 @@ void func_802F1234(void) {
         func_802F09C0();
 
         if (o->oVelY != 0.0f) {
-            o->oUnknownUnkF4_S32 = 1;
+            o->oCapUnkF4 = 1;
             o->oVelY = 0.0f;
             o->oFaceAnglePitch = 0;
         }
     }
 
-    if (o->oUnknownUnkF4_S32 == 1)
+    if (o->oCapUnkF4 == 1)
         func_802F0D70();
 }
 

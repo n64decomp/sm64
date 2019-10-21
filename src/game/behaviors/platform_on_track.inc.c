@@ -129,9 +129,9 @@ static void platform_on_track_act_move_along_track(void) {
     s16 initialAngle;
 
     if (!o->oPlatformOnTrackIsNotSkiLift) {
-        PlaySound(SOUND_ENVIRONMENT_ELEVATOR3);
+        PlaySound(SOUND_ENV_ELEVATOR3);
     } else if (!o->oPlatformOnTrackIsNotHMC) {
-        PlaySound(SOUND_ENVIRONMENT_ELEVATOR1);
+        PlaySound(SOUND_ENV_ELEVATOR1);
     }
 
     // Fall after reaching the last waypoint if desired

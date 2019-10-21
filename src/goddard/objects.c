@@ -85,23 +85,29 @@ void func_8017BD20(void *a0) {
     set_cur_dynobj(a0);
     d_get_world_pos(&sp1c);
 
-    if (sp1c.x < D_801B9DA0.p0.x)
+    if (sp1c.x < D_801B9DA0.p0.x) {
         D_801B9DA0.p0.x = sp1c.x;
+    }
 
-    if (sp1c.y < D_801B9DA0.p0.y)
+    if (sp1c.y < D_801B9DA0.p0.y) {
         D_801B9DA0.p0.y = sp1c.y;
+    }
 
-    if (sp1c.z < D_801B9DA0.p0.z)
+    if (sp1c.z < D_801B9DA0.p0.z) {
         D_801B9DA0.p0.z = sp1c.z;
+    }
 
-    if (sp1c.x > D_801B9DA0.p1.x)
+    if (sp1c.x > D_801B9DA0.p1.x) {
         D_801B9DA0.p1.x = sp1c.x;
+    }
 
-    if (sp1c.y > D_801B9DA0.p1.y)
+    if (sp1c.y > D_801B9DA0.p1.y) {
         D_801B9DA0.p1.y = sp1c.y;
+    }
 
-    if (sp1c.z > D_801B9DA0.p1.z)
+    if (sp1c.z > D_801B9DA0.p1.z) {
         D_801B9DA0.p1.z = sp1c.z;
+    }
 }
 
 /* @ 22A630 for 0x70 */
@@ -293,14 +299,16 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
 
     newObj = gd_malloc(objSize, objPermanence);
 
-    if (newObj == NULL)
+    if (newObj == NULL) {
         fatal_printf("Cant allocate object '%s' memory!", objNameStr);
+    }
 
     stop_memtracker(objNameStr);
 
     newObjBytes = (u8 *) newObj;
-    for (i = 0; i < objSize; i++)
+    for (i = 0; i < objSize; i++) {
         newObjBytes[i] = 0;
+    }
 
     gGdObjCount++;
     objListOldHead = gGdObjectList;
@@ -358,13 +366,15 @@ struct Links *make_link_to_obj(struct Links *head, struct GdObj *a1) {
 
     newLink = gd_malloc_perm(0x0C);
 
-    if (newLink == NULL)
+    if (newLink == NULL) {
         fatal_print("Cant allocate link memory!");
+    }
 
     stop_memtracker("links");
 
-    if (head != NULL)
+    if (head != NULL) {
         head->next = newLink;
+    }
 
     newLink->prev = head;
     newLink->next = NULL;
@@ -379,11 +389,13 @@ struct VtxLink *make_vtx_link(struct VtxLink *prevlink, Vtx *data) {
 
     newLink = gd_malloc_perm(sizeof(struct VtxLink));
 
-    if (newLink == NULL)
+    if (newLink == NULL) {
         fatal_print("Cant allocate link memory!");
+    }
 
-    if (prevlink != NULL)
+    if (prevlink != NULL) {
         prevlink->next = newLink;
+    }
 
     newLink->prev = prevlink;
     newLink->next = NULL;
@@ -391,8 +403,9 @@ struct VtxLink *make_vtx_link(struct VtxLink *prevlink, Vtx *data) {
 // WTF?
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
-    if (((s32)(newLink)) == 0x3F800000)
+    if (((s32)(newLink)) == 0x3F800000) {
         fatal_printf("bad3\n");
+    }
 #pragma GCC diagnostic pop
     return newLink;
 }
@@ -444,8 +457,9 @@ void reset_plane(struct ObjPlane *plane) {
 
     sp28 = sp4C->normal.z < 0.0f ? -sp4C->normal.z : sp4C->normal.z;
     sp44 = sp28;
-    if (sp44 > sp48)
+    if (sp44 > sp48) {
         sp30 = 2;
+    }
 
     switch (sp30) {
         case 0:
@@ -464,8 +478,9 @@ void reset_plane(struct ObjPlane *plane) {
 
     func_8017BCB0();
 
-    for (i = 0; i < sp4C->vtxCount; i++)
+    for (i = 0; i < sp4C->vtxCount; i++) {
         func_8017BD20(sp4C->vertices[i]);
+    }
 
     plane->plane28.p0.x = D_801B9DA0.p0.x;
     plane->plane28.p0.y = D_801B9DA0.p0.y;
@@ -554,10 +569,11 @@ struct ObjMaterial *make_material(UNUSED s32 a0, char *name, s32 id) {
 
     newMtl = (struct ObjMaterial *) make_object(OBJ_TYPE_MATERIALS);
 
-    if (name != NULL)
+    if (name != NULL) {
         gd_strcpy(newMtl->name, name);
-    else
+    } else {
         gd_strcpy(newMtl->name, "NoName");
+    }
 
     newMtl->id = id;
     newMtl->gddlNumber = 0;
@@ -572,10 +588,11 @@ struct ObjLight *make_light(s32 flags, char *name, s32 id) {
 
     newLight = (struct ObjLight *) make_object(OBJ_TYPE_LIGHTS);
 
-    if (name != NULL)
+    if (name != NULL) {
         gd_strcpy(newLight->name, name);
-    else
+    } else {
         gd_strcpy(newLight->name, "NoName");
+    }
 
     newLight->id = id;
     newLight->unk30 = 1.0f;
@@ -594,16 +611,18 @@ struct ObjView *make_view(const char *name, s32 flags, s32 a2, s32 ulx, s32 uly,
                           struct ObjGroup *parts) {
     struct ObjView *newView = (struct ObjView *) make_object(OBJ_TYPE_VIEWS);
 
-    if (gGdViewsGroup == NULL)
+    if (gGdViewsGroup == NULL) {
         gGdViewsGroup = make_group(0);
+    }
 
     addto_group(gGdViewsGroup, &newView->header);
 
     newView->flags = flags | VIEW_UPDATE | VIEW_LIGHT;
     newView->id = sGdViewInfo.count++;
 
-    if ((newView->components = parts) != NULL)
+    if ((newView->components = parts) != NULL) {
         reset_nets_and_gadgets(parts);
+    }
 
     newView->unk78 = 0;
     newView->unk38 = a2;
@@ -628,8 +647,9 @@ struct ObjView *make_view(const char *name, s32 flags, s32 a2, s32 ulx, s32 uly,
     newView->proc = NULL;
     newView->unk9C = 0;
 
-    if (name != NULL)
+    if (name != NULL) {
         newView->unk1C = setup_view_buffers(name, newView, ulx, uly, lrx, lry);
+    }
 
     newView->namePtr = name;
     newView->lights = NULL;
@@ -669,11 +689,13 @@ struct ObjGroup *make_group_of_type(enum ObjTypeFlag type, struct GdObj *fromObj
     curObj = fromObj;
 
     while (curObj != NULL) {
-        if (curObj->type & type)
+        if (curObj->type & type) {
             addto_group(newGroup, curObj);
+        }
 
-        if (curObj == toObj)
+        if (curObj == toObj) {
             break;
+        }
 
         curObj = curObj->prev;
     }
@@ -745,8 +767,9 @@ struct ObjGroup *make_group(s32 count, ...) {
         oldGroupListHead->prev = newGroup;
     }
 
-    if (count == 0)
+    if (count == 0) {
         return newGroup;
+    }
 
     va_start(args, count);
     curLink = NULL;
@@ -755,8 +778,9 @@ struct ObjGroup *make_group(s32 count, ...) {
         // get the next pointer in the struct.
         vargObj = va_arg(args, struct GdObj *);
 
-        if (vargObj == NULL) // one of our pointers was NULL. raise an error.
+        if (vargObj == NULL) { // one of our pointers was NULL. raise an error.
             fatal_printf("make_group() NULL group ptr");
+        }
 
         curObj = vargObj;
         newGroup->groupObjTypes |= curObj->type;
@@ -787,8 +811,9 @@ void addto_group(struct ObjGroup *group, struct GdObj *obj) {
     if (group->link1C == NULL) {
         group->link1C = make_link_to_obj(NULL, obj);
         group->link20 = group->link1C;
-    } else
+    } else {
         group->link20 = make_link_to_obj(group->link20, obj);
+    }
 
     group->groupObjTypes |= obj->type;
     group->objCount++;
@@ -829,8 +854,9 @@ s32 group_contains_obj(struct ObjGroup *group, struct GdObj *obj) {
     struct Links *objLink = group->link1C;
 
     while (objLink != NULL) {
-        if (objLink->obj->number == obj->number)
+        if (objLink->obj->number == obj->number) {
             return 1;
+        }
 
         objLink = objLink->next;
     }
@@ -877,26 +903,36 @@ void show_details(enum ObjTypeFlag type) {
                     gd_printf("Group %s: ", idStrBuf);
                     curGroupTypes = ((struct ObjGroup *) curObj)->groupObjTypes;
 
-                    if (curGroupTypes & OBJ_TYPE_GROUPS)
+                    if (curGroupTypes & OBJ_TYPE_GROUPS) {
                         gd_printf("groups ");
-                    if (curGroupTypes & OBJ_TYPE_BONES)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_BONES) {
                         gd_printf("bones ");
-                    if (curGroupTypes & OBJ_TYPE_JOINTS)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_JOINTS) {
                         gd_printf("joints ");
-                    if (curGroupTypes & OBJ_TYPE_PARTICLES)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_PARTICLES) {
                         gd_printf("particles ");
-                    if (curGroupTypes & OBJ_TYPE_CAMERAS)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_CAMERAS) {
                         gd_printf("cameras ");
-                    if (curGroupTypes & OBJ_TYPE_NETS)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_NETS) {
                         gd_printf("nets ");
-                    if (curGroupTypes & OBJ_TYPE_GADGETS)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_GADGETS) {
                         gd_printf("gadgets ");
-                    if (curGroupTypes & OBJ_TYPE_LABELS)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_LABELS) {
                         gd_printf("labels ");
-                    if (curGroupTypes & OBJ_TYPE_FACES)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_FACES) {
                         gd_printf("face ");
-                    if (curGroupTypes & OBJ_TYPE_VERTICES)
+                    }
+                    if (curGroupTypes & OBJ_TYPE_VERTICES) {
                         gd_printf("vertex ");
+                    }
 
                     curGroupLink = ((struct ObjGroup *) curObj)->link1C;
                     while (curGroupLink != NULL) {
@@ -986,8 +1022,9 @@ struct GdObj *UnknownRecursive8017E2F0(struct GdObj *obj, enum ObjTypeFlag type)
         default:;
     }
 
-    if (curObjType == type)
+    if (curObjType == type) {
         return obj;
+    }
 
 //! @bug Nothing is returned if a GdObj of `type` is not found
 #if BUGFIX_GODDARD_MISSING_RETURN
@@ -1020,11 +1057,13 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *grou
 #endif
     }
 
-    if (group->linkType & 1) // compressed data, not an Obj
+    if (group->linkType & 1) { // compressed data, not an Obj
         return fnAppliedCount;
+    }
 
-    if (!((group->groupObjTypes & OBJ_TYPE_GROUPS) | (group->groupObjTypes & types)))
+    if (!((group->groupObjTypes & OBJ_TYPE_GROUPS) | (group->groupObjTypes & types))) {
         return fnAppliedCount;
+    }
 
     objFn = fn;
     curLink = group->link1C;
@@ -1034,8 +1073,9 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *grou
         linkedObjType = linkedObj->type;
         nextLink = curLink->next;
 
-        if (linkedObjType == OBJ_TYPE_GROUPS)
+        if (linkedObjType == OBJ_TYPE_GROUPS) {
             fnAppliedCount += apply_to_obj_types_in_group(types, fn, (struct ObjGroup *) linkedObj);
+        }
 
         if (linkedObjType & types) {
             (*objFn)(linkedObj);
@@ -1087,8 +1127,9 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     cross_product_vec3f(&sp70, a1, &sp94);
     sp2C = (f32) gd_sqrt_d((sp94.x * sp94.x) + (sp94.z * sp94.z));
 
-    if (sp2C > 1000.0) //? 1000.0f
+    if (sp2C > 1000.0) { //? 1000.0f
         sp2C = 1000.0f;
+    }
 
     sp2C /= 1000.0;    //? 1000.0f
     sp2C = 1.0 - sp2C; //? 1.0f - sp2C
@@ -1157,8 +1198,9 @@ void func_8017E9EC(struct ObjNet *a0) {
 /* @ 22D264 for 0x90 */
 s32 Unknown8017EA94(struct GdVec3f *vec, Mat4f matrix) {
     if (vec->x >= matrix[2][2] && vec->x <= matrix[3][1] && vec->z >= matrix[3][0]
-        && vec->z <= matrix[3][3])
+        && vec->z <= matrix[3][3]) {
         return 1;
+    }
 
     return 0;
 }
@@ -1190,11 +1232,15 @@ s32 Unknown8017EB24(struct GdObj *a0, struct GdObj *a1) {
     D_801B9E08.y = sp38.y - sp44.y;
     D_801B9E08.z = sp38.z - sp44.z;
 
-    if (D_801B9E08.x >= sp18.p0.x)
-        if (D_801B9E08.x <= sp18.p1.x)
-            if (D_801B9E08.z >= sp18.p0.z)
-                if (D_801B9E08.z <= sp18.p1.z)
+    if (D_801B9E08.x >= sp18.p0.x) {
+        if (D_801B9E08.x <= sp18.p1.x) {
+            if (D_801B9E08.z >= sp18.p0.z) {
+                if (D_801B9E08.z <= sp18.p1.z) {
                     return 1;
+                }
+            }
+        }
+    }
 
     return 0;
 }
@@ -1206,51 +1252,75 @@ s32 Unknown8017ED00(struct GdObj *a0, struct GdPlaneF *a1) {
     set_cur_dynobj(a0);
     d_get_world_pos(&sp1C);
 
-    if (sp1C.x >= a1->p0.x)
-        if (sp1C.x <= a1->p1.x)
-            if (sp1C.z >= a1->p0.z)
-                if (sp1C.z <= a1->p1.z)
+    if (sp1C.x >= a1->p0.x) {
+        if (sp1C.x <= a1->p1.x) {
+            if (sp1C.z >= a1->p0.z) {
+                if (sp1C.z <= a1->p1.z) {
                     return 1;
+                }
+            }
+        }
+    }
 
     return 0;
 }
 
 /* @ 22D59C for 0x90 */
 s32 Unknown8017EDCC(struct GdVec3f *a0, struct GdPlaneF *a1) {
-    if (a0->x >= a1->p0.x)
-        if (a0->x <= a1->p1.x)
-            if (a0->z >= a1->p0.z)
-                if (a0->z <= a1->p1.z)
+    if (a0->x >= a1->p0.x) {
+        if (a0->x <= a1->p1.x) {
+            if (a0->z >= a1->p0.z) {
+                if (a0->z <= a1->p1.z) {
                     return 1;
+                }
+            }
+        }
+    }
 
     return 0;
 }
 
 /* @ 22D62C for 0x1F8; orig name: Unknown8017EE5C */
 s32 gd_plane_point_within(struct GdPlaneF *a0, struct GdPlaneF *a1) {
-    if (a0->p0.x >= a1->p0.x)
-        if (a0->p0.x <= a1->p1.x)
-            if (a0->p0.z >= a1->p0.z)
-                if (a0->p0.z <= a1->p1.z)
+    if (a0->p0.x >= a1->p0.x) {
+        if (a0->p0.x <= a1->p1.x) {
+            if (a0->p0.z >= a1->p0.z) {
+                if (a0->p0.z <= a1->p1.z) {
                     return TRUE;
+                }
+            }
+        }
+    }
 
-    if (a0->p1.x >= a1->p0.x)
-        if (a0->p1.x <= a1->p1.x)
-            if (a0->p0.z >= a1->p0.z)
-                if (a0->p0.z <= a1->p1.z)
+    if (a0->p1.x >= a1->p0.x) {
+        if (a0->p1.x <= a1->p1.x) {
+            if (a0->p0.z >= a1->p0.z) {
+                if (a0->p0.z <= a1->p1.z) {
                     return TRUE;
+                }
+            }
+        }
+    }
 
-    if (a0->p1.x >= a1->p0.x)
-        if (a0->p1.x <= a1->p1.x)
-            if (a0->p1.z >= a1->p0.z)
-                if (a0->p1.z <= a1->p1.z)
+    if (a0->p1.x >= a1->p0.x) {
+        if (a0->p1.x <= a1->p1.x) {
+            if (a0->p1.z >= a1->p0.z) {
+                if (a0->p1.z <= a1->p1.z) {
                     return TRUE;
+                }
+            }
+        }
+    }
 
-    if (a0->p0.x >= a1->p0.x)
-        if (a0->p0.x <= a1->p1.x)
-            if (a0->p1.z >= a1->p0.z)
-                if (a0->p1.z <= a1->p1.z)
+    if (a0->p0.x >= a1->p0.x) {
+        if (a0->p0.x <= a1->p1.x) {
+            if (a0->p1.z >= a1->p0.z) {
+                if (a0->p1.z <= a1->p1.z) {
                     return TRUE;
+                }
+            }
+        }
+    }
 
     return FALSE;
 }
@@ -1427,11 +1497,13 @@ void move_animator(struct ObjAnimator *animObj) {
     register struct Links *link;
     struct GdObj *linkedObj;
 
-    if (animObj->fn48 != NULL)
+    if (animObj->fn48 != NULL) {
         (*animObj->fn48)(animObj);
+    }
 
-    if (animObj->unk14 == NULL)
+    if (animObj->unk14 == NULL) {
         return;
+    }
 
     animData = (struct AnimDataInfo *) animObj->animdata->link1C->obj;
 
@@ -1442,24 +1514,27 @@ void move_animator(struct ObjAnimator *animObj) {
             ((struct ObjAnimator *) animObj->unk44)->unk20; //...why offset this pointer like this...
     }
 
-    if (animData->type == 0)
+    if (animData->type == 0) {
         return;
+    }
 
     unusedVec.x = 4.0f;
     unusedVec.y = 1.0f;
     unusedVec.z = 1.0f;
 
-    if (animObj->unk28 > (f32) animData->count)
+    if (animObj->unk28 > (f32) animData->count) {
         animObj->unk28 = 1.0f;
-    else if (animObj->unk28 < 0.0f)
+    } else if (animObj->unk28 < 0.0f) {
         animObj->unk28 = (f32) animData->count;
+    }
 
     sp38 = animObj->unk28;
     sp30 = animObj->unk28 - (f32) sp38;
     sp34 = sp38 + 1;
 
-    if (sp34 > animData->count)
+    if (sp34 > animData->count) {
         sp34 = 1;
+    }
 
     sp38--;
     sp34--;
@@ -1613,14 +1688,15 @@ void move_animator(struct ObjAnimator *animObj) {
                 d_set_idn_mtx(&localMtx);
                 break;
             case GD_ANIM_STUB:
-                if (stubObj1 == NULL)
+                if (stubObj1 == NULL) {
                     stubObj1 = linkedObj;
-                else {
+                } else {
                     if (stubObj2 == NULL) {
                         stubObj2 = linkedObj;
                         func_8017F404(animObj->unk28, stubObj1, stubObj2);
-                    } else
+                    } else {
                         fatal_printf("Too many objects to morph");
+                    }
                 }
                 break;
             default:
@@ -1648,8 +1724,9 @@ void drag_picked_object(struct GdObj *inputObj) {
 
     ctrl = &gGdCtrl;
 
-    if (gViewUpdateCamera == NULL)
+    if (gViewUpdateCamera == NULL) {
         return;
+    }
 
     sp28 = magnitude_vec3f(&gViewUpdateCamera->unk40);
     sp28 /= 1000.0f;
@@ -1665,8 +1742,9 @@ void drag_picked_object(struct GdObj *inputObj) {
     if ((inputObj->drawFlags & OBJ_PICKED) && gGdCtrl.btnApressed) {
         gd_play_sfx(GD_SFX_PINCH_FACE);
         // Note: this second sfx won't play, as it is "overwritten" by the first
-        if (ABS(ctrl->stickDeltaX) + ABS(ctrl->stickDeltaY) >= 11)
+        if (ABS(ctrl->stickDeltaX) + ABS(ctrl->stickDeltaY) >= 11) {
             gd_play_sfx(GD_SFX_PINCH_FACE_2);
+        }
 
         switch (inputObj->type) {
             case OBJ_TYPE_JOINTS:
@@ -1720,8 +1798,9 @@ void move_camera(struct ObjCamera *cam) {
     struct GdControl *ctrl; // 28
 
     ctrl = &gGdCtrl;
-    if ((cam->unk2C & 0x10) == 0)
+    if ((cam->unk2C & 0x10) == 0) {
         return;
+    }
 
     spE0.x = spE0.y = spE0.z = 0.0f;
     spB0.x = spB0.y = spB0.z = 0.0f;
@@ -1750,15 +1829,17 @@ void move_camera(struct ObjCamera *cam) {
         cam->unkA8[1][2] = 0.0f;
 
         set_identity_mat4(&cam->unkA8);
-    } else
+    } else {
         set_identity_mat4(&cam->unkA8);
+    }
 
     sp2C = &cam->unk64;
     if ((cam->unk2C & 0x4) != 0) { // new B press
         if (ctrl->btnB != FALSE && ctrl->prevFrame->btnB == FALSE) {
             cam->zoom++;
-            if (cam->zoom > cam->zoomLevels)
+            if (cam->zoom > cam->zoomLevels) {
                 cam->zoom = 0;
+            }
 
             switch (cam->zoom) {
                 case 0:
@@ -1771,17 +1852,21 @@ void move_camera(struct ObjCamera *cam) {
             }
         }
 
-        if (ctrl->cleft)
+        if (ctrl->cleft) {
             cam->unk128.y += cam->unk134.y;
+        }
 
-        if (ctrl->cright)
+        if (ctrl->cright) {
             cam->unk128.y -= cam->unk134.y;
+        }
 
-        if (ctrl->cup)
+        if (ctrl->cup) {
             cam->unk128.x += cam->unk134.x;
+        }
 
-        if (ctrl->cdown)
+        if (ctrl->cdown) {
             cam->unk128.x -= cam->unk134.x;
+        }
 
         cam->unk128.x = func_80194728(cam->unk128.x, 80.0f);
 
@@ -1795,8 +1880,9 @@ void move_camera(struct ObjCamera *cam) {
         cam->unk40.x += (cam->unk4C.x - cam->unk40.x) * cam->unk17C;
         cam->unk40.y += (cam->unk4C.y - cam->unk40.y) * cam->unk17C;
         cam->unk40.z += (cam->unk4C.z - cam->unk40.z) * cam->unk17C;
-    } else
+    } else {
         set_identity_mat4(sp2C);
+    }
 
     spD4.x = cam->unk40.x;
     spD4.y = cam->unk40.y;
@@ -1829,14 +1915,17 @@ void Unknown8018100C(struct ObjLight *light) {
     UNUSED u32 pad1C[3];
 
     if (light->unk40 == 3) {
-        if (light->unk30 > 0.0)  //? 0.0f
-            light->unk30 -= 0.2; //? 0.2f
+        if (light->unk30 > 0.0) { //? 0.0f
+            light->unk30 -= 0.2;  //? 0.2f
+        }
 
-        if (light->unk30 < 0.0f)
+        if (light->unk30 < 0.0f) {
             light->unk30 = 0.0f;
+        }
 
-        if ((light->unk3C & 0x1) != 0)
+        if ((light->unk3C & 0x1) != 0) {
             light->unk30 = 1.0f;
+        }
 
         light->unk3C &= ~1;
     }
@@ -1848,14 +1937,17 @@ void Unknown8018100C(struct ObjLight *light) {
     light->position.z += light->unk80.z;
 
     // should be position.x for second comparison?
-    if (light->position.x > 500.0f || light->position.y < -500.0f)
+    if (light->position.x > 500.0f || light->position.y < -500.0f) {
         light->unk80.x = -light->unk80.x;
+    }
 
-    if (light->position.y > 500.0f || light->position.y < -500.0f)
+    if (light->position.y > 500.0f || light->position.y < -500.0f) {
         light->unk80.y = -light->unk80.y;
+    }
 
-    if (light->position.z > 500.0f || light->position.z < -500.0f)
+    if (light->position.z > 500.0f || light->position.z < -500.0f) {
         light->unk80.z = -light->unk80.z;
+    }
 
     return;
     // more unreachable
@@ -1892,8 +1984,9 @@ void move_group_members(void) {
         move_particles_in_grp(sCurrentMoveGrp);
         move_animators(sCurrentMoveGrp);
 
-        for (i = 0; i <= 0; i++)
+        for (i = 0; i <= 0; i++) {
             move_nets(sCurrentMoveGrp);
+        }
 
         move_cameras_in_grp(sCurrentMoveGrp);
     }
@@ -1904,10 +1997,12 @@ void proc_view_movement(struct ObjView *view) {
     add_to_stacktrace("movement");
     sCurrentMoveCamera = view->activeCam;
     sCurrentMoveView = view;
-    if ((sCurrentMoveGrp = view->components) != NULL)
+    if ((sCurrentMoveGrp = view->components) != NULL) {
         move_group_members();
-    if ((sCurrentMoveGrp = view->lights) != NULL)
+    }
+    if ((sCurrentMoveGrp = view->lights) != NULL) {
         move_group_members();
+    }
     imout();
 }
 

@@ -81,9 +81,9 @@ extern "C" {
 
 /* Cache operations and macros */
 
-extern void		osInvalDCache(void *, s32);
-extern void		osInvalICache(void *, s32);
-extern void		osWritebackDCache(void *, s32);
+extern void		osInvalDCache(void *, size_t);
+extern void		osInvalICache(void *, size_t);
+extern void		osWritebackDCache(void *, size_t);
 extern void		osWritebackDCacheAll(void);
 
 

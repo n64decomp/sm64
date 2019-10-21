@@ -224,7 +224,7 @@ static void wiggler_act_walk(void) {
 
         // If Mario is positioned below the wiggler, assume he entered through the
         // lower cave entrance, so don't display text.
-        if (gMarioObject->oPosY < o->oPosY || obj_update_dialog_unk2(2, 0, 0xA2, 0x96) != 0) {
+        if (gMarioObject->oPosY < o->oPosY || obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG_1, 150) != 0) {
             o->oWigglerTextStatus = WIGGLER_TEXT_STATUS_COMPLETED_DIALOG;
         }
     } else {
@@ -300,7 +300,7 @@ static void wiggler_act_jumped_on(void) {
     // defeated) or go back to walking
     if (o->header.gfx.scale[1] >= 4.0f) {
         if (o->oTimer > 30) {
-            if (obj_update_dialog_unk2(2, 0, 0xA2, attackText[o->oHealth - 2]) != 0) {
+            if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG_1, attackText[o->oHealth - 2]) != 0) {
                 // Because we don't want the wiggler to disappear after being
                 // defeated, we leave its health at 1
                 if (--o->oHealth == 1) {
@@ -311,7 +311,7 @@ static void wiggler_act_jumped_on(void) {
                     o->oMoveAngleYaw = o->oFaceAngleYaw;
 
                     if (o->oHealth == 2) {
-                        PlaySound2(SOUND_WIGGLER_JUMP);
+                        PlaySound2(SOUND_OBJ_WIGGLER_JUMP);
                         o->oForwardVel = 10.0f;
                         o->oVelY = 70.0f;
                     }
@@ -349,12 +349,12 @@ static void wiggler_act_knockback(void) {
 static void wiggler_act_shrink(void) {
     if (o->oTimer >= 20) {
         if (o->oTimer == 20) {
-            PlaySound2(SOUND_EMEMY_DEFEAT_SHRINK);
+            PlaySound2(SOUND_OBJ_ENEMY_DEFEAT_SHRINK);
         }
 
         // 4 is the default scale, so shrink to 1/4 of regular size
         if (approach_f32_ptr(&o->header.gfx.scale[0], 1.0f, 0.1f)) {
-            CreateStar(0.0f, 2048.0f, 0.0f);
+            create_star(0.0f, 2048.0f, 0.0f);
             o->oAction = WIGGLER_ACT_FALL_THROUGH_FLOOR;
         }
 
@@ -385,7 +385,7 @@ static void wiggler_act_fall_through_floor(void) {
  * Stop and enter the jumped on action.
  */
 void wiggler_jumped_on_attack_handler(void) {
-    PlaySound2(SOUND_WIGGLER_ATTACKED);
+    PlaySound2(SOUND_OBJ_WIGGLER_ATTACKED);
     o->oAction = WIGGLER_ACT_JUMPED_ON;
     o->oForwardVel = o->oVelY = 0.0f;
     o->oWigglerSquishSpeed = 0.4f;
@@ -409,7 +409,7 @@ void bhv_wiggler_update(void) {
             func_8029ED98(0, o->oWigglerWalkAnimSpeed);
             if (o->oWigglerWalkAnimSpeed != 0.0f) {
                 func_802F9378(0, 13,
-                              o->oHealth >= 4 ? SOUND_WIGGLER_LOW_PITCH : SOUND_WIGGLER_HIGH_PITCH);
+                              o->oHealth >= 4 ? SOUND_OBJ_WIGGLER_LOW_PITCH : SOUND_OBJ_WIGGLER_HIGH_PITCH);
             } else {
                 func_8029F6F0();
             }

@@ -2,8 +2,8 @@
 #define BUFFERS_H
 
 #include "types.h"
-#include "save_file.h"
-#include "display.h"
+#include "game/save_file.h"
+#include "game/display.h"
 
 extern u8 gDecompressionHeap[];
 

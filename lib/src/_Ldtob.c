@@ -83,8 +83,9 @@ void _Ldtob(printf_struct *args, u8 type) {
         nsig = 0;
         exp = 0;
     } else {
-        if (val < 0)
+        if (val < 0) {
             val = -val;
+        }
         exp = exp * 30103 / 0x000186A0 - 4;
         if (exp < 0) {
             n = (3 - exp) & ~3;
@@ -109,8 +110,9 @@ void _Ldtob(printf_struct *args, u8 type) {
             }
         }
         gen = ((type == 'f') ? exp + 10 : 6) + args->precision;
-        if (gen > 0x13)
+        if (gen > 0x13) {
             gen = 0x13;
+        }
         *ptr++ = '0';
         while (gen > 0 && 0 < val) {
             lo = val;
@@ -136,13 +138,15 @@ void _Ldtob(printf_struct *args, u8 type) {
         }
 
         nsig = ((type == 'f') ? exp + 1 : ((type == 'e' || type == 'E') ? 1 : 0)) + args->precision;
-        if (gen < nsig)
+        if (gen < nsig) {
             nsig = gen;
+        }
         if (nsig > 0) {
-            if (nsig < gen && ptr[nsig] > '4')
+            if (nsig < gen && ptr[nsig] > '4') {
                 drop = '9';
-            else
+            } else {
                 drop = '0';
+            }
 
             for (n2 = nsig; ptr[--n2] == drop;) {
                 nsig--;
@@ -170,9 +174,9 @@ static s16 _Ldunscale(s16 *pex, printf_struct *px) {
         *pex = xchar - (_DBIAS - 1);
         return (FINITE);
     }
-    if (0 > xchar)
+    if (0 > xchar) {
         return NAN;
-    else {
+    } else {
         *pex = 0;
         return (0);
     }
@@ -180,91 +184,106 @@ static s16 _Ldunscale(s16 *pex, printf_struct *px) {
 
 static void _Genld(printf_struct *px, u8 code, u8 *p, s16 nsig, s16 xexp) {
     u8 point = '.';
-    if (nsig <= 0)
+    if (nsig <= 0) {
         nsig = 1,
 
         p = (u8 *) "0";
+    }
 
     if (code == 'f'
         || ((code == 'g' || code == 'G') && (-4 <= xexp) && (xexp < px->precision))) { /* 'f' format */
         ++xexp;            /* change to leading digit count */
         if (code != 'f') { /* fixup for 'g' */
-            if (!(px->flags & FLAGS_HASH) && nsig < px->precision)
+            if (!(px->flags & FLAGS_HASH) && nsig < px->precision) {
                 px->precision = nsig;
-            if ((px->precision -= xexp) < 0)
+            }
+            if ((px->precision -= xexp) < 0) {
                 px->precision = 0;
+            }
         }
         if (xexp <= 0) { /* digits only to right of point */
             px->buff[px->part2_len++] = '0';
-            if (0 < px->precision || px->flags & FLAGS_HASH)
+            if (0 < px->precision || px->flags & FLAGS_HASH) {
                 px->buff[px->part2_len++] = point;
-            if (px->precision < -xexp)
+            }
+            if (px->precision < -xexp) {
                 xexp = -px->precision;
+            }
             px->num_mid_zeros = -xexp;
             px->precision += xexp;
-            if (px->precision < nsig)
+            if (px->precision < nsig) {
                 nsig = px->precision;
+            }
             memcpy(&px->buff[px->part2_len], p, px->part3_len = nsig);
             px->num_trailing_zeros = px->precision - nsig;
         } else if (nsig < xexp) { /* zeros before point */
             memcpy(&px->buff[px->part2_len], p, nsig);
             px->part2_len += nsig;
             px->num_mid_zeros = xexp - nsig;
-            if (0 < px->precision || px->flags & FLAGS_HASH)
+            if (0 < px->precision || px->flags & FLAGS_HASH) {
                 px->buff[px->part2_len] = point, ++px->part3_len;
+            }
             px->num_trailing_zeros = px->precision;
         } else { /* enough digits before point */
             memcpy(&px->buff[px->part2_len], p, xexp);
             px->part2_len += xexp;
             nsig -= xexp;
-            if (0 < px->precision || px->flags & FLAGS_HASH)
+            if (0 < px->precision || px->flags & FLAGS_HASH) {
                 px->buff[px->part2_len++] = point;
-            if (px->precision < nsig)
+            }
+            if (px->precision < nsig) {
                 nsig = px->precision;
+            }
             memcpy(&px->buff[px->part2_len], p + xexp, nsig);
             px->part2_len += nsig;
             px->num_mid_zeros = px->precision - nsig;
         }
     } else {                              /* 'e' format */
         if (code == 'g' || code == 'G') { /* fixup for 'g' */
-            if (nsig < px->precision)
+            if (nsig < px->precision) {
                 px->precision = nsig;
-            if (--px->precision < 0)
+            }
+            if (--px->precision < 0) {
                 px->precision = 0;
+            }
             code = code == 'g' ? 'e' : 'E';
         }
         px->buff[px->part2_len++] = *p++;
-        if (0 < px->precision || px->flags & FLAGS_HASH)
+        if (0 < px->precision || px->flags & FLAGS_HASH) {
             px->buff[px->part2_len++] = point;
+        }
         if (0 < px->precision) { /* put fraction digits */
-            if (px->precision < --nsig)
+            if (px->precision < --nsig) {
                 nsig = px->precision;
+            }
             memcpy(&px->buff[px->part2_len], p, nsig);
             px->part2_len += nsig;
             px->num_mid_zeros = px->precision - nsig;
         }
         p = (u8 *) &px->buff[px->part2_len]; /* put exponent */
         *p++ = code;
-        if (0 <= xexp)
+        if (0 <= xexp) {
             *p++ = '+';
-        else { /* negative exponent */
+        } else { /* negative exponent */
             *p++ = '-';
             xexp = -xexp;
         }
         if (100 <= xexp) { /* put oversize exponent */
-            if (1000 <= xexp)
+            if (1000 <= xexp) {
                 *p++ = xexp / 1000 + '0', xexp %= 1000;
+            }
             *p++ = xexp / 100 + '0', xexp %= 100;
         }
         *p++ = xexp / 10 + '0', xexp %= 10;
         *p++ = xexp + '0';
-        px->part3_len = (u32) p - (u32) &px->buff[px->part2_len];
+        px->part3_len = p - (u8 *) &px->buff[px->part2_len];
     }
     if ((px->flags & (FLAGS_ZERO | FLAGS_MINUS)) == FLAGS_ZERO) { /* pad with leading zeros */
         int n =
             px->part1_len + px->part2_len + px->num_mid_zeros + px->part3_len + px->num_trailing_zeros;
 
-        if (n < px->width)
+        if (n < px->width) {
             px->num_leading_zeros = px->width - n;
+        }
     }
 }
