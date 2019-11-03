@@ -9,7 +9,6 @@
 #include "engine/graph_node.h"
 #include "geo_misc.h"
 #include "area.h"
-#include "prevent_bss_reordering.h"
 #include "segment2.h"
 #include "paintings.h"
 
@@ -17,26 +16,26 @@ s16 gPaintingMarioFloorType;
 float gPaintingMarioXPos, gPaintingMarioYPos, gPaintingMarioZPos;
 struct Thing *D_8035FFA0;
 float (*D_8035FFA4)[3]; // TODO: Use struct
-struct PaintingData *ripplingPainting;
+struct Painting *ripplingPainting;
 s8 dddStatus;
 
-struct PaintingData *hmcPaintings[] = {
-    cotmc_painting,
+struct Painting *hmcPaintings[] = {
+    &cotmc_painting,
     NULL,
 };
 
-struct PaintingData *insideCastlePaintings[] = {
-    bob_painting, ccm_painting, wf_painting,  jrb_painting,      lll_painting,
-    ssl_painting, hmc_painting, ddd_painting, wdw_painting,      thi_tiny_painting,
-    ttm_painting, ttc_painting, sl_painting,  thi_huge_painting, NULL,
+struct Painting *insideCastlePaintings[] = {
+    &bob_painting, &ccm_painting, &wf_painting,  &jrb_painting,      &lll_painting,
+    &ssl_painting, &hmc_painting, &ddd_painting, &wdw_painting,      &thi_tiny_painting,
+    &ttm_painting, &ttc_painting, &sl_painting,  &thi_huge_painting, NULL,
 };
 
-struct PaintingData *ttmPaintings[] = {
-    ttm_slide_painting,
+struct Painting *ttmPaintings[] = {
+    &ttm_slide_painting,
     NULL,
 };
 
-struct PaintingData **paintingGroups[] = {
+struct Painting **paintingGroups[] = {
     hmcPaintings,
     insideCastlePaintings,
     ttmPaintings,
@@ -45,14 +44,14 @@ struct PaintingData **paintingGroups[] = {
 s16 gPaintingUpdateCounter = 1;
 s16 gLastPaintingUpdateCounter = 0;
 
-void stopAllRippleExcept(s16 *idptr, struct PaintingData *paintingGroup[]) {
+void stopAllRippleExcept(s16 *idptr, struct Painting *paintingGroup[]) {
     s16 index;
     s16 id = *idptr;
 
     index = 0;
     while (paintingGroup[index] != NULL) // for each painting
     {
-        struct PaintingData *painting = segmented_to_virtual(paintingGroup[index]);
+        struct Painting *painting = segmented_to_virtual(paintingGroup[index]);
         if (painting->id != id) {
             painting->rippleStatus = 0; // stop all rippling except for the selected painting
         }
@@ -60,7 +59,7 @@ void stopAllRippleExcept(s16 *idptr, struct PaintingData *paintingGroup[]) {
     }
 }
 
-float find_mario_y_position_on_painting(struct PaintingData *painting) {
+float find_mario_y_position_on_painting(struct Painting *painting) {
     //! unnecessary use of double constants
     float marioYOffsetFromPainting = gPaintingMarioYPos - painting->vYPos + 50.0;
 
@@ -73,7 +72,7 @@ float find_mario_y_position_on_painting(struct PaintingData *painting) {
     return marioYOffsetFromPainting;
 }
 
-float find_mario_z_position_on_painting(struct PaintingData *painting) {
+float find_mario_z_position_on_painting(struct Painting *painting) {
     float marioZOffsetFromPainting = painting->vZPos - gPaintingMarioZPos;
 
     if (marioZOffsetFromPainting < 0.0) {
@@ -85,7 +84,7 @@ float find_mario_z_position_on_painting(struct PaintingData *painting) {
     return marioZOffsetFromPainting;
 }
 
-float painting_find_vertical_ripple_location(struct PaintingData *painting, s8 rippleSpot) {
+float painting_find_vertical_ripple_location(struct Painting *painting, s8 rippleSpot) {
     switch (rippleSpot) {
         case MARIO_Y:
             return find_mario_y_position_on_painting(painting); // normal vertical paintings
@@ -99,7 +98,7 @@ float painting_find_vertical_ripple_location(struct PaintingData *painting, s8 r
     }
 }
 
-float find_part_of_painting_near_mario(struct PaintingData *painting) {
+float find_part_of_painting_near_mario(struct Painting *painting) {
     float firstQuarter = painting->vSize / 4.0;       // 1/4 of the way across the painting
     float secondQuarter = painting->vSize / 2.0;      // 1/2 of the way across the painting
     float thirdQuarter = painting->vSize * 3.0 / 4.0; // 3/4 of the way across the painting
@@ -119,7 +118,7 @@ float find_part_of_painting_near_mario(struct PaintingData *painting) {
     }
 }
 
-float find_mario_x_position_on_painting(struct PaintingData *painting) {
+float find_mario_x_position_on_painting(struct Painting *painting) {
     float mario_x_offset_from_painting = gPaintingMarioXPos - painting->vXPos;
 
     if (mario_x_offset_from_painting < 0.0) {
@@ -131,7 +130,7 @@ float find_mario_x_position_on_painting(struct PaintingData *painting) {
     return mario_x_offset_from_painting;
 }
 
-float painting_find_horizontal_ripple_location(struct PaintingData *painting, s8 rippleSpot) {
+float painting_find_horizontal_ripple_location(struct Painting *painting, s8 rippleSpot) {
     switch (rippleSpot) {
         case NEAR_MARIO_LATERALLY: // normal vertical paintings
             return find_part_of_painting_near_mario(painting);
@@ -145,8 +144,8 @@ float painting_find_horizontal_ripple_location(struct PaintingData *painting, s8
     }
 }
 
-void painting_set_ripple_type(s8 intendedStatus, struct PaintingData *painting,
-                              struct PaintingData *paintingGroup[], s8 hRippleSpot, s8 vRippleSpot,
+void painting_set_ripple_type(s8 intendedStatus, struct Painting *painting,
+                              struct Painting *paintingGroup[], s8 hRippleSpot, s8 vRippleSpot,
                               s8 resetTimer) {
     stopAllRippleExcept(&painting->id, paintingGroup); // make sure no other paintings are rippling
     switch (intendedStatus) // set the variables necessary for the given ripple status
@@ -176,8 +175,8 @@ void painting_set_ripple_type(s8 intendedStatus, struct PaintingData *painting,
 }
 
 void vertical_proximity_ripple_painting_ripple(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned vertically that follow RIPPLE_TRIGGER_PROXIMITY, set
                           // some flags depending on where Mario is
 {
@@ -203,8 +202,8 @@ void vertical_proximity_ripple_painting_ripple(
 }
 
 void vertical_proximity_ripple_painting_ripple_if_mario_enters(
-    struct PaintingData *painting,
-    struct PaintingData *paintingGroup[]) // For paintings aligned vertically that follow
+    struct Painting *painting,
+    struct Painting *paintingGroup[]) // For paintings aligned vertically that follow
                                           // RIPPLE_TRIGGER_PROXIMITY, set some flags if Mario enters
 {
     if (painting->floorEntered & ENTER_LEFT) {
@@ -220,8 +219,8 @@ void vertical_proximity_ripple_painting_ripple_if_mario_enters(
 }
 
 void vertical_continuous_ripple_painting_ripple(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned vertically that follow RIPPLE_TRIGGER_CONTINUOUS (DDD
                           // only), set some flags depending on where Mario is
 {
@@ -247,8 +246,8 @@ void vertical_continuous_ripple_painting_ripple(
 }
 
 void vertical_continuous_ripple_painting_ripple_if_mario_enters(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned vertically that follow RIPPLE_TRIGGER_CONTINUOUS (DDD
                           // only), set some flags if Mario enters
 {
@@ -265,8 +264,8 @@ void vertical_continuous_ripple_painting_ripple_if_mario_enters(
 }
 
 void horizontal_proximity_ripple_painting_ripple(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned horizontally that follow RIPPLE_TRIGGER_PROXIMITY
                           // (these are not found in-game), set some flags depending on where Mario is
 {
@@ -294,8 +293,8 @@ void horizontal_proximity_ripple_painting_ripple(
 }
 
 void horizontal_proximity_ripple_painting_ripple_if_mario_enters(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned horizontally that follow RIPPLE_TRIGGER_PROXIMITY
                           // (these are not found in-game), set some flags if Mario enters
 {
@@ -314,8 +313,8 @@ void horizontal_proximity_ripple_painting_ripple_if_mario_enters(
 }
 
 void horizontal_continuous_ripple_painting_ripple(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned horizontally that follow RIPPLE_TRIGGER_CONTINUOUS
                           // (HMC and CotMC), set some flags depending on where Mario is
 {
@@ -341,8 +340,8 @@ void horizontal_continuous_ripple_painting_ripple(
 }
 
 void horizontal_continuous_ripple_painting_ripple_if_mario_enters(
-    struct PaintingData *painting,
-    struct PaintingData
+    struct Painting *painting,
+    struct Painting
         *paintingGroup[]) // For paintings aligned horizontally that follow RIPPLE_TRIGGER_CONTINUOUS
                           // (HMC and CotMC), set some flags if Mario enters
 {
@@ -360,7 +359,7 @@ void horizontal_continuous_ripple_painting_ripple_if_mario_enters(
     }
 }
 
-void painting_update_floors(struct PaintingData *painting) {
+void painting_update_floors(struct Painting *painting) {
     s16 paintingId = painting->id;
     s8 leftSideStand = 0;
     s8 middleStand = 0;
@@ -415,7 +414,7 @@ void painting_update_floors(struct PaintingData *painting) {
                                             // this frame but wasn't last frame.
 }
 
-void painting_update_ripple_status(struct PaintingData *painting) {
+void painting_update_ripple_status(struct Painting *painting) {
     if (gPaintingUpdateCounter != gLastPaintingUpdateCounter) {
         painting->currRippleMag *= painting->rippleMagMultiplier;
         painting->rippleTimer +=
@@ -447,7 +446,7 @@ void painting_update_ripple_status(struct PaintingData *painting) {
     }
 }
 
-s16 painting_calculate_point_ripple(struct PaintingData *painting, float xpos,
+s16 painting_calculate_point_ripple(struct Painting *painting, float xpos,
                                     float ypos) // note that xpos and ypos correspond to a point on the
                                                 // face of the painting, not actual axes
 {
@@ -483,7 +482,7 @@ s16 painting_calculate_point_ripple(struct PaintingData *painting, float xpos,
     }
 }
 
-s16 painting_conditionally_calculate_point_ripple(struct PaintingData *painting, s16 condition,
+s16 painting_conditionally_calculate_point_ripple(struct Painting *painting, s16 condition,
                                                   s16 xpos, s16 ypos) {
     s16 rippleHeight = 0;
 
@@ -493,7 +492,7 @@ s16 painting_conditionally_calculate_point_ripple(struct PaintingData *painting,
     return rippleHeight;
 }
 
-void Print1(struct PaintingData *painting, s16 *b, s16 c) {
+void Print1(struct Painting *painting, s16 *b, s16 c) {
     s16 sp1E;
 
     D_8035FFA0 = mem_pool_alloc(D_8033A124, c * sizeof(struct Thing));
@@ -587,7 +586,7 @@ void func_802D39DC(s16 *a, s16 b) {
     }
 }
 
-void *func_802D3CF0(u8 *img, s16 b, s16 c, s16 *d, s16 e, s16 f, u8 g) {
+void *func_802D3CF0(u8 *img, s16 tWidth, s16 tHeight, s16 *d, s16 e, s16 f, u8 g) {
     s16 sp9E;
     s16 sp9C;
     s16 sp9A;
@@ -608,10 +607,10 @@ void *func_802D3CF0(u8 *img, s16 b, s16 c, s16 *d, s16 e, s16 f, u8 g) {
 
     gDPSetTextureImage(sp7C++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, img);
     gDPTileSync(sp7C++);
-    gDPSetTile(sp7C++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK,
-               G_TX_NOLOD, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+    gDPSetTile(sp7C++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
+        G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
     gDPLoadSync(sp7C++);
-    gDPLoadBlock(sp7C++, 7, 0, 0, b * c - 1, (MAX(1, b * 2 / 8) + 2047) / MAX(1, b * 2 / 8));
+    gDPLoadBlock(sp7C++, G_TX_LOADTILE, 0, 0, tWidth * tHeight - 1, CALC_DXT(tWidth, G_IM_SIZ_16b_BYTES))
 
     for (sp9E = 0; sp9E < sp90; sp9E++) {
         sp9A = e * 3 + sp9E * 15 + 2;
@@ -645,7 +644,7 @@ void *func_802D3CF0(u8 *img, s16 b, s16 c, s16 *d, s16 e, s16 f, u8 g) {
     return sp80;
 }
 
-Gfx *func_802D43FC(struct PaintingData *painting) {
+Gfx *func_802D43FC(struct Painting *painting) {
     float sp4C = painting->vSize / DEFAULT_HEIGHT;
     Mtx *sp48 = alloc_display_list(sizeof(Mtx));
     Mtx *sp44 = alloc_display_list(sizeof(Mtx));
@@ -662,16 +661,16 @@ Gfx *func_802D43FC(struct PaintingData *painting) {
     guRotate(sp44, painting->vYRotation, 0.0f, 1.0f, 0.0f);
     guScale(sp3C, sp4C, sp4C, sp4C);
 
-    gSPMatrix(sp34++, sp40, G_MTX_MODELVIEW | G_MTX_PUSH);
-    gSPMatrix(sp34++, sp48, G_MTX_MODELVIEW | G_MTX_MUL);
-    gSPMatrix(sp34++, sp44, G_MTX_MODELVIEW | G_MTX_MUL);
-    gSPMatrix(sp34++, sp3C, G_MTX_MODELVIEW | G_MTX_MUL);
+    gSPMatrix(sp34++, sp40, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPMatrix(sp34++, sp48, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPMatrix(sp34++, sp44, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPMatrix(sp34++, sp3C, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     gSPEndDisplayList(sp34);
 
     return sp38;
 }
 
-Gfx *func_802D45FC(struct PaintingData *painting) {
+Gfx *func_802D45FC(struct Painting *painting) {
     s16 sp66;
     s16 sp64;
     s16 sp62;
@@ -706,7 +705,7 @@ Gfx *func_802D45FC(struct PaintingData *painting) {
     return sp48;
 }
 
-Gfx *func_802D4874(struct PaintingData *painting) {
+Gfx *func_802D4874(struct Painting *painting) {
     s16 sp5E;
     s16 sp5C;
     s16 *sp58;
@@ -736,7 +735,7 @@ Gfx *func_802D4874(struct PaintingData *painting) {
     return sp48;
 }
 
-Gfx *display_painting_rippling(struct PaintingData *painting) {
+Gfx *display_painting_rippling(struct Painting *painting) {
     s16 *sp34 = segmented_to_virtual(seg2_triangle_mesh);
     s16 *sp30 = segmented_to_virtual(seg2_mesh_order);
     s16 sp2E = sp34[0];
@@ -759,7 +758,7 @@ Gfx *display_painting_rippling(struct PaintingData *painting) {
     return sp28;
 }
 
-Gfx *display_painting_not_rippling(struct PaintingData *painting) {
+Gfx *display_painting_not_rippling(struct Painting *painting) {
     Gfx *sp2C = alloc_display_list(4 * sizeof(Gfx));
     Gfx *sp28 = sp2C;
 
@@ -773,7 +772,7 @@ Gfx *display_painting_not_rippling(struct PaintingData *painting) {
     return sp2C;
 }
 
-void reset_painting(struct PaintingData *painting) {
+void reset_painting(struct Painting *painting) {
     painting->lastFloor = 0;
     painting->currFloor = 0;
     painting->floorEntered = 0;
@@ -783,7 +782,7 @@ void reset_painting(struct PaintingData *painting) {
     ripplingPainting = NULL;
 }
 
-void update_ddd_painting(struct PaintingData *painting, float frontPos, float backPos,
+void update_ddd_painting(struct Painting *painting, float frontPos, float backPos,
                          float speed) // Tells the DDD painting whether to move back
 {
     u32 dddFlags = save_file_get_star_flags(gCurrSaveFileNum - 1,
@@ -822,7 +821,7 @@ struct Struct802D4E04 {
     u32 unk18; // the upper half is the painting's id
 };
 
-void func_802D4E04(struct GraphNodeGenerated *a, struct PaintingData *b) {
+void func_802D4E04(struct GraphNodeGenerated *a, struct Painting *b) {
     switch (b->brightness) {
         case 0xFF: // brightest
             a->fnNode.node.flags = (a->fnNode.node.flags & 0xFF) | 0x100;
@@ -833,7 +832,7 @@ void func_802D4E04(struct GraphNodeGenerated *a, struct PaintingData *b) {
     }
 }
 
-Gfx *display_painting(struct PaintingData *painting) {
+Gfx *display_painting(struct Painting *painting) {
     switch (painting->rippleStatus) {
         case RIPPLE_STATE_NONE:
             return display_painting_not_rippling(painting);
@@ -844,7 +843,7 @@ Gfx *display_painting(struct PaintingData *painting) {
     }
 }
 
-void vertical_painting_ripple(struct PaintingData *painting, struct PaintingData *paintingGroup[]) {
+void vertical_painting_ripple(struct Painting *painting, struct Painting *paintingGroup[]) {
     if (painting->rippleTrigger
         == RIPPLE_TRIGGER_PROXIMITY) // make the painting ripple using a different function based on its
                                      // ripple trigger and status
@@ -869,7 +868,7 @@ void vertical_painting_ripple(struct PaintingData *painting, struct PaintingData
     }
 }
 
-void horizontal_painting_ripple(struct PaintingData *painting, struct PaintingData *paintingGroup[]) {
+void horizontal_painting_ripple(struct Painting *painting, struct Painting *paintingGroup[]) {
     if (painting->rippleTrigger
         == RIPPLE_TRIGGER_PROXIMITY) // make the painting ripple using a different function based on its
                                      // ripple trigger and status
@@ -900,8 +899,8 @@ Gfx *Geo18_802D5B98(s32 run, struct GraphNode *node, UNUSED s32 c) {
     s32 sp28 = (sp2C->parameter >> 8) & 0xFF;
     s32 id = sp2C->parameter & 0xFF;
     Gfx *sp20 = NULL;
-    struct PaintingData **paintingGroup = paintingGroups[sp28];
-    struct PaintingData *painting = segmented_to_virtual(paintingGroup[id]);
+    struct Painting **paintingGroup = paintingGroups[sp28];
+    struct Painting *painting = segmented_to_virtual(paintingGroup[id]);
 
     if (run != TRUE) {
         reset_painting(painting);

@@ -1,2 +1,0 @@
-# Koopa Shell
-

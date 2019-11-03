@@ -89,10 +89,19 @@ struct Struct8033B4B8 D_8033B498;
 struct Struct8033B4B8 D_8033B4B8;
 s16 gCameraMovementFlags;
 s16 gCameraFlags2;
-struct CinematicCameraTable D_8033B4E0[32];
-struct CinematicCameraTable D_8033B5E0[32];
-s16 D_8033B6E0;
-f32 D_8033B6E4;
+struct CutsceneSplinePoint D_8033B4E0[32];
+struct CutsceneSplinePoint D_8033B5E0[32];
+
+/**
+ * The current segment of the CutsceneSplinePoint[] being used.
+ */
+s16 sCutsceneSplineSegment;
+
+/**
+ * The progress (from 0 to 1) through the current spline segment.
+ * When it becomes >= 1, 1.0 is subtracted from it and sCutsceneSplineSegment is increased.
+ */
+f32 sCutsceneSplineSegmentProgress;
 s16 D_8033B6E8;
 s16 D_8033B6EA;
 s16 gCutsceneTimer;
@@ -2513,11 +2522,11 @@ void init_camera(struct LevelCamera *c) {
     sGeometryForMario.prevFloorType = sGeometryForMario.currFloorType;
     sGeometryForMario.prevCeilType = sGeometryForMario.currCeilType;
     for (i = 0; i < 32; i++) {
-        D_8033B4E0[i].unk0 = -1;
-        D_8033B5E0[i].unk0 = -1;
+        D_8033B4E0[i].index = -1;
+        D_8033B5E0[i].index = -1;
     }
-    D_8033B6E0 = 0;
-    D_8033B6E4 = 0.f;
+    sCutsceneSplineSegment = 0;
+    sCutsceneSplineSegmentProgress = 0.f;
     D_8033B6E8 = 0;
     sSplinePositionLimit = 0.f;
     sPositionAlongSpline = 0.f;
@@ -2697,8 +2706,8 @@ void func_802876D0(struct GraphNodeCamera *a) {
     func_80287404(a);
 }
 
-s32 geo_camera_preset_and_pos(s32 a, struct GraphNodeCamera *b, struct AllocOnlyPool *c) {
-    struct GraphNodeCamera *sp2C = b;
+Gfx *geo_camera_preset_and_pos(s32 a, struct GraphNode *b, struct AllocOnlyPool *c) {
+    struct GraphNodeCamera *sp2C = (struct GraphNodeCamera *) b;
     UNUSED struct AllocOnlyPool *sp28 = c;
 
     switch (a) {
@@ -2709,7 +2718,7 @@ s32 geo_camera_preset_and_pos(s32 a, struct GraphNodeCamera *b, struct AllocOnly
             func_802876D0(sp2C);
             break;
     }
-    return 0;
+    return NULL;
 }
 
 void dummy_802877D8(UNUSED struct LevelCamera *c) {
@@ -2785,56 +2794,81 @@ void evaluate_cubic_spline(f32 u, Vec3f Q, Vec3f a0, Vec3f a1, Vec3f a2, Vec3f a
     unused_spline_yaw = atan2s(z, x);
 }
 
-s32 func_80287CFC(Vec3f a, struct CinematicCameraTable b[], s16 *c, f32 *d) {
-    s32 sp6C = 0;
-    Vec3f sp3C[4];
+/**
+ * Computes the point that is `progress` percent of the way through segment `splineSegment` of `spline`,
+ * and stores the result in `p`. `progress` and `splineSegment` are updated if `progress` becomes >= 1.0.
+ *
+ * When neither of next two points' speeds == 0, the number of frames is between 1 and 255. Otherwise
+ * it's infinite.
+ *
+ * To calculate the number of frames it will take to progress through a spline segment:
+ * If the next two speeds are the same and nonzero, it's 1.0 / firstSpeed.
+ *
+ * s1 and s2 are short hand for first/secondSpeed. The progress at any frame n is defined by a recurrency relation:
+ *      p(n+1) = (s2 - s1 + 1) * p(n) + s1
+ * Which can be written as
+ *      p(n) = (s2 * ((s2 - s1 + 1)^(n) - 1)) / (s2 - s1)
+ *
+ * Solving for the number of frames:
+ *      n = log(((s2 - s1) / s1) + 1) / log(s2 - s1 + 1)
+ *
+ * @return 1 if the point has reached the end of the spline, when `progress` reaches 1.0 or greater, and
+ * the 4th CutsceneSplinePoint in the current segment away from spline[splineSegment] has an index of -1.
+ */
+s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *splineSegment, f32 *progress) {
+    s32 finished = 0;
+    Vec3f controlPoints[4];
     s32 i = 0;
-    f32 sp34 = *d;
-    UNUSED f32 sp30;
-    f32 sp2C = 0;
-    f32 sp28 = 0;
-    s32 sp24 = *c;
+    f32 u = *progress;
+    f32 progressChange;
+    f32 firstSpeed = 0;
+    f32 secondSpeed = 0;
+    s32 segment = *splineSegment;
 
-    if (*c < 0) {
-        sp24 = 0;
-        sp34 = 0;
+    if (*splineSegment < 0) {
+        segment = 0;
+        u = 0;
     }
-    if (b[sp24].unk0 == -1 || b[sp24 + 1].unk0 == -1 || b[sp24 + 2].unk0 == -1) {
+    if (spline[segment].index == -1 || spline[segment + 1].index == -1 || spline[segment + 2].index == -1) {
         return 1;
     }
+
     for (i = 0; i < 4; i++) {
-        sp3C[i][0] = b[sp24 + i].unk2[0];
-        sp3C[i][1] = b[sp24 + i].unk2[1];
-        sp3C[i][2] = b[sp24 + i].unk2[2];
+        controlPoints[i][0] = spline[segment + i].point[0];
+        controlPoints[i][1] = spline[segment + i].point[1];
+        controlPoints[i][2] = spline[segment + i].point[2];
     }
-    evaluate_cubic_spline(sp34, a, sp3C[0], sp3C[1], sp3C[2], sp3C[3]);
-    if (b[*c + 1].unk1 != 0) {
-        sp2C = 1.0f / b[*c + 1].unk1;
+    evaluate_cubic_spline(u, p, controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3]);
+
+    if (spline[*splineSegment + 1].speed != 0) {
+        firstSpeed = 1.0f / spline[*splineSegment + 1].speed;
     }
-    if (b[*c + 2].unk1 != 0) {
-        sp28 = 1.0f / b[*c + 2].unk1;
+    if (spline[*splineSegment + 2].speed != 0) {
+        secondSpeed = 1.0f / spline[*splineSegment + 2].speed;
     }
-    sp30 = (sp28 - sp2C) * *d + sp2C;
+    progressChange = (secondSpeed - firstSpeed) * *progress + firstSpeed;
+
 #ifdef VERSION_EU
     if (gCurrLevelCamera->cutscene == CUTSCENE_INTRO_PEACH) {
-        sp30 += sp30 * 0.19f;
+        progressChange += progressChange * 0.19f;
     }
     if (gCurrLevelCamera->cutscene == CUTSCENE_CREDITS) {
-        sp30 += sp30 * 0.15f;
+        progressChange += progressChange * 0.15f;
     }
     if (gCurrLevelCamera->cutscene == CUTSCENE_PEACH_END) {
-        sp30 += sp30 * 0.1f;
+        progressChange += progressChange * 0.1f;
     }
 #endif
-    if (1 <= (*d += sp30)) {
-        (*c)++;
-        if (b[*c + 3].unk0 == -1) {
-            *c = 0;
-            sp6C = 1;
+
+    if (1 <= (*progress += progressChange)) {
+        (*splineSegment)++;
+        if (spline[*splineSegment + 3].index == -1) {
+            *splineSegment = 0;
+            finished = 1;
         }
-        *d -= 1;
+        *progress -= 1;
     }
-    return sp6C;
+    return finished;
 }
 
 s32 select_or_activate_mario_cam(s32 angle) {
@@ -5134,7 +5168,7 @@ struct TableCamera *TableLevelCinematicCamera[40] = {
     NULL,
 };
 
-struct CinematicCameraTable D_8032DDF0[23] = {
+struct CutsceneSplinePoint sIntroStartToPipePosition[23] = {
     { 0, 0, { 2122, 8762, 9114 } },  { 0, 0, { 2122, 8762, 9114 } },  { 1, 0, { 2122, 7916, 9114 } },
     { 1, 0, { 2122, 7916, 9114 } },  { 2, 0, { 957, 5166, 8613 } },   { 3, 0, { 589, 4338, 7727 } },
     { 4, 0, { 690, 3366, 6267 } },   { 5, 0, { -1600, 2151, 4955 } }, { 6, 0, { -1557, 232, 1283 } },
@@ -5145,7 +5179,7 @@ struct CinematicCameraTable D_8032DDF0[23] = {
     { 0, 0, { 448, 136, 564 } },     { -1, 0, { 448, 136, 564 } }
 };
 
-struct CinematicCameraTable D_8032DEA8[23] = {
+struct CutsceneSplinePoint sIntroStartToPipeFocus[23] = {
     { 0, 50, { 1753, 29800, 8999 } }, { 0, 50, { 1753, 29800, 8999 } },
     { 1, 50, { 1753, 8580, 8999 } },  { 1, 100, { 1753, 8580, 8999 } },
     { 2, 50, { 520, 5400, 8674 } },   { 3, 50, { 122, 4437, 7875 } },
@@ -5160,7 +5194,12 @@ struct CinematicCameraTable D_8032DEA8[23] = {
     { -1, 0, { 48, 191, 227 } }
 };
 
-struct CinematicCameraTable D_8032DF60[14] = {
+/**
+ * Describes the spline the camera follows, starting when the camera jumps to Lakitu and ending after
+ * mario jumps out of the pipe when the first dialog opens.  This table specifically updates the
+ * camera's position.
+ */
+struct CutsceneSplinePoint sIntroPipeToDialogPosition[14] = {
     { 0, 0, { -785, 625, 4527 } },  { 1, 0, { -785, 625, 4527 } },  { 2, 0, { -1286, 644, 4376 } },
     { 3, 0, { -1286, 623, 4387 } }, { 4, 0, { -1286, 388, 3963 } }, { 5, 0, { -1286, 358, 4093 } },
     { 6, 0, { -1386, 354, 4159 } }, { 7, 0, { -1477, 306, 4223 } }, { 8, 0, { -1540, 299, 4378 } },
@@ -5168,7 +5207,10 @@ struct CinematicCameraTable D_8032DF60[14] = {
     { 0, 0, { -1328, 485, 5017 } }, { -1, 0, { -1328, 485, 5017 } }
 };
 
-struct CinematicCameraTable D_8032DFD0[14] = {
+/**
+ * Describes the spline that the camera's focus follows, during the same part of the intro as the above.
+ */
+struct CutsceneSplinePoint sIntroPipeToDialogFocus[14] = {
     { 0, 20, { -1248, 450, 4596 } }, { 1, 59, { -1258, 485, 4606 } }, { 2, 59, { -1379, 344, 4769 } },
     { 3, 20, { -1335, 366, 4815 } }, { 4, 23, { -1315, 370, 4450 } }, { 5, 40, { -1322, 333, 4591 } },
     { 6, 25, { -1185, 329, 4616 } }, { 7, 21, { -1059, 380, 4487 } }, { 8, 14, { -1086, 421, 4206 } },
@@ -5176,21 +5218,21 @@ struct CinematicCameraTable D_8032DFD0[14] = {
     { 0, 0, { -1328, 385, 4354 } },  { -1, 0, { -1328, 385, 4354 } }
 };
 
-struct CinematicCameraTable D_8032E040[10] = {
+struct CutsceneSplinePoint D_8032E040[10] = {
     { 0, 0, { -86, 876, 640 } },   { 1, 0, { -86, 876, 610 } },   { 2, 0, { -66, 945, 393 } },
     { 3, 0, { -80, 976, 272 } },   { 4, 0, { -66, 1306, -36 } },  { 5, 0, { -70, 1869, -149 } },
     { 6, 0, { -10, 2093, -146 } }, { 7, 0, { -10, 2530, -248 } }, { 8, 0, { -10, 2530, -263 } },
     { 9, 0, { -10, 2530, -273 } }
 };
 
-struct CinematicCameraTable D_8032E090[11] = {
+struct CutsceneSplinePoint D_8032E090[11] = {
     { 0, 50, { -33, 889, -7 } },    { 1, 35, { -33, 889, -7 } },    { 2, 31, { -17, 1070, -193 } },
     { 3, 25, { -65, 1182, -272 } }, { 4, 20, { -64, 1559, -542 } }, { 5, 25, { -68, 2029, -677 } },
     { 6, 25, { -9, 2204, -673 } },  { 7, 25, { -8, 2529, -772 } },  { 8, 0, { -8, 2529, -772 } },
     { 9, 0, { -8, 2529, -772 } },   { -1, 0, { -8, 2529, -772 } }
 };
 
-struct CinematicCameraTable D_8032E0E8[20] = {
+struct CutsceneSplinePoint D_8032E0E8[20] = {
     { 0, 50, { 1, 120, -1150 } },    { 1, 50, { 1, 120, -1150 } },    { 2, 40, { 118, 121, -1199 } },
     { 3, 40, { 147, 74, -1306 } },   { 4, 40, { 162, 95, -1416 } },   { 5, 40, { 25, 111, -1555 } },
     { 6, 40, { -188, 154, -1439 } }, { 7, 40, { -203, 181, -1242 } }, { 8, 40, { 7, 191, -1057 } },
@@ -5200,25 +5242,25 @@ struct CinematicCameraTable D_8032E0E8[20] = {
     { 8, 0, { -6, 72, 574 } },       { -1, 0, { -6, 72, 574 } }
 };
 
-struct CinematicCameraTable D_8032E188[9] = {
+struct CutsceneSplinePoint D_8032E188[9] = {
     { 0, 0, { -130, 1111, -1815 } }, { 1, 0, { -131, 1052, -1820 } }, { 2, 0, { -271, 1008, -1651 } },
     { 3, 0, { -439, 1043, -1398 } }, { 4, 0, { -433, 1040, -1120 } }, { 5, 0, { -417, 1040, -1076 } },
     { 6, 0, { -417, 1040, -1076 } }, { 7, 0, { -417, 1040, -1076 } }, { -1, 0, { -417, 1040, -1076 } }
 };
 
-struct CinematicCameraTable D_8032E1D0[9] = {
+struct CutsceneSplinePoint D_8032E1D0[9] = {
     { 0, 50, { -37, 1020, -1332 } }, { 1, 20, { -36, 1012, -1330 } }, { 2, 20, { -24, 1006, -1215 } },
     { 3, 20, { 28, 1002, -1224 } },  { 4, 24, { 45, 1013, -1262 } },  { 5, 35, { 34, 1000, -1287 } },
     { 6, 0, { 34, 1000, -1287 } },   { 7, 0, { 34, 1000, -1287 } },   { -1, 0, { 34, 1000, -1287 } }
 };
 
-struct CinematicCameraTable D_8032E218[8] = {
+struct CutsceneSplinePoint D_8032E218[8] = {
     { 0, 50, { 200, 1066, -1414 } }, { 0, 50, { 200, 1066, -1414 } }, { 0, 30, { 198, 1078, -1412 } },
     { 0, 33, { 15, 1231, -1474 } },  { 0, 39, { -94, 1381, -1368 } }, { 0, 0, { -92, 1374, -1379 } },
     { 0, 0, { -92, 1374, -1379 } },  { -1, 0, { -92, 1374, -1379 } }
 };
 
-struct CinematicCameraTable D_8032E258[7] = {
+struct CutsceneSplinePoint D_8032E258[7] = {
     { 0, 50, { 484, 1368, -888 } }, { 0, 72, { 479, 1372, -892 } }, { 0, 50, { 351, 1817, -918 } },
     { 0, 50, { 351, 1922, -598 } }, { 0, 0, { 636, 2027, -415 } },  { 0, 0, { 636, 2027, -415 } },
     { -1, 0, { 636, 2027, -415 } }
@@ -5602,8 +5644,8 @@ void set_cam_yaw_from_focus_and_pos(struct LevelCamera *c) {
 }
 
 void func_8028FABC(void) {
-    D_8033B6E0 = 0;
-    D_8033B6E4 = 0;
+    sCutsceneSplineSegment = 0;
+    sCutsceneSplineSegmentProgress = 0;
 }
 
 void func_8028FAE0(struct LevelCamera *c) {
@@ -5618,32 +5660,32 @@ void cap_switch_save(s16 dummy) {
     save_file_do_save(gCurrSaveFileNum - 1);
 }
 
-void func_8028FB80(struct CinematicCameraTable *a, s8 b, u8 c, Vec3s d) {
-    a->unk0 = b;
-    a->unk1 = c;
-    vec3s_copy(a->unk2, d);
+void func_8028FB80(struct CutsceneSplinePoint *a, s8 b, u8 c, Vec3s d) {
+    a->index = b;
+    a->speed = c;
+    vec3s_copy(a->point, d);
 }
 
-void func_8028FBD8(struct CinematicCameraTable a[], struct CinematicCameraTable b[]) {
+void func_8028FBD8(struct CutsceneSplinePoint a[], struct CutsceneSplinePoint b[]) {
     s32 j = 0;
     s32 i = 0;
     UNUSED s32 pad[2];
 
-    func_8028FB80(&a[i], b[j].unk0, b[j].unk1, b[j].unk2);
+    func_8028FB80(&a[i], b[j].index, b[j].speed, b[j].point);
     i += 1;
 
     do {
         do {
-            func_8028FB80(&a[i], b[j].unk0, b[j].unk1, b[j].unk2);
+            func_8028FB80(&a[i], b[j].index, b[j].speed, b[j].point);
             i += 1;
             j += 1;
-        } while ((b[j].unk0 != -1) && (b[j].unk0 != -1)); //! same comparison performed twice
+        } while ((b[j].index != -1) && (b[j].index != -1)); //! same comparison performed twice
     } while (j > 16);
 
-    func_8028FB80(&a[i], 0, b[j].unk1, b[j].unk2);
-    func_8028FB80(&a[i + 1], 0, 0, b[j].unk2);
-    func_8028FB80(&a[i + 2], 0, 0, b[j].unk2);
-    func_8028FB80(&a[i + 3], -1, 0, b[j].unk2);
+    func_8028FB80(&a[i], 0, b[j].speed, b[j].point);
+    func_8028FB80(&a[i + 1], 0, 0, b[j].point);
+    func_8028FB80(&a[i + 2], 0, 0, b[j].point);
+    func_8028FB80(&a[i + 3], -1, 0, b[j].point);
 }
 
 s16 func_8028FD94(s32 a) {
@@ -5666,6 +5708,7 @@ static void unused_8028FE50(UNUSED struct LevelCamera *a) {
     gCutsceneTimer = func_8028FD94(2);
 }
 
+// Lower the volume and start the peach letter background music
 CmdRet CutsceneIntroPeach0_2(UNUSED struct LevelCamera *a) {
 #ifdef VERSION_US
     func_8031FFB4(0, 60, 40);
@@ -5865,8 +5908,8 @@ CmdRet CutscenePeachEndCommon367A(UNUSED struct LevelCamera *c) {
 }
 
 CmdRet CutscenePeachEnd3_1(struct LevelCamera *c) {
-    func_80287CFC(c->pos, D_8032E040, &D_8033B6E0, &D_8033B6E4);
-    func_80287CFC(c->focus, D_8032E090, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->pos, D_8032E040, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    move_point_along_spline(c->focus, D_8032E090, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
 }
 
 CmdRet CutscenePeachEnd3(struct LevelCamera *c) {
@@ -5876,8 +5919,8 @@ CmdRet CutscenePeachEnd3(struct LevelCamera *c) {
 }
 
 CmdRet CutscenePeachEnd1(struct LevelCamera *c) {
-    vec3f_set(c->focus, D_8032E090[0].unk2[0], D_8032E090[0].unk2[1] + 80.f, D_8032E090[0].unk2[2]);
-    vec3f_set(c->pos, D_8032E040[0].unk2[0], D_8032E040[0].unk2[1], D_8032E040[0].unk2[2] + 150.f);
+    vec3f_set(c->focus, D_8032E090[0].point[0], D_8032E090[0].point[1] + 80.f, D_8032E090[0].point[2]);
+    vec3f_set(c->pos, D_8032E040[0].point[0], D_8032E040[0].point[1], D_8032E040[0].point[2] + 150.f);
     move_credits_camera(c, -0x800, 0x2000, -0x2000, 0x2000);
 }
 
@@ -5900,7 +5943,7 @@ CmdRet CutscenePeachEnd5_1(UNUSED struct LevelCamera *c) {
 }
 
 CmdRet CutscenePeachEnd5_2(struct LevelCamera *c) {
-    func_80287CFC(c->pos, D_8032E0E8, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->pos, D_8032E0E8, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
     c->pos[1] += gCutsceneFocus->oPosY + D_8033B6F0[3].unk4[1];
 }
 
@@ -5911,7 +5954,7 @@ CmdRet CutscenePeachEnd5_3(UNUSED struct LevelCamera *c) {
 CmdRet CutscenePeachEnd5_4(struct LevelCamera *c) {
     Vec3f sp1C;
 
-    func_80287CFC(sp1C, D_8032E0E8, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(sp1C, D_8032E0E8, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
     c->pos[0] = sp1C[0];
     c->pos[2] = sp1C[2];
     approach_f32_exponential_bool(&c->pos[1], (sp1C[1] += gCutsceneFocus->oPosY), 0.07f);
@@ -5929,21 +5972,21 @@ CmdRet CutscenePeachEnd5(struct LevelCamera *c) {
 
 CmdRet CutscenePeachEnd6(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutscenePeachEndCommon367A, c, 0, 0);
-    func_80287CFC(c->pos, D_8032E188, &D_8033B6E0, &D_8033B6E4);
-    func_80287CFC(c->focus, D_8032E1D0, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->pos, D_8032E188, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    move_point_along_spline(c->focus, D_8032E1D0, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
     move_credits_camera(c, -0x2000, 0x2000, -0x2000, 0x2000);
 }
 
 CmdRet CutscenePeachEnd7_1(UNUSED struct LevelCamera *c) {
-    func_80287CFC(c->focus, D_8032E218, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->focus, D_8032E218, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
 }
 
 CmdRet CutscenePeachEnd7(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutscenePeachEndCommon367A, c, 0, 0);
     call_cutscene_func_in_time_range(CutscenePeachEnd7_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutscenePeachEnd7_1, c, 250, -1);
-    func_80299C60(7, 300);
-    func_80299C60(9, 340);
+    set_cutscene_phase_at_frame(7, 300);
+    set_cutscene_phase_at_frame(9, 340);
     vec3f_set(c->pos, -163.f, 978.f, -1082.f);
     move_credits_camera(c, -0x800, 0x2000, -0x2000, 0x2000);
 }
@@ -5978,7 +6021,7 @@ CmdRet CutscenePeachEnd9(struct LevelCamera *c) {
 }
 
 CmdRet CutscenePeachEndA_1(struct LevelCamera *c) {
-    func_80287CFC(c->focus, D_8032E258, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->focus, D_8032E258, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
     vec3f_set(c->pos, 699.f, 1680.f, -703.f);
 }
 
@@ -5991,10 +6034,10 @@ CmdRet CutscenePeachEndA(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutscenePeachEndA_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutscenePeachEndA_2, c, 0, 499);
     call_cutscene_func_in_time_range(CutscenePeachEndA_1, c, 500, -1);
-    func_80299C60(8, 600);
-    func_80299C60(8, 608);
-    func_80299C60(8, 624);
-    func_80299C60(8, 710);
+    set_cutscene_phase_at_frame(8, 600);
+    set_cutscene_phase_at_frame(8, 608);
+    set_cutscene_phase_at_frame(8, 624);
+    set_cutscene_phase_at_frame(8, 710);
 }
 
 CmdRet CutscenePeachEndB(struct LevelCamera *c) {
@@ -6520,7 +6563,7 @@ CmdRet CutsceneEnterBowserPlatform2(struct LevelCamera *c) {
 }
 
 CmdRet CutsceneEnterBowserPlatform0(struct LevelCamera *c) {
-    func_80299C60(2, 0);
+    set_cutscene_phase_at_frame(2, 0);
 
     if (gSecondCameraFocus != NULL) {
         call_cutscene_func_in_time_range(CutsceneEnterBowserPlatform0_1, c, 0, -1);
@@ -7495,22 +7538,35 @@ CmdRet CutsceneUnlockKeyDoor0(UNUSED struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutsceneUnlockKeyDoor0_6, c, 112, 112);
 }
 
-s32 func_80296DDC(struct LevelCamera *a, struct CinematicCameraTable b[],
-                  struct CinematicCameraTable c[]) {
-    Vec3f sp24;
-    s32 sp20 = 0;
-    s32 sp1C = 0;
+/**
+ * Move the camera along `positionSpline` and point its focus at the corresponding point along
+ * `focusSpline`. sCutsceneSplineSegmentProgress is updated after pos and focus are calculated.
+ */
+s32 intro_peach_move_camera_start_to_pipe(struct LevelCamera *c, struct CutsceneSplinePoint positionSpline[],
+                  struct CutsceneSplinePoint focusSpline[]) {
+    Vec3f offset;
+    s32 posReturn = 0;
+    s32 focusReturn = 0;
 
-    sp20 = func_80287CFC(a->pos, b, &D_8033B6E0, &D_8033B6E4);
-    sp1C = func_80287CFC(a->focus, c, &D_8033B6E0, &D_8033B6E4);
-    rotate_in_xz(a->focus, a->focus, -0x8000);
-    rotate_in_xz(a->pos, a->pos, -0x8000);
+    /**
+     * The position spline's speed parameters are all 0, so sCutsceneSplineSegmentProgress doesn't get
+     * updated. Otherwise position would move two frames ahead, and c->focus would always be one frame
+     * further along the spline than c->pos.
+     */
+    posReturn = move_point_along_spline(c->pos, positionSpline, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    focusReturn = move_point_along_spline(c->focus, focusSpline, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
 
-    vec3f_set(sp24, -1328.f, 260.f, 4664.f);
-    vec3f_add(a->focus, sp24);
-    vec3f_add(a->pos, sp24);
-    sp20 += sp1C;
-    return sp1C;
+    // The two splines used by this function are reflected in the horizontal plane for some reason,
+    // so they are rotated every frame. Why do this, Nintendo?
+    rotate_in_xz(c->focus, c->focus, -0x8000);
+    rotate_in_xz(c->pos, c->pos, -0x8000);
+
+    vec3f_set(offset, -1328.f, 260.f, 4664.f);
+    vec3f_add(c->focus, offset);
+    vec3f_add(c->pos, offset);
+
+    posReturn += focusReturn; // Unused
+    return focusReturn;
 }
 
 CmdRet peach_letter_text(UNUSED struct LevelCamera *c) {
@@ -7524,7 +7580,7 @@ CmdRet play_sound_peach_reading_letter(UNUSED struct LevelCamera *c) {
 #endif
 
 CmdRet CutsceneIntroPeachCommon(struct LevelCamera *c) {
-    if (func_80296DDC(c, D_8032DDF0, D_8032DEA8) != 0) {
+    if (intro_peach_move_camera_start_to_pipe(c, sIntroStartToPipePosition, sIntroStartToPipeFocus) != 0) {
         gCameraMovementFlags &= ~CAM_MOVE_C_UP_MODE;
         gCutsceneTimer = 0x7FFF;
     }
@@ -7541,8 +7597,8 @@ CmdRet CutsceneIntroPeach4(struct LevelCamera *c) {
 }
 
 CmdRet CutsceneIntroPeach3_2(struct LevelCamera *c) {
-    func_80287CFC(c->pos, D_8032DF60, &D_8033B6E0, &D_8033B6E4);
-    func_80287CFC(c->focus, D_8032DFD0, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->pos, sIntroPipeToDialogPosition, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    move_point_along_spline(c->focus, sIntroPipeToDialogFocus, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
 }
 
 CmdRet CutsceneIntroPeach2_2(UNUSED struct LevelCamera *c) {
@@ -7555,8 +7611,8 @@ CmdRet CutsceneIntroPeach0_1(UNUSED struct LevelCamera *c) {
 }
 
 CmdRet CutsceneIntroPeach3_1(UNUSED struct LevelCamera *c) {
-    D_8033B6E0 = 0;
-    D_8033B6E4 = 0.1f;
+    sCutsceneSplineSegment = 0;
+    sCutsceneSplineSegmentProgress = 0.1f;
     set_spline_values(4);
 }
 
@@ -7578,7 +7634,7 @@ CmdRet CutsceneIntroPeach2(struct LevelCamera *c) {
 #ifndef VERSION_JP
     call_cutscene_func_in_time_range(play_sound_intro_turn_on_hud, c, 818, 818);
 #endif
-    func_80299C60(6, 1);
+    set_cutscene_phase_at_frame(6, 1);
     call_cutscene_func_in_time_range(CutsceneIntroPeach2_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutsceneIntroPeachCommon, c, 0, -1);
     call_cutscene_func_in_time_range(CutsceneIntroPeach2_2, c, 717, 717);
@@ -7600,6 +7656,7 @@ CmdRet CutsceneIntroPeach3(struct LevelCamera *c) {
             + (sMarioStatusForCamera->pos[1] - sGeometryForMario.currFloorHeight) * 1.1f,
         0.4f);
 
+    // Make the camera look up as mario jumps out of the pipe
     if (c->focus[1] < D_8033B6F0[1].unk4[1]) {
         c->focus[1] = D_8033B6F0[1].unk4[1];
     }
@@ -7612,7 +7669,7 @@ CmdRet CutsceneIntroPeach1(UNUSED struct LevelCamera *c) {
 }
 
 CmdRet CutsceneIntroPeach0(struct LevelCamera *c) {
-    func_80299C60(5, 0);
+    set_cutscene_phase_at_frame(5, 0);
     call_cutscene_func_in_time_range(CutsceneIntroPeach0_1, c, 0, 0);
     call_cutscene_func_in_time_range(CutsceneIntroPeach0_2, c, 65, 65);
 #ifdef VERSION_EU
@@ -7636,7 +7693,7 @@ CmdRet CutsceneEndWaving0_1(UNUSED struct LevelCamera *c) {
 }
 
 // 3rd part of data
-struct CinematicCameraTable D_8032E2B4[35] = {
+struct CutsceneSplinePoint gIntroLakituStartToPipeFocus[35] = {
     { 0, 32, { 58, -250, 346 } },    { 1, 50, { -159, -382, 224 } }, { 2, 37, { 0, -277, 237 } },
     { 3, 15, { 1, -44, 245 } },      { 4, 35, { 0, -89, 228 } },     { 5, 15, { 28, 3, 259 } },
     { 6, 25, { -38, -201, 371 } },   { 7, 20, { -642, 118, 652 } },  { 8, 25, { 103, -90, 861 } },
@@ -7651,7 +7708,7 @@ struct CinematicCameraTable D_8032E2B4[35] = {
     { 0, 15, { -227, 511, 1550 } },  { -1, 15, { -227, 511, 1600 } }
 };
 
-struct CinematicCameraTable D_8032E3CC[35] = {
+struct CutsceneSplinePoint gIntroLakituStartToPipeOffsetFromCamera[35] = {
     { 0, 0, { -46, 87, -15 } },   { 1, 0, { -38, 91, -11 } },  { 2, 0, { -31, 93, -13 } },
     { 3, 0, { -50, 84, -16 } },   { 4, 0, { -52, 83, -17 } },  { 5, 0, { -10, 99, 3 } },
     { 6, 0, { -54, 83, -10 } },   { 7, 0, { -31, 85, -40 } },  { 8, 0, { -34, 91, 19 } },
@@ -7666,13 +7723,13 @@ struct CinematicCameraTable D_8032E3CC[35] = {
     { 33, 0, { 51, -11, 84 } },   { -1, 0, { 51, -11, 84 } }
 };
 
-struct CinematicCameraTable D_8032E4E4[9] = {
+struct CutsceneSplinePoint D_8032E4E4[9] = {
     { 0, 0, { -5, 975, -917 } },    { 0, 0, { -5, 975, -917 } },    { 0, 0, { -5, 975, -917 } },
     { 0, 0, { -76, 1067, 742 } },   { 0, 0, { -105, 1576, 3240 } }, { 0, 0, { -177, 1709, 5586 } },
     { 0, 0, { -177, 1709, 5586 } }, { 0, 0, { -177, 1709, 5586 } }, { 0, 0, { -177, 1709, 5586 } }
 };
 
-struct CinematicCameraTable D_8032E52C[9] = {
+struct CutsceneSplinePoint D_8032E52C[9] = {
     { 0, 50, { 18, 1013, -1415 } }, { 0, 100, { 17, 1037, -1412 } }, { 0, 100, { 16, 1061, -1408 } },
     { 0, 100, { -54, 1053, 243 } }, { 0, 100, { -84, 1575, 2740 } }, { 0, 50, { -156, 1718, 5086 } },
     { 0, 0, { -156, 1718, 5086 } }, { 0, 0, { -156, 1718, 5086 } },  { 0, 0, { -156, 1718, 5086 } }
@@ -7680,58 +7737,58 @@ struct CinematicCameraTable D_8032E52C[9] = {
 
 CmdRet CutsceneEndWaving0(struct LevelCamera *c) {
     call_cutscene_func_in_time_range(CutsceneEndWaving0_1, c, 0, 0);
-    func_80287CFC(c->pos, D_8032E4E4, &D_8033B6E0, &D_8033B6E4);
-    func_80287CFC(c->focus, D_8032E52C, &D_8033B6E0, &D_8033B6E4);
-    func_80299C60(6, 120);
+    move_point_along_spline(c->pos, D_8032E4E4, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    move_point_along_spline(c->focus, D_8032E52C, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    set_cutscene_phase_at_frame(6, 120);
 }
 
 CmdRet CutsceneCredits0_1(UNUSED struct LevelCamera *c) {
     func_8028FABC();
 }
 
-extern struct CinematicCameraTable sBobCreditsCameraPositions[5];
-extern struct CinematicCameraTable sBobCreditsCameraFocus[5];
-extern struct CinematicCameraTable sWfCreditsCameraPositions[5];
-extern struct CinematicCameraTable sWfCreditsCameraFocus[5];
-extern struct CinematicCameraTable sJrbCreditsCameraPositions[5];
-extern struct CinematicCameraTable sJrbCreditsCameraFocus[5];
-extern struct CinematicCameraTable sCcmSlideCreditsCameraPositions[5];
-extern struct CinematicCameraTable sCcmSlideCreditsCameraFocus[5];
-extern struct CinematicCameraTable sBbhCreditsCameraPositions[4];
-extern struct CinematicCameraTable sBbhCreditsCameraFocus[4];
-extern struct CinematicCameraTable sHmcCreditsCameraPositions[5];
-extern struct CinematicCameraTable sHmcCreditsCameraFocus[5];
-extern struct CinematicCameraTable sThiWigglerCreditsCameraPositions[3];
-extern struct CinematicCameraTable sThiWigglerCreditsCameraFocus[3];
-extern struct CinematicCameraTable sVolcanoCreditsCameraPositions[6];
-extern struct CinematicCameraTable sVolcanoCreditsCameraFocus[6];
-extern struct CinematicCameraTable sSslCreditsCameraPositions[6];
-extern struct CinematicCameraTable sSslCreditsCameraFocus[6];
-extern struct CinematicCameraTable sDddCreditsCameraPositions[7];
-extern struct CinematicCameraTable sDddCreditsCameraFocus[7];
-extern struct CinematicCameraTable sSlCreditsCameraPositions[4];
-extern struct CinematicCameraTable sSlCreditsCameraFocus[4];
-extern struct CinematicCameraTable sWdwCreditsCameraPositions[4];
-extern struct CinematicCameraTable sWdwCreditsCameraFocus[4];
-extern struct CinematicCameraTable sTtmCreditsCameraPositions[6];
-extern struct CinematicCameraTable sTtmCreditsCameraFocus[6];
-extern struct CinematicCameraTable sThiHugeCreditsCameraPositions[7];
-extern struct CinematicCameraTable sThiHugeCreditsCameraFocus[7];
-extern struct CinematicCameraTable sTtcCreditsCameraPositions[4];
-extern struct CinematicCameraTable sTtcCreditsCameraFocus[4];
-extern struct CinematicCameraTable sRrCreditsCameraPositions[4];
-extern struct CinematicCameraTable sRrCreditsCameraFocus[4];
-extern struct CinematicCameraTable sSaCreditsCameraPositions[5];
-extern struct CinematicCameraTable sSaCreditsCameraFocus[5];
-extern struct CinematicCameraTable sCotmcCreditsCameraPositions[5];
-extern struct CinematicCameraTable sCotmcCreditsCameraFocus[5];
-extern struct CinematicCameraTable sDddSubCreditsCameraPositions[5];
-extern struct CinematicCameraTable sDddSubCreditsCameraFocus[5];
-extern struct CinematicCameraTable sCcmOutsideCreditsCameraPositions[4];
-extern struct CinematicCameraTable sCcmOutsideCreditsCameraFocus[4];
+extern struct CutsceneSplinePoint sBobCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sBobCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sWfCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sWfCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sJrbCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sJrbCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sCcmSlideCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sCcmSlideCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sBbhCreditsCameraPositions[4];
+extern struct CutsceneSplinePoint sBbhCreditsCameraFocus[4];
+extern struct CutsceneSplinePoint sHmcCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sHmcCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sThiWigglerCreditsCameraPositions[3];
+extern struct CutsceneSplinePoint sThiWigglerCreditsCameraFocus[3];
+extern struct CutsceneSplinePoint sVolcanoCreditsCameraPositions[6];
+extern struct CutsceneSplinePoint sVolcanoCreditsCameraFocus[6];
+extern struct CutsceneSplinePoint sSslCreditsCameraPositions[6];
+extern struct CutsceneSplinePoint sSslCreditsCameraFocus[6];
+extern struct CutsceneSplinePoint sDddCreditsCameraPositions[7];
+extern struct CutsceneSplinePoint sDddCreditsCameraFocus[7];
+extern struct CutsceneSplinePoint sSlCreditsCameraPositions[4];
+extern struct CutsceneSplinePoint sSlCreditsCameraFocus[4];
+extern struct CutsceneSplinePoint sWdwCreditsCameraPositions[4];
+extern struct CutsceneSplinePoint sWdwCreditsCameraFocus[4];
+extern struct CutsceneSplinePoint sTtmCreditsCameraPositions[6];
+extern struct CutsceneSplinePoint sTtmCreditsCameraFocus[6];
+extern struct CutsceneSplinePoint sThiHugeCreditsCameraPositions[7];
+extern struct CutsceneSplinePoint sThiHugeCreditsCameraFocus[7];
+extern struct CutsceneSplinePoint sTtcCreditsCameraPositions[4];
+extern struct CutsceneSplinePoint sTtcCreditsCameraFocus[4];
+extern struct CutsceneSplinePoint sRrCreditsCameraPositions[4];
+extern struct CutsceneSplinePoint sRrCreditsCameraFocus[4];
+extern struct CutsceneSplinePoint sSaCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sSaCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sCotmcCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sCotmcCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sDddSubCreditsCameraPositions[5];
+extern struct CutsceneSplinePoint sDddSubCreditsCameraFocus[5];
+extern struct CutsceneSplinePoint sCcmOutsideCreditsCameraPositions[4];
+extern struct CutsceneSplinePoint sCcmOutsideCreditsCameraFocus[4];
 
 CmdRet CutsceneCredits0(struct LevelCamera *c) {
-    struct CinematicCameraTable *focus, *pos;
+    struct CutsceneSplinePoint *focus, *pos;
 
     call_cutscene_func_in_time_range(CutsceneCredits0_1, c, 0, 0);
 
@@ -7782,8 +7839,8 @@ CmdRet CutsceneCredits0(struct LevelCamera *c) {
 
     func_8028FBD8(D_8033B4E0, pos);
     func_8028FBD8(D_8033B5E0, focus);
-    func_80287CFC(c->pos, D_8033B4E0, &D_8033B6E0, &D_8033B6E4);
-    func_80287CFC(c->focus, D_8033B5E0, &D_8033B6E0, &D_8033B6E4);
+    move_point_along_spline(c->pos, D_8033B4E0, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    move_point_along_spline(c->focus, D_8033B5E0, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
     move_credits_camera(c, -0x2000, 0x2000, -0x4000, 0x4000);
 }
 
@@ -8317,226 +8374,226 @@ u8 D_8032E8A4[27][4] = {
 u8 D_8032E910[20] = { 0x00, 0x00, 0x10, 0x00, 0x11, 0x11, 0x30, 0x10, 0x11, 0x10,
                       0x10, 0x01, 0x01, 0x00, 0x10, 0x11, 0x10, 0x01, 0x01, 0x00 };
 
-struct CinematicCameraTable sBobCreditsCameraPositions[5] = { { 1, 0, { 5984, 3255, 4975 } },
+struct CutsceneSplinePoint sBobCreditsCameraPositions[5] = { { 1, 0, { 5984, 3255, 4975 } },
                                                               { 2, 0, { 4423, 3315, 1888 } },
                                                               { 3, 0, { 776, 2740, -1825 } },
                                                               { 4, 0, { -146, 3894, -3167 } },
                                                               { -1, 0, { 741, 4387, -5474 } } };
 
-struct CinematicCameraTable sBobCreditsCameraFocus[5] = { { 0, 30, { 5817, 3306, 4507 } },
+struct CutsceneSplinePoint sBobCreditsCameraFocus[5] = { { 0, 30, { 5817, 3306, 4507 } },
                                                           { 0, 40, { 4025, 3378, 1593 } },
                                                           { 0, 50, { 1088, 2652, -2205 } },
                                                           { 0, 60, { 205, 3959, -3517 } },
                                                           { -1, 60, { 1231, 4400, -5649 } } };
 
-struct CinematicCameraTable sWfCreditsCameraPositions[5] = { { 0, 0, { -301, 1399, 2643 } },
+struct CutsceneSplinePoint sWfCreditsCameraPositions[5] = { { 0, 0, { -301, 1399, 2643 } },
                                                              { 0, 0, { -182, 2374, 4572 } },
                                                              { 0, 0, { 4696, 3864, 413 } },
                                                              { 0, 0, { 1738, 4891, -1516 } },
                                                              { -1, 0, { 1783, 4891, -1516 } } };
 
-struct CinematicCameraTable sWfCreditsCameraFocus[5] = { { 1, 30, { -249, 1484, 2153 } },
+struct CutsceneSplinePoint sWfCreditsCameraFocus[5] = { { 1, 30, { -249, 1484, 2153 } },
                                                          { 2, 40, { -200, 2470, 4082 } },
                                                          { 3, 40, { 4200, 3916, 370 } },
                                                          { 4, 40, { 1523, 4976, -1072 } },
                                                          { -1, 40, { 1523, 4976, -1072 } } };
 
-struct CinematicCameraTable sJrbCreditsCameraPositions[5] = { { 0, 0, { 5538, -4272, 2376 } },
+struct CutsceneSplinePoint sJrbCreditsCameraPositions[5] = { { 0, 0, { 5538, -4272, 2376 } },
                                                               { 0, 0, { 5997, -3303, 2261 } },
                                                               { 0, 0, { 6345, -3255, 2179 } },
                                                               { 0, 0, { 6345, -3255, 2179 } },
                                                               { -1, 0, { 6694, -3203, 2116 } } };
 
-struct CinematicCameraTable sJrbCreditsCameraFocus[5] = { { 0, 50, { 5261, -4683, 2443 } },
+struct CutsceneSplinePoint sJrbCreditsCameraFocus[5] = { { 0, 50, { 5261, -4683, 2443 } },
                                                           { 0, 50, { 5726, -3675, 2456 } },
                                                           { 0, 50, { 6268, -2817, 2409 } },
                                                           { 0, 50, { 6596, -2866, 2369 } },
                                                           { -1, 50, { 7186, -3153, 2041 } } };
 
-struct CinematicCameraTable sCcmSlideCreditsCameraPositions[5] = { { 0, 0, { -6324, 6745, -5626 } },
+struct CutsceneSplinePoint sCcmSlideCreditsCameraPositions[5] = { { 0, 0, { -6324, 6745, -5626 } },
                                                                    { 1, 0, { -6324, 6745, -5626 } },
                                                                    { 2, 0, { -6108, 6762, -5770 } },
                                                                    { 3, 0, { -5771, 6787, -5962 } },
                                                                    { -1, 0, { -5672, 6790, -5979 } } };
 
-struct CinematicCameraTable sCcmSlideCreditsCameraFocus[5] = { { 0, 50, { -5911, 6758, -5908 } },
+struct CutsceneSplinePoint sCcmSlideCreditsCameraFocus[5] = { { 0, 50, { -5911, 6758, -5908 } },
                                                                { 1, 50, { -5911, 6758, -5908 } },
                                                                { 2, 50, { -5652, 6814, -5968 } },
                                                                { 3, 50, { -5277, 6801, -6043 } },
                                                                { -1, 50, { -5179, 6804, -6060 } } };
 
-struct CinematicCameraTable sBbhCreditsCameraPositions[4] = { { 1, 0, { 1088, 341, 2447 } },
+struct CutsceneSplinePoint sBbhCreditsCameraPositions[4] = { { 1, 0, { 1088, 341, 2447 } },
                                                               { 2, 0, { 1338, 610, 2808 } },
                                                               { 3, 0, { 2267, 1612, 2966 } },
                                                               { -1, 0, { 2296, 1913, 2990 } } };
 
-struct CinematicCameraTable sBbhCreditsCameraFocus[4] = { { 1, 50, { 1160, 263, 1958 } },
+struct CutsceneSplinePoint sBbhCreditsCameraFocus[4] = { { 1, 50, { 1160, 263, 1958 } },
                                                           { 2, 50, { 1034, 472, 2436 } },
                                                           { 3, 50, { 1915, 1833, 2688 } },
                                                           { -1, 50, { 2134, 2316, 2742 } } };
 
-struct CinematicCameraTable sHmcCreditsCameraPositions[5] = { { 1, 0, { -5952, 1807, -5882 } },
+struct CutsceneSplinePoint sHmcCreditsCameraPositions[5] = { { 1, 0, { -5952, 1807, -5882 } },
                                                               { 2, 0, { -5623, 1749, -4863 } },
                                                               { 3, 0, { -5472, 1955, -2520 } },
                                                               { 4, 0, { -5544, 1187, -1085 } },
                                                               { -1, 0, { -5547, 391, -721 } } };
 
-struct CinematicCameraTable sHmcCreditsCameraFocus[5] = { { 1, 210, { -5952, 1884, -6376 } },
+struct CutsceneSplinePoint sHmcCreditsCameraFocus[5] = { { 1, 210, { -5952, 1884, -6376 } },
                                                           { 2, 58, { -5891, 1711, -5283 } },
                                                           { 3, 30, { -5595, 1699, -2108 } },
                                                           { 4, 31, { -5546, 794, -777 } },
                                                           { -1, 31, { -5548, -85, -572 } } };
 
-struct CinematicCameraTable sThiWigglerCreditsCameraPositions[3] = { { 1, 0, { -1411, 2474, -1276 } },
+struct CutsceneSplinePoint sThiWigglerCreditsCameraPositions[3] = { { 1, 0, { -1411, 2474, -1276 } },
                                                                      { 2, 0, { -1606, 2479, -434 } },
                                                                      { -1, 0, { -1170, 2122, 1337 } } };
 
-struct CinematicCameraTable sThiWigglerCreditsCameraFocus[3] = { { 1, 50, { -1053, 2512, -928 } },
+struct CutsceneSplinePoint sThiWigglerCreditsCameraFocus[3] = { { 1, 50, { -1053, 2512, -928 } },
                                                                  { 2, 50, { -1234, 2377, -114 } },
                                                                  { -1, 50, { -758, 2147, 1054 } } };
 
-struct CinematicCameraTable sVolcanoCreditsCameraPositions[6] = {
+struct CutsceneSplinePoint sVolcanoCreditsCameraPositions[6] = {
     { 0, 0, { -1445, 1094, 1617 } }, { 0, 0, { -1509, 649, 871 } },  { 0, 0, { -1133, 420, -248 } },
     { 0, 0, { -778, 359, -1052 } },  { 0, 0, { -565, 260, -1730 } }, { -1, 0, { 1274, 473, -275 } }
 };
 
-struct CinematicCameraTable sVolcanoCreditsCameraFocus[6] = {
+struct CutsceneSplinePoint sVolcanoCreditsCameraFocus[6] = {
     { 0, 50, { -1500, 757, 1251 } }, { 0, 50, { -1401, 439, 431 } },  { 0, 50, { -749, 270, -532 } },
     { 0, 50, { -396, 270, -1363 } }, { 0, 50, { -321, 143, -2151 } }, { -1, 50, { 1002, 460, -694 } }
 };
 
-struct CinematicCameraTable sSslCreditsCameraPositions[6] = {
+struct CutsceneSplinePoint sSslCreditsCameraPositions[6] = {
     { 0, 0, { -4262, 4658, -5015 } }, { 0, 0, { -3274, 2963, -4661 } }, { 0, 0, { -2568, 812, -6528 } },
     { 0, 0, { -414, 660, -7232 } },   { 0, 0, { 1466, 660, -6898 } },   { -1, 0, { 2724, 660, -6298 } }
 };
 
-struct CinematicCameraTable sSslCreditsCameraFocus[6] = {
+struct CutsceneSplinePoint sSslCreditsCameraFocus[6] = {
     { 0, 50, { -4083, 4277, -4745 } }, { 0, 50, { -2975, 2574, -4759 } },
     { 0, 50, { -2343, 736, -6088 } },  { 0, 50, { -535, 572, -6755 } },
     { 0, 50, { 1311, 597, -6427 } },   { -1, 50, { 2448, 612, -5884 } }
 };
 
-struct CinematicCameraTable sDddCreditsCameraPositions[7] = {
+struct CutsceneSplinePoint sDddCreditsCameraPositions[7] = {
     { 0, 0, { -874, -4933, 366 } },   { 0, 0, { -1463, -4782, 963 } }, { 0, 0, { -1893, -4684, 1303 } },
     { 0, 0, { -2818, -4503, 1583 } }, { 0, 0, { -4095, -2924, 730 } }, { 0, 0, { -4737, -1594, -63 } },
     { -1, 0, { -4681, -1084, -623 } }
 };
 
-struct CinematicCameraTable sDddCreditsCameraFocus[7] = {
+struct CutsceneSplinePoint sDddCreditsCameraFocus[7] = {
     { 0, 50, { -1276, -4683, 622 } },  { 0, 50, { -1858, -4407, 1097 } },
     { 0, 50, { -2324, -4332, 1318 } }, { 0, 50, { -3138, -4048, 1434 } },
     { 0, 50, { -4353, -2444, 533 } },  { 0, 50, { -4807, -1169, -436 } },
     { -1, 50, { -4665, -664, -1007 } }
 };
 
-struct CinematicCameraTable sSlCreditsCameraPositions[4] = { { 0, 0, { 939, 6654, 6196 } },
+struct CutsceneSplinePoint sSlCreditsCameraPositions[4] = { { 0, 0, { 939, 6654, 6196 } },
                                                              { 0, 0, { 1873, 5160, 3714 } },
                                                              { 0, 0, { 3120, 3564, 1314 } },
                                                              { -1, 0, { 2881, 4231, 573 } } };
 
-struct CinematicCameraTable sSlCreditsCameraFocus[4] = { { 0, 50, { 875, 6411, 5763 } },
+struct CutsceneSplinePoint sSlCreditsCameraFocus[4] = { { 0, 50, { 875, 6411, 5763 } },
                                                          { 0, 50, { 1659, 4951, 3313 } },
                                                          { 0, 50, { 2630, 3565, 1215 } },
                                                          { -1, 50, { 2417, 4056, 639 } } };
 
-struct CinematicCameraTable sWdwCreditsCameraPositions[4] = { { 0, 0, { 3927, 2573, 3685 } },
+struct CutsceneSplinePoint sWdwCreditsCameraPositions[4] = { { 0, 0, { 3927, 2573, 3685 } },
                                                               { 0, 0, { 2389, 2054, 1210 } },
                                                               { 0, 0, { 2309, 2069, 22 } },
                                                               { -1, 0, { 2122, 2271, -979 } } };
 
-struct CinematicCameraTable sWdwCreditsCameraFocus[4] = { { 0, 50, { 3637, 2460, 3294 } },
+struct CutsceneSplinePoint sWdwCreditsCameraFocus[4] = { { 0, 50, { 3637, 2460, 3294 } },
                                                           { 0, 50, { 1984, 2067, 918 } },
                                                           { 0, 50, { 1941, 2255, -261 } },
                                                           { -1, 50, { 1779, 2587, -1158 } } };
 
-struct CinematicCameraTable sTtmCreditsCameraPositions[6] = {
+struct CutsceneSplinePoint sTtmCreditsCameraPositions[6] = {
     { 0, 0, { 386, 2535, 644 } },    { 0, 0, { 1105, 2576, 918 } },   { 0, 0, { 3565, 2261, 2098 } },
     { 0, 0, { 6715, -2791, 4554 } }, { 0, 0, { 3917, -3130, 3656 } }, { -1, 0, { 3917, -3130, 3656 } }
 };
 
-struct CinematicCameraTable sTtmCreditsCameraFocus[6] = {
+struct CutsceneSplinePoint sTtmCreditsCameraFocus[6] = {
     { 1, 50, { 751, 2434, 318 } },    { 2, 50, { 768, 2382, 603 } },
     { 3, 60, { 3115, 2086, 1969 } },  { 4, 30, { 6370, -3108, 4727 } },
     { 5, 50, { 4172, -3385, 4001 } }, { -1, 50, { 4172, -3385, 4001 } }
 };
 
-struct CinematicCameraTable sThiHugeCreditsCameraPositions[7] = {
+struct CutsceneSplinePoint sThiHugeCreditsCameraPositions[7] = {
     { 0, 0, { 6990, -1000, -4858 } }, { 0, 0, { 7886, -1055, 2878 } }, { 0, 0, { 1952, -1481, 10920 } },
     { 0, 0, { -1684, -219, 2819 } },  { 0, 0, { -2427, -131, 2755 } }, { 0, 0, { -3246, 416, 3286 } },
     { -1, 0, { -3246, 416, 3286 } }
 };
 
-struct CinematicCameraTable sThiHugeCreditsCameraFocus[7] = {
+struct CutsceneSplinePoint sThiHugeCreditsCameraFocus[7] = {
     { 1, 70, { 7022, -965, -5356 } },  { 2, 40, { 7799, -915, 2405 } },
     { 3, 60, { 1878, -1137, 10568 } }, { 4, 50, { -1931, -308, 2394 } },
     { 5, 50, { -2066, -386, 2521 } },  { 6, 50, { -2875, 182, 3045 } },
     { -1, 50, { -2875, 182, 3045 } }
 };
 
-struct CinematicCameraTable sTtcCreditsCameraPositions[4] = { { 1, 0, { -1724, 277, -994 } },
+struct CutsceneSplinePoint sTtcCreditsCameraPositions[4] = { { 1, 0, { -1724, 277, -994 } },
                                                               { 2, 0, { -1720, 456, -995 } },
                                                               { 3, 0, { -1655, 810, -1014 } },
                                                               { -1, 0, { -1753, 883, -1009 } } };
 
-struct CinematicCameraTable sTtcCreditsCameraFocus[4] = { { 1, 50, { -1554, 742, -1063 } },
+struct CutsceneSplinePoint sTtcCreditsCameraFocus[4] = { { 1, 50, { -1554, 742, -1063 } },
                                                           { 2, 50, { -1245, 571, -1102 } },
                                                           { 3, 50, { -1220, 603, -1151 } },
                                                           { -1, 50, { -1412, 520, -1053 } } };
 
-struct CinematicCameraTable sRrCreditsCameraPositions[4] = { { 0, 0, { -1818, 4036, 97 } },
+struct CutsceneSplinePoint sRrCreditsCameraPositions[4] = { { 0, 0, { -1818, 4036, 97 } },
                                                              { 0, 0, { -575, 3460, -505 } },
                                                              { 0, 0, { 1191, 3611, -1134 } },
                                                              { -1, 0, { 2701, 3777, -3686 } } };
 
-struct CinematicCameraTable sRrCreditsCameraFocus[4] = { { 0, 50, { -1376, 3885, -81 } },
+struct CutsceneSplinePoint sRrCreditsCameraFocus[4] = { { 0, 50, { -1376, 3885, -81 } },
                                                          { 0, 50, { -146, 3343, -734 } },
                                                          { 0, 50, { 1570, 3446, -1415 } },
                                                          { -1, 50, { 2794, 3627, -3218 } } };
 
-struct CinematicCameraTable sSaCreditsCameraPositions[5] = { { 0, 0, { -295, -396, -585 } },
+struct CutsceneSplinePoint sSaCreditsCameraPositions[5] = { { 0, 0, { -295, -396, -585 } },
                                                              { 1, 0, { -295, -396, -585 } },
                                                              { 2, 0, { -292, -856, -573 } },
                                                              { 3, 0, { -312, -856, -541 } },
                                                              { -1, 0, { 175, -856, -654 } } };
 
-struct CinematicCameraTable sSaCreditsCameraFocus[5] = { { 0, 50, { -175, -594, -142 } },
+struct CutsceneSplinePoint sSaCreditsCameraFocus[5] = { { 0, 50, { -175, -594, -142 } },
                                                          { 1, 50, { -175, -594, -142 } },
                                                          { 2, 50, { -195, -956, -92 } },
                                                          { 3, 50, { -572, -956, -150 } },
                                                          { -1, 50, { -307, -956, -537 } } };
 
-struct CinematicCameraTable sCotmcCreditsCameraPositions[5] = { { 0, 0, { -296, 495, 1607 } },
+struct CutsceneSplinePoint sCotmcCreditsCameraPositions[5] = { { 0, 0, { -296, 495, 1607 } },
                                                                 { 0, 0, { -430, 541, 654 } },
                                                                 { 0, 0, { -466, 601, -359 } },
                                                                 { 0, 0, { -217, 433, -1549 } },
                                                                 { -1, 0, { -95, 366, -2922 } } };
 
-struct CinematicCameraTable sCotmcCreditsCameraFocus[5] = { { 0, 50, { -176, 483, 2092 } },
+struct CutsceneSplinePoint sCotmcCreditsCameraFocus[5] = { { 0, 50, { -176, 483, 2092 } },
                                                             { 0, 50, { -122, 392, 1019 } },
                                                             { 0, 50, { -268, 450, -792 } },
                                                             { 0, 50, { -172, 399, -2046 } },
                                                             { -1, 50, { -51, 355, -3420 } } };
 
-struct CinematicCameraTable sDddSubCreditsCameraPositions[5] = { { 0, 0, { 4656, 2171, 5028 } },
+struct CutsceneSplinePoint sDddSubCreditsCameraPositions[5] = { { 0, 0, { 4656, 2171, 5028 } },
                                                                  { 0, 0, { 4548, 1182, 4596 } },
                                                                  { 0, 0, { 5007, 813, 3257 } },
                                                                  { 0, 0, { 5681, 648, 1060 } },
                                                                  { -1, 0, { 4644, 774, 113 } } };
 
-struct CinematicCameraTable sDddSubCreditsCameraFocus[5] = { { 0, 50, { 4512, 2183, 4549 } },
+struct CutsceneSplinePoint sDddSubCreditsCameraFocus[5] = { { 0, 50, { 4512, 2183, 4549 } },
                                                              { 0, 50, { 4327, 838, 4308 } },
                                                              { 0, 50, { 4774, 749, 2819 } },
                                                              { 0, 50, { 5279, 660, 763 } },
                                                              { -1, 50, { 4194, 885, -75 } } };
 
-struct CinematicCameraTable sCcmOutsideCreditsCameraPositions[4] = {
+struct CutsceneSplinePoint sCcmOutsideCreditsCameraPositions[4] = {
     { 1, 0, { 1427, -1387, 5409 } },
     { 2, 0, { -1646, -1536, 4526 } },
     { 3, 0, { -3852, -1448, 3913 } },
     { -1, 0, { -5199, -1366, 1886 } }
 };
 
-struct CinematicCameraTable sCcmOutsideCreditsCameraFocus[4] = { { 1, 50, { 958, -1481, 5262 } },
+struct CutsceneSplinePoint sCcmOutsideCreditsCameraFocus[4] = { { 1, 50, { 958, -1481, 5262 } },
                                                                  { 2, 50, { -2123, -1600, 4391 } },
                                                                  { 3, 50, { -3957, -1401, 3426 } },
                                                                  { -1, 50, { -4730, -1215, 1795 } } };
@@ -8639,9 +8696,9 @@ s32 call_cutscene_func_in_time_range(CameraCommandProc func, struct LevelCamera 
     return 0;
 }
 
-s32 func_80299C60(s32 a, s16 b) {
-    if (b == gCutsceneTimer) {
-        sCutscenePhase = a;
+s32 set_cutscene_phase_at_frame(s32 phase, s16 frame) {
+    if (frame == gCutsceneTimer) {
+        sCutscenePhase = phase;
     }
     return 0;
 }
@@ -8667,12 +8724,12 @@ void func_80299D00(s16 a, s16 b, s16 c, f32 d, f32 e, f32 f, f32 g) {
     }
 }
 
-void func_80299DB4(struct GraphNodeCamera *a) {
+void func_80299DB4(struct GraphNodePerspective *a) {
     if (D_8033B230.unk10 != 0.f) {
         D_8033B230.unk8 = coss(D_8033B230.unk14) * D_8033B230.unk10 / 256;
         D_8033B230.unk14 += D_8033B230.unk16;
         camera_approach_f32_symmetric_bool(&D_8033B230.unk10, 0.f, D_8033B230.unk18);
-        a->from[0] += D_8033B230.unk8;
+        a->fov += D_8033B230.unk8;
     } else {
         D_8033B230.unk14 = 0;
     }
@@ -8764,8 +8821,8 @@ void func_8029A288(struct MarioState *m) {
     D_8033B230.fieldOfView = approach_f32(D_8033B230.fieldOfView, targetFoV, 2.f, 2.f);
 }
 
-s32 geo_camera_fov(s32 a, struct GraphNodeCamera *b, UNUSED struct AllocOnlyPool *c) {
-    struct GraphNodeCamera *sp24 = b;
+Gfx *geo_camera_fov(s32 a, struct GraphNode *b, UNUSED struct AllocOnlyPool *c) {
+    struct GraphNodePerspective *sp24 = (struct GraphNodePerspective *) b;
     struct MarioState *marioState = &gMarioStates[0];
     u8 sp1F = D_8033B230.unk0;
 
@@ -8807,9 +8864,9 @@ s32 geo_camera_fov(s32 a, struct GraphNodeCamera *b, UNUSED struct AllocOnlyPool
         }
     }
 
-    sp24->from[0] = D_8033B230.fieldOfView;
+    sp24->fov = D_8033B230.fieldOfView;
     func_80299DB4(sp24);
-    return 0;
+    return NULL;
 }
 
 void set_fov_function(u8 a) {

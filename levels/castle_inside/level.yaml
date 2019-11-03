@@ -1,7 +1,7 @@
 # Princess Peach's Castle (Inside the Castle)
 short-name: castle_inside
 full-name: Princess Peach's Castle (Inside the Castle)
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 3
 objects: [clock_hour_hand, clock_minute_hand, star_door, trap_door, water_level_pillar]
 shared-path: []

@@ -33,7 +33,7 @@ void bhv_falling_pillar_spawn_hitboxes(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        spawn_object_relative(i, 0, i * 400 + 300, 0, o, MODEL_NONE, &bhvFallingPillarHitbox);
+        spawn_object_relative(i, 0, i * 400 + 300, 0, o, MODEL_NONE, bhvFallingPillarHitbox);
     }
 }
 

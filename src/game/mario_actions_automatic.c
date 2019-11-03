@@ -43,7 +43,7 @@ void play_climbing_sounds(struct MarioState *m, s32 b) {
     s32 isOnTree = (m->usedObj->behavior == segmented_to_virtual(bhvTree));
 
     if (b == 1) {
-        if (is_anim_past_frame(m, 1) != 0) {
+        if (is_anim_past_frame(m, 1)) {
             play_sound(isOnTree ? SOUND_ACTION_CLIMB_UP_TREE : SOUND_ACTION_CLIMB_UP_POLE,
                        m->marioObj->header.gfx.cameraToObject);
         }
@@ -721,7 +721,7 @@ s32 act_in_cannon(struct MarioState *m) {
                 m->pos[1] += 120.0f * sins(m->faceAngle[0]);
                 m->pos[2] += 120.0f * coss(m->faceAngle[0]) * coss(m->faceAngle[1]);
 
-                play_sound(SOUND_ACTION_UNKNOWN456, m->marioObj->header.gfx.cameraToObject);
+                play_sound(SOUND_ACTION_FLYING_FAST, m->marioObj->header.gfx.cameraToObject);
                 play_sound(SOUND_OBJ_POUNDING_CANNON, m->marioObj->header.gfx.cameraToObject);
 
                 m->marioObj->header.gfx.node.flags |= 0x0001;
@@ -812,7 +812,7 @@ s32 act_tornado_twirling(struct MarioState *m) {
 
     // Play sound on angle overflow
     if (prevTwirlYaw > m->twirlYaw) {
-        play_sound(SOUND_ACTION_SWISH2_2, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_ACTION_TWIRL, m->marioObj->header.gfx.cameraToObject);
     }
 
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);

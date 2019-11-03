@@ -1,3 +1,30 @@
+Refresh #3
+1.) Small bits of sound sample labelling
+2.) Append 'b' to fopen calls in n64graphics to satisfy Windows
+3.) Document synthesis.c and abi.h
+4.) Remove gbi_old.h and use gbi.h instead for F3D_OLD
+5.) Fix and change most values used by f3d commands
+6.) Convert actors to C
+7.) Make extract_assets.py fail on bad baserom
+8.) Fix some (pragma-ignored) warnings
+9.) Convert trig tables and data/ buffers into C
+10.) Document intro behaviors and some of camera.c
+11.) Match dma_sample_data
+12.) Convert levels, bin, text, goddard_tex_dl to C
+13.) Remove .bss size hardcoding
+14.) Add mips64 fallback and alt dump option to diff.sh
+15.) Convert behavior_data to C
+16.) Get rid of the enum in behavior_data.
+17.) Change more values used by f3d commands
+18.) Document game/skybox.c
+19.) Actors levels fixup
+20.) Convert Mario animations to C (kind of)
+22.) generate skybox data from 248x248 images
+23.) 64-bit fixes
+24.) Move demo data to C
+25.) Change uintptr_t to GeoLayout for actors
+26.) Move libc includes to include/libc/
+
 Refresh #2a (hotfix)
 Changes from Refresh #2:
 

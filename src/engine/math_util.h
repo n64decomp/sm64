@@ -1,8 +1,24 @@
 #ifndef _MATH_UTIL_H_
 #define _MATH_UTIL_H_
 
+/*
+ * The sine and cosine tables overlap, but "#define gCosineTable (gSineTable +
+ * 0x400)" doesn't give expected codegen; gSineTable and gCosineTable need to
+ * be different symbols for code to match. Most likely the tables were placed
+ * adjacent to each other, and gSineTable cut short, such that reads overflow
+ * into gCosineTable.
+ *
+ * These kinds of out of bounds reads are undefined behavior, and break on
+ * e.g. GCC (which doesn't place the tables next to each other, and probably
+ * exploits array sizes for range analysis-based optimizations as well).
+ * Thus, for non-IDO compilers we use the standard-compliant version.
+ */
 extern f32 gSineTable[];
+#if BUGFIXES_CRITICAL
+#define gCosineTable (gSineTable + 0x400)
+#else
 extern f32 gCosineTable[];
+#endif
 
 #define sins(x) gSineTable[(u16) (x) >> 4]
 #define coss(x) gCosineTable[(u16) (x) >> 4]
@@ -41,7 +57,7 @@ void mtxf_mul_vec3s(f32 a[4][4], Vec3s b);
 void mtxf_to_mtx(Mtx *a, f32 b[4][4]);
 void mtxf_rotate_xy(Mtx *a, s16 b);
 void get_pos_from_transform_mtx(Vec3f a, f32 b[4][4], f32 c[4][4]);
-void vec3f_get_dist_and_angle(Vec3f a, Vec3f b, f32 *c, s16 *d, s16 *e);
+void vec3f_get_dist_and_angle(Vec3f from, Vec3f to, f32 *dist, s16 *pitch, s16 *yaw);
 void vec3f_set_dist_and_angle(Vec3f a, Vec3f b, f32 c, s16 d, s16 e);
 s32 approach_s32(s32 a, s32 b, s32 c, s32 d);
 f32 approach_f32(f32 a, f32 b, f32 c, f32 d);

@@ -1,12 +1,13 @@
 #include <ultra64.h>
 
 #include "sm64.h"
+#include "audio/external.h"
+#include "buffers/buffers.h"
+#include "buffers/gfx_output_buffer.h"
 #include "game.h"
 #include "main.h"
 #include "memory.h"
 #include "profiler.h"
-#include "buffers/buffers.h"
-#include "audio/external.h"
 #include "display.h"
 
 int unused8032C690 = 0;
@@ -25,7 +26,7 @@ void my_rdp_init(void) {
     gDPPipelineMode(gDisplayListHead++, G_PM_1PRIMITIVE);
 
     gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    gDPSetCombine(gDisplayListHead++, 0xFFFFFF, 0xFFFE793C);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
 
     gDPSetTextureLOD(gDisplayListHead++, G_TL_TILE);
     gDPSetTextureLUT(gDisplayListHead++, G_TT_NONE);
@@ -50,13 +51,12 @@ void my_rdp_init(void) {
  */
 void my_rsp_init(void) {
     gSPClearGeometryMode(gDisplayListHead++, G_SHADE | G_SHADING_SMOOTH | G_CULL_BOTH | G_FOG
-                                                 | G_LIGHTING | G_TEXTURE_GEN | G_TEXTURE_GEN_LINEAR
-                                                 | G_LOD);
+                        | G_LIGHTING | G_TEXTURE_GEN | G_TEXTURE_GEN_LINEAR | G_LOD);
 
     gSPSetGeometryMode(gDisplayListHead++, G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK | G_LIGHTING);
 
     gSPNumLights(gDisplayListHead++, 1);
-    gSPTexture(gDisplayListHead++, 0, 0, 0, 0, 0);
+    gSPTexture(gDisplayListHead++, 0, 0, 0, G_TX_RENDERTILE, G_OFF);
 
     // @bug Nintendo did not explicitly define the clipping ratio.
     // For Fast3DEX2, this causes the dreaded warped vertices issue
@@ -72,11 +72,11 @@ void clear_z_buffer(void) {
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetDepthSource(gDisplayListHead++, G_ZS_PIXEL);
-    gDPSetDepthImage(gDisplayListHead++, zBufferPtr);
+    gDPSetDepthImage(gDisplayListHead++, gPhysicalZBuffer);
 
-    gDPSetColorImage(gDisplayListHead++, G_IM_FMT_RGBA, 2, SCREEN_WIDTH, zBufferPtr);
+    gDPSetColorImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, SCREEN_WIDTH, gPhysicalZBuffer);
     gDPSetFillColor(gDisplayListHead++,
-                    GPACK_RGBA5551(255, 255, 240, 0) << 16 | GPACK_RGBA5551(255, 255, 240, 0));
+                    GPACK_ZDZ(G_MAXFBZ, 0) << 16 | GPACK_ZDZ(G_MAXFBZ, 0));
 
     gDPFillRectangle(gDisplayListHead++, 0, BORDER_HEIGHT, SCREEN_WIDTH - 1,
                      SCREEN_HEIGHT - 1 - BORDER_HEIGHT);
@@ -87,8 +87,8 @@ void display_frame_buffer(void) {
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-    gDPSetColorImage(gDisplayListHead++, G_IM_FMT_RGBA, 2, SCREEN_WIDTH,
-                     gFrameBuffers[frameBufferIndex]);
+    gDPSetColorImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, SCREEN_WIDTH,
+                     gPhysicalFrameBuffers[frameBufferIndex]);
     gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                   SCREEN_HEIGHT - BORDER_HEIGHT);
 }
@@ -175,8 +175,9 @@ void create_task_structure(void) {
     gGfxSPTask->task.t.ucode_data_size = SP_UCODE_DATA_SIZE;
     gGfxSPTask->task.t.dram_stack = (u64 *) gGfxSPTaskStack;
     gGfxSPTask->task.t.dram_stack_size = SP_DRAM_STACK_SIZE8;
-    gGfxSPTask->task.t.output_buff = (u64 *) gGfxSPTaskOutputBuffer;
-    gGfxSPTask->task.t.output_buff_size = (u64 *) (gGfxSPTaskOutputBuffer + 0x1F000);
+    gGfxSPTask->task.t.output_buff = gGfxSPTaskOutputBuffer;
+    gGfxSPTask->task.t.output_buff_size =
+        (u64 *)((u8 *) gGfxSPTaskOutputBuffer + sizeof(gGfxSPTaskOutputBuffer));
     gGfxSPTask->task.t.data_ptr = (u64 *) &gGfxPool->buffer;
     gGfxSPTask->task.t.data_size = entries * sizeof(Gfx);
     gGfxSPTask->task.t.yield_data_ptr = (u64 *) gGfxSPTaskYieldBuffer;
@@ -218,7 +219,7 @@ void func_80247D84(void) {
             fbNum = sCurrFBNum - 1;
         }
 
-        sp18 = (u64 *) PHYSICAL_TO_VIRTUAL(gFrameBuffers[fbNum]);
+        sp18 = (u64 *) PHYSICAL_TO_VIRTUAL(gPhysicalFrameBuffers[fbNum]);
         sp18 += D_8032C648++ * (SCREEN_WIDTH / 4);
 
         for (sp24 = 0; sp24 < ((SCREEN_HEIGHT / 16) + 1); sp24++) {
@@ -268,7 +269,7 @@ void display_and_vsync(void) {
     send_display_list(&gGfxPool->spTask);
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
     osRecvMesg(&gGameVblankQueue, &D_80339BEC, OS_MESG_BLOCK);
-    osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gFrameBuffers[sCurrFBNum]));
+    osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFrameBuffers[sCurrFBNum]));
     profiler_log_thread5_time(THREAD5_END);
     osRecvMesg(&gGameVblankQueue, &D_80339BEC, OS_MESG_BLOCK);
     if (++sCurrFBNum == 3) {

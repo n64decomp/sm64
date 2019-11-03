@@ -1,0 +1,35 @@
+// 0x020087E4
+static const u8 Debug0[] = {
+    _("STAGE SELECT\n"
+      " つづける?\n"
+      " 1 マウンテン\n"
+      " 2 ファイア-バブル\n"
+      " 3 スノ-スライダ-\n"
+      " 4 ウォ-タ-ランド\n"
+      "   クッパ1ごう\n"
+      " もどる")
+};
+
+
+// 0x0200883C
+static const u8 Debug1[] = {
+    _("PAUSE    \n"
+      " つづける?\n"
+      " やめる ?")
+};
+
+
+// debug text table
+static const struct DialogEntry debug_text_entry_0 = {
+    1, 8, 30, 200, Debug0
+};
+
+static const struct DialogEntry debug_text_entry_1 = {
+    1, 3, 100, 150, Debug1
+};
+
+
+const struct DialogEntry *const seg2_debug_text_table[] = {
+    &debug_text_entry_0, &debug_text_entry_1, NULL,
+};
+

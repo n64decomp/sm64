@@ -25,8 +25,8 @@ extern struct MemoryPool *D_8033A124;
 
 uintptr_t set_segment_base_addr(s32 segment, void *addr);
 void *get_segment_base_addr(s32 segment);
-void *segmented_to_virtual(void *addr);
-void *virtual_to_segmented(s32 segment, void *addr);
+void *segmented_to_virtual(const void *addr);
+void *virtual_to_segmented(u32 segment, const void *addr);
 void move_segment_table_to_dmem(void);
 
 void main_pool_init(void *start, void *end);

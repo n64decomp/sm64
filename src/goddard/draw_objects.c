@@ -1,6 +1,8 @@
 #include <ultra64.h>
 #include <macros.h>
 #include <config.h>
+#include <stdio.h>
+
 #include "gd_types.h"
 #include "gd_macros.h"
 #include "gd_main.h"
@@ -355,7 +357,7 @@ void check_face_bad_vtx(struct ObjFace *face) {
             return;
         }
         if ((uintptr_t) vtx->gbiVerts == 0x3F800000) {
-            fatal_printf("bad2 %x,%d,%d,%d\n", (u32) (uintptr_t) vtx, vtx->unk3C, vtx->id, vtx->header.type);
+            fatal_printf("bad2 %x,%d,%d,%d\n", (u32) (uintptr_t) vtx, vtx->scaleFactor, vtx->id, vtx->header.type);
         }
     }
 }

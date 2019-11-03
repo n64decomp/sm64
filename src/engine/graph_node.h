@@ -76,7 +76,7 @@ extern Vec3s gVec3sOne;
 // - for GEO_CONTEXT_CREATE it is the AllocOnlyPool from which the node was allocated
 // - for GEO_CONTEXT_RENDER or GEO_CONTEXT_HELD_OBJ it is the top of the float matrix stack with type Mat4
 // - for GEO_CONTEXT_AREA_* it is the root geo node
-typedef s32 (*GraphNodeFunc)(s32 callContext, struct GraphNode *node, void *context);
+typedef Gfx *(*GraphNodeFunc)(s32 callContext, struct GraphNode *node, void *context);
 
 /** An extension of a graph node that includes a function pointer.
  *  Many graph node types have an update function that gets called
@@ -343,8 +343,8 @@ struct GraphNodeBackground
 struct GraphNodeHeldObject
 {
     /*0x00*/ struct FnGraphNode fnNode;
-    /*0x18*/ s32 unused;
-    /*0x1C*/ struct GraphNodeObject *objNode; // assumed type
+    /*0x18*/ s32 playerIndex;
+    /*0x1C*/ struct Object *objNode;
     /*0x20*/ Vec3s translation;
 };
 
@@ -402,7 +402,7 @@ struct GraphNodeGenerated *init_graph_node_generated(struct AllocOnlyPool *pool,
 struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *pool, struct GraphNodeBackground *sp1c,
     u16 sp22, GraphNodeFunc sp24, s32 sp28);
 struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *pool, struct GraphNodeHeldObject *sp1c,
-    struct GraphNodeObject *objNode, Vec3s translation, GraphNodeFunc nodeFunc, s32 unused);
+    struct Object *objNode, Vec3s translation, GraphNodeFunc nodeFunc, s32 playerIndex);
 
 struct GraphNode *geo_add_child(struct GraphNode *, struct GraphNode *);
 struct GraphNode *geo_remove_child(struct GraphNode *);

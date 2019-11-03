@@ -20,7 +20,7 @@ static s32 func_8030D284(s32 arg0) {
     }
 }
 
-static void eyerok_spawn_hand(s16 side, s32 model, void *behavior) {
+static void eyerok_spawn_hand(s16 side, s32 model, const BehaviorScript *behavior) {
     struct Object *hand;
 
     hand = spawn_object_relative_with_scale(side, -500 * side, 0, 300, 1.5f, o, model, behavior);

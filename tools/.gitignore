@@ -9,6 +9,8 @@
 /aiff_extract_codebook
 /vadpcm_enc
 /tabledesign
+/extract_data_for_mio
+/skyconv
 !/ido5.3_compiler/lib/*.so
 !/ido5.3_compiler/usr/lib/*.so
 !/ido5.3_compiler/usr/lib/*.so.1

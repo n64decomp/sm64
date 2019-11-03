@@ -183,8 +183,8 @@ s16 find_mario_anim_flags_and_translation(struct Object *obj, s32 yaw, Vec3s tra
 
     struct Animation *curAnim = (void *) obj->header.gfx.unk38.curAnim;
     s16 animFrame = geo_update_animation_frame(&obj->header.gfx.unk38, NULL);
-    u16 *animIndex = segmented_to_virtual(curAnim->index);
-    s16 *animValues = segmented_to_virtual(curAnim->values);
+    u16 *animIndex = segmented_to_virtual((void *) curAnim->index);
+    s16 *animValues = segmented_to_virtual((void *) curAnim->values);
 
     f32 s = (f32) sins(yaw);
     f32 c = (f32) coss(yaw);
@@ -289,7 +289,7 @@ void play_sound_and_spawn_particles(struct MarioState *m, u32 soundBits, u32 wav
         }
     }
 
-    if ((m->flags & MARIO_METAL_CAP) || soundBits == SOUND_ACTION_UNKNOWN443
+    if ((m->flags & MARIO_METAL_CAP) || soundBits == SOUND_ACTION_UNSTUCK_FROM_GROUND
         || soundBits == SOUND_MARIO_PUNCH_HOO) {
         play_sound(soundBits, m->marioObj->header.gfx.cameraToObject);
     } else {

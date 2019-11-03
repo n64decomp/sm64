@@ -45,8 +45,6 @@ s8 D_80331508 = 0;
 s8 D_8033150C = 0;
 s8 D_80331510 = 0;
 
-s32 count_objects_with_behavior(void *);
-
 extern void *ccm_seg7_trajectory_snowman;
 extern void *inside_castle_seg7_trajectory_mips;
 
@@ -69,7 +67,7 @@ Gfx *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2) {
         sp28 = arg1;
         sp24 = arg1;
         if (gCurGraphNodeHeldObject != NULL) {
-            sp2c = (struct Object *) gCurGraphNodeHeldObject->objNode;
+            sp2c = gCurGraphNodeHeldObject->objNode;
         }
 
         sp34 = alloc_display_list(3 * sizeof(Gfx));

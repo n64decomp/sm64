@@ -38,7 +38,7 @@ Gfx *geo_enfvx_main(s32 callContext, struct GraphNode *node, f32 c[4][4]) {
 
                 gfx = alloc_display_list(2 * sizeof(*gfx));
                 mtxf_to_mtx(mtx, c);
-                gSPMatrix(&gfx[0], VIRTUAL_TO_PHYSICAL(mtx), G_MTX_MODELVIEW | G_MTX_LOAD);
+                gSPMatrix(&gfx[0], VIRTUAL_TO_PHYSICAL(mtx), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
                 gSPBranchList(&gfx[1], VIRTUAL_TO_PHYSICAL(particleList));
                 execNode->fnNode.node.flags = (execNode->fnNode.node.flags & 0xFF) | 0x400;
             }
@@ -69,7 +69,7 @@ Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) 
         struct GraphNodePerspective *camFrustum =
             (struct GraphNodePerspective *) camNode->fnNode.node.parent;
 
-        gfx = func_802CF414(0, backgroundNode->background, camFrustum->fov, gCameraStatus.pos[0],
+        gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov, gCameraStatus.pos[0],
                             gCameraStatus.pos[1], gCameraStatus.pos[2], gCameraStatus.focus[0],
                             gCameraStatus.focus[1], gCameraStatus.focus[2]);
     }

@@ -33,7 +33,7 @@ void bhv_openable_grill_loop(void) {
             o->oAction++;
             break;
         case 1:
-            if ((o->oOpenableGrillUnkF4 = obj_nearest_object_with_behavior(&bhvFloorSwitchGrills))
+            if ((o->oOpenableGrillUnkF4 = obj_nearest_object_with_behavior(bhvFloorSwitchGrills))
                 != NULL)
                 o->oAction++;
             break;

@@ -1,7 +1,8 @@
 // intro_scene.inc.c
 
 void func_8029B964(struct Object *parent, s16 xOffset, s16 yOffset, s16 zOffset, s16 pitchOffset,
-                   s16 yawOffset, s16 rollOffset, s16 forwardVel, s32 model, void *behavior) {
+                   s16 yawOffset, s16 rollOffset, s16 forwardVel,
+                   s32 model, const BehaviorScript *behavior) {
     struct Object *sp1C = spawn_object(parent, model, behavior);
 
     sp1C->header.gfx.unk38.animFrame = RandomFloat() * 6.f;

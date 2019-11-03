@@ -63,15 +63,15 @@ void *get_segment_base_addr(s32 segment) {
     return (void *) (sSegmentTable[segment] | 0x80000000);
 }
 
-void *segmented_to_virtual(void *addr) {
-    u32 segment = (uintptr_t) addr >> 24;
-    u32 offset = (uintptr_t) addr & 0x00FFFFFF;
+void *segmented_to_virtual(const void *addr) {
+    size_t segment = (uintptr_t) addr >> 24;
+    size_t offset = (uintptr_t) addr & 0x00FFFFFF;
 
     return (void *) ((sSegmentTable[segment] + offset) | 0x80000000);
 }
 
-void *virtual_to_segmented(s32 segment, void *addr) {
-    uintptr_t offset = ((uintptr_t) addr & 0x1FFFFFFF) - sSegmentTable[segment];
+void *virtual_to_segmented(u32 segment, const void *addr) {
+    size_t offset = ((uintptr_t) addr & 0x1FFFFFFF) - sSegmentTable[segment];
 
     return (void *) ((segment << 24) + offset);
 }
@@ -509,7 +509,8 @@ void *alloc_display_list(u32 size) {
 static struct MarioAnimDmaRelatedThing *func_802789F0(u8 *srcAddr) {
     struct MarioAnimDmaRelatedThing *sp1C = dynamic_dma_read(srcAddr, srcAddr + sizeof(u32),
                                                              MEMORY_POOL_LEFT);
-    u32 size = sp1C->count * sizeof(struct MarioAnimSub) + sizeof(u32) + sizeof(u8 *);
+    u32 size = sizeof(u32) + (sizeof(u8 *) - sizeof(u32)) + sizeof(u8 *) +
+               sp1C->count * sizeof(struct OffsetSizePair);
     main_pool_free(sp1C);
 
     sp1C = dynamic_dma_read(srcAddr, srcAddr + size, MEMORY_POOL_LEFT);

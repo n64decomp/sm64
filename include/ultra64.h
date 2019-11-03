@@ -3,6 +3,10 @@
 
 #include <math.h>
 
+#ifndef _LANGUAGE_C
+#define _LANGUAGE_C
+#endif
+
 #include <PR/ultratypes.h>
 #include <PR/os_exception.h>
 #include <PR/os_misc.h>

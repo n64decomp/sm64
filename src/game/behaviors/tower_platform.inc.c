@@ -55,7 +55,7 @@ void bhv_wf_sliding_tower_platform_loop(void) {
         mark_object_for_deletion(o);
 }
 
-void func_802AF9A4(s16 a, u32 *beh) {
+void func_802AF9A4(s16 a, const BehaviorScript *beh) {
     s16 yaw;
     struct Object *platform = spawn_object(o, a, beh);
     yaw = o->oPlatformSpawnerUnkF4 * o->oPlatformSpawnerUnkFC + o->oPlatformSpawnerUnkF8;

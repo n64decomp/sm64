@@ -9,14 +9,30 @@
 #include "game/area.h"
 #include "geo_layout.h"
 
+#if IS_64_BIT
+static s16 next_s16_in_geo_script(s16 **src) {
+    s16 ret;
+    if (((uintptr_t)(*src) & 7) == 4) {
+         *src += 2; // skip 32 bits
+    }
+    ret = *(*src)++;
+    if (((uintptr_t)(*src) & 7) == 4) {
+         *src += 2; // skip 32 bits
+    }
+    return ret;
+}
+#else
+#define next_s16_in_geo_script(src) (*(*src)++)
+#endif
+
 /**
  * Takes a pointer to three shorts (supplied by a geo layout script) and
  * copies it to the destination float vector.
  */
 s16 *read_vec3s_to_vec3f(Vec3f dst, s16 *src) {
-    dst[0] = *src++;
-    dst[1] = *src++;
-    dst[2] = *src++;
+    dst[0] = next_s16_in_geo_script(&src);
+    dst[1] = next_s16_in_geo_script(&src);
+    dst[2] = next_s16_in_geo_script(&src);
     return src;
 }
 
@@ -26,9 +42,9 @@ s16 *read_vec3s_to_vec3f(Vec3f dst, s16 *src) {
  * with the other two 'geo-script vector to internal vector' functions.
  */
 s16 *read_vec3s(Vec3s dst, s16 *src) {
-    dst[0] = *src++;
-    dst[1] = *src++;
-    dst[2] = *src++;
+    dst[0] = next_s16_in_geo_script(&src);
+    dst[1] = next_s16_in_geo_script(&src);
+    dst[2] = next_s16_in_geo_script(&src);
     return src;
 }
 
@@ -38,9 +54,9 @@ s16 *read_vec3s(Vec3s dst, s16 *src) {
  * range.
  */
 s16 *read_vec3s_angle(Vec3s dst, s16 *src) {
-    dst[0] = ((*src++) << 15) / 180;
-    dst[1] = ((*src++) << 15) / 180;
-    dst[2] = ((*src++) << 15) / 180;
+    dst[0] = (next_s16_in_geo_script(&src) << 15) / 180;
+    dst[1] = (next_s16_in_geo_script(&src) << 15) / 180;
+    dst[2] = (next_s16_in_geo_script(&src) << 15) / 180;
     return src;
 }
 

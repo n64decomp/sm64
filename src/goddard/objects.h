@@ -56,7 +56,7 @@ extern struct ObjZone * make_zone(struct ObjGroup *, struct GdPlaneF *, struct O
 extern struct ObjUnk200000 * Unknown8017C7A0(struct ObjVertex *, struct ObjFace *);
 extern struct Links * make_link_to_obj(struct Links*, struct GdObj*);
 extern struct VtxLink * make_vtx_link(struct VtxLink *, Vtx *);
-extern struct ObjValPtrs* make_valptrs(struct GdObj *, s32, enum ValPtrType, s32);
+extern struct ObjValPtrs* make_valptrs(struct GdObj *, s32, enum ValPtrType, size_t);
 extern void reset_plane(struct ObjPlane*);
 extern struct ObjPlane* make_plane(s32, struct ObjFace*);
 extern struct ObjCamera* make_camera(s32, struct GdObj*);

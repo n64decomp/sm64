@@ -1,7 +1,17 @@
 #ifndef _MODEL_IDS_H
 #define _MODEL_IDS_H
+#define ACT_1 (1 << 0)
+#define ACT_2 (1 << 1)
+#define ACT_3 (1 << 2)
+#define ACT_4 (1 << 3)
+#define ACT_5 (1 << 4)
+#define ACT_6 (1 << 5)
 
-// Don't worry about formatting here, this file should be deleted and replaced with model_ids.inc.
+// If an object is set as active for the first 5 acts only, it is treated as always active.
+// It's possible that there were only planned to be 5 acts per level early in development.
+// Hence, they added a macro so they wouldn't have to change the acts for every object.
+#define ALL_ACTS_MACRO ACT_1 | ACT_2 | ACT_3 | ACT_4 | ACT_5
+#define ALL_ACTS       ACT_1 | ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6
 
 #define COIN_FORMATION_FLAG_VERTICAL  (1 << 0)
 #define COIN_FORMATION_FLAG_RING      (1 << 1)
@@ -389,8 +399,8 @@
 #define MODEL_ENEMY_LAKITU                0x54        // enemy_lakitu_geo
 #define MODEL_SPINY_BALL                  0x55        // spiny_ball_geo
 #define MODEL_SPINY                       0x56        // spiny_geo
-#define MODEL_WIGGLER                     0x57        // wiggler_geo
-#define MODEL_WIGGLER_BODY_PART           0x58        // wiggler_body_part_geo
+#define MODEL_WIGGLER_HEAD                0x57        // wiggler_head_geo
+#define MODEL_WIGGLER_BODY                0x58        // wiggler_body_geo
 #define MODEL_BUBBA                       0x59        // bubba_geo
 
 // referenced in macro presets. Unknown usage.

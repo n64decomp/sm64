@@ -1,9 +1,9 @@
 // tumbling_bridge.c.inc
 
-extern u8 wf_seg7_collision_tumbling_bridge[];
-extern u8 bbh_seg7_collision_07026B1C[];
-extern u8 lll_seg7_collision_0701D21C[];
-extern u8 bitfs_seg7_collision_07015288[];
+#include "levels/wf/header.h"
+#include "levels/bbh/header.h"
+#include "levels/lll/header.h"
+#include "levels/bitfs/header.h"
 
 struct Struct8032F34C sTumblingBridgeParams[] = {
     { 9, -512, 0x80, MODEL_WF_TUMBLING_BRIDGE_PART, wf_seg7_collision_tumbling_bridge },

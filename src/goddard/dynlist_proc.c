@@ -1,6 +1,7 @@
 #include <ultra64.h>
 #include <macros.h>
 #include <config.h>
+#include <stdio.h>
 #include "gd_types.h"
 #include "bad_declarations.h"
 #include "prevent_bss_reordering.h"
@@ -201,7 +202,7 @@ struct GdObj *proc_dynlist(struct DynList *dylist) {
                 break;
             case 50:
                 d_add_valptr(Dyn1AsID(dylist), (u32) DynVecY(dylist), Dyn2AsInt(dylist),
-                             (u32) DynVecX(dylist));
+                             (size_t) DynVecX(dylist));
                 break;
             case 29:
                 d_link_with_ptr(Dyn1AsPtr(dylist));
@@ -2318,7 +2319,7 @@ void d_set_shape_offset(f32 x, f32 y, f32 z) {
  *
  * @param type `::ValPtrType`
  */
-void d_add_valptr(DynId objId, u32 vflags, s32 type, u32 offset) {
+void d_add_valptr(DynId objId, u32 vflags, s32 type, size_t offset) {
     struct GdObj *dynobj;      // sp2C
     struct ObjValPtrs *valptr; // sp28
     struct DynObjInfo *info;   // sp24
@@ -2984,7 +2985,7 @@ void d_set_rot_mtx(Mat4f *src) {
             cpy_mat4(src, &((struct ObjJoint *) sDynListCurObj)->mat128);
             break;
         case OBJ_TYPE_NETS:
-            cpy_mat4(src, &((struct ObjJoint *) sDynListCurObj)->mat168);
+            cpy_mat4(src, &((struct ObjNet *) sDynListCurObj)->mat168);
             break;
         default:
             fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetRMatrix()",
@@ -3004,7 +3005,7 @@ Mat4f *d_get_rot_mtx_ptr(void) {
         case OBJ_TYPE_JOINTS:
             return &((struct ObjJoint *) sDynListCurObj)->mat128;
         case OBJ_TYPE_NETS:
-            return &((struct ObjJoint *) sDynListCurObj)->mat168;
+            return &((struct ObjNet *) sDynListCurObj)->mat168;
         default:
             fatal_printf("%s: Object '%s'(%x) does not support this function.", "dGetRMatrixPtr()",
                          sDynListCurInfo->name, sDynListCurObj->type);
@@ -3028,7 +3029,7 @@ void d_set_idn_mtx(Mat4f *src) {
             cpy_mat4(src, &((struct ObjNet *) dynobj)->matE8);
             break;
         case OBJ_TYPE_JOINTS:
-            cpy_mat4(src, &((struct ObjNet *) dynobj)->mat168);
+            cpy_mat4(src, &((struct ObjJoint *) dynobj)->mat168);
             break;
         case OBJ_TYPE_LIGHTS:
             ((struct ObjLight *) dynobj)->position.x = (*src)[3][0];

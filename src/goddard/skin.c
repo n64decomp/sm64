@@ -455,7 +455,7 @@ void Unknown8019373C(struct ObjNet *net) {
                 net->unk1A8->unk24 = make_group(0);
                 for (link = net->unk1A8->vtxGroup->link1C; link != NULL; link = link->next) {
                     vtx = (struct ObjVertex *) link->obj;
-                    if (vtx->unk3C != 1.0) //? 1.0f
+                    if (vtx->scaleFactor != 1.0) //? 1.0f
                     {
                         addto_group(net->unk1A8->unk24, &vtx->header);
                     }

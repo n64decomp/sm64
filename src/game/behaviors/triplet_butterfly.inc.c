@@ -1,6 +1,6 @@
 struct TripletButterflyActivationData {
     s32 model;
-    void *behavior;
+    const BehaviorScript *behavior;
     f32 scale;
 };
 

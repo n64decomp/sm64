@@ -25,8 +25,8 @@
             _PROUT(dst, src, c);                                                                       \
         }
 
-const u8 length_str[] = "hlL";
-const u8 flags_str[] = " +-#0";
+const char length_str[] = "hlL";
+const char flags_str[] = " +-#0";
 const u32 flags_arr[] = { FLAGS_SPACE, FLAGS_PLUS, FLAGS_MINUS, FLAGS_HASH, FLAGS_ZERO, 0 };
 char _spaces[] = "                                ";
 char _zeroes[] = "00000000000000000000000000000000";
@@ -37,7 +37,7 @@ s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char 
     printf_struct sp78;
     const u8 *fmt_ptr;
     u8 c;
-    const u8 *flag_index;
+    const char *flag_index;
     u8 sp4c[0x20]; // probably a buffer?
     s32 sp48, sp44, sp40, sp3c, sp38, sp34, sp30, sp2c, sp28, sp24;
     sp78.size = 0;
@@ -212,7 +212,7 @@ static void _Putfld(printf_struct *a0, va_list *args, u8 type, u8 *buff) {
 
         case 's':
             a0->buff = va_arg(*args, char *);
-            a0->part2_len = strlen((u8 *) a0->buff);
+            a0->part2_len = strlen(a0->buff);
             if (a0->precision >= 0 && a0->part2_len > a0->precision) {
                 a0->part2_len = a0->precision;
             }

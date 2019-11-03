@@ -31,7 +31,7 @@ class Aifc:
 class SampleBank:
     def __init__(self, name, entries):
         self.name = name
-        self.uses = 0
+        self.uses = []
         self.entries = entries
         self.name_to_entry = {}
         for e in entries:
@@ -457,7 +457,7 @@ def apply_version_diffs(json, defines):
 
 
 def mark_sample_bank_uses(bank):
-    bank.sample_bank.uses += 1
+    bank.sample_bank.uses.append(bank)
 
     def mark_used(name):
         bank.sample_bank.name_to_entry[name].used = True
@@ -492,7 +492,7 @@ def serialize_ctl(bank, base_ser):
             ">IIII",
             len(json["instrument_list"]),
             len(drums),
-            1 if bank.sample_bank.uses > 1 else 0,
+            1 if len(bank.sample_bank.uses) > 1 else 0,
             to_bcd(date),
         )
     )
@@ -919,7 +919,8 @@ def main():
         except Exception as e:
             fail("failed to parse bank " + fname + ": " + str(e))
 
-    sample_banks = [b for b in sample_banks if b.uses > 0]
+    sample_banks = [b for b in sample_banks if b.uses]
+    sample_banks.sort(key=lambda b: b.uses[0].name)
     sample_bank_index = {}
     for sample_bank in sample_banks:
         sample_bank_index[sample_bank] = len(sample_bank_index)

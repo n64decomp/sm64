@@ -4,6 +4,7 @@
 #include "types.h"
 #include "area.h"
 #include "engine/geo_layout.h"
+#include "engine/graph_node.h"
 
 #define ABS(x) ((x) > 0.f ? (x) : -(x))
 #define ABS2(x) ((x) >= 0.f ? (x) : -(x))
@@ -215,8 +216,8 @@ struct Struct8033B2B8
 // Camera command procedures are marked as returning s32, but none of them
 // actually return a value. This causes undefined behavior, which we'd rather
 // avoid on modern GCC. Hence, typedef. Interestingly, the void vs s32
-// difference doesn't affect -g, only -O2.
-#ifdef __GNUC__
+// difference doesn't affect -g codegen, only -O2.
+#if BUGFIXES_CRITICAL
 typedef void CmdRet;
 #else
 typedef s32 CmdRet;
@@ -255,12 +256,19 @@ struct Struct8033B230
     /*0x18*/ s16 unk18;
 };
 
-struct CinematicCameraTable
+/**
+ * Information for a control point in a spline segment.
+ */
+struct CutsceneSplinePoint
 {
-    /*0x00*/ s8 unk0;
-    /*0x01*/ u8 unk1;
-    /*0x02*/ Vec3s unk2;
-}; // size = 0x08
+    /* The index of this point in the spline. Ignored except for -1, which ends the spline.
+       An index of -1 should come four points after the start of the last segment. */
+    s8 index;
+    /* Roughly controls the number of frames it takes to progress through the spline segment.
+       See move_point_along_spline() in camera.c */
+    u8 speed;
+    Vec3s point;
+};
 
 struct PlayerGeometry
 {
@@ -395,12 +403,13 @@ extern void update_camera(struct LevelCamera *);
 extern void reset_camera(struct LevelCamera *);
 extern void init_camera(struct LevelCamera *);
 extern void select_mario_cam_mode(void);
+extern Gfx *geo_camera_preset_and_pos(s32 a, struct GraphNode *b, struct AllocOnlyPool *c);
 extern void dummy_802877D8(struct LevelCamera *);
 extern void dummy_802877EC(struct LevelCamera *);
 extern void vec3f_sub(Vec3f, Vec3f);
 extern void object_pos_to_vec3f(Vec3f, struct Object *);
 extern void vec3f_to_object_pos(struct Object *, Vec3f); // static (ASM)
-extern s32 func_80287CFC(Vec3f, struct CinematicCameraTable[], s16 *, f32 *);
+extern s32 move_point_along_spline(Vec3f, struct CutsceneSplinePoint[], s16 *, f32 *);
 extern s32 select_or_activate_mario_cam(s32 angle);
 extern s32 test_or_set_mario_cam_active(s32);
 extern void set_spline_values(u8);
@@ -831,7 +840,7 @@ extern s16 cutscene_object(u8, struct Object *);
 // extern ? CutsceneDoorAB_2(?);
 extern void handle_cutscenes(struct LevelCamera *);
 extern s32 call_cutscene_func_in_time_range(CameraCommandProc, struct LevelCamera *, s16, s16);
-extern s32 func_80299C60(s32, s16);
+extern s32 set_cutscene_phase_at_frame(s32 phase, s16 frame);
 extern void func_80299C98(s16, s16, s16);
 // extern ? func_80299D00(?);
 
@@ -851,5 +860,7 @@ extern void func_8029A7DC(struct Object *, Vec3f, s16, s16, s16, s16);
 // extern ? bhv_end_birds_2_loop(?);
 // extern ? func_8029B964(?);
 // extern ? bhv_intro_scene_loop(?);
+
+extern Gfx *geo_camera_fov(s32 a, struct GraphNode *b, UNUSED struct AllocOnlyPool *c);
 
 #endif /* _CAMERA_H */

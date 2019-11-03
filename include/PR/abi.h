@@ -269,6 +269,56 @@ typedef short ENVMIX_STATE[40];
  * Macros to assemble the audio command list
  */
 
+/*
+ * Info about parameters:
+ *
+ * A "count" in the following macros is always measured in bytes.
+ *
+ * All volumes/gains are in Q1.15 signed fixed point numbers:
+ *  0x8000 is the minimum volume (-100%), negating the audio curve.
+ *  0x0000 is silent.
+ *  0x7fff is maximum volume (99.997%).
+ *
+ * All DRAM addresses refer to segmented addresses. A segment table shall
+ * first be set up by calling aSegment for each segment. When a DRAM
+ * address is later used as parameter, the 8 high bits will be an index
+ * to the segment table and the lower 24 bits are added to the base address
+ * stored in the segment table for this entry. The result is the physical address.
+ *
+ * Transfers to/from DRAM are executed using DMA and hence follow these restrictions:
+ * All DRAM addresses should be aligned by 8 bytes, or they will be
+ * rounded down to the nearest multiple of 8 bytes.
+ * All DRAM lengths should be aligned by 8 bytes, or they will be
+ * rounded up to the nearest multiple of 8 bytes.
+ */
+
+/*
+ * Decompresses ADPCM data.
+ * Possible flags: A_INIT and A_LOOP.
+ *
+ * First set up internal data in DMEM:
+ * aLoadADPCM(cmd++, nEntries * 16, physicalAddressOfBook)
+ * aSetLoop(cmd++, physicalAddressOfLoopState)    (if A_LOOP is set)
+ *
+ * Then before this command, call:
+ * aSetBuffer(cmd++, 0, in, out, count)
+ *
+ * Note: count will be rounded up to the nearest multiple of 32 bytes.
+ *
+ * ADPCM decompression works on a block of 16 (uncompressed) samples.
+ * The previous 2 samples and 9 bytes of input are decompressed to
+ * 16 new samples using the code book previously loaded.
+ *
+ * Before the algorithm starts, the previous 16 samples are loaded according to flag:
+ *   A_INIT: all zeros
+ *   A_LOOP: the address set by aSetLoop
+ *   no flags: the DRAM address in the s parameter
+ * These 16 samples are immediately copied to the destination address.
+ *
+ * The result of "count" bytes will be written after these 16 initial samples.
+ * The last 16 samples written to the destination will also be written to
+ * the state address in DRAM.
+ */
 #define aADPCMdec(pkt, f, s)                                            \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -277,6 +327,9 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Not used in SM64.
+ */
 #define aPoleFilter(pkt, f, g, s)                                       \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -286,6 +339,11 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Clears DMEM data, where d is address and c is count, by writing zeros.
+ *
+ * Note: c is rounded up to the nearest multiple of 16 bytes.
+ */
 #define aClearBuffer(pkt, d, c)                                         \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -294,6 +352,31 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(c);                                  \
 }
 
+/*
+ * Mixes an envelope with mono sound into 2 or 4 channels.
+ * Possible flags: A_INIT, A_AUX (indicates that 4 channels should be used).
+ *
+ * Before this command, call:
+ * aSetBuffer(cmd++, 0, inBuf, dryLeft, count)
+ * aSetBuffer(cmd++, A_AUX, dryRight, wetLeft, wetRight)
+ *
+ * The first time (A_INIT is set), volume also needs to be set:
+ * aSetVolume(cmd++, A_VOL | A_LEFT, initialVolumeLeft, 0, 0)
+ * aSetVolume(cmd++, A_VOL | A_RIGHT, initialVolumeRight, 0, 0)
+ * aSetVolume32(cmd++, A_RATE | A_LEFT, targetVolumeLeft, rampLeft)
+ * aSetVolume32(cmd++, A_RATE | A_RIGHT, targetVolumeRight, rampRight)
+ * aSetVolume(cmd++, A_AUX, dryVolume, 0, wetVolume)
+ *
+ * This command will now mix samples in inBuf into the destination buffers (dry and wet),
+ * but with the volume increased (or decreased) from initial volumes to target volumes,
+ * with the specified ramp rate. Once the target volume is reached, the volume stays
+ * at that level. Before the samples are finally mixed (added) into the destination
+ * buffers (dry and wet), the volume is changed according to dryVolume and wetVolume.
+ *
+ * Note: count will be rounded up to the nearest multiple of 16 bytes.
+ * Note: the wet channels are used for reverb.
+ *
+ */
 #define aEnvMixer(pkt, f, s)                                            \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -302,6 +385,17 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Interleaves two mono channels into stereo.
+ *
+ * First call:
+ * aSetBuffer(cmd++, 0, 0, output, count)
+ *
+ * The count refers to the size of the output.
+ * A left sample will be placed before the right sample.
+ *
+ * Note: count will be rounded up to the nearest multiple of 16 bytes.
+ */
 #define aInterleave(pkt, l, r)                                          \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -310,6 +404,15 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(l, 16, 16) | _SHIFTL(r, 0, 16);          \
 }
 
+/*
+ * Loads a buffer from DRAM to DMEM.
+ *
+ * First call:
+ * aSetBuffer(cmd++, 0, in, 0, count)
+ *
+ * The in parameter to aSetBuffer is the destination in DMEM and the
+ * s parameter to this command is the source in DRAM.
+ */
 #define aLoadBuffer(pkt, s)                                             \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -318,6 +421,20 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Mixes audio.
+ * Possible flags: no flags used, although parameter present.
+ *
+ * First call:
+ * aSetBuffer(cmd++, 0, 0, 0, count)
+ *
+ * Input and output addresses are taken from the i and o parameters.
+ * The volume with which the input is changed is taken from the g parameter.
+ * After the volume of the input samples have been changed, the result
+ * is added to the output.
+ *
+ * Note: count will be rounded up to the nearest multiple of 32 bytes.
+ */
 #define aMix(pkt, f, g, i, o)                                           \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -327,6 +444,7 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(i,16, 16) | _SHIFTL(o, 0, 16);           \
 }
 
+// Not present in the audio microcode.
 #define aPan(pkt, f, d, s)                                              \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -336,6 +454,39 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Resamples audio.
+ * Possible flags: A_INIT, A_OUT? (not used in SM64).
+ *
+ * First call:
+ * aSetBuffer(cmd++, 0, in, out, count)
+ *
+ * This command resamples the audio using the given frequency ratio (pitch)
+ * using a filter that uses a window of 4 source samples. This can be used
+ * either for just resampling audio to be able to be played back at a different
+ * sample rate, or to change the pitch if the result is played back at
+ * the same sample rate as the input.
+ *
+ * The frequency ratio is given in UQ1.15 fixed point format.
+ * For no change in frequency, use pitch 0x8000.
+ * For 1 octave up or downsampling to (roughly) half number of samples, use pitch 0xffff.
+ * For 1 octave down or upsampling to double as many samples, use pitch 0x4000.
+ *
+ * Note: count represents the number of output samples and is rounded up to
+ * the nearest multiple of 16 bytes.
+ *
+ * The state consists of the four following source samples when the algorithm stopped as
+ * well as a fractional position, and is initialized to all zeros if A_INIT is given.
+ * Otherwise it is loaded from DRAM at address s.
+ *
+ * The algorithm starts by writing the four source samples from the state (or zero)
+ * to just before the input address given. It then creates one output sample by examining
+ * the four next source samples and then moving the source position zero or more
+ * samples forward. The first output sample (when A_INIT is given) is always 0.
+ *
+ * When "count" samples have been written, the following four source samples
+ * are written to the state in DRAM as well as a fractional position.
+ */
 #define aResample(pkt, f, p, s)                                         \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -345,6 +496,15 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Stores a buffer in DMEM to DRAM.
+ *
+ * First call:
+ * aSetBuffer(cmd++, 0, 0, out, count)
+ *
+ * The out parameter to aSetBuffer is the source in DMEM and the
+ * s parameter to this command is the destination in DRAM.
+ */
 #define aSaveBuffer(pkt, s)                                             \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -353,6 +513,12 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
+/*
+ * Sets up an entry in the segment table.
+ *
+ * The s parameter is a segment index, 0 to 15.
+ * The b parameter is the base offset.
+ */
 #define aSegment(pkt, s, b)                                             \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -361,6 +527,10 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(s, 24, 8) | _SHIFTL(b, 0, 24);           \
 }
 
+/*
+ * Sets internal DMEM buffer addresses used for later commands.
+ * See each command for how to use aSetBuffer.
+ */
 #define aSetBuffer(pkt, f, i, o, c)                                     \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -370,6 +540,10 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16);          \
 }
 
+/*
+ * Sets internal volume parameters.
+ * See aEnvMixer for more info.
+ */
 #define aSetVolume(pkt, f, v, t, r)                                     \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -379,13 +553,29 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(t, 16, 16) | _SHIFTL(r, 0, 16);          \
 }
 
+/*
+ * Sets the address to ADPCM loop state.
+ *
+ * The a parameter is a DRAM address.
+ * See aADPCMdec for more info.
+ */
 #define aSetLoop(pkt, a)                                                \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
         _a->words.w0 = _SHIFTL(A_SETLOOP, 24, 8);                       \
         _a->words.w1 = (uintptr_t)(a);                                  \
 }
-    
+
+/*
+ * Copies memory in DMEM.
+ *
+ * Copies c bytes from address i to address o.
+ *
+ * Note: count is rounded up to the nearest multiple of 16 bytes.
+ *
+ * Note: This acts as memcpy where 16 bytes are moved at a time, therefore
+ * if input and output overlap, output address should be less than input address.
+ */
 #define aDMEMMove(pkt, i, o, c)                                         \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -394,6 +584,14 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16);          \
 }
 
+/*
+ * Loads ADPCM book from DRAM into DMEM.
+ *
+ * This command loads ADPCM table entries from DRAM to DMEM.
+ *
+ * The count parameter c should be a multiple of 16 bytes.
+ * The d parameter is a DRAM address.
+ */
 #define aLoadADPCM(pkt, c, d)                                           \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -406,7 +604,10 @@ typedef short ENVMIX_STATE[40];
 // instead of two 16-bit ones. According to AziAudio, it is used to set
 // ramping values when neither bit 4 nor bit 8 is set in the flags parameter.
 // It does not appear in the official abi.h header.
-
+/*
+ * Sets internal volume parameters.
+ * See aEnvMixer for more info.
+ */
 #define aSetVolume32(pkt, f, v, tr)                                     \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \

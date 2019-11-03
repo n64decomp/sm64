@@ -86,7 +86,7 @@ extern struct Object *gMarioObject;
 extern struct Object *gLuigiObject;
 extern struct Object *gCurrentObject;
 
-extern uintptr_t *gBehCommand;
+extern const BehaviorScript *gBehCommand;
 extern s16 gPrevFrameObjectCount;
 
 extern s32 gSurfaceNodesAllocated;

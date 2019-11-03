@@ -683,7 +683,7 @@ struct SPTask *create_next_audio_frame_task(void) {
     // across this function call.
     flags = 0;
 
-    gAudioCmd = func_80313CD4(gAudioCmd, &writtenCmds, gCurrAiBuffer, gAiBufferLengths[index]);
+    gAudioCmd = synthesis_execute(gAudioCmd, &writtenCmds, gCurrAiBuffer, gAiBufferLengths[index]);
     D_80226EB8 = ((D_80226EB8 + gActiveAudioFrames) * gActiveAudioFrames);
 
     index = gAudioTaskIndex;
@@ -2074,7 +2074,7 @@ void sound_reset(u8 arg0) {
     sGameLoopTicked = 0;
     disable_all_sequence_players();
     sound_init();
-    func_80316928(&D_80332190[arg0]);
+    audio_reset_session(&gAudioSessionPresets[arg0]);
     osWritebackDCacheAll();
     if (arg0 != 7) {
         preload_sequence(SEQ_EVENT_SOLVE_PUZZLE, PRELOAD_BANKS | PRELOAD_SEQUENCE);

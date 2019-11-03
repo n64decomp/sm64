@@ -1,6 +1,8 @@
 #include <ultra64.h>
+#include <stdio.h>
 
 #include "sm64.h"
+#include "prevent_bss_reordering.h"
 #include "audio/external.h"
 #include "game.h"
 #include "memory.h"

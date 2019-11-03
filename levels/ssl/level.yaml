@@ -1,7 +1,7 @@
 # Shifting Sand Land
 short-name: ssl
 full-name: Shifting Sand Land
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 3
 objects: [eyerok_col, grindel, moving_pyramid_wall, pyramid_elevator, pyramid_top, spindel, tox_box]
 shared-path: []

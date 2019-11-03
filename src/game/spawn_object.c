@@ -245,6 +245,9 @@ static struct Object *allocate_object(struct ObjectNode *objList) {
 
     for (i = 0; i < 0x50; i++) {
         obj->rawData.asU32[i] = 0;
+#if IS_64_BIT
+        obj->ptrData.asVoidPtr[i] = NULL;
+#endif
     }
 
     obj->unused1 = 0;
@@ -307,11 +310,11 @@ static void snap_object_to_floor(struct Object *obj) {
  * Spawn an object at the origin with the behavior script at virtual address
  * behScript.
  */
-struct Object *create_object(uintptr_t *behScript) {
+struct Object *create_object(const BehaviorScript *behScript) {
     s32 objListIndex;
     struct Object *obj;
     struct ObjectNode *objList;
-    void *behavior = (void *) behScript;
+    const BehaviorScript *behavior = behScript;
 
     // If the first behavior script command is "begin <object list>", then
     // extract the object list from it

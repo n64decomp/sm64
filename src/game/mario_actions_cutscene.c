@@ -288,7 +288,7 @@ void handle_save_menu(struct MarioState *m) {
  * Spawns object with given behavior and model and copies over Mario's position
  * and yaw plus relative yaw.
  */
-struct Object *spawn_obj_at_mario_rel_yaw(struct MarioState *m, s32 model, void *behavior, s16 relYaw) {
+struct Object *spawn_obj_at_mario_rel_yaw(struct MarioState *m, s32 model, const BehaviorScript *behavior, s16 relYaw) {
     struct Object *o = spawn_object(m->marioObj, model, behavior);
 
     o->oFaceAngleYaw = m->faceAngle[1] + relYaw;
@@ -504,7 +504,7 @@ s32 act_reading_automatic_dialog(struct MarioState *m) {
 s32 act_reading_sign(struct MarioState *m) {
     struct Object *marioObj = m->marioObj;
 
-    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN45B, MARIO_ACTION_SOUND_PLAYED);
+    play_sound_if_no_flag(m, SOUND_ACTION_READ_SIGN, MARIO_ACTION_SOUND_PLAYED);
 
     switch (m->actionState) {
         // start dialog
@@ -1028,7 +1028,7 @@ s32 act_spawn_spin_airborne(struct MarioState *m) {
     // is 300 units above floor, spin and play woosh sounds
     if (m->actionState == 0 && m->pos[1] - m->floorHeight > 300.0f) {
         if (set_mario_animation(m, MARIO_ANIM_FORWARD_SPINNING) == 0) { // first anim frame
-            play_sound(SOUND_ACTION_SWISH2, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_ACTION_SPIN, m->marioObj->header.gfx.cameraToObject);
         }
     }
 
@@ -1121,7 +1121,7 @@ s32 act_exit_land_save_dialog(struct MarioState *m) {
                                                -32768);
                     //! fall through
                 case 67:
-                    play_sound(SOUND_ACTION_SWISH1, m->marioObj->header.gfx.cameraToObject);
+                    play_sound(SOUND_ACTION_KEY_SWISH, m->marioObj->header.gfx.cameraToObject);
                     //! fall through
                 case 83:
                     play_sound(SOUND_ACTION_PAT_BACK, m->marioObj->header.gfx.cameraToObject);
@@ -1317,7 +1317,7 @@ s32 act_bbh_enter_spin(struct MarioState *m) {
             mario_set_forward_vel(m, forwardVel);
 
             if (set_mario_animation(m, MARIO_ANIM_FORWARD_SPINNING) == 0) {
-                play_sound(SOUND_ACTION_SWISH2, m->marioObj->header.gfx.cameraToObject);
+                play_sound(SOUND_ACTION_SPIN, m->marioObj->header.gfx.cameraToObject);
             }
 
             m->flags &= ~MARIO_UNKNOWN_08;
@@ -1342,7 +1342,7 @@ s32 act_bbh_enter_spin(struct MarioState *m) {
                     m->actionState = 3;
                 }
             } else {
-                play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN446, MARIO_ACTION_SOUND_PLAYED);
+                play_sound_if_no_flag(m, SOUND_ACTION_SHRINK_INTO_BBH, MARIO_ACTION_SOUND_PLAYED);
                 set_mario_animation(m, MARIO_ANIM_DIVE);
                 m->marioObj->header.gfx.angle[0] = atan2s(m->forwardVel, -m->vel[1]);
             }
@@ -1396,7 +1396,7 @@ s32 act_bbh_enter_jump(struct MarioState *m) {
 }
 
 s32 act_teleport_fade_out(struct MarioState *m) {
-    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN457, MARIO_ACTION_SOUND_PLAYED);
+    play_sound_if_no_flag(m, SOUND_ACTION_TELEPORT, MARIO_ACTION_SOUND_PLAYED);
     set_mario_animation(m, m->prevAction == ACT_CROUCHING ? MARIO_ANIM_CROUCHING
                                                           : MARIO_ANIM_FIRST_PERSON);
     m->flags |= MARIO_TELEPORTING;
@@ -1415,7 +1415,7 @@ s32 act_teleport_fade_out(struct MarioState *m) {
 }
 
 s32 act_teleport_fade_in(struct MarioState *m) {
-    play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN457, MARIO_ACTION_SOUND_PLAYED);
+    play_sound_if_no_flag(m, SOUND_ACTION_TELEPORT, MARIO_ACTION_SOUND_PLAYED);
     set_mario_animation(m, MARIO_ANIM_FIRST_PERSON);
 
     if (m->actionTimer < 32) {
@@ -1606,10 +1606,8 @@ void stuck_in_ground_handler(struct MarioState *m, s32 animation, s32 unstuckFra
 
     if (animFrame == -1) {
         play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STUCK_IN_GROUND, 1);
-
     } else if (animFrame == unstuckFrame) {
-        play_sound_and_spawn_particles(m, SOUND_ACTION_UNKNOWN443, 1);
-
+        play_sound_and_spawn_particles(m, SOUND_ACTION_UNSTUCK_FROM_GROUND, 1);
     } else if (animFrame == target2 || animFrame == target3) {
         play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
     }
@@ -1686,7 +1684,7 @@ static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
 
         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
 #ifndef VERSION_JP
-        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN444_3, MARIO_ACTION_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
 #endif
 
         set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);

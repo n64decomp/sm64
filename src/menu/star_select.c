@@ -252,7 +252,7 @@ static void print_act_selector_strings(void) {
     print_hud_my_score_coins(1, gCurrSaveFileNum - 1, gCurrCourseNum - 1, 155, 106);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
 
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
     // Print the "MY SCORE" text if the coin score is more than 0
     if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0) {
@@ -261,7 +261,7 @@ static void print_act_selector_strings(void) {
     // Print the level name; add 3 to skip the number and spacing to get to the actual string to center.
     lvlNameX = get_str_x_pos_from_center(160, currLevelName + 3, 10.0f);
     print_generic_string(lvlNameX, 33, currLevelName + 3);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 
     print_course_number();
 

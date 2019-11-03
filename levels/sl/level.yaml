@@ -1,7 +1,7 @@
 # Snowman's Land
 short-name: sl
 full-name: Snowman's Land
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 2
 objects: [snow_mound, unused_cracked_ice, unused_ice_shard]
 shared-path: []

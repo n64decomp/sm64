@@ -1,7 +1,7 @@
 # Princess Peach's Castle (Castle Grounds)
 short-name: castle_grounds
 full-name: Princess Peach's Castle (Castle Grounds)
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: []
 shared-path: []

@@ -10,7 +10,7 @@
 #define NUMAIBUFFERS 3
 
 // constant .data
-extern struct Struct80332190 D_80332190[18];
+extern struct AudioSessionSettings gAudioSessionPresets[18];
 extern u16 D_80332388[128]; // unused
 
 extern f32 gPitchBendFrequencyScale[255];
@@ -39,7 +39,7 @@ extern f32 gVolRampingRhs128[128];
 extern s16 gTatumsPerBeat;
 extern s8 gUnusedCount80333EE8;
 extern s32 gAudioHeapSize;
-extern s32 D_80333EF0; // amount of heap designated to gSoundPool, 0x2500
+extern s32 D_80333EF0; // amount of heap designated to gAudioInitPool, 0x2500
 extern volatile s32 gAudioLoadLock;
 
 // .bss

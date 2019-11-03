@@ -1,7 +1,7 @@
 # Hazy Maze Cave
 short-name: hmc
 full-name: Hazy Maze Cave
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: [arrow_platform, arrow_platform_button, elevator_platform, rolling_rock, rolling_rock_fragment_1, rolling_rock_fragment_2]
 shared-path: []

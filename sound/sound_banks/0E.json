@@ -1,6 +1,6 @@
 {
     "date": "1996-03-19",
-    "sample_bank": "nlist_B",
+    "sample_bank": "instruments",
     "envelopes": {
         "envelope0": [
             [6, 32700],

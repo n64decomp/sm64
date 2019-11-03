@@ -17,6 +17,12 @@ case "$1" in
         LANG=eu
         shift
         ;;
+    -a)
+        # Use an alternate dump file as the base.
+        shift
+        ALT_DUMP="$1"
+        shift
+        ;;
     *)
         POSITIONAL+=("$1")
         shift
@@ -29,6 +35,6 @@ BASEROM=baserom.$LANG
 MAPFILE="build/$LANG/sm64.$LANG.map"
 MYDUMP=sm64.$LANG.dump
 MYIMG=build/$LANG/sm64.$LANG.z64
-BASEDUMP=$BASEROM.dump
+BASEDUMP="${ALT_DUMP:-${BASEROM}.dump}"
 BASEIMG=$BASEROM.z64
 MAKEFLAGS="-j VERSION=$LANG"

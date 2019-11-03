@@ -1,0 +1,169 @@
+// level names (EU, Français)
+// 0x1900A3CC
+static const u8 level_name_01[] = {
+    _(" 1 BATAILLE DE BOB-OMB")
+};
+
+
+// 0x1900A3E4
+static const u8 level_name_02[] = {
+    _(" 2 FORTERESSE DE WHOMP")
+};
+
+
+// 0x1900A3FC
+static const u8 level_name_03[] = {
+    _(" 3 BAIE DES PIRATES")
+};
+
+
+// 0x1900A410
+static const u8 level_name_04[] = {
+    _(" 4 MONTAGNE GLA-GLA")
+};
+
+
+// 0x1900A424
+static const u8 level_name_05[] = {
+    _(" 5 MANOIR DE BIG BOO")
+};
+
+
+// 0x1900A43C
+static const u8 level_name_06[] = {
+    _(" 6 CAVERNE BRUMEUSE")
+};
+
+
+// 0x1900A450
+static const u8 level_name_07[] = {
+    _(" 7 LAVES FATALES")
+};
+
+
+// 0x1900A464
+static const u8 level_name_08[] = {
+    _(" 8 SABLES TROP MOUVANTS")
+};
+
+
+// 0x1900A47C
+static const u8 level_name_09[] = {
+    _(" 9 AFFREUX BASSIN")
+};
+
+
+// 0x1900A490
+static const u8 level_name_10[] = {
+    _("10 CHEZ LE ROI DES NEIGES")
+};
+
+
+// 0x1900A4AC
+static const u8 level_name_11[] = {
+    _("11 MONDE TREMPE-SECHE")
+};
+
+
+// 0x1900A4C4
+static const u8 level_name_12[] = {
+    _("12 TROP HAUTE MONTAGNE")
+};
+
+
+// 0x1900A4DC
+static const u8 level_name_13[] = {
+    _("13 ILE GRANDS-PETITS")
+};
+
+
+// 0x1900A4F4
+static const u8 level_name_14[] = {
+    _("14 HORLOGE TIC-TAC")
+};
+
+
+// 0x1900A508
+static const u8 level_name_15[] = {
+    _("15 COURSE ARC-EN-CIEL")
+};
+
+
+// 0x1900A520
+static const u8 level_name_16[] = {
+    _("   BOWSER DES TENEBRES")
+};
+
+
+// 0x1900A538
+static const u8 level_name_17[] = {
+    _("   BOWSER DES LAVES")
+};
+
+
+// 0x1900A54C
+static const u8 level_name_18[] = {
+    _("   BOWSER DES CIEUX")
+};
+
+
+// 0x1900A560
+static const u8 level_name_19[] = {
+    _("   GLISSADE DE LA PRINCESSE")
+};
+
+
+// 0x1900A57C
+static const u8 level_name_20[] = {
+    _("   MINE DES CASQUETTES-METAL")
+};
+
+
+// 0x1900A59C
+static const u8 level_name_21[] = {
+    _("   INTERRUPTEUR DE LA TOUR AILEE")
+};
+
+
+// 0x1900A5C0
+static const u8 level_name_22[] = {
+    _("   INVISIBLE SOUS LES DOUVES")
+};
+
+
+// 0x1900A5E0
+static const u8 level_name_23[] = {
+    _("   AU-DELA DE L'ARC-EN-CIEL")
+};
+
+
+// 0x1900A5FC
+static const u8 level_name_24[] = {
+    _("   AQUARIUM SECRET")
+};
+
+
+// 0x1900A610
+static const u8 level_name_25[] = {
+    _("")
+};
+
+
+// 0x1900A614
+static const u8 level_name_castle_secret_stars[] = {
+    _("   ETOILES SECRETES")
+};
+
+
+// level name table
+// 0x1900A628
+const u8 *const level_name_table_eu_fr[] = {
+    level_name_01, level_name_02, level_name_03, level_name_04,
+    level_name_05, level_name_06, level_name_07, level_name_08,
+    level_name_09, level_name_10, level_name_11, level_name_12,
+    level_name_13, level_name_14, level_name_15, level_name_16,
+    level_name_17, level_name_18, level_name_19, level_name_20,
+    level_name_21, level_name_22, level_name_23, level_name_24,
+    level_name_25, level_name_castle_secret_stars, 0x0,
+};
+

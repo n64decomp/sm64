@@ -206,7 +206,7 @@ struct ObjVertex *gd_make_vertex(f32 x, f32 y, f32 z) {
     vtx->initPos.y = y;
     vtx->initPos.z = z;
 
-    vtx->unk3C = 1.0f;
+    vtx->scaleFactor = 1.0f;
     vtx->gbiVerts = NULL;
     vtx->alpha = 1.0f;
 

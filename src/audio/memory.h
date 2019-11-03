@@ -47,20 +47,20 @@ struct SoundMultiPool
 }; // size = 0x1D0
 
 extern u8 gAudioHeap[];
-extern s16 D_802212A0;
-extern s8 D_802212A2;
-extern u8 D_802212A3;
-extern struct SoundAllocPool gSoundPool;
-extern struct SoundAllocPool D_802212C8;
+extern s16 gVolume;
+extern s8 gReverbDownsampleRate;
+extern u8 sReverbDownsampleRateLog;
+extern struct SoundAllocPool gAudioInitPool;
+extern struct SoundAllocPool gNotesAndBuffersPool;
 extern struct SoundMultiPool gSeqLoadedPool;
 extern struct SoundMultiPool gBankLoadedPool;
 extern u8 gBankLoadStatus[64];
 extern u8 gSeqLoadStatus[256];
 
 void *soundAlloc(struct SoundAllocPool *pool, u32 size);
-void func_80316108(s32 arg0);
+void sound_init_main_pools(s32 sizeForAudioInitPool);
 void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg3, s32 id);
 void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 arg2);
-void func_80316928(struct Struct80332190 *arg0);
+void audio_reset_session(struct AudioSessionSettings *preset);
 
 #endif /* _AUDIO_MEMORY_H */

@@ -1,2 +1,0 @@
-# Chilly Chief (Ice Bully)
-

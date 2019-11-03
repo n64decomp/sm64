@@ -8,13 +8,11 @@
 
 .section .text, "ax"
 
-# TODO: replace 2CEE0 with __bss1size
-
 glabel EntryPoint
     lui   $t0, %hi(_mainSegmentNoloadStart) # $t0, 0x8034
-    lui   $t1, (0x0002CEE0 >> 16) # lui $t1, 2
+    lui   $t1, %lo(_mainSegmentNoloadSizeHi) # lui $t1, 2
     addiu $t0, %lo(_mainSegmentNoloadStart) # addiu $t0, $t0, -0x6df0
-    ori   $t1, (0x0002CEE0 & 0xFFFF) # ori $t1, $t1, 0xcee0
+    ori   $t1, %lo(_mainSegmentNoloadSizeLo) # ori $t1, $t1, 0xcee0
 .L80246010:
     addi  $t1, $t1, -8
     sw    $zero, ($t0)

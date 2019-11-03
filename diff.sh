@@ -9,6 +9,12 @@ MAKE=0
 BASE_SHIFT=0
 DIFF_ARGS="-l"
 
+if type mips-linux-gnu-ld >/dev/null 2>/dev/null; then
+    CROSS=mips-linux-gnu-
+else
+    CROSS=mips64-elf-
+fi
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
 case "$1" in
@@ -113,8 +119,10 @@ if [[ $DIFF_OBJ = 1 ]]; then
         exit 1
     fi
 
-    OBJDUMP="mips-linux-gnu-objdump -drz"
-    $OBJDUMP $REFOBJFILE | grep "<$1>:" -A1000 > $BASEDUMP
+    OBJDUMP="${CROSS}objdump -drz"
+    if [[ -z "$ALT_DUMP" ]]; then
+        $OBJDUMP $REFOBJFILE | grep "<$1>:" -A1000 > $BASEDUMP
+    fi
     $OBJDUMP $OBJFILE | grep "<$1>:" -A1000 > $MYDUMP
     DIFF_ARGS+=" -o"
 else
@@ -123,10 +131,12 @@ else
         END="$2"
     fi
 
-    OBJDUMP="mips-linux-gnu-objdump -D -z -bbinary -mmips -EB"
+    OBJDUMP="${CROSS}objdump -D -z -bbinary -mmips -EB"
     OPTIONS1="--start-address=$(($START - ($BASE) + ($BASE_SHIFT))) --stop-address=$(($END - ($BASE) + ($BASE_SHIFT)))"
     OPTIONS2="--start-address=$(($START - ($BASE))) --stop-address=$(($END - ($BASE)))"
-    $OBJDUMP $OPTIONS1 $BASEIMG > $BASEDUMP
+    if [[ -z "$ALT_DUMP" ]]; then
+        $OBJDUMP $OPTIONS1 $BASEIMG > $BASEDUMP
+    fi
     $OBJDUMP $OPTIONS2 $MYIMG > $MYDUMP
 fi
 

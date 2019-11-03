@@ -76,8 +76,8 @@ glabel handle_dialog_text_and_pages # EU: func_802AF808
 /* 06F098 802AF898 3C068031 */  lui   $a2, %hi(gDisplayListHead) # $a2, 0x8031
 /* 06F09C 802AF89C 24C692A8 */  addiu $a2, %lo(gDisplayListHead) # addiu $a2, $a2, -0x6d58
 /* 06F0A0 802AF8A0 8CC30000 */  lw    $v1, ($a2)
-/* 06F0A4 802AF8A4 3C0D0200 */  lui   $t5, %hi(dl_ia8_text_begin) # $t5, 0x200
-/* 06F0A8 802AF8A8 25AD73B0 */  addiu $t5, %lo(dl_ia8_text_begin) # addiu $t5, $t5, 0x73b0
+/* 06F0A4 802AF8A4 3C0D0200 */  lui   $t5, %hi(dl_ia_text_begin) # $t5, 0x200
+/* 06F0A8 802AF8A8 25AD73B0 */  addiu $t5, %lo(dl_ia_text_begin) # addiu $t5, $t5, 0x73b0
 /* 06F0AC 802AF8AC 246B0008 */  addiu $t3, $v1, 8
 /* 06F0B0 802AF8B0 ACCB0000 */  sw    $t3, ($a2)
 /* 06F0B4 802AF8B4 3C0C0600 */  lui   $t4, 0x600
@@ -331,8 +331,8 @@ glabel L_EU_802AFBD0
 /* 06F430 802AFC30 24070002 */  li    $a3, 2
 .L802AFC34:
 /* 06F434 802AFC34 8CC30000 */  lw    $v1, ($a2)
-/* 06F438 802AFC38 3C0D0200 */  lui   $t5, %hi(dl_ia8_text_end) # $t5, 0x200
-/* 06F43C 802AFC3C 25AD7418 */  addiu $t5, %lo(dl_ia8_text_end) # addiu $t5, $t5, 0x7418
+/* 06F438 802AFC38 3C0D0200 */  lui   $t5, %hi(dl_ia_text_end) # $t5, 0x200
+/* 06F43C 802AFC3C 25AD7418 */  addiu $t5, %lo(dl_ia_text_end) # addiu $t5, $t5, 0x7418
 /* 06F440 802AFC40 246A0008 */  addiu $t2, $v1, 8
 /* 06F444 802AFC44 ACCA0000 */  sw    $t2, ($a2)
 /* 06F448 802AFC48 3C0B0600 */  lui   $t3, 0x600

@@ -690,9 +690,9 @@ int main(int argc, char *argv[])
 
    if (config.mode == MODE_IMPORT) {
       if (config.truncate) {
-         fp = fopen(config.bin_filename, "w");
+         fp = fopen(config.bin_filename, "wb");
       } else {
-         fp = fopen(config.bin_filename, "r+");
+         fp = fopen(config.bin_filename, "r+b");
       }
       if (!fp) {
          ERROR("Error opening \"%s\"\n", config.bin_filename);
@@ -748,7 +748,7 @@ int main(int argc, char *argv[])
          ERROR("Error: must set position width and height for export\n");
          return EXIT_FAILURE;
       }
-      fp = fopen(config.bin_filename, "r");
+      fp = fopen(config.bin_filename, "rb");
       if (!fp) {
          ERROR("Error opening \"%s\"\n", config.bin_filename);
          return -1;

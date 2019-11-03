@@ -42,11 +42,11 @@
 // BSS
 s16 D_8035FF10;
 
-struct Struct8032F24A {
+struct WFRotatingPlatformData {
     s16 pad;
-    s16 unk0;
-    void *unk1;
-    s16 unk2;
+    s16 scale;
+    const Collision *collisionData;
+    s16 collisionDistance;
 };
 
 struct Struct8032F34C {
@@ -54,7 +54,7 @@ struct Struct8032F34C {
     s16 bridgeRelativeStartingXorZ;
     s16 platformWidth;
     s16 model;
-    void *segAddr;
+    const void *segAddr;
 };
 
 struct Struct8032F698 {
@@ -70,7 +70,7 @@ struct Struct802C0DF0 {
     u8 unk1;
     u8 unk2;
     u8 model;
-    void *behavior;
+    const BehaviorScript *behavior;
 };
 
 struct Struct8032FE4C {

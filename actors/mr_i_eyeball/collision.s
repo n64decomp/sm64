@@ -1,2 +1,0 @@
-# Mr I (white eyeball)
-

@@ -21,8 +21,8 @@
 // extern ? func_802CB508(?);
 // extern ? func_802CB6A0(?);
 // extern ? func_802CB9F8(?);
-extern u32 func_802CC108();
+int func_802CC108(s8 sp23, s8 sp27, u8 sp2B, struct WarpTransitionData *sp2C);
 // extern ? func_802CC2E8(?);
-// extern ? Geo18_802CD1E8(?);
+extern Gfx *Geo18_802CD1E8(s32 run, struct GraphNode *node, UNUSED f32 mtx[4][4]);
 
 #endif /* _SCREEN_TRANSITION_H */

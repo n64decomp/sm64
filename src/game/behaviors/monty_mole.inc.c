@@ -97,8 +97,8 @@ f32 sMontyMoleLastKilledPosZ;
  * The result is a singly linked list in reverse processing order. Return the
  * start of this list.
  */
-static struct Object *link_objects_with_behavior(void *behavior) {
-    void *behaviorAddr;
+static struct Object *link_objects_with_behavior(const BehaviorScript *behavior) {
+    const BehaviorScript *behaviorAddr;
     struct Object *obj;
     struct Object *lastObject;
     struct ObjectNode *listHead;

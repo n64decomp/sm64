@@ -392,17 +392,6 @@ struct MovtexQuad {
     s16 textureId; /// texture id
 };
 
-/**
- * Contains an id and an array of MovtexQuad structs.
- */
-struct MovtexQuadCollection {
-    /// identifier for geo nodes to refer to this MovtexQuad collection
-    s16 id;
-    s16 filler;
-    /// points to a short 'n' followed by an array of n MovtexQuad structs
-    void *quadArraySegmented;
-};
-
 /// Variable for a little optimization: only set the texture when it differs from the previous texture
 s16 gMovetexLastTextureId;
 
@@ -461,17 +450,17 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
             }
             gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
             gDPTileSync(gfx++);
-            gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
-                    G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+            gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
+                G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
             gDPLoadSync(gfx++);
-            gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+            gDPLoadBlock(gfx++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
         } else { // any rgba16 texture
             gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
             gDPTileSync(gfx++);
-            gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP, G_TX_NOMASK,
-                    G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+            gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
+                G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
             gDPLoadSync(gfx++);
-            gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+            gDPLoadBlock(gfx++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
             if (0) {
             }
         }
@@ -841,13 +830,12 @@ Gfx *movtex_gen_list(s16 *movtexVerts, struct MovtexObject *movtexList, s8 attrL
     }
 
     gSPDisplayList(gfx++, movtexList->beginDl);
-    gDPSetTextureImage(
-        gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId]);
+    gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId]);
     gDPTileSync(gfx++);
-    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP,
-            G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD);
+    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
+        G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
     gDPLoadSync(gfx++);
-    gDPLoadBlock(gfx++, 7, 0, 0, 1023, 256);
+    gDPLoadBlock(gfx++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
     gSPVertex(gfx++, VIRTUAL_TO_PHYSICAL2(verts), movtexList->vtx_count, 0);
     gSPDisplayList(gfx++, movtexList->triDl);
     gSPDisplayList(gfx++, movtexList->endDl);

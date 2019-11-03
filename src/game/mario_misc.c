@@ -285,7 +285,7 @@ Gfx *Geo18_802770A4(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     return sp28;
 }
 
-s32 geo_switch_mario_stand_run(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) {
+Gfx *geo_switch_mario_stand_run(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) {
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
     struct MarioBodyState *sp0 = &gBodyStates[switchCase->numCases];
 
@@ -293,10 +293,10 @@ s32 geo_switch_mario_stand_run(s32 callContext, struct GraphNode *node, UNUSED M
         // assign result. 0 if moving, 1 if stationary.
         switchCase->selectedCase = ((sp0->action & ACT_FLAG_STATIONARY) == FALSE);
     }
-    return 0;
+    return NULL;
 }
 
-s32 geo_switch_mario_eyes(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+Gfx *geo_switch_mario_eyes(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
     struct MarioBodyState *sp8 = &gBodyStates[switchCase->numCases];
     s16 sp6;
@@ -313,7 +313,7 @@ s32 geo_switch_mario_eyes(s32 callContext, struct GraphNode *node, UNUSED Mat4 *
             switchCase->selectedCase = sp8->eyeState - 1;
         }
     }
-    return 0;
+    return NULL;
 }
 
 Gfx *Geo18_80277294(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
@@ -359,7 +359,7 @@ Gfx *Geo18_802773A4(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     return NULL;
 }
 
-s32 geo_switch_mario_hand(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+Gfx *geo_switch_mario_hand(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
     struct MarioBodyState *sp0 = &gBodyStates[0];
 
@@ -374,7 +374,7 @@ s32 geo_switch_mario_hand(s32 callContext, struct GraphNode *node, UNUSED Mat4 *
             }
         }
     }
-    return 0;
+    return NULL;
 }
 
 Gfx *Geo18_802775CC(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
@@ -396,17 +396,17 @@ Gfx *Geo18_802775CC(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     return NULL;
 }
 
-s32 geo_switch_mario_cap_effect(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+Gfx *geo_switch_mario_cap_effect(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
     struct MarioBodyState *sp0 = &gBodyStates[switchCase->numCases];
 
     if (callContext == GEO_CONTEXT_RENDER) {
         switchCase->selectedCase = sp0->modelState >> 8;
     }
-    return 0;
+    return NULL;
 }
 
-s32 geo_switch_mario_cap_on_off(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+Gfx *geo_switch_mario_cap_on_off(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
     struct GraphNode *next = node->next;
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
     struct MarioBodyState *sp4 = &gBodyStates[switchCase->numCases];
@@ -424,7 +424,7 @@ s32 geo_switch_mario_cap_on_off(s32 callContext, struct GraphNode *node, UNUSED 
             next = next->next;
         }
     }
-    return 0;
+    return NULL;
 }
 
 Gfx *Geo18_80277824(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
@@ -449,27 +449,27 @@ Gfx *Geo18_80277824(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
 }
 
 Gfx *geo_switch_mario_hand_grab_pos(s32 callContext, struct GraphNode *b, Mat4 *c) {
-    struct Struct8027795C *sp2C = (struct Struct8027795C *) b;
+    struct GraphNodeHeldObject *sp2C = (struct GraphNodeHeldObject *) b;
     Mat4 *sp28 = c;
-    struct MarioState *sp24 = &gMarioStates[sp2C->unk18];
+    struct MarioState *sp24 = &gMarioStates[sp2C->playerIndex];
 
     if (callContext == GEO_CONTEXT_RENDER) {
-        sp2C->unk1C = 0;
+        sp2C->objNode = NULL;
         if (sp24->heldObj != NULL) {
-            sp2C->unk1C = sp24->heldObj;
+            sp2C->objNode = sp24->heldObj;
             switch (sp24->marioBodyState->grabPos) {
                 case GRAB_POS_LIGHT_OBJ:
                     if (sp24->action & ACT_FLAG_THROWING) {
-                        vec3s_set(sp2C->unk20, 50, 0, 0);
+                        vec3s_set(sp2C->translation, 50, 0, 0);
                     } else {
-                        vec3s_set(sp2C->unk20, 50, 0, 110);
+                        vec3s_set(sp2C->translation, 50, 0, 110);
                     }
                     break;
                 case GRAB_POS_HEAVY_OBJ:
-                    vec3s_set(sp2C->unk20, 145, -173, 180);
+                    vec3s_set(sp2C->translation, 145, -173, 180);
                     break;
                 case GRAB_POS_BOWSER:
-                    vec3s_set(sp2C->unk20, 80, -270, 1260);
+                    vec3s_set(sp2C->translation, 80, -270, 1260);
                     break;
             }
         }

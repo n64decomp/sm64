@@ -1,0 +1,169 @@
+// level names (EU, Deutsch)
+// 0x19009F68
+static const u8 level_name_01[] = {
+    _(" 1 BOB-OMBS BOMBENBERG")
+};
+
+
+// 0x19009F80
+static const u8 level_name_02[] = {
+    _(" 2 WUMMPS WUCHTWALL")
+};
+
+
+// 0x19009F94
+static const u8 level_name_03[] = {
+    _(" 3 PIRATENBUCHT PANIK")
+};
+
+
+// 0x19009FAC
+static const u8 level_name_04[] = {
+    _(" 4 BIBBERBERG BOB")
+};
+
+
+// 0x19009FC0
+static const u8 level_name_05[] = {
+    _(" 5 BIG BOOS BURG")
+};
+
+
+// 0x19009FD4
+static const u8 level_name_06[] = {
+    _(" 6 GRÜNE GIFTGROTTE")
+};
+
+
+// 0x19009FE8
+static const u8 level_name_07[] = {
+    _(" 7 LAVA LAGUNE")
+};
+
+
+// 0x19009FF8
+static const u8 level_name_08[] = {
+    _(" 8 WOBIWABA WÜSTE")
+};
+
+
+// 0x1900A00C
+static const u8 level_name_09[] = {
+    _(" 9 WILDE WASSERWERFT")
+};
+
+
+// 0x1900A024
+static const u8 level_name_10[] = {
+    _("10 FROSTBEULEN FRUST")
+};
+
+
+// 0x1900A03C
+static const u8 level_name_11[] = {
+    _("11 ATLANTIS AQUARIA")
+};
+
+
+// 0x1900A050
+static const u8 level_name_12[] = {
+    _("12 FLIEGENPILZ FIASKO")
+};
+
+
+// 0x1900A068
+static const u8 level_name_13[] = {
+    _("13 GULLIVER GUMBA")
+};
+
+
+// 0x1900A07C
+static const u8 level_name_14[] = {
+    _("14 TICK TACK TRAUMA")
+};
+
+
+// 0x1900A090
+static const u8 level_name_15[] = {
+    _("15 REGENBOGEN RASEREI")
+};
+
+
+// 0x1900A0A8
+static const u8 level_name_16[] = {
+    _("   BOWSERS SCHATTENWELT")
+};
+
+
+// 0x1900A0C0
+static const u8 level_name_17[] = {
+    _("   BOWSERS LAVASEE")
+};
+
+
+// 0x1900A0D4
+static const u8 level_name_18[] = {
+    _("   BOWSERS LUFTSCHLOSS")
+};
+
+
+// 0x1900A0EC
+static const u8 level_name_19[] = {
+    _("   TOADSTOOLS RUTSCHBAHN")
+};
+
+
+// 0x1900A108
+static const u8 level_name_20[] = {
+    _("   GRÜNER SCHALTERPALAST")
+};
+
+
+// 0x1900A124
+static const u8 level_name_21[] = {
+    _("   ROTER SCHALTERPALAST")
+};
+
+
+// 0x1900A13C
+static const u8 level_name_22[] = {
+    _("   BLAUER SCHALTERPALAST")
+};
+
+
+// 0x1900A158
+static const u8 level_name_23[] = {
+    _("   REGENBOGEN FEUERWERK")
+};
+
+
+// 0x1900A170
+static const u8 level_name_24[] = {
+    _("   VERSTECKTES AQUARIUM")
+};
+
+
+// 0x1900A188
+static const u8 level_name_25[] = {
+    _("")
+};
+
+
+// 0x1900A18C
+static const u8 level_name_castle_secret_stars[] = {
+    _("   GEHEIME STERNE")
+};
+
+
+// level name table
+// 0x1900A1A0
+const u8 *const level_name_table_eu_de[] = {
+    level_name_01, level_name_02, level_name_03, level_name_04,
+    level_name_05, level_name_06, level_name_07, level_name_08,
+    level_name_09, level_name_10, level_name_11, level_name_12,
+    level_name_13, level_name_14, level_name_15, level_name_16,
+    level_name_17, level_name_18, level_name_19, level_name_20,
+    level_name_21, level_name_22, level_name_23, level_name_24,
+    level_name_25, level_name_castle_secret_stars, 0x0,
+};
+

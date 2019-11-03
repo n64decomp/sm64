@@ -6,8 +6,7 @@
 #include "audio/external.h"
 #include "spawn_sound.h"
 #include "object_list_processor.h"
-
-extern void *bhvSoundSpawner;
+#include "behavior_data.h"
 
 /*
  * execute an object's current sound state with a provided array
@@ -48,7 +47,7 @@ void exec_anim_sound_state(struct SoundState *soundStates) {
  * (Breakable walls, King Bobomb exploding, etc)
  */
 void create_sound_spawner(s32 soundMagic) {
-    struct Object *obj = spawn_object(gCurrentObject, 0, &bhvSoundSpawner);
+    struct Object *obj = spawn_object(gCurrentObject, 0, bhvSoundSpawner);
 
     obj->oSoundEffectUnkF4 = soundMagic;
 }

@@ -486,7 +486,7 @@ void bounce_off_object(struct MarioState *m, struct Object *o, f32 velY) {
 
     m->flags &= ~MARIO_UNKNOWN_08;
 
-    play_sound(SOUND_ACTION_UNKNOWN459, m->marioObj->header.gfx.cameraToObject);
+    play_sound(SOUND_ACTION_BOUNCE_OFF_OBJECT, m->marioObj->header.gfx.cameraToObject);
 }
 
 void hit_object_from_below(struct MarioState *m, UNUSED struct Object *o) {
@@ -632,7 +632,7 @@ void bounce_back_from_attack(struct MarioState *m, u32 interaction) {
     }
 
     if (interaction & (INT_PUNCH | INT_KICK | INT_TRIP | INT_FAST_ATTACK_OR_SHELL)) {
-        play_sound(SOUND_ACTION_UNKNOWN444_2, m->marioObj->header.gfx.cameraToObject);
+        play_sound(SOUND_ACTION_HIT_2, m->marioObj->header.gfx.cameraToObject);
     }
 }
 
@@ -1655,11 +1655,11 @@ void check_kick_or_punch_wall(struct MarioState *m) {
                 }
 
                 mario_set_forward_vel(m, -48.0f);
-                play_sound(SOUND_ACTION_UNKNOWN444_2, m->marioObj->header.gfx.cameraToObject);
+                play_sound(SOUND_ACTION_HIT_2, m->marioObj->header.gfx.cameraToObject);
                 m->particleFlags |= 0x00040000;
             } else if (m->action & ACT_FLAG_AIR) {
                 mario_set_forward_vel(m, -16.0f);
-                play_sound(SOUND_ACTION_UNKNOWN444_2, m->marioObj->header.gfx.cameraToObject);
+                play_sound(SOUND_ACTION_HIT_2, m->marioObj->header.gfx.cameraToObject);
                 m->particleFlags |= 0x00040000;
             }
         }

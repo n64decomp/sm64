@@ -1,0 +1,612 @@
+// act_name_ Names
+// 0x0200E4C0
+static const u8 act_name_00[] = {
+    _("BIG BOB-OMB ON THE SUMMIT")
+};
+
+
+// 0x0200E4D0
+static const u8 act_name_01[] = {
+    _("FOOTRACE WITH KOOPA THE QUICK")
+};
+
+
+// 0x0200E4E0
+static const u8 act_name_02[] = {
+    _("SHOOT TO THE ISLAND IN THE SKY")
+};
+
+
+// 0x0200E4F0
+static const u8 act_name_03[] = {
+    _("FIND THE 8 RED COINS")
+};
+
+
+// 0x0200E4FC
+static const u8 act_name_04[] = {
+    _("MARIO WINGS TO THE SKY")
+};
+
+
+// 0x0200E50C
+static const u8 act_name_05[] = {
+    _("BEHIND CHAIN CHOMP'S GATE")
+};
+
+
+// 0x0200E51C
+static const u8 act_name_06[] = {
+    _("CHIP OFF WHOMP'S BLOCK")
+};
+
+
+// 0x0200E52C
+static const u8 act_name_07[] = {
+    _("TO THE TOP OF THE FORTRESS")
+};
+
+
+// 0x0200E53C
+static const u8 act_name_08[] = {
+    _("SHOOT INTO THE WILD BLUE")
+};
+
+
+// 0x0200E54C
+static const u8 act_name_09[] = {
+    _("RED COINS ON THE FLOATING ISLE")
+};
+
+
+// 0x0200E55C
+static const u8 act_name_10[] = {
+    _("FALL ONTO THE CAGED ISLAND")
+};
+
+
+// 0x0200E568
+static const u8 act_name_11[] = {
+    _("BLAST AWAY THE WALL")
+};
+
+
+// 0x0200E578
+static const u8 act_name_12[] = {
+    _("PLUNDER IN THE SUNKEN SHIP")
+};
+
+
+// 0x0200E588
+static const u8 act_name_13[] = {
+    _("CAN THE EEL COME OUT TO PLAY?")
+};
+
+
+// 0x0200E598
+static const u8 act_name_14[] = {
+    _("TREASURE OF THE OCEAN CAVE")
+};
+
+
+// 0x0200E5A8
+static const u8 act_name_15[] = {
+    _("RED COINS ON THE SHIP AFLOAT")
+};
+
+
+// 0x0200E5B8
+static const u8 act_name_16[] = {
+    _("BLAST TO THE STONE PILLAR")
+};
+
+
+// 0x0200E5C8
+static const u8 act_name_17[] = {
+    _("THROUGH THE JET STREAM")
+};
+
+
+// 0x0200E5D8
+static const u8 act_name_18[] = {
+    _("SLIP SLIDIN' AWAY")
+};
+
+
+// 0x0200E5E8
+static const u8 act_name_19[] = {
+    _("LI'L PENGUIN LOST")
+};
+
+
+// 0x0200E5F8
+static const u8 act_name_20[] = {
+    _("BIG PENGUIN RACE")
+};
+
+
+// 0x0200E60C
+static const u8 act_name_21[] = {
+    _("FROSTY SLIDE FOR 8 RED COINS")
+};
+
+
+// 0x0200E61C
+static const u8 act_name_22[] = {
+    _("SNOWMAN'S LOST HIS HEAD")
+};
+
+
+// 0x0200E62C
+static const u8 act_name_23[] = {
+    _("WALL KICKS WILL WORK")
+};
+
+
+// 0x0200E640
+static const u8 act_name_24[] = {
+    _("GO ON A GHOST HUNT")
+};
+
+
+// 0x0200E650
+static const u8 act_name_25[] = {
+    _("RIDE BIG BOO'S MERRY-GO-ROUND")
+};
+
+
+// 0x0200E660
+static const u8 act_name_26[] = {
+    _("SECRET OF THE HAUNTED BOOKS")
+};
+
+
+// 0x0200E670
+static const u8 act_name_27[] = {
+    _("SEEK THE 8 RED COINS")
+};
+
+
+// 0x0200E680
+static const u8 act_name_28[] = {
+    _("BIG BOO'S BALCONY")
+};
+
+
+// 0x0200E690
+static const u8 act_name_29[] = {
+    _("EYE TO EYE IN THE SECRET ROOM")
+};
+
+
+// 0x0200E6A0
+static const u8 act_name_30[] = {
+    _("SWIMMING BEAST IN THE CAVERN")
+};
+
+
+// 0x0200E6B0
+static const u8 act_name_31[] = {
+    _("ELEVATE FOR 8 RED COINS")
+};
+
+
+// 0x0200E6C0
+static const u8 act_name_32[] = {
+    _("METAL-HEAD MARIO CAN MOVE!")
+};
+
+
+// 0x0200E6CC
+static const u8 act_name_33[] = {
+    _("NAVIGATING THE TOXIC MAZE")
+};
+
+
+// 0x0200E6D8
+static const u8 act_name_34[] = {
+    _("A-MAZE-ING EMERGENCY EXIT")
+};
+
+
+// 0x0200E6EC
+static const u8 act_name_35[] = {
+    _("WATCH FOR ROLLING ROCKS")
+};
+
+
+// 0x0200E6FC
+static const u8 act_name_36[] = {
+    _("BOIL THE BIG BULLY")
+};
+
+
+// 0x0200E70C
+static const u8 act_name_37[] = {
+    _("BULLY THE BULLIES")
+};
+
+
+// 0x0200E71C
+static const u8 act_name_38[] = {
+    _("8-COIN PUZZLE WITH 15 PIECES")
+};
+
+
+// 0x0200E72C
+static const u8 act_name_39[] = {
+    _("RED-HOT LOG ROLLING")
+};
+
+
+// 0x0200E738
+static const u8 act_name_40[] = {
+    _("HOT-FOOT-IT INTO THE VOLCANO")
+};
+
+
+// 0x0200E748
+static const u8 act_name_41[] = {
+    _("ELEVATOR TOUR IN THE VOLCANO")
+};
+
+
+// 0x0200E758
+static const u8 act_name_42[] = {
+    _("IN THE TALONS OF THE BIG BIRD")
+};
+
+
+// 0x0200E76C
+static const u8 act_name_43[] = {
+    _("SHINING ATOP THE PYRAMID")
+};
+
+
+// 0x0200E780
+static const u8 act_name_44[] = {
+    _("INSIDE THE ANCIENT PYRAMID")
+};
+
+
+// 0x0200E794
+static const u8 act_name_45[] = {
+    _("STAND TALL ON THE FOUR PILLARS")
+};
+
+
+// 0x0200E7A4
+static const u8 act_name_46[] = {
+    _("FREE FLYING FOR 8 RED COINS")
+};
+
+
+// 0x0200E7B4
+static const u8 act_name_47[] = {
+    _("PYRAMID PUZZLE")
+};
+
+
+// 0x0200E7C8
+static const u8 act_name_48[] = {
+    _("BOARD BOWSER'S SUB")
+};
+
+
+// 0x0200E7D8
+static const u8 act_name_49[] = {
+    _("CHESTS IN THE CURRENT")
+};
+
+
+// 0x0200E7E8
+static const u8 act_name_50[] = {
+    _("POLE-JUMPING FOR RED COINS")
+};
+
+
+// 0x0200E7F8
+static const u8 act_name_51[] = {
+    _("THROUGH THE JET STREAM")
+};
+
+
+// 0x0200E808
+static const u8 act_name_52[] = {
+    _("THE MANTA RAY'S REWARD")
+};
+
+
+// 0x0200E814
+static const u8 act_name_53[] = {
+    _("COLLECT THE CAPS...")
+};
+
+
+// 0x0200E824
+static const u8 act_name_54[] = {
+    _("SNOWMAN'S BIG HEAD")
+};
+
+
+// 0x0200E834
+static const u8 act_name_55[] = {
+    _("CHILL WITH THE BULLY")
+};
+
+
+// 0x0200E844
+static const u8 act_name_56[] = {
+    _("IN THE DEEP FREEZE")
+};
+
+
+// 0x0200E850
+static const u8 act_name_57[] = {
+    _("WHIRL FROM THE FREEZING POND")
+};
+
+
+// 0x0200E860
+static const u8 act_name_58[] = {
+    _("SHELL SHREDDIN' FOR RED COINS")
+};
+
+
+// 0x0200E870
+static const u8 act_name_59[] = {
+    _("INTO THE IGLOO")
+};
+
+
+// 0x0200E87C
+static const u8 act_name_60[] = {
+    _("SHOCKING ARROW LIFTS!")
+};
+
+
+// 0x0200E88C
+static const u8 act_name_61[] = {
+    _("TOP O' THE TOWN")
+};
+
+
+// 0x0200E89C
+static const u8 act_name_62[] = {
+    _("SECRETS IN THE SHALLOWS & SKY")
+};
+
+
+// 0x0200E8AC
+static const u8 act_name_63[] = {
+    _("EXPRESS ELEVATOR--HURRY UP!")
+};
+
+
+// 0x0200E8C0
+static const u8 act_name_64[] = {
+    _("GO TO TOWN FOR RED COINS")
+};
+
+
+// 0x0200E8D0
+static const u8 act_name_65[] = {
+    _("QUICK RACE THROUGH DOWNTOWN!")
+};
+
+
+// 0x0200E8E0
+static const u8 act_name_66[] = {
+    _("SCALE THE MOUNTAIN")
+};
+
+
+// 0x0200E8F0
+static const u8 act_name_67[] = {
+    _("MYSTERY OF THE MONKEY CAGE")
+};
+
+
+// 0x0200E904
+static const u8 act_name_68[] = {
+    _("SCARY 'SHROOMS, RED COINS")
+};
+
+
+// 0x0200E914
+static const u8 act_name_69[] = {
+    _("MYSTERIOUS MOUNTAINSIDE")
+};
+
+
+// 0x0200E924
+static const u8 act_name_70[] = {
+    _("BREATHTAKING VIEW FROM BRIDGE")
+};
+
+
+// 0x0200E934
+static const u8 act_name_71[] = {
+    _("BLAST TO THE LONELY MUSHROOM")
+};
+
+
+// 0x0200E944
+static const u8 act_name_72[] = {
+    _("PLUCK THE PIRANHA FLOWER")
+};
+
+
+// 0x0200E954
+static const u8 act_name_73[] = {
+    _("THE TIP TOP OF THE HUGE ISLAND")
+};
+
+
+// 0x0200E964
+static const u8 act_name_74[] = {
+    _("REMATCH WITH KOOPA THE QUICK")
+};
+
+
+// 0x0200E974
+static const u8 act_name_75[] = {
+    _("FIVE ITTY BITTY SECRETS")
+};
+
+
+// 0x0200E984
+static const u8 act_name_76[] = {
+    _("WIGGLER'S RED COINS")
+};
+
+
+// 0x0200E994
+static const u8 act_name_77[] = {
+    _("MAKE WIGGLER SQUIRM")
+};
+
+
+// 0x0200E9A0
+static const u8 act_name_78[] = {
+    _("ROLL INTO THE CAGE")
+};
+
+
+// 0x0200E9B0
+static const u8 act_name_79[] = {
+    _("THE PIT AND THE PENDULUMS")
+};
+
+
+// 0x0200E9B8
+static const u8 act_name_80[] = {
+    _("GET A HAND")
+};
+
+
+// 0x0200E9C8
+static const u8 act_name_81[] = {
+    _("STOMP ON THE THWOMP")
+};
+
+
+// 0x0200E9DC
+static const u8 act_name_82[] = {
+    _("TIMED JUMPS ON MOVING BARS")
+};
+
+
+// 0x0200E9EC
+static const u8 act_name_83[] = {
+    _("STOP TIME FOR RED COINS")
+};
+
+
+// 0x0200E9F8
+static const u8 act_name_84[] = {
+    _("CRUISER CROSSING THE RAINBOW")
+};
+
+
+// 0x0200EA04
+static const u8 act_name_85[] = {
+    _("THE BIG HOUSE IN THE SKY")
+};
+
+
+// 0x0200EA10
+static const u8 act_name_86[] = {
+    _("COINS AMASSED IN A MAZE")
+};
+
+
+// 0x0200EA20
+static const u8 act_name_87[] = {
+    _("SWINGIN' IN THE BREEZE")
+};
+
+
+// 0x0200EA34
+static const u8 act_name_88[] = {
+    _("TRICKY TRIANGLES!")
+};
+
+
+// 0x0200EA44
+static const u8 act_name_89[] = {
+    _("SOMEWHERE OVER THE RAINBOW")
+};
+
+
+// 0x0200EA54
+static const u8 act_name_90[] = {
+    _("ONE OF THE CASTLE'S SECRET STARS!")
+};
+
+
+// 0x0200EA60
+static const u8 act_name_91[] = {
+    _("")
+};
+
+
+// 0x0200EA70
+static const u8 act_name_92[] = {
+    _("")
+};
+
+
+// 0x0200EA80
+static const u8 act_name_93[] = {
+    _("")
+};
+
+
+// 0x0200EA94
+static const u8 act_name_94[] = {
+    _("")
+};
+
+
+// 0x0200EAA8
+static const u8 act_name_95[] = {
+    _("")
+};
+
+
+// 0x0200EABC
+static const u8 act_name_96[] = {
+    _("")
+};
+
+
+// act names table 0x0200EAD0
+const u8 *const seg2_act_name_table[] = {
+    act_name_00, act_name_01, act_name_02, act_name_03,
+    act_name_04, act_name_05, act_name_06, act_name_07,
+    act_name_08, act_name_09, act_name_10, act_name_11,
+    act_name_12, act_name_13, act_name_14, act_name_15,
+    act_name_16, act_name_17, act_name_18, act_name_19,
+    act_name_20, act_name_21, act_name_22, act_name_23,
+    act_name_24, act_name_25, act_name_26, act_name_27,
+    act_name_28, act_name_29, act_name_30, act_name_31,
+    act_name_32, act_name_33, act_name_34, act_name_35,
+    act_name_36, act_name_37, act_name_38, act_name_39,
+    act_name_40, act_name_41, act_name_42, act_name_43,
+    act_name_44, act_name_45, act_name_46, act_name_47,
+    act_name_48, act_name_49, act_name_50, act_name_51,
+    act_name_52, act_name_53, act_name_54, act_name_55,
+    act_name_56, act_name_57, act_name_58, act_name_59,
+    act_name_60, act_name_61, act_name_62, act_name_63,
+    act_name_64, act_name_65, act_name_66, act_name_67,
+    act_name_68, act_name_69, act_name_70, act_name_71,
+    act_name_72, act_name_73, act_name_74, act_name_75,
+    act_name_76, act_name_77, act_name_78, act_name_79,
+    act_name_80, act_name_81, act_name_82, act_name_83,
+    act_name_84, act_name_85, act_name_86, act_name_87,
+    act_name_88, act_name_89, act_name_90, act_name_91,
+    act_name_92, act_name_93, act_name_94, act_name_95,
+    act_name_96, 0x0,
+};
+

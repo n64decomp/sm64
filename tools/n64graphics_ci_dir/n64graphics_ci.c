@@ -458,10 +458,10 @@ int main(int argc, char* argv[])
     if (config.mode == MODE_IMPORT) {
         printf("%s\n", config.bin_filename);
         if (config.truncate) {
-            fp = fopen(config.bin_filename, "w");
+            fp = fopen(config.bin_filename, "wb");
         }
         else {
-            fp = fopen(config.bin_filename, "r+");
+            fp = fopen(config.bin_filename, "r+b");
         }
         if (!fp) {
             ERROR("Error opening binary file \"%s\"\n", config.bin_filename);
@@ -506,7 +506,7 @@ int main(int argc, char* argv[])
         if (config.format == IMG_FORMAT_CI) {
             pal_bin_filename = getPaletteFilename(config.bin_filename);
 
-            fp_pal = fopen(pal_bin_filename, "w");
+            fp_pal = fopen(pal_bin_filename, "wb");
             INFO("Writing 0x%X bytes to palette file \"%s\"\n", pal_len, pal_bin_filename);
             flength = fwrite(pal, 1, pal_len, fp_pal);
             if (flength != pal_len) {
@@ -520,7 +520,7 @@ int main(int argc, char* argv[])
             ERROR("Error: must set position width and height for export\n");
             return EXIT_FAILURE;
         }
-        fp = fopen(config.bin_filename, "r");
+        fp = fopen(config.bin_filename, "rb");
         if (!fp) {
             ERROR("Error opening \"%s\"\n", config.bin_filename);
             return -1;
@@ -538,7 +538,7 @@ int main(int argc, char* argv[])
         case IMG_FORMAT_CI:
             // Read Palette file
             pal_bin_filename = getPaletteFilename(config.bin_filename);
-            fp_pal = fopen(pal_bin_filename, "r");
+            fp_pal = fopen(pal_bin_filename, "rb");
             if (!fp_pal) {
                 ERROR("Error opening \"%s\"\n", pal_bin_filename);
                 return -1;

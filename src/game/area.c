@@ -49,7 +49,7 @@ u8 gWarpTransBlue = 0;
 s16 gCurrSaveFileNum = 1;
 s16 gCurrLevelNum = 1;
 
-void *D_8032CE9C[] = {
+const BehaviorScript *D_8032CE9C[] = {
     bhvDoorWarp, bhvStar,    bhvExitPodiumWarp, bhvWarp,    bhvWarpPipe, bhvFadingWarp, bhvWarps60,
     bhvWarps64,  bhvWarps68, bhvWarps6C,        bhvWarps70, bhvWarps74,  bhvWarps78,    bhvWarps94,
     bhvWarps7C,  bhvWarps80, bhvWarps88,        bhvWarps84, bhvWarps8C,  bhvWarps90,
@@ -117,7 +117,7 @@ void print_intro_text(void) {
 
 u32 get_mario_spawn_type(struct Object *o) {
     s32 i;
-    void *behavior = virtual_to_segmented(0x13, o->behavior);
+    const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
     for (i = 0; i < 20; i++) {
         if (D_8032CE9C[i] == behavior) {

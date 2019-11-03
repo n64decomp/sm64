@@ -5,11 +5,10 @@
 
 struct DemoInput
 {
-    u8 timer; // until next input: if this value is 0 proceeding on the demo
-              // input, it means the demo is over.
+    u8 timer; // time until next input. if this value is 0, it means the demo is over
     s8 rawStickX;
     s8 rawStickY;
-    u8 button;
+    u8 buttonMask;
 };
 
 extern struct Controller gControllers[3];
@@ -20,8 +19,8 @@ extern OSMesgQueue D_80339CB8;
 extern OSMesg D_80339CD0;
 extern OSMesg D_80339CD4;
 extern struct VblankHandler gGameVblankHandler;
-extern u32 gFrameBuffers[3];
-extern u32 zBufferPtr;
+extern uintptr_t gPhysicalFrameBuffers[3];
+extern uintptr_t gPhysicalZBuffer;
 extern void *D_80339CF0;
 extern void *D_80339CF4;
 extern struct SPTask *gGfxSPTask;
@@ -47,11 +46,10 @@ extern u16 func_802495B0(u32);
 // this area is the demo input + the header. when the demo is loaded in, there is a header the size
 // of a single word next to the input list. this word is the current ID count.
 extern struct MarioAnimation D_80339D10;
-extern struct MarioAnimation gDemo; // gDemo
+extern struct MarioAnimation gDemo;
 
-extern u8 gZBuffer[];
+extern u16 gZBuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 extern u8 gMarioAnims[];
 extern u8 gDemoInputs[];
-extern u8 D_10000000[];
 
 #endif

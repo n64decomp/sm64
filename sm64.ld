@@ -24,7 +24,7 @@ OUTPUT_ARCH (mips)
 #define MIO0_SEG(name, segAddr) \
    BEGIN_SEG(name##_mio0, segAddr) \
    { \
-      BUILD_DIR/mio0/name.mio0.o(.data); \
+      BUILD_DIR/bin/name.mio0.o(.data); \
       . = ALIGN(0x10); \
    } \
    END_SEG(name##_mio0)
@@ -32,7 +32,7 @@ OUTPUT_ARCH (mips)
 #define MIO0_EU_SEG(name, segAddr) \
    BEGIN_SEG(name##_mio0, segAddr) \
    { \
-      BUILD_DIR/mio0/eu/name.mio0.o(.data); \
+      BUILD_DIR/bin/eu/name.mio0.o(.data); \
       . = ALIGN(0x10); \
    } \
    END_SEG(name##_mio0)
@@ -40,21 +40,27 @@ OUTPUT_ARCH (mips)
 #define STANDARD_LEVEL(name) \
    BEGIN_SEG(name##_segment_7, 0x07000000) \
    { \
-      BUILD_DIR/bin/name/header.o(.seg07); \
+      BUILD_DIR/levels/name/leveldata.mio0.o(.data); \
+      . = ALIGN(0x10); \
    } \
    END_SEG(name##_segment_7) \
    BEGIN_SEG(name, 0x0E000000) \
    { \
-      BUILD_DIR/bin/name/header.o(.level); \
+      BUILD_DIR/levels/name/script.o(.data); \
+      BUILD_DIR/levels/name/geo.o(.data); \
    } \
    END_SEG(name)
 
 #define STANDARD_OBJECTS(name, segAddr, geoAddr) \
-   MIO0_SEG(name, segAddr) \
+   BEGIN_SEG(name##_mio0, segAddr) \
+   { \
+      BUILD_DIR/actors/name.mio0.o(.data); \
+      . = ALIGN(0x10); \
+   } \
+   END_SEG(name##_mio0) \
    BEGIN_SEG(name##_geo, geoAddr) \
    { \
-      BUILD_DIR/actors/name##_geo.o(.geo); \
-      . = ALIGN(0x10); \
+      BUILD_DIR/actors/name##_geo.o(.data); \
    } \
    END_SEG(name##_geo)
 
@@ -64,7 +70,7 @@ SECTIONS
 
    BEGIN_SEG(boot, 0x04000000)
    {
-      BUILD_DIR/data/rom_header.o(.text);
+      BUILD_DIR/asm/rom_header.o(.text);
       BUILD_DIR/asm/boot.o(.text);
    }
    END_SEG(boot)
@@ -449,6 +455,8 @@ SECTIONS
       BUILD_DIR/libultra.a:*.o(.bss*);
    }
    END_NOLOAD(main)
+   _mainSegmentNoloadSizeLo = SIZEOF (.main.noload) & 0xffff;
+   _mainSegmentNoloadSizeHi = SIZEOF (.main.noload) >> 16;
 
    ASSERT((. <= SEG_ENGINE), "Error: main segment extended into engine.")
 
@@ -467,7 +475,6 @@ SECTIONS
       BUILD_DIR/src/engine/graph_node.o(.data*);
       BUILD_DIR/src/engine/graph_node_manager.o(.data*);
       BUILD_DIR/src/engine/math_util.o(.data*);
-      BUILD_DIR/data/trig_tables.o(.data*);
       BUILD_DIR/src/engine/geo_layout.o(.data*);
       BUILD_DIR/src/engine/level_script.o(.data*);
       BUILD_DIR/src/engine/behavior_script.o(.data*);
@@ -497,7 +504,7 @@ SECTIONS
    . = SEG_FRAMEBUFFERS;
    BEGIN_NOLOAD(framebuffers)
    {
-      BUILD_DIR/data/framebuffers.o(.bss*);
+      BUILD_DIR/src/buffers/framebuffers.o(.bss*);
    }
    END_NOLOAD(framebuffers)
 
@@ -507,7 +514,7 @@ SECTIONS
 
    BEGIN_SEG(entry, 0x10000000)
    {
-      BUILD_DIR/levels/entry.o(.level);
+      BUILD_DIR/levels/entry.o(.data);
    }
    END_SEG(entry)
 
@@ -548,7 +555,7 @@ SECTIONS
    /* use segmented addressing for behaviors */
    BEGIN_SEG(behavior, 0x13000000)
    {
-      BUILD_DIR/data/behavior_data.o(.behavior);
+      BUILD_DIR/data/behavior_data.o(.data);
    }
    END_SEG(behavior)
 
@@ -596,8 +603,6 @@ SECTIONS
       BUILD_DIR/libgoddard.a:joints.o(.data*);
       BUILD_DIR/libgoddard.a:shape_helper.o(.data*);
       BUILD_DIR/libgoddard.a:renderer.o(.data*);
-      /* goddard texture and DLs */
-      BUILD_DIR/data/goddard_tex_dl.o(.rodata*);
       /* goddard subsystem rodata */
       BUILD_DIR/libgoddard.a:gd_main.o(.rodata*);
       BUILD_DIR/libgoddard.a:gd_memory.o(.rodata*);
@@ -652,7 +657,8 @@ SECTIONS
       BUILD_DIR/src/audio/data.o(.bss*);
       BUILD_DIR/src/audio/globals_end.o(.bss*);
       BUILD_DIR/src/audio*.o(.bss*);
-      BUILD_DIR/data/gfx_output_buffer.o(.bss*);
+      . = ALIGN(0x1000);
+      BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
    }
    END_NOLOAD(buffers)
 
@@ -665,12 +671,14 @@ SECTIONS
    /* 0x268020 0x268020-0 [0] */
    BEGIN_SEG(intro, 0x14000000)
    {
-      BUILD_DIR/bin/intro/header.o(.level);
+      BUILD_DIR/levels/intro/script.o(.data);
+      BUILD_DIR/levels/intro/geo.o(.data);
    }
    END_SEG(intro)
    BEGIN_SEG(intro_segment_7, 0x07000000)
    {
-      BUILD_DIR/bin/intro/header.o(.seg07);
+      BUILD_DIR/levels/intro/leveldata.mio0.o(.data);
+      . = ALIGN(0x10);
    }
    END_SEG(intro_segment_7)
 
@@ -704,18 +712,20 @@ SECTIONS
 
    BEGIN_SEG(menu, 0x14000000)
    {
-      BUILD_DIR/bin/menu/header.o(.level);
+      BUILD_DIR/levels/menu/script.o(.data);
+      BUILD_DIR/levels/menu/geo.o(.data);
    }
    END_SEG(menu)
    BEGIN_SEG(menu_segment_7, 0x07000000)
    {
-      BUILD_DIR/bin/menu/header.o(.seg07);
+      BUILD_DIR/levels/menu/leveldata.mio0.o(.data);
+      . = ALIGN(0x10);
    }
    END_SEG(menu_segment_7)
 
    BEGIN_SEG(scripts, 0x15000000)
    {
-      BUILD_DIR/levels/scripts.o(.level);
+      BUILD_DIR/levels/scripts.o(.data);
    }
    END_SEG(scripts)
 
@@ -781,21 +791,15 @@ SECTIONS
    BEGIN_SEG(assets, __romPos)
    {
       BUILD_DIR/assets/mario_anim_data.o(.data);
-      . = ALIGN(0x10);
       BUILD_DIR/assets/demo_data.o(.data);
-      . = ALIGN(0x10);
       gSoundDataADSR = .;
       BUILD_DIR/sound/sound_data.ctl.o(.data);
-      . = ALIGN(0x10);
       gSoundDataRaw = .;
       BUILD_DIR/sound/sound_data.tbl.o(.data);
-      . = ALIGN(0x10);
       gMusicData = .;
       BUILD_DIR/sound/sequences.bin.o(.data);
-      . = ALIGN(0x10);
       gBankSetsData = .;
       BUILD_DIR/sound/bank_sets.o(.data);
-      . = ALIGN(0x10);
    }
    END_SEG(assets)
 

@@ -1,7 +1,7 @@
 # Dire Dire Docks
 short-name: ddd
 full-name: Dire Dire Docks
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 2
 objects: [pole, sub_door, submarine]
 shared-path: []

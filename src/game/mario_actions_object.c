@@ -260,7 +260,7 @@ s32 act_throwing(struct MarioState *m) {
     if (++m->actionTimer == 7) {
         mario_throw_held_object(m);
         play_sound_if_no_flag(m, SOUND_MARIO_WAH2, MARIO_MARIO_SOUND_PLAYED);
-        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN435, MARIO_ACTION_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
     }
 
     animated_stationary_ground_step(m, MARIO_ANIM_GROUND_THROW, ACT_IDLE);
@@ -279,7 +279,7 @@ s32 act_heavy_throw(struct MarioState *m) {
     if (++m->actionTimer == 13) {
         mario_drop_held_object(m);
         play_sound_if_no_flag(m, SOUND_MARIO_WAH2, MARIO_MARIO_SOUND_PLAYED);
-        play_sound_if_no_flag(m, SOUND_ACTION_UNKNOWN435, MARIO_ACTION_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
     }
 
     animated_stationary_ground_step(m, MARIO_ANIM_HEAVY_THROW, ACT_IDLE);

@@ -53,8 +53,8 @@ void func_80318908(void) {
     for (i = 0; i < gMaxSimultaneousNotes; i++) {
         note = &gNotes[i];
         if (note->priority != NOTE_PRIORITY_DISABLED) {
-            if (note->priority == NOTE_PRIORITY_STOPPING || note->unk0b10) {
-                if (note->adsrVolScale == 0 || note->unk0b10) {
+            if (note->priority == NOTE_PRIORITY_STOPPING || note->finished) {
+                if (note->adsrVolScale == 0 || note->finished) {
                     if (note->wantedParentLayer != NO_LAYER) {
                         note_disable2(note);
                         if (note->wantedParentLayer->seqChannel != NULL) {
@@ -219,7 +219,7 @@ void func_80318F04(struct Note *note, struct SequenceChannelLayer *seqLayer) {
     note->instOrWave = (u8) seqLayer->seqChannel->instOrWave;
     for (i = -1, pos = 0; pos < 0x40; pos += stepSize) {
         i++;
-        note->unk34->samples[i] = gWaveSamples[seqLayer->seqChannel->instOrWave - 0x80][pos];
+        note->synthesisBuffers->samples[i] = gWaveSamples[seqLayer->seqChannel->instOrWave - 0x80][pos];
     }
 
     // Repeat sample
@@ -227,25 +227,25 @@ void func_80318F04(struct Note *note, struct SequenceChannelLayer *seqLayer) {
         lim = note->sampleCount;
         if (offset < 0 || offset > 0) {
             for (j = 0; j < lim; j++) {
-                note->unk34->samples[offset + j] = note->unk34->samples[j];
+                note->synthesisBuffers->samples[offset + j] = note->synthesisBuffers->samples[j];
             }
         } else {
             for (j = 0; j < lim; j++) {
-                note->unk34->samples[offset + j] = note->unk34->samples[j];
+                note->synthesisBuffers->samples[offset + j] = note->synthesisBuffers->samples[j];
             }
         }
     }
 
-    osWritebackDCache(note->unk34->samples, sizeof(note->unk34->samples));
+    osWritebackDCache(note->synthesisBuffers->samples, sizeof(note->synthesisBuffers->samples));
 }
 
 void func_80319164(struct Note *note, struct SequenceChannelLayer *seqLayer) {
     s32 sampleCount = note->sampleCount;
     func_80318F04(note, seqLayer);
     if (sampleCount != 0) {
-        note->unk14 *= note->sampleCount / sampleCount;
+        note->samplePosInt *= note->sampleCount / sampleCount;
     } else {
-        note->unk14 = 0;
+        note->samplePosInt = 0;
     }
 }
 
@@ -591,7 +591,7 @@ void note_init_all(void) {
         note->wantedParentLayer = NO_LAYER;
         note->prevParentLayer = NO_LAYER;
         note->reverb = 0;
-        note->usesStereo = FALSE;
+        note->usesHeadsetPanEffects = FALSE;
         note->sampleCount = 0;
         note->instOrWave = 0;
         note->targetVolLeft = 0;
@@ -605,6 +605,6 @@ void note_init_all(void) {
         note->vibratoState.active = FALSE;
         note->portamento.cur = 0.0f;
         note->portamento.speed = 0.0f;
-        note->unk34 = soundAlloc(&D_802212C8, 0x190);
+        note->synthesisBuffers = soundAlloc(&gNotesAndBuffersPool, sizeof(struct NoteSynthesisBuffers));
     }
 }

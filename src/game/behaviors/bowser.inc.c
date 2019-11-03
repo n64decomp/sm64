@@ -615,9 +615,9 @@ void ActionBowser7(void) {
         case 3:
             o->oBowserUnkF8 = 0;
             set_obj_animation_and_sound_state(21);
-            spawn_object_relative_with_scale(0, 100, -50, 0, 3.0f, o, MODEL_SMOKE, &bhvWhitePuffSmoke2);
+            spawn_object_relative_with_scale(0, 100, -50, 0, 3.0f, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
             spawn_object_relative_with_scale(0, -100, -50, 0, 3.0f, o, MODEL_SMOKE,
-                                             &bhvWhitePuffSmoke2);
+                                             bhvWhitePuffSmoke2);
             if (approach_f32_signed(&o->oForwardVel, 0, -1.0f))
                 o->oSubAction = 2;
             func_8029F728();
@@ -767,9 +767,9 @@ void ActionBowser3(void) {
 
 void func_802B5C78(void) {
     if (BITS)
-        gSecondCameraFocus = spawn_object(o, MODEL_STAR, &bhvGrandStar);
+        gSecondCameraFocus = spawn_object(o, MODEL_STAR, bhvGrandStar);
     else {
-        gSecondCameraFocus = spawn_object(o, MODEL_BOWSER_KEY, &bhvBowserKey);
+        gSecondCameraFocus = spawn_object(o, MODEL_BOWSER_KEY, bhvBowserKey);
         PlaySound2(SOUND_GENERAL2_BOWSER_KEY);
     }
     gSecondCameraFocus->oAngleVelYaw = o->oAngleVelYaw;
@@ -1254,7 +1254,7 @@ s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
     if (run == TRUE) {
         if (gCurGraphNodeHeldObject != NULL)
-            obj = (struct Object *) gCurGraphNodeHeldObject->objNode;
+            obj = gCurGraphNodeHeldObject->objNode;
         switch (sp36 = obj->oBowserEyesShut) {
             case 0: // eyes open, handle eye looking direction
                 func_802B70C8(obj, switchCase);
@@ -1278,7 +1278,7 @@ Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
         sp24 = (struct Object *) gCurGraphNodeObject;
         sp20 = (struct GraphNodeGenerated *) node;
         if (gCurGraphNodeHeldObject != 0)
-            sp24 = (struct Object *) gCurGraphNodeHeldObject->objNode;
+            sp24 = gCurGraphNodeHeldObject->objNode;
         if (sp24->oOpacity == 0xFF)
             sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | 0x100;
         else
@@ -1294,9 +1294,9 @@ Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
 }
 
 void ActionFallingBowserPlatform0(void) {
-    o->oPlatformUnkF8 = obj_nearest_object_with_behavior(&bhvBowser);
+    o->oPlatformUnkF8 = obj_nearest_object_with_behavior(bhvBowser);
     set_object_collision_data(o, D_8032F698[o->oBehParams2ndByte].unk0);
-    if (o->oBowserUnkF8 != 0)
+    if (o->oPlatformUnkF8 != 0)
         o->oAction = 1;
 }
 
@@ -1384,9 +1384,9 @@ void bhv_falling_bowser_platform_loop(void) {
 
 void func_802B7A58(void) {
     mark_object_for_deletion(o);
-    spawn_object_with_scale(o, MODEL_NONE, &bhvBlackSmokeUpward, 1.0f);
+    spawn_object_with_scale(o, MODEL_NONE, bhvBlackSmokeUpward, 1.0f);
     if (RandomFloat() < 0.1)
-        spawn_object(o, MODEL_YELLOW_COIN, &bhvTemporaryYellowCoin);
+        spawn_object(o, MODEL_YELLOW_COIN, bhvTemporaryYellowCoin);
 }
 
 s32 func_802B7ADC(s32 a0) {
@@ -1478,7 +1478,7 @@ void bhv_flame_moving_forward_growing_loop(void) {
         mark_object_for_deletion(o);
     if (o->oPosY < o->oFloorHeight) {
         o->oPosY = o->oFloorHeight;
-        sp18 = spawn_object(o, MODEL_RED_FLAME, &bhvFlameBowser);
+        sp18 = spawn_object(o, MODEL_RED_FLAME, bhvFlameBowser);
         mark_object_for_deletion(o);
     }
 }
@@ -1506,9 +1506,9 @@ void bhv_flame_floating_landing_loop(void) {
         o->oVelY = D_8032F748[o->oBehParams2ndByte];
     if (o->oMoveFlags & 1) {
         if (o->oBehParams2ndByte == 0)
-            spawn_object(o, MODEL_RED_FLAME, &bhvFlameLargeBurningOut);
+            spawn_object(o, MODEL_RED_FLAME, bhvFlameLargeBurningOut);
         else
-            spawn_object(o, MODEL_NONE, &bhvBlueFlamesGroup); //? wonder if they meant MODEL_BLUE_FLAME?
+            spawn_object(o, MODEL_NONE, bhvBlueFlamesGroup); //? wonder if they meant MODEL_BLUE_FLAME?
         mark_object_for_deletion(o);
     }
     o->oGraphYOffset = o->header.gfx.scale[1] * 14.0f;
@@ -1537,12 +1537,12 @@ void bhv_blue_bowser_flame_loop(void) {
         if (o->oBehParams2ndByte == 0)
             for (i = 0; i < 3; i++)
                 spawn_object_relative_with_scale(0, 0, 0, 0, 5.0f, o, MODEL_RED_FLAME,
-                                                 &bhvFlameFloatingLanding);
+                                                 bhvFlameFloatingLanding);
         else {
             spawn_object_relative_with_scale(1, 0, 0, 0, 8.0f, o, MODEL_BLUE_FLAME,
-                                             &bhvFlameFloatingLanding);
+                                             bhvFlameFloatingLanding);
             spawn_object_relative_with_scale(2, 0, 0, 0, 8.0f, o, MODEL_BLUE_FLAME,
-                                             &bhvFlameFloatingLanding);
+                                             bhvFlameFloatingLanding);
         }
         mark_object_for_deletion(o);
     }
@@ -1559,7 +1559,7 @@ void bhv_flame_bouncing_init(void) {
 void bhv_flame_bouncing_loop(void) {
     struct Object *sp1C;
     if (o->oTimer == 0)
-        o->oFlameUnk100 = obj_nearest_object_with_behavior(&bhvBowser);
+        o->oFlameUnk100 = obj_nearest_object_with_behavior(bhvBowser);
     sp1C = o->oFlameUnk100;
     o->oForwardVel = 15.0f;
     o->oBounce = -1.0f;

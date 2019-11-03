@@ -289,13 +289,13 @@ sound_ref .sound_action_metal_step_tiptoe
 sound_ref .chan_4E5
 sound_ref .chan_4F1
 sound_ref .chan_4FD
-sound_ref .chan_512
+sound_ref .sound_action_swim
 sound_ref .chan_522
-sound_ref .chan_52E
-sound_ref .sound_action_swish1
-sound_ref .sound_action_swish2
-sound_ref .sound_action_swish2
-sound_ref .sound_action_swish2
+sound_ref .sound_action_throw
+sound_ref .sound_action_key_swish
+sound_ref .sound_action_spin
+sound_ref .sound_action_spin
+sound_ref .sound_action_spin
 sound_ref .sound_action_climb_up_tree
 sound_ref .sound_action_climb_down_tree
 sound_ref .chan_582
@@ -304,12 +304,12 @@ sound_ref .chan_5A3
 sound_ref .sound_action_pat_back
 sound_ref .sound_action_brush_hair
 sound_ref .sound_action_climb_up_pole
-sound_ref .chan_5E9
-sound_ref .chan_5F8
-sound_ref .chan_604
-sound_ref .chan_651
-sound_ref .chan_664
-sound_ref .chan_6A9
+sound_ref .sound_action_metal_bonk
+sound_ref .sound_action_unstuck_from_ground
+sound_ref .sound_action_hit
+sound_ref .sound_action_bonk
+sound_ref .sound_action_enter_bbh
+sound_ref .sound_action_swim_fast
 sound_ref .sound_action_stuck_in_ground_default
 sound_ref .sound_action_stuck_in_ground_default
 sound_ref .sound_action_stuck_in_ground_default
@@ -318,18 +318,18 @@ sound_ref .sound_action_stuck_in_ground_default
 sound_ref .sound_action_stuck_in_ground_snow
 sound_ref .sound_action_stuck_in_ground_sand
 sound_ref .sound_action_stuck_in_ground_sand
-sound_ref .chan_6FA
-sound_ref .chan_70C
-sound_ref .chan_71E
+sound_ref .sound_action_metal_jump_water
+sound_ref .sound_action_metal_land_water
+sound_ref .sound_action_metal_step_water
 sound_ref .chan_731
 sound_ref .chan_743
 sound_ref .chan_756
-sound_ref .chan_766
-sound_ref .chan_782
+sound_ref .sound_action_flying_fast
+sound_ref .sound_action_teleport
 sound_ref .chan_7A5
-sound_ref .chan_7C5
+sound_ref .sound_action_bounce_off_object
 sound_ref .chan_7ED
-sound_ref .chan_801
+sound_ref .sound_action_read_sign
 sound_ref .chan_810
 .ifdef VERSION_JP
   sound_ref .sound_action_jump_default
@@ -337,8 +337,8 @@ sound_ref .chan_810
   sound_ref .sound_action_jump_default
 .else
   sound_ref .chan_828
-  sound_ref .chan_84B
-  sound_ref .chan_863
+  sound_ref .sound_action_intro_unk45e
+  sound_ref .sound_action_intro_unk45f
 .endif
 sound_ref .sound_action_heavy_landing_default
 sound_ref .sound_action_heavy_landing_grass
@@ -908,7 +908,7 @@ layer_portamento 0x81, 36, 255
 layer_note1 50, 0x32, 80
 layer_end
 
-.chan_512:
+.sound_action_swim:
 chan_setbank 2
 chan_setinstr 2
 chan_setlayer 0, .layer_51A
@@ -929,7 +929,7 @@ chan_end
 layer_note1 39, 0x7f, 115
 layer_end
 
-.chan_52E:
+.sound_action_throw:
 chan_setbank 0
 chan_setinstr 0
 chan_setlayer 0, .layer_538
@@ -943,7 +943,7 @@ layer_portamento 0x81, 46, 255
 layer_note1 31, 0xf, 100
 layer_end
 
-.sound_action_swish1:
+.sound_action_key_swish:
 chan_setbank 0
 chan_setinstr 0
 chan_setlayer 0, .layer_548
@@ -953,7 +953,7 @@ chan_end
 layer_note1 39, 0x12, 100
 layer_end
 
-.sound_action_swish2:
+.sound_action_spin:
 chan_setbank 0
 chan_setinstr 0
 chan_setdecayrelease 30
@@ -977,7 +977,7 @@ layer_portamento 0x81, 42, 255
 layer_note1 37, 0x1e, 105
 layer_end
 
-.sound_action_climb_down_tree:
+.sound_action_climb_down_tree: # unused
 chan_setbank 0
 chan_setinstr 1
 chan_setlayer 0, .layer_579
@@ -988,7 +988,7 @@ layer_portamento 0x81, 44, 255
 layer_note1 40, 0xb4, 100
 layer_end
 
-.chan_582:
+.chan_582: # unused
 chan_setbank 0
 chan_setinstr 2
 chan_setlayer 0, .layer_58A
@@ -1058,7 +1058,7 @@ layer_note1 55, 0xc, 127
 layer_note1 53, 0x18, 127
 layer_end
 
-.chan_5E9:
+.sound_action_metal_bonk:
 chan_setbank 1
 chan_setinstr 7
 chan_setlayer 0, .layer_5F1
@@ -1069,7 +1069,7 @@ layer_note1 39, 0x7, 100
 layer_note1 20, 0x18, 115
 layer_end
 
-.chan_5F8:
+.sound_action_unstuck_from_ground:
 chan_setbank 0
 chan_setinstr 4
 chan_setlayer 0, .layer_600
@@ -1079,7 +1079,7 @@ chan_end
 layer_note1 37, 0x48, 127
 layer_end
 
-.chan_604:
+.sound_action_hit:
 chan_setbank 7
 chan_setinstr 3
 chan_setlayer 0, .layer_618
@@ -1117,7 +1117,7 @@ layer_note1 20, 0x5, 115
 layer_note1 32, 0x5, 115
 layer_end
 
-.chan_651:
+.sound_action_bonk:
 chan_setbank 7
 chan_setinstr 3
 chan_setlayer 0, .layer_659
@@ -1129,7 +1129,7 @@ layer_note1 34, 0x5, 110
 layer_note1 39, 0x2, 110
 layer_end
 
-.chan_664:
+.sound_action_enter_bbh:
 chan_setbank 3
 chan_setinstr 3
 chan_setval 50
@@ -1166,7 +1166,7 @@ layer_portamento 0x81, 62, 255
 layer_note1 38, 0x7f, 100
 layer_end
 
-.chan_6A9:
+.sound_action_swim_fast:
 chan_setbank 2
 chan_setinstr 2
 chan_setval 20
@@ -1219,7 +1219,7 @@ layer_note1 17, 0x6, 127
 layer_note1 19, 0xc, 127
 layer_end
 
-.chan_6FA:
+.sound_action_metal_jump_water:
 chan_setbank 1
 chan_setinstr 7
 chan_setenvelope .envelope_3314
@@ -1231,7 +1231,7 @@ layer_note1 20, 0xf, 90
 layer_note1 29, 0x17, 90
 layer_end
 
-.chan_70C:
+.sound_action_metal_land_water:
 chan_setbank 1
 chan_setinstr 7
 chan_setenvelope .envelope_3314
@@ -1243,7 +1243,7 @@ layer_note1 29, 0xf, 90
 layer_note1 20, 0x1f, 90
 layer_end
 
-.chan_71E:
+.sound_action_metal_step_water:
 chan_setbank 1
 chan_setinstr 7
 chan_setenvelope .envelope_3314
@@ -1290,7 +1290,7 @@ chan_end
 layer_transpose 8
 layer_jump .layer_61F
 
-.chan_766:
+.sound_action_flying_fast:
 chan_setbank 5
 chan_setinstr 6
 chan_setenvelope .envelope_33AC
@@ -1308,7 +1308,7 @@ layer_note1 51, 0x14, 127
 layer_note1 36, 0x5a, 127
 layer_end
 
-.chan_782:
+.sound_action_teleport:
 chan_setbank 9
 chan_setinstr 3
 chan_setvibratoextent 60
@@ -1347,7 +1347,7 @@ layer_transpose 12
 layer_note1 55, 0x6, 80
 layer_end
 
-.chan_7C5:
+.sound_action_bounce_off_object:
 chan_setbank 7
 chan_setinstr 3
 chan_setlayer 0, .layer_7D9
@@ -1380,10 +1380,10 @@ layer_portamento 0x81, 32, 255
 layer_note1 39, 0x24, 127
 layer_end
 
-.chan_801:
+.sound_action_read_sign:
 chan_jump .sound_menu_read_sign
 
-.chan_fn_804:
+.heavy_landing_common:
 chan_setbank 0
 chan_setinstr 5
 chan_setlayer 0, .layer_80C
@@ -1408,7 +1408,7 @@ layer_note1 42, 0x8, 127
 layer_end
 
 .ifndef VERSION_JP
-  .chan_828:
+  .chan_828: # unused
   chan_setbank 7
   chan_setinstr 3
   chan_setlayer 0, .layer_83C
@@ -1426,7 +1426,7 @@ layer_end
   layer_note1 39, 0xf, 100
   layer_end
 
-  .chan_84B:
+  .sound_action_intro_unk45e:
   chan_setbank 5
   chan_setinstr 6
   chan_setenvelope .envelope_33AC
@@ -1442,7 +1442,7 @@ layer_end
   layer_note1 51, 0x53, 127
   layer_end
 
-  .chan_863:
+  .sound_action_intro_unk45f:
   chan_setbank 5
   chan_setinstr 6
   chan_setenvelope .envelope_33AC
@@ -1456,7 +1456,7 @@ layer_end
 .endif
 
 .sound_action_heavy_landing_default:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1
@@ -1465,7 +1465,7 @@ chan_setlayer 1, .layer_388
 chan_end
 
 .sound_action_heavy_landing_grass:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1
@@ -1474,7 +1474,7 @@ chan_setlayer 1, .layer_397
 chan_end
 
 .sound_action_heavy_landing_water:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 2
@@ -1483,7 +1483,7 @@ chan_setlayer 1, .layer_3A6
 chan_end
 
 .sound_action_heavy_landing_stone:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1
@@ -1492,7 +1492,7 @@ chan_setlayer 1, .layer_3B5
 chan_end
 
 .sound_action_heavy_landing_spooky:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1
@@ -1501,7 +1501,7 @@ chan_setlayer 1, .layer_3C4
 chan_end
 
 .sound_action_heavy_landing_snow:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1
@@ -1510,7 +1510,7 @@ chan_setlayer 1, .layer_3D3
 chan_end
 
 .sound_action_heavy_landing_ice:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1
@@ -1519,7 +1519,7 @@ chan_setlayer 1, .layer_3E2
 chan_end
 
 .sound_action_heavy_landing_sand:
-chan_call .chan_fn_804
+chan_call .heavy_landing_common
 chan_setval 1
 chan_call .delay
 chan_setbank 1

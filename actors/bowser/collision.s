@@ -1,2 +1,0 @@
-# Bowser (King Koopa)
-

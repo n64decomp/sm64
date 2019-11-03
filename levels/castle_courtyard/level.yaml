@@ -1,7 +1,7 @@
 # Princess Peach's Castle (Castle Courtyard)
 short-name: castle_courtyard
 full-name: Princess Peach's Castle (Castle Courtyard)
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: []
 shared-path: []

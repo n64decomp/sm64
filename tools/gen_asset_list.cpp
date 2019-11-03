@@ -1,3 +1,6 @@
+// WARNING: THIS SCRIPT IS CURRENTLY BROKEN.
+// It doesn't handle skyboxes/cake images correctly.
+
 // Usage:
 // g++-8 -std=c++17 ./tools/gen_asset_list.cpp -lstdc++fs -O1 -Wall -o tools/gen_asset_list
 // ./tools/gen_asset_list
@@ -219,6 +222,7 @@ tuple<string, string, vector<string>> compileSoundData(const string& lang) {
 }
 
 int main() {
+    intentional syntax error; // (see comment at top of file)
     map<string, string> assets;
     map<string, vector<pair<string, int>>> soundAssets;
 

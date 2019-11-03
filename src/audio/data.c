@@ -7,15 +7,15 @@
 // Format:
 // - frequency
 // - max number of simultaneous notes
-// - unk5 (chunk size/discretization step?)
-// - unk6 (some memory req)
-// - unk8 (gain?)
+// - reverb downsample rate (makes the ring buffer be downsampled to save memory)
+// - reverb window size (ring buffer size, length affects reverb delay)
+// - reverb gain (0 = min reverb, 32767 = max reverb, 32769 to 65535 = louder and louder...)
 // - volume
 // - memory used for persistent sequences
 // - memory used for persistent banks
 // - memory used for temporary sequences
 // - memory used for temporary banks
-struct Struct80332190 D_80332190[18] = {
+struct AudioSessionSettings gAudioSessionPresets[18] = {
 #ifdef VERSION_JP
     { 32000, 16, 1, 0x0800, 0x2FFF, 0x7FFF, 0x3900, 0x6000, 0x4400, 0x2A00 },
     { 32000, 16, 1, 0x0A00, 0x47FF, 0x7FFF, 0x3900, 0x6000, 0x4400, 0x2A00 },
@@ -366,8 +366,8 @@ f32 gVolRampingRhs128[128] = {
 
 s16 gTatumsPerBeat = TATUMS_PER_BEAT;
 s8 gUnusedCount80333EE8 = 16;
-s32 gAudioHeapSize = 0x31150;
-s32 D_80333EF0 = 0x2500;
+s32 gAudioHeapSize = DOUBLE_SIZE_ON_64_BIT(0x31150);
+s32 D_80333EF0 = DOUBLE_SIZE_ON_64_BIT(0x2500);
 volatile s32 gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
 s8 sUnused8033EF8 = 24;
 

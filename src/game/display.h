@@ -11,7 +11,6 @@ struct GfxPool {
 };
 
 extern u16 frameBufferIndex;
-extern u8 gGfxSPTaskOutputBuffer[];
 extern u32 gGlobalTimer;
 
 // extern ? my_rdp_init(?);

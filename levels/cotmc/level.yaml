@@ -1,7 +1,7 @@
 # Cavern of the Metal Cap
 short-name: cotmc
 full-name: Cavern of the Metal Cap
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: []
 shared-path: []

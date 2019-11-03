@@ -7,11 +7,26 @@
  * object type. These macros provide access to these fields.
  */
 
-
+#ifdef OBJECT_FIELDS_INDEX_DIRECTLY
+#define OBJECT_FIELD_U32(index)           index
+#define OBJECT_FIELD_S32(index)           index
+#define OBJECT_FIELD_S16(index, subIndex) index
+#define OBJECT_FIELD_F32(index)           index
+#define OBJECT_FIELD_S16P(index)          index
+#define OBJECT_FIELD_S32P(index)          index
+#define OBJECT_FIELD_ANIMS(index)         index
+#define OBJECT_FIELD_WAYPOINT(index)      index
+#define OBJECT_FIELD_CHAIN_SEGMENT(index) index
+#define OBJECT_FIELD_OBJ(index)           index
+#define OBJECT_FIELD_SURFACE(index)       index
+#define OBJECT_FIELD_VPTR(index)          index
+#define OBJECT_FIELD_CVPTR(index)         index
+#else
 #define OBJECT_FIELD_U32(index)           rawData.asU32[index]
 #define OBJECT_FIELD_S32(index)           rawData.asS32[index]
 #define OBJECT_FIELD_S16(index, subIndex) rawData.asS16[index][subIndex]
 #define OBJECT_FIELD_F32(index)           rawData.asF32[index]
+#if !IS_64_BIT
 #define OBJECT_FIELD_S16P(index)          rawData.asS16P[index]
 #define OBJECT_FIELD_S32P(index)          rawData.asS32P[index]
 #define OBJECT_FIELD_ANIMS(index)         rawData.asAnims[index]
@@ -20,13 +35,27 @@
 #define OBJECT_FIELD_OBJ(index)           rawData.asObject[index]
 #define OBJECT_FIELD_SURFACE(index)       rawData.asSurface[index]
 #define OBJECT_FIELD_VPTR(index)          rawData.asVoidPtr[index]
+#define OBJECT_FIELD_CVPTR(index)         rawData.asConstVoidPtr[index]
+#else
+#define OBJECT_FIELD_S16P(index)          ptrData.asS16P[index]
+#define OBJECT_FIELD_S32P(index)          ptrData.asS32P[index]
+#define OBJECT_FIELD_ANIMS(index)         ptrData.asAnims[index]
+#define OBJECT_FIELD_WAYPOINT(index)      ptrData.asWaypoint[index]
+#define OBJECT_FIELD_CHAIN_SEGMENT(index) ptrData.asChainSegment[index]
+#define OBJECT_FIELD_OBJ(index)           ptrData.asObject[index]
+#define OBJECT_FIELD_SURFACE(index)       ptrData.asSurface[index]
+#define OBJECT_FIELD_VPTR(index)          ptrData.asVoidPtr[index]
+#define OBJECT_FIELD_CVPTR(index)         ptrData.asConstVoidPtr[index]
+#endif
+#endif
 
 // 0x088 (0x00), the first field, is object-specific and defined below the common fields.
 /* Common fields */
 #define /*0x08C*/ oFlags                      OBJECT_FIELD_U32(0x01)
 #define /*0x090*/ oDialogResponse             OBJECT_FIELD_S16(0x02, 0)
 #define /*0x092*/ oDialogState                OBJECT_FIELD_S16(0x02, 1)
-// 0x94/0x98 unused/removed.
+#define /*0x094*/ oUnk94                      OBJECT_FIELD_U32(0x03)
+// 0x98 unused/removed.
 #define /*0x09C*/ oIntangibleTimer            OBJECT_FIELD_S32(0x05)
 #define /*0x0A0*/ O_POS_INDEX                 0x06
 #define /*0x0A0*/ oPosX                       OBJECT_FIELD_F32(O_POS_INDEX + 0)
@@ -160,7 +189,8 @@
 #define /*0x0FC*/ oHomingAmpAvgY     OBJECT_FIELD_F32(0x1D)
 
 /* Arrow Lift */
-#define /*0x0F4*/ oArrowLiftDisplacement OBJECT_FIELD_F32(0x1B)
+#define /*0x0F4*/ oArrowLiftDisplacement       OBJECT_FIELD_F32(0x1B)
+#define /*0x100*/ oArrowLiftUnk100             OBJECT_FIELD_S32(0x1E)
 
 /* Back-and-Forth Platform */
 #define /*0x0F4*/ oBackAndForthPlatformUnkF4  OBJECT_FIELD_F32(0x1B)
@@ -624,14 +654,14 @@
 #define /*0x100*/ oEnemyLakituFaceForwardCountdown OBJECT_FIELD_S32(0x1E)
 
 /* Intro Cutscene Lakitu */
-#define /*0x0F8*/ oIntroLakituUnkF8  OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oIntroLakituUnkFC  OBJECT_FIELD_F32(0x1D)
-#define /*0x100*/ oIntroLakituUnk100 OBJECT_FIELD_F32(0x1E)
-#define /*0x104*/ oIntroLakituUnk104 OBJECT_FIELD_F32(0x1F)
-#define /*0x108*/ oIntroLakituUnk108 OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oIntroLakituUnk10C OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oIntroLakituUnk110 OBJECT_FIELD_F32(0x22)
-#define /*0x1AC*/ oIntroLakituUnk1AC OBJECT_FIELD_OBJ(0x49)
+#define /*0x0F8*/ oIntroLakituSplineSegmentProgress  OBJECT_FIELD_F32(0x1C)
+#define /*0x0FC*/ oIntroLakituSplineSegment          OBJECT_FIELD_F32(0x1D)
+#define /*0x100*/ oIntroLakituUnk100                 OBJECT_FIELD_F32(0x1E)
+#define /*0x104*/ oIntroLakituUnk104                 OBJECT_FIELD_F32(0x1F)
+#define /*0x108*/ oIntroLakituUnk108                 OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oIntroLakituUnk10C                 OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oIntroLakituUnk110                 OBJECT_FIELD_F32(0x22)
+#define /*0x1AC*/ oIntroLakituCloud                  OBJECT_FIELD_OBJ(0x49)
 
 /* Main Menu Button */
 #define /*0x0F4*/ oMenuButtonState       OBJECT_FIELD_S32(0x1B)
@@ -695,16 +725,16 @@
 /* Object Respawner */
 #define /*0x0F4*/ oRespawnerModelToRespawn    OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oRespawnerMinSpawnDist      OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oRespawnerBehaviorToRespawn OBJECT_FIELD_VPTR(0x1D)
+#define /*0x0FC*/ oRespawnerBehaviorToRespawn OBJECT_FIELD_CVPTR(0x1D)
 
 /* Openable Grill */
 #define /*0x088*/ oOpenableGrillUnk88 OBJECT_FIELD_S32(0x00)
 #define /*0x0F4*/ oOpenableGrillUnkF4 OBJECT_FIELD_OBJ(0x1B)
 
 /* Intro Cutscene Peach */
-#define /*0x108*/ oIntroPeachUnk108 OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oIntroPeachUnk10C OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oIntroPeachUnk110 OBJECT_FIELD_F32(0x22)
+#define /*0x108*/ oIntroPeachYawFromFocus OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oIntroPeachPitchFromFocus OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oIntroPeachDistToCamera OBJECT_FIELD_F32(0x22)
 
 /* Racing Penguin */
 #define /*0x0F4*/ oRacingPenguinInitTextCooldown       OBJECT_FIELD_S32(0x1B)

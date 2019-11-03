@@ -7,20 +7,23 @@
 #define GEO_CMD_FLAGS_SET   1
 #define GEO_CMD_FLAGS_CLEAR 2
 
+#define CMD_SIZE_SHIFT (sizeof(void *) >> 3)
+#define CMD_PROCESS_OFFSET(offset) ((offset & 3) | ((offset & ~3) << CMD_SIZE_SHIFT))
+
 #define cur_geo_cmd_u8(offset) \
-    (gGeoLayoutCommand[offset])
+    (gGeoLayoutCommand[CMD_PROCESS_OFFSET(offset)])
 
 #define cur_geo_cmd_s16(offset) \
-    (*(s16 *) &gGeoLayoutCommand[offset])
+    (*(s16 *) &gGeoLayoutCommand[CMD_PROCESS_OFFSET(offset)])
 
 #define cur_geo_cmd_s32(offset) \
-    (*(s32 *) &gGeoLayoutCommand[offset])
+    (*(s32 *) &gGeoLayoutCommand[CMD_PROCESS_OFFSET(offset)])
 
 #define cur_geo_cmd_u32(offset) \
-    (*(u32 *) &gGeoLayoutCommand[offset])
+    (*(u32 *) &gGeoLayoutCommand[CMD_PROCESS_OFFSET(offset)])
 
 #define cur_geo_cmd_ptr(offset) \
-    (*(void **) &gGeoLayoutCommand[offset])
+    (*(void **) &gGeoLayoutCommand[CMD_PROCESS_OFFSET(offset)])
 
 extern struct AllocOnlyPool *gGraphNodePool;
 extern struct GraphNode *gCurRootGraphNode;

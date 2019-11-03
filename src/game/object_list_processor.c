@@ -112,7 +112,7 @@ struct Object *gCurrentObject;
 /**
  * The next object behavior command to be executed.
  */
-uintptr_t *gBehCommand;
+const BehaviorScript *gBehCommand;
 
 /**
  * The number of objects that were processed last frame, which may miss some
@@ -171,7 +171,7 @@ struct ParticleProperties {
     u32 particleFlag;
     u32 activeParticleFlag;
     u8 model;
-    void *behavior;
+    const BehaviorScript *behavior;
 };
 
 /**
@@ -234,7 +234,7 @@ void copy_mario_state_to_object(void) {
 /**
  * Spawn a particle at gCurrentObject's location.
  */
-void spawn_particle(u32 activeParticleFlag, s16 model, void *behavior) {
+void spawn_particle(u32 activeParticleFlag, s16 model, const BehaviorScript *behavior) {
     if (!(gCurrentObject->oActiveParticleFlags & activeParticleFlag)) {
         struct Object *particle;
         gCurrentObject->oActiveParticleFlags |= activeParticleFlag;
@@ -453,7 +453,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
     while (spawnInfo != NULL) {
         struct Object *object;
         UNUSED s32 unused;
-        void *script;
+        const BehaviorScript *script;
         UNUSED s16 arg16 = (s16)(spawnInfo->behaviorArg & 0xFFFF);
 
         script = segmented_to_virtual(spawnInfo->behaviorScript);
@@ -482,7 +482,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
                 geo_make_first_child(&object->header.gfx.node);
             }
 
-            geo_obj_init_spawninfo((struct GraphNodeObject *) object, spawnInfo);
+            geo_obj_init_spawninfo(&object->header.gfx, spawnInfo);
 
             object->oPosX = spawnInfo->startPos[0];
             object->oPosY = spawnInfo->startPos[1];

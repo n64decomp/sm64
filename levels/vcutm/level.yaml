@@ -1,7 +1,7 @@
 # Vanish Cap under the Moat
 short-name: vcutm
 full-name: Vanish Cap Under The Moat
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: [seesaw]
 shared-path: []

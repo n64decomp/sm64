@@ -13,6 +13,7 @@
 #define cur_object_set_int(offset, value) gCurrentObject->OBJECT_FIELD_S32(offset) = (s32)(value)
 #define cur_object_or_int(offset, value)  gCurrentObject->OBJECT_FIELD_S32(offset) |= (s32)(value)
 #define cur_object_and_int(offset, value) gCurrentObject->OBJECT_FIELD_S32(offset) &= (s32)(value)
+#define cur_object_set_vptr(offset, value) gCurrentObject->OBJECT_FIELD_VPTR(offset) = (void *)(value)
 
 #define object_and_int(object, offset, value) object->OBJECT_FIELD_S32(offset) &= (s32)(value)
 

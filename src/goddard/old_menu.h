@@ -4,7 +4,7 @@
 #include <ultra64.h>
 #include "gd_types.h"
 
-extern void get_objvalue(union ObjVarVal *, enum ValPtrType, void *, s32);
+extern void get_objvalue(union ObjVarVal *, enum ValPtrType, void *, size_t);
 extern struct ObjGadget *make_gadget(s32, s32);
 extern void reset_gadget(struct ObjGadget *);
 extern void reset_gadgets_in_grp(struct ObjGroup *);

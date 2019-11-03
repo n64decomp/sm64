@@ -1,7 +1,7 @@
 # Tiny Huge Island
 short-name: thi
 full-name: Tiny Huge Island
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 3
 objects: []
 shared-path: ["/areas/2/", "/areas/1/"]

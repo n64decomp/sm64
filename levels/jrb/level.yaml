@@ -1,7 +1,7 @@
 # Jolly Roger Bay
 short-name: jrb
 full-name: Jolly Roger Bay
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 2
 objects: [falling_pillar, falling_pillar_base, floating_platform, rock, sliding_box, unused_lid, wooden_ship]
 shared-path: []

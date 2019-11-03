@@ -6,8 +6,8 @@
 /**
  * @file gd_tex_dl.h
  * 
- * Data arrays that were probably in C arrays in `renderer`,
- * but it is easier to leave these as `.incbin`s in an ASM file.
+ * Data arrays that were probably in u16 C arrays in `renderer`,
+ * but it is easier to leave these as ALIGNED8 u8 arrays in C.
  */
 
 extern Gfx *redStarDlArray[];

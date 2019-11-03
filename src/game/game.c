@@ -1,18 +1,19 @@
 #include <ultra64.h>
 
 #include "sm64.h"
+#include "audio/external.h"
+#include "buffers/framebuffers.h"
+#include "engine/level_script.h"
 #include "main.h"
 #include "memory.h"
 #include "save_file.h"
 #include "seq_ids.h"
 #include "sound_init.h"
 #include "display.h"
-#include "engine/level_script.h"
 #include "profiler.h"
 #include "print.h"
 #include "segment2.h"
 #include "main_entry.h"
-#include "audio/external.h"
 #include <prevent_bss_reordering.h>
 #include "game.h"
 
@@ -26,8 +27,8 @@ OSMesgQueue D_80339CB8;
 OSMesg D_80339CD0;
 OSMesg D_80339CD4;
 struct VblankHandler gGameVblankHandler;
-u32 gFrameBuffers[3];
-u32 zBufferPtr;
+uintptr_t gPhysicalFrameBuffers[3];
+uintptr_t gPhysicalZBuffer;
 void *D_80339CF0;
 void *D_80339CF4;
 struct SPTask *gGfxSPTask;
@@ -39,7 +40,7 @@ s8 gEepromProbe;
 
 struct MarioAnimation D_80339D10;
 struct MarioAnimation gDemo;
-UNUSED s8 filler80339D30[0x80339DC0 - 0x80339D30];
+UNUSED u8 filler80339D30[0x90];
 
 void (*D_8032C6A0)(void) = NULL;
 struct Controller *gPlayer1Controller = &gControllers[0];
@@ -73,10 +74,10 @@ static void record_demo(void) {
     // record the distinct input and timer so long as they
     // are unique. If the timer hits 0xFF, reset the timer
     // for the next demo input.
-    if (gRecordedDemoInput.timer == 0xFF || buttonMask != gRecordedDemoInput.button
+    if (gRecordedDemoInput.timer == 0xFF || buttonMask != gRecordedDemoInput.buttonMask
         || rawStickX != gRecordedDemoInput.rawStickX || rawStickY != gRecordedDemoInput.rawStickY) {
         gRecordedDemoInput.timer = 0;
-        gRecordedDemoInput.button = buttonMask;
+        gRecordedDemoInput.buttonMask = buttonMask;
         gRecordedDemoInput.rawStickX = rawStickX;
         gRecordedDemoInput.rawStickY = rawStickY;
     }
@@ -172,7 +173,7 @@ void run_demo_inputs(void) {
                 lower 4 bits to get the correct button mask.
             */
             gControllers[0].controllerData->button =
-                ((gCurrDemoInput->button & 0xF0) << 8) + ((gCurrDemoInput->button & 0xF));
+                ((gCurrDemoInput->buttonMask & 0xF0) << 8) + ((gCurrDemoInput->buttonMask & 0xF));
 
             // if start was pushed, put it into the demo sequence being input to
             // end the demo.
@@ -274,10 +275,10 @@ void setup_game_memory(void) {
     set_segment_base_addr(0, (void *) 0x80000000);
     osCreateMesgQueue(&D_80339CB8, &D_80339CD4, 1);
     osCreateMesgQueue(&gGameVblankQueue, &D_80339CD0, 1);
-    zBufferPtr = VIRTUAL_TO_PHYSICAL(gZBuffer);
-    gFrameBuffers[0] = VIRTUAL_TO_PHYSICAL(gFrameBuffer0);
-    gFrameBuffers[1] = VIRTUAL_TO_PHYSICAL(gFrameBuffer1);
-    gFrameBuffers[2] = VIRTUAL_TO_PHYSICAL(gFrameBuffer2);
+    gPhysicalZBuffer = VIRTUAL_TO_PHYSICAL(gZBuffer);
+    gPhysicalFrameBuffers[0] = VIRTUAL_TO_PHYSICAL(gFrameBuffer0);
+    gPhysicalFrameBuffers[1] = VIRTUAL_TO_PHYSICAL(gFrameBuffer1);
+    gPhysicalFrameBuffers[2] = VIRTUAL_TO_PHYSICAL(gFrameBuffer2);
     D_80339CF0 = main_pool_alloc(0x4000, MEMORY_POOL_LEFT);
     set_segment_base_addr(17, (void *) D_80339CF0);
     func_80278A78(&D_80339D10, gMarioAnims, D_80339CF0);

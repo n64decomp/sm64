@@ -19,6 +19,16 @@ enum MovtexRectTextureId
     TEX_YELLOW_TRI_TTC
 };
 
+/**
+ * Contains an id and an array of MovtexQuad structs.
+ */
+struct MovtexQuadCollection {
+    /// identifier for geo nodes to refer to this MovtexQuad collection
+    s16 id;
+    /// points to a short 'n' followed by an array of n MovtexQuad structs
+    Movtex *quadArraySegmented;
+};
+
 extern f32 gPaintingMarioYEntry;
 
 // Moving texture mesh ids have for bits 8-16 a course identifier.
@@ -97,5 +107,16 @@ extern f32 gPaintingMarioYEntry;
 #define MOVTEX_SSL_SAND_PIT_PYRAMID  (2 | MOVTEX_AREA_SSL)
 #define MOVTEX_TREADMILL_BIG         (0 | MOVTEX_AREA_TTC)
 #define MOVTEX_TREADMILL_SMALL       (1 | MOVTEX_AREA_TTC)
+
+extern Gfx *geo_wdw_set_initial_water_level(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_movtex_pause_control(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_movtex_draw_nocolor(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_movtex_draw_colored(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_movtex_draw_colored_no_update(s32 callContext, struct GraphNode *node,
+                                              f32 mtx[4][4]);
+extern Gfx *geo_movtex_draw_colored_2_no_update(s32 callContext, struct GraphNode *node,
+                                         f32 mtx[4][4]);
+extern Gfx *geo_movtex_update_horizontal(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
 
 #endif /* _MOVING_TEXTURE_H */

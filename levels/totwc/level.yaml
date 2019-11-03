@@ -1,7 +1,7 @@
 # Tower of the Wing Cap
 short-name: totwc
 full-name: Tower of the Wing Cap
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: [cloud]
 shared-path: []

@@ -40,7 +40,7 @@ extern void func_8029EA0C(struct Object *);
 extern void translate_object_local(struct Object *, s16, s16);
 extern void copy_object_pos(struct Object *, struct Object *);
 extern void copy_object_angle(struct Object *, struct Object *);
-extern struct Object *obj_find_nearest_object_with_behavior(void *, f32 *);
+extern struct Object *obj_find_nearest_object_with_behavior(const BehaviorScript *, f32 *);
 extern void obj_move_y(f32, f32, f32);
 static s32 clear_move_flag(u32 *, s32);
 extern void func_802AA618(s32, s32, f32);
@@ -78,8 +78,7 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
         sp2C = (struct GraphNodeGenerated *) node;
 
         if (gCurGraphNodeHeldObject) {
-            sp34 = (struct Object *)
-                       gCurGraphNodeHeldObject->objNode; // TODO: change this to object pointer?
+            sp34 = gCurGraphNodeHeldObject->objNode;
         }
 
         sp28 = sp34->oOpacity;
@@ -107,11 +106,11 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
 #ifdef VERSION_JP
             if (sp30->parameter == 10) {
                 if (gDebugInfo[DEBUG_PAGE_ENEMYINFO][3]) {
-                    gDPSetAlphaCompare(sp38++, 3);
+                    gDPSetAlphaCompare(sp38++, G_AC_DITHER);
                 }
             } else {
                 if (sp34->activeFlags & ACTIVE_FLAG_UNK7) {
-                    gDPSetAlphaCompare(sp38++, 3);
+                    gDPSetAlphaCompare(sp38++, G_AC_DITHER);
                 }
             }
 #else // gDebugInfo accesses were removed in all non-JP versions.
@@ -123,7 +122,7 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
             // one.
             if (sp30->parameter != 10) {
                 if (sp34->activeFlags & ACTIVE_FLAG_UNK7) {
-                    gDPSetAlphaCompare(sp38++, 3);
+                    gDPSetAlphaCompare(sp38++, G_AC_DITHER);
                 }
             }
 #endif
@@ -153,8 +152,8 @@ s32 geo_switch_anim_state(s32 run, struct GraphNode *node) {
         // cast the pointer.
         switchCase = (struct GraphNodeSwitchCase *) node;
 
-        if (gCurGraphNodeHeldObject != 0) {
-            obj = (struct Object *) gCurGraphNodeHeldObject->objNode;
+        if (gCurGraphNodeHeldObject != NULL) {
+            obj = gCurGraphNodeHeldObject->objNode;
         }
 
         // if the case is greater than the number of cases, set to 0 to avoid overflowing
@@ -266,7 +265,7 @@ void func_8029D704(Mat4 a0, Mat4 a1, Mat4 a2) {
     a0[3][3] = 1.0f;
 }
 
-void set_object_held_state(struct Object *obj, void *heldBehavior) {
+void set_object_held_state(struct Object *obj, const BehaviorScript *heldBehavior) {
     obj->parentObj = o;
 
     if (obj->oFlags & OBJ_FLAG_HOLDABLE) {
@@ -456,7 +455,8 @@ void set_object_angle(struct Object *a0, s16 pitch, s16 yaw, s16 roll) {
  * Spawns an object at an absolute location with a specified angle.
  */
 struct Object *spawn_object_abs_with_rot(struct Object *parent, s16 uselessArg, u32 model,
-                                         void *behavior, s16 x, s16 y, s16 z, s16 rx, s16 ry, s16 rz) {
+                                         const BehaviorScript *behavior,
+                                         s16 x, s16 y, s16 z, s16 rx, s16 ry, s16 rz) {
     // 'uselessArg' is unused in the function spawn_object_at_origin()
     struct Object *newObj = spawn_object_at_origin(parent, uselessArg, model, behavior);
     set_object_pos(newObj, x, y, z);
@@ -470,7 +470,8 @@ struct Object *spawn_object_abs_with_rot(struct Object *parent, s16 uselessArg, 
  * The rz argument is never used, and the z offset is used for z-rotation instead. This is most likely
  * a copy-paste typo by one of the programmers.
  */
-struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model, void *behavior, s16 xOff,
+struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model,
+                                         const BehaviorScript *behavior, s16 xOff,
                                          s16 yOff, s16 zOff, s16 rx, s16 ry, UNUSED s16 rz) {
     struct Object *newObj = spawn_object_at_origin(parent, 0, model, behavior);
     newObj->oFlags |= OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT;
@@ -480,7 +481,7 @@ struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model, void 
     return newObj;
 }
 
-struct Object *Unknown8029E330(struct Object *sp20, s32 model, void *sp28) {
+struct Object *Unknown8029E330(struct Object *sp20, s32 model, const BehaviorScript *sp28) {
     struct Object *sp1C = spawn_object(sp20, model, sp28);
     sp1C->oFlags |= OBJ_FLAG_0020 | OBJ_FLAG_0800;
     return sp1C;
@@ -526,9 +527,9 @@ struct Object *spawn_water_splash(struct Object *parent, struct WaterSplashParam
 }
 
 struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedArg, u32 model,
-                                      void *behavior) {
+                                      const BehaviorScript *behavior) {
     struct Object *obj;
-    uintptr_t *behaviorAddr;
+    const BehaviorScript *behaviorAddr;
 
     behaviorAddr = segmented_to_virtual(behavior);
     obj = create_object(behaviorAddr);
@@ -543,7 +544,7 @@ struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedAr
     return obj;
 }
 
-struct Object *spawn_object(struct Object *parent, s32 model, void *behavior) {
+struct Object *spawn_object(struct Object *parent, s32 model, const BehaviorScript *behavior) {
     struct Object *obj;
 
     obj = spawn_object_at_origin(parent, 0, model, behavior);
@@ -553,7 +554,7 @@ struct Object *spawn_object(struct Object *parent, s32 model, void *behavior) {
 }
 
 struct Object *try_to_spawn_object(s16 offsetY, f32 scale, struct Object *parent, s32 model,
-                                   void *behavior) {
+                                   const BehaviorScript *behavior) {
     struct Object *obj;
 
     if (gFreeObjectList.next != NULL) {
@@ -566,7 +567,7 @@ struct Object *try_to_spawn_object(s16 offsetY, f32 scale, struct Object *parent
     }
 }
 
-struct Object *spawn_object_with_scale(struct Object *parent, s32 model, void *behavior, f32 scale) {
+struct Object *spawn_object_with_scale(struct Object *parent, s32 model, const BehaviorScript *behavior, f32 scale) {
     struct Object *obj;
 
     obj = spawn_object_at_origin(parent, 0, model, behavior);
@@ -583,7 +584,7 @@ static void build_relative_object_transform(struct Object *obj) {
 
 struct Object *spawn_object_relative(s16 behaviorParam, s16 relativePosX, s16 relativePosY,
                                      s16 relativePosZ, struct Object *parent, s32 model,
-                                     void *behavior) {
+                                     const BehaviorScript *behavior) {
     struct Object *obj = spawn_object_at_origin(parent, 0, model, behavior);
 
     copy_object_pos_and_angle(obj, parent);
@@ -598,7 +599,7 @@ struct Object *spawn_object_relative(s16 behaviorParam, s16 relativePosX, s16 re
 
 struct Object *spawn_object_relative_with_scale(s16 behaviorParam, s16 relativePosX, s16 relativePosY,
                                                 s16 relativePosZ, f32 scale, struct Object *parent,
-                                                s32 model, void *behavior) {
+                                                s32 model, const BehaviorScript *behavior) {
     struct Object *obj;
 
     obj = spawn_object_relative(behaviorParam, relativePosX, relativePosY, relativePosZ, parent, model,
@@ -815,7 +816,7 @@ void obj_set_facing_to_move_angles(struct Object *a0) {
     a0->oFaceAngleRoll = a0->oMoveAngleRoll;
 }
 
-u32 get_object_list_from_behavior(uintptr_t *behavior) {
+u32 get_object_list_from_behavior(const BehaviorScript *behavior) {
     u32 objectList;
 
     // If the first behavior command is "begin", then get the object list header
@@ -829,7 +830,7 @@ u32 get_object_list_from_behavior(uintptr_t *behavior) {
     return objectList;
 }
 
-struct Object *obj_nearest_object_with_behavior(void *behavior) {
+struct Object *obj_nearest_object_with_behavior(const BehaviorScript *behavior) {
     struct Object *obj;
     f32 dist;
 
@@ -838,7 +839,7 @@ struct Object *obj_nearest_object_with_behavior(void *behavior) {
     return obj;
 }
 
-f32 obj_dist_to_nearest_object_with_behavior(void *behavior) {
+f32 obj_dist_to_nearest_object_with_behavior(const BehaviorScript *behavior) {
     struct Object *obj;
     f32 dist;
 
@@ -850,7 +851,7 @@ f32 obj_dist_to_nearest_object_with_behavior(void *behavior) {
     return dist;
 }
 
-struct Object *obj_find_nearest_object_with_behavior(void *behavior, f32 *dist) {
+struct Object *obj_find_nearest_object_with_behavior(const BehaviorScript *behavior, f32 *dist) {
     uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
     struct Object *closestObj = NULL;
     struct Object *obj;
@@ -901,7 +902,7 @@ s32 count_unimportant_objects(void) {
     return count;
 }
 
-s32 count_objects_with_behavior(void *behavior) {
+s32 count_objects_with_behavior(const BehaviorScript *behavior) {
     uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
     struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
     struct ObjectNode *obj = listHead->next;
@@ -918,8 +919,8 @@ s32 count_objects_with_behavior(void *behavior) {
     return count;
 }
 
-struct Object *obj_find_nearby_held_actor(void *behavior, f32 maxDist) {
-    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
+struct Object *obj_find_nearby_held_actor(const BehaviorScript *behavior, f32 maxDist) {
+    const BehaviorScript *behaviorAddr = segmented_to_virtual(behavior);
     struct ObjectNode *listHead;
     struct Object *obj;
     struct Object *foundObj;
@@ -1474,15 +1475,15 @@ s32 are_objects_collided(struct Object *obj1, struct Object *obj2) {
     return FALSE;
 }
 
-void obj_set_behavior(void *behavior) {
+void obj_set_behavior(const BehaviorScript *behavior) {
     o->behavior = segmented_to_virtual(behavior);
 }
 
-void set_object_behavior(struct Object *obj, void *behavior) {
+void set_object_behavior(struct Object *obj, const BehaviorScript *behavior) {
     obj->behavior = segmented_to_virtual(behavior);
 }
 
-s32 obj_has_behavior(u32 *behavior) {
+s32 obj_has_behavior(const BehaviorScript *behavior) {
     if (o->behavior == segmented_to_virtual(behavior)) {
         return TRUE;
     } else {
@@ -1490,7 +1491,7 @@ s32 obj_has_behavior(u32 *behavior) {
     }
 }
 
-s32 object_has_behavior(struct Object *obj, u32 *behavior) {
+s32 object_has_behavior(struct Object *obj, const BehaviorScript *behavior) {
     if (obj->behavior == segmented_to_virtual(behavior)) {
         return TRUE;
     } else {
@@ -1603,7 +1604,8 @@ void obj_set_hurtbox_radius_and_height(f32 radius, f32 height) {
     o->hurtboxHeight = height;
 }
 
-static void spawn_object_loot_coins(struct Object *obj, s32 numCoins, f32 sp30, void *coinBehavior,
+static void spawn_object_loot_coins(struct Object *obj, s32 numCoins, f32 sp30,
+                                    const BehaviorScript *coinBehavior,
                                     s16 posJitter, s16 model) {
     s32 i;
     f32 spawnHeight;
@@ -2486,7 +2488,7 @@ void func_802A3C98(f32 sp18, s32 sp1C) {
     }
 }
 
-void set_object_collision_data(struct Object *obj, void *segAddr) {
+void set_object_collision_data(struct Object *obj, const void *segAddr) {
     obj->collisionData = segmented_to_virtual(segAddr);
 }
 

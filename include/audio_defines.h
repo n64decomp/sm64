@@ -66,13 +66,13 @@
 #define SOUND_TERRAIN_ICE       6
 #define SOUND_TERRAIN_SAND      7
 
-#define SOUND_ACTION_TERRAIN_JUMP                       SOUND_ARG_LOAD(0, 4, 0x00, 0x80, 8)
-#define SOUND_ACTION_TERRAIN_LANDING                    SOUND_ARG_LOAD(0, 4, 0x08, 0x80, 8)
-#define SOUND_ACTION_TERRAIN_STEP                       SOUND_ARG_LOAD(0, 6, 0x10, 0x80, 8)
-#define SOUND_ACTION_TERRAIN_BODY_HIT_GROUND            SOUND_ARG_LOAD(0, 4, 0x18, 0x80, 8)
-#define SOUND_ACTION_TERRAIN_STEP_TIPTOE                SOUND_ARG_LOAD(0, 6, 0x20, 0x80, 8)
-#define SOUND_ACTION_TERRAIN_STUCK_IN_GROUND            SOUND_ARG_LOAD(0, 4, 0x48, 0x80, 8)
-#define SOUND_ACTION_TERRAIN_HEAVY_LANDING              SOUND_ARG_LOAD(0, 4, 0x60, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_JUMP               SOUND_ARG_LOAD(0, 4, 0x00, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_LANDING            SOUND_ARG_LOAD(0, 4, 0x08, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_STEP               SOUND_ARG_LOAD(0, 6, 0x10, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_BODY_HIT_GROUND    SOUND_ARG_LOAD(0, 4, 0x18, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_STEP_TIPTOE        SOUND_ARG_LOAD(0, 6, 0x20, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_STUCK_IN_GROUND    SOUND_ARG_LOAD(0, 4, 0x48, 0x80, 8)
+#define SOUND_ACTION_TERRAIN_HEAVY_LANDING      SOUND_ARG_LOAD(0, 4, 0x60, 0x80, 8)
 
 #define SOUND_ACTION_METAL_JUMP                         SOUND_ARG_LOAD(0, 4, 0x28, 0x90, 8)
 #define SOUND_ACTION_METAL_LANDING                      SOUND_ARG_LOAD(0, 4, 0x29, 0x90, 8)
@@ -85,44 +85,44 @@
 /* not verified */ #define SOUND_ACTION_UNKNOWN430      SOUND_ARG_LOAD(0, 4, 0x30, 0xC0, 8)
 /* not verified */ #define SOUND_ACTION_UNKNOWN431      SOUND_ARG_LOAD(0, 4, 0x31, 0x60, 8)
 /* not verified */ #define SOUND_ACTION_UNKNOWN432      SOUND_ARG_LOAD(0, 4, 0x32, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN433      SOUND_ARG_LOAD(0, 4, 0x33, 0x80, 8)
+#define SOUND_ACTION_SWIM                               SOUND_ARG_LOAD(0, 4, 0x33, 0x80, 8)
 /* not verified */ #define SOUND_ACTION_UNKNOWN434      SOUND_ARG_LOAD(0, 4, 0x34, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN435      SOUND_ARG_LOAD(0, 4, 0x35, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_SWISH1          SOUND_ARG_LOAD(0, 4, 0x36, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_SWISH2          SOUND_ARG_LOAD(0, 4, 0x37, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_SWISH2_2        SOUND_ARG_LOAD(0, 4, 0x38, 0x80, 8)
+#define SOUND_ACTION_THROW                              SOUND_ARG_LOAD(0, 4, 0x35, 0x80, 8)
+#define SOUND_ACTION_KEY_SWISH                          SOUND_ARG_LOAD(0, 4, 0x36, 0x80, 8)
+#define SOUND_ACTION_SPIN                               SOUND_ARG_LOAD(0, 4, 0x37, 0x80, 8)
+#define SOUND_ACTION_TWIRL                              SOUND_ARG_LOAD(0, 4, 0x38, 0x80, 8) // same sound as spin
 /* not verified */ #define SOUND_ACTION_CLIMB_UP_TREE   SOUND_ARG_LOAD(0, 4, 0x3A, 0x80, 8)
 /* not verified */ #define SOUND_ACTION_CLIMB_DOWN_TREE 0x003B
 /* not verified */ #define SOUND_ACTION_UNK3C           0x003C
 /* not verified */ #define SOUND_ACTION_UNKNOWN43D      SOUND_ARG_LOAD(0, 4, 0x3D, 0x80, 8)
 /* not verified */ #define SOUND_ACTION_UNKNOWN43E      SOUND_ARG_LOAD(0, 4, 0x3E, 0x80, 8)
 /* not verified */ #define SOUND_ACTION_PAT_BACK        SOUND_ARG_LOAD(0, 4, 0x3F, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_BRUSH_HAIR      SOUND_ARG_LOAD(0, 4, 0x40, 0x80, 8)
+#define SOUND_ACTION_BRUSH_HAIR                         SOUND_ARG_LOAD(0, 4, 0x40, 0x80, 8)
 /* not verified */ #define SOUND_ACTION_CLIMB_UP_POLE   SOUND_ARG_LOAD(0, 4, 0x41, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN442      SOUND_ARG_LOAD(0, 4, 0x42, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN443      SOUND_ARG_LOAD(0, 4, 0x43, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN444      SOUND_ARG_LOAD(0, 4, 0x44, 0xC0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN444_2    SOUND_ARG_LOAD(0, 4, 0x44, 0xB0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN444_3    SOUND_ARG_LOAD(0, 4, 0x44, 0xA0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN445      SOUND_ARG_LOAD(0, 4, 0x45, 0xA0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN446      SOUND_ARG_LOAD(0, 4, 0x46, 0xA0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN447      SOUND_ARG_LOAD(0, 4, 0x47, 0xA0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN450      SOUND_ARG_LOAD(0, 4, 0x50, 0x90, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN451      SOUND_ARG_LOAD(0, 4, 0x51, 0x90, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN452      SOUND_ARG_LOAD(0, 4, 0x52, 0x90, 8)
+#define SOUND_ACTION_METAL_BONK                         SOUND_ARG_LOAD(0, 4, 0x42, 0x80, 8)
+#define SOUND_ACTION_UNSTUCK_FROM_GROUND                SOUND_ARG_LOAD(0, 4, 0x43, 0x80, 8)
+/* not verified */ #define SOUND_ACTION_HIT             SOUND_ARG_LOAD(0, 4, 0x44, 0xC0, 8)
+/* not verified */ #define SOUND_ACTION_HIT_2           SOUND_ARG_LOAD(0, 4, 0x44, 0xB0, 8)
+/* not verified */ #define SOUND_ACTION_HIT_3           SOUND_ARG_LOAD(0, 4, 0x44, 0xA0, 8)
+#define SOUND_ACTION_BONK                               SOUND_ARG_LOAD(0, 4, 0x45, 0xA0, 8)
+#define SOUND_ACTION_SHRINK_INTO_BBH                    SOUND_ARG_LOAD(0, 4, 0x46, 0xA0, 8)
+#define SOUND_ACTION_SWIM_FAST                          SOUND_ARG_LOAD(0, 4, 0x47, 0xA0, 8)
+#define SOUND_ACTION_METAL_JUMP_WATER                   SOUND_ARG_LOAD(0, 4, 0x50, 0x90, 8)
+#define SOUND_ACTION_METAL_LAND_WATER                   SOUND_ARG_LOAD(0, 4, 0x51, 0x90, 8)
+#define SOUND_ACTION_METAL_STEP_WATER                   SOUND_ARG_LOAD(0, 4, 0x52, 0x90, 8)
 /* not verified */ #define SOUND_ACTION_UNK53           0x0053
 /* not verified */ #define SOUND_ACTION_UNK54           0x0054
 /* not verified */ #define SOUND_ACTION_UNK55           0x0055
-/* not verified */ #define SOUND_ACTION_UNKNOWN456      SOUND_ARG_LOAD(0, 4, 0x56, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN457      SOUND_ARG_LOAD(0, 4, 0x57, 0xC0, 8)
+/* not verified */ #define SOUND_ACTION_FLYING_FAST     SOUND_ARG_LOAD(0, 4, 0x56, 0x80, 8) // "swoop"?
+#define SOUND_ACTION_TELEPORT                           SOUND_ARG_LOAD(0, 4, 0x57, 0xC0, 8)
 /* not verified */ #define SOUND_ACTION_UNKNOWN458      SOUND_ARG_LOAD(0, 4, 0x58, 0xA0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN459      SOUND_ARG_LOAD(0, 4, 0x59, 0xB0, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN45A      SOUND_ARG_LOAD(0, 4, 0x5A, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN45B      SOUND_ARG_LOAD(0, 4, 0x5B, 0xFF, 8)
+/* not verified */ #define SOUND_ACTION_BOUNCE_OFF_OBJECT   SOUND_ARG_LOAD(0, 4, 0x59, 0xB0, 8)
+/* not verified */ #define SOUND_ACTION_SIDE_FLIP_UNK   SOUND_ARG_LOAD(0, 4, 0x5A, 0x80, 8)
+#define SOUND_ACTION_READ_SIGN                          SOUND_ARG_LOAD(0, 4, 0x5B, 0xFF, 8)
 /* not verified */ #define SOUND_ACTION_UNKNOWN45C      SOUND_ARG_LOAD(0, 4, 0x5C, 0x80, 8)
 /* not verified */ #define SOUND_ACTION_UNK5D           0x005D
-/* not verified */ #define SOUND_ACTION_UNKNOWN45E      SOUND_ARG_LOAD(0, 4, 0x5E, 0x80, 8)
-/* not verified */ #define SOUND_ACTION_UNKNOWN45F      SOUND_ARG_LOAD(0, 4, 0x5F, 0x80, 8)
+/* not verified */ #define SOUND_ACTION_INTRO_UNK45E    SOUND_ARG_LOAD(0, 4, 0x5E, 0x80, 8)
+/* not verified */ #define SOUND_ACTION_INTRO_UNK45F    SOUND_ARG_LOAD(0, 4, 0x5F, 0x80, 8)
 
 /* Moving Sound Effects */
 
@@ -492,7 +492,6 @@
 #define SOUND_MENU_CAMERA_TURN                              SOUND_ARG_LOAD(7, 0, 0x0F, 0x00, 8)
 /* not verified */ #define SOUND_MENU_UNK10                 0x7010
 #define SOUND_MENU_CLICK_FILE_SELECT                        SOUND_ARG_LOAD(7, 0, 0x11, 0x00, 8)
-/* not verified */ #define SOUND_MENU_READ_SIGN             0x7012
 /* not verified */ #define SOUND_MENU_MESSAGE_NEXT_PAGE     SOUND_ARG_LOAD(7, 0, 0x13, 0x00, 8)
 #define SOUND_MENU_COIN_ITS_A_ME_MARIO                      SOUND_ARG_LOAD(7, 0, 0x14, 0x00, 8)
 #define SOUND_MENU_YOSHI_GAIN_LIVES                         SOUND_ARG_LOAD(7, 0, 0x15, 0x00, 8)

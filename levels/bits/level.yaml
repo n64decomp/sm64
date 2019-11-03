@@ -1,7 +1,7 @@
 # Bowser in the Sky
 short-name: bits
 full-name: Bowser in the Sky
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: []
 shared-path: []

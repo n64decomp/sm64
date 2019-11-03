@@ -1,2 +1,0 @@
-# Burn Smoke
-

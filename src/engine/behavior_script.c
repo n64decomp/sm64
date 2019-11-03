@@ -118,9 +118,9 @@ static s32 beh_cmd_graph_node(void) {
 
 static s32 beh_cmd_obj_load_chill(void) {
     u32 model = (u32) gBehCommand[1];
-    void *arg1 = (void *) gBehCommand[2];
+    const BehaviorScript *behavior = (const BehaviorScript *) gBehCommand[2];
 
-    struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, arg1);
+    struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, behavior);
 
     copy_object_pos_and_angle(object, gCurrentObject);
 
@@ -130,9 +130,9 @@ static s32 beh_cmd_obj_load_chill(void) {
 
 static s32 beh_cmd_obj_spawn(void) {
     u32 model = (u32) gBehCommand[1];
-    void *arg1 = (void *) gBehCommand[2];
+    const BehaviorScript *behavior = (const BehaviorScript *) gBehCommand[2];
 
-    struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, arg1);
+    struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, behavior);
 
     copy_object_pos_and_angle(object, gCurrentObject);
 
@@ -145,9 +145,9 @@ static s32 beh_cmd_obj_spawn(void) {
 static s32 beh_cmd_obj_load_chill_param(void) {
     u32 behParam = (s16)(gBehCommand[0] & 0xFFFF);
     u32 model = (u32) gBehCommand[1];
-    void *arg2 = (void *) gBehCommand[2];
+    const BehaviorScript *behavior = (const BehaviorScript *) gBehCommand[2];
 
-    struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, arg2);
+    struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, behavior);
 
     copy_object_pos_and_angle(object, gCurrentObject);
 
@@ -172,18 +172,18 @@ static s32 beh_cmd_break2(void) {
 }
 
 static s32 beh_cmd_call(void) {
-    uintptr_t *jumpAddress;
+    const BehaviorScript *jumpAddress;
 
     gBehCommand++;
     cur_object_stack_push((uintptr_t)(gBehCommand + 1));
-    jumpAddress = segmented_to_virtual((void *) gBehCommand[0]);
+    jumpAddress = segmented_to_virtual((const BehaviorScript *) gBehCommand[0]);
     gBehCommand = jumpAddress;
 
     return BEH_CONTINUE;
 }
 
 static s32 beh_cmd_return(void) {
-    gBehCommand = (uintptr_t *) cur_object_stack_pop();
+    gBehCommand = (const BehaviorScript *) cur_object_stack_pop();
     return BEH_CONTINUE;
 }
 
@@ -216,7 +216,7 @@ static s32 beh_cmd_delay_var(void) {
 
 static s32 beh_cmd_goto(void) {
     gBehCommand++;
-    gBehCommand = segmented_to_virtual((void *) gBehCommand[0]);
+    gBehCommand = segmented_to_virtual((const BehaviorScript *) gBehCommand[0]);
     return BEH_CONTINUE;
 }
 
@@ -248,7 +248,7 @@ static s32 beh_cmd_end_repeat(void) {
 
     count--;
     if (count != 0) {
-        gBehCommand = (uintptr_t *) cur_object_stack_pop();
+        gBehCommand = (const BehaviorScript *) cur_object_stack_pop();
         cur_object_stack_push((uintptr_t) gBehCommand);
         cur_object_stack_push(count);
     } else {
@@ -264,7 +264,7 @@ static s32 beh_cmd_end_repeat_nobreak(void) {
 
     count--;
     if (count != 0) {
-        gBehCommand = (uintptr_t *) cur_object_stack_pop();
+        gBehCommand = (const BehaviorScript *) cur_object_stack_pop();
         cur_object_stack_push((uintptr_t) gBehCommand);
         cur_object_stack_push(count);
     } else {
@@ -283,7 +283,7 @@ static s32 beh_cmd_begin_loop(void) {
 }
 
 static s32 beh_cmd_end_loop(void) {
-    gBehCommand = (uintptr_t *) cur_object_stack_pop();
+    gBehCommand = (const BehaviorScript *) cur_object_stack_pop();
     cur_object_stack_push((uintptr_t) gBehCommand);
 
     return BEH_BREAK;
@@ -432,10 +432,10 @@ static s32 beh_cmd_obj_bit_clear_int(void) {
     return BEH_CONTINUE;
 }
 
-static s32 beh_cmd_obj_set_int32(void) {
+static s32 beh_cmd_obj_set_anims(void) {
     u8 objectOffset = (u8)((gBehCommand[0] >> 16) & 0xFF);
 
-    cur_object_set_int(objectOffset, gBehCommand[1]);
+    cur_object_set_vptr(objectOffset, gBehCommand[1]);
 
     gBehCommand += 2;
     return BEH_CONTINUE;
@@ -722,7 +722,7 @@ static BehCommandProc BehaviorJumpTable[] = {
     Behavior24,
     beh_cmd_delay_var,
     Behavior26,
-    beh_cmd_obj_set_int32,
+    beh_cmd_obj_set_anims,
     beh_cmd_obj_animate,
     beh_cmd_obj_load_chill_param,
     beh_cmd_collision_data,

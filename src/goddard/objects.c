@@ -364,7 +364,7 @@ struct Links *make_link_to_obj(struct Links *head, struct GdObj *a1) {
 
     start_memtracker("links");
 
-    newLink = gd_malloc_perm(0x0C);
+    newLink = gd_malloc_perm(sizeof(struct Links));
 
     if (newLink == NULL) {
         fatal_print("Cant allocate link memory!");
@@ -400,18 +400,15 @@ struct VtxLink *make_vtx_link(struct VtxLink *prevlink, Vtx *data) {
     newLink->prev = prevlink;
     newLink->next = NULL;
     newLink->data = data;
-// WTF?
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
-    if (((s32)(newLink)) == 0x3F800000) {
+    // WTF?
+    if (((uintptr_t)(newLink)) == 0x3F800000) {
         fatal_printf("bad3\n");
     }
-#pragma GCC diagnostic pop
     return newLink;
 }
 
 /* @ 22B154 for 0x88; orig name: func8017C984 */
-struct ObjValPtrs *make_valptrs(struct GdObj *obj, s32 flags, enum ValPtrType type, s32 offset) {
+struct ObjValPtrs *make_valptrs(struct GdObj *obj, s32 flags, enum ValPtrType type, size_t offset) {
     struct ObjValPtrs *sp1C = (struct ObjValPtrs *) make_object(OBJ_TYPE_VALPTRS);
 
     sp1C->obj = obj;
@@ -1379,15 +1376,13 @@ s32 func_8017F054(struct GdObj *a0, struct GdObj *a1) {
 }
 
 /* @ 22D9E0 for 0x1BC */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
     struct Links *sp6C;
     struct ObjGroup *sp68;
     UNUSED u32 sp64;
-    Mat4f *sp60;
+    UNUSED Mat4f *sp60;
     Mat4f *sp5C;
-    Mat4f *sp58;
+    UNUSED Mat4f *sp58;
     Mat4f *sp54;
     Mat4f *sp50;
     UNUSED u8 pad38[0x18];
@@ -1431,7 +1426,6 @@ s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
     }
     return count;
 }
-#pragma GCC diagnostic pop
 
 /* @ 22DB9C for 0x38; a0 might be ObjUnk200000* */
 void Unknown8017F3CC(struct Unk8017F3CC *a0) {
@@ -1470,8 +1464,6 @@ void func_8017F424(struct GdTriangleF *a0, struct GdTriangleF *a1, f32 a2) {
 }
 
 /* @ 22DD94 for 0x1060; orig name: Unknown8017F5C4 */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 void move_animator(struct ObjAnimator *animObj) {
     struct AnimDataInfo *animData; // array?
     Mat4f *mtxArr;
@@ -1488,7 +1480,7 @@ void move_animator(struct ObjAnimator *animObj) {
     UNUSED s32 sp50;
     UNUSED s32 sp4C;
     UNUSED s32 sp48;
-    struct GdVec3f unusedVec;
+    UNUSED struct GdVec3f unusedVec;
     s32 sp38;
     s32 sp34;
     f32 sp30;
@@ -1705,7 +1697,6 @@ void move_animator(struct ObjAnimator *animObj) {
         link = link->next;
     }
 }
-#pragma GCC diagnostic pop
 
 /* @ 22EDF4 for 0x300; orig name: Unknown80180624 */
 void drag_picked_object(struct GdObj *inputObj) {

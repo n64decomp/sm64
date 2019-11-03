@@ -1383,10 +1383,10 @@ static void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const unsigned ch
  * Prints a generic white string with text fade properties.
  */
 static void print_generic_string_fade(s16 x, s16 y, const unsigned char *text) {
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha - sTextFadeAlpha);
     print_generic_string(x, y, text);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
 
 /**
@@ -1464,7 +1464,7 @@ static void print_main_menu_strings(void) {
     print_save_file_star_count(SAVE_FILE_D, 209, 118);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
    // Print menu names
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
     print_generic_string(SCORE_X, 39, textScore);
     print_generic_string(COPY_X, 39, textCopy);
@@ -1473,7 +1473,7 @@ static void print_main_menu_strings(void) {
     sSoundTextX = get_str_x_pos_from_center(254, textSoundModes[sSoundMode], 10.0f);
 #endif
     print_generic_string(SOUNDMODE_X1, 39, textSoundModes[sSoundMode]);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
@@ -1542,12 +1542,12 @@ static void print_score_menu_strings(void) {
     print_save_file_star_count(SAVE_FILE_D, 211, 119);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
     // Print menu names
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
     print_generic_string(RETURN_X, 35, textReturn);
     print_generic_string(COPYFILE_X1, 35, textCopyFileButton);
     print_generic_string(ERASEFILE_X1, 35, textEraseFileButton);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
@@ -1670,12 +1670,12 @@ static void print_copy_menu_strings(void) {
     print_save_file_star_count(SAVE_FILE_D, 211, 119);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
     // Print menu names
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
     print_generic_string(RETURN_X, 35, textReturn);
     print_generic_string(VIEWSCORE_X1, 35, textViewScore);
     print_generic_string(ERASEFILE_X2, 35, textEraseFileButton);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
@@ -1754,12 +1754,12 @@ static void print_erase_menu_prompt(s16 x, s16 y) {
         }
     }
     // Print "YES NO" strings
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, sYesNoColor[0], sYesNoColor[0], sYesNoColor[0], sTextBaseAlpha);
     print_generic_string(x + 56, y, textYes);
     gDPSetEnvColor(gDisplayListHead++, sYesNoColor[1], sYesNoColor[1], sYesNoColor[1], sTextBaseAlpha);
     print_generic_string(x + 98, y, textNo);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
 
 #ifdef VERSION_JP
@@ -1873,12 +1873,12 @@ static void print_erase_menu_strings(void) {
     print_save_file_star_count(SAVE_FILE_D, 211, 119);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
     // Print menu names
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
     print_generic_string(RETURN_X, 35, textReturn);
     print_generic_string(VIEWSCORE_X2, 35, textViewScore);
     print_generic_string(COPYFILE_X2, 35, textCopyFileButton);
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
@@ -1912,7 +1912,7 @@ static void print_sound_mode_menu_strings(void) {
     print_hud_lut_string(HUD_LUT_DIFF, SOUND_SELECT_X, 35, textSoundSelect);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
     // Print mode names
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_begin);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     for (mode = 0; mode < 3; mode++) {
         if (mode == sSoundMode) {
             gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
@@ -1925,7 +1925,7 @@ static void print_sound_mode_menu_strings(void) {
 #endif
         print_generic_string(SOUNDMODE_X2, 87, textSoundModes[mode]);
     }
-    gSPDisplayList(gDisplayListHead++, dl_ia8_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
 
 static unsigned char textStarX[] = { TEXT_STAR_X };

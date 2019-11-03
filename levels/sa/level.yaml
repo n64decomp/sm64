@@ -1,7 +1,7 @@
 # Secret Aquarium
 short-name: sa
 full-name: Secret Aquarium
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: []
 shared-path: []

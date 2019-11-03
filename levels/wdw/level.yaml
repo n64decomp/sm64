@@ -1,7 +1,7 @@
 # Wet Dry World
 short-name: wdw
 full-name: Wet Dry World
-texture-file: ["/texture.s"]
+texture-file: ["/texture.inc.c"]
 area-count: 2
 objects: [arrow_lift, double_arrows, express_elevator, hidden_platform, rectangular_floating_platform, rotating_platform, square_floating_platform, water_level_diamond]
 # areas 1 and 2 share the double_arrows object and so they need its model data.

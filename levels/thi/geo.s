@@ -1,5 +1,0 @@
-.include "levels/thi/areas/1/6/geo.s"
-.include "levels/thi/areas/1/7/geo.s"
-.include "levels/thi/areas/1/geo.s"
-.include "levels/thi/areas/2/geo.s"
-.include "levels/thi/areas/3/geo.s"

@@ -12,6 +12,7 @@
 #include "debug.h"
 #include "object_list_processor.h"
 #include "room.h"
+#include "behavior_data.h"
 
 #define DEBUG_INFO_NOFLAGS (0 << 0)
 #define DEBUG_INFO_FLAG_DPRINT (1 << 0)
@@ -29,10 +30,6 @@ enum DebugPrintStateInfo {
     DEBUG_PSTATE_MAX_X_CURSOR,
     DEBUG_PSTATE_LINE_Y_OFFSET
 };
-
-extern u8 bhvKoopaShell[];
-extern u8 bhvJumpingBox[];
-extern u8 bhvKoopaShellUnderwater[];
 
 // DEBUG_SYS_EFFECTINFO
 const char *sDebugEffectStringInfo[] = {
@@ -79,13 +76,13 @@ void Stub802C98C0(void) {
  * its difference for consecutive calls.
  */
 s64 get_current_clock(void) {
-    u64 wtf = 0;
+    s64 wtf = 0;
 
     return wtf;
 }
 
 s64 get_clock_difference(UNUSED s64 arg0) {
-    u64 wtf = 0;
+    s64 wtf = 0;
 
     return wtf;
 }

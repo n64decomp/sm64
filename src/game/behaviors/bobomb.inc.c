@@ -390,7 +390,7 @@ void BobombBuddyTurnToTalkLoop(void) {
     if ((s16) o->oMoveAngleYaw == (s16) o->oAngleToMario)
         o->oAction = BOBOMB_BUDDY_ACT_TALK;
 
-    PlaySound2(SOUND_ACTION_UNKNOWN45B);
+    PlaySound2(SOUND_ACTION_READ_SIGN);
 }
 
 void BobombBuddyActionLoop(void) {

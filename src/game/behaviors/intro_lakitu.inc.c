@@ -1,43 +1,60 @@
-// intro_lakitu.inc.c
+/**
+ * @file intro_lakitu.inc.c
+ * This file implements lakitu's behvaior during the intro cutscene.
+ * It's also used during the ending cutscene.
+ */
 
-void func_8029AB70(struct Object *o, Vec3f b) {
-    f32 sp2C;
-    Vec3s sp24;
-    s16 sp22, sp20;
 
-    vec3f_add(b, gCurrLevelCamera->pos);
-    vec3f_get_dist_and_angle(gCurrLevelCamera->pos, gCurrLevelCamera->focus, &sp2C, &sp24[0], &sp24[1]);
-    vec3f_get_dist_and_angle(gCurrLevelCamera->pos, b, &sp2C, &sp22, &sp20);
-    vec3f_set_dist_and_angle(gCurrLevelCamera->pos, b, sp2C, sp24[0] + sp22, sp24[1] + sp20);
-    vec3f_to_object_pos(o, b);
+/**
+ * Add the camera's position to `offset`, rotate the point to be relative to the camera's focus, then
+ * set lakitu's location.
+ */
+void intro_lakitu_set_offset_from_camera(struct Object *o, Vec3f offset) {
+    f32 dist;
+    Vec3s focusAngles;
+    s16 offsetPitch, offsetYaw;
+
+    vec3f_add(offset, gCurrLevelCamera->pos);
+    vec3f_get_dist_and_angle(gCurrLevelCamera->pos, gCurrLevelCamera->focus,
+                             &dist, &focusAngles[0], &focusAngles[1]);
+    vec3f_get_dist_and_angle(gCurrLevelCamera->pos, offset, &dist, &offsetPitch, &offsetYaw);
+    vec3f_set_dist_and_angle(gCurrLevelCamera->pos, offset, dist,
+                             focusAngles[0] + offsetPitch, focusAngles[1] + offsetYaw);
+    vec3f_to_object_pos(o, offset);
 }
 
-void func_8029AC3C(struct Object *o, Vec3f b) {
-    UNUSED Vec3f sp3C;
-    Vec3f sp30;
-    f32 sp2C;
-    s16 sp2A, sp28;
-    UNUSED u32 sp24;
+void intro_lakitu_set_focus(struct Object *o, Vec3f newFocus) {
+    UNUSED Vec3f unusedVec3f;
+    Vec3f origin;
+    f32 dist;
+    s16 pitch, yaw;
+    UNUSED u32 unused;
 
-    vec3f_set(sp30, 0.f, 0.f, 0.f);
-    vec3f_get_dist_and_angle(sp30, b, &sp2C, &sp2A, &sp28);
-    o->oFaceAnglePitch = sp2A;
-    o->oFaceAngleYaw = sp28;
+    // newFocus is an offset from lakitu's origin, not a point in the world.
+    vec3f_set(origin, 0.f, 0.f, 0.f);
+    vec3f_get_dist_and_angle(origin, newFocus, &dist, &pitch, &yaw);
+    o->oFaceAnglePitch = pitch;
+    o->oFaceAngleYaw = yaw;
 }
 
-s32 func_8029ACAC(struct Object *o, struct CinematicCameraTable b[], struct CinematicCameraTable c[]) {
-    Vec3f sp2C, sp20;
-    s32 sp1C = 0;
-    s16 sp1A = o->oIntroLakituUnkFC;
+/**
+ * Move lakitu along the spline `offset`, relative to the camera, and face him towards the corresponding
+ * location along the spline `focus`.
+ */
+s32 intro_lakitu_set_pos_and_focus(struct Object *o, struct CutsceneSplinePoint offset[],
+                                   struct CutsceneSplinePoint focus[]) {
+    Vec3f newOffset, newFocus;
+    s32 splineFinished = 0;
+    s16 splineSegment = o->oIntroLakituSplineSegment;
 
-    if ((func_80287CFC(sp20, b, &sp1A, &(o->oIntroLakituUnkF8)) == 1)
-        || (func_80287CFC(sp2C, c, &sp1A, &(o->oIntroLakituUnkF8)) == 1))
-        sp1C += 1;
+    if ((move_point_along_spline(newFocus, offset, &splineSegment, &(o->oIntroLakituSplineSegmentProgress)) == 1)
+        || (move_point_along_spline(newOffset, focus, &splineSegment, &(o->oIntroLakituSplineSegmentProgress)) == 1))
+        splineFinished += 1;
 
-    o->oIntroLakituUnkFC = sp1A;
-    func_8029AB70(o, sp2C);
-    func_8029AC3C(o, sp20);
-    return sp1C;
+    o->oIntroLakituSplineSegment = splineSegment;
+    intro_lakitu_set_offset_from_camera(o, newOffset);
+    intro_lakitu_set_focus(o, newFocus);
+    return splineFinished;
 }
 
 void bhv_intro_lakitu_loop(void) {
@@ -47,9 +64,9 @@ void bhv_intro_lakitu_loop(void) {
     switch (gCurrentObject->oAction) {
         case 0:
             obj_disable_rendering();
-            gCurrentObject->oIntroLakituUnkFC = 0.f;
-            gCurrentObject->oIntroLakituUnkF8 = 0.f;
-            gCurrentObject->oIntroLakituUnk1AC =
+            gCurrentObject->oIntroLakituSplineSegment = 0.f;
+            gCurrentObject->oIntroLakituSplineSegmentProgress = 0.f;
+            gCurrentObject->oIntroLakituCloud =
                 spawn_object_relative_with_scale(1, 0, 0, 0, 2.f, gCurrentObject, MODEL_MIST, bhvCloud);
             if (gCurrLevelCamera->cutscene == CUTSCENE_END_WAVING)
                 gCurrentObject->oAction = 100;
@@ -66,16 +83,18 @@ void bhv_intro_lakitu_loop(void) {
             }
             if (gCutsceneTimer > 52)
                 PlaySound(SOUND_AIR_LAKITU_FLY_HIGHPRIO);
-            if (func_8029ACAC(gCurrentObject, D_8032E3CC, D_8032E2B4) == 1)
+
+            if (intro_lakitu_set_pos_and_focus(gCurrentObject, gIntroLakituStartToPipeOffsetFromCamera,
+                                               gIntroLakituStartToPipeFocus) == 1)
                 gCurrentObject->oAction += 1;
 
             switch (gCurrentObject->oTimer) {
 #ifdef VERSION_US
                 case 534:
-                    PlaySound2(SOUND_ACTION_UNKNOWN456);
+                    PlaySound2(SOUND_ACTION_FLYING_FAST);
                     break;
                 case 581:
-                    PlaySound2(SOUND_ACTION_UNKNOWN45E);
+                    PlaySound2(SOUND_ACTION_INTRO_UNK45E);
                     break;
 #endif
                 case 73:
@@ -93,9 +112,9 @@ void bhv_intro_lakitu_loop(void) {
             }
 #ifdef VERSION_EU
             if (gCurrentObject->oTimer == 446)
-                PlaySound2(SOUND_ACTION_UNKNOWN456);
+                PlaySound2(SOUND_ACTION_FLYING_FAST);
             if (gCurrentObject->oTimer == 485)
-                PlaySound2(SOUND_ACTION_UNKNOWN45E);
+                PlaySound2(SOUND_ACTION_INTRO_UNK45E);
 #endif
             break;
         case 2:
@@ -134,6 +153,7 @@ void bhv_intro_lakitu_loop(void) {
 
             if (gCurrentObject->oTimer == 31) {
                 gCurrentObject->oPosY -= 158.f;
+                // Spawn white ground particles
                 func_802ADA94();
                 gCurrentObject->oPosY += 158.f;
             }
@@ -145,11 +165,11 @@ void bhv_intro_lakitu_loop(void) {
 
             if (gCurrentObject->oTimer == TIMER) {
                 mark_object_for_deletion(gCurrentObject);
-                mark_object_for_deletion(gCurrentObject->oIntroLakituUnk1AC);
+                mark_object_for_deletion(gCurrentObject->oIntroLakituCloud);
             }
 #ifndef VERSION_JP
             if (gCurrentObject->oTimer == 14)
-                PlaySound2(SOUND_ACTION_UNKNOWN45F);
+                PlaySound2(SOUND_ACTION_INTRO_UNK45F);
 #endif
             break;
         case 100:

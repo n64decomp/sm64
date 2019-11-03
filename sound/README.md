@@ -5,10 +5,11 @@ compression format that reduces file sizes by ~70% compared to uncompressed
 AIFF (with 16-bit samples). The build system automatically converts
 uncompressed AIFF files into this format.
 
-Samples are collected into banks, given by directories. The order in which
-banks and samples end up in the final binary is determined by their file and
-directory names. Thus, to keep the ROM OK, sample files/bank directories should
-be prefixed by a number to maintain sort order.
+Samples are collected into banks, given by directories. The order in which each
+bank's samples end up in the final binary is determined by their file names.
+Thus, to keep the ROM OK, sample files should be prefixed by a number to
+maintain sort order. (Bank directories are ordered by their usages in way
+that automatically makes the ROM match.)
 
 Samples cannot be referred to directly from sequence files. Instead, there is
 an indirect step in the form of sound banks. Each sound bank refers to a single

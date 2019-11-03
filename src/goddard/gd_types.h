@@ -352,7 +352,7 @@ struct ObjVertex {
     /* 0x2C */ struct GdVec3f normal;  // normal? also color (like gbi?)
     /* 0x38 */ s16 id;
     /* 0x3A */ u8  pad3A[2];
-    /* 0x3C */ f32 unk3C;
+    /* 0x3C */ f32 scaleFactor;
     /* 0x40 */ f32 alpha;
     /* 0x44 */ struct VtxLink *gbiVerts;
 }; /* sizeof = 0x48 */
@@ -578,7 +578,7 @@ enum ValPtrType {
 struct ObjValPtrs {
     /* 0x00 */ struct GdObj header;
     /* 0x14 */ struct GdObj *obj;   // maybe just a void *?
-    /* 0x18 */ s32 offset;
+    /* 0x18 */ size_t offset;
     /* 0x1C */ enum ValPtrType datatype;
     /* 0x20 */ s32 unk20;       // obj type ptr enum? Might be OBJ_TYPES flags?
 }; /* sizeof = 0x24 */
