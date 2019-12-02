@@ -962,7 +962,7 @@ ALIGNED8 static const u8 texture_font_char_jp_katakana_small_tsu[] = {
 #include "textures/segment2/segment2.07A90.ia1.inc.c"
 };
 
-ALIGNED8 static const u8 texture_font_char_jp_katakana_small_ka[] = {
+ALIGNED8 static const u8 texture_font_char_jp_katakana_small_ya[] = {
 #include "textures/segment2/segment2.07AA0.ia1.inc.c"
 };
 
@@ -2040,7 +2040,7 @@ const u8 *const main_font_lut[] = {
                       0x0,                   0x0,                   0x0,                   0x0,
                       0x0,                   0x0,                   0x0,                   0x0,
                       0x0,                   0x0,                   0x0,                   0x0,
-    texture_font_char_jp_katakana_small_e, texture_font_char_jp_katakana_small_tsu, texture_font_char_jp_katakana_small_ka, texture_font_char_jp_katakana_small_yu,
+    texture_font_char_jp_katakana_small_e, texture_font_char_jp_katakana_small_tsu, texture_font_char_jp_katakana_small_ya, texture_font_char_jp_katakana_small_yu,
     texture_font_char_jp_katakana_small_yo, texture_font_char_jp_katakana_small_a, texture_font_char_jp_katakana_small_i, texture_font_char_jp_katakana_small_u,
     texture_font_char_jp_katakana_small_o,                   0x0,                   0x0,                   0x0,
                       0x0,                   0x0,                   0x0,                   0x0,

@@ -446,10 +446,10 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
                 render_lowercase_diacritic(&xCoord, &yCoord, DIALOG_CHAR_I_NO_DIA, str[strPos] & 0xF);
                 break;
 #else // i.e. not EU
-            case DIALOG_CHAR_PREFIX_DAKUTEN:
+            case DIALOG_CHAR_DAKUTEN:
                 mark = DIALOG_MARK_DAKUTEN;
                 break;
-            case DIALOG_CHAR_PREFIX_HANDAKUTEN:
+            case DIALOG_CHAR_PERIOD_OR_HANDAKUTEN:
                 mark = DIALOG_MARK_HANDAKUTEN;
                 break;
             case DIALOG_CHAR_NEWLINE:
@@ -457,9 +457,9 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
                 create_dl_translation_matrix(MENU_MTX_PUSH, x, y - (lineNum * MAX_STRING_WIDTH), 0.0f);
                 lineNum++;
                 break;
-            case DIALOG_CHAR_HANDAKUTEN:
+            case DIALOG_CHAR_PERIOD:
                 create_dl_translation_matrix(MENU_MTX_PUSH, -2.0f, -5.0f, 0.0f);
-                render_generic_char(DIALOG_CHAR_PREFIX_HANDAKUTEN);
+                render_generic_char(DIALOG_CHAR_PERIOD_OR_HANDAKUTEN);
                 gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
                 break;
 #endif
@@ -656,10 +656,10 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
                 curX += gDialogCharWidths[str[strPos]];
                 break;
 #else
-            case DIALOG_CHAR_PREFIX_DAKUTEN:
+            case DIALOG_CHAR_DAKUTEN:
                 mark = DIALOG_MARK_DAKUTEN;
                 break;
-            case DIALOG_CHAR_PREFIX_HANDAKUTEN:
+            case DIALOG_CHAR_PERIOD_OR_HANDAKUTEN:
                 mark = DIALOG_MARK_HANDAKUTEN;
                 break;
 #endif
@@ -806,8 +806,8 @@ s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale) {
         //! EU checks for dakuten and handakuten despite dialog code unable to handle it
         if (str[strPos] == DIALOG_CHAR_SPACE) {
             spacesWidth += 1.0;
-        } else if (str[strPos] != DIALOG_CHAR_PREFIX_DAKUTEN
-                   && str[strPos] != DIALOG_CHAR_PREFIX_HANDAKUTEN) {
+        } else if (str[strPos] != DIALOG_CHAR_DAKUTEN
+                   && str[strPos] != DIALOG_CHAR_PERIOD_OR_HANDAKUTEN) {
             charsWidth += 1.0;
         }
         strPos++;
@@ -1078,13 +1078,13 @@ void handle_dialog_scroll_page_state(s8 lineNum, s8 totalLines, s8 *pageState, s
 }
 
 #ifdef VERSION_JP
-void adjust_handakuten_char_pos(s8 *xMatrix, s16 *linePos) {
+void adjust_pos_and_print_period_char(s8 *xMatrix, s16 *linePos) {
     if (linePos[0] != 0) {
         create_dl_translation_matrix(MENU_MTX_NOPUSH, xMatrix[0] * 10, 0, 0);
     }
 
     create_dl_translation_matrix(MENU_MTX_PUSH, -2.0f, -5.0f, 0);
-    render_generic_char(DIALOG_CHAR_PREFIX_HANDAKUTEN);
+    render_generic_char(DIALOG_CHAR_PERIOD_OR_HANDAKUTEN);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
@@ -1336,10 +1336,10 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
                 render_dialog_lowercase_diacritic(dialog, DIALOG_CHAR_I_NO_DIA, strChar & 0xF);
                 break;
 #else
-            case DIALOG_CHAR_PREFIX_DAKUTEN:
+            case DIALOG_CHAR_DAKUTEN:
                 mark = DIALOG_MARK_DAKUTEN;
                 break;
-            case DIALOG_CHAR_PREFIX_HANDAKUTEN:
+            case DIALOG_CHAR_PERIOD_OR_HANDAKUTEN:
                 mark = DIALOG_MARK_HANDAKUTEN;
                 break;
 #endif
@@ -1359,8 +1359,8 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
 #endif
                 break;
 #ifdef VERSION_JP
-            case DIALOG_CHAR_HANDAKUTEN:
-                adjust_handakuten_char_pos(&xMatrix, &linePos);
+            case DIALOG_CHAR_PERIOD:
+                adjust_pos_and_print_period_char(&xMatrix, &linePos);
                 break;
 #else
             case DIALOG_CHAR_SLASH:
@@ -1439,8 +1439,8 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
 
 #ifdef VERSION_JP
         if (linePos == 12) {
-            if (str[strIdx + 1] == DIALOG_CHAR_HANDAKUTEN) {
-                adjust_handakuten_char_pos(&xMatrix, &linePos);
+            if (str[strIdx + 1] == DIALOG_CHAR_PERIOD) {
+                adjust_pos_and_print_period_char(&xMatrix, &linePos);
                 strIdx++;
             }
 
