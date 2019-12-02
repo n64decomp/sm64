@@ -738,7 +738,7 @@ ALIGNED8 static const u8 texture_font_char_jp_hiragana_small_tsu[] = {
 #include "textures/segment2/segment2.07710.ia1.inc.c"
 };
 
-ALIGNED8 static const u8 texture_font_char_jp_hiragana_small_ka[] = {
+ALIGNED8 static const u8 texture_font_char_jp_hiragana_small_ya[] = {
 #include "textures/segment2/segment2.07720.ia1.inc.c"
 };
 
@@ -2028,7 +2028,7 @@ const u8 *const main_font_lut[] = {
     texture_font_char_jp_katakana_yu, texture_font_char_jp_katakana_yo, texture_font_char_jp_katakana_ra, texture_font_char_jp_katakana_ri,
     texture_font_char_jp_katakana_ru, texture_font_char_jp_katakana_re, texture_font_char_jp_katakana_ro, texture_font_char_jp_katakana_wa,
                       0x0, texture_font_char_jp_katakana_n,                   0x0, texture_font_char_jp_long_vowel,
-    texture_font_char_jp_hiragana_small_e, texture_font_char_jp_hiragana_small_tsu, texture_font_char_jp_hiragana_small_ka, texture_font_char_jp_hiragana_small_yu,
+    texture_font_char_jp_hiragana_small_e, texture_font_char_jp_hiragana_small_tsu, texture_font_char_jp_hiragana_small_ya, texture_font_char_jp_hiragana_small_yu,
     texture_font_char_jp_hiragana_small_yo, texture_font_char_jp_hiragana_small_a, texture_font_char_jp_hiragana_small_i, texture_font_char_jp_hiragana_small_u,
     texture_font_char_jp_hiragana_small_o,                   0x0,                   0x0,                   0x0,
                       0x0,                   0x0,                   0x0,                   0x0,
