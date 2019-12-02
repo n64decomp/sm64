@@ -5,6 +5,7 @@
 #include "types.h"
 #include "audio/external.h"
 #include "seq_ids.h"
+#include "dialog_ids.h"
 #include "game.h"
 #include "save_file.h"
 #include "level_update.h"
@@ -340,7 +341,7 @@ struct MultiTextEntry {
 #define TEXT_THE_RAW ASCII_TO_DIALOG('t'), ASCII_TO_DIALOG('h'), ASCII_TO_DIALOG('e'), 0x00
 #define TEXT_YOU_RAW ASCII_TO_DIALOG('y'), ASCII_TO_DIALOG('o'), ASCII_TO_DIALOG('u'), 0x00
 
-enum MutliStringIDs { STRING_THE, STRING_YOU };
+enum MultiStringIDs { STRING_THE, STRING_YOU };
 
 /*
  * Place the multi-text string according to the ID passed. (US, EU)
@@ -970,7 +971,7 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
                 // convert the speed into angle
                 create_dl_rotation_matrix(MENU_MTX_NOPUSH, gDialogBoxOpenTimer * 4.0f, 0, 0, 1.0f);
             }
-            gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 0x96);
+            gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 150);
             break;
         case DIALOG_TYPE_ZOOM: // Renders a dialog white box with zoom
             if (gDialogBoxState == DIALOG_STATE_OPENING || gDialogBoxState == DIALOG_STATE_CLOSING) {
@@ -978,7 +979,7 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
                                               (40.0 / gDialogBoxScale) - 40, 0);
                 create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.0 / gDialogBoxScale, 1.0 / gDialogBoxScale, 1.0f);
             }
-            gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 0x96);
+            gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 150);
             break;
     }
 
@@ -2201,15 +2202,15 @@ void render_pause_my_score_coins(void) {
     u8 textUnfilledStar[] = { TEXT_UNFILLED_STAR };
 
     u8 strCourseNum[4];
-    void **levelNameTbl;
-    u8 *levelName;
+    void **courseNameTbl;
+    u8 *courseName;
     void **actNameTbl;
     u8 *actName;
     u8 courseIndex;
     u8 starFlags;
 
 #ifndef VERSION_EU
-    levelNameTbl = segmented_to_virtual(seg2_level_name_table);
+    courseNameTbl = segmented_to_virtual(seg2_course_name_table);
     actNameTbl = segmented_to_virtual(seg2_act_name_table);
 #endif
 
@@ -2220,15 +2221,15 @@ void render_pause_my_score_coins(void) {
     switch (gInGameLanguage) {
         case LANGUAGE_ENGLISH:
             actNameTbl = segmented_to_virtual(act_name_table_eu_en);
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_en);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_en);
             break;
         case LANGUAGE_FRENCH:
             actNameTbl = segmented_to_virtual(act_name_table_eu_fr);
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_fr);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_fr);
             break;
         case LANGUAGE_GERMAN:
             actNameTbl = segmented_to_virtual(act_name_table_eu_de);
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_de);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_de);
             break;
     }
 #endif
@@ -2250,7 +2251,7 @@ void render_pause_my_score_coins(void) {
         print_generic_string(MYSCORE_X, 121, textMyScore);
     }
 
-    levelName = segmented_to_virtual(levelNameTbl[courseIndex]);
+    courseName = segmented_to_virtual(courseNameTbl[courseIndex]);
 
     if (courseIndex < COURSE_STAGES_COUNT) {
 #ifdef VERSION_EU
@@ -2274,19 +2275,19 @@ void render_pause_my_score_coins(void) {
         }
         print_generic_string(ACT_NAME_X, 140, actName);
 #ifndef VERSION_JP
-        print_generic_string(LVL_NAME_X, 157, &levelName[3]);
+        print_generic_string(LVL_NAME_X, 157, &courseName[3]);
 #endif
     }
 #ifndef VERSION_JP
     else {
 #ifdef VERSION_US
-        print_generic_string(94, 157, &levelName[3]);
+        print_generic_string(94, 157, &courseName[3]);
 #elif defined(VERSION_EU)
-        print_generic_string(get_str_x_pos_from_center(159, &levelName[3], 10.0f), 157, &levelName[3]);
+        print_generic_string(get_str_x_pos_from_center(159, &courseName[3], 10.0f), 157, &courseName[3]);
 #endif
     }
 #else
-    print_generic_string(117, 157, &levelName[3]);
+    print_generic_string(117, 157, &courseName[3]);
 #endif
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
@@ -2498,9 +2499,9 @@ void render_pause_castle_course_stars(s16 x, s16 y, s16 fileNum, s16 courseNum) 
 
 void render_pause_castle_main_strings(s16 x, s16 y) {
 #ifdef VERSION_EU
-    void **levelNameTbl;
+    void **courseNameTbl;
 #else
-    void **levelNameTbl = segmented_to_virtual(seg2_level_name_table);
+    void **courseNameTbl = segmented_to_virtual(seg2_course_name_table);
 #endif
 
 #ifdef VERSION_EU
@@ -2510,7 +2511,7 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     u8 textCoin[] = { TEXT_COIN_X };
 #endif
 
-    void *levelName;
+    void *courseName;
 
     u8 strVal[8];
     s16 starNum = gDialogLineNum;
@@ -2518,13 +2519,13 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
 #ifdef VERSION_EU
     switch (gInGameLanguage) {
         case LANGUAGE_ENGLISH:
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_en);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_en);
             break;
         case LANGUAGE_FRENCH:
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_fr);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_fr);
             break;
         case LANGUAGE_GERMAN:
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_de);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_de);
             break;
     }
 #endif
@@ -2558,7 +2559,7 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
     if (gDialogLineNum < COURSE_STAGES_COUNT) {
-        levelName = segmented_to_virtual(levelNameTbl[gDialogLineNum]);
+        courseName = segmented_to_virtual(courseNameTbl[gDialogLineNum]);
         render_pause_castle_course_stars(x, y, gCurrSaveFileNum - 1, gDialogLineNum);
         print_generic_string(x + 34, y - 5, textCoin);
 #ifdef VERSION_EU
@@ -2567,21 +2568,21 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
         int_to_str(save_file_get_course_coin_score(gCurrSaveFileNum - 1, gDialogLineNum), strVal);
         print_generic_string(x + 54, y - 5, strVal);
 #ifdef VERSION_EU
-        print_generic_string(x - 17, y + 30, levelName);
+        print_generic_string(x - 17, y + 30, courseName);
 #endif
     } else {
         u8 textStarX[] = { TEXT_STAR_X };
-        levelName = segmented_to_virtual(levelNameTbl[COURSE_MAX]);
+        courseName = segmented_to_virtual(courseNameTbl[COURSE_MAX]);
         print_generic_string(x + 40, y + 13, textStarX);
         int_to_str(save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_BONUS_STAGES - 1, COURSE_MAX - 1), strVal);
         print_generic_string(x + 60, y + 13, strVal);
 #ifdef VERSION_EU
-        print_generic_string(get_str_x_pos_from_center(x + 51, levelName, 10.0f), y + 30, levelName);
+        print_generic_string(get_str_x_pos_from_center(x + 51, courseName, 10.0f), y + 30, courseName);
 #endif
     }
 
 #ifndef VERSION_EU
-    print_generic_string(x - 9, y + 30, levelName);
+    print_generic_string(x - 9, y + 30, courseName);
 #endif
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
@@ -2816,7 +2817,7 @@ void render_course_complete_lvl_info_and_hud_str(void) {
 #endif
 
     void **actNameTbl;
-    void **levelNameTbl;
+    void **courseNameTbl;
     u8 *name;
 
     u8 strCourseNum[4];
@@ -2826,20 +2827,20 @@ void render_course_complete_lvl_info_and_hud_str(void) {
     switch (gInGameLanguage) {
         case LANGUAGE_ENGLISH:
             actNameTbl = segmented_to_virtual(act_name_table_eu_en);
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_en);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_en);
             break;
         case LANGUAGE_FRENCH:
             actNameTbl = segmented_to_virtual(act_name_table_eu_fr);
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_fr);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_fr);
             break;
         case LANGUAGE_GERMAN:
             actNameTbl = segmented_to_virtual(act_name_table_eu_de);
-            levelNameTbl = segmented_to_virtual(level_name_table_eu_de);
+            courseNameTbl = segmented_to_virtual(course_name_table_eu_de);
             break;
     }
 #else
     actNameTbl = segmented_to_virtual(seg2_act_name_table);
-    levelNameTbl = segmented_to_virtual(seg2_level_name_table);
+    courseNameTbl = segmented_to_virtual(seg2_course_name_table);
 #endif
 
     if (gLastCompletedCourseNum <= COURSE_STAGES_MAX) {
@@ -2862,7 +2863,7 @@ void render_course_complete_lvl_info_and_hud_str(void) {
         print_generic_string(CRS_NUM_X3, 167, strCourseNum);
         gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     } else if (gLastCompletedCourseNum == COURSE_BITDW || gLastCompletedCourseNum == COURSE_BITFS) {
-        name = segmented_to_virtual(levelNameTbl[gLastCompletedCourseNum - 1]);
+        name = segmented_to_virtual(courseNameTbl[gLastCompletedCourseNum - 1]);
         gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
         gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, gDialogTextAlpha);
 #ifdef VERSION_EU

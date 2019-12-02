@@ -12,15 +12,15 @@ extern u8 _translation_de_mio0SegmentRomStart[];
 extern u8 _translation_de_mio0SegmentRomEnd[];
 
 extern void *dialog_table_eu_en[];
-extern void *level_name_table_eu_en[];
+extern void *course_name_table_eu_en[];
 extern void *act_name_table_eu_en[];
 
 extern void *dialog_table_eu_fr[];
-extern void *level_name_table_eu_fr[];
+extern void *course_name_table_eu_fr[];
 extern void *act_name_table_eu_fr[];
 
 extern void *dialog_table_eu_de[];
-extern void *level_name_table_eu_de[];
+extern void *course_name_table_eu_de[];
 extern void *act_name_table_eu_de[];
 
 #endif /* EU_TRANSLATION_H */

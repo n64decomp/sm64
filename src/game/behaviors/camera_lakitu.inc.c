@@ -115,7 +115,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                     }
                 }
             }
-        } else if (obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0, CUTSCENE_DIALOG_1, 34) != 0) {
+        } else if (obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0, CUTSCENE_DIALOG_1, DIALOG_034) != 0) {
             o->oCameraLakituFinishedDialog = TRUE;
         }
     }
@@ -151,15 +151,15 @@ void bhv_camera_lakitu_update(void) {
                     break;
             }
         } else {
-            f32 val0C = (f32) 0x875C3D / 0x800 - gCameraStatus.camFocAndPosCurrAndGoal[0][3];
-            if (gCameraStatus.camFocAndPosCurrAndGoal[0][3] < 1700.0f || val0C < 0.0f) {
+            f32 val0C = (f32) 0x875C3D / 0x800 - gCameraStatus.camFocAndPosCurrAndGoal[1][0];
+            if (gCameraStatus.camFocAndPosCurrAndGoal[1][0] < 1700.0f || val0C < 0.0f) {
                 obj_hide();
             } else {
                 obj_unhide();
 
-                o->oPosX = gCameraStatus.camFocAndPosCurrAndGoal[0][3];
-                o->oPosY = gCameraStatus.camFocAndPosCurrAndGoal[0][4];
-                o->oPosZ = gCameraStatus.camFocAndPosCurrAndGoal[0][5];
+                o->oPosX = gCameraStatus.camFocAndPosCurrAndGoal[1][0];
+                o->oPosY = gCameraStatus.camFocAndPosCurrAndGoal[1][1];
+                o->oPosZ = gCameraStatus.camFocAndPosCurrAndGoal[1][2];
 
                 o->oHomeX = gCameraStatus.camFocAndPosCurrAndGoal[0][0];
                 o->oHomeZ = gCameraStatus.camFocAndPosCurrAndGoal[0][2];

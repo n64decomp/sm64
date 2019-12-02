@@ -3,95 +3,6 @@
 
 #include "types.h"
 
-enum CourseNum
-{
-    COURSE_NONE,                       // (0)  Overworld (Castle Grounds, etc)
-    COURSE_MIN,
-    /* -------------- Main Courses -------------- */
-    COURSE_STAGES_MIN = COURSE_MIN,
-    COURSE_BOB = COURSE_STAGES_MIN,    // (1)  Bob Omb Battlefield
-    COURSE_WF,                         // (2)  Whomp's Fortress
-    COURSE_JRB,                        // (3)  Jolly Rodger's Bay
-    COURSE_CCM,                        // (4)  Cool Cool Mountain
-    COURSE_BBH,                        // (5)  Big Boo's Haunt
-    COURSE_HMC,                        // (6)  Hazy Maze Cave
-    COURSE_LLL,                        // (7)  Lethal Lava Land
-    COURSE_SSL,                        // (8)  Shifting Sand Land
-    COURSE_DDD,                        // (9)  Dire Dire Docks
-    COURSE_SL,                         // (10) Snowman's Land
-    COURSE_WDW,                        // (11) Wet Dry World
-    COURSE_TTM,                        // (12) Tall Tall Mountain
-    COURSE_THI,                        // (13) Tiny Huge Island
-    COURSE_TTC,                        // (14) Tick Tock Clock
-    COURSE_RR,                         // (15) Rainbow Ride
-    COURSE_BONUS_STAGES,
-    COURSE_STAGES_MAX = COURSE_BONUS_STAGES - 1,
-    COURSE_STAGES_COUNT = COURSE_STAGES_MAX,
-    /* -------------- Bonus Courses -------------- */
-    COURSE_BITDW,                      // (16) Bowser in the Dark World
-    COURSE_BITFS,                      // (17) Bowser in the Fire Sea
-    COURSE_BITS,                       // (18) Bowser in the Sky
-    COURSE_PSS,                        // (19) Princess's Secret Slide
-    COURSE_CAP_COURSES,
-    COURSE_COTMC = COURSE_CAP_COURSES, // (20) Cavern of the Metal Cap
-    COURSE_TOTWC,                      // (21) Tower of the Wing Cap
-    COURSE_VCUTM,                      // (22) Vanish Cap Under the Moat
-    COURSE_WMOTR,                      // (23) Winged Mario over the Rainbow
-    COURSE_SA,                         // (24) Secret Aquarium
-    COURSE_CAKE_END,                   // (25) The End (Cake Scene)
-    COURSE_AFTER_END,
-    COURSE_MAX = COURSE_AFTER_END - 1,
-    COURSE_COUNT = COURSE_MAX
-};
-
-#define COURSE_IS_MAIN_COURSE(cmd) (cmd >= COURSE_STAGES_MIN && cmd <= COURSE_STAGES_MAX)
-
-enum LevelNum
-{
-    LEVEL_NONE,                  // not indexed
-    LEVEL_MIN,
-    LEVEL_UNKNOWN_1 = LEVEL_MIN, // (1)  ""
-    LEVEL_UNKNOWN_2,             // (2)  ""
-    LEVEL_UNKNOWN_3,             // (3)  ""
-    LEVEL_BBH,                   // (4)  "TERESA OBAKE"   Big Boo's Haunt
-    LEVEL_CCM,                   // (5)  "YYAMA1 % YSLD1" Cool Cool Mountain
-    LEVEL_CASTLE,                // (6)  "SELECT ROOM"    Castle lobby
-    LEVEL_HMC,                   // (7)  "HORROR DUNGEON" Hazy Maze Cave
-    LEVEL_SSL,                   // (8)  "SABAKU % PYRMD" Shifting Sand Land
-    LEVEL_BOB,                   // (9)  "BATTLE FIELD"   Bob Omb Battlefield
-    LEVEL_SL,                    // (10) "YUKIYAMA2"      Snowman's Land
-    LEVEL_WDW,                   // (11) "POOL KAI"       Wet Dry World
-    LEVEL_JRB,                   // (12) "WTDG % TINBOTU" Jolly Rodger's Bay
-    LEVEL_THI,                   // (13) "BIG WORLD"      Tiny Huge Island
-    LEVEL_TTC,                   // (14) "CLOCK TOWER"    Tick Tock Clock
-    LEVEL_RR,                    // (15) "RAINBOW CRUISE" Rainbow Ride
-    LEVEL_CASTLE_GROUNDS,        // (16) "MAIN MAP"       Castle grounds (outside)
-    LEVEL_BITDW,                 // (17) "EXT1 YOKO SCRL" Bowser in the Dark World
-    LEVEL_VCUTM,                 // (18) "EXT7 HORI MINI" Vanish Cap under the Moat
-    LEVEL_BITFS,                 // (19) "EXT2 TIKA LAVA" Bowser in the Fire Sea
-    LEVEL_SA,                    // (20) "EXT9 SUISOU"    Secret Aquarium
-    LEVEL_BITS,                  // (21) "EXT3 HEAVEN"    Bowser in the Sky
-    LEVEL_LLL,                   // (22) "FIREB1 % INVLC" Lethal Lava Land
-    LEVEL_DDD,                   // (23) "WATER LAND"     Dire Dire Docks
-    LEVEL_WF,                    // (24) "MOUNTAIN"       Whomp's Fortress
-    LEVEL_ENDING,                // (25) "ENDING"         (Ending Cutscene)
-    LEVEL_CASTLE_COURTYARD,      // (26) "URANIWA"        Castle courtyard (BBH entrance)
-    LEVEL_PSS,                   // (27) "EXT4 MINI SLID" Princess's Secret Slide
-    LEVEL_COTMC,                 // (28) "IN THE FALL"    Cavern of the Metal Cap
-    LEVEL_TOTWC,                 // (29) "EXT6 MARIO FLY" Tower of the Wing Cap
-    LEVEL_BOWSER_1,              // (30) "KUPPA1"         Bowser in the Dark World (Boss)
-    LEVEL_WMOTR,                 // (31) "EXT8 BLUE SKY"  Winged Mario over the Rainbow
-    LEVEL_UNKNOWN_32,            // (32) ""
-    LEVEL_BOWSER_2,              // (33) "KUPPA2"         Bowser in the Fire Sea (Boss)
-    LEVEL_BOWSER_3,              // (34) "KUPPA3"         Bowser in the Sky (Final Boss)
-    LEVEL_UNKNOWN_35,            // (35) ""
-    LEVEL_TTM,                   // (36) "DONKEY % SLID2" Tall Tall Mountain
-    LEVEL_UNKNOWN_37,            // (37) ""
-    LEVEL_UNKNOWN_38,            // (38) ""
-    LEVEL_COUNT,
-    LEVEL_MAX = LEVEL_COUNT - 1
-};
-
 struct WarpNode
 {
     /*00*/ u8 id;
@@ -203,6 +114,21 @@ struct Area
     /*0x38*/ u16 musicParam2;
 };
 
+/**
+ * Helper macro for defining which areas of a level should zoom out the camera when the game is paused.
+ * Because a mask is used by two levels, the pattern will repeat when more than 4 areas are used by a level.
+ */
+#define ZOOMOUT_AREA_MASK(level1Area1, level1Area2, level1Area3, level1Area4, \
+                          level2Area1, level2Area2, level2Area3, level2Area4) \
+    ((level2Area4) << 7 |                                                     \
+     (level2Area3) << 6 |                                                     \
+     (level2Area2) << 5 |                                                     \
+     (level2Area1) << 4 |                                                     \
+     (level1Area4) << 3 |                                                     \
+     (level1Area3) << 2 |                                                     \
+     (level1Area2) << 1 |                                                     \
+     (level1Area1) << 0)
+
 // All the transition data to be used in screen_transition.c
 struct WarpTransitionData
 {
@@ -210,14 +136,14 @@ struct WarpTransitionData
     /*0x01*/ u8 green;
     /*0x02*/ u8 blue;
 
-    /*0x04*/ s16 startCircleRadius;
-    /*0x06*/ s16 endCircleRadius;
-    /*0x08*/ s16 startCircleX;
-    /*0x0A*/ s16 startCircleY;
-    /*0x0C*/ s16 endCircleX;
-    /*0x0E*/ s16 endCircleY;
+    /*0x04*/ s16 startTexRadius;
+    /*0x06*/ s16 endTexRadius;
+    /*0x08*/ s16 startTexX;
+    /*0x0A*/ s16 startTexY;
+    /*0x0C*/ s16 endTexX;
+    /*0x0E*/ s16 endTexY;
 
-    /*0x10*/ s16 unk10;
+    /*0x10*/ s16 texTimer; // always 0, does seems to affect transition when disabled
 };
 
 #define WARP_TRANSITION_FADE_FROM_COLOR  0x00

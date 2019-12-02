@@ -1,24 +1,16 @@
 // Bub
 
 // 0x0600E278
-static const Ambient bub_seg6_light_0600E278 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x0600E280
-static const Light bub_seg6_light_0600E280 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bub_seg6_lights_0600E280 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0600E290
-static const Ambient bub_seg6_light_0600E290 = {
-    {{0x3f, 0x1d, 0x25}, 0, {0x3f, 0x1d, 0x25}, 0}
-};
-
-// 0x0600E298
-static const Light bub_seg6_light_0600E298 = {
-    {{0xff, 0x75, 0x94}, 0, {0xff, 0x75, 0x94}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bub_seg6_lights_0600E290 = gdSPDefLights1(
+    0x3f, 0x1d, 0x25,
+    0xff, 0x75, 0x94, 0x28, 0x28, 0x28
+);
 
 // 0x0600E2A8
 ALIGNED8 static const u8 bub_seg6_texture_0600E2A8[] = {
@@ -171,8 +163,8 @@ const Gfx bub_seg6_dl_06011848[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bub_seg6_texture_0600E2A8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bub_seg6_light_0600E280, 1),
-    gsSPLight(&bub_seg6_light_0600E278, 2),
+    gsSPLight(&bub_seg6_lights_0600E280.l, 1),
+    gsSPLight(&bub_seg6_lights_0600E280.a, 2),
     gsSPVertex(bub_seg6_vertex_060112A8, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  5,  7,  6, 0x0),
@@ -230,8 +222,8 @@ const Gfx bub_seg6_dl_06011968[] = {
 
 // 0x06011A50 - 0x06011B28
 const Gfx bub_seg6_dl_06011A50[] = {
-    gsSPLight(&bub_seg6_light_0600E298, 1),
-    gsSPLight(&bub_seg6_light_0600E290, 2),
+    gsSPLight(&bub_seg6_lights_0600E290.l, 1),
+    gsSPLight(&bub_seg6_lights_0600E290.a, 2),
     gsSPVertex(bub_seg6_vertex_06011718, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 1,  4,  2, 0x0,  1,  3,  4, 0x0),
@@ -240,8 +232,8 @@ const Gfx bub_seg6_dl_06011A50[] = {
     gsSP2Triangles( 8,  9, 10, 0x0,  8,  5,  0, 0x0),
     gsSP2Triangles( 0, 11,  8, 0x0,  8, 10,  5, 0x0),
     gsSP2Triangles( 5, 10,  6, 0x0, 10,  9,  6, 0x0),
-    gsSPLight(&bub_seg6_light_0600E280, 1),
-    gsSPLight(&bub_seg6_light_0600E278, 2),
+    gsSPLight(&bub_seg6_lights_0600E280.l, 1),
+    gsSPLight(&bub_seg6_lights_0600E280.a, 2),
     gsSPVertex(bub_seg6_vertex_060117D8, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  4, 0x0),
     gsSP2Triangles( 2,  1,  5, 0x0,  2,  5,  6, 0x0),
@@ -292,8 +284,8 @@ const Gfx bub_seg6_dl_06011C58[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bub_seg6_texture_0600EAA8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bub_seg6_light_0600E280, 1),
-    gsSPLight(&bub_seg6_light_0600E278, 2),
+    gsSPLight(&bub_seg6_lights_0600E280.l, 1),
+    gsSPLight(&bub_seg6_lights_0600E280.a, 2),
     gsSPVertex(bub_seg6_vertex_06011BD8, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSP2Triangles( 4,  5,  0, 0x0,  0,  5,  6, 0x0),
@@ -336,8 +328,8 @@ const Gfx bub_seg6_dl_06011DC0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bub_seg6_texture_0600EAA8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bub_seg6_light_0600E280, 1),
-    gsSPLight(&bub_seg6_light_0600E278, 2),
+    gsSPLight(&bub_seg6_lights_0600E280.l, 1),
+    gsSPLight(&bub_seg6_lights_0600E280.a, 2),
     gsSPVertex(bub_seg6_vertex_06011D50, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  2, 0x0),
     gsSP2Triangles( 2,  4,  0, 0x0,  3,  2,  1, 0x0),
@@ -379,8 +371,8 @@ const Gfx bub_seg6_dl_06011F18[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bub_seg6_texture_0600EAA8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bub_seg6_light_0600E280, 1),
-    gsSPLight(&bub_seg6_light_0600E278, 2),
+    gsSPLight(&bub_seg6_lights_0600E280.l, 1),
+    gsSPLight(&bub_seg6_lights_0600E280.a, 2),
     gsSPVertex(bub_seg6_vertex_06011EA8, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  3,  0, 0x0,  0,  5,  6, 0x0),

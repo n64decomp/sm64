@@ -568,7 +568,9 @@ void mtxf_mul_vec3s(Mat4 mtx, Vec3s b) {
  * and no crashes occur.
  */
 void mtxf_to_mtx(Mtx *dest, Mat4 src) {
-#if ENDIAN_IND
+#ifdef AVOID_UB
+    // Avoid type-casting which is technically UB by calling the equivalent
+    // guMtxF2L function. This helps little-endian systems, as well.
     guMtxF2L(src, dest);
 #else
     s32 asFixedPoint;

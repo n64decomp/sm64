@@ -64,7 +64,7 @@ void func_802F2F8C(s16 sp1A) {
 }
 
 void bhv_1up_walking_loop(void) {
-    ObjectStep();
+    object_step();
 
     switch (o->oAction) {
         case 0:
@@ -91,18 +91,18 @@ void bhv_1up_walking_loop(void) {
             break;
 
         case 2:
-            ObjFlickerAndDisappear(o, 30);
+            obj_flicker_and_disappear(o, 30);
             bhv_1up_interact();
             break;
     }
 
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 void bhv_1up_running_away_loop(void) {
     s16 sp26;
 
-    sp26 = ObjectStep();
+    sp26 = object_step();
     switch (o->oAction) {
         case 0:
             if (o->oTimer >= 18)
@@ -126,18 +126,18 @@ void bhv_1up_running_away_loop(void) {
             break;
 
         case 2:
-            ObjFlickerAndDisappear(o, 30);
+            obj_flicker_and_disappear(o, 30);
             bhv_1up_interact();
             break;
     }
 
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 void func_802F3328(void) {
     s16 sp1E;
 
-    sp1E = ObjectStep();
+    sp1E = object_step();
     if (sp1E & 0x01) {
         o->oForwardVel += 25.0f;
         o->oVelY = 0;
@@ -155,7 +155,7 @@ void func_802F3328(void) {
 void bhv_1up_sliding_loop(void) {
     switch (o->oAction) {
         case 0:
-            SetObjectVisibility(o, 3000);
+            set_object_visibility(o, 3000);
             if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1000))
                 o->oAction = 1;
             break;
@@ -165,7 +165,7 @@ void bhv_1up_sliding_loop(void) {
             break;
 
         case 2:
-            ObjFlickerAndDisappear(o, 30);
+            obj_flicker_and_disappear(o, 30);
             bhv_1up_interact();
             break;
     }
@@ -176,7 +176,7 @@ void bhv_1up_sliding_loop(void) {
 
 void bhv_1up_loop(void) {
     bhv_1up_interact();
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 void bhv_1up_jump_on_approach_loop(void) {
@@ -191,19 +191,19 @@ void bhv_1up_jump_on_approach_loop(void) {
             break;
 
         case 1:
-            sp26 = ObjectStep();
+            sp26 = object_step();
             func_802F2F8C(sp26);
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
             break;
 
         case 2:
-            sp26 = ObjectStep();
+            sp26 = object_step();
             bhv_1up_interact();
-            ObjFlickerAndDisappear(o, 30);
+            obj_flicker_and_disappear(o, 30);
             break;
     }
 
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 void bhv_1up_hidden_loop(void) {
@@ -220,19 +220,19 @@ void bhv_1up_hidden_loop(void) {
             break;
 
         case 1:
-            sp26 = ObjectStep();
+            sp26 = object_step();
             func_802F2F8C(sp26);
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
             break;
 
         case 2:
-            sp26 = ObjectStep();
+            sp26 = object_step();
             bhv_1up_interact();
-            ObjFlickerAndDisappear(o, 30);
+            obj_flicker_and_disappear(o, 30);
             break;
 
         case 3:
-            sp26 = ObjectStep();
+            sp26 = object_step();
             if (o->oTimer >= 18)
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
@@ -273,11 +273,11 @@ void bhv_1up_hidden_in_pole_loop(void) {
 
         case 1:
             func_802F2E18();
-            sp26 = ObjectStep();
+            sp26 = object_step();
             break;
 
         case 3:
-            sp26 = ObjectStep();
+            sp26 = object_step();
             if (o->oTimer >= 18)
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 

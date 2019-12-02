@@ -32,7 +32,7 @@ s8 D_8032F4FC[] = { 7, 8, 9, 12, 13, 14, 15, 4, 3, 16, 17, 19, 3, 3, 3, 3 };
 s16 D_8032F50C[] = { 60, 0 };
 s16 D_8032F510[] = { 50, 0 };
 s8 D_8032F514[] = { 24, 42, 60, -1 };
-s16 sBowserDefeatedDialogText[3] = { 119, 120, 121 };
+s16 sBowserDefeatedDialogText[3] = { DIALOG_119, DIALOG_120, DIALOG_121 };
 s16 D_8032F520[][3] = { { 1, 10, 40 },   { 0, 0, 74 },    { -1, -10, 114 },  { 1, -20, 134 },
                         { -1, 20, 154 }, { 1, 40, 164 },  { -1, -40, 174 },  { 1, -80, 179 },
                         { -1, 80, 184 }, { 1, 160, 186 }, { -1, -160, 186 }, { 1, 0, 0 }, };
@@ -865,9 +865,9 @@ s32 func_802B6254(void) {
     s32 dialogID;
     if (o->oBowserUnkF8 < 2) {
         if (gHudDisplay.stars < 120)
-            dialogID = 121;
+            dialogID = DIALOG_121;
         else
-            dialogID = 163;
+            dialogID = DIALOG_163;
         if (o->oBowserUnkF8 == 0) {
             func_8031FFB4(0, 60, 40);
             o->oBowserUnkF8++;
@@ -1247,7 +1247,7 @@ void func_802B70C8(struct Object *a0, struct GraphNodeSwitchCase *switchCase) {
  * state. Checks whether oBowserEyesShut is TRUE and closes eyes if so and processes
  * direction otherwise.
  */
-s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
+Gfx *geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
     UNUSED s16 sp36;
     UNUSED s32 unused;
     struct Object *obj = (struct Object *) gCurGraphNodeObject;
@@ -1265,7 +1265,7 @@ s32 geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
         }
         obj->oBowserUnk1AE++;
     }
-    return 0;
+    return NULL;
 }
 
 Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
@@ -1280,9 +1280,9 @@ Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
         if (gCurGraphNodeHeldObject != 0)
             sp24 = gCurGraphNodeHeldObject->objNode;
         if (sp24->oOpacity == 0xFF)
-            sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | 0x100;
+            sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | GRAPH_NODE_TYPE_FUNCTIONAL;
         else
-            sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | (0x100 | 0x400);
+            sp20->fnNode.node.flags = (sp20->fnNode.node.flags & 0xFF) | (GRAPH_NODE_TYPE_FUNCTIONAL | GRAPH_NODE_TYPE_400);
         sp28 = sp2C = alloc_display_list(2 * sizeof(Gfx));
 
         if (sp24->oBowserUnk1B2 != 0) {

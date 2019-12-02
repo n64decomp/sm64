@@ -5,48 +5,12 @@
 #include "object_helpers2.h"
 #include "engine/surface_collision.h"
 
-extern struct Surface *D_803600E0;
-
-extern s8 D_80331500;
-extern s16 D_80331504;
-extern s8 D_80331508;
-extern s8 D_8033150C;
-extern s8 D_80331510;
-
 extern u8 bob_seg7_metal_ball_path0[];
 extern u8 ttm_seg7_trajectory_070170A0[];
 extern u8 bob_seg7_metal_ball_path1[];
 
-void func_802E2F40(void);
-Gfx *func_802E2F58(s32 arg0, struct Object *arg1, UNUSED s32 arg2); /* unused */
-f32 absf_2(f32 f);
-void TurnObjAwayFromSurface(f32 objVelX, f32 objVelZ, f32 nX, UNUSED f32 nY, f32 nZ, f32 *objYawX, f32 *objYawZ);
-s32 ObjFindWall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ);
-s32 TurnObjAwayFromAwkwardFloor(struct Surface *objFloor, f32 floorY, f32 objVelX, f32 objVelZ);
-void ObjOrientGraph(struct Object *obj, f32 normalX, f32 normalY, f32 normalZ);
-void CalcObjFriction(f32 *objFriction, f32 floor_nY);
-void CalcNewObjVelAndPosY(struct Surface* objFloor, f32 objFloorY, f32 objVelX, f32 arg3);
-void CalcNewObjVelAndPosYUnderwater(struct Surface* objFloor, f32 floorY, f32 objVelX, f32 objVelZ, f32 waterY);
-void ObjUpdatePosVelXZ(void);
-void ObjSplash(s32 waterY, s32 objY);
-s32 ObjectStep(void);
-s32 func_802E4204(void);
-void obj_move_xyz_using_fvel_and_yaw(struct Object* obj);
-s32 is_point_within_radius_of_mario(f32 x, f32 y, f32 z, s32 dist);
-s32 IsPointCloseToObject(struct Object* obj, f32 x, f32 y, f32 z, s32 dist);
-void SetObjectVisibility(struct Object* obj, s32 arg1);
-s32 ObjLeaveIfMarioIsNearHome(struct Object* obj, f32 arg1, f32 arg2, f32 arg3, s32 arg4);
-void ObjDisplaceHome(struct Object* obj, f32 homeX, UNUSED f32 homeY, f32 homeZ, s32 baseDisp);
-s32 func_802E46C0(u32 arg0, u32 arg1, s16 arg2);
-s32 func_802E478C(Vec3f dist, f32 x, f32 y, f32 z, f32 arg4);
-void ObjSpawnYellowCoins(struct Object *obj, s8 nCoins);
-s32 ObjFlickerAndDisappear(struct Object *obj, s16 arg1);
-s8 func_802E49A4(s16 arg0);
-s16 func_802E4A38(s32 *arg0, s16 arg1, f32 arg2, s32 arg3);
-void ObjCheckFloorDeath(s16 collisionFlags, struct Surface *floor);
-s32 ObjLavaDeath(void);
-void SpawnOrangeNumber(s8 arg0, s16 arg1, s16 arg2, s16 arg3);
-s32 Unknown802E4DF4(s16 *arg0); /* unused */
+void set_yoshi_as_not_dead(void);
+
 s32 CoinStep(s16 *collisionFlagsPtr);
 void MovingCoinFlickerLoop(void);
 void CoinCollected(void);
@@ -93,15 +57,8 @@ void WhirlpoolOrientGraph(void);
 void bhv_whirlpool_loop(void);
 void bhv_jet_stream_loop(void);
 void bhv_homing_amp_init(void);
-//void check_amp_attack(void);
-//void homing_amp_appear_loop(void);
-//void homing_amp_chase_loop(void);
-//void homing_amp_give_up_loop(void);
-//void amp_attack_cooldown_loop(void);
 void bhv_homing_amp_loop(void);
 void bhv_circling_amp_init(void);
-//void fixed_circling_amp_idle_loop(void);
-//void circling_amp_idle_loop(void);
 void bhv_circling_amp_loop(void);
 void bhv_butterfly_init(void);
 void ButterflyStep(s32 speed);
@@ -123,8 +80,6 @@ void HootTurnToHome(void);
 void HootAwakeLoop(void);
 void bhv_hoot_loop(void);
 void bhv_beta_holdable_object_init(void); /* unused */
-//void beta_holdable_object_drop(void); /* unused */
-//void beta_holdable_object_throw(void); /* unused */
 void bhv_beta_holdable_object_loop(void); /* unused */
 void bhv_object_bubble_init(void);
 void bhv_object_bubble_loop(void);

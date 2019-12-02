@@ -39,7 +39,7 @@ void bhv_treasure_chest_top_loop(void) {
                 o->oFaceAnglePitch = -0x4000;
                 o->oAction++;
                 if (o->parentObj->oBehParams2ndByte != 4)
-                    SpawnOrangeNumber(o->parentObj->oBehParams2ndByte, 0, -40, 0);
+                    spawn_orange_number(o->parentObj->oBehParams2ndByte, 0, -40, 0);
             }
             break;
 
@@ -65,7 +65,7 @@ void bhv_treasure_chest_bottom_init(void) {
 void bhv_treasure_chest_bottom_loop(void) {
     switch (o->oAction) {
         case 0:
-            if (func_802E46C0(o->oMoveAngleYaw, gMarioObject->header.gfx.angle[1] + 0x8000, 0x3000)) {
+            if (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, gMarioObject->header.gfx.angle[1] + 0x8000, 0x3000)) {
                 if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 150)) {
                     if (!o->parentObj->oTreasureChestUnkF8) {
                         if (o->parentObj->oTreasureChestUnkF4 == o->oBehParams2ndByte) {

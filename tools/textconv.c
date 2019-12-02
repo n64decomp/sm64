@@ -179,6 +179,13 @@ static void read_charmap(const char *filename)
                 else if (*line == '\\')
                 {
                     line++; // advance to get the character being escaped
+                    if (*line == '\r')
+                        line++;
+                    if (*line == '\n')
+                    {
+                        // Backslash at end of line is ignored
+                        continue;
+                    }
                     entry.unicode[len] = get_escape_char(*line);
                     if (entry.unicode[len] == 0)
                         parse_error(filename, lineNum, "unknown escape sequence \\%c", *line);

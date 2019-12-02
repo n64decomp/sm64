@@ -1,22 +1,14 @@
-// 0x070076A8 - 0x070076B0
-static const Ambient thi_seg7_light_070076A8 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
+// 0x070076A8 - 0x070076C0
+static const Lights1 thi_seg7_lights_070076A8 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x070076B0 - 0x070076C0
-static const Light thi_seg7_light_070076B0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x070076C0 - 0x070076C8
-static const Ambient thi_seg7_light_070076C0 = {
-    {{0x4c, 0x4c, 0x4c}, 0, {0x4c, 0x4c, 0x4c}, 0}
-};
-
-// 0x070076C8 - 0x070076D8
-static const Light thi_seg7_light_070076C8 = {
-    {{0x99, 0x99, 0x99}, 0, {0x99, 0x99, 0x99}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x070076C0 - 0x070076D8
+static const Lights1 thi_seg7_lights_070076C0 = gdSPDefLights1(
+    0x4c, 0x4c, 0x4c,
+    0x99, 0x99, 0x99, 0x28, 0x28, 0x28
+);
 
 // 0x070076D8 - 0x07007718
 static const Vtx thi_seg7_vertex_070076D8[] = {
@@ -56,8 +48,8 @@ static const Gfx thi_seg7_dl_07007828[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, grass_09005800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&thi_seg7_light_070076B0, 1),
-    gsSPLight(&thi_seg7_light_070076A8, 2),
+    gsSPLight(&thi_seg7_lights_070076A8.l, 1),
+    gsSPLight(&thi_seg7_lights_070076A8.a, 2),
     gsSPVertex(thi_seg7_vertex_070076D8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -81,8 +73,8 @@ static const Gfx thi_seg7_dl_070078D8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, grass_09004800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&thi_seg7_light_070076C8, 1),
-    gsSPLight(&thi_seg7_light_070076C0, 2),
+    gsSPLight(&thi_seg7_lights_070076C0.l, 1),
+    gsSPLight(&thi_seg7_lights_070076C0.a, 2),
     gsSPVertex(thi_seg7_vertex_070077D8, 5, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSP2Triangles( 3,  4,  2, 0x0,  4,  0,  2, 0x0),

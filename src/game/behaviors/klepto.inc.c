@@ -144,8 +144,10 @@ static void klepto_circle_target(f32 radius, f32 targetSpeed) {
         o->oKleptoYawToTarget += turnAmount;
         func_8030F218();
 
+        //! The multiplied value is sometimes out of range for an s16 during the s32 -> s16 cast,
+        //  which might invert sign.
         turnAmount =
-            (s16)(abs_angle_diff(o->oKleptoYawToTarget, o->oMoveAngleYaw) * (0.03f * o->oKleptoSpeed));
+            (s16)(s32)(abs_angle_diff(o->oKleptoYawToTarget, o->oMoveAngleYaw) * (0.03f * o->oKleptoSpeed));
         clamp_s16(&turnAmount, 400, 700);
         obj_rotate_yaw_and_bounce_off_walls(o->oKleptoYawToTarget, turnAmount);
 

@@ -6,52 +6,56 @@
 #include "engine/geo_layout.h"
 #include "engine/graph_node.h"
 
+#include "level_table.h"
+
 #define ABS(x) ((x) > 0.f ? (x) : -(x))
 #define ABS2(x) ((x) >= 0.f ? (x) : -(x))
 
-#define AREA_BBH                0x0041
-#define AREA_CCM_OUTSIDE        0x0051
-#define AREA_CCM_SLIDE          0x0052
-#define AREA_CASTLE_LOBBY       0x0061
-#define AREA_CASTLE_TIPPY       0x0062
-#define AREA_CASTLE_BASTEMENT   0x0063
-#define AREA_HMC                0x0071
-#define AREA_SSL_OUTSIDE        0x0081
-#define AREA_SSL_PYRAMID        0x0082
-#define AREA_SSL_EYEROK         0x0083
-#define AREA_BOB                0x0091
-#define AREA_SL_OUTSIDE         0x00A1
-#define AREA_SL_IGLOO           0x00A2
-#define AREA_WDW_MAIN           0x00B1
-#define AREA_WDW_TOWN           0x00B2
-#define AREA_JRB_MAIN           0x00C1
-#define AREA_JRB_SHIP           0x00C2
-#define AREA_THI_HUGE           0x00D1
-#define AREA_THI_TINY           0x00D2
-#define AREA_THI_WIGGLER        0x00D3
-#define AREA_TTC                0x00E1
-#define AREA_RR                 0x00F1
-#define AREA_OUTSIDE_CASTLE     0x0101
-#define AREA_BITDW              0x0111
-#define AREA_VCUTM              0x0121
-#define AREA_BITFS              0x0131
-#define AREA_SA                 0x0141
-#define AREA_BITS               0x0151
-#define AREA_LLL_OUTSIDE        0x0161
-#define AREA_LLL_VOLCANO        0x0162
-#define AREA_DDD_WHIRLPOOL      0x0171
-#define AREA_DDD_SUB            0x0172
-#define AREA_WF                 0x0181
-#define AREA_ENDING             0x0191
-#define AREA_COURTYARD          0x01A1
-#define AREA_PSS                0x01B1
-#define AREA_COTMC              0x01C1
-#define AREA_TOTWC              0x01D1
-#define AREA_BOWSER_1           0x01E1
-#define AREA_WMOTR              0x01F1
-#define AREA_BOWSER_2           0x0211
-#define AREA_BOWSER_3           0x0221
-#define AREA_TTM_OUTSIDE        0x0241
+#define LEVEL_AREA_INDEX(levelNum, areaNum) ((levelNum << 4) + areaNum)
+
+#define AREA_BBH                LEVEL_AREA_INDEX(LEVEL_BBH, 1)
+#define AREA_CCM_OUTSIDE        LEVEL_AREA_INDEX(LEVEL_CCM, 1)
+#define AREA_CCM_SLIDE          LEVEL_AREA_INDEX(LEVEL_CCM, 2)
+#define AREA_CASTLE_LOBBY       LEVEL_AREA_INDEX(LEVEL_CASTLE, 1)
+#define AREA_CASTLE_TIPPY       LEVEL_AREA_INDEX(LEVEL_CASTLE, 2)
+#define AREA_CASTLE_BASTEMENT   LEVEL_AREA_INDEX(LEVEL_CASTLE, 3)
+#define AREA_HMC                LEVEL_AREA_INDEX(LEVEL_HMC, 1)
+#define AREA_SSL_OUTSIDE        LEVEL_AREA_INDEX(LEVEL_SSL, 1)
+#define AREA_SSL_PYRAMID        LEVEL_AREA_INDEX(LEVEL_SSL, 2)
+#define AREA_SSL_EYEROK         LEVEL_AREA_INDEX(LEVEL_SSL, 3) 
+#define AREA_BOB                LEVEL_AREA_INDEX(LEVEL_BOB, 1)
+#define AREA_SL_OUTSIDE         LEVEL_AREA_INDEX(LEVEL_SL, 1)
+#define AREA_SL_IGLOO           LEVEL_AREA_INDEX(LEVEL_SL, 2)
+#define AREA_WDW_MAIN           LEVEL_AREA_INDEX(LEVEL_WDW, 1)
+#define AREA_WDW_TOWN           LEVEL_AREA_INDEX(LEVEL_WDW, 2)
+#define AREA_JRB_MAIN           LEVEL_AREA_INDEX(LEVEL_JRB, 1)
+#define AREA_JRB_SHIP           LEVEL_AREA_INDEX(LEVEL_JRB, 2)
+#define AREA_THI_HUGE           LEVEL_AREA_INDEX(LEVEL_THI, 1)
+#define AREA_THI_TINY           LEVEL_AREA_INDEX(LEVEL_THI, 2)
+#define AREA_THI_WIGGLER        LEVEL_AREA_INDEX(LEVEL_THI, 3)
+#define AREA_TTC                LEVEL_AREA_INDEX(LEVEL_TTC, 1)
+#define AREA_RR                 LEVEL_AREA_INDEX(LEVEL_RR, 1)
+#define AREA_OUTSIDE_CASTLE     LEVEL_AREA_INDEX(LEVEL_CASTLE_GROUNDS, 1)
+#define AREA_BITDW              LEVEL_AREA_INDEX(LEVEL_BITDW, 1)
+#define AREA_VCUTM              LEVEL_AREA_INDEX(LEVEL_VCUTM, 1)
+#define AREA_BITFS              LEVEL_AREA_INDEX(LEVEL_BITFS, 1)
+#define AREA_SA                 LEVEL_AREA_INDEX(LEVEL_SA, 1)
+#define AREA_BITS               LEVEL_AREA_INDEX(LEVEL_BITS, 1)
+#define AREA_LLL_OUTSIDE        LEVEL_AREA_INDEX(LEVEL_LLL, 1)
+#define AREA_LLL_VOLCANO        LEVEL_AREA_INDEX(LEVEL_LLL, 2)
+#define AREA_DDD_WHIRLPOOL      LEVEL_AREA_INDEX(LEVEL_DDD, 1)
+#define AREA_DDD_SUB            LEVEL_AREA_INDEX(LEVEL_DDD, 2)
+#define AREA_WF                 LEVEL_AREA_INDEX(LEVEL_WF, 1)
+#define AREA_ENDING             LEVEL_AREA_INDEX(LEVEL_ENDING, 1)
+#define AREA_COURTYARD          LEVEL_AREA_INDEX(LEVEL_CASTLE_COURTYARD, 1)
+#define AREA_PSS                LEVEL_AREA_INDEX(LEVEL_PSS, 1)
+#define AREA_COTMC              LEVEL_AREA_INDEX(LEVEL_COTMC, 1)
+#define AREA_TOTWC              LEVEL_AREA_INDEX(LEVEL_TOTWC, 1)
+#define AREA_BOWSER_1           LEVEL_AREA_INDEX(LEVEL_BOWSER_1, 1)
+#define AREA_WMOTR              LEVEL_AREA_INDEX(LEVEL_WMOTR, 1)
+#define AREA_BOWSER_2           LEVEL_AREA_INDEX(LEVEL_BOWSER_2, 1)
+#define AREA_BOWSER_3           LEVEL_AREA_INDEX(LEVEL_BOWSER_3, 1)
+#define AREA_TTM_OUTSIDE        LEVEL_AREA_INDEX(LEVEL_TTM, 1)
 
 #define CAM_MODE_MARIO_ACTIVE           0x01
 #define CAM_MODE_LAKITU_WAS_ZOOMED_OUT  0x02
@@ -217,7 +221,7 @@ struct Struct8033B2B8
 // actually return a value. This causes undefined behavior, which we'd rather
 // avoid on modern GCC. Hence, typedef. Interestingly, the void vs s32
 // difference doesn't affect -g codegen, only -O2.
-#if BUGFIXES_CRITICAL
+#ifdef AVOID_UB
 typedef void CmdRet;
 #else
 typedef s32 CmdRet;

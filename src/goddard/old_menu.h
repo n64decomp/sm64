@@ -10,7 +10,7 @@ extern void reset_gadget(struct ObjGadget *);
 extern void reset_gadgets_in_grp(struct ObjGroup *);
 
 // see bad_declarations.h
-#if !GD_USE_BAD_DECLARATIONS
+#ifndef GD_USE_BAD_DECLARATIONS
 extern struct ObjLabel *make_label(struct ObjValPtrs *, char *, s32, f32, f32, f32);
 #endif
 

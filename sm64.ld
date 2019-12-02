@@ -75,6 +75,11 @@ SECTIONS
    }
    END_SEG(boot)
 
+   . = 0x80000400;
+   BEGIN_NOLOAD(zbuffer) {
+      BUILD_DIR/src/buffers/zbuffer.o(.bss*);
+   }
+
    /* lib/src/__osDevMgrMain.c and lib/src/osCreateViManager.c contain infinite
     * loops compiled without -g, which cause the return statements and the .o
     * files themselves to be aligned to 32-byte boundaries. But in the binary,
@@ -755,37 +760,13 @@ SECTIONS
    MIO0_SEG(inside, 0x09000000)
    MIO0_SEG(effect, 0x0B000000)
 
-   STANDARD_LEVEL(bbh)
-   STANDARD_LEVEL(ccm)
-   STANDARD_LEVEL(castle_inside)
-   STANDARD_LEVEL(hmc)
-   STANDARD_LEVEL(ssl)
-   STANDARD_LEVEL(bob)
-   STANDARD_LEVEL(sl)
-   STANDARD_LEVEL(wdw)
-   STANDARD_LEVEL(jrb)
-   STANDARD_LEVEL(thi)
-   STANDARD_LEVEL(ttc)
-   STANDARD_LEVEL(rr)
-   STANDARD_LEVEL(castle_grounds)
-   STANDARD_LEVEL(bitdw)
-   STANDARD_LEVEL(vcutm)
-   STANDARD_LEVEL(bitfs)
-   STANDARD_LEVEL(sa)
-   STANDARD_LEVEL(bits)
-   STANDARD_LEVEL(lll)
-   STANDARD_LEVEL(ddd)
-   STANDARD_LEVEL(wf)
-   STANDARD_LEVEL(ending)
-   STANDARD_LEVEL(castle_courtyard)
-   STANDARD_LEVEL(pss)
-   STANDARD_LEVEL(cotmc)
-   STANDARD_LEVEL(totwc)
-   STANDARD_LEVEL(bowser_1)
-   STANDARD_LEVEL(wmotr)
-   STANDARD_LEVEL(bowser_2)
-   STANDARD_LEVEL(bowser_3)
-   STANDARD_LEVEL(ttm)
+#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8)
+#define DEFINE_LEVEL(_0, _1, _2, folder, _4, _5, _6, _7, _8, _9, _10) STANDARD_LEVEL(folder)
+
+   #include "levels/level_defines.h"
+
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
 
    /* 4E9FA0-? [?] */
    BEGIN_SEG(assets, __romPos)

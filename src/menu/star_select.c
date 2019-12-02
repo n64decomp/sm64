@@ -236,7 +236,7 @@ static void print_act_selector_strings(void) {
 #ifndef VERSION_EU
     unsigned char myScore[] = { TEXT_MYSCORE };
     unsigned char starNumbers[] = { TEXT_ZERO };
-    u8 **levelNameTbl = segmented_to_virtual(seg2_level_name_table);
+    u8 **levelNameTbl = segmented_to_virtual(seg2_course_name_table);
     u8 *currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
     u8 **actNameTbl = segmented_to_virtual(seg2_act_name_table);
     u8 *selectedActName;
@@ -288,7 +288,11 @@ static void print_act_selector_strings(void) {
  * Geo function that Print act selector strings.
  *!@bug: This geo function is missing the third param. Harmless in practice due to o32 convention.
  */
+#ifdef AVOID_UB
+Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node, UNUSED void *context) {
+#else
 Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node) {
+#endif
     if (callContext == GEO_CONTEXT_RENDER) {
         print_act_selector_strings();
     }
@@ -299,7 +303,7 @@ Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node) {
  * Initiates act selector values before entering a main course.
  * Also load how much stars a course has, without counting the 100 coin star.
  */
-void lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
+s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
 
     sLoadedActNum = 0;
@@ -312,13 +316,18 @@ void lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
     if (stars & (1 << 6)) {
         sObtainedStars--;
     }
+
+    //! no return value
+#ifdef AVOID_UB
+    return 0;
+#endif
 }
 
 /**
  * Loads act selector button actions with selected act value checks.
  * Also updates objects and returns act number selected after is choosen.
  */
-int lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
+s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
     if (sActSelectorMenuTimer >= 11) {
         // If any of these buttons are pressed, play sound and go to course act
         if ((gPlayer3Controller->buttonPressed & A_BUTTON)

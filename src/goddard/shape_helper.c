@@ -29,8 +29,8 @@ struct UnkData {
 struct ObjGroup *gMarioFaceGrp = NULL;     // @ 801A82E0; returned by load_dynlist
 struct ObjShape *D_801A82E4 = NULL;        // Shape used for drawing lights?
 static struct ObjShape *D_801A82E8 = NULL; // returned by load_dynlist
-struct ObjShape *gShapeSilSpark = NULL;    // @ 801A82EC
-struct ObjShape *gShapeRedSpark = NULL;    // @ 801A82F0
+struct ObjShape *gShapeRedSpark = NULL;    // @ 801A82EC
+struct ObjShape *gShapeSilverSpark = NULL;    // @ 801A82F0
 struct ObjShape *gShapeRedStar = NULL;     // @ 801A82F4
 struct ObjShape *gShapeSilverStar = NULL;  // @ 801A82F8
 static struct UnkData sUnref801A82FC = { { {
@@ -1344,21 +1344,21 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     sp24->unk60 = 3;
     sp24->unk64 = 3;
     sp24->unkBC = &sp2C->header;
-    sp24->unk1C = gShapeRedSpark;
+    sp24->unk1C = gShapeSilverSpark;
     addto_group(gGdLightGroup, &sp24->header);
 
     sp24 = make_particle(0, 1, 0.0f, 0.0f, 0.0f);
     sp24->unk60 = 3;
     sp24->unk64 = 2;
     sp24->unkBC = d_use_obj("N228l"); // probably a camera
-    sp24->unk1C = gShapeRedSpark;
+    sp24->unk1C = gShapeSilverSpark;
     addto_group(gGdLightGroup, &sp24->header);
 
     sp24 = make_particle(0, 2, 0.0f, 0.0f, 0.0f);
     sp24->unk60 = 3;
     sp24->unk64 = 2;
     sp24->unkBC = d_use_obj("N231l"); // probably a camera
-    sp24->unk1C = gShapeSilSpark;
+    sp24->unk1C = gShapeRedSpark;
     addto_group(gGdLightGroup, &sp24->header);
 
     sp3C = (struct ObjGroup *) d_use_obj("N1000l");

@@ -23,6 +23,34 @@
 #include "skybox.h"
 #include "interaction.h"
 #include "object_list_processor.h"
+#include "dialog_ids.h"
+
+#define TOAD_STAR_1_REQUIREMENT 12
+#define TOAD_STAR_2_REQUIREMENT 25
+#define TOAD_STAR_3_REQUIREMENT 35
+
+#define TOAD_STAR_1_DIALOG DIALOG_082
+#define TOAD_STAR_2_DIALOG DIALOG_076
+#define TOAD_STAR_3_DIALOG DIALOG_083
+
+#define TOAD_STAR_1_DIALOG_AFTER DIALOG_154
+#define TOAD_STAR_2_DIALOG_AFTER DIALOG_155
+#define TOAD_STAR_3_DIALOG_AFTER DIALOG_156
+
+enum ToadMessageStates {
+    TOAD_MESSAGE_FADED,
+    TOAD_MESSAGE_OPAQUE,
+    TOAD_MESSAGE_OPACIFYING,
+    TOAD_MESSAGE_FADING,
+    TOAD_MESSAGE_TALKING
+};
+
+enum UnlockDoorStarStates {
+    UNLOCK_DOOR_STAR_RISING,
+    UNLOCK_DOOR_STAR_WAITING,
+    UNLOCK_DOOR_STAR_SPAWNING_PARTICLES,
+    UNLOCK_DOOR_STAR_DONE
+};
 
 static s8 D_8032CDF0[7] = { 0x01, 0x02, 0x01, 0x00, 0x01, 0x02, 0x01 };
 static s8 D_8032CDF8[] = { 0x0a, 0x0c, 0x10, 0x18, 0x0a, 0x0a, 0x0a, 0x0e, 0x14, 0x1e,
@@ -80,20 +108,20 @@ static void bhvToadMessage_opaque(void) {
 }
 
 static void bhvToadMessage_talking(void) {
-    if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG_1, gCurrentObject->oToadMessageDialogNum) != 0) {
+    if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG_1, gCurrentObject->oToadMessageDialogId) != 0) {
         gCurrentObject->oToadMessageRecentlyTalked = 1;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
-        switch (gCurrentObject->oToadMessageDialogNum) {
+        switch (gCurrentObject->oToadMessageDialogId) {
             case TOAD_STAR_1_DIALOG:
-                gCurrentObject->oToadMessageDialogNum = TOAD_STAR_1_DIALOG_AFTER;
+                gCurrentObject->oToadMessageDialogId = TOAD_STAR_1_DIALOG_AFTER;
                 bhv_spawn_star_objects(0);
                 break;
             case TOAD_STAR_2_DIALOG:
-                gCurrentObject->oToadMessageDialogNum = TOAD_STAR_2_DIALOG_AFTER;
+                gCurrentObject->oToadMessageDialogId = TOAD_STAR_2_DIALOG_AFTER;
                 bhv_spawn_star_objects(1);
                 break;
             case TOAD_STAR_3_DIALOG:
-                gCurrentObject->oToadMessageDialogNum = TOAD_STAR_3_DIALOG_AFTER;
+                gCurrentObject->oToadMessageDialogId = TOAD_STAR_3_DIALOG_AFTER;
                 bhv_spawn_star_objects(2);
                 break;
         }
@@ -138,31 +166,31 @@ void bhvToadMessage_loop(void) {
 void bhvToadMessage_init(void) {
     s32 saveFlags = save_file_get_flags();
     s32 starCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, 0, 24);
-    s32 dialogNum = (gCurrentObject->oBehParams >> 24) & 0xFF;
+    s32 dialogId = (gCurrentObject->oBehParams >> 24) & 0xFF;
     s32 enoughStars = TRUE;
 
-    switch (dialogNum) {
+    switch (dialogId) {
         case TOAD_STAR_1_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_1_REQUIREMENT);
             if (saveFlags & (1 << 24)) {
-                dialogNum = TOAD_STAR_1_DIALOG_AFTER;
+                dialogId = TOAD_STAR_1_DIALOG_AFTER;
             }
             break;
         case TOAD_STAR_2_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_2_REQUIREMENT);
             if (saveFlags & (1 << 25)) {
-                dialogNum = TOAD_STAR_2_DIALOG_AFTER;
+                dialogId = TOAD_STAR_2_DIALOG_AFTER;
             }
             break;
         case TOAD_STAR_3_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_3_REQUIREMENT);
             if (saveFlags & (1 << 26)) {
-                dialogNum = TOAD_STAR_3_DIALOG_AFTER;
+                dialogId = TOAD_STAR_3_DIALOG_AFTER;
             }
             break;
     }
     if (enoughStars) {
-        gCurrentObject->oToadMessageDialogNum = dialogNum;
+        gCurrentObject->oToadMessageDialogId = dialogId;
         gCurrentObject->oToadMessageRecentlyTalked = 0;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADED;
         gCurrentObject->oOpacity = 81;

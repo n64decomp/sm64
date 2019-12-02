@@ -27,7 +27,7 @@ static void swoop_act_idle(void) {
     set_obj_animation_and_sound_state(1);
 
     if (approach_f32_ptr(&o->header.gfx.scale[0], 1.0f, 0.05f) && o->oDistanceToMario < 1500.0f) {
-        if (obj_rotate_yaw_toward(o->oAngleToMario, 0x320)) {
+        if (obj_rotate_yaw_toward(o->oAngleToMario, 800)) {
             PlaySound2(SOUND_OBJ2_SWOOP);
             o->oAction = SWOOP_ACT_MOVE;
             o->oVelY = -12.0f;
@@ -49,7 +49,7 @@ static void swoop_act_move(void) {
 
     if (o->oForwardVel == 0.0f) {
         // If we haven't started moving yet, begin swooping
-        if (obj_face_roll_approach(0, 0x9C4)) {
+        if (obj_face_roll_approach(0, 2500)) {
             o->oForwardVel = 10.0f;
             o->oVelY = -10.0f;
         }
@@ -74,23 +74,23 @@ static void swoop_act_move(void) {
                 obj_y_vel_approach(-10.0f, 0.5f);
             }
         } else if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
-            // Bounce off walls and get stunned for a second
+            // Bounce off a wall and don't bounce again for 30 frames.
             o->oSwoopTargetYaw = obj_reflect_move_angle_off_wall();
             o->oSwoopBonkCountdown = 30;
         }
 
         // Tilt upward when approaching mario
         if ((o->oSwoopTargetPitch = obj_get_pitch_from_vel()) == 0) {
-            o->oSwoopTargetPitch += o->oForwardVel * 0x1F4;
+            o->oSwoopTargetPitch += o->oForwardVel * 500;
         }
-        obj_move_pitch_approach(o->oSwoopTargetPitch, 0x8C);
+        obj_move_pitch_approach(o->oSwoopTargetPitch, 140);
 
         // Jitter yaw a bit
-        obj_rotate_yaw_toward(o->oSwoopTargetYaw + (s32)(0xBB8 * coss(0xFA0 * gGlobalTimer)), 0x4B0);
-        obj_roll_to_match_yaw_turn(o->oSwoopTargetYaw, 0x3000, 0x1F4);
+        obj_rotate_yaw_toward(o->oSwoopTargetYaw + (s32)(3000 * coss(4000 * gGlobalTimer)), 1200);
+        obj_roll_to_match_yaw_turn(o->oSwoopTargetYaw, 0x3000, 500);
 
         // Jitter roll a bit
-        o->oFaceAngleRoll += (s32)(0x3E8 * coss(0x4E20 * gGlobalTimer));
+        o->oFaceAngleRoll += (s32)(1000 * coss(20000 * gGlobalTimer));
     }
 }
 

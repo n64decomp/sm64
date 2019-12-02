@@ -12,6 +12,7 @@
 #include "level_update.h"
 #include "spawn_object.h"
 #include "object_list_processor.h"
+#include "level_table.h"
 
 /**
  * An unused linked list struct that seems to have been replaced by ObjectNode.

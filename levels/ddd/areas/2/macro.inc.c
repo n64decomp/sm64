@@ -23,7 +23,7 @@ const MacroObject ddd_seg7_area_2_macro_objs[] = {
     MACRO_OBJECT(/*preset*/ macro_fish_group,                  /*yaw*/   0, /*pos*/  2061, -3323,  2246),
     MACRO_OBJECT(/*preset*/ macro_fish_group_2,                /*yaw*/   0, /*pos*/  5661, -2923, -1415),
     MACRO_OBJECT(/*preset*/ macro_clam_shell,                  /*yaw*/  90, /*pos*/  1273, -4106,  2320),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,             /*yaw*/ 180, /*pos*/  3086,   110,  6120, /*behParam*/ 53),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,             /*yaw*/ 180, /*pos*/  3086,   110,  6120, /*behParam*/ DIALOG_053),
     MACRO_OBJECT(/*preset*/ macro_seaweed_bundle,              /*yaw*/   0, /*pos*/  6420, -4106, -2026),
     MACRO_OBJECT(/*preset*/ macro_seaweed_bundle,              /*yaw*/   0, /*pos*/  6340, -4106, -1413),
     MACRO_OBJECT(/*preset*/ macro_clam_shell,                  /*yaw*/ 135, /*pos*/  1966, -4106,  3226),

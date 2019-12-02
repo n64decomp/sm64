@@ -47,7 +47,7 @@ u8 gSeqLoadStatus[0x100];
 
 u8 gAudioUnusedBuffer[0x1000];
 
-extern s32 D_80226D6C;
+extern s32 gMaxAudioCmds;
 
 void reset_bank_and_seq_load_status(void) {
     s32 i;
@@ -109,7 +109,7 @@ void *soundAlloc(struct SoundAllocPool *pool, u32 size) {
 }
 
 void sound_alloc_pool_init(struct SoundAllocPool *pool, void *memAddr, u32 size) {
-    pool->cur = pool->start = (u8 *) (((uintptr_t) memAddr + 0xf) & -0x10);
+    pool->cur = pool->start = (u8 *) ALIGN16((uintptr_t) memAddr);
     pool->size = size;
     pool->unused = 0;
 }
@@ -374,9 +374,9 @@ void decrease_reverb_gain(void) {
  * Waits until a specified number of audio frames have been created
  */
 void wait_for_audio_frames(s32 frames) {
-    gActiveAudioFrames = 0;
-    // Sound thread will update gActiveAudioFrames
-    while (gActiveAudioFrames < frames) {
+    gAudioFrameCount = 0;
+    // Sound thread will update gAudioFrameCount
+    while (gAudioFrameCount < frames) {
         // spin
     }
 }
@@ -425,8 +425,13 @@ void audio_reset_session(struct AudioSessionSettings *preset) {
             }
         }
 
+        // Wait for the reverb to finish as well
         decrease_reverb_gain();
         wait_for_audio_frames(3);
+
+        // The audio interface is double buffered; thus, we have to take the
+        // load lock for 2 frames for the buffers to free up before we can
+        // repurpose memory. Make that 3 frames, just in case.
         gAudioLoadLock = AUDIO_LOCK_LOADING;
         wait_for_audio_frames(3);
 
@@ -450,7 +455,7 @@ void audio_reset_session(struct AudioSessionSettings *preset) {
     reverbWindowSize = preset->reverbWindowSize;
     gAiFrequency = osAiSetFrequency(preset->frequency);
     gMaxSimultaneousNotes = preset->maxSimultaneousNotes;
-    D_80226D74 = ALIGN16(gAiFrequency / 60);
+    gSamplesPerFrameTarget = ALIGN16(gAiFrequency / 60);
     gReverbDownsampleRate = preset->reverbDownsampleRate;
 
     switch (gReverbDownsampleRate) {
@@ -475,9 +480,9 @@ void audio_reset_session(struct AudioSessionSettings *preset) {
 
     gReverbDownsampleRate = preset->reverbDownsampleRate;
     gVolume = preset->volume;
-    gMinAiBufferLength = D_80226D74 - 0x10;
-    updatesPerFrame = D_80226D74 / 160 + 1;
-    gAudioUpdatesPerFrame = D_80226D74 / 160 + 1;
+    gMinAiBufferLength = gSamplesPerFrameTarget - 0x10;
+    updatesPerFrame = gSamplesPerFrameTarget / 160 + 1;
+    gAudioUpdatesPerFrame = gSamplesPerFrameTarget / 160 + 1;
 
     // Compute conversion ratio from the internal unit tatums/tick to the
     // external beats/minute (JP) or tatums/minute (US). In practice this is
@@ -488,7 +493,7 @@ void audio_reset_session(struct AudioSessionSettings *preset) {
     gTempoInternalToExternal = (u32)(updatesPerFrame * 2880000.0f / gTatumsPerBeat / 16.713f);
 #endif
 
-    D_80226D6C = gMaxSimultaneousNotes * 20 * updatesPerFrame + 320;
+    gMaxAudioCmds = gMaxSimultaneousNotes * 20 * updatesPerFrame + 320;
     persistentMem = DOUBLE_SIZE_ON_64_BIT(preset->persistentBankMem + preset->persistentSeqMem);
     temporaryMem = DOUBLE_SIZE_ON_64_BIT(preset->temporaryBankMem + preset->temporarySeqMem);
     totalMem = persistentMem + temporaryMem;
@@ -510,7 +515,7 @@ void audio_reset_session(struct AudioSessionSettings *preset) {
     reset_bank_and_seq_load_status();
 
     for (j = 0; j < 2; j++) {
-        gAudioCmdBuffers[j] = soundAlloc(&gNotesAndBuffersPool, D_80226D6C * 8);
+        gAudioCmdBuffers[j] = soundAlloc(&gNotesAndBuffersPool, gMaxAudioCmds * sizeof(u64));
     }
 
     gNotes = soundAlloc(&gNotesAndBuffersPool, gMaxSimultaneousNotes * sizeof(struct Note));
@@ -537,17 +542,17 @@ void audio_reset_session(struct AudioSessionSettings *preset) {
             gSynthesisReverb.unk24 = soundAlloc(&gNotesAndBuffersPool, 16 * sizeof(s16));
             gSynthesisReverb.unk28 = soundAlloc(&gNotesAndBuffersPool, 16 * sizeof(s16));
             for (i = 0; i < gAudioUpdatesPerFrame; i++) {
-                mem = soundAlloc(&gNotesAndBuffersPool, 0x280);
+                mem = soundAlloc(&gNotesAndBuffersPool, DEFAULT_LEN_2CH);
                 gSynthesisReverb.items[0][i].toDownsampleLeft = mem;
                 gSynthesisReverb.items[0][i].toDownsampleRight = mem + 0xA0;
-                mem = soundAlloc(&gNotesAndBuffersPool, 0x280);
+                mem = soundAlloc(&gNotesAndBuffersPool, DEFAULT_LEN_2CH);
                 gSynthesisReverb.items[1][i].toDownsampleLeft = mem;
                 gSynthesisReverb.items[1][i].toDownsampleRight = mem + 0xA0;
             }
         }
     }
 
-    func_8031758C(gMaxSimultaneousNotes);
+    init_sample_dma_buffers(gMaxSimultaneousNotes);
     osWritebackDCacheAll();
     if (gAudioLoadLock != AUDIO_LOCK_UNINITIALIZED) {
         gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;

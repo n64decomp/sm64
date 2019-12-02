@@ -13,6 +13,7 @@
 #include "sound_init.h"
 #include "engine/graph_node.h"
 #include "paintings.h"
+#include "level_table.h"
 
 #define MUSIC_NONE 0xFFFF
 

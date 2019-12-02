@@ -63,7 +63,7 @@ def main():
         structobj.append("{" + ",".join(hex(x) for x in demobytes) + "},")
 
     print("#include \"types.h\"")
-    print("#include \"stddef.h\"")
+    print("#include <stddef.h>")
     print("")
 
     print("struct DemoInputsObj {")

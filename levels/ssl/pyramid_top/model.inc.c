@@ -1,12 +1,8 @@
-// 0x0700BD70 - 0x0700BD78
-static const Ambient ssl_seg7_light_0700BD70 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x0700BD78 - 0x0700BD88
-static const Light ssl_seg7_light_0700BD78 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700BD70 - 0x0700BD88
+static const Lights1 ssl_seg7_lights_0700BD70 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0700BD88 - 0x0700BE48
 static const Vtx ssl_seg7_vertex_0700BD88[] = {
@@ -37,8 +33,8 @@ static const Gfx ssl_seg7_dl_0700BE88[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, generic_09000800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&ssl_seg7_light_0700BD78, 1),
-    gsSPLight(&ssl_seg7_light_0700BD70, 2),
+    gsSPLight(&ssl_seg7_lights_0700BD70.l, 1),
+    gsSPLight(&ssl_seg7_lights_0700BD70.a, 2),
     gsSPVertex(ssl_seg7_vertex_0700BD88, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

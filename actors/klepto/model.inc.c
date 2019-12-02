@@ -31,24 +31,16 @@ ALIGNED8 static const u8 klepto_seg5_texture_05003008[] = {
 };
 
 // 0x05003808
-static const Ambient klepto_seg5_light_05003808 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05003810
-static const Light klepto_seg5_light_05003810 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05003808 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05003820
-static const Ambient klepto_seg5_light_05003820 = {
-    {{0x3f, 0x1d, 0x08}, 0, {0x3f, 0x1d, 0x08}, 0}
-};
-
-// 0x05003828
-static const Light klepto_seg5_light_05003828 = {
-    {{0xff, 0x75, 0x21}, 0, {0xff, 0x75, 0x21}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05003820 = gdSPDefLights1(
+    0x3f, 0x1d, 0x08,
+    0xff, 0x75, 0x21, 0x28, 0x28, 0x28
+);
 
 // 0x05003838
 static const Vtx klepto_seg5_vertex_05003838[] = {
@@ -106,8 +98,8 @@ const Gfx klepto_seg5_dl_05003A68[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05000808),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05003810, 1),
-    gsSPLight(&klepto_seg5_light_05003808, 2),
+    gsSPLight(&klepto_seg5_lights_05003808.l, 1),
+    gsSPLight(&klepto_seg5_lights_05003808.a, 2),
     gsSPVertex(klepto_seg5_vertex_05003838, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 2,  1,  4, 0x0,  4,  5,  2, 0x0),
@@ -132,8 +124,8 @@ const Gfx klepto_seg5_dl_05003AC0[] = {
 
 // 0x05003B40 - 0x05003BD0
 const Gfx klepto_seg5_dl_05003B40[] = {
-    gsSPLight(&klepto_seg5_light_05003828, 1),
-    gsSPLight(&klepto_seg5_light_05003820, 2),
+    gsSPLight(&klepto_seg5_lights_05003820.l, 1),
+    gsSPLight(&klepto_seg5_lights_05003820.a, 2),
     gsSPVertex(klepto_seg5_vertex_050039B8, 11, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSP2Triangles( 4,  5,  3, 0x0,  3,  6,  4, 0x0),
@@ -167,14 +159,10 @@ const Gfx klepto_seg5_dl_05003BD0[] = {
 };
 
 // 0x05003C58
-static const Ambient klepto_seg5_light_05003C58 = {
-    {{0x3f, 0x1d, 0x08}, 0, {0x3f, 0x1d, 0x08}, 0}
-};
-
-// 0x05003C60
-static const Light klepto_seg5_light_05003C60 = {
-    {{0xff, 0x75, 0x21}, 0, {0xff, 0x75, 0x21}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05003C58 = gdSPDefLights1(
+    0x3f, 0x1d, 0x08,
+    0xff, 0x75, 0x21, 0x28, 0x28, 0x28
+);
 
 // 0x05003C70
 static const Vtx klepto_seg5_vertex_05003C70[] = {
@@ -191,8 +179,8 @@ static const Vtx klepto_seg5_vertex_05003C70[] = {
 
 // 0x05003D00 - 0x05003D80
 const Gfx klepto_seg5_dl_05003D00[] = {
-    gsSPLight(&klepto_seg5_light_05003C60, 1),
-    gsSPLight(&klepto_seg5_light_05003C58, 2),
+    gsSPLight(&klepto_seg5_lights_05003C58.l, 1),
+    gsSPLight(&klepto_seg5_lights_05003C58.a, 2),
     gsSPVertex(klepto_seg5_vertex_05003C70, 9, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 4,  2,  5, 0x0,  2,  4,  3, 0x0),
@@ -214,14 +202,10 @@ const Gfx klepto_seg5_dl_05003D80[] = {
 };
 
 // 0x05003DB0
-static const Ambient klepto_seg5_light_05003DB0 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05003DB8
-static const Light klepto_seg5_light_05003DB8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05003DB0 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05003DC8
 static const Vtx klepto_seg5_vertex_05003DC8[] = {
@@ -242,8 +226,8 @@ const Gfx klepto_seg5_dl_05003E68[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05000008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05003DB8, 1),
-    gsSPLight(&klepto_seg5_light_05003DB0, 2),
+    gsSPLight(&klepto_seg5_lights_05003DB0.l, 1),
+    gsSPLight(&klepto_seg5_lights_05003DB0.a, 2),
     gsSPVertex(klepto_seg5_vertex_05003DC8, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  2, 0x0),
     gsSP2Triangles( 5,  2,  1, 0x0,  2,  5,  3, 0x0),
@@ -273,14 +257,10 @@ const Gfx klepto_seg5_dl_05003F20[] = {
 };
 
 // 0x05003F80
-static const Ambient klepto_seg5_light_05003F80 = {
-    {{0x07, 0x01, 0x01}, 0, {0x07, 0x01, 0x01}, 0}
-};
-
-// 0x05003F88
-static const Light klepto_seg5_light_05003F88 = {
-    {{0x1e, 0x05, 0x04}, 0, {0x1e, 0x05, 0x04}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05003F80 = gdSPDefLights1(
+    0x07, 0x01, 0x01,
+    0x1e, 0x05, 0x04, 0x28, 0x28, 0x28
+);
 
 // 0x05003F98
 static const Vtx klepto_seg5_vertex_05003F98[] = {
@@ -300,8 +280,8 @@ static const Vtx klepto_seg5_vertex_05003F98[] = {
 
 // 0x05004058 - 0x05004118
 const Gfx klepto_seg5_dl_05004058[] = {
-    gsSPLight(&klepto_seg5_light_05003F88, 1),
-    gsSPLight(&klepto_seg5_light_05003F80, 2),
+    gsSPLight(&klepto_seg5_lights_05003F80.l, 1),
+    gsSPLight(&klepto_seg5_lights_05003F80.a, 2),
     gsSPVertex(klepto_seg5_vertex_05003F98, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
     gsSP2Triangles( 2,  4,  5, 0x0,  2,  5,  0, 0x0),
@@ -327,14 +307,10 @@ const Gfx klepto_seg5_dl_05004118[] = {
 };
 
 // 0x05004148
-static const Ambient klepto_seg5_light_05004148 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05004150
-static const Light klepto_seg5_light_05004150 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004148 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05004160
 static const Vtx klepto_seg5_vertex_05004160[] = {
@@ -349,8 +325,8 @@ const Gfx klepto_seg5_dl_050041A0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05003008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05004150, 1),
-    gsSPLight(&klepto_seg5_light_05004148, 2),
+    gsSPLight(&klepto_seg5_lights_05004148.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004148.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004160, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  1,  0, 0x0),
     gsSPEndDisplayList(),
@@ -375,14 +351,10 @@ const Gfx klepto_seg5_dl_050041E8[] = {
 };
 
 // 0x05004258
-static const Ambient klepto_seg5_light_05004258 = {
-    {{0x3f, 0x1d, 0x08}, 0, {0x3f, 0x1d, 0x08}, 0}
-};
-
-// 0x05004260
-static const Light klepto_seg5_light_05004260 = {
-    {{0xff, 0x75, 0x21}, 0, {0xff, 0x75, 0x21}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004258 = gdSPDefLights1(
+    0x3f, 0x1d, 0x08,
+    0xff, 0x75, 0x21, 0x28, 0x28, 0x28
+);
 
 // 0x05004270
 static const Vtx klepto_seg5_vertex_05004270[] = {
@@ -396,8 +368,8 @@ static const Vtx klepto_seg5_vertex_05004270[] = {
 
 // 0x050042D0 - 0x05004330
 const Gfx klepto_seg5_dl_050042D0[] = {
-    gsSPLight(&klepto_seg5_light_05004260, 1),
-    gsSPLight(&klepto_seg5_light_05004258, 2),
+    gsSPLight(&klepto_seg5_lights_05004258.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004258.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004270, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 4,  0,  2, 0x0,  0,  4,  3, 0x0),
@@ -417,14 +389,10 @@ const Gfx klepto_seg5_dl_05004330[] = {
 };
 
 // 0x05004360
-static const Ambient klepto_seg5_light_05004360 = {
-    {{0x3f, 0x1d, 0x08}, 0, {0x3f, 0x1d, 0x08}, 0}
-};
-
-// 0x05004368
-static const Light klepto_seg5_light_05004368 = {
-    {{0xff, 0x75, 0x21}, 0, {0xff, 0x75, 0x21}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004360 = gdSPDefLights1(
+    0x3f, 0x1d, 0x08,
+    0xff, 0x75, 0x21, 0x28, 0x28, 0x28
+);
 
 // 0x05004378
 static const Vtx klepto_seg5_vertex_05004378[] = {
@@ -438,8 +406,8 @@ static const Vtx klepto_seg5_vertex_05004378[] = {
 
 // 0x050043D8 - 0x05004438
 const Gfx klepto_seg5_dl_050043D8[] = {
-    gsSPLight(&klepto_seg5_light_05004368, 1),
-    gsSPLight(&klepto_seg5_light_05004360, 2),
+    gsSPLight(&klepto_seg5_lights_05004360.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004360.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004378, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 4,  0,  2, 0x0,  0,  4,  3, 0x0),
@@ -459,24 +427,16 @@ const Gfx klepto_seg5_dl_05004438[] = {
 };
 
 // 0x05004468
-static const Ambient klepto_seg5_light_05004468 = {
-    {{0x02, 0x00, 0x00}, 0, {0x02, 0x00, 0x00}, 0}
-};
-
-// 0x05004470
-static const Light klepto_seg5_light_05004470 = {
-    {{0x08, 0x00, 0x00}, 0, {0x08, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004468 = gdSPDefLights1(
+    0x02, 0x00, 0x00,
+    0x08, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x05004480
-static const Ambient klepto_seg5_light_05004480 = {
-    {{0x3f, 0x1d, 0x08}, 0, {0x3f, 0x1d, 0x08}, 0}
-};
-
-// 0x05004488
-static const Light klepto_seg5_light_05004488 = {
-    {{0xff, 0x75, 0x21}, 0, {0xff, 0x75, 0x21}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004480 = gdSPDefLights1(
+    0x3f, 0x1d, 0x08,
+    0xff, 0x75, 0x21, 0x28, 0x28, 0x28
+);
 
 // 0x05004498
 static const Vtx klepto_seg5_vertex_05004498[] = {
@@ -524,16 +484,16 @@ static const Vtx klepto_seg5_vertex_05004648[] = {
 
 // 0x05004698 - 0x050047C8
 const Gfx klepto_seg5_dl_05004698[] = {
-    gsSPLight(&klepto_seg5_light_05004470, 1),
-    gsSPLight(&klepto_seg5_light_05004468, 2),
+    gsSPLight(&klepto_seg5_lights_05004468.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004468.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004498, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 4,  3,  6, 0x0,  3,  5,  6, 0x0),
     gsSP2Triangles( 7,  8,  9, 0x0,  8,  7, 10, 0x0),
     gsSP2Triangles( 8, 10,  9, 0x0,  0, 11,  1, 0x0),
     gsSP1Triangle(11,  0,  2, 0x0),
-    gsSPLight(&klepto_seg5_light_05004488, 1),
-    gsSPLight(&klepto_seg5_light_05004480, 2),
+    gsSPLight(&klepto_seg5_lights_05004480.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004480.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004558, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  3, 0x0,  7,  4,  3, 0x0),
@@ -561,24 +521,16 @@ const Gfx klepto_seg5_dl_050047C8[] = {
 };
 
 // 0x050047F8
-static const Ambient klepto_seg5_light_050047F8 = {
-    {{0x02, 0x00, 0x00}, 0, {0x02, 0x00, 0x00}, 0}
-};
-
-// 0x05004800
-static const Light klepto_seg5_light_05004800 = {
-    {{0x08, 0x00, 0x00}, 0, {0x08, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_050047F8 = gdSPDefLights1(
+    0x02, 0x00, 0x00,
+    0x08, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x05004810
-static const Ambient klepto_seg5_light_05004810 = {
-    {{0x3f, 0x1d, 0x08}, 0, {0x3f, 0x1d, 0x08}, 0}
-};
-
-// 0x05004818
-static const Light klepto_seg5_light_05004818 = {
-    {{0xff, 0x75, 0x21}, 0, {0xff, 0x75, 0x21}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004810 = gdSPDefLights1(
+    0x3f, 0x1d, 0x08,
+    0xff, 0x75, 0x21, 0x28, 0x28, 0x28
+);
 
 // 0x05004828
 static const Vtx klepto_seg5_vertex_05004828[] = {
@@ -626,16 +578,16 @@ static const Vtx klepto_seg5_vertex_050049D8[] = {
 
 // 0x05004A28 - 0x05004B58
 const Gfx klepto_seg5_dl_05004A28[] = {
-    gsSPLight(&klepto_seg5_light_05004800, 1),
-    gsSPLight(&klepto_seg5_light_050047F8, 2),
+    gsSPLight(&klepto_seg5_lights_050047F8.l, 1),
+    gsSPLight(&klepto_seg5_lights_050047F8.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004828, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 4,  3,  6, 0x0,  3,  5,  6, 0x0),
     gsSP2Triangles( 7,  8,  9, 0x0,  8,  7, 10, 0x0),
     gsSP2Triangles( 8, 10,  9, 0x0,  0, 11,  1, 0x0),
     gsSP1Triangle(11,  0,  2, 0x0),
-    gsSPLight(&klepto_seg5_light_05004818, 1),
-    gsSPLight(&klepto_seg5_light_05004810, 2),
+    gsSPLight(&klepto_seg5_lights_05004810.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004810.a, 2),
     gsSPVertex(klepto_seg5_vertex_050048E8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  3, 0x0,  7,  4,  3, 0x0),
@@ -663,14 +615,10 @@ const Gfx klepto_seg5_dl_05004B58[] = {
 };
 
 // 0x05004B88
-static const Ambient klepto_seg5_light_05004B88 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05004B90
-static const Light klepto_seg5_light_05004B90 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004B88 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05004BA0
 static const Vtx klepto_seg5_vertex_05004BA0[] = {
@@ -685,8 +633,8 @@ const Gfx klepto_seg5_dl_05004BE0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05002008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05004B90, 1),
-    gsSPLight(&klepto_seg5_light_05004B88, 2),
+    gsSPLight(&klepto_seg5_lights_05004B88.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004B88.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004BA0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
@@ -711,14 +659,10 @@ const Gfx klepto_seg5_dl_05004C28[] = {
 };
 
 // 0x05004C98
-static const Ambient klepto_seg5_light_05004C98 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05004CA0
-static const Light klepto_seg5_light_05004CA0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004C98 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05004CB0
 static const Vtx klepto_seg5_vertex_05004CB0[] = {
@@ -733,8 +677,8 @@ const Gfx klepto_seg5_dl_05004CF0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05002008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05004CA0, 1),
-    gsSPLight(&klepto_seg5_light_05004C98, 2),
+    gsSPLight(&klepto_seg5_lights_05004C98.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004C98.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004CB0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSPEndDisplayList(),
@@ -759,14 +703,10 @@ const Gfx klepto_seg5_dl_05004D38[] = {
 };
 
 // 0x05004DA8
-static const Ambient klepto_seg5_light_05004DA8 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05004DB0
-static const Light klepto_seg5_light_05004DB0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004DA8 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05004DC0
 static const Vtx klepto_seg5_vertex_05004DC0[] = {
@@ -781,8 +721,8 @@ const Gfx klepto_seg5_dl_05004E00[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05002008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05004DB0, 1),
-    gsSPLight(&klepto_seg5_light_05004DA8, 2),
+    gsSPLight(&klepto_seg5_lights_05004DA8.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004DA8.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004DC0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
@@ -807,14 +747,10 @@ const Gfx klepto_seg5_dl_05004E48[] = {
 };
 
 // 0x05004EB8
-static const Ambient klepto_seg5_light_05004EB8 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05004EC0
-static const Light klepto_seg5_light_05004EC0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004EB8 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05004ED0
 static const Vtx klepto_seg5_vertex_05004ED0[] = {
@@ -829,8 +765,8 @@ const Gfx klepto_seg5_dl_05004F10[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05002008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05004EC0, 1),
-    gsSPLight(&klepto_seg5_light_05004EB8, 2),
+    gsSPLight(&klepto_seg5_lights_05004EB8.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004EB8.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004ED0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSPEndDisplayList(),
@@ -855,14 +791,10 @@ const Gfx klepto_seg5_dl_05004F58[] = {
 };
 
 // 0x05004FC8
-static const Ambient klepto_seg5_light_05004FC8 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05004FD0
-static const Light klepto_seg5_light_05004FD0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_05004FC8 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05004FE0
 static const Vtx klepto_seg5_vertex_05004FE0[] = {
@@ -877,8 +809,8 @@ const Gfx klepto_seg5_dl_05005020[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05002008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_05004FD0, 1),
-    gsSPLight(&klepto_seg5_light_05004FC8, 2),
+    gsSPLight(&klepto_seg5_lights_05004FC8.l, 1),
+    gsSPLight(&klepto_seg5_lights_05004FC8.a, 2),
     gsSPVertex(klepto_seg5_vertex_05004FE0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
@@ -903,14 +835,10 @@ const Gfx klepto_seg5_dl_05005068[] = {
 };
 
 // 0x050050D8
-static const Ambient klepto_seg5_light_050050D8 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x050050E0
-static const Light klepto_seg5_light_050050E0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 klepto_seg5_lights_050050D8 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x050050F0
 static const Vtx klepto_seg5_vertex_050050F0[] = {
@@ -925,8 +853,8 @@ const Gfx klepto_seg5_dl_05005130[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, klepto_seg5_texture_05002008),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&klepto_seg5_light_050050E0, 1),
-    gsSPLight(&klepto_seg5_light_050050D8, 2),
+    gsSPLight(&klepto_seg5_lights_050050D8.l, 1),
+    gsSPLight(&klepto_seg5_lights_050050D8.a, 2),
     gsSPVertex(klepto_seg5_vertex_050050F0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSPEndDisplayList(),

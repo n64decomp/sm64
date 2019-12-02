@@ -628,7 +628,7 @@ static s32 beh_cmd_scale(void) {
     return BEH_CONTINUE;
 }
 
-static s32 beh_cmd_obj_set_gravity(void) {
+static s32 beh_cmd_obj_set_physics(void) {
     UNUSED f32 sp04, sp00;
 
     gCurrentObject->oWallHitboxRadius = (f32)(s16)(gBehCommand[1] >> 16);
@@ -731,7 +731,7 @@ static BehCommandProc BehaviorJumpTable[] = {
     beh_cmd_obj_set_pos,
     beh_cmd_obj_set_float2,
     beh_cmd_interact_type,
-    beh_cmd_obj_set_gravity,
+    beh_cmd_obj_set_physics,
     Behavior31,
     beh_cmd_scale,
     beh_cmd_obj_bit_clear_int32,

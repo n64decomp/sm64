@@ -8,15 +8,10 @@ ALIGNED8 static const u8 cyan_fish_seg6_texture_0600D468[] = {
 #include "actors/cyan_fish/cyan_fish.rgba16.inc.c"
 };
 
-// 0x0600DC68
-static const Ambient cyan_fish_seg6_light_0600DC68 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0600DC70
-static const Light cyan_fish_seg6_light_0600DC70 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 cyan_fish_seg6_lights_0600DC68 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0600DC80
 static const Vtx cyan_fish_seg6_vertex_0600DC80[] = {
@@ -37,8 +32,8 @@ const Gfx cyan_fish_seg6_dl_0600DD20[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cyan_fish_seg6_texture_0600D468),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&cyan_fish_seg6_light_0600DC70, 1),
-    gsSPLight(&cyan_fish_seg6_light_0600DC68, 2),
+    gsSPLight(&cyan_fish_seg6_lights_0600DC68.l, 1),
+    gsSPLight(&cyan_fish_seg6_lights_0600DC68.a, 2),
     gsSPVertex(cyan_fish_seg6_vertex_0600DC80, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSP2Triangles( 0,  4,  1, 0x0,  4,  0,  3, 0x0),
@@ -68,14 +63,10 @@ const Gfx cyan_fish_seg6_dl_0600DDD8[] = {
 };
 
 // 0x0600DE38
-static const Ambient cyan_fish_seg6_light_0600DE38 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0600DE40
-static const Light cyan_fish_seg6_light_0600DE40 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 cyan_fish_seg6_lights_0600DE38 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0600DE50
 static const Vtx cyan_fish_seg6_vertex_0600DE50[] = {
@@ -90,8 +81,8 @@ const Gfx cyan_fish_seg6_dl_0600DE90[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cyan_fish_seg6_texture_0600D468),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&cyan_fish_seg6_light_0600DE40, 1),
-    gsSPLight(&cyan_fish_seg6_light_0600DE38, 2),
+    gsSPLight(&cyan_fish_seg6_lights_0600DE38.l, 1),
+    gsSPLight(&cyan_fish_seg6_lights_0600DE38.a, 2),
     gsSPVertex(cyan_fish_seg6_vertex_0600DE50, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSPEndDisplayList(),
@@ -116,14 +107,10 @@ const Gfx cyan_fish_seg6_dl_0600DED8[] = {
 };
 
 // 0x0600DF48
-static const Ambient cyan_fish_seg6_light_0600DF48 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0600DF50
-static const Light cyan_fish_seg6_light_0600DF50 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 cyan_fish_seg6_lights_0600DF48 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0600DF60
 static const Vtx cyan_fish_seg6_vertex_0600DF60[] = {
@@ -140,8 +127,8 @@ const Gfx cyan_fish_seg6_dl_0600DFC0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cyan_fish_seg6_texture_0600D468),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&cyan_fish_seg6_light_0600DF50, 1),
-    gsSPLight(&cyan_fish_seg6_light_0600DF48, 2),
+    gsSPLight(&cyan_fish_seg6_lights_0600DF48.l, 1),
+    gsSPLight(&cyan_fish_seg6_lights_0600DF48.a, 2),
     gsSPVertex(cyan_fish_seg6_vertex_0600DF60, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  4, 0x0),
     gsSP2Triangles( 1,  4,  2, 0x0,  0,  3,  1, 0x0),

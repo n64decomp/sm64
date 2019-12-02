@@ -16,6 +16,7 @@
 #include "segment2.h"
 #include "save_file.h"
 #include "geo_misc.h"
+#include "level_table.h"
 
 /**
  * @file shadow.c

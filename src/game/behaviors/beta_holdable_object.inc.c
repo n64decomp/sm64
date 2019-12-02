@@ -59,7 +59,7 @@ void bhv_beta_holdable_object_loop(void) {
     switch (o->oHeldState) {
         case HELD_FREE:
             // Apply standard physics
-            ObjectStep();
+            object_step();
             break;
 
         case HELD_HELD:

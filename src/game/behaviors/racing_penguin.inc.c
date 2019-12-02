@@ -5,8 +5,8 @@ struct RacingPenguinData {
 };
 
 static struct RacingPenguinData sRacingPenguinData[] = {
-    { 55, 200.0f, 200.0f },
-    { 164, 350.0f, 250.0f },
+    { DIALOG_055, 200.0f, 200.0f },
+    { DIALOG_164, 350.0f, 250.0f },
 };
 
 void bhv_racing_penguin_init(void) {
@@ -125,13 +125,13 @@ static void racing_penguin_act_show_final_text(void) {
             if (obj_is_mario_in_range_and_ready_to_speak(400.0f, 400.0f)) {
                 if (o->oRacingPenguinMarioWon) {
                     if (o->oRacingPenguinMarioCheated) {
-                        o->oRacingPenguinFinalTextbox = 0x84;
+                        o->oRacingPenguinFinalTextbox = DIALOG_132;
                         o->oRacingPenguinMarioWon = FALSE;
                     } else {
-                        o->oRacingPenguinFinalTextbox = 0x38;
+                        o->oRacingPenguinFinalTextbox = DIALOG_056;
                     }
                 } else {
-                    o->oRacingPenguinFinalTextbox = 0x25;
+                    o->oRacingPenguinFinalTextbox = DIALOG_037;
                 }
             }
         } else {

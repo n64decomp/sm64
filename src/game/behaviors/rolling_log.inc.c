@@ -35,7 +35,7 @@ void func_802F238C(void) {
         if (o->oAngleVelPitch < -0x200)
             o->oAngleVelPitch = -0x200;
     } else {
-        if (IsPointCloseToObject(o, o->oHomeX, o->oHomeY, o->oHomeZ, 100)) {
+        if (is_point_close_to_object(o, o->oHomeX, o->oHomeY, o->oHomeZ, 100)) {
             if (o->oAngleVelPitch != 0) {
                 if (o->oAngleVelPitch > 0)
                     o->oAngleVelPitch -= 0x10;

@@ -1,6 +1,5 @@
 #include <ultra64.h>
 #include <macros.h>
-#include <config.h>
 #include <stdio.h>
 #include "gd_types.h"
 #include "bad_declarations.h"
@@ -630,13 +629,10 @@ struct GdObj *d_makeobj(enum DObjTypes type, DynId id) {
             d_makeobj(D_GROUP, id);
             ((struct ObjGroup *) sDynListCurObj)->linkType = 1;
 //! @bug Returns garbage when making `D_DATA_GRP` object
-#if BUGFIX_GODDARD_MISSING_RETURN
+#ifdef AVOID_UB
             return NULL;
 #else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
             return;
-#pragma GCC diagnostic pop
 #endif
         case D_CAMERA:
             dobj = &make_camera(0, NULL)->header;

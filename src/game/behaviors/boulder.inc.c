@@ -13,7 +13,7 @@ void bhv_big_boulder_init(void) {
 void func_802F05DC(void) {
     s16 sp1E;
 
-    sp1E = func_802E4204();
+    sp1E = object_step_without_floor_orient();
     if ((sp1E & 0x09) == 0x01 && o->oVelY > 10.0f) {
         PlaySound2(SOUND_GENERAL_GRINDEL_ROLL);
         func_802A3004();
@@ -51,7 +51,7 @@ void bhv_big_boulder_generator_loop(void) {
         o->oTimer = 0;
     }
 
-    if (!func_802E49A4(4) || is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1500))
+    if (!current_mario_room_check(4) || is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1500))
         return;
 
     if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 6000)) {

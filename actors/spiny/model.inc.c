@@ -1,64 +1,40 @@
 // Spiny
 
 // 0x050157F8
-static const Ambient spiny_seg5_light_050157F8 = {
-    {{0x32, 0x23, 0x0a}, 0, {0x32, 0x23, 0x0a}, 0}
-};
-
-// 0x05015800
-static const Light spiny_seg5_light_05015800 = {
-    {{0xca, 0x8d, 0x29}, 0, {0xca, 0x8d, 0x29}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spiny_seg5_lights_050157F8 = gdSPDefLights1(
+	0x32, 0x23, 0x0a,
+	0xca, 0x8d, 0x29, 0x28, 0x28, 0x28
+);
 
 // 0x05015810
-static const Ambient spiny_seg5_light_05015810 = {
-    {{0x3a, 0x2c, 0x1f}, 0, {0x3a, 0x2c, 0x1f}, 0}
-};
-
-// 0x05015818
-static const Light spiny_seg5_light_05015818 = {
-    {{0xeb, 0xb0, 0x7f}, 0, {0xeb, 0xb0, 0x7f}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spiny_seg5_lights_05015810 = gdSPDefLights1(
+	0x3a, 0x2c, 0x1f,
+	0xeb, 0xb0, 0x7f, 0x28, 0x28, 0x28
+);
 
 // 0x05015828
-static const Ambient spiny_seg5_light_05015828 = {
-    {{0x2c, 0x2c, 0x2c}, 0, {0x2c, 0x2c, 0x2c}, 0}
-};
-
-// 0x05015830
-static const Light spiny_seg5_light_05015830 = {
-    {{0xb2, 0xb2, 0xb2}, 0, {0xb2, 0xb2, 0xb2}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spiny_seg5_lights_05015828 = gdSPDefLights1(
+	0x2c, 0x2c, 0x2c,
+	0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
+);
 
 // 0x05015840
-static const Ambient spiny_seg5_light_05015840 = {
-    {{0x3f, 0x00, 0x00}, 0, {0x3f, 0x00, 0x00}, 0}
-};
-
-// 0x05015848
-static const Light spiny_seg5_light_05015848 = {
-    {{0xff, 0x00, 0x00}, 0, {0xff, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spiny_seg5_lights_05015840 = gdSPDefLights1(
+	0x3f, 0x00, 0x00,
+	0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x05015858
-static const Ambient spiny_seg5_light_05015858 = {
-    {{0x3d, 0x25, 0x01}, 0, {0x3d, 0x25, 0x01}, 0}
-};
-
-// 0x05015860
-static const Light spiny_seg5_light_05015860 = {
-    {{0xf4, 0x96, 0x07}, 0, {0xf4, 0x96, 0x07}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spiny_seg5_lights_05015858 = gdSPDefLights1(
+	0x3d, 0x25, 0x01,
+	0xf4, 0x96, 0x07, 0x28, 0x28, 0x28
+);
 
 // 0x05015870
-static const Ambient spiny_seg5_light_05015870 = {
-    {{0x3c, 0x2c, 0x09}, 0, {0x3c, 0x2c, 0x09}, 0}
-};
-
-// 0x05015878
-static const Light spiny_seg5_light_05015878 = {
-    {{0xf1, 0xb2, 0x25}, 0, {0xf1, 0xb2, 0x25}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spiny_seg5_lights_05015870 = gdSPDefLights1(
+	0x3c, 0x2c, 0x09,
+	0xf1, 0xb2, 0x25, 0x28, 0x28, 0x28
+);
 
 // 0x05015888
 static const Vtx spiny_seg5_vertex_05015888[] = {
@@ -311,8 +287,8 @@ static const Vtx spiny_seg5_vertex_05016328[] = {
 
 // 0x05016418 - 0x050164E0
 const Gfx spiny_seg5_dl_05016418[] = {
-    gsSPLight(&spiny_seg5_light_05015800, 1),
-    gsSPLight(&spiny_seg5_light_050157F8, 2),
+    gsSPLight(&spiny_seg5_lights_050157F8.l, 1),
+    gsSPLight(&spiny_seg5_lights_050157F8.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015888, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  7, 0x0,  8,  7,  9, 0x0),
@@ -321,8 +297,8 @@ const Gfx spiny_seg5_dl_05016418[] = {
     gsSP2Triangles( 3,  5, 11, 0x0, 11,  5,  0, 0x0),
     gsSP2Triangles( 7,  8,  3, 0x0,  9, 12,  8, 0x0),
     gsSP2Triangles( 9,  2,  1, 0x0,  2, 10,  0, 0x0),
-    gsSPLight(&spiny_seg5_light_05015818, 1),
-    gsSPLight(&spiny_seg5_light_05015810, 2),
+    gsSPLight(&spiny_seg5_lights_05015810.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015810.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015958, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 3,  4,  0, 0x0,  1,  5,  2, 0x0),
@@ -331,8 +307,8 @@ const Gfx spiny_seg5_dl_05016418[] = {
 
 // 0x050164E0 - 0x050165A8
 const Gfx spiny_seg5_dl_050164E0[] = {
-    gsSPLight(&spiny_seg5_light_05015800, 1),
-    gsSPLight(&spiny_seg5_light_050157F8, 2),
+    gsSPLight(&spiny_seg5_lights_050157F8.l, 1),
+    gsSPLight(&spiny_seg5_lights_050157F8.a, 2),
     gsSPVertex(spiny_seg5_vertex_050159B8, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  7, 0x0,  8,  7,  9, 0x0),
@@ -341,8 +317,8 @@ const Gfx spiny_seg5_dl_050164E0[] = {
     gsSP2Triangles( 3,  5, 11, 0x0, 11,  5,  0, 0x0),
     gsSP2Triangles( 7,  8,  3, 0x0,  9, 12,  8, 0x0),
     gsSP2Triangles( 9,  2,  1, 0x0,  2, 10,  0, 0x0),
-    gsSPLight(&spiny_seg5_light_05015818, 1),
-    gsSPLight(&spiny_seg5_light_05015810, 2),
+    gsSPLight(&spiny_seg5_lights_05015810.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015810.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015A88, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 3,  4,  0, 0x0,  1,  5,  2, 0x0),
@@ -351,8 +327,8 @@ const Gfx spiny_seg5_dl_050164E0[] = {
 
 // 0x050165A8 - 0x05016670
 const Gfx spiny_seg5_dl_050165A8[] = {
-    gsSPLight(&spiny_seg5_light_05015800, 1),
-    gsSPLight(&spiny_seg5_light_050157F8, 2),
+    gsSPLight(&spiny_seg5_lights_050157F8.l, 1),
+    gsSPLight(&spiny_seg5_lights_050157F8.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015AE8, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  5, 0x0,  8,  6,  9, 0x0),
@@ -361,8 +337,8 @@ const Gfx spiny_seg5_dl_050165A8[] = {
     gsSP2Triangles(10,  3,  5, 0x0,  2,  3, 10, 0x0),
     gsSP2Triangles( 5,  9,  6, 0x0,  9, 12,  8, 0x0),
     gsSP2Triangles( 1,  0,  8, 0x0,  2, 11,  0, 0x0),
-    gsSPLight(&spiny_seg5_light_05015818, 1),
-    gsSPLight(&spiny_seg5_light_05015810, 2),
+    gsSPLight(&spiny_seg5_lights_05015810.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015810.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015BB8, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 2,  4,  3, 0x0,  0,  5,  1, 0x0),
@@ -371,8 +347,8 @@ const Gfx spiny_seg5_dl_050165A8[] = {
 
 // 0x05016670 - 0x05016738
 const Gfx spiny_seg5_dl_05016670[] = {
-    gsSPLight(&spiny_seg5_light_05015800, 1),
-    gsSPLight(&spiny_seg5_light_050157F8, 2),
+    gsSPLight(&spiny_seg5_lights_050157F8.l, 1),
+    gsSPLight(&spiny_seg5_lights_050157F8.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015C18, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  5, 0x0,  8,  6,  9, 0x0),
@@ -381,8 +357,8 @@ const Gfx spiny_seg5_dl_05016670[] = {
     gsSP2Triangles(10,  3,  5, 0x0,  2,  3, 10, 0x0),
     gsSP2Triangles( 5,  9,  6, 0x0,  9, 12,  8, 0x0),
     gsSP2Triangles( 1,  0,  8, 0x0,  2, 11,  0, 0x0),
-    gsSPLight(&spiny_seg5_light_05015818, 1),
-    gsSPLight(&spiny_seg5_light_05015810, 2),
+    gsSPLight(&spiny_seg5_lights_05015810.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015810.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015CE8, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 2,  4,  3, 0x0,  0,  5,  1, 0x0),
@@ -391,8 +367,8 @@ const Gfx spiny_seg5_dl_05016670[] = {
 
 // 0x05016738 - 0x05016A48
 const Gfx spiny_seg5_dl_05016738[] = {
-    gsSPLight(&spiny_seg5_light_05015830, 1),
-    gsSPLight(&spiny_seg5_light_05015828, 2),
+    gsSPLight(&spiny_seg5_lights_05015828.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015828.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015D48, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
     gsSP2Triangles( 3,  4,  2, 0x0,  1,  0,  5, 0x0),
@@ -413,8 +389,8 @@ const Gfx spiny_seg5_dl_05016738[] = {
     gsSPVertex(spiny_seg5_vertex_05015F48, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  4, 0x0),
     gsSP2Triangles( 5,  2,  4, 0x0,  4,  2,  1, 0x0),
-    gsSPLight(&spiny_seg5_light_05015860, 1),
-    gsSPLight(&spiny_seg5_light_05015858, 2),
+    gsSPLight(&spiny_seg5_lights_05015858.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015858.a, 2),
     gsSPVertex(spiny_seg5_vertex_05015FA8, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  2,  1, 0x0),
     gsSP2Triangles( 0,  2,  4, 0x0,  5,  6,  7, 0x0),
@@ -426,8 +402,8 @@ const Gfx spiny_seg5_dl_05016738[] = {
     gsSP2Triangles( 0,  9, 10, 0x0,  0, 10,  1, 0x0),
     gsSP2Triangles( 6,  5,  0, 0x0, 15, 10, 13, 0x0),
     gsSP2Triangles( 3,  1, 15, 0x0, 10, 15,  1, 0x0),
-    gsSPLight(&spiny_seg5_light_05015848, 1),
-    gsSPLight(&spiny_seg5_light_05015840, 2),
+    gsSPLight(&spiny_seg5_lights_05015840.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015840.a, 2),
     gsSPVertex(spiny_seg5_vertex_050160A8, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  0,  8,  1, 0x0),
@@ -435,8 +411,8 @@ const Gfx spiny_seg5_dl_05016738[] = {
     gsSP2Triangles( 3,  5,  9, 0x0,  1,  8,  7, 0x0),
     gsSP2Triangles( 3,  9,  2, 0x0,  3,  7,  4, 0x0),
     gsSP2Triangles( 4,  7,  6, 0x0,  4,  6,  5, 0x0),
-    gsSPLight(&spiny_seg5_light_05015878, 1),
-    gsSPLight(&spiny_seg5_light_05015870, 2),
+    gsSPLight(&spiny_seg5_lights_05015870.l, 1),
+    gsSPLight(&spiny_seg5_lights_05015870.a, 2),
     gsSPVertex(spiny_seg5_vertex_05016148, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -454,6 +430,6 @@ const Gfx spiny_seg5_dl_05016738[] = {
 
 // 0x05016A48 - 0x05016A58
 const Gfx spiny_seg5_dl_05016A48[] = {
-    gsSPNumLights(NUMLIGHTS_0), // I cannot tell if they meant to put 0 or 1 here.
+    gsSPNumLights(NUMLIGHTS_1),
     gsSPEndDisplayList(),
 };

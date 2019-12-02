@@ -1,24 +1,16 @@
 // Clam Shell
 
-// Unreferenced light
-UNUSED static const Ambient clam_shell_light_1 = {
-    {{0x1b, 0x23, 0x30}, 0, {0x1b, 0x23, 0x30}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 clam_shell_lights_unused1 = gdSPDefLights1(
+    0x1b, 0x23, 0x30,
+    0x6d, 0x8f, 0xc3, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light clam_shell_light_2 = {
-    {{0x6d, 0x8f, 0xc3}, 0, {0x6d, 0x8f, 0xc3}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient clam_shell_light_3 = {
-    {{0x18, 0x28, 0x38}, 0, {0x18, 0x28, 0x38}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light clam_shell_light_4 = {
-    {{0x60, 0xa2, 0xe2}, 0, {0x60, 0xa2, 0xe2}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 clam_shell_lights_unused2 = gdSPDefLights1(
+    0x18, 0x28, 0x38,
+    0x60, 0xa2, 0xe2, 0x28, 0x28, 0x28
+);
 
 // 0x05000030
 ALIGNED8 static const u8 clam_shell_seg5_texture_05000030[] = {
@@ -31,14 +23,10 @@ ALIGNED8 static const u8 clam_shell_seg5_texture_05000830[] = {
 };
 
 // 0x05001030
-static const Ambient clam_shell_seg5_light_05001030 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05001038
-static const Light clam_shell_seg5_light_05001038 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 clam_shell_seg5_lights_05001030 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001048
 static const Vtx clam_shell_seg5_vertex_05001048[] = {
@@ -75,8 +63,8 @@ const Gfx clam_shell_seg5_dl_050011A8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, clam_shell_seg5_texture_05000030),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&clam_shell_seg5_light_05001038, 1),
-    gsSPLight(&clam_shell_seg5_light_05001030, 2),
+    gsSPLight(&clam_shell_seg5_lights_05001030.l, 1),
+    gsSPLight(&clam_shell_seg5_lights_05001030.a, 2),
     gsSPVertex(clam_shell_seg5_vertex_05001048, 11, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  4, 0x0),
     gsSP2Triangles( 4,  5,  3, 0x0,  4,  0,  6, 0x0),
@@ -120,14 +108,10 @@ const Gfx clam_shell_seg5_dl_050012B8[] = {
 };
 
 // 0x05001320
-static const Ambient clam_shell_seg5_light_05001320 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05001328
-static const Light clam_shell_seg5_light_05001328 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 clam_shell_seg5_lights_05001320 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001338
 static const Vtx clam_shell_seg5_vertex_05001338[] = {
@@ -162,8 +146,8 @@ const Gfx clam_shell_seg5_dl_05001478[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, clam_shell_seg5_texture_05000030),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&clam_shell_seg5_light_05001328, 1),
-    gsSPLight(&clam_shell_seg5_light_05001320, 2),
+    gsSPLight(&clam_shell_seg5_lights_05001320.l, 1),
+    gsSPLight(&clam_shell_seg5_lights_05001320.a, 2),
     gsSPVertex(clam_shell_seg5_vertex_05001338, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  0, 0x0),
     gsSP2Triangles( 4,  5,  0, 0x0,  0,  5,  6, 0x0),

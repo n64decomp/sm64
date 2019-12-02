@@ -165,9 +165,14 @@ extern s8 dddStatus;
 // extern ? D_8033670C;
 
 extern Gfx *Geo18_8029D890(s32 run, UNUSED struct GraphNode *node, f32 mtx[4][4]);
-extern Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48);
-extern s32 geo_switch_anim_state(s32 run, struct GraphNode *node);
-extern s32 geo_switch_area(s32 run, struct GraphNode *node);
+extern Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED void *context);
+#ifdef AVOID_UB
+extern Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node, void *context);
+extern Gfx *geo_switch_area(s32 run, struct GraphNode *node, void *context);
+#else
+extern Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node);
+extern Gfx *geo_switch_area(s32 run, struct GraphNode *node);
+#endif
 extern void func_8029D558(Mat4, struct Object *);
 void apply_object_scale_to_matrix(struct Object *, Mat4, Mat4);
 extern void func_8029D704(Mat4,Mat4,Mat4);
@@ -319,7 +324,7 @@ void obj_rotate_face_angle_using_vel(void);
 extern s32 obj_follow_path(UNUSED s32);
 extern void chain_segment_init(struct ChainSegment *);
 extern f32 random_f32_around_zero(f32);
-f32 scale_object_random(struct Object*,f32,f32);
+void scale_object_random(struct Object*,f32,f32);
 extern void translate_object_xyz_random(struct Object *, f32);
 extern void translate_object_xz_random(struct Object *, f32);
 // extern ? func_802A297C(?);

@@ -972,7 +972,7 @@ glabel L_U_8031CBEC
 /* 0D7DF4 8031CDF4 02002825 */  move  $a1, $s0
 /* 0D7DF8 8031CDF8 17200004 */  bnez  $t9, .L8031CE0C
 /* 0D7DFC 8031CDFC 00000000 */   nop
-/* 0D7E00 8031CE00 0C0C6874 */  jal   func_80319164
+/* 0D7E00 8031CE00 0C0C6874 */  jal   init_synthetic_wave
 /* 0D7E04 8031CE04 A3A8003D */   sb    $t0, 0x3d($sp)
 /* 0D7E08 8031CE08 93A8003D */  lbu   $t0, 0x3d($sp)
 .L8031CE0C:

@@ -23,9 +23,9 @@ struct SequencePlayer gSequencePlayers[SEQUENCE_PLAYERS];
 struct SequenceChannel gSequenceChannels[32];
 
 #ifdef VERSION_JP
-struct SequenceChannelLayer D_802245D8[48];
+struct SequenceChannelLayer gSequenceLayers[48];
 #else
-struct SequenceChannelLayer D_802245D8[52];
+struct SequenceChannelLayer gSequenceLayers[52];
 #endif
 
 struct SequenceChannel gSequenceChannelNone;
@@ -212,7 +212,7 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *arg3) {
 }
 
 // called from sound_reset
-void func_8031758C(UNUSED s32 arg0) {
+void init_sample_dma_buffers(UNUSED s32 arg0) {
     s32 i;
     s32 j;
 
@@ -287,7 +287,7 @@ static void unused_80317844(void) {
 }
 
 #ifdef NON_MATCHING
-void func_8031784C(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32 numDrums) {
+void patch_audio_bank(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32 numDrums) {
     // Make pointers into real pointers rather than indices
     struct Instrument *instrument;
     struct Instrument **itInstrs;
@@ -393,7 +393,7 @@ void func_8031784C(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32 nu
 }
 
 #else
-GLOBAL_ASM("asm/non_matchings/func_8031784C.s")
+GLOBAL_ASM("asm/non_matchings/patch_audio_bank.s")
 #endif
 
 struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
@@ -419,7 +419,7 @@ struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
     numInstruments = buf[0];
     numDrums = buf[1];
     audio_dma_copy_immediate((uintptr_t)(ctlData + 0x10), ret, alloc);
-    func_8031784C(ret, gAlTbl->seqArray[bankId].offset, numInstruments, numDrums);
+    patch_audio_bank(ret, gAlTbl->seqArray[bankId].offset, numInstruments, numDrums);
     gCtlEntries[bankId].numInstruments = (u8) numInstruments;
     gCtlEntries[bankId].numDrums = (u8) numDrums;
     gCtlEntries[bankId].instruments = ret->instruments;
@@ -635,11 +635,11 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
             // @bug This should set the last bank (i.e. the first in the JSON)
             // as default, not the missing one. This code path never gets
             // taken, though -- all sequence loading is synchronous.
-            seqPlayer->anyBank[0] = bankId;
-        } else if (load_banks_immediate(seqId, &seqPlayer->anyBank[0]) == NULL) {
+            seqPlayer->defaultBank[0] = bankId;
+        } else if (load_banks_immediate(seqId, &seqPlayer->defaultBank[0]) == NULL) {
             return;
         }
-    } else if (load_banks_immediate(seqId, &seqPlayer->anyBank[0]) == NULL) {
+    } else if (load_banks_immediate(seqId, &seqPlayer->defaultBank[0]) == NULL) {
         return;
     }
 
@@ -704,7 +704,7 @@ void audio_init() {
         gAiBufferLengths[i] = 0x00a0;
     }
 
-    gActiveAudioFrames = 0;
+    gAudioFrameCount = 0;
     gAudioTaskIndex = 0;
     gCurrAiBufferIndex = 0;
     gSoundMode = 0;
@@ -763,6 +763,6 @@ void audio_init() {
     gAlBankSets = soundAlloc(&gAudioInitPool, 0x100);
     audio_dma_copy_immediate((uintptr_t) gBankSetsData, gAlBankSets, 0x100);
 
-    func_8031D4B8();
+    init_sequence_players();
     gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;
 }

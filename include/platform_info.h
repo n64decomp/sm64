@@ -1,7 +1,7 @@
 #ifndef PLATFORM_INFO_H
 #define PLATFORM_INFO_H
 
-#if defined(__sgi) || defined(TARGET_N64)
+#ifdef TARGET_N64
 #define IS_64_BIT 0
 #define IS_BIG_ENDIAN 1
 #else

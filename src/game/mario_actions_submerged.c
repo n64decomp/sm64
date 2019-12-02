@@ -14,6 +14,7 @@
 #include "camera.h"
 #include "audio/external.h"
 #include "behavior_data.h"
+#include "level_table.h"
 
 #define MIN_SWIM_STRENGTH 160
 #define MIN_SWIM_SPEED 16.0f

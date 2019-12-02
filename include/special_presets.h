@@ -41,7 +41,7 @@ static struct SpecialPreset SpecialObjectPresets[] =
     {0x0D, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_LLL_ROTATING_HEXAGONAL_RING , bhvLllRotatingHexagonalRing},
     {0x0E, SPTYPE_YROT_NO_PARAMS    , 0x00, MODEL_LLL_SINKING_RECTANGULAR_PLATFORM, bhvLllSinkingRectangularPlatform},
     {0x0F, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_LLL_SINKING_SQUARE_PLATFORMS, bhvLllSinkingSquarePlatforms},
-    {0x10, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_LLL_TILTING_SQUARE_PLATFORM, bhvLllTiltingSquarePlatform},
+    {0x10, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_LLL_TILTING_SQUARE_PLATFORM, bhvLllTiltingInvertedPyramid},
     {0x11, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_NONE, bhvLllBowserPuzzle},
     {0x12, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_NONE, bhvMrI},
     {0x13, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_BULLY, bhvSmallBully},

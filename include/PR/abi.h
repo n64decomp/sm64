@@ -217,7 +217,7 @@ typedef struct {
 
 typedef union {
     Awords          words;
-#if !defined(__x86_64__) && !defined(__i386__)
+#if IS_BIG_ENDIAN && !IS_64_BIT
     Aadpcm          adpcm;
     Apolef          polef;
     Aclearbuff      clearbuff;

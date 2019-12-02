@@ -5,7 +5,7 @@ glabel D_80337BB8
     .word 0x407FFEDA, 0x407FFEDA 
 .text
 
-glabel process_notes
+glabel synthesis_process_notes
 /* 0D0590 80315590 27BDFE90 */  addiu $sp, $sp, -0x170
 /* 0D0594 80315594 3C0E8022 */  lui   $t6, %hi(gMaxSimultaneousNotes) # $t6, 0x8022
 /* 0D0598 80315598 8DCE6B70 */  lw    $t6, %lo(gMaxSimultaneousNotes)($t6)

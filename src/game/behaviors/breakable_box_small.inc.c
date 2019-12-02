@@ -29,7 +29,7 @@ void func_802F4CE8(void) {
 }
 
 void func_802F4DB4(void) {
-    s16 sp1E = ObjectStep();
+    s16 sp1E = object_step();
 
     attack_collided_non_mario_object(o);
     if (sp1E == 1)
@@ -44,12 +44,12 @@ void func_802F4DB4(void) {
     if (sp1E & 2) {
         func_802A3004();
         spawn_triangle_break_particles(20, 138, 0.7f, 3);
-        ObjSpawnYellowCoins(o, 3);
+        obj_spawn_yellow_coins(o, 3);
         create_sound_spawner(SOUND_GENERAL_BREAK_BOX);
         o->activeFlags = 0;
     }
 
-    ObjCheckFloorDeath(sp1E, D_803600E0);
+    obj_check_floor_death(sp1E, sObjFloor);
 }
 
 void breakable_box_small_released_loop(void) {
@@ -77,7 +77,7 @@ void breakable_box_small_idle_loop(void) {
             break;
 
         case 100:
-            ObjLavaDeath();
+            obj_lava_death();
             break;
 
         case 101:

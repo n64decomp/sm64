@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <macros.h>
-#include <config.h>
 
 #include "gd_types.h"
 #include "gd_macros.h"
@@ -343,7 +343,7 @@ struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGr
     newZone->unk30 = a0;
 
 //! @bug Created `ObjZone` is not returned
-#if BUGFIX_GODDARD_MISSING_RETURN
+#ifdef AVOID_UB
     return newZone;
 #endif
 }
@@ -1024,7 +1024,7 @@ struct GdObj *UnknownRecursive8017E2F0(struct GdObj *obj, enum ObjTypeFlag type)
     }
 
 //! @bug Nothing is returned if a GdObj of `type` is not found
-#if BUGFIX_GODDARD_MISSING_RETURN
+#ifdef AVOID_UB
     return NULL;
 #endif
 }
@@ -1044,13 +1044,10 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *grou
     //! @bug When `group` pointer is NULL, garbage is returned, not the
     //!      count of `fn` calls
     if (group == NULL) {
-#if BUGFIX_GODDARD_MISSING_RETURN
+#ifdef AVOID_UB
         return fnAppliedCount;
 #else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
         return;
-#pragma GCC diagnostic pop
 #endif
     }
 

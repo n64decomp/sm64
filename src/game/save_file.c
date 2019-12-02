@@ -8,6 +8,7 @@
 #include "level_update.h"
 #include "save_file.h"
 #include "sound_init.h"
+#include "level_table.h"
 
 #define MENU_DATA_MAGIC 0x4849
 #define SAVE_FILE_MAGIC 0x4441
@@ -29,46 +30,15 @@ u8 gCurrCourseStarFlags = 0;
 
 u8 gSpecialTripleJump = 0;
 
+#define STUB_LEVEL(_0, _1, courseenum, _3, _4, _5, _6, _7, _8) courseenum,
+#define DEFINE_LEVEL(_0, _1, courseenum, _3, _4, _5, _6, _7, _8, _9, _10) courseenum,
+
 s8 gLevelToCourseNumTable[] = {
-    COURSE_NONE,     // LEVEL_UNKNOWN_1
-    COURSE_NONE,     // LEVEL_UNKNOWN_2
-    COURSE_NONE,     // LEVEL_UNKNOWN_3
-    COURSE_BBH,      // LEVEL_BBH
-    COURSE_CCM,      // LEVEL_CCM
-    COURSE_NONE,     // LEVEL_CASTLE
-    COURSE_HMC,      // LEVEL_HMC
-    COURSE_SSL,      // LEVEL_SSL
-    COURSE_BOB,      // LEVEL_BOB
-    COURSE_SL,       // LEVEL_SL
-    COURSE_WDW,      // LEVEL_WDW
-    COURSE_JRB,      // LEVEL_JRB
-    COURSE_THI,      // LEVEL_THI
-    COURSE_TTC,      // LEVEL_TTC
-    COURSE_RR,       // LEVEL_RR
-    COURSE_NONE,     // LEVEL_CASTLE_GROUNDS
-    COURSE_BITDW,    // LEVEL_BITDW
-    COURSE_VCUTM,    // LEVEL_VCUTM
-    COURSE_BITFS,    // LEVEL_BITFS
-    COURSE_SA,       // LEVEL_SA
-    COURSE_BITS,     // LEVEL_BITS
-    COURSE_LLL,      // LEVEL_LLL
-    COURSE_DDD,      // LEVEL_DDD
-    COURSE_WF,       // LEVEL_WF
-    COURSE_CAKE_END, // LEVEL_ENDING
-    COURSE_NONE,     // LEVEL_CASTLE_COURTYARD
-    COURSE_PSS,      // LEVEL_PSS
-    COURSE_COTMC,    // LEVEL_COTMC
-    COURSE_TOTWC,    // LEVEL_TOTWC
-    COURSE_BITDW,    // LEVEL_BOWSER_1
-    COURSE_WMOTR,    // LEVEL_WMOTR
-    COURSE_NONE,     // LEVEL_UNKNOWN_32
-    COURSE_BITFS,    // LEVEL_BOWSER_2
-    COURSE_BITS,     // LEVEL_BOWSER_3
-    COURSE_NONE,     // LEVEL_UNKNOWN_35
-    COURSE_TTM,      // LEVEL_TTM
-    COURSE_NONE,     // LEVEL_UNKNOWN_37
-    COURSE_NONE      // LEVEL_UNKNOWN_38
+    #include "levels/level_defines.h"
 };
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
+
 STATIC_ASSERT(ARRAY_COUNT(gLevelToCourseNumTable) == LEVEL_COUNT - 1,
               "change this array if you are adding levels");
 

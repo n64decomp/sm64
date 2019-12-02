@@ -21,7 +21,9 @@ if lang is None:
     best = 0
     for path in ['build/us/sm64.us.z64', 'build/jp/sm64.jp.z64', 'build/eu/sm64.eu.z64']:
         try:
-            if os.path.getmtime(path) > best:
+            mtime = os.path.getmtime(path)
+            if mtime > best:
+                best = mtime
                 lang = path.split('/')[1]
         except Exception:
             pass

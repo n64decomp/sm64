@@ -1,14 +1,10 @@
 // Boo
 
 // 0x05009B28
-static const Ambient boo_seg5_light_05009B28 = {
-    {{0x97, 0x9a, 0xff}, 0, {0x97, 0x9a, 0xff}, 0}
-};
-
-// 0x05009B30
-static const Light boo_seg5_light_05009B30 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 boo_seg5_lights_05009B28 = gdSPDefLights1(
+    0x97, 0x9a, 0xff,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05009B40
 ALIGNED8 static const u8 boo_seg5_texture_05009B40[] = {
@@ -265,8 +261,8 @@ const Gfx boo_seg5_dl_0500BEE0[] = {
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&boo_seg5_light_05009B30, 1),
-    gsSPLight(&boo_seg5_light_05009B28, 2),
+    gsSPLight(&boo_seg5_lights_05009B28.l, 1),
+    gsSPLight(&boo_seg5_lights_05009B28.a, 2),
     gsSPVertex(boo_seg5_vertex_0500B340, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -338,7 +334,7 @@ const Gfx boo_seg5_dl_0500BFA0[] = {
 const Gfx boo_seg5_dl_0500C1B0[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_BLENDRGBFADEA, G_CC_BLENDRGBFADEA),
-    gsSPNumLights(NUMLIGHTS_0), // I cannot tell if they meant to put 0 or 1 here.
+    gsSPNumLights(NUMLIGHTS_1),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),

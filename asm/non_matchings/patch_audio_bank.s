@@ -1,4 +1,4 @@
-glabel func_8031784C
+glabel patch_audio_bank
 /* 0D284C 8031784C 27ADFFF0 */  addiu $t5, $sp, -0x10
 /* 0D2850 80317850 ADA60018 */  sw    $a2, 0x18($t5)
 /* 0D2854 80317854 8C820000 */  lw    $v0, ($a0)

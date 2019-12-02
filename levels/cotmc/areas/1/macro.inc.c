@@ -11,7 +11,7 @@ const MacroObject cotmc_seg7_macro_objs[] = {
     MACRO_OBJECT(/*preset*/ macro_1up,                  /*yaw*/   0, /*pos*/   900,   260, -3620),
     MACRO_OBJECT(/*preset*/ macro_coin_line_horizontal, /*yaw*/   0, /*pos*/     0,  -170, -1660),
     MACRO_OBJECT(/*preset*/ macro_coin_line_horizontal, /*yaw*/   0, /*pos*/   -20,  -211, -3940),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 270, /*pos*/   -71,    20,   720, /*behParam*/ 123),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 270, /*pos*/   -71,    20,   720, /*behParam*/ DIALOG_123),
     MACRO_OBJECT(/*preset*/ macro_red_coin,             /*yaw*/   0, /*pos*/   200,  -291, -5600),
     MACRO_OBJECT(/*preset*/ macro_red_coin,             /*yaw*/   0, /*pos*/   980,   260, -3430),
     MACRO_OBJECT(/*preset*/ macro_red_coin,             /*yaw*/   0, /*pos*/  -540,  -352, -5940),

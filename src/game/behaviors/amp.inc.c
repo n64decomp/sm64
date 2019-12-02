@@ -225,7 +225,7 @@ void bhv_homing_amp_loop(void) {
             break;
     }
 
-    ObjectStep();
+    object_step();
 
     // Oscillate
     o->oAmpYPhase++;

@@ -166,14 +166,10 @@ const Gfx amp_seg8_dl_08002E58[] = {
 };
 
 // 0x08002EC8
-static const Ambient amp_seg8_light_08002EC8 = {
-    {{0x33, 0x3f, 0x00}, 0, {0x33, 0x3f, 0x00}, 0}
-};
-
-// 0x08002ED0
-static const Light amp_seg8_light_08002ED0 = {
-    {{0xcf, 0xff, 0x00}, 0, {0xcf, 0xff, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 amp_seg8_lights_08002EC8 = gdSPDefLights1(
+    0x33, 0x3f, 0x00,
+    0xcf, 0xff, 0x00, 0x28, 0x28, 0x28
+);
 
 // //! Another malformed entry: Vertex interpreted as light
 // 0x08002EE0
@@ -401,8 +397,8 @@ static const Vtx amp_seg8_vertex_080038D0[] = {
 
 // 0x08003910 - 0x08003940
 const Gfx amp_seg8_dl_08003910[] = {
-    gsSPLight(&amp_seg8_light_08002ED0, 1),
-    gsSPLight(&amp_seg8_light_08002EC8, 2),
+    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
+    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
     gsSPVertex(amp_seg8_vertex_08002EE0, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -410,8 +406,8 @@ const Gfx amp_seg8_dl_08003910[] = {
 
 // 0x08003940 - 0x08003970
 const Gfx amp_seg8_dl_08003940[] = {
-    gsSPLight(&amp_seg8_light_08002ED0, 1),
-    gsSPLight(&amp_seg8_light_08002EC8, 2),
+    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
+    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
     gsSPVertex(amp_seg8_vertex_08002F40, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -419,8 +415,8 @@ const Gfx amp_seg8_dl_08003940[] = {
 
 // 0x08003970 - 0x080039A0
 const Gfx amp_seg8_dl_08003970[] = {
-    gsSPLight(&amp_seg8_light_08002ED0, 1),
-    gsSPLight(&amp_seg8_light_08002EC8, 2),
+    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
+    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
     gsSPVertex(amp_seg8_vertex_08002FA0, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -428,8 +424,8 @@ const Gfx amp_seg8_dl_08003970[] = {
 
 // 0x080039A0 - 0x080039D0
 const Gfx amp_seg8_dl_080039A0[] = {
-    gsSPLight(&amp_seg8_light_08002ED0, 1),
-    gsSPLight(&amp_seg8_light_08002EC8, 2),
+    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
+    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
     gsSPVertex(amp_seg8_vertex_08003000, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),

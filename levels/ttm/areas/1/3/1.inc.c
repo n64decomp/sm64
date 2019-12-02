@@ -1,22 +1,14 @@
-// 0x0700A340 - 0x0700A348
-static const Ambient ttm_seg7_light_0700A340 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
+// 0x0700A340 - 0x0700A358
+static const Lights1 ttm_seg7_lights_0700A340 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x0700A348 - 0x0700A358
-static const Light ttm_seg7_light_0700A348 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700A358 - 0x0700A360
-static const Ambient ttm_seg7_light_0700A358 = {
-    {{0x7f, 0x7f, 0x64}, 0, {0x7f, 0x7f, 0x64}, 0}
-};
-
-// 0x0700A360 - 0x0700A370
-static const Light ttm_seg7_light_0700A360 = {
-    {{0xff, 0xff, 0xc9}, 0, {0xff, 0xff, 0xc9}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700A358 - 0x0700A370
+static const Lights1 ttm_seg7_lights_0700A358 = gdSPDefLights1(
+    0x7f, 0x7f, 0x64,
+    0xff, 0xff, 0xc9, 0x28, 0x28, 0x28
+);
 
 // 0x0700A370 - 0x0700A460
 static const Vtx ttm_seg7_vertex_0700A370[] = {
@@ -97,8 +89,8 @@ static const Gfx ttm_seg7_dl_0700A710[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mountain_09004800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&ttm_seg7_light_0700A348, 1),
-    gsSPLight(&ttm_seg7_light_0700A340, 2),
+    gsSPLight(&ttm_seg7_lights_0700A340.l, 1),
+    gsSPLight(&ttm_seg7_lights_0700A340.a, 2),
     gsSPVertex(ttm_seg7_vertex_0700A370, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 5,  4,  6, 0x0,  5,  6,  7, 0x0),
@@ -125,8 +117,8 @@ static const Gfx ttm_seg7_dl_0700A848[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, ttm_seg7_texture_07000800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&ttm_seg7_light_0700A360, 1),
-    gsSPLight(&ttm_seg7_light_0700A358, 2),
+    gsSPLight(&ttm_seg7_lights_0700A358.l, 1),
+    gsSPLight(&ttm_seg7_lights_0700A358.a, 2),
     gsSPVertex(ttm_seg7_vertex_0700A640, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  4, 0x0),
     gsSP2Triangles( 0,  5,  3, 0x0,  0,  6,  7, 0x0),

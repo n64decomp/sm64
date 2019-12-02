@@ -1,34 +1,22 @@
 // Lakitu Enemy
 
-// Unreferenced light
-UNUSED static const Ambient lakitu_enemy_light_1 = {
-    {{0x33, 0x1f, 0x0c}, 0, {0x33, 0x1f, 0x0c}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light lakitu_enemy_light_2 = {
-    {{0xcc, 0x7f, 0x33}, 0, {0xcc, 0x7f, 0x33}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 lakitu_enemy_lights_unused1 = gdSPDefLights1(
+	0x33, 0x1f, 0x0c,
+	0xcc, 0x7f, 0x33, 0x28, 0x28, 0x28
+);
 
 // 0x0500ECB0
-static const Ambient lakitu_enemy_seg5_light_0500ECB0 = {
-    {{0x29, 0x13, 0x06}, 0, {0x29, 0x13, 0x06}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_0500ECB0 = gdSPDefLights1(
+	0x29, 0x13, 0x06,
+	0xa5, 0x4f, 0x1b, 0x28, 0x28, 0x28
+);
 
-// 0x0500ECB8
-static const Light lakitu_enemy_seg5_light_0500ECB8 = {
-    {{0xa5, 0x4f, 0x1b}, 0, {0xa5, 0x4f, 0x1b}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient lakitu_enemy_light_3 = {
-    {{0x0d, 0x2c, 0x0b}, 0, {0x0d, 0x2c, 0x0b}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light lakitu_enemy_light_4 = {
-    {{0x34, 0xb2, 0x2c}, 0, {0x34, 0xb2, 0x2c}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 lakitu_enemy_lights_unused2 = gdSPDefLights1(
+	0x0d, 0x2c, 0x0b,
+	0x34, 0xb2, 0x2c, 0x28, 0x28, 0x28
+);
 
 // Unreferenced texture
 // 0x0500ECE0
@@ -57,24 +45,16 @@ ALIGNED8 static const u8 lakitu_enemy_seg5_texture_05011CE0[] = {
 };
 
 // 0x050124E0
-static const Ambient lakitu_enemy_seg5_light_050124E0 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x050124E8
-static const Light lakitu_enemy_seg5_light_050124E8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_050124E0 = gdSPDefLights1(
+	0x7f, 0x7f, 0x7f,
+	0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x050124F8
-static const Ambient lakitu_enemy_seg5_light_050124F8 = {
-    {{0x79, 0x55, 0x00}, 0, {0x79, 0x55, 0x00}, 0}
-};
-
-// 0x05012500
-static const Light lakitu_enemy_seg5_light_05012500 = {
-    {{0xf2, 0xab, 0x00}, 0, {0xf2, 0xab, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_050124F8 = gdSPDefLights1(
+	0x79, 0x55, 0x00,
+	0xf2, 0xab, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x05012510
 static const Vtx lakitu_enemy_seg5_vertex_05012510[] = {
@@ -130,8 +110,8 @@ const Gfx lakitu_enemy_seg5_dl_05012760[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, lakitu_enemy_seg5_texture_050114E0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&lakitu_enemy_seg5_light_050124E8, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_050124E0, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_050124E0.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_050124E0.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_05012510, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 4,  6,  7, 0x0,  4,  7,  5, 0x0),
@@ -154,8 +134,8 @@ const Gfx lakitu_enemy_seg5_dl_05012760[] = {
 
 // 0x05012890 - 0x05012910
 const Gfx lakitu_enemy_seg5_dl_05012890[] = {
-    gsSPLight(&lakitu_enemy_seg5_light_05012500, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_050124F8, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_050124F8.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_050124F8.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_050126B0, 11, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  4, 0x0),
     gsSP2Triangles( 1,  5,  2, 0x0,  4,  0,  2, 0x0),
@@ -184,14 +164,10 @@ const Gfx lakitu_enemy_seg5_dl_05012910[] = {
 };
 
 // 0x05012978
-static const Ambient lakitu_enemy_seg5_light_05012978 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x05012980
-static const Light lakitu_enemy_seg5_light_05012980 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_05012978 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05012990
 static const Vtx lakitu_enemy_seg5_vertex_05012990[] = {
@@ -308,8 +284,8 @@ const Gfx lakitu_enemy_seg5_dl_05012EF0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, lakitu_enemy_seg5_texture_05011CE0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&lakitu_enemy_seg5_light_05012980, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_05012978, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_05012978.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_05012978.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_05012990, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  1,  4, 0x0),
     gsSP2Triangles( 3,  5,  1, 0x0,  1,  6,  7, 0x0),
@@ -371,14 +347,10 @@ const Gfx lakitu_enemy_seg5_dl_05013160[] = {
 };
 
 // 0x050131C0
-static const Ambient lakitu_enemy_seg5_light_050131C0 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x050131C8
-static const Light lakitu_enemy_seg5_light_050131C8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_050131C0 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x050131D8
 static const Vtx lakitu_enemy_seg5_vertex_050131D8[] = {
@@ -398,8 +370,8 @@ static const Vtx lakitu_enemy_seg5_vertex_050131D8[] = {
 
 // 0x05013298 - 0x050132D8
 const Gfx lakitu_enemy_seg5_dl_05013298[] = {
-    gsSPLight(&lakitu_enemy_seg5_light_050131C8, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_050131C0, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_050131C0.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_050131C0.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_050131D8, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -448,14 +420,10 @@ const Gfx lakitu_enemy_seg5_dl_05013378[] = {
 };
 
 // 0x050133A0
-static const Ambient lakitu_enemy_seg5_light_050133A0 = {
-    {{0x79, 0x55, 0x00}, 0, {0x79, 0x55, 0x00}, 0}
-};
-
-// 0x050133A8
-static const Light lakitu_enemy_seg5_light_050133A8 = {
-    {{0xf2, 0xab, 0x00}, 0, {0xf2, 0xab, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_050133A0 = gdSPDefLights1(
+    0x79, 0x55, 0x00,
+    0xf2, 0xab, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x050133B8
 static const Vtx lakitu_enemy_seg5_vertex_050133B8[] = {
@@ -478,8 +446,8 @@ static const Vtx lakitu_enemy_seg5_vertex_050133B8[] = {
 
 // 0x050134A8 - 0x05013598
 const Gfx lakitu_enemy_seg5_dl_050134A8[] = {
-    gsSPLight(&lakitu_enemy_seg5_light_050133A8, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_050133A0, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_050133A0.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_050133A0.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_050133B8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  3,  5, 0x0,  3,  7,  4, 0x0),
@@ -498,14 +466,10 @@ const Gfx lakitu_enemy_seg5_dl_050134A8[] = {
 };
 
 // 0x05013598
-static const Ambient lakitu_enemy_seg5_light_05013598 = {
-    {{0x79, 0x55, 0x00}, 0, {0x79, 0x55, 0x00}, 0}
-};
-
-// 0x050135A0
-static const Light lakitu_enemy_seg5_light_050135A0 = {
-    {{0xf2, 0xab, 0x00}, 0, {0xf2, 0xab, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 lakitu_enemy_seg5_lights_05013598 = gdSPDefLights1(
+    0x79, 0x55, 0x00,
+    0xf2, 0xab, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x050135B0
 static const Vtx lakitu_enemy_seg5_vertex_050135B0[] = {
@@ -528,8 +492,8 @@ static const Vtx lakitu_enemy_seg5_vertex_050135B0[] = {
 
 // 0x050136A0 - 0x05013790
 const Gfx lakitu_enemy_seg5_dl_050136A0[] = {
-    gsSPLight(&lakitu_enemy_seg5_light_050135A0, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_05013598, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_05013598.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_05013598.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_050135B0, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 4,  6,  7, 0x0,  4,  7,  5, 0x0),
@@ -566,8 +530,8 @@ static const Vtx lakitu_enemy_seg5_vertex_05013790[] = {
 
 // 0x05013860 - 0x050138B0
 const Gfx lakitu_enemy_seg5_dl_05013860[] = {
-    gsSPLight(&lakitu_enemy_seg5_light_0500ECB8, 1),
-    gsSPLight(&lakitu_enemy_seg5_light_0500ECB0, 2),
+    gsSPLight(&lakitu_enemy_seg5_lights_0500ECB0.l, 1),
+    gsSPLight(&lakitu_enemy_seg5_lights_0500ECB0.a, 2),
     gsSPVertex(lakitu_enemy_seg5_vertex_05013790, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  0,  2, 0x0,  7,  8,  9, 0x0),
@@ -577,6 +541,6 @@ const Gfx lakitu_enemy_seg5_dl_05013860[] = {
 
 // 0x050138B0 - 0x050138C0
 const Gfx lakitu_enemy_seg5_dl_050138B0[] = {
-    gsSPNumLights(NUMLIGHTS_0), // I cannot tell if they meant to put 0 or 1 here.
+    gsSPNumLights(NUMLIGHTS_1),
     gsSPEndDisplayList(),
 };

@@ -2757,17 +2757,17 @@ sound_ref .sound_general_boat_tilt1
 sound_ref .sound_general_boat_tilt2
 sound_ref .sound_general_coin_drop
 sound_ref .chan_1429
-sound_ref .sound_general_switch1
+sound_ref .sound_general_pendulum_swing
 sound_ref .sound_general_chain_chomp1
 sound_ref .sound_general_chain_chomp2
-sound_ref .sound_general_switch2
+sound_ref .sound_general_door_turn_key
 sound_ref .sound_general_moving_in_sand
 sound_ref .chan_1519
-sound_ref .sound_general_switch3
+sound_ref .sound_general_moving_platform_switch
 sound_ref .sound_general_cage_open
 sound_ref .sound_general_quiet_pound1
 sound_ref .sound_general_break_box
-sound_ref .sound_general_switch4
+sound_ref .sound_general_door_insert_key
 sound_ref .sound_general_quiet_pound2
 sound_ref .sound_general_big_pound
 sound_ref .chan_15CD
@@ -3426,7 +3426,7 @@ layer_note1 51, 0x3, 50
 layer_note1 27, 0xa, 75
 layer_end
 
-.sound_general_switch1:
+.sound_general_pendulum_swing:
 chan_setbank 4
 chan_setinstr 9
 chan_setval 50
@@ -3519,7 +3519,7 @@ layer_loop 2
 layer_loopend
 layer_end
 
-.sound_general_switch2:
+.sound_general_door_turn_key:
 chan_setbank 4
 chan_setinstr 9
 chan_setlayer 0, .layer_14F2
@@ -3562,7 +3562,7 @@ layer_transpose 1
 layer_note1 15, 0x2c, 127
 layer_end
 
-.sound_general_switch3:
+.sound_general_moving_platform_switch:
 chan_setbank 4
 chan_setinstr 9
 chan_setlayer 0, .layer_1539
@@ -3621,7 +3621,7 @@ layer_note1 38, 0x10, 110
 layer_note1 27, 0x64, 110
 layer_end
 
-.sound_general_switch4:
+.sound_general_door_insert_key:
 chan_setbank 4
 chan_setinstr 9
 chan_setlayer 0, .layer_1599

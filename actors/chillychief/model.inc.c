@@ -1,44 +1,28 @@
 // Chilly Chief (Chill Bully)
 
 // 0x06000000
-static const Ambient chilly_chief_seg6_light_06000000 = {
-    {{0x00, 0x38, 0x00}, 0, {0x00, 0x38, 0x00}, 0}
-};
-
-// 0x06000008
-static const Light chilly_chief_seg6_light_06000008 = {
-    {{0x00, 0xe3, 0x00}, 0, {0x00, 0xe3, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 chilly_chief_seg6_lights_06000000 = gdSPDefLights1(
+    0x00, 0x38, 0x00,
+    0x00, 0xe3, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x06000018
-static const Ambient chilly_chief_seg6_light_06000018 = {
-    {{0x00, 0x3f, 0x00}, 0, {0x00, 0x3f, 0x00}, 0}
-};
-
-// 0x06000020
-static const Light chilly_chief_seg6_light_06000020 = {
-    {{0x00, 0xff, 0x00}, 0, {0x00, 0xff, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 chilly_chief_seg6_lights_06000018 = gdSPDefLights1(
+    0x00, 0x3f, 0x00,
+    0x00, 0xff, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x06000030
-static const Ambient chilly_chief_seg6_light_06000030 = {
-    {{0x3f, 0x29, 0x00}, 0, {0x3f, 0x29, 0x00}, 0}
-};
+static const Lights1 chilly_chief_seg6_lights_06000030 = gdSPDefLights1(
+    0x3f, 0x29, 0x00,
+    0xff, 0xa5, 0x00, 0x28, 0x28, 0x28
+);
 
-// 0x06000038
-static const Light chilly_chief_seg6_light_06000038 = {
-    {{0xff, 0xa5, 0x00}, 0, {0xff, 0xa5, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient chillychief_light_1 = {
-    {{0x00, 0x00, 0x00}, 0, {0x00, 0x00, 0x00}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light chillychief_light_2 = {
-    {{0x00, 0x00, 0x00}, 0, {0x00, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 chillychief_lights_unused = gdSPDefLights1(
+    0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x06000060
 ALIGNED8 static const u8 chilly_chief_seg6_texture_06000060[] = {
@@ -122,8 +106,8 @@ static const Vtx chilly_chief_seg6_vertex_06002AA0[] = {
 
 // 0x06002B30 - 0x06002BC8
 const Gfx chilly_chief_seg6_dl_06002B30[] = {
-    gsSPLight(&chilly_chief_seg6_light_06000008, 1),
-    gsSPLight(&chilly_chief_seg6_light_06000000, 2),
+    gsSPLight(&chilly_chief_seg6_lights_06000000.l, 1),
+    gsSPLight(&chilly_chief_seg6_lights_06000000.a, 2),
     gsSPVertex(chilly_chief_seg6_vertex_06002860, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
     gsSP2Triangles( 2,  3,  4, 0x0,  1,  5,  6, 0x0),
@@ -138,8 +122,8 @@ const Gfx chilly_chief_seg6_dl_06002B30[] = {
 
 // 0x06002BC8 - 0x06002C60
 const Gfx chilly_chief_seg6_dl_06002BC8[] = {
-    gsSPLight(&chilly_chief_seg6_light_06000020, 1),
-    gsSPLight(&chilly_chief_seg6_light_06000018, 2),
+    gsSPLight(&chilly_chief_seg6_lights_06000018.l, 1),
+    gsSPLight(&chilly_chief_seg6_lights_06000018.a, 2),
     gsSPVertex(chilly_chief_seg6_vertex_06002980, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  1, 0x0),
     gsSP2Triangles( 3,  1,  0, 0x0,  5,  6,  7, 0x0),
@@ -154,8 +138,8 @@ const Gfx chilly_chief_seg6_dl_06002BC8[] = {
 
 // 0x06002C60 - 0x06002C98
 const Gfx chilly_chief_seg6_dl_06002C60[] = {
-    gsSPLight(&chilly_chief_seg6_light_06000038, 1),
-    gsSPLight(&chilly_chief_seg6_light_06000030, 2),
+    gsSPLight(&chilly_chief_seg6_lights_06000030.l, 1),
+    gsSPLight(&chilly_chief_seg6_lights_06000030.a, 2),
     gsSPVertex(chilly_chief_seg6_vertex_06002AA0, 9, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP1Triangle( 6,  7,  8, 0x0),

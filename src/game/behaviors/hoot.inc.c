@@ -188,7 +188,7 @@ void HootActionLoop(void) {
             if (o->oPosY < 2700.0f) {
                 set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
 
-                if (cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, 45)) {
+                if (cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, DIALOG_045)) {
                     clear_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
 
                     o->oAction = HOOT_ACT_TIRED;
@@ -240,7 +240,7 @@ void HootAwakeLoop(void) {
         o->oTimer = 0;
     }
 
-    SetObjectVisibility(o, 2000);
+    set_object_visibility(o, 2000);
 }
 
 void bhv_hoot_loop(void) {
@@ -255,7 +255,7 @@ void bhv_hoot_loop(void) {
         case HOOT_AVAIL_WANTS_TO_TALK:
             HootAwakeLoop();
 
-            if (set_mario_npc_dialog(2) == 2 && cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, 44)) {
+            if (set_mario_npc_dialog(2) == 2 && cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, DIALOG_044)) {
                 set_mario_npc_dialog(0);
 
                 obj_become_tangible();

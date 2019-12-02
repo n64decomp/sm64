@@ -12,6 +12,8 @@ TYPE_TBL = 2
 
 STACK_TRACES = False
 DUMP_INDIVIDUAL_BINS = False
+ENDIAN_MARKER = ">"
+WORD_BYTES = 4
 
 orderedJsonDecoder = JSONDecoder(object_pairs_hook=OrderedDict)
 
@@ -64,6 +66,14 @@ def validate(cond, msg, forstr=""):
 def strip_comments(string):
     string = re.sub(re.compile("/\*.*?\*/", re.DOTALL), "", string)
     return re.sub(re.compile("//.*?\n"), "", string)
+
+
+def pack(fmt, *args):
+    if WORD_BYTES == 4:
+        fmt = fmt.replace('P', 'I').replace('X', '')
+    else:
+        fmt = fmt.replace('P', 'Q').replace('X', 'xxxx')
+    return struct.pack(ENDIAN_MARKER + fmt, *args)
 
 
 def to_bcd(num):
@@ -488,8 +498,8 @@ def serialize_ctl(bank, base_ser):
     y, m, d = map(int, json.get("date", "0000-00-00").split("-"))
     date = y * 10000 + m * 100 + d
     base_ser.add(
-        struct.pack(
-            ">IIII",
+        pack(
+            "IIII",
             len(json["instrument_list"]),
             len(drums),
             1 if len(bank.sample_bank.uses) > 1 else 0,
@@ -499,12 +509,12 @@ def serialize_ctl(bank, base_ser):
 
     ser = ReserveSerializer()
     if drums:
-        drum_pos_buf = ser.reserve(4)
+        drum_pos_buf = ser.reserve(WORD_BYTES)
     else:
-        ser.add(b"\0" * 4)
+        ser.add(b"\0" * WORD_BYTES)
         drum_pos_buf = None
 
-    inst_pos_buf = ser.reserve(4 * len(json["instrument_list"]))
+    inst_pos_buf = ser.reserve(WORD_BYTES * len(json["instrument_list"]))
     ser.align(16)
 
     used_samples = []
@@ -528,32 +538,30 @@ def serialize_ctl(bank, base_ser):
         sample_len = len(aifc.data)
 
         # Sample
-        ser.add(struct.pack(">II", 0, aifc.offset))
-        loop_addr_buf = ser.reserve(4)
-        book_addr_buf = ser.reserve(4)
-        ser.add(struct.pack(">I", align(sample_len, 2)))
+        ser.add(pack("PP", 0, aifc.offset))
+        loop_addr_buf = ser.reserve(WORD_BYTES)
+        book_addr_buf = ser.reserve(WORD_BYTES)
+        ser.add(pack("I", align(sample_len, 2)))
         ser.align(16)
 
         # Book
-        book_addr_buf.append(struct.pack(">I", ser.size))
-        ser.add(struct.pack(">ii", aifc.book.order, aifc.book.npredictors))
+        book_addr_buf.append(pack("P", ser.size))
+        ser.add(pack("ii", aifc.book.order, aifc.book.npredictors))
         for x in aifc.book.table:
-            ser.add(struct.pack(">h", x))
+            ser.add(pack("h", x))
         ser.align(16)
 
         # Loop
-        loop_addr_buf.append(struct.pack(">I", ser.size))
+        loop_addr_buf.append(pack("P", ser.size))
         if aifc.loop is None:
             assert sample_len % 9 in [0, 1]
             end = sample_len // 9 * 16 + (sample_len % 2) + (sample_len % 9)
-            ser.add(struct.pack(">IIiI", 0, end, 0, 0))
+            ser.add(pack("IIiI", 0, end, 0, 0))
         else:
-            ser.add(
-                struct.pack(">IIiI", aifc.loop.start, aifc.loop.end, aifc.loop.count, 0)
-            )
+            ser.add(pack("IIiI", aifc.loop.start, aifc.loop.end, aifc.loop.count, 0))
             assert aifc.loop.count != 0
             for x in aifc.loop.state:
-                ser.add(struct.pack(">h", x))
+                ser.add(pack("h", x))
         ser.align(16)
 
     env_name_to_addr = {}
@@ -568,6 +576,8 @@ def serialize_ctl(bank, base_ser):
                 entry = [2 ** 16 - 3, 0]
             elif entry[0] == "goto":
                 entry[0] = 2 ** 16 - 2
+            # Envelopes are always written as big endian, to match sequence files
+            # which are byte blobs and can embed envelopes.
             ser.add(struct.pack(">HH", *entry))
         ser.align(16)
 
@@ -580,7 +590,7 @@ def serialize_ctl(bank, base_ser):
         else:
             aifc = bank.sample_bank.name_to_entry[sound["sample"]]
             tuning = aifc.sample_rate / 32000
-        ser.add(struct.pack(">If", sample_addr, tuning))
+        ser.add(pack("PfX", sample_addr, tuning))
 
     no_sound = {"sample": None, "tuning": 0.0}
 
@@ -591,8 +601,8 @@ def serialize_ctl(bank, base_ser):
         inst_name_to_pos[name] = ser.size
         env_addr = env_name_to_addr[inst["envelope"]]
         ser.add(
-            struct.pack(
-                ">BBBBI",
+            pack(
+                "BBBBXP",
                 0,
                 inst.get("normal_range_lo", 0),
                 inst.get("normal_range_hi", 127),
@@ -607,23 +617,23 @@ def serialize_ctl(bank, base_ser):
 
     for name in json["instrument_list"]:
         if name is None:
-            inst_pos_buf.append(struct.pack(">I", 0))
+            inst_pos_buf.append(pack("P", 0))
             continue
-        inst_pos_buf.append(struct.pack(">I", inst_name_to_pos[name]))
+        inst_pos_buf.append(pack("P", inst_name_to_pos[name]))
 
     if drums:
         drum_poses = []
         for drum in drums:
             drum_poses.append(ser.size)
-            ser.add(struct.pack(">BBBB", drum["release_rate"], drum["pan"], 0, 0))
+            ser.add(pack("BBBBX", drum["release_rate"], drum["pan"], 0, 0))
             ser_sound(drum["sound"])
             env_addr = env_name_to_addr[drum["envelope"]]
-            ser.add(struct.pack(">I", env_addr))
+            ser.add(pack("P", env_addr))
         ser.align(16)
 
-        drum_pos_buf.append(struct.pack(">I", ser.size))
+        drum_pos_buf.append(pack("P", ser.size))
         for pos in drum_poses:
-            ser.add(struct.pack(">I", pos))
+            ser.add(pack("P", pos))
         ser.align(16)
 
     base_ser.add(ser.finish())
@@ -644,8 +654,8 @@ def serialize_tbl(sample_bank, ser):
 
 def serialize_seqfile(entries, serialize_entry, entry_list, magic, extra_padding=True):
     ser = ReserveSerializer()
-    ser.add(struct.pack(">HH", magic, len(entry_list)))
-    table = ser.reserve(len(entry_list) * 8)
+    ser.add(pack("HHX", magic, len(entry_list)))
+    table = ser.reserve(len(entry_list) * 2 * WORD_BYTES)
     ser.align(16)
     data_start = ser.size
 
@@ -662,8 +672,8 @@ def serialize_seqfile(entries, serialize_entry, entry_list, magic, extra_padding
     ser.align(64)
 
     for ent in entry_list:
-        table.append(struct.pack(">I", entry_offsets[ent] + data_start))
-        table.append(struct.pack(">I", entry_lens[ent]))
+        table.append(pack("P", entry_offsets[ent] + data_start))
+        table.append(pack("IX", entry_lens[ent]))
     return ser.finish()
 
 
@@ -779,15 +789,18 @@ def write_sequences(
             bank_set = json.get(name, None)
             if bank_set is None:
                 bank_set = []
-            table.append(struct.pack(">H", ser.size))
+            table.append(pack("H", ser.size))
             ser.add(bytes([len(bank_set)]))
             for bank in bank_set[::-1]:
                 ser.add(bytes([bank_names.index(bank)]))
+        ser.align(16)
         f.write(ser.finish())
 
 
 def main():
     global STACK_TRACES
+    global ENDIAN_MARKER
+    global WORD_BYTES
     need_help = False
     skip_next = 0
     cpp_command = None
@@ -806,6 +819,26 @@ def main():
             skip_next = 1
         elif a == "-D":
             defines.append(sys.argv[i + 1])
+            skip_next = 1
+        elif a == "--endian":
+            endian = sys.argv[i + 1]
+            if endian == "big":
+                ENDIAN_MARKER = ">"
+            elif endian == "little":
+                ENDIAN_MARKER = "<"
+            elif endian == "native":
+                ENDIAN_MARKER = "="
+            else:
+                fail("--endian takes argument big, little or native")
+            skip_next = 1
+        elif a == "--bitwidth":
+            bitwidth = sys.argv[i + 1]
+            if bitwidth == 'native':
+                WORD_BYTES = struct.calcsize('P')
+            else:
+                if bitwidth not in ['32', '64']:
+                    fail("--bitwidth takes argument 32, 64 or native")
+                WORD_BYTES = int(bitwidth) // 8
             skip_next = 1
         elif a.startswith("-D"):
             defines.append(a[2:])

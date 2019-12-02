@@ -3,6 +3,8 @@
 
 #include "command_macros_base.h"
 
+#include "level_table.h"
+
 #define OP_AND   0
 #define OP_NAND  1
 #define OP_EQ    2

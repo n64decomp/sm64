@@ -1,5 +1,5 @@
-#ifndef _AUDIO_DATA_H
-#define _AUDIO_DATA_H
+#ifndef AUDIO_DATA_H
+#define AUDIO_DATA_H
 
 #include "internal.h"
 
@@ -46,16 +46,16 @@ extern volatile s32 gAudioLoadLock;
 extern struct CtlEntry *gCtlEntries;
 extern s32 gAiFrequency;
 extern u32 D_80226D68;
-extern s32 D_80226D6C;
+extern s32 gMaxAudioCmds;
 
 extern s32 gMaxSimultaneousNotes;
-extern s32 D_80226D74;
+extern s32 gSamplesPerFrameTarget;
 extern s32 gMinAiBufferLength;
 extern s16 gTempoInternalToExternal;
 extern s8 gAudioUpdatesPerFrame; // = 4
 extern s8 gSoundMode;
 
-extern volatile s32 gActiveAudioFrames;
+extern volatile s32 gAudioFrameCount;
 extern volatile s32 gCurrAudioFrameDmaCount; // number of DMAs performed during this frame
 
 extern s32 gAudioTaskIndex;
@@ -73,6 +73,6 @@ extern s16 gAiBufferLengths[NUMAIBUFFERS];
 extern u32 gUnused80226E58[0x10];
 extern u16 gUnused80226E98[0x10];
 
-extern u32 D_80226EB8;
+extern u32 gAudioRandom;
 
-#endif /* _AUDIO_DATA_H */
+#endif /* AUDIO_DATA_H */

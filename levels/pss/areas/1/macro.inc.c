@@ -16,7 +16,7 @@ const MacroObject pss_seg7_macro_objs[] = {
     MACRO_OBJECT(/*preset*/ macro_yellow_coin_2,        /*yaw*/   0, /*pos*/ -2565, -3268, -3525),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin_2,        /*yaw*/   0, /*pos*/ -4909, -3633, -4218),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin_2,        /*yaw*/   0, /*pos*/ -6290, -3937, -2545),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/  90, /*pos*/  3580,  6140, -5180, /*behParam*/ 149),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/  90, /*pos*/  3580,  6140, -5180, /*behParam*/ DIALOG_149),
     MACRO_OBJECT(/*preset*/ macro_coin_line_horizontal, /*yaw*/  90, /*pos*/  3000,  6180, -5640),
     MACRO_OBJECT(/*preset*/ macro_blue_coin_switch,     /*yaw*/   0, /*pos*/  5423,  6140, -6540),
     MACRO_OBJECT(/*preset*/ macro_hidden_blue_coin,     /*yaw*/   0, /*pos*/   780,  5613, -5600),

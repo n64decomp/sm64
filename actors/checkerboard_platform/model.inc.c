@@ -1,14 +1,10 @@
 // Checkerboard Platform
 
 // 0x0800C828
-static const Ambient checkerboard_platform_seg8_light_0800C828 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x0800C830
-static const Light checkerboard_platform_seg8_light_0800C830 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 checkerboard_platform_seg8_lights_0800C828 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0800C840
 ALIGNED8 static const u8 checkerboard_platform_seg8_texture_0800C840[] = {
@@ -57,8 +53,8 @@ const Gfx checkerboard_platform_seg8_dl_0800D5C0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, checkerboard_platform_seg8_texture_0800C840),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&checkerboard_platform_seg8_light_0800C830, 1),
-    gsSPLight(&checkerboard_platform_seg8_light_0800C828, 2),
+    gsSPLight(&checkerboard_platform_seg8_lights_0800C828.l, 1),
+    gsSPLight(&checkerboard_platform_seg8_lights_0800C828.a, 2),
     gsSPVertex(checkerboard_platform_seg8_vertex_0800D440, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),

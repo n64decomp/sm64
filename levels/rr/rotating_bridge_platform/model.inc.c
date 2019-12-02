@@ -1,52 +1,32 @@
-// 0x07019B68 - 0x07019B70
-static const Ambient rr_seg7_light_07019B68 = {
-    {{0x32, 0x32, 0x32}, 0, {0x32, 0x32, 0x32}, 0}
-};
+// 0x07019B68 - 0x07019B80
+static const Lights1 rr_seg7_lights_07019B68 = gdSPDefLights1(
+    0x32, 0x32, 0x32,
+    0xc8, 0xc8, 0xc8, 0x28, 0x28, 0x28
+);
 
-// 0x07019B70 - 0x07019B80
-static const Light rr_seg7_light_07019B70 = {
-    {{0xc8, 0xc8, 0xc8}, 0, {0xc8, 0xc8, 0xc8}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07019B80 - 0x07019B98
+static const Lights1 rr_seg7_lights_07019B80 = gdSPDefLights1(
+    0x23, 0x2b, 0x14,
+    0x8e, 0xac, 0x52, 0x28, 0x28, 0x28
+);
 
-// 0x07019B80 - 0x07019B88
-static const Ambient rr_seg7_light_07019B80 = {
-    {{0x23, 0x2b, 0x14}, 0, {0x23, 0x2b, 0x14}, 0}
-};
+// 0x07019B98 - 0x07019BB0
+static const Lights1 rr_seg7_lights_07019B98 = gdSPDefLights1(
+    0x1f, 0x2b, 0x14,
+    0x7f, 0xac, 0x52, 0x28, 0x28, 0x28
+);
 
-// 0x07019B88 - 0x07019B98
-static const Light rr_seg7_light_07019B88 = {
-    {{0x8e, 0xac, 0x52}, 0, {0x8e, 0xac, 0x52}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07019BB0 - 0x07019BC8
+static const Lights1 rr_seg7_lights_07019BB0 = gdSPDefLights1(
+    0x2f, 0x2a, 0x0f,
+    0xbf, 0xaa, 0x3f, 0x28, 0x28, 0x28
+);
 
-// 0x07019B98 - 0x07019BA0
-static const Ambient rr_seg7_light_07019B98 = {
-    {{0x1f, 0x2b, 0x14}, 0, {0x1f, 0x2b, 0x14}, 0}
-};
-
-// 0x07019BA0 - 0x07019BB0
-static const Light rr_seg7_light_07019BA0 = {
-    {{0x7f, 0xac, 0x52}, 0, {0x7f, 0xac, 0x52}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07019BB0 - 0x07019BB8
-static const Ambient rr_seg7_light_07019BB0 = {
-    {{0x2f, 0x2a, 0x0f}, 0, {0x2f, 0x2a, 0x0f}, 0}
-};
-
-// 0x07019BB8 - 0x07019BC8
-static const Light rr_seg7_light_07019BB8 = {
-    {{0xbf, 0xaa, 0x3f}, 0, {0xbf, 0xaa, 0x3f}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07019BC8 - 0x07019BD0
-static const Ambient rr_seg7_light_07019BC8 = {
-    {{0x14, 0x23, 0x2b}, 0, {0x14, 0x23, 0x2b}, 0}
-};
-
-// 0x07019BD0 - 0x07019BE0
-static const Light rr_seg7_light_07019BD0 = {
-    {{0x52, 0x8e, 0xac}, 0, {0x52, 0x8e, 0xac}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07019BC8 - 0x07019BE0
+static const Lights1 rr_seg7_lights_07019BC8 = gdSPDefLights1(
+    0x14, 0x23, 0x2b,
+    0x52, 0x8e, 0xac, 0x28, 0x28, 0x28
+);
 
 // 0x07019BE0 - 0x07019CD0
 static const Vtx rr_seg7_vertex_07019BE0[] = {
@@ -199,8 +179,8 @@ static const Gfx rr_seg7_dl_0701A2C0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sky_09001800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&rr_seg7_light_07019B70, 1),
-    gsSPLight(&rr_seg7_light_07019B68, 2),
+    gsSPLight(&rr_seg7_lights_07019B68.l, 1),
+    gsSPLight(&rr_seg7_lights_07019B68.a, 2),
     gsSPVertex(rr_seg7_vertex_07019BE0, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),
@@ -233,20 +213,20 @@ static const Gfx rr_seg7_dl_0701A3E0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sky_09003000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&rr_seg7_light_07019B88, 1),
-    gsSPLight(&rr_seg7_light_07019B80, 2),
+    gsSPLight(&rr_seg7_lights_07019B80.l, 1),
+    gsSPLight(&rr_seg7_lights_07019B80.a, 2),
     gsSPVertex(rr_seg7_vertex_07019EC0, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),
-    gsSPLight(&rr_seg7_light_07019BA0, 1),
-    gsSPLight(&rr_seg7_light_07019B98, 2),
+    gsSPLight(&rr_seg7_lights_07019B98.l, 1),
+    gsSPLight(&rr_seg7_lights_07019B98.a, 2),
     gsSPVertex(rr_seg7_vertex_07019F40, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),
     gsSP2Triangles( 7,  9, 10, 0x0, 11, 12, 13, 0x0),
     gsSP2Triangles(11, 13, 14, 0x0,  0,  2, 15, 0x0),
-    gsSPLight(&rr_seg7_light_07019BB8, 1),
-    gsSPLight(&rr_seg7_light_07019BB0, 2),
+    gsSPLight(&rr_seg7_lights_07019BB0.l, 1),
+    gsSPLight(&rr_seg7_lights_07019BB0.a, 2),
     gsSPVertex(rr_seg7_vertex_0701A040, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),
@@ -260,8 +240,8 @@ static const Gfx rr_seg7_dl_0701A4E8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sky_09002000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&rr_seg7_light_07019BD0, 1),
-    gsSPLight(&rr_seg7_light_07019BC8, 2),
+    gsSPLight(&rr_seg7_lights_07019BC8.l, 1),
+    gsSPLight(&rr_seg7_lights_07019BC8.a, 2),
     gsSPVertex(rr_seg7_vertex_0701A140, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

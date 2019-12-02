@@ -127,7 +127,7 @@ void render_dl_power_meter(s16 numHealthWedges) {
         gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_end);
     }
 
-    gSPPopMatrix(gDisplayListHead++, 0);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 /**

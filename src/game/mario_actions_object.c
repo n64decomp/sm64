@@ -195,13 +195,13 @@ s32 act_picking_up(struct MarioState *m) {
             m->marioBodyState->grabPos = GRAB_POS_HEAVY_OBJ;
             set_mario_animation(m, MARIO_ANIM_GRAB_HEAVY_OBJECT);
             if (is_anim_at_end(m)) {
-                set_mario_action(m, ACT_UNKNOWN_008, 0);
+                set_mario_action(m, ACT_HOLD_HEAVY_IDLE, 0);
             }
         } else {
             m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
             set_mario_animation(m, MARIO_ANIM_PICK_UP_LIGHT_OBJ);
             if (is_anim_at_end(m)) {
-                set_mario_action(m, ACT_UNKNOWN_007, 0);
+                set_mario_action(m, ACT_HOLD_IDLE, 0);
             }
         }
     }
@@ -215,6 +215,9 @@ s32 act_dive_picking_up(struct MarioState *m) {
         return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
     }
 
+    //! Hands-free holding. Landing on a slope or being pushed off a ledge while
+    // landing from a dive grab sets mario's action to a non-holding action
+    // without dropping the object, causing the hands-free holding glitch.
     if (m->input & INPUT_OFF_FLOOR) {
         return set_mario_action(m, ACT_FREEFALL, 0);
     }
@@ -223,7 +226,7 @@ s32 act_dive_picking_up(struct MarioState *m) {
         return set_mario_action(m, ACT_BEGIN_SLIDING, 0);
     }
 
-    animated_stationary_ground_step(m, MARIO_ANIM_STOP_SLIDE_LIGHT_OBJ, ACT_UNKNOWN_007);
+    animated_stationary_ground_step(m, MARIO_ANIM_STOP_SLIDE_LIGHT_OBJ, ACT_HOLD_IDLE);
     return FALSE;
 }
 

@@ -1,14 +1,10 @@
 // Metal Box
 
 // 0x08023980
-static const Ambient metal_box_seg8_light_08023980 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x08023988
-static const Light metal_box_seg8_light_08023988 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 metal_box_seg8_lights_08023980 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x08023998
 ALIGNED8 static const u8 metal_box_seg8_texture_08023998[] = {
@@ -52,8 +48,8 @@ const Gfx metal_box_seg8_dl_08024B18[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, metal_box_seg8_texture_08023998),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&metal_box_seg8_light_08023988, 1),
-    gsSPLight(&metal_box_seg8_light_08023980, 2),
+    gsSPLight(&metal_box_seg8_lights_08023980.l, 1),
+    gsSPLight(&metal_box_seg8_lights_08023980.a, 2),
     gsSPVertex(metal_box_seg8_vertex_08024998, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  6,  7, 0x0),

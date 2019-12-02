@@ -29,8 +29,8 @@ static const Gfx lll_seg7_dl_0701A2F0[] = {
 
 // 0x0701A338 - 0x0701A388
 static const Gfx lll_seg7_dl_0701A338[] = {
-    gsSPLight(&lll_seg7_light_0700FC08, 1),
-    gsSPLight(&lll_seg7_light_0700FC00, 2),
+    gsSPLight(&lll_seg7_lights_0700FC00.l, 1),
+    gsSPLight(&lll_seg7_lights_0700FC00.a, 2),
     gsSPVertex(lll_seg7_vertex_0701A270, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),

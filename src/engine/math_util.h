@@ -14,7 +14,7 @@
  * Thus, for non-IDO compilers we use the standard-compliant version.
  */
 extern f32 gSineTable[];
-#if BUGFIXES_CRITICAL
+#ifdef AVOID_UB
 #define gCosineTable (gSineTable + 0x400)
 #else
 extern f32 gCosineTable[];

@@ -1,14 +1,10 @@
 // Bowser Key
 
-// 0x030156E0, solid color brown
-static const Ambient bowser_key_amb_light = {
-    {{0x3f, 0x2c, 0x00}, 0, {0x3f, 0x2c, 0x00}, 0}
-};
-
-// 0x030156E8, solid color orange
-static const Light bowser_key_diff_light = {
-    {{0xff, 0xb2, 0x00}, 0, {0xff, 0xb2, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x030156E0, ambient color brown - light color orange
+static const Lights1 bowser_key_lights = gdSPDefLights1(
+    0x3f, 0x2c, 0x00,
+    0xff, 0xb2, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x030156F8
 static const Vtx bowser_key_dl_vertex_group1[] = {
@@ -236,8 +232,8 @@ static const Vtx bowser_key_dl_vertex_group12[] = {
 
 // 0x030161F8 - 0x03016530
 const Gfx bowser_key_dl[] = {
-    gsSPLight(&bowser_key_diff_light, 1),
-    gsSPLight(&bowser_key_amb_light, 2),
+    gsSPLight(&bowser_key_lights.l, 1),
+    gsSPLight(&bowser_key_lights.a, 2),
     gsSPVertex(bowser_key_dl_vertex_group1, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  6,  7, 0x0),

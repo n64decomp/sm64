@@ -1,42 +1,26 @@
-// 0x0700A1B0 - 0x0700A1B8
-static const Ambient wdw_seg7_light_0700A1B0 = {
-    {{0x99, 0x99, 0x82}, 0, {0x99, 0x99, 0x82}, 0}
-};
+// 0x0700A1B0 - 0x0700A1C8
+static const Lights1 wdw_seg7_lights_0700A1B0 = gdSPDefLights1(
+    0x99, 0x99, 0x82,
+    0xff, 0xff, 0xd9, 0x28, 0x28, 0x28
+);
 
-// 0x0700A1B8 - 0x0700A1C8
-static const Light wdw_seg7_light_0700A1B8 = {
-    {{0xff, 0xff, 0xd9}, 0, {0xff, 0xff, 0xd9}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700A1C8 - 0x0700A1E0
+static const Lights1 wdw_seg7_lights_0700A1C8 = gdSPDefLights1(
+    0x99, 0x99, 0x99,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x0700A1C8 - 0x0700A1D0
-static const Ambient wdw_seg7_light_0700A1C8 = {
-    {{0x99, 0x99, 0x99}, 0, {0x99, 0x99, 0x99}, 0}
-};
+// 0x0700A1E0 - 0x0700A1F8
+static const Lights1 wdw_seg7_lights_0700A1E0 = gdSPDefLights1(
+    0x3c, 0x3c, 0x3c,
+    0x64, 0x64, 0x64, 0x28, 0x28, 0x28
+);
 
-// 0x0700A1D0 - 0x0700A1E0
-static const Light wdw_seg7_light_0700A1D0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700A1E0 - 0x0700A1E8
-static const Ambient wdw_seg7_light_0700A1E0 = {
-    {{0x3c, 0x3c, 0x3c}, 0, {0x3c, 0x3c, 0x3c}, 0}
-};
-
-// 0x0700A1E8 - 0x0700A1F8
-static const Light wdw_seg7_light_0700A1E8 = {
-    {{0x64, 0x64, 0x64}, 0, {0x64, 0x64, 0x64}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700A1F8 - 0x0700A200
-static const Ambient wdw_seg7_light_0700A1F8 = {
-    {{0x7b, 0x0d, 0x1f}, 0, {0x7b, 0x0d, 0x1f}, 0}
-};
-
-// 0x0700A200 - 0x0700A210
-static const Light wdw_seg7_light_0700A200 = {
-    {{0xce, 0x16, 0x35}, 0, {0xce, 0x16, 0x35}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700A1F8 - 0x0700A210
+static const Lights1 wdw_seg7_lights_0700A1F8 = gdSPDefLights1(
+    0x7b, 0x0d, 0x1f,
+    0xce, 0x16, 0x35, 0x28, 0x28, 0x28
+);
 
 // 0x0700A210 - 0x0700A270
 static const Vtx wdw_seg7_vertex_0700A210[] = {
@@ -2000,13 +1984,13 @@ static const Gfx wdw_seg7_dl_07010120[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, grass_09007000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&wdw_seg7_light_0700A1B8, 1),
-    gsSPLight(&wdw_seg7_light_0700A1B0, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1B0.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1B0.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700A210, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  4, 0x0),
     gsSP2Triangles( 0,  4,  1, 0x0,  0,  2,  5, 0x0),
-    gsSPLight(&wdw_seg7_light_0700A1D0, 1),
-    gsSPLight(&wdw_seg7_light_0700A1C8, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1C8.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1C8.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700A270, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),
@@ -2071,8 +2055,8 @@ static const Gfx wdw_seg7_dl_07010120[] = {
     gsSP2Triangles(10, 11, 12, 0x0, 10, 13, 11, 0x0),
     gsSPVertex(wdw_seg7_vertex_0700ACD0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
-    gsSPLight(&wdw_seg7_light_0700A1E8, 1),
-    gsSPLight(&wdw_seg7_light_0700A1E0, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1E0.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1E0.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700AD10, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),
@@ -2091,8 +2075,8 @@ static const Gfx wdw_seg7_dl_07010578[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, wdw_seg7_texture_07000800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&wdw_seg7_light_0700A200, 1),
-    gsSPLight(&wdw_seg7_light_0700A1F8, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1F8.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1F8.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700AED0, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  7,  8,  9, 0x0),
@@ -2102,8 +2086,8 @@ static const Gfx wdw_seg7_dl_07010578[] = {
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),
     gsSP2Triangles( 8,  9, 10, 0x0,  8, 11,  9, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 12, 15, 13, 0x0),
-    gsSPLight(&wdw_seg7_light_0700A1D0, 1),
-    gsSPLight(&wdw_seg7_light_0700A1C8, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1C8.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1C8.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700B0B0, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  4, 0x0,  7,  8,  9, 0x0),
@@ -2357,8 +2341,8 @@ static const Gfx wdw_seg7_dl_07010EA0[] = {
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  6,  8,  9, 0x0),
     gsSP1Triangle( 0,  2, 10, 0x0),
-    gsSPLight(&wdw_seg7_light_0700A1E8, 1),
-    gsSPLight(&wdw_seg7_light_0700A1E0, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1E0.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1E0.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700D770, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -2369,8 +2353,8 @@ static const Gfx wdw_seg7_dl_07011208[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, grass_09007800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&wdw_seg7_light_0700A1D0, 1),
-    gsSPLight(&wdw_seg7_light_0700A1C8, 2),
+    gsSPLight(&wdw_seg7_lights_0700A1C8.l, 1),
+    gsSPLight(&wdw_seg7_lights_0700A1C8.a, 2),
     gsSPVertex(wdw_seg7_vertex_0700D7B0, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),

@@ -198,7 +198,7 @@ void func_8027A7C4(void) {
     if (gCurrentArea != NULL) {
         geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_UNLOAD);
         gCurrentArea = NULL;
-        gWarpTransition.isActive = 0;
+        gWarpTransition.isActive = FALSE;
     }
 
     for (i = 0; i < 8; i++) {
@@ -235,7 +235,7 @@ void func_8027A998(void) {
 
         gCurrentArea->flags = 0;
         gCurrentArea = NULL;
-        gWarpTransition.isActive = 0;
+        gWarpTransition.isActive = FALSE;
     }
 }
 
@@ -298,42 +298,42 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
         red = gWarpTransRed, green = gWarpTransGreen, blue = gWarpTransBlue;
     }
 
-    if (transType < 8) {
+    if (transType < 8) { // if transition is RGB
         gWarpTransition.data.red = red;
         gWarpTransition.data.green = green;
         gWarpTransition.data.blue = blue;
-    } else {
+    } else { // if transition is textured
         gWarpTransition.data.red = red;
         gWarpTransition.data.green = green;
         gWarpTransition.data.blue = blue;
 
-        // Both the start and end circles are always located in the middle of the screen.
+        // Both the start and end textured transition are always located in the middle of the screen.
         // If you really wanted to, you could place the start at one corner and the end at
         // the opposite corner. This will make the transition image look like it is moving
         // across the screen.
-        gWarpTransition.data.startCircleX = 160;
-        gWarpTransition.data.startCircleY = 120;
-        gWarpTransition.data.endCircleX = 160;
-        gWarpTransition.data.endCircleY = 120;
+        gWarpTransition.data.startTexX = SCREEN_WIDTH / 2;
+        gWarpTransition.data.startTexY = SCREEN_HEIGHT / 2;
+        gWarpTransition.data.endTexX = SCREEN_WIDTH / 2;
+        gWarpTransition.data.endTexY = SCREEN_HEIGHT / 2;
 
-        gWarpTransition.data.unk10 = 0;
+        gWarpTransition.data.texTimer = 0;
 
         if (transType & 1) // Is the image fading in?
         {
-            gWarpTransition.data.startCircleRadius = 320;
+            gWarpTransition.data.startTexRadius = SCREEN_WIDTH;
             if (transType >= 0x0F) {
-                gWarpTransition.data.endCircleRadius = 16;
+                gWarpTransition.data.endTexRadius = 16;
             } else {
-                gWarpTransition.data.endCircleRadius = 0;
+                gWarpTransition.data.endTexRadius = 0;
             }
         } else // The image is fading out. (Reverses start & end circles)
         {
             if (transType >= 0x0E) {
-                gWarpTransition.data.startCircleRadius = 16;
+                gWarpTransition.data.startTexRadius = 16;
             } else {
-                gWarpTransition.data.startCircleRadius = 0;
+                gWarpTransition.data.startTexRadius = 0;
             }
-            gWarpTransition.data.endCircleRadius = 320;
+            gWarpTransition.data.endTexRadius = SCREEN_WIDTH;
         }
     }
 }
@@ -378,7 +378,7 @@ void render_game(void) {
 
         if (gWarpTransition.isActive) {
             if (gWarpTransDelay == 0) {
-                gWarpTransition.isActive = !func_802CC108(0, gWarpTransition.type, gWarpTransition.time,
+                gWarpTransition.isActive = !render_screen_transition(0, gWarpTransition.type, gWarpTransition.time,
                                                           &gWarpTransition.data);
                 if (!gWarpTransition.isActive) {
                     if (gWarpTransition.type & 1) {

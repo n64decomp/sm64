@@ -1,64 +1,40 @@
 // Skeeter
 
-// Unreferenced light
-UNUSED static const Ambient skeeter_light_1 = {
-    {{0x3f, 0x20, 0x02}, 0, {0x3f, 0x20, 0x02}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 skeeter_lights_unused1 = gdSPDefLights1(
+    0x3f, 0x20, 0x02,
+    0xfc, 0x80, 0x08, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light skeeter_light_2 = {
-    {{0xfc, 0x80, 0x08}, 0, {0xfc, 0x80, 0x08}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 skeeter_lights_unused2 = gdSPDefLights1(
+    0x05, 0x05, 0x02,
+    0x15, 0x15, 0x08, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Ambient skeeter_light_3 = {
-    {{0x05, 0x05, 0x02}, 0, {0x05, 0x05, 0x02}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 skeeter_lights_unused3 = gdSPDefLights1(
+    0x03, 0x10, 0x29,
+    0x0e, 0x40, 0xa4, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light skeeter_light_4 = {
-    {{0x15, 0x15, 0x08}, 0, {0x15, 0x15, 0x08}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 skeeter_lights_unused4 = gdSPDefLights1(
+    0x3b, 0x3a, 0x36,
+    0xef, 0xea, 0xd9, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Ambient skeeter_light_5 = {
-    {{0x03, 0x10, 0x29}, 0, {0x03, 0x10, 0x29}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 skeeter_lights_unused5 = gdSPDefLights1(
+    0x33, 0x0c, 0x00,
+    0xcf, 0x32, 0x00, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light skeeter_light_6 = {
-    {{0x0e, 0x40, 0xa4}, 0, {0x0e, 0x40, 0xa4}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient skeeter_light_7 = {
-    {{0x3b, 0x3a, 0x36}, 0, {0x3b, 0x3a, 0x36}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light skeeter_light_8 = {
-    {{0xef, 0xea, 0xd9}, 0, {0xef, 0xea, 0xd9}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient skeeter_light_9 = {
-    {{0x33, 0x0c, 0x00}, 0, {0x33, 0x0c, 0x00}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light skeeter_light_10 = {
-    {{0xcf, 0x32, 0x00}, 0, {0xcf, 0x32, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient skeeter_light_11 = {
-    {{0x10, 0x29, 0x20}, 0, {0x10, 0x29, 0x20}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light skeeter_light_12 = {
-    {{0x42, 0xa5, 0x81}, 0, {0x42, 0xa5, 0x81}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 skeeter_lights_unused6 = gdSPDefLights1(
+    0x10, 0x29, 0x20,
+    0x42, 0xa5, 0x81, 0x28, 0x28, 0x28
+);
 
 // 0x06000090
 ALIGNED8 static const u8 skeeter_seg6_texture_06000090[] = {
@@ -249,14 +225,10 @@ const Gfx skeeter_seg6_dl_06000D78[] = {
 };
 
 // 0x06000DE8
-static const Ambient skeeter_seg6_light_06000DE8 = {
-    {{0x7f, 0x55, 0x00}, 0, {0x7f, 0x55, 0x00}, 0}
-};
-
-// 0x06000DF0
-static const Light skeeter_seg6_light_06000DF0 = {
-    {{0xff, 0xaa, 0x00}, 0, {0xff, 0xaa, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 skeeter_seg6_lights_06000DE8 = gdSPDefLights1(
+    0x7f, 0x55, 0x00,
+    0xff, 0xaa, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x06000E00
 static const Vtx skeeter_seg6_vertex_06000E00[] = {
@@ -270,8 +242,8 @@ static const Vtx skeeter_seg6_vertex_06000E00[] = {
 
 // 0x06000E60 - 0x06000EC0
 const Gfx skeeter_seg6_dl_06000E60[] = {
-    gsSPLight(&skeeter_seg6_light_06000DF0, 1),
-    gsSPLight(&skeeter_seg6_light_06000DE8, 2),
+    gsSPLight(&skeeter_seg6_lights_06000DE8.l, 1),
+    gsSPLight(&skeeter_seg6_lights_06000DE8.a, 2),
     gsSPVertex(skeeter_seg6_vertex_06000E00, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 2,  1,  4, 0x0,  1,  3,  4, 0x0),

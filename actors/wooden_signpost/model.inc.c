@@ -1,14 +1,10 @@
 // Signpost
 
 // 0x0302C940
-static const Ambient wooden_signpost_seg3_light_0302C940 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0302C948
-static const Light wooden_signpost_seg3_light_0302C948 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 wooden_signpost_seg3_lights_0302C940 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0302C958
 static const Vtx wooden_signpost_seg3_vertex_0302C958[] = {
@@ -36,8 +32,8 @@ const Gfx wooden_signpost_seg3_dl_0302D9C8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, wooden_signpost_seg3_texture_0302C9C8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&wooden_signpost_seg3_light_0302C948, 1),
-    gsSPLight(&wooden_signpost_seg3_light_0302C940, 2),
+    gsSPLight(&wooden_signpost_seg3_lights_0302C940.l, 1),
+    gsSPLight(&wooden_signpost_seg3_lights_0302C940.a, 2),
     gsSPVertex(wooden_signpost_seg3_vertex_0302C958, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 0,  3,  1, 0x0,  4,  1,  3, 0x0),
@@ -64,14 +60,10 @@ const Gfx wooden_signpost_seg3_dl_0302DA48[] = {
 };
 
 // 0x0302DAA8
-static const Ambient wooden_signpost_seg3_light_0302DAA8 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0302DAB0
-static const Light wooden_signpost_seg3_light_0302DAB0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 wooden_signpost_seg3_lights_0302DAA8 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0302DAC0
 static const Vtx wooden_signpost_seg3_vertex_0302DAC0[] = {
@@ -114,8 +106,8 @@ const Gfx wooden_signpost_seg3_dl_0302DC40[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, wooden_signpost_seg3_texture_0302C9C8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&wooden_signpost_seg3_light_0302DAB0, 1),
-    gsSPLight(&wooden_signpost_seg3_light_0302DAA8, 2),
+    gsSPLight(&wooden_signpost_seg3_lights_0302DAA8.l, 1),
+    gsSPLight(&wooden_signpost_seg3_lights_0302DAA8.a, 2),
     gsSPVertex(wooden_signpost_seg3_vertex_0302DAC0, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  6,  8,  9, 0x0),

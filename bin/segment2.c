@@ -2075,11 +2075,13 @@ const u8 *const main_hud_camera_lut[] = {
     texture_hud_char_arrow_up, texture_hud_char_arrow_down,
 };
 
-#ifndef VERSION_EU
-#include "text/debug.inc.c"
-#include "text/dialog.inc.c"
-#include "text/level.inc.c"
-#include "text/star.inc.c"
+// If you change the language here, the following Makefile rule also needs to
+// change, to generate the right version of define_text.inc.c:
+// $(BUILD_DIR)/bin/segment2.o: $(BUILD_DIR)/text/$(VERSION)/define_text.inc.c
+#ifdef VERSION_JP
+#include "text/jp/define_text.inc.c"
+#elif defined(VERSION_US)
+#include "text/us/define_text.inc.c"
 #endif
 
 UNUSED static const u64 segment2_unused_0 = 0;
@@ -2489,16 +2491,11 @@ ALIGNED8 const u8 texture_waterbox_lava[] = {
 #include "textures/segment2/segment2.13C58.rgba16.inc.c"
 };
 
-
-// Unreferenced light
-UNUSED static const Ambient segment2_light_1 = {
-    {{0x40, 0x40, 0x40}, 0, {0x40, 0x40, 0x40}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light segment2_light_2 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+static const Lights1 segment2_lights_unused = gdSPDefLights1(
+    0x40, 0x40, 0x40,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x02014470 - 0x020144B0
 static const Mtx matrix_identity = {
@@ -2724,22 +2721,18 @@ const Gfx dl_ia8_up_arrow_end[] = {
 };
 
 // 0x02014958 - 0x02014960
-static const Ambient seg2_light_02014958 = {
-    {{0x50, 0x50, 0x50}, 0, {0x50, 0x50, 0x50}, 0}
-};
-
-// 0x02014960 - 0x02014970
-static const Light seg2_light_02014960 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x32, 0x32, 0x32}, 0}
-};
+static const Lights1 seg2_lights_02014958 = gdSPDefLights1(
+    0x50, 0x50, 0x50,
+    0xff, 0xff, 0xff, 0x32, 0x32, 0x32
+);
 
 // 0x02014970 - 0x020149A8
 const Gfx dl_paintings_rippling_begin[] = {
     gsDPPipeSync(),
     gsSPSetGeometryMode(G_LIGHTING | G_SHADING_SMOOTH),
     gsDPSetCombineMode(G_CC_MODULATERGBA, G_CC_MODULATERGBA),
-    gsSPLight(&seg2_light_02014960, 1),
-    gsSPLight(&seg2_light_02014958, 2),
+    gsSPLight(&seg2_lights_02014958.l, 1),
+    gsSPLight(&seg2_lights_02014958.a, 2),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsSPEndDisplayList(),
 };
@@ -2757,8 +2750,8 @@ const Gfx dl_paintings_env_mapped_begin[] = {
     gsDPPipeSync(),
     gsSPSetGeometryMode(G_LIGHTING | G_TEXTURE_GEN),
     gsDPSetCombineMode(G_CC_DECALRGB, G_CC_DECALRGB),
-    gsSPLight(&seg2_light_02014960, 1),
-    gsSPLight(&seg2_light_02014958, 2),
+    gsSPLight(&seg2_lights_02014958.l, 1),
+    gsSPLight(&seg2_lights_02014958.a, 2),
     gsSPTexture(0x4000, 0x4000, 0, G_TX_RENDERTILE, G_ON),
     gsSPEndDisplayList(),
 };

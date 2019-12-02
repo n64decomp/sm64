@@ -29,18 +29,14 @@ typedef volatile s64 vs64;
 typedef float  f32;
 typedef double f64;
 
-#ifdef __x86_64__
-typedef u64 size_t;
-typedef s64 ssize_t;
-typedef u64 uintptr_t;
-typedef s64 intptr_t;
-typedef s64 ptrdiff_t;
-#else
+#ifdef TARGET_N64
 typedef u32 size_t;
 typedef s32 ssize_t;
 typedef u32 uintptr_t;
 typedef s32 intptr_t;
 typedef s32 ptrdiff_t;
+#else
+#include <stddef.h>
 #endif
 
 #endif

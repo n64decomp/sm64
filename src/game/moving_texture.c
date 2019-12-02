@@ -445,7 +445,7 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
 
     // Only add commands to change the texture when necessary
     if (textureId != gMovetexLastTextureId) {
-        if (textureId == TEXTURE_MIST) { // an G_IM_FMT_IA texture
+        if (textureId == TEXTURE_MIST) { // an ia16 texture
             if (0) {
             }
             gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);

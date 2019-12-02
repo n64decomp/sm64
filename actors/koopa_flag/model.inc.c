@@ -1,34 +1,22 @@
 // Koopa Flag
 
 // 0x06000000
-static const Ambient koopa_flag_seg6_light_06000000 = {
-    {{0x00, 0x1b, 0x00}, 0, {0x00, 0x1b, 0x00}, 0}
-};
-
-// 0x06000008
-static const Light koopa_flag_seg6_light_06000008 = {
-    {{0x00, 0x6e, 0x00}, 0, {0x00, 0x6e, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_flag_seg6_lights_06000000 = gdSPDefLights1(
+    0x00, 0x1b, 0x00,
+    0x00, 0x6e, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x06000018
-static const Ambient koopa_flag_seg6_light_06000018 = {
-    {{0x3f, 0x39, 0x15}, 0, {0x3f, 0x39, 0x15}, 0}
-};
-
-// 0x06000020
-static const Light koopa_flag_seg6_light_06000020 = {
-    {{0xff, 0xe6, 0x57}, 0, {0xff, 0xe6, 0x57}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_flag_seg6_lights_06000018 = gdSPDefLights1(
+    0x3f, 0x39, 0x15,
+    0xff, 0xe6, 0x57, 0x28, 0x28, 0x28
+);
 
 // 0x06000030
-static const Ambient koopa_flag_seg6_light_06000030 = {
-    {{0x2b, 0x15, 0x01}, 0, {0x2b, 0x15, 0x01}, 0}
-};
-
-// 0x06000038
-static const Light koopa_flag_seg6_light_06000038 = {
-    {{0xac, 0x54, 0x05}, 0, {0xac, 0x54, 0x05}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_flag_seg6_lights_06000030 = gdSPDefLights1(
+    0x2b, 0x15, 0x01,
+    0xac, 0x54, 0x05, 0x28, 0x28, 0x28
+);
 
 // 0x06000048
 ALIGNED8 static const u8 koopa_flag_seg6_texture_06000048[] = {
@@ -36,24 +24,16 @@ ALIGNED8 static const u8 koopa_flag_seg6_texture_06000048[] = {
 };
 
 // 0x06000848
-static const Ambient koopa_flag_seg6_light_06000848 = {
-    {{0x37, 0x27, 0x07}, 0, {0x37, 0x27, 0x07}, 0}
-};
-
-// 0x06000850
-static const Light koopa_flag_seg6_light_06000850 = {
-    {{0xdf, 0x9f, 0x1f}, 0, {0xdf, 0x9f, 0x1f}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_flag_seg6_lights_06000848 = gdSPDefLights1(
+    0x37, 0x27, 0x07,
+    0xdf, 0x9f, 0x1f, 0x28, 0x28, 0x28
+);
 
 // 0x06000860
-static const Ambient koopa_flag_seg6_light_06000860 = {
-    {{0x14, 0x0a, 0x00}, 0, {0x14, 0x0a, 0x00}, 0}
-};
-
-// 0x06000868
-static const Light koopa_flag_seg6_light_06000868 = {
-    {{0x50, 0x28, 0x00}, 0, {0x50, 0x28, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_flag_seg6_lights_06000860 = gdSPDefLights1(
+    0x14, 0x0a, 0x00,
+    0x50, 0x28, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x06000878
 static const Vtx koopa_flag_seg6_vertex_06000878[] = {
@@ -80,13 +60,13 @@ static const Vtx koopa_flag_seg6_vertex_060008C8[] = {
 
 // 0x06000968 - 0x06000A08
 const Gfx koopa_flag_seg6_dl_06000968[] = {
-    gsSPLight(&koopa_flag_seg6_light_06000850, 1),
-    gsSPLight(&koopa_flag_seg6_light_06000848, 2),
+    gsSPLight(&koopa_flag_seg6_lights_06000848.l, 1),
+    gsSPLight(&koopa_flag_seg6_lights_06000848.a, 2),
     gsSPVertex(koopa_flag_seg6_vertex_06000878, 5, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  0, 0x0),
     gsSP1Triangle( 3,  0,  2, 0x0),
-    gsSPLight(&koopa_flag_seg6_light_06000868, 1),
-    gsSPLight(&koopa_flag_seg6_light_06000860, 2),
+    gsSPLight(&koopa_flag_seg6_lights_06000860.l, 1),
+    gsSPLight(&koopa_flag_seg6_lights_06000860.a, 2),
     gsSPVertex(koopa_flag_seg6_vertex_060008C8, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 4,  2,  1, 0x0,  5,  0,  3, 0x0),

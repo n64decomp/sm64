@@ -1,14 +1,10 @@
 // Boo (Castle)
 
 // 0x06015658
-static const Ambient boo_castle_seg6_light_06015658 = {
-    {{0x97, 0x9a, 0xff}, 0, {0x97, 0x9a, 0xff}, 0}
-};
-
-// 0x06015660
-static const Light boo_castle_seg6_light_06015660 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 boo_castle_seg6_lights_06015658 = gdSPDefLights1(
+    0x97, 0x9a, 0xff,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x06015670
 ALIGNED8 static const u8 boo_castle_seg6_texture_06015670[] = {
@@ -265,8 +261,8 @@ const Gfx boo_castle_seg6_dl_06017A10[] = {
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&boo_castle_seg6_light_06015660, 1),
-    gsSPLight(&boo_castle_seg6_light_06015658, 2),
+    gsSPLight(&boo_castle_seg6_lights_06015658.l, 1),
+    gsSPLight(&boo_castle_seg6_lights_06015658.a, 2),
     gsSPVertex(boo_castle_seg6_vertex_06016E70, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -338,7 +334,7 @@ const Gfx boo_castle_seg6_dl_06017AD0[] = {
 const Gfx boo_castle_seg6_dl_06017CE0[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_BLENDRGBFADEA, G_CC_BLENDRGBFADEA),
-    gsSPNumLights(NUMLIGHTS_0), // I cannot tell if they meant to put 0 or 1 here.
+    gsSPNumLights(NUMLIGHTS_1),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),

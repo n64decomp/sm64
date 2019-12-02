@@ -1,124 +1,76 @@
 // Hoot
 
 // 0x05000900
-static const Ambient hoot_seg5_light_05000900 = {
-    {{0x30, 0x1b, 0x0f}, 0, {0x30, 0x1b, 0x0f}, 0}
-};
+static const Lights1 hoot_seg5_lights_05000900 = gdSPDefLights1(
+    0x30, 0x1b, 0x0f,
+    0xc0, 0x6e, 0x3d, 0x28, 0x28, 0x28
+);
 
-// 0x05000908
-static const Light hoot_seg5_light_05000908 = {
-    {{0xc0, 0x6e, 0x3d}, 0, {0xc0, 0x6e, 0x3d}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient hoot_light_1 = {
-    {{0x37, 0x27, 0x0b}, 0, {0x37, 0x27, 0x0b}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light hoot_light_2 = {
-    {{0xdd, 0x9d, 0x2d}, 0, {0xdd, 0x9d, 0x2d}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 hoot_lights_unused1 = gdSPDefLights1(
+    0x37, 0x27, 0x0b,
+    0xdd, 0x9d, 0x2d, 0x28, 0x28, 0x28
+);
 
 // 0x05000930
-static const Ambient hoot_seg5_light_05000930 = {
-    {{0x36, 0x26, 0x11}, 0, {0x36, 0x26, 0x11}, 0}
-};
-
-// 0x05000938
-static const Light hoot_seg5_light_05000938 = {
-    {{0xdb, 0x99, 0x46}, 0, {0xdb, 0x99, 0x46}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05000930 = gdSPDefLights1(
+    0x36, 0x26, 0x11,
+    0xdb, 0x99, 0x46, 0x28, 0x28, 0x28
+);
 
 // 0x05000948
-static const Ambient hoot_seg5_light_05000948 = {
-    {{0x06, 0x06, 0x06}, 0, {0x06, 0x06, 0x06}, 0}
-};
-
-// 0x05000950
-static const Light hoot_seg5_light_05000950 = {
-    {{0x19, 0x19, 0x19}, 0, {0x19, 0x19, 0x19}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05000948 = gdSPDefLights1(
+    0x06, 0x06, 0x06,
+    0x19, 0x19, 0x19, 0x28, 0x28, 0x28
+);
 
 // 0x05000960
-static const Ambient hoot_seg5_light_05000960 = {
-    {{0x1d, 0x0a, 0x05}, 0, {0x1d, 0x0a, 0x05}, 0}
-};
-
-// 0x05000968
-static const Light hoot_seg5_light_05000968 = {
-    {{0x77, 0x2a, 0x16}, 0, {0x77, 0x2a, 0x16}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05000960 = gdSPDefLights1(
+    0x1d, 0x0a, 0x05,
+    0x77, 0x2a, 0x16, 0x28, 0x28, 0x28
+);
 
 // 0x05000978
-static const Ambient hoot_seg5_light_05000978 = {
-    {{0x06, 0x06, 0x06}, 0, {0x06, 0x06, 0x06}, 0}
-};
+static const Lights1 hoot_seg5_lights_05000978 = gdSPDefLights1(
+    0x06, 0x06, 0x06,
+    0x19, 0x19, 0x19, 0x28, 0x28, 0x28
+);
 
-// 0x05000980
-static const Light hoot_seg5_light_05000980 = {
-    {{0x19, 0x19, 0x19}, 0, {0x19, 0x19, 0x19}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 hoot_lights_unused2 = gdSPDefLights1(
+    0x39, 0x27, 0x0a,
+    0xe6, 0x9d, 0x29, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Ambient hoot_light_3 = {
-    {{0x39, 0x27, 0x0a}, 0, {0x39, 0x27, 0x0a}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 hoot_lights_unused3 = gdSPDefLights1(
+    0x1d, 0x06, 0x3b,
+    0x75, 0x18, 0xef, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light hoot_light_4 = {
-    {{0xe6, 0x9d, 0x29}, 0, {0xe6, 0x9d, 0x29}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient hoot_light_5 = {
-    {{0x1d, 0x06, 0x3b}, 0, {0x1d, 0x06, 0x3b}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light hoot_light_6 = {
-    {{0x75, 0x18, 0xef}, 0, {0x75, 0x18, 0xef}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient hoot_light_7 = {
-    {{0x3a, 0x29, 0x09}, 0, {0x3a, 0x29, 0x09}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light hoot_light_8 = {
-    {{0xeb, 0xa6, 0x27}, 0, {0xeb, 0xa6, 0x27}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 hoot_lights_unused4 = gdSPDefLights1(
+    0x3a, 0x29, 0x09,
+    0xeb, 0xa6, 0x27, 0x28, 0x28, 0x28
+);
 
 // 0x050009D8
-static const Ambient hoot_seg5_light_050009D8 = {
-    {{0x18, 0x07, 0x03}, 0, {0x18, 0x07, 0x03}, 0}
-};
-
-// 0x050009E0
-static const Light hoot_seg5_light_050009E0 = {
-    {{0x63, 0x1e, 0x0f}, 0, {0x63, 0x1e, 0x0f}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_050009D8 = gdSPDefLights1(
+    0x18, 0x07, 0x03,
+    0x63, 0x1e, 0x0f, 0x28, 0x28, 0x28
+);
 
 // 0x050009F0
-static const Ambient hoot_seg5_light_050009F0 = {
-    {{0x3f, 0x3a, 0x09}, 0, {0x3f, 0x3a, 0x09}, 0}
-};
-
-// 0x050009F8
-static const Light hoot_seg5_light_050009F8 = {
-    {{0xfe, 0xea, 0x26}, 0, {0xfe, 0xea, 0x26}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_050009F0 = gdSPDefLights1(
+    0x3f, 0x3a, 0x09,
+    0xfe, 0xea, 0x26, 0x28, 0x28, 0x28
+);
 
 // 0x05000A08
-static const Ambient hoot_seg5_light_05000A08 = {
-    {{0x13, 0x0d, 0x0b}, 0, {0x13, 0x0d, 0x0b}, 0}
-};
-
-// 0x05000A10
-static const Light hoot_seg5_light_05000A10 = {
-    {{0x4d, 0x35, 0x2e}, 0, {0x4d, 0x35, 0x2e}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05000A08 = gdSPDefLights1(
+    0x13, 0x0d, 0x0b,
+    0x4d, 0x35, 0x2e, 0x28, 0x28, 0x28
+);
 
 // 0x05000A20
 ALIGNED8 static const u8 hoot_seg5_texture_05000A20[] = {
@@ -322,8 +274,8 @@ static const Vtx hoot_seg5_vertex_05001A90[] = {
 // 0x05001B80 - 0x05001C00
 const Gfx hoot_seg5_dl_05001B80[] = {
     gsDPLoadTextureBlock(hoot_seg5_texture_05000A20, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
-    gsSPLight(&hoot_seg5_light_050009E0, 1),
-    gsSPLight(&hoot_seg5_light_050009D8, 2),
+    gsSPLight(&hoot_seg5_lights_050009D8.l, 1),
+    gsSPLight(&hoot_seg5_lights_050009D8.a, 2),
     gsSPVertex(hoot_seg5_vertex_05001220, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -333,17 +285,17 @@ const Gfx hoot_seg5_dl_05001B80[] = {
 
 // 0x05001C00 - 0x05001DF0
 const Gfx hoot_seg5_dl_05001C00[] = {
-    gsSPLight(&hoot_seg5_light_050009F8, 1),
-    gsSPLight(&hoot_seg5_light_050009F0, 2),
+    gsSPLight(&hoot_seg5_lights_050009F0.l, 1),
+    gsSPLight(&hoot_seg5_lights_050009F0.a, 2),
     gsSPVertex(hoot_seg5_vertex_05001310, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
-    gsSPLight(&hoot_seg5_light_05000A10, 1),
-    gsSPLight(&hoot_seg5_light_05000A08, 2),
+    gsSPLight(&hoot_seg5_lights_05000A08.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000A08.a, 2),
     gsSPVertex(hoot_seg5_vertex_050013D0, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
-    gsSPLight(&hoot_seg5_light_050009E0, 1),
-    gsSPLight(&hoot_seg5_light_050009D8, 2),
+    gsSPLight(&hoot_seg5_lights_050009D8.l, 1),
+    gsSPLight(&hoot_seg5_lights_050009D8.a, 2),
     gsSPVertex(hoot_seg5_vertex_05001400, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -393,14 +345,10 @@ const Gfx hoot_seg5_dl_05001DF0[] = {
 };
 
 // 0x05001E38
-static const Ambient hoot_seg5_light_05001E38 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05001E40
-static const Light hoot_seg5_light_05001E40 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05001E38 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001E50
 ALIGNED8 static const u8 hoot_seg5_texture_05001E50[] = {
@@ -438,8 +386,8 @@ const Gfx hoot_seg5_dl_05002EB0[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_05001E40, 1),
-    gsSPLight(&hoot_seg5_light_05001E38, 2),
+    gsSPLight(&hoot_seg5_lights_05001E38.l, 1),
+    gsSPLight(&hoot_seg5_lights_05001E38.a, 2),
     gsSPVertex(hoot_seg5_vertex_05002E50, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -460,14 +408,10 @@ const Gfx hoot_seg5_dl_05002F10[] = {
 };
 
 // 0x05002F60
-static const Ambient hoot_seg5_light_05002F60 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05002F68
-static const Light hoot_seg5_light_05002F68 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05002F60 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x05002F78
@@ -495,8 +439,8 @@ const Gfx hoot_seg5_dl_05002FD8[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_05002F68, 1),
-    gsSPLight(&hoot_seg5_light_05002F60, 2),
+    gsSPLight(&hoot_seg5_lights_05002F60.l, 1),
+    gsSPLight(&hoot_seg5_lights_05002F60.a, 2),
     gsSPVertex(hoot_seg5_vertex_05002F78, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -517,14 +461,10 @@ const Gfx hoot_seg5_dl_05003038[] = {
 };
 
 // 0x05003088
-static const Ambient hoot_seg5_light_05003088 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05003090
-static const Light hoot_seg5_light_05003090 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05003088 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x050030A0
@@ -552,8 +492,8 @@ const Gfx hoot_seg5_dl_05003100[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_05003090, 1),
-    gsSPLight(&hoot_seg5_light_05003088, 2),
+    gsSPLight(&hoot_seg5_lights_05003088.l, 1),
+    gsSPLight(&hoot_seg5_lights_05003088.a, 2),
     gsSPVertex(hoot_seg5_vertex_050030A0, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -574,14 +514,10 @@ const Gfx hoot_seg5_dl_05003160[] = {
 };
 
 // 0x050031B0
-static const Ambient hoot_seg5_light_050031B0 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x050031B8
-static const Light hoot_seg5_light_050031B8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_050031B0 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x050031C8
@@ -609,8 +545,8 @@ const Gfx hoot_seg5_dl_05003228[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_050031B8, 1),
-    gsSPLight(&hoot_seg5_light_050031B0, 2),
+    gsSPLight(&hoot_seg5_lights_050031B0.l, 1),
+    gsSPLight(&hoot_seg5_lights_050031B0.a, 2),
     gsSPVertex(hoot_seg5_vertex_050031C8, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -631,14 +567,10 @@ const Gfx hoot_seg5_dl_05003288[] = {
 };
 
 // 0x050032D8
-static const Ambient hoot_seg5_light_050032D8 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x050032E0
-static const Light hoot_seg5_light_050032E0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_050032D8 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x050032F0
@@ -666,8 +598,8 @@ const Gfx hoot_seg5_dl_05003350[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_050032E0, 1),
-    gsSPLight(&hoot_seg5_light_050032D8, 2),
+    gsSPLight(&hoot_seg5_lights_050032D8.l, 1),
+    gsSPLight(&hoot_seg5_lights_050032D8.a, 2),
     gsSPVertex(hoot_seg5_vertex_050032F0, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -688,14 +620,10 @@ const Gfx hoot_seg5_dl_050033B0[] = {
 };
 
 // 0x05003400
-static const Ambient hoot_seg5_light_05003400 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05003408
-static const Light hoot_seg5_light_05003408 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05003400 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x05003418
@@ -723,8 +651,8 @@ const Gfx hoot_seg5_dl_05003478[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_05003408, 1),
-    gsSPLight(&hoot_seg5_light_05003400, 2),
+    gsSPLight(&hoot_seg5_lights_05003400.l, 1),
+    gsSPLight(&hoot_seg5_lights_05003400.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003418, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -745,14 +673,10 @@ const Gfx hoot_seg5_dl_050034D8[] = {
 };
 
 // 0x05003528
-static const Ambient hoot_seg5_light_05003528 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05003530
-static const Light hoot_seg5_light_05003530 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05003528 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x05003540
@@ -780,8 +704,8 @@ const Gfx hoot_seg5_dl_050035A0[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_05003530, 1),
-    gsSPLight(&hoot_seg5_light_05003528, 2),
+    gsSPLight(&hoot_seg5_lights_05003528.l, 1),
+    gsSPLight(&hoot_seg5_lights_05003528.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003540, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -802,14 +726,10 @@ const Gfx hoot_seg5_dl_05003600[] = {
 };
 
 // 0x05003650
-static const Ambient hoot_seg5_light_05003650 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05003658
-static const Light hoot_seg5_light_05003658 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 hoot_seg5_lights_05003650 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // //! The vertex macro which calls this has too large of a size.
 // 0x05003668
@@ -837,8 +757,8 @@ const Gfx hoot_seg5_dl_050036C8[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&hoot_seg5_light_05003658, 1),
-    gsSPLight(&hoot_seg5_light_05003650, 2),
+    gsSPLight(&hoot_seg5_lights_05003650.l, 1),
+    gsSPLight(&hoot_seg5_lights_05003650.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003668, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
@@ -1231,8 +1151,8 @@ static const Vtx hoot_seg5_vertex_05004828[] = {
 
 // 0x05004928 - 0x05004A98
 const Gfx hoot_seg5_dl_05004928[] = {
-    gsSPLight(&hoot_seg5_light_05000938, 1),
-    gsSPLight(&hoot_seg5_light_05000930, 2),
+    gsSPLight(&hoot_seg5_lights_05000930.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000930.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003778, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -1252,8 +1172,8 @@ const Gfx hoot_seg5_dl_05004928[] = {
     gsSP1Triangle(12, 13, 14, 0x0),
     gsSPVertex(hoot_seg5_vertex_05003B48, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
-    gsSPLight(&hoot_seg5_light_05000950, 1),
-    gsSPLight(&hoot_seg5_light_05000948, 2),
+    gsSPLight(&hoot_seg5_lights_05000948.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000948.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003BA8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -1266,8 +1186,8 @@ const Gfx hoot_seg5_dl_05004928[] = {
 
 // 0x05004A98 - 0x05004B38
 const Gfx hoot_seg5_dl_05004A98[] = {
-    gsSPLight(&hoot_seg5_light_05000968, 1),
-    gsSPLight(&hoot_seg5_light_05000960, 2),
+    gsSPLight(&hoot_seg5_lights_05000960.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000960.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003D58, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -1275,8 +1195,8 @@ const Gfx hoot_seg5_dl_05004A98[] = {
     gsSPVertex(hoot_seg5_vertex_05003E58, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
-    gsSPLight(&hoot_seg5_light_05000980, 1),
-    gsSPLight(&hoot_seg5_light_05000978, 2),
+    gsSPLight(&hoot_seg5_lights_05000978.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000978.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003F18, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
@@ -1284,8 +1204,8 @@ const Gfx hoot_seg5_dl_05004A98[] = {
 
 // 0x05004B38 - 0x05004CA8
 const Gfx hoot_seg5_dl_05004B38[] = {
-    gsSPLight(&hoot_seg5_light_05000950, 1),
-    gsSPLight(&hoot_seg5_light_05000948, 2),
+    gsSPLight(&hoot_seg5_lights_05000948.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000948.a, 2),
     gsSPVertex(hoot_seg5_vertex_05003F58, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -1293,8 +1213,8 @@ const Gfx hoot_seg5_dl_05004B38[] = {
     gsSPVertex(hoot_seg5_vertex_05004048, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
-    gsSPLight(&hoot_seg5_light_05000938, 1),
-    gsSPLight(&hoot_seg5_light_05000930, 2),
+    gsSPLight(&hoot_seg5_lights_05000930.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000930.a, 2),
     gsSPVertex(hoot_seg5_vertex_05004108, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -1319,8 +1239,8 @@ const Gfx hoot_seg5_dl_05004B38[] = {
 
 // 0x05004CA8 - 0x05004D48
 const Gfx hoot_seg5_dl_05004CA8[] = {
-    gsSPLight(&hoot_seg5_light_05000968, 1),
-    gsSPLight(&hoot_seg5_light_05000960, 2),
+    gsSPLight(&hoot_seg5_lights_05000960.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000960.a, 2),
     gsSPVertex(hoot_seg5_vertex_05004548, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -1328,8 +1248,8 @@ const Gfx hoot_seg5_dl_05004CA8[] = {
     gsSPVertex(hoot_seg5_vertex_05004648, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
-    gsSPLight(&hoot_seg5_light_05000980, 1),
-    gsSPLight(&hoot_seg5_light_05000978, 2),
+    gsSPLight(&hoot_seg5_lights_05000978.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000978.a, 2),
     gsSPVertex(hoot_seg5_vertex_05004708, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSPEndDisplayList(),
@@ -1337,8 +1257,8 @@ const Gfx hoot_seg5_dl_05004CA8[] = {
 
 // 0x05004D48 - 0x05004EC0
 const Gfx hoot_seg5_dl_05004D48[] = {
-    gsSPLight(&hoot_seg5_light_05000908, 1),
-    gsSPLight(&hoot_seg5_light_05000900, 2),
+    gsSPLight(&hoot_seg5_lights_05000900.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000900.a, 2),
     gsSPVertex(hoot_seg5_vertex_05004748, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  1,  4, 0x0,  7,  8,  9, 0x0),
@@ -1350,8 +1270,8 @@ const Gfx hoot_seg5_dl_05004D48[] = {
     gsSP2Triangles( 2, 10, 12, 0x0,  6,  9,  8, 0x0),
     gsSP2Triangles(11, 13,  7, 0x0,  5,  4,  1, 0x0),
     gsSP1Triangle( 1,  8,  2, 0x0),
-    gsSPLight(&hoot_seg5_light_05000968, 1),
-    gsSPLight(&hoot_seg5_light_05000960, 2),
+    gsSPLight(&hoot_seg5_lights_05000960.l, 1),
+    gsSPLight(&hoot_seg5_lights_05000960.a, 2),
     gsSPVertex(hoot_seg5_vertex_05004828, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  8,  4,  3, 0x0),

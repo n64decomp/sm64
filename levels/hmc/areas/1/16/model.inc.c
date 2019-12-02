@@ -1,12 +1,8 @@
-// 0x07014CB8 - 0x07014CC0
-static const Ambient hmc_seg7_light_07014CB8 = {
-    {{0x23, 0x2b, 0x14}, 0, {0x23, 0x2b, 0x14}, 0}
-};
-
-// 0x07014CC0 - 0x07014CD0
-static const Light hmc_seg7_light_07014CC0 = {
-    {{0x8e, 0xac, 0x52}, 0, {0x8e, 0xac, 0x52}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07014CB8 - 0x07014CD0
+static const Lights1 hmc_seg7_lights_07014CB8 = gdSPDefLights1(
+    0x23, 0x2b, 0x14,
+    0x8e, 0xac, 0x52, 0x28, 0x28, 0x28
+);
 
 // 0x07014CD0 - 0x07014DD0
 static const Vtx hmc_seg7_vertex_07014CD0[] = {
@@ -33,8 +29,8 @@ static const Gfx hmc_seg7_dl_07014DD0[] = {
     gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, cave_0900C000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&hmc_seg7_light_07014CC0, 1),
-    gsSPLight(&hmc_seg7_light_07014CB8, 2),
+    gsSPLight(&hmc_seg7_lights_07014CB8.l, 1),
+    gsSPLight(&hmc_seg7_lights_07014CB8.a, 2),
     gsSPVertex(hmc_seg7_vertex_07014CD0, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),

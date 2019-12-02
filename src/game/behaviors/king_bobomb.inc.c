@@ -19,7 +19,7 @@ void ActionKingBobomb0(void) {
             o->oSubAction++;
             func_8031FFB4(0, 60, 40);
         }
-    } else if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, 17)) {
+    } else if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, DIALOG_017)) {
         o->oAction = 2;
         o->oFlags |= OBJ_FLAG_HOLDABLE;
     }
@@ -154,7 +154,7 @@ void ActionKingBobomb6(void) {
 
 void ActionKingBobomb7(void) {
     set_obj_animation_and_sound_state(2);
-    if (obj_update_dialog_with_cutscene(2, 2, CUTSCENE_DIALOG_1, 116)) {
+    if (obj_update_dialog_with_cutscene(2, 2, CUTSCENE_DIALOG_1, DIALOG_116)) {
         create_sound_spawner(SOUND_OBJ_KING_WHOMP_DEATH);
         obj_hide();
         obj_become_intangible();
@@ -246,7 +246,7 @@ void ActionKingBobomb5() { // bobomb returns home
                 o->oSubAction++;
             break;
         case 4:
-            if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, 128))
+            if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, DIALOG_128))
                 o->oAction = 2;
             break;
     }

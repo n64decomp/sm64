@@ -1,3 +1,33 @@
+Refresh #4
+1.) Label screen_transition.c (#737)
+2.) Revamp macros (#738)
+3.) Simplify the cake makefile logic (#739)
+4.) Move zbuffer to C (#742)
+5.) Audio blob endian/64-bit fixes (#740)
+6.) Ub fixes (#745)
+7.) process_level_music_dynamics: slightly better stack and regalloc (#746)
+8.) move level order specific definitions out to levels/level_defines.h (#743)
+9.) Renamed some mislabelled sound effects (#748)
+10.) Very minor white space fixes in Mario.c (#752)
+11.) Renamed GRAVITY to OBJ_PHYSICS (#755)
+12.) Use defined macros instead of literal values for interactions in behavior_data.c (#754)
+13.) iQue Player console detection + full support (#756) 
+14.) Fix Goddard Mario head for little endian etc. (#757) 
+15.) Small bits of audio doc (#749)
+16.) Update diff script (#750) 
+17.) Nicer format for course/dialog text, enum for dialog IDs (#753) 
+18.) first-diff: store most recent mtime during check (#759)
+19.) Use Lights1 struct for light values (#760)
+20.) Detect mips64-elf in diff.py (#761) 
+21.) Name display lists in gd renderer.c (#764) 
+22.) Document a variety of PU type crashes. (#765) 
+23.) Label object_behaviors. (#716) 
+24.) Update swoop.inc.c (#767) 
+25.) Label tilting_pyramid.inc.c (#768) 
+26.) Label red_coin.inc.c (#770) 
+27.) Use more level defines (#758) 
+28.) Named Mario actions 6, 7, and 8 and noted causes of hands-free holding glitch (#769)
+
 Refresh #3
 1.) Small bits of sound sample labelling
 2.) Append 'b' to fopen calls in n64graphics to satisfy Windows

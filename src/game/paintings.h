@@ -132,7 +132,7 @@ extern float (*D_8035FFA4)[3];
 extern struct Painting *ripplingPainting;
 extern s8 dddStatus;
 
-extern Gfx *Geo18_802D5B98(s32 run, struct GraphNode *node, s32 c);
+extern Gfx *Geo18_802D5B98(s32 run, struct GraphNode *node, void *context);
 extern Gfx *Geo18_802D5D0C(s32 run, struct GraphNode *node, f32 c[4][4]);
 
 #endif /* PAINTINGS_H */

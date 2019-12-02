@@ -1,62 +1,38 @@
-// 0x0700C430 - 0x0700C438
-static const Ambient bitfs_seg7_light_0700C430 = {
-    {{0x46, 0x46, 0x46}, 0, {0x46, 0x46, 0x46}, 0}
-};
+// 0x0700C430 - 0x0700C448
+static const Lights1 bitfs_seg7_lights_0700C430 = gdSPDefLights1(
+    0x46, 0x46, 0x46,
+    0x8c, 0x8c, 0x8c, 0x28, 0x28, 0x28
+);
 
-// 0x0700C438 - 0x0700C448
-static const Light bitfs_seg7_light_0700C438 = {
-    {{0x8c, 0x8c, 0x8c}, 0, {0x8c, 0x8c, 0x8c}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700C448 - 0x0700C460
+static const Lights1 bitfs_seg7_lights_0700C448 = gdSPDefLights1(
+    0x64, 0x64, 0x64,
+    0xc8, 0xc8, 0xc8, 0x28, 0x28, 0x28
+);
 
-// 0x0700C448 - 0x0700C450
-static const Ambient bitfs_seg7_light_0700C448 = {
-    {{0x64, 0x64, 0x64}, 0, {0x64, 0x64, 0x64}, 0}
-};
+// 0x0700C460 - 0x0700C478
+static const Lights1 bitfs_seg7_lights_0700C460 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x0700C450 - 0x0700C460
-static const Light bitfs_seg7_light_0700C450 = {
-    {{0xc8, 0xc8, 0xc8}, 0, {0xc8, 0xc8, 0xc8}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700C478 - 0x0700C490
+static const Lights1 bitfs_seg7_lights_0700C478 = gdSPDefLights1(
+    0x32, 0x32, 0x32,
+    0x64, 0x64, 0x64, 0x28, 0x28, 0x28
+);
 
-// 0x0700C460 - 0x0700C468
-static const Ambient bitfs_seg7_light_0700C460 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
+// 0x0700C490 - 0x0700C4A8
+static const Lights1 bitfs_seg7_lights_0700C490 = gdSPDefLights1(
+    0x62, 0x7f, 0x7f,
+    0xc4, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x0700C468 - 0x0700C478
-static const Light bitfs_seg7_light_0700C468 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700C478 - 0x0700C480
-static const Ambient bitfs_seg7_light_0700C478 = {
-    {{0x32, 0x32, 0x32}, 0, {0x32, 0x32, 0x32}, 0}
-};
-
-// 0x0700C480 - 0x0700C490
-static const Light bitfs_seg7_light_0700C480 = {
-    {{0x64, 0x64, 0x64}, 0, {0x64, 0x64, 0x64}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700C490 - 0x0700C498
-static const Ambient bitfs_seg7_light_0700C490 = {
-    {{0x62, 0x7f, 0x7f}, 0, {0x62, 0x7f, 0x7f}, 0}
-};
-
-// 0x0700C498 - 0x0700C4A8
-static const Light bitfs_seg7_light_0700C498 = {
-    {{0xc4, 0xff, 0xff}, 0, {0xc4, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700C4A8 - 0x0700C4B0
-static const Ambient bitfs_seg7_light_0700C4A8 = {
-    {{0x32, 0x7f, 0x59}, 0, {0x32, 0x7f, 0x59}, 0}
-};
-
-// 0x0700C4B0 - 0x0700C4C0
-static const Light bitfs_seg7_light_0700C4B0 = {
-    {{0x65, 0xff, 0xb2}, 0, {0x65, 0xff, 0xb2}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700C4A8 - 0x0700C4C0
+static const Lights1 bitfs_seg7_lights_0700C4A8 = gdSPDefLights1(
+    0x32, 0x7f, 0x59,
+    0x65, 0xff, 0xb2, 0x28, 0x28, 0x28
+);
 
 // 0x0700C4C0 - 0x0700C540
 static const Vtx bitfs_seg7_vertex_0700C4C0[] = {
@@ -717,21 +693,21 @@ static const Gfx bitfs_seg7_dl_0700E460[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sky_09001800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bitfs_seg7_light_0700C438, 1),
-    gsSPLight(&bitfs_seg7_light_0700C430, 2),
+    gsSPLight(&bitfs_seg7_lights_0700C430.l, 1),
+    gsSPLight(&bitfs_seg7_lights_0700C430.a, 2),
     gsSPVertex(bitfs_seg7_vertex_0700C4C0, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),
-    gsSPLight(&bitfs_seg7_light_0700C450, 1),
-    gsSPLight(&bitfs_seg7_light_0700C448, 2),
+    gsSPLight(&bitfs_seg7_lights_0700C448.l, 1),
+    gsSPLight(&bitfs_seg7_lights_0700C448.a, 2),
     gsSPVertex(bitfs_seg7_vertex_0700C540, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
-    gsSPLight(&bitfs_seg7_light_0700C468, 1),
-    gsSPLight(&bitfs_seg7_light_0700C460, 2),
+    gsSPLight(&bitfs_seg7_lights_0700C460.l, 1),
+    gsSPLight(&bitfs_seg7_lights_0700C460.a, 2),
     gsSPVertex(bitfs_seg7_vertex_0700C580, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
-    gsSPLight(&bitfs_seg7_light_0700C480, 1),
-    gsSPLight(&bitfs_seg7_light_0700C478, 2),
+    gsSPLight(&bitfs_seg7_lights_0700C478.l, 1),
+    gsSPLight(&bitfs_seg7_lights_0700C478.a, 2),
     gsSPVertex(bitfs_seg7_vertex_0700C5C0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
@@ -742,8 +718,8 @@ static const Gfx bitfs_seg7_dl_0700E530[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sky_09000800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bitfs_seg7_light_0700C498, 1),
-    gsSPLight(&bitfs_seg7_light_0700C490, 2),
+    gsSPLight(&bitfs_seg7_lights_0700C490.l, 1),
+    gsSPLight(&bitfs_seg7_lights_0700C490.a, 2),
     gsSPVertex(bitfs_seg7_vertex_0700C600, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  6,  8,  9, 0x0),
@@ -842,8 +818,8 @@ static const Gfx bitfs_seg7_dl_0700E530[] = {
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
     gsSP2Triangles( 9, 12, 10, 0x0,  6, 13,  7, 0x0),
     gsSP1Triangle( 3, 14,  4, 0x0),
-    gsSPLight(&bitfs_seg7_light_0700C4B0, 1),
-    gsSPLight(&bitfs_seg7_light_0700C4A8, 2),
+    gsSPLight(&bitfs_seg7_lights_0700C4A8.l, 1),
+    gsSPLight(&bitfs_seg7_lights_0700C4A8.a, 2),
     gsSPVertex(bitfs_seg7_vertex_0700DCE0, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  0,  2,  9, 0x0),

@@ -17,6 +17,7 @@
 #include "level_update.h"
 #include "audio/external.h"
 #include "seq_ids.h"
+#include "dialog_ids.h"
 #include "save_file.h"
 #include "area.h"
 #include "engine/graph_node.h"
@@ -36,6 +37,7 @@
 #include "ingame_menu.h"
 #include "room.h"
 #include "rendering_graph_node.h"
+#include "level_table.h"
 
 #define o gCurrentObject
 
@@ -186,7 +188,7 @@ void func_802AA618(s32 sp18, s32 sp1C, f32 sp20) {
 #include "behaviors/breakable_box.inc.c"
 
 // not sure what this is doing here. not in a behavior file.
-s32 Geo18_802B1BB0(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {
+Gfx *Geo18_802B1BB0(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {
     Mat4 sp20;
     struct Object *sp1C;
 
@@ -198,7 +200,7 @@ s32 Geo18_802B1BB0(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {
             func_8029EA0C(sp1C->prevObj);
         }
     }
-    return 0;
+    return NULL;
 }
 
 #include "behaviors/heave_ho.inc.c"
@@ -244,7 +246,7 @@ void func_802B2328(
 #include "behaviors/lll_volcano_flames.inc.c"
 #include "behaviors/lll_hexagonal_ring.inc.c"
 #include "behaviors/lll_sinking_rectangle.inc.c"
-#include "behaviors/lll_tilting_platform.inc.c"
+#include "behaviors/tilting_inverted_pyramid.inc.c"
 #include "behaviors/koopa_shell.inc.c"
 #include "behaviors/tox_box.inc.c"
 #include "behaviors/piranha_plant.inc.c"

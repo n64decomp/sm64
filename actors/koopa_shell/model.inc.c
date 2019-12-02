@@ -1,44 +1,28 @@
 // Koopa Shell
 
 // 0x08026388
-static const Ambient koopa_shell_seg8_light_08026388 = {
-    {{0x11, 0x33, 0x06}, 0, {0x11, 0x33, 0x06}, 0}
-};
-
-// 0x08026390
-static const Light koopa_shell_seg8_light_08026390 = {
-    {{0x45, 0xcd, 0x1a}, 0, {0x45, 0xcd, 0x1a}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_shell_seg8_lights_08026388 = gdSPDefLights1(
+    0x11, 0x33, 0x06,
+    0x45, 0xcd, 0x1a, 0x28, 0x28, 0x28
+);
 
 // 0x080263A0
-static const Ambient koopa_shell_seg8_light_080263A0 = {
-    {{0x39, 0x0a, 0x07}, 0, {0x39, 0x0a, 0x07}, 0}
-};
-
-// 0x080263A8
-static const Light koopa_shell_seg8_light_080263A8 = {
-    {{0xe4, 0x29, 0x1d}, 0, {0xe4, 0x29, 0x1d}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_shell_seg8_lights_080263A0 = gdSPDefLights1(
+    0x39, 0x0a, 0x07,
+    0xe4, 0x29, 0x1d, 0x28, 0x28, 0x28
+);
 
 // 0x080263B8
-static const Ambient koopa_shell_seg8_light_080263B8 = {
-    {{0x21, 0x30, 0x39}, 0, {0x21, 0x30, 0x39}, 0}
-};
-
-// 0x080263C0
-static const Light koopa_shell_seg8_light_080263C0 = {
-    {{0x84, 0xc3, 0xe5}, 0, {0x84, 0xc3, 0xe5}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_shell_seg8_lights_080263B8 = gdSPDefLights1(
+    0x21, 0x30, 0x39,
+    0x84, 0xc3, 0xe5, 0x28, 0x28, 0x28
+);
 
 // 0x080263D0
-static const Ambient koopa_shell_seg8_light_080263D0 = {
-    {{0x3e, 0x3f, 0x3e}, 0, {0x3e, 0x3f, 0x3e}, 0}
-};
-
-// 0x080263D8
-static const Light koopa_shell_seg8_light_080263D8 = {
-    {{0xfa, 0xff, 0xf8}, 0, {0xfa, 0xff, 0xf8}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_shell_seg8_lights_080263D0 = gdSPDefLights1(
+    0x3e, 0x3f, 0x3e,
+    0xfa, 0xff, 0xf8, 0x28, 0x28, 0x28
+);
 
 // 0x080263E8
 static const Vtx koopa_shell_seg8_vertex_080263E8[] = {
@@ -385,51 +369,43 @@ const Gfx koopa_shell_seg8_dl_08027258[] = {
 // 0x080273C8 - 0x08027420
 const Gfx koopa_shell_seg8_dl_080273C8[] = {
     gsDPPipeSync(),
-    gsSPNumLights(NUMLIGHTS_0), // I cannot tell if they meant to put 0 or 1 here.
-    gsSPLight(&koopa_shell_seg8_light_08026390, 1),
-    gsSPLight(&koopa_shell_seg8_light_08026388, 2),
+    gsSPNumLights(NUMLIGHTS_1),
+    gsSPLight(&koopa_shell_seg8_lights_08026388.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_08026388.a, 2),
     gsSPDisplayList(koopa_shell_seg8_dl_08027108),
-    gsSPLight(&koopa_shell_seg8_light_080263C0, 1),
-    gsSPLight(&koopa_shell_seg8_light_080263B8, 2),
+    gsSPLight(&koopa_shell_seg8_lights_080263B8.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_080263B8.a, 2),
     gsSPDisplayList(koopa_shell_seg8_dl_08027170),
-    gsSPLight(&koopa_shell_seg8_light_080263D8, 1),
-    gsSPLight(&koopa_shell_seg8_light_080263D0, 2),
+    gsSPLight(&koopa_shell_seg8_lights_080263D0.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_080263D0.a, 2),
     gsSPBranchList(koopa_shell_seg8_dl_08027258),
 };
 
 // 0x08027420 - 0x08027470
 const Gfx koopa_shell_seg8_dl_08027420[] = {
     gsDPPipeSync(),
-    gsSPLight(&koopa_shell_seg8_light_080263A8, 1),
-    gsSPLight(&koopa_shell_seg8_light_080263A0, 2),
+    gsSPLight(&koopa_shell_seg8_lights_080263A0.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_080263A0.a, 2),
     gsSPDisplayList(koopa_shell_seg8_dl_08027108),
-    gsSPLight(&koopa_shell_seg8_light_080263C0, 1),
-    gsSPLight(&koopa_shell_seg8_light_080263B8, 2),
+    gsSPLight(&koopa_shell_seg8_lights_080263B8.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_080263B8.a, 2),
     gsSPDisplayList(koopa_shell_seg8_dl_08027170),
-    gsSPLight(&koopa_shell_seg8_light_080263D8, 1),
-    gsSPLight(&koopa_shell_seg8_light_080263D0, 2),
+    gsSPLight(&koopa_shell_seg8_lights_080263D0.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_080263D0.a, 2),
     gsSPBranchList(koopa_shell_seg8_dl_08027258),
 };
 
 // 0x08027470
-static const Ambient koopa_shell_seg8_light_08027470 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x08027478
-static const Light koopa_shell_seg8_light_08027478 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_shell_seg8_lights_08027470 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x08027488
-static const Ambient koopa_shell_seg8_light_08027488 = {
-    {{0x38, 0x2b, 0x00}, 0, {0x38, 0x2b, 0x00}, 0}
-};
-
-// 0x08027490
-static const Light koopa_shell_seg8_light_08027490 = {
-    {{0xe0, 0xae, 0x00}, 0, {0xe0, 0xae, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 koopa_shell_seg8_lights_08027488 = gdSPDefLights1(
+    0x38, 0x2b, 0x00,
+    0xe0, 0xae, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x080274A0
 ALIGNED8 static const u8 koopa_shell_seg8_texture_080274A0[] = {
@@ -538,8 +514,8 @@ const Gfx koopa_shell_seg8_dl_080288E0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, koopa_shell_seg8_texture_08027CA0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&koopa_shell_seg8_light_08027478, 1),
-    gsSPLight(&koopa_shell_seg8_light_08027470, 2),
+    gsSPLight(&koopa_shell_seg8_lights_08027470.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_08027470.a, 2),
     gsSPVertex(koopa_shell_seg8_vertex_080284A0, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 0,  4,  1, 0x0,  0,  5,  4, 0x0),
@@ -569,13 +545,13 @@ const Gfx koopa_shell_seg8_dl_08028978[] = {
 
 // 0x08028A20 - 0x08028B78
 const Gfx koopa_shell_seg8_dl_08028A20[] = {
-    gsSPLight(&koopa_shell_seg8_light_08027490, 1),
-    gsSPLight(&koopa_shell_seg8_light_08027488, 2),
+    gsSPLight(&koopa_shell_seg8_lights_08027488.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_08027488.a, 2),
     gsSPVertex(koopa_shell_seg8_vertex_08028620, 5, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSP1Triangle( 2,  4,  3, 0x0),
-    gsSPLight(&koopa_shell_seg8_light_08027478, 1),
-    gsSPLight(&koopa_shell_seg8_light_08027470, 2),
+    gsSPLight(&koopa_shell_seg8_lights_08027470.l, 1),
+    gsSPLight(&koopa_shell_seg8_lights_08027470.a, 2),
     gsSPVertex(koopa_shell_seg8_vertex_08028670, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  1,  0, 0x0),
     gsSP2Triangles( 4,  1,  3, 0x0,  2,  1,  5, 0x0),

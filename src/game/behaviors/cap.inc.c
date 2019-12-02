@@ -25,15 +25,15 @@ s32 func_802F0904(void) {
 
 void func_802F0978(void) {
     if (o->oTimer > 300) {
-        ObjFlickerAndDisappear(o, 300);
+        obj_flicker_and_disappear(o, 300);
     }
 }
 
 void func_802F09C0(void) {
-    if (D_803600E0 == NULL)
+    if (sObjFloor == NULL)
         return;
 
-    switch (D_803600E0->type) {
+    switch (sObjFloor->type) {
         case SURFACE_DEATH_PLANE:
             o->activeFlags = 0;
             break;
@@ -49,8 +49,8 @@ void func_802F09C0(void) {
         case SURFACE_SHALLOW_MOVING_QUICKSAND:
         case SURFACE_MOVING_QUICKSAND:
             o->oAction = 11;
-            o->oMoveAngleYaw = (D_803600E0->force & 0xFF) << 8;
-            o->oForwardVel = -((D_803600E0->force & 0xff00) >> 8) * 2 + 8;
+            o->oMoveAngleYaw = (sObjFloor->force & 0xFF) << 8;
+            o->oForwardVel = -((sObjFloor->force & 0xff00) >> 8) * 2 + 8;
             break;
 
         case SURFACE_INSTANT_QUICKSAND:
@@ -60,8 +60,8 @@ void func_802F09C0(void) {
 
         case SURFACE_INSTANT_MOVING_QUICKSAND:
             o->oAction = 13;
-            o->oMoveAngleYaw = (D_803600E0->force & 0xFF) << 8;
-            o->oForwardVel = -((D_803600E0->force & 0xff00) >> 8) * 2 + 8;
+            o->oMoveAngleYaw = (sObjFloor->force & 0xFF) << 8;
+            o->oForwardVel = -((sObjFloor->force & 0xff00) >> 8) * 2 + 8;
             break;
     }
 }
@@ -121,7 +121,7 @@ void func_802F0E0C(void) {
     s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
-    sp1E = ObjectStep();
+    sp1E = object_step();
     if (sp1E & 0x01) {
         func_802F09C0();
         if (o->oVelY != 0.0f) {
@@ -141,7 +141,7 @@ void bhv_wing_vanish_cap_loop(void) {
             break;
 
         default:
-            ObjectStep();
+            object_step();
             func_802F0B68();
             break;
     }
@@ -164,7 +164,7 @@ void func_802F0FE0(void) {
     s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
-    sp1E = ObjectStep();
+    sp1E = object_step();
     if (sp1E & 0x01)
         func_802F09C0();
 }
@@ -176,7 +176,7 @@ void bhv_metal_cap_loop(void) {
             break;
 
         default:
-            ObjectStep();
+            object_step();
             func_802F0B68();
             break;
     }
@@ -224,7 +224,7 @@ void func_802F1234(void) {
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
     o->oFaceAnglePitch += o->oForwardVel * 80.0f;
-    sp1E = ObjectStep();
+    sp1E = object_step();
     if (sp1E & 0x01) {
         func_802F09C0();
 
@@ -246,7 +246,7 @@ void bhv_normal_cap_loop(void) {
             break;
 
         default:
-            ObjectStep();
+            object_step();
             func_802F0B68();
             break;
     }

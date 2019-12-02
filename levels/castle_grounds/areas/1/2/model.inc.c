@@ -1,82 +1,50 @@
-// 0x07006ED8 - 0x07006EE0
-static const Ambient castle_grounds_seg7_light_07006ED8 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
+// 0x07006ED8 - 0x07006EF0
+static const Lights1 castle_grounds_seg7_lights_07006ED8 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x07006EE0 - 0x07006EF0
-static const Light castle_grounds_seg7_light_07006EE0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07006EF0 - 0x07006F08
+static const Lights1 castle_grounds_seg7_lights_07006EF0 = gdSPDefLights1(
+    0x4e, 0x4e, 0x53,
+    0xc4, 0xc4, 0xd0, 0x28, 0x28, 0x28
+);
 
-// 0x07006EF0 - 0x07006EF8
-static const Ambient castle_grounds_seg7_light_07006EF0 = {
-    {{0x4e, 0x4e, 0x53}, 0, {0x4e, 0x4e, 0x53}, 0}
-};
+// 0x07006F08 - 0x07006F20
+static const Lights1 castle_grounds_seg7_lights_07006F08 = gdSPDefLights1(
+    0x36, 0x36, 0x37,
+    0x89, 0x89, 0x8a, 0x28, 0x28, 0x28
+);
 
-// 0x07006EF8 - 0x07006F08
-static const Light castle_grounds_seg7_light_07006EF8 = {
-    {{0xc4, 0xc4, 0xd0}, 0, {0xc4, 0xc4, 0xd0}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07006F20 - 0x07006F38
+static const Lights1 castle_grounds_seg7_lights_07006F20 = gdSPDefLights1(
+    0x2d, 0x2d, 0x38,
+    0x72, 0x72, 0x8c, 0x28, 0x28, 0x28
+);
 
-// 0x07006F08 - 0x07006F10
-static const Ambient castle_grounds_seg7_light_07006F08 = {
-    {{0x36, 0x36, 0x37}, 0, {0x36, 0x36, 0x37}, 0}
-};
+// 0x07006F38 - 0x07006F50
+static const Lights1 castle_grounds_seg7_lights_07006F38 = gdSPDefLights1(
+    0x29, 0x29, 0x2a,
+    0x67, 0x67, 0x69, 0x28, 0x28, 0x28
+);
 
-// 0x07006F10 - 0x07006F20
-static const Light castle_grounds_seg7_light_07006F10 = {
-    {{0x89, 0x89, 0x8a}, 0, {0x89, 0x89, 0x8a}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07006F50 - 0x07006F68
+static const Lights1 castle_grounds_seg7_lights_07006F50 = gdSPDefLights1(
+    0x56, 0x56, 0x56,
+    0xd8, 0xd8, 0xd8, 0x28, 0x28, 0x28
+);
 
-// 0x07006F20 - 0x07006F28
-static const Ambient castle_grounds_seg7_light_07006F20 = {
-    {{0x2d, 0x2d, 0x38}, 0, {0x2d, 0x2d, 0x38}, 0}
-};
+// 0x07006F68 - 0x07006F80
+static const Lights1 castle_grounds_seg7_lights_07006F68 = gdSPDefLights1(
+    0x23, 0x23, 0x27,
+    0x58, 0x58, 0x62, 0x28, 0x28, 0x28
+);
 
-// 0x07006F28 - 0x07006F38
-static const Light castle_grounds_seg7_light_07006F28 = {
-    {{0x72, 0x72, 0x8c}, 0, {0x72, 0x72, 0x8c}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07006F38 - 0x07006F40
-static const Ambient castle_grounds_seg7_light_07006F38 = {
-    {{0x29, 0x29, 0x2a}, 0, {0x29, 0x29, 0x2a}, 0}
-};
-
-// 0x07006F40 - 0x07006F50
-static const Light castle_grounds_seg7_light_07006F40 = {
-    {{0x67, 0x67, 0x69}, 0, {0x67, 0x67, 0x69}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07006F50 - 0x07006F58
-static const Ambient castle_grounds_seg7_light_07006F50 = {
-    {{0x56, 0x56, 0x56}, 0, {0x56, 0x56, 0x56}, 0}
-};
-
-// 0x07006F58 - 0x07006F68
-static const Light castle_grounds_seg7_light_07006F58 = {
-    {{0xd8, 0xd8, 0xd8}, 0, {0xd8, 0xd8, 0xd8}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07006F68 - 0x07006F70
-static const Ambient castle_grounds_seg7_light_07006F68 = {
-    {{0x23, 0x23, 0x27}, 0, {0x23, 0x23, 0x27}, 0}
-};
-
-// 0x07006F70 - 0x07006F80
-static const Light castle_grounds_seg7_light_07006F70 = {
-    {{0x58, 0x58, 0x62}, 0, {0x58, 0x58, 0x62}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07006F80 - 0x07006F88
-static const Ambient castle_grounds_seg7_light_07006F80 = {
-    {{0x13, 0x57, 0x00}, 0, {0x13, 0x57, 0x00}, 0}
-};
-
-// 0x07006F88 - 0x07006F98
-static const Light castle_grounds_seg7_light_07006F88 = {
-    {{0x30, 0xdb, 0x02}, 0, {0x30, 0xdb, 0x02}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07006F80 - 0x07006F98
+static const Lights1 castle_grounds_seg7_lights_07006F80 = gdSPDefLights1(
+    0x13, 0x57, 0x00,
+    0x30, 0xdb, 0x02, 0x28, 0x28, 0x28
+);
 
 // 0x07006F98 - 0x07006FD8
 static const Vtx castle_grounds_seg7_vertex_07006F98[] = {
@@ -657,12 +625,12 @@ static const Gfx castle_grounds_seg7_dl_070089F8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_0900B000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 16 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07006F98, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  2,  1, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006EF8, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006EF0, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006EF0.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006EF0.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07006FD8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  2,  1, 0x0),
     gsSPEndDisplayList(),
@@ -673,8 +641,8 @@ static const Gfx castle_grounds_seg7_dl_07008A68[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_09004000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007018, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10,  6, 0x0),
@@ -741,8 +709,8 @@ static const Gfx castle_grounds_seg7_dl_07008D70[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_09009000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006F10, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F08, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_070077B8, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSP2Triangles( 3,  4,  2, 0x0,  5,  0,  2, 0x0),
@@ -756,8 +724,8 @@ static const Gfx castle_grounds_seg7_dl_07008DE8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_09009800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007858, 13, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 0,  2,  4, 0x0,  1,  3,  5, 0x0),
@@ -766,12 +734,12 @@ static const Gfx castle_grounds_seg7_dl_07008DE8[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10, 11,  3, 0x0),
     gsSP2Triangles( 3,  8, 10, 0x0,  8,  3,  0, 0x0),
     gsSP1Triangle( 4,  7, 12, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F10, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F08, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007928, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007968, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSP2Triangles( 3,  1,  4, 0x0,  3,  4,  5, 0x0),
@@ -785,8 +753,8 @@ static const Gfx castle_grounds_seg7_dl_07008EE8[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPVertex(castle_grounds_seg7_vertex_070079C8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  2,  1, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F28, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F20, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F20.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F20.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007A08, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
     gsSPEndDisplayList(),
@@ -797,8 +765,8 @@ static const Gfx castle_grounds_seg7_dl_07008F48[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_09003800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007A48, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 1,  4,  2, 0x0,  4,  5,  2, 0x0),
@@ -823,19 +791,19 @@ static const Gfx castle_grounds_seg7_dl_07009010[] = {
     gsSP2Triangles( 4,  5,  6, 0x0,  5,  4,  7, 0x0),
     gsSP2Triangles( 8,  5,  7, 0x0,  9, 10, 11, 0x0),
     gsSP1Triangle(10, 12, 11, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F40, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F38, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F38.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F38.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007C98, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
     gsSP2Triangles( 2,  3,  4, 0x0,  5,  6,  7, 0x0),
     gsSP2Triangles( 5,  7,  8, 0x0,  7,  9,  8, 0x0),
     gsSP2Triangles( 3, 10,  4, 0x0,  8,  9, 11, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F58, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F50, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F50.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F50.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007D58, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07007D98, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  4,  3, 0x0,  4,  7,  5, 0x0),
@@ -867,18 +835,18 @@ static const Gfx castle_grounds_seg7_dl_07009010[] = {
     gsSP2Triangles( 3,  6,  4, 0x0,  7,  8,  9, 0x0),
     gsSP2Triangles( 7, 10,  8, 0x0, 11, 12, 13, 0x0),
     gsSP2Triangles( 8, 14, 13, 0x0, 12,  8, 13, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F70, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F68, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F68.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F68.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07008268, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 2,  4,  3, 0x0,  3,  4,  5, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F10, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F08, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_070082C8, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP1Triangle( 5,  4,  6, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006EE0, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006ED8, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006ED8.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07008338, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPEndDisplayList(),
@@ -889,8 +857,8 @@ static const Gfx castle_grounds_seg7_dl_07009330[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_09004800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006F88, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F80, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F80.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F80.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07008368, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  3,  7,  4, 0x0),
@@ -936,14 +904,14 @@ static const Gfx castle_grounds_seg7_dl_07009568[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, outside_09006800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&castle_grounds_seg7_light_07006F40, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F38, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F38.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F38.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_07008908, 11, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),
     gsSP1Triangle( 0,  2, 10, 0x0),
-    gsSPLight(&castle_grounds_seg7_light_07006F10, 1),
-    gsSPLight(&castle_grounds_seg7_light_07006F08, 2),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.l, 1),
+    gsSPLight(&castle_grounds_seg7_lights_07006F08.a, 2),
     gsSPVertex(castle_grounds_seg7_vertex_070089B8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
     gsSPEndDisplayList(),

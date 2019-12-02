@@ -1,36 +1,22 @@
 // Chain Chomp
 
-
-// These 6 lights are unreferenced.
 // 0x06021388
-static const Ambient chain_chomp_seg6_light_06021388 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x06021390
-static const Light chain_chomp_seg6_light_06021390 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+UNUSED static const Lights1 chain_chomp_lights_unused1 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x060213A0
-static const Ambient chain_chomp_seg6_light_060213A0 = {
-    {{0x03, 0x03, 0x05}, 0, {0x03, 0x03, 0x05}, 0}
-};
-
-// 0x060213A8
-static const Light chain_chomp_seg6_light_060213A8 = {
-    {{0x0d, 0x0f, 0x16}, 0, {0x0d, 0x0f, 0x16}, 0, {0x28, 0x28, 0x28}, 0}
-};
+UNUSED static const Lights1 chain_chomp_lights_unused2 = gdSPDefLights1(
+    0x03, 0x03, 0x05,
+    0x0d, 0x0f, 0x16, 0x28, 0x28, 0x28
+);
 
 // 0x060213B8
-static const Ambient chain_chomp_seg6_light_060213B8 = {
-    {{0x25, 0x00, 0x00}, 0, {0x25, 0x00, 0x00}, 0}
-};
-
-// 0x060213C0
-static const Light chain_chomp_seg6_light_060213C0 = {
-    {{0x96, 0x00, 0x00}, 0, {0x96, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+UNUSED static const Lights1 chain_chomp_lights_unused3 = gdSPDefLights1(
+    0x25, 0x00, 0x00,
+    0x96, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x060213D0
 ALIGNED8 static const u8 chain_chomp_seg6_texture_060213D0[] = {
@@ -380,14 +366,10 @@ const Gfx chain_chomp_seg6_dl_06024940[] = {
 };
 
 // 0x060249D0
-static const Ambient chain_chomp_seg6_light_060249D0 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x060249D8
-static const Light chain_chomp_seg6_light_060249D8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 chain_chomp_seg6_lights_060249D0 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x060249E8
 static const Vtx chain_chomp_seg6_vertex_060249E8[] = {
@@ -410,8 +392,8 @@ const Gfx chain_chomp_seg6_dl_06024AA8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, chain_chomp_seg6_texture_060233D0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&chain_chomp_seg6_light_060249D8, 1),
-    gsSPLight(&chain_chomp_seg6_light_060249D0, 2),
+    gsSPLight(&chain_chomp_seg6_lights_060249D0.l, 1),
+    gsSPLight(&chain_chomp_seg6_lights_060249D0.a, 2),
     gsSPVertex(chain_chomp_seg6_vertex_060249E8, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

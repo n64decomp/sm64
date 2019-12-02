@@ -6,6 +6,7 @@
 #include "segment_symbols.h"
 #include "level_commands.h"
 
+#include "game/area.h"
 #include "game/level_update.h"
 #include "menu/level_select_menu.h"
 
@@ -31,7 +32,7 @@ const LevelScript level_intro_entry_1[] = {
     LOAD_AREA(/*area*/ 1),
     CALL(/*arg*/ 0, /*func*/ LevelProc_8016F508),
     SLEEP(/*frames*/ 75),
-    TRANSITION(/*transType*/ 1, /*time*/ 16, /*color*/ 0, 0, 0),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 16),
     CMD2A(/*unk2*/ 1),
     CLEAR_LEVEL(),
@@ -56,7 +57,7 @@ const LevelScript level_intro_entry_2[] = {
     BLACKOUT(/*active*/ FALSE),
     LOAD_AREA(/*area*/ 1),
     SET_MENU_MUSIC(/*seq*/ 0x0002),
-    TRANSITION(/*transType*/ 8, /*time*/ 20, /*color*/ 0, 0, 0),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 20),
     CALL_LOOP(/*arg*/ 1, /*func*/ LevelProc_8016F508),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ 100, script_intro_L1),
@@ -81,7 +82,7 @@ const LevelScript level_intro_entry_3[] = {
     BLACKOUT(/*active*/ FALSE),
     LOAD_AREA(/*area*/ 1),
     SET_MENU_MUSIC(/*seq*/ 0x0082),
-    TRANSITION(/*transType*/ 8, /*time*/ 20, /*color*/ 0, 0, 0),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 20),
     CALL_LOOP(/*arg*/ 2, /*func*/ LevelProc_8016F508),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ 100, script_intro_L1),
@@ -103,7 +104,7 @@ const LevelScript level_intro_entry_4[] = {
     FREE_LEVEL_POOL(),
     LOAD_AREA(/*area*/ 1),
     SET_MENU_MUSIC(/*seq*/ 0x0002),
-    TRANSITION(/*transType*/ 0, /*time*/ 16, /*color*/ -1, -1, -1),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
     SLEEP(/*frames*/ 16),
     CALL_LOOP(/*arg*/ 3, /*func*/ LevelProc_8016F508),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ -1, script_intro_L5),
@@ -114,7 +115,7 @@ const LevelScript level_intro_entry_4[] = {
 
 const LevelScript script_intro_L1[] = {
     STOP_MUSIC(/*fadeOutTime*/ 0x00BE),
-    TRANSITION(/*transType*/ 1, /*time*/ 16, /*color*/ -1, -1, -1),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
     SLEEP(/*frames*/ 16),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),
@@ -123,7 +124,7 @@ const LevelScript script_intro_L1[] = {
 };
 
 const LevelScript script_intro_L2[] = {
-    TRANSITION(/*transType*/ 1, /*time*/ 16, /*color*/ -1, -1, -1),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
     SLEEP(/*frames*/ 16),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),
@@ -132,7 +133,7 @@ const LevelScript script_intro_L2[] = {
 
 const LevelScript script_intro_L3[] = {
     STOP_MUSIC(/*fadeOutTime*/ 0x00BE),
-    TRANSITION(/*transType*/ 1, /*time*/ 16, /*color*/ -1, -1, -1),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
     SLEEP(/*frames*/ 16),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),
@@ -140,7 +141,7 @@ const LevelScript script_intro_L3[] = {
 };
 
 const LevelScript script_intro_L4[] = {
-    TRANSITION(/*transType*/ 1, /*time*/ 16, /*color*/ -1, -1, -1),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
     SLEEP(/*frames*/ 16),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),
@@ -149,7 +150,7 @@ const LevelScript script_intro_L4[] = {
 
 const LevelScript script_intro_L5[] = {
     STOP_MUSIC(/*fadeOutTime*/ 0x00BE),
-    TRANSITION(/*transType*/ 1, /*time*/ 16, /*color*/ 0, 0, 0),
+    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 16),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),

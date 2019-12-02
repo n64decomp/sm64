@@ -151,6 +151,6 @@ extern const struct MovtexQuadCollection inside_castle_movtex_green_room_water[]
 extern const struct MovtexQuadCollection inside_castle_movtex_moat_water[];
 
 // script
-extern const LevelScript level_castle_entry[];
+extern const LevelScript level_castle_inside_entry[];
 
 #endif

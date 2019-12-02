@@ -57,7 +57,7 @@ void sequence_player_process_sound(struct SequencePlayer *seqPlayer) {
 
             channelVolume =
                 seqChannel->seqPlayer->fadeVolume * (seqChannel->volume * seqChannel->volumeScale);
-            if (seqChannel->seqPlayer->muted && (seqChannel->muteBehavior & MUTE_BEHAVIOR_20) != 0) {
+            if (seqChannel->seqPlayer->muted && (seqChannel->muteBehavior & MUTE_BEHAVIOR_SOFTEN) != 0) {
                 channelVolume *= seqChannel->seqPlayer->muteVolumeScale;
             }
 
@@ -257,7 +257,7 @@ s32 adsr_update(struct AdsrState *adsr) {
             // fallthrough
 
         case ADSR_STATE_LOOP:
-            adsr->delay = adsr->envelope[adsr->envIndex].delay;
+            adsr->delay = BSWAP16(adsr->envelope[adsr->envIndex].delay);
             switch (adsr->delay) {
                 case ADSR_DISABLE:
                     adsr->state = ADSR_STATE_DISABLED;
@@ -266,14 +266,14 @@ s32 adsr_update(struct AdsrState *adsr) {
                     adsr->state = ADSR_STATE_HANG;
                     break;
                 case ADSR_GOTO:
-                    adsr->envIndex = adsr->envelope[adsr->envIndex].arg;
+                    adsr->envIndex = BSWAP16(adsr->envelope[adsr->envIndex].arg);
                     break;
                 case ADSR_RESTART:
                     adsr->state = ADSR_STATE_INITIAL;
                     break;
 
                 default:
-                    adsr->target = adsr->envelope[adsr->envIndex].arg;
+                    adsr->target = BSWAP16(adsr->envelope[adsr->envIndex].arg);
                     adsr->velocity = ((adsr->target - adsr->current) << 0x10) / adsr->delay;
                     adsr->state = ADSR_STATE_FADE;
                     adsr->envIndex++;

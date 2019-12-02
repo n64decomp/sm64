@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+// TODO: join this together with object_helpers.h
+
 #define WAYPOINT_FLAGS_END -1
 #define WAYPOINT_FLAGS_INITIALIZED 0x8000
 #define WAYPOINT_MASK_00FF 0x00FF
@@ -41,7 +43,7 @@ void func_802A3470(void);
 extern s32 obj_is_mario_on_platform(void);
 // extern ? obj_shake_y_until(?);
 s32 func_802A362C(s32);
-s32 obj_call_action_function(void(*[])(void));
+void obj_call_action_function(void(*[])(void));
 // extern ? func_802A36D8(?);
 // extern ? Unknown802A3750(?);
 s32 func_802A377C(s32);
@@ -70,7 +72,7 @@ s32 obj_update_dialog_with_cutscene(s32 arg0, s32 dialogFlags, s32 cutsceneTable
 s32 obj_has_model(u16);
 extern void obj_align_gfx_with_floor(void);
 // extern ? mario_is_within_rectangle(?);
-s32 ShakeScreen(s32);
+void ShakeScreen(s32);
 extern s32 attack_collided_non_mario_object(struct Object *obj);
 s32 obj_was_attacked_or_ground_pounded(void);
 void copy_object_behavior_params(struct Object*,struct Object*);

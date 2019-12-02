@@ -5,6 +5,7 @@
 #include "sm64.h"
 #include "camera.h"
 #include "seq_ids.h"
+#include "dialog_ids.h"
 #include "audio/external.h"
 #include "mario_misc.h"
 #include "game.h"
@@ -28,6 +29,7 @@
 #include "paintings.h"
 #include "prevent_bss_reordering.h"
 #include "engine/graph_node.h"
+#include "level_table.h"
 
 #define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
 
@@ -2640,7 +2642,7 @@ void init_camera(struct LevelCamera *c) {
     c->storedYaw = gCameraStatus.trueYaw;
 }
 
-extern u8 D_8032E910[20];
+extern u8 zoomOutAreaMasks[20];
 
 void func_80287404(struct GraphNodeCamera *a) {
     UNUSED u8 unused1[8];
@@ -2651,13 +2653,13 @@ void func_80287404(struct GraphNodeCamera *a) {
     s32 sp28 = gCurrLevelArea / 32;
     s32 sp24 = 1 << (((gCurrLevelArea & 0x10) / 4) + (((gCurrLevelArea & 0xF) - 1) & 3));
 
-    if (sp28 >= ARRAY_COUNT(D_8032E910) - 1) {
+    if (sp28 >= ARRAY_COUNT(zoomOutAreaMasks) - 1) {
         sp28 = 0;
         sp24 = 0;
     }
     if (gCameraMovementFlags & CAM_MOVE_PAUSE_SCREEN) {
         if (gFramesPaused >= 2) {
-            if (D_8032E910[sp28] & sp24) {
+            if (zoomOutAreaMasks[sp28] & sp24) {
                 a->to[0] = gCurrLevelCamera->xFocus;
                 a->to[1] = (sMarioStatusForCamera->pos[1] + gCurrLevelCamera->unk68) / 2.f;
                 a->to[2] = gCurrLevelCamera->zFocus;
@@ -5125,48 +5127,24 @@ struct TableCamera TableCameraBBH[61] = {
     TABLE_EMPTY
 };
 
-struct TableCamera *TableLevelCinematicCamera[40] = {
+#define _ NULL
+
+#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, cameratable) cameratable,
+#define DEFINE_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, cameratable) cameratable,
+
+/*
+ * This table has an extra 2 levels after the last unknown_38 stub level. What I think
+ * the programmer was thinking was that the table is null terminated and so used the 
+ * level count as a coorespondance to the ID of the final level, but the enum represents 
+ * an ID *after* the last stub lebel, not before or during it.
+ */
+struct TableCamera *TableLevelCinematicCamera[LEVEL_COUNT + 1] = {
     NULL,
-    NULL,
-    NULL,
-    NULL,
-    TableCameraBBH,
-    TableCameraCCM,
-    TableCameraInside,
-    TableCameraHMC,
-    TableCameraSSL,
-    NULL,
-    TableCameraSL,
-    NULL,
-    NULL,
-    TableCameraTHI,
-    NULL,
-    TableCameraRR,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    TableCameraCotMC,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    #include "levels/level_defines.h"
 };
+#undef _
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
 
 struct CutsceneSplinePoint sIntroStartToPipePosition[23] = {
     { 0, 0, { 2122, 8762, 9114 } },  { 0, 0, { 2122, 8762, 9114 } },  { 1, 0, { 2122, 7916, 9114 } },
@@ -5608,7 +5586,7 @@ s16 cutscene_object_with_dialog(u8 cutsceneTable, struct Object *o, s16 dialogID
             if (dialogID != -1) {
                 D_8033B320 = dialogID;
             } else {
-                D_8033B320 = 1;
+                D_8033B320 = DIALOG_001;
             }
         } else {
             sp1E = D_8032CFFC;
@@ -6533,13 +6511,13 @@ CmdRet bowser_fight_intro_dialog(UNUSED struct LevelCamera *c) {
 
     switch (gCurrLevelNum) {
         case LEVEL_BOWSER_1:
-            dialog = 67;
+            dialog = DIALOG_067;
             break;
         case LEVEL_BOWSER_2:
-            dialog = 92;
+            dialog = DIALOG_092;
             break;
         default:
-            dialog = 93;
+            dialog = DIALOG_093;
     }
 
     create_dialog_box(dialog);
@@ -7458,7 +7436,7 @@ CmdRet CutsceneCapSwitchPress0_3(struct LevelCamera *c) {
 }
 
 CmdRet CutsceneCapSwitchPress0_6(UNUSED struct LevelCamera *c) {
-    create_dialog_box_with_response(gCutsceneFocus->oBehParams2ndByte + 10);
+    create_dialog_box_with_response(gCutsceneFocus->oBehParams2ndByte + DIALOG_010);
 }
 
 static void unused_802968E8(struct LevelCamera *c) {
@@ -7570,7 +7548,7 @@ s32 intro_peach_move_camera_start_to_pipe(struct LevelCamera *c, struct Cutscene
 }
 
 CmdRet peach_letter_text(UNUSED struct LevelCamera *c) {
-    create_dialog_box(20);
+    create_dialog_box(DIALOG_020);
 }
 
 #ifndef VERSION_JP
@@ -7621,7 +7599,7 @@ CmdRet CutsceneIntroPeach3_3(UNUSED struct LevelCamera *c) {
 }
 
 CmdRet intro_pipe_exit_text(UNUSED struct LevelCamera *c) {
-    create_dialog_box(33);
+    create_dialog_box(DIALOG_033);
 }
 
 #ifndef VERSION_JP
@@ -8359,20 +8337,51 @@ struct CutsceneTableEntry TableCutsceneReadMessage[3] = { { CutsceneReadMessage0
                                                           { CutsceneReadMessage1, 15 },
                                                           { CutsceneReadMessage2, 0 } };
 
-u8 D_8032E8A4[27][4] = {
-    { 0x44, 0x44, 0x44, 0x04 }, { 0x00, 0x20, 0x22, 0x04 }, { 0x00, 0x00, 0x02, 0x04 },
-    { 0x22, 0x22, 0x22, 0x04 }, { 0x00, 0x22, 0x00, 0x04 }, { 0x22, 0x22, 0x22, 0x04 },
-    { 0x22, 0x22, 0x22, 0x04 }, { 0x12, 0x12, 0x12, 0x04 }, { 0x02, 0x22, 0x22, 0x04 },
-    { 0x22, 0x22, 0x22, 0x04 }, { 0x20, 0x20, 0x20, 0x04 }, { 0x22, 0x01, 0x22, 0x04 },
-    { 0x00, 0x00, 0x00, 0x04 }, { 0x11, 0x11, 0x12, 0x04 }, { 0x22, 0x22, 0x22, 0x04 },
-    { 0x00, 0x00, 0x00, 0x04 }, { 0x43, 0x44, 0x44, 0x04 }, { 0x43, 0x44, 0x44, 0x04 },
-    { 0x43, 0x44, 0x44, 0x04 }, { 0x42, 0x44, 0x44, 0x04 }, { 0x44, 0x44, 0x44, 0x04 },
-    { 0x40, 0x44, 0x44, 0x04 }, { 0x42, 0x44, 0x44, 0x04 }, { 0x40, 0x44, 0x44, 0x04 },
-    { 0x42, 0x44, 0x44, 0x04 }, { 0x44, 0x44, 0x44, 0x04 }, { 0x44, 0x44, 0x44, 0x04 }
-};
+#define DEFINE_COURSE(_0, i1, i2, i3, i4) { i1, i2, i3, i4 },
+#define DEFINE_COURSES_END()
+#define DEFINE_BONUS_COURSE(_0, i1, i2, i3, i4) { i1, i2, i3, i4 },
 
-u8 D_8032E910[20] = { 0x00, 0x00, 0x10, 0x00, 0x11, 0x11, 0x30, 0x10, 0x11, 0x10,
-                      0x10, 0x01, 0x01, 0x00, 0x10, 0x11, 0x10, 0x01, 0x01, 0x00 };
+u8 D_8032E8A4[27][4] = {
+    { 0x44, 0x44, 0x44, 0x04 }, // (0) Course Hub (Castle Grounds)
+    #include "levels/course_defines.h"
+    { 0x44, 0x44, 0x44, 0x04 } // an extra course, hmm...
+};
+#undef DEFINE_COURSE
+#undef DEFINE_COURSES_END
+#undef DEFINE_BONUS_COURSE
+
+/**
+ * These masks set whether or not the camera zooms out when game is paused.
+ *
+ * Each entry is used by two levels. Even levels use the low 4 bits, odd levels use the high 4 bits
+ * Because areas are 1-indexed, a mask of 0x1 will make area 1 (not area 0) zoom out.
+ *
+ * In zoom_out_if_paused_and_outside(), the current area is converted to a shift.
+ * Then the value of (1 << shift) is &'d with the level's mask,
+ * and if the result is non-zero, the camera will zoom out.
+ */
+u8 zoomOutAreaMasks[20] = {
+    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // Unused         | Unused
+    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // Unused         | Unused
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // BBH            | CCM
+    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // CASTLE_INSIDE  | HMC
+    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // SSL            | BOB
+    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // SL             | WDW
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,1,0,0), // JRB            | THI
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // TTC            | RR
+    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // CASTLE_GROUNDS | BITDW
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // VCUTM          | BITFS
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // SA             | BITS
+    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // LLL            | DDD
+    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // WF             | ENDING
+    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // COURTYARD      | PSS
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // COTMC          | TOTWC
+    ZOOMOUT_AREA_MASK(1,0,0,0, 1,0,0,0), // BOWSER_1       | WMOTR
+    ZOOMOUT_AREA_MASK(0,0,0,0, 1,0,0,0), // Unused         | BOWSER_2
+    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // BOWSER_3       | Unused
+    ZOOMOUT_AREA_MASK(1,0,0,0, 0,0,0,0), // TTM            | Unused
+    ZOOMOUT_AREA_MASK(0,0,0,0, 0,0,0,0), // Unused         | Unused
+};
 
 struct CutsceneSplinePoint sBobCreditsCameraPositions[5] = { { 1, 0, { 5984, 3255, 4975 } },
                                                               { 2, 0, { 4423, 3315, 1888 } },

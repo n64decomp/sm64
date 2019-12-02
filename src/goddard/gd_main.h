@@ -3,16 +3,14 @@
 
 #include <ultra64.h>
 
+
 // In various files of the Goddard subsystem, there are miscellaneous
-// unused rodata strings. These can be generated via a printf call that
-// is stubbed out, but not via define printf(...), as IDO 5.3 C
-// preprocessor did not support va_arg defines. Goddard, however, did
-// use gd_printf, which is distinct from this type of stubbed call, as
-// gd_printf actually is called. This could be because gd_printf could
-// forward to printf (currently unclear whether it might or might not,
-// gd_printf is awaiting decompilation), which would indicate goddard was
-// in the middle of moving these calls to the wrapper function. The unmoved
-// calls result in the unused rodata strings.
+// unused rodata strings. These are likely byproducts of a printf macro
+// that was stubbed out as "#define printf", letting printf calls expand
+// to no-op comma expressions. (IDO doesn't support variadic macros, so
+// "#define printf(...) /* nothing */" wasn't an option.)
+// This macro is separate from the gd_printf function; one probably
+// forwarded to the other, but it is hard to tell in which direction.
 #ifdef __GNUC__
 #define printf(...)                                       \
     _Pragma ("GCC diagnostic push")                       \

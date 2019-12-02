@@ -403,11 +403,12 @@ struct ObjCamera {
     /* 0x18C */ struct ObjView *unk18C; // view that has/is using this camera?
 }; /* sizeof = 0x190 */
 
-// These might not be types, but rather flags?
 enum GdMtlTypes {
-    GD_MTL_UNK04 =  4,
-    GD_MTL_UNK16 = 16,
-    GD_MTL_UNK64 = 64
+    GD_MTL_STUB_DL = 0x01,
+    GD_MTL_BREAK = 0x04,
+    GD_MTL_SHINE_DL = 0x10,
+    GD_MTL_TEX_OFF = 0x20,
+    GD_MTL_LIGHTS = 0x40 // uses default case
 };
 
 struct ObjMaterial {

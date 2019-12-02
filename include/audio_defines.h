@@ -1,5 +1,5 @@
-#ifndef _AUDIODEFINES_H
-#define _AUDIODEFINES_H
+#ifndef AUDIO_DEFINES_H
+#define AUDIO_DEFINES_H
 
 // Sound Magic Definition:
 // First Byte (Upper Nibble): Sound Bank (not the same as audio bank!)
@@ -262,19 +262,19 @@
 /* not verified */ #define SOUND_GENERAL_UNKNOWN3_LOWPRIO   SOUND_ARG_LOAD(3, 0, 0x37, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_UNKNOWN3           SOUND_ARG_LOAD(3, 0, 0x37, 0x80, 8)
 /* not verified */ #define SOUND_GENERAL_UNKNOWN3_2         SOUND_ARG_LOAD(3, 8, 0x37, 0x80, 8)
-/* not verified */ #define SOUND_GENERAL_SWITCH1            SOUND_ARG_LOAD(3, 0, 0x38, 0x00, 8)
+#define SOUND_GENERAL_PENDULUM_SWING                        SOUND_ARG_LOAD(3, 0, 0x38, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_CHAIN_CHOMP1       SOUND_ARG_LOAD(3, 0, 0x39, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_CHAIN_CHOMP2       SOUND_ARG_LOAD(3, 0, 0x3A, 0x00, 8)
-/* not verified */ #define SOUND_GENERAL_SWITCH2            SOUND_ARG_LOAD(3, 0, 0x3B, 0x00, 8)
+#define SOUND_GENERAL_DOOR_TURN_KEY                         SOUND_ARG_LOAD(3, 0, 0x3B, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_MOVING_IN_SAND     SOUND_ARG_LOAD(3, 0, 0x3C, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_UNKNOWN4_LOWPRIO   SOUND_ARG_LOAD(3, 0, 0x3D, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_UNKNOWN4           SOUND_ARG_LOAD(3, 0, 0x3D, 0x80, 8)
-/* not verified */ #define SOUND_GENERAL_SWITCH3            SOUND_ARG_LOAD(3, 0, 0x3E, 0x00, 8)
+#define SOUND_GENERAL_MOVING_PLATFORM_SWITCH                SOUND_ARG_LOAD(3, 0, 0x3E, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_CAGE_OPEN          SOUND_ARG_LOAD(3, 0, 0x3F, 0xA0, 8)
 /* not verified */ #define SOUND_GENERAL_QUIET_POUND1_LOWPRIO   SOUND_ARG_LOAD(3, 0, 0x40, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_QUIET_POUND1       SOUND_ARG_LOAD(3, 0, 0x40, 0x40, 8)
 /* not verified */ #define SOUND_GENERAL_BREAK_BOX          SOUND_ARG_LOAD(3, 0, 0x41, 0xC0, 8)
-/* not verified */ #define SOUND_GENERAL_SWITCH4            SOUND_ARG_LOAD(3, 0, 0x42, 0x00, 8)
+#define SOUND_GENERAL_DOOR_INSERT_KEY                       SOUND_ARG_LOAD(3, 0, 0x42, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_QUIET_POUND2       SOUND_ARG_LOAD(3, 0, 0x43, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_BIG_POUND          SOUND_ARG_LOAD(3, 0, 0x44, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_UNK45              SOUND_ARG_LOAD(3, 0, 0x45, 0x00, 8)
@@ -556,4 +556,4 @@
 #define SOUND_OBJ2_BOSS_DIALOG_GRUNT            SOUND_ARG_LOAD(9, 0, 0x69, 0x40, 8)
 #define SOUND_OBJ2_MRI_SPINNING                 SOUND_ARG_LOAD(9, 0, 0x6B, 0x00, 8)
 
-#endif /* _AUDIODEFINES_H */
+#endif /* AUDIO_DEFINES_H */

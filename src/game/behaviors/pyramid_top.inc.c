@@ -132,7 +132,7 @@ void bhv_pyramid_top_fragment_init(void) {
  * deactivate it.
  */
 void bhv_pyramid_top_fragment_loop(void) {
-    ObjectStep();
+    object_step();
     o->oFaceAngleYaw += 0x1000;
     o->oFaceAnglePitch += 0x1000;
 

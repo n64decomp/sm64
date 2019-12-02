@@ -4,7 +4,6 @@ osRomBase = 0x80000308;
 osResetType = 0x8000030C;
 osMemSize = 0x80000318;
 osAppNmiBuffer = 0x8000031C;
-gZBuffer = 0x80000400; /* boot location */
 
 /* boot and osException symbols */
 D_80000000 = 0x80000000;

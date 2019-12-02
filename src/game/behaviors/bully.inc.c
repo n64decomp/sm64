@@ -164,10 +164,10 @@ void PlayBullyStompingSound(void) {
 
 void BullyStep(void) {
     s16 collisionFlags = 0;
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
     BullyBackUpCheck(collisionFlags);
     PlayBullyStompingSound();
-    ObjCheckFloorDeath(collisionFlags, D_803600E0);
+    obj_check_floor_death(collisionFlags, sObjFloor);
 
     if (o->oBullySubtype & BULLY_STYPE_CHILL) {
         if (o->oPosY < 1030.0f)
@@ -189,7 +189,7 @@ void BullySpawnCoin(void) {
 }
 
 void BullyLavaDeath(void) {
-    if (ObjLavaDeath() == 1) {
+    if (obj_lava_death() == 1) {
         if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
             if (o->oBullySubtype == BULLY_STYPE_MINION)
                 o->parentObj->oBullyKBTimerAndMinionKOCounter++;
@@ -223,7 +223,7 @@ void bhv_bully_loop(void) {
         case BULLY_ACT_PATROL:
             o->oForwardVel = 5.0;
 
-            if (ObjLeaveIfMarioIsNearHome(o, o->oHomeX, o->oPosY, o->oHomeZ, 800) == 1) {
+            if (obj_return_home_if_safe(o, o->oHomeX, o->oPosY, o->oHomeZ, 800) == 1) {
                 o->oAction = BULLY_ACT_CHASE_MARIO;
                 SetObjAnimation(1);
             }
@@ -255,7 +255,7 @@ void bhv_bully_loop(void) {
             break;
     }
 
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 // sp38 = arg0
@@ -283,7 +283,7 @@ void bhv_big_bully_with_minions_init(void) {
 }
 
 void BigBullyWithMinionsLavaDeath(void) {
-    if (ObjLavaDeath() == 1) {
+    if (obj_lava_death() == 1) {
         func_802A3004();
         create_star(3700.0f, 600.0f, -5500.0f);
     }
@@ -306,7 +306,7 @@ void bhv_big_bully_with_minions_loop(void) {
         case BULLY_ACT_PATROL:
             o->oForwardVel = 5.0;
 
-            if (ObjLeaveIfMarioIsNearHome(o, o->oHomeX, o->oPosY, o->oHomeZ, 1000) == 1) {
+            if (obj_return_home_if_safe(o, o->oHomeX, o->oPosY, o->oHomeZ, 1000) == 1) {
                 o->oAction = BULLY_ACT_CHASE_MARIO;
                 SetObjAnimation(1);
             }
@@ -343,7 +343,7 @@ void bhv_big_bully_with_minions_loop(void) {
             break;
 
         case BULLY_ACT_ACTIVATE_AND_FALL:
-            collisionFlags = ObjectStep();
+            collisionFlags = object_step();
             if ((collisionFlags & 0x9) == 0x9) /* bits 0 and 3 */
                 o->oAction = BULLY_ACT_PATROL;
 

@@ -3,6 +3,7 @@
 #include "sm64.h"
 #include "audio/external.h"
 #include "buffers/framebuffers.h"
+#include "buffers/zbuffer.h"
 #include "engine/level_script.h"
 #include "main.h"
 #include "memory.h"

@@ -48,7 +48,6 @@ extern u16 func_802495B0(u32);
 extern struct MarioAnimation D_80339D10;
 extern struct MarioAnimation gDemo;
 
-extern u16 gZBuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 extern u8 gMarioAnims[];
 extern u8 gDemoInputs[];
 

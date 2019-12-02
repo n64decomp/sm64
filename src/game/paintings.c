@@ -894,7 +894,7 @@ void horizontal_painting_ripple(struct Painting *painting, struct Painting *pain
     }
 }
 
-Gfx *Geo18_802D5B98(s32 run, struct GraphNode *node, UNUSED s32 c) {
+Gfx *Geo18_802D5B98(s32 run, struct GraphNode *node, UNUSED void *context) {
     struct GraphNodeGenerated *sp2C = (struct GraphNodeGenerated *) node;
     s32 sp28 = (sp2C->parameter >> 8) & 0xFF;
     s32 id = sp2C->parameter & 0xFF;

@@ -1,14 +1,10 @@
 // Treasure Chest
 
 // 0x06013F90
-static const Ambient treasure_chest_seg6_light_06013F90 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x06013F98
-static const Light treasure_chest_seg6_light_06013F98 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 treasure_chest_seg6_lights_06013F90 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x06013FA8
 ALIGNED8 static const u8 treasure_chest_seg6_texture_06013FA8[] = {
@@ -158,8 +154,8 @@ const Gfx treasure_chest_seg6_dl_06016D58[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, treasure_chest_seg6_texture_06013FA8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&treasure_chest_seg6_light_06013F98, 1),
-    gsSPLight(&treasure_chest_seg6_light_06013F90, 2),
+    gsSPLight(&treasure_chest_seg6_lights_06013F90.l, 1),
+    gsSPLight(&treasure_chest_seg6_lights_06013F90.a, 2),
     gsSPVertex(treasure_chest_seg6_vertex_060167A8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -381,8 +377,8 @@ const Gfx treasure_chest_seg6_dl_06017680[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, treasure_chest_seg6_texture_060147A8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&treasure_chest_seg6_light_06013F98, 1),
-    gsSPLight(&treasure_chest_seg6_light_06013F90, 2),
+    gsSPLight(&treasure_chest_seg6_lights_06013F90.l, 1),
+    gsSPLight(&treasure_chest_seg6_lights_06013F90.a, 2),
     gsSPVertex(treasure_chest_seg6_vertex_06017030, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 0,  3,  4, 0x0,  5,  6,  7, 0x0),

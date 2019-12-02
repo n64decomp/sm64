@@ -24,6 +24,8 @@
 #include "interaction.h"
 #include "object_list_processor.h"
 #include "room.h"
+#include "level_table.h"
+#include "dialog_ids.h"
 
 #include "object_helpers.h"
 #include "object_helpers2.h"
@@ -63,7 +65,7 @@ Gfx *Geo18_8029D890(s32 run, UNUSED struct GraphNode *node, f32 mtx[4][4]) {
     return NULL;
 }
 
-Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
+Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED void *context) {
     Gfx *sp3C, *sp38;
     struct Object *sp34;
     struct GraphNodeGenerated *sp30;
@@ -128,7 +130,7 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
 #endif
         }
 
-        gDPSetEnvColor(sp38++, 0xFF, 0xFF, 0xFF, sp28);
+        gDPSetEnvColor(sp38++, 255, 255, 255, sp28);
         gSPEndDisplayList(sp38);
     }
 
@@ -141,7 +143,11 @@ Gfx *Geo18_8029D924(s32 run, struct GraphNode *node, UNUSED s32 sp48) {
  * executor passes the 3rd argument to a function that doesn't declare it. This is
  * undefined behavior, but harmless in practice due to the o32 calling convention.
  */
-s32 geo_switch_anim_state(s32 run, struct GraphNode *node) {
+#ifdef AVOID_UB
+Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node, UNUSED void *context) {
+#else
+Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node) {
+#endif
     struct Object *obj;
     struct GraphNodeSwitchCase *switchCase;
 
@@ -166,11 +172,15 @@ s32 geo_switch_anim_state(s32 run, struct GraphNode *node) {
         switchCase->selectedCase = obj->oAnimState;
     }
 
-    return 0;
+    return NULL;
 }
 
 //! @bug Same issue as geo_switch_anim_state.
-s32 geo_switch_area(s32 run, struct GraphNode *node) {
+#ifdef AVOID_UB
+Gfx *geo_switch_area(s32 run, struct GraphNode *node, UNUSED void *context) {
+#else
+Gfx *geo_switch_area(s32 run, struct GraphNode *node) {
+#endif
     s16 sp26;
     struct Surface *sp20;
     UNUSED struct Object *sp1C =
@@ -199,7 +209,7 @@ s32 geo_switch_area(s32 run, struct GraphNode *node) {
         switchCase->selectedCase = 0;
     }
 
-    return 0;
+    return NULL;
 }
 
 void func_8029D558(Mat4 a0, struct Object *a1) {
@@ -2058,7 +2068,7 @@ f32 random_f32_around_zero(f32 diameter) {
     return RandomFloat() * diameter - diameter / 2.0f;
 }
 
-f32 scale_object_random(struct Object *obj, f32 rangeLength, f32 minScale) {
+void scale_object_random(struct Object *obj, f32 rangeLength, f32 minScale) {
     f32 scale = RandomFloat() * rangeLength + minScale;
     scale_object_xyz(obj, scale, scale, scale);
 }
@@ -2336,7 +2346,7 @@ s32 func_802A362C(s32 a0) {
     return 0;
 }
 
-s32 obj_call_action_function(void (*actionFunctions[])(void)) {
+void obj_call_action_function(void (*actionFunctions[])(void)) {
     void (*actionFunction)(void) = actionFunctions[o->oAction];
     actionFunction();
 }
@@ -2781,7 +2791,7 @@ s32 mario_is_within_rectangle(s16 minX, s16 maxX, s16 minZ, s16 maxZ) {
     return TRUE;
 }
 
-s32 ShakeScreen(s32 sp18) {
+void ShakeScreen(s32 sp18) {
     func_8027F440(sp18, o->oPosX, o->oPosY, o->oPosZ);
 }
 

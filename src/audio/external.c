@@ -14,21 +14,27 @@
 #include "game/room.h"
 #include "game/camera.h"
 #include "seq_ids.h"
+#include "dialog_ids.h"
+#include "level_table.h"
 
 // N.B. sound banks are different from the audio banks referred to in other
 // files. We should really fix our naming to be less ambiguous...
 #define MAX_BG_MUSIC_QUEUE_SIZE 6
 #define SOUND_BANK_COUNT 10
+#define MAX_CHANNELS_PER_SOUND 1
 
 #define SEQUENCE_NONE 0xFF
 
+#define SAMPLES_TO_OVERPRODUCE 0x10
+#define EXTRA_BUFFERED_AI_SAMPLES_TARGET 0x40
+
 // No-op printf macro which leaves string literals in rodata in IDO. (IDO
 // doesn't support variadic macros, so instead they let the parameter list
-// expand to a no-op comma expression.) See goddard/gd_main.h.
-#ifdef __GNUC__
-#define stubbed_printf(...)
-#else
+// expand to a no-op comma expression.) See also goddard/gd_main.h.
+#ifdef __sgi
 #define stubbed_printf
+#else
+#define stubbed_printf(...)
 #endif
 
 struct Sound {
@@ -66,7 +72,7 @@ s32 gAudioErrorFlags = 0;
 s32 sGameLoopTicked = 0;
 
 // Dialog sounds
-// The US difference is the sound for Dialog037 ("I win! You lose! Ha ha ha ha!
+// The US difference is the sound for DIALOG_037 ("I win! You lose! Ha ha ha ha!
 // You're no slouch, but I'm a better sledder! Better luck next time!"), spoken
 // by Koopa instead of the penguin in JP.
 
@@ -89,7 +95,7 @@ s32 sGameLoopTicked = 0;
 #define DIFF TUXIE
 #endif
 
-u8 sDialogSpeaker[170] = {
+u8 sDialogSpeaker[] = {
     //       0      1      2      3      4      5      6      7      8      9
     /* 0*/ _,     BOMB,  BOMB,  BOMB,  BOMB,  KOOPA, KOOPA, KOOPA, _,     KOOPA,
     /* 1*/ _,     _,     _,     _,     _,     _,     _,     KBOMB, _,     _,
@@ -110,6 +116,7 @@ u8 sDialogSpeaker[170] = {
     /*16*/ _,     YOSHI, _,     _,     _,     _,     _,     _,     WIGLR, _
 };
 #undef _
+STATIC_ASSERT(ARRAY_COUNT(sDialogSpeaker) == DIALOG_COUNT, "change this array if you are adding dialogs");
 
 s32 sDialogSpeakerVoice[15] = {
     SOUND_OBJ_UKIKI_CHATTER_LONG,
@@ -150,10 +157,11 @@ u8 sSoundRequestCount = 0;
 #define MARIO_IS_IN_AREA 6
 #define MARIO_IS_IN_ROOM 7
 
-#define DYN1(cond1, val1, res) 1 << (15 - cond1) | res, val1
-#define DYN2(cond1, val1, cond2, val2, res) 1 << (15 - cond1) | 1 << (15 - cond2) | res, val1, val2
-#define DYN3(cond1, val1, cond2, val2, cond3, val3, res)                                               \
-    1 << (15 - cond1) | 1 << (15 - cond2) | 1 << (15 - cond3) | res, val1, val2, val3
+#define DYN1(cond1, val1, res) (s16)(1 << (15 - cond1) | res), val1
+#define DYN2(cond1, val1, cond2, val2, res) \
+    (s16)(1 << (15 - cond1) | 1 << (15 - cond2) | res), val1, val2
+#define DYN3(cond1, val1, cond2, val2, cond3, val3, res) \
+    (s16)(1 << (15 - cond1) | 1 << (15 - cond2) | 1 << (15 - cond3) | res), val1, val2, val3
 
 s16 sDynBbh[] = {
     SEQ_LEVEL_SPOOKY,
@@ -201,167 +209,58 @@ s16 sDynNone[] = { SEQ_SOUND_PLAYER, 0 };
 u8 sCurrentMusicDynamic = 0xff;
 u8 sBackgroundMusicForDynamics = SEQUENCE_NONE;
 
+#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, leveldyn, _8) leveldyn,
+#define DEFINE_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8, leveldyn, _10) leveldyn,
+
 #define _ sDynNone
-s16 *sLevelDynamics[] = {
+s16 *sLevelDynamics[LEVEL_COUNT] = {
     _,         // LEVEL_NONE
-    _,         // LEVEL_UNKNOWN_1
-    _,         // LEVEL_UNKNOWN_2
-    _,         // LEVEL_UNKNOWN_3
-    sDynBbh,   // LEVEL_BBH
-    _,         // LEVEL_CCM
-    _,         // LEVEL_CASTLE
-    sDynHmc,   // LEVEL_HMC
-    _,         // LEVEL_SSL
-    _,         // LEVEL_BOB
-    _,         // LEVEL_SL
-    sDynWdw,   // LEVEL_WDW
-    sDynJrb,   // LEVEL_JRB
-    _,         // LEVEL_THI
-    _,         // LEVEL_TTC
-    _,         // LEVEL_RR
-    _,         // LEVEL_CASTLE_GROUNDS
-    _,         // LEVEL_BITDW
-    _,         // LEVEL_VCUTM
-    _,         // LEVEL_BITFS
-    _,         // LEVEL_SA
-    _,         // LEVEL_BITS
-    _,         // LEVEL_LLL
-    sDynDdd,   // LEVEL_DDD
-    _,         // LEVEL_WF
-    _,         // LEVEL_ENDING
-    _,         // LEVEL_CASTLE_COURTYARD
-    _,         // LEVEL_PSS
-    _,         // LEVEL_COTMC
-    _,         // LEVEL_TOTWC
-    _,         // LEVEL_BOWSER_1
-    _,         // LEVEL_WMOTR
-    _,         // LEVEL_UNKNOWN_32
-    _,         // LEVEL_BOWSER_2
-    _,         // LEVEL_BOWSER_3
-    _,         // LEVEL_UNKNOWN_35
-    _,         // LEVEL_TTM
-    _,         // LEVEL_UNKNOWN_37
-    sDynUnk38, // LEVEL_UNKNOWN_38
+    #include "levels/level_defines.h"
 };
-STATIC_ASSERT(ARRAY_COUNT(sLevelDynamics) == LEVEL_COUNT, "change this array if you are adding levels");
 #undef _
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
 
 struct MusicDynamic {
     /*0x0*/ s16 bits1;
-    /*0x2*/ u8 unused1;
-    /*0x3*/ u8 volScale1; // maybe this is an u16, loaded as u8?
+    /*0x2*/ u16 volScale1;
     /*0x4*/ s16 dur1;
     /*0x6*/ s16 bits2;
-    /*0x8*/ u8 unused2;
-    /*0x9*/ u8 volScale2;
+    /*0x8*/ u16 volScale2;
     /*0xA*/ s16 dur2;
 }; // size = 0xC
 
 struct MusicDynamic sMusicDynamics[8] = {
-    { 0x0000, 0, 127, 100, 0x0e43, 0, 0, 100 }, // SEQ_LEVEL_WATER
-    { 0x0003, 0, 127, 100, 0x0e40, 0, 0, 100 }, // SEQ_LEVEL_WATER
-    { 0x0e43, 0, 127, 200, 0x0000, 0, 0, 200 }, // SEQ_LEVEL_WATER
-    { 0x02ff, 0, 127, 100, 0x0100, 0, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
-    { 0x03f7, 0, 127, 100, 0x0008, 0, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
-    { 0x0070, 0, 127, 10, 0x0000, 0, 0, 100 },  // SEQ_LEVEL_SPOOKY
-    { 0x0000, 0, 127, 100, 0x0070, 0, 0, 10 },  // SEQ_LEVEL_SPOOKY
-    { 0xffff, 0, 127, 100, 0x0000, 0, 0, 100 }, // any (unused)
+    { 0x0000, 127, 100, 0x0e43, 0, 100 }, // SEQ_LEVEL_WATER
+    { 0x0003, 127, 100, 0x0e40, 0, 100 }, // SEQ_LEVEL_WATER
+    { 0x0e43, 127, 200, 0x0000, 0, 200 }, // SEQ_LEVEL_WATER
+    { 0x02ff, 127, 100, 0x0100, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
+    { 0x03f7, 127, 100, 0x0008, 0, 100 }, // SEQ_LEVEL_UNDERGROUND
+    { 0x0070, 127, 10, 0x0000, 0, 100 },  // SEQ_LEVEL_SPOOKY
+    { 0x0000, 127, 100, 0x0070, 0, 10 },  // SEQ_LEVEL_SPOOKY
+    { 0xffff, 127, 100, 0x0000, 0, 100 }, // any (unused)
 };
 
-u8 gAreaEchoLevel[][3] = {
+#define STUB_LEVEL(_0, _1, _2, _3, echo1, echo2, echo3, _7, _8) { echo1, echo2, echo3 },
+#define DEFINE_LEVEL(_0, _1, _2, _3, _4, _5, echo1, echo2, echo3, _9, _10) { echo1, echo2, echo3 },
+
+u8 gAreaEchoLevel[LEVEL_COUNT][3] = {
     { 0x00, 0x00, 0x00 }, // LEVEL_NONE
-    { 0x00, 0x00, 0x00 }, // LEVEL_UNKNOWN_1
-    { 0x00, 0x00, 0x00 }, // LEVEL_UNKNOWN_2
-    { 0x00, 0x00, 0x00 }, // LEVEL_UNKNOWN_3
-    { 0x28, 0x28, 0x28 }, // LEVEL_BBH
-    { 0x10, 0x38, 0x38 }, // LEVEL_CCM
-    { 0x20, 0x20, 0x30 }, // LEVEL_CASTLE
-    { 0x28, 0x28, 0x28 }, // LEVEL_HMC
-    { 0x08, 0x30, 0x30 }, // LEVEL_SSL
-    { 0x08, 0x08, 0x08 }, // LEVEL_BOB
-    { 0x10, 0x28, 0x28 }, // LEVEL_SL
-    { 0x10, 0x18, 0x18 }, // LEVEL_WDW
-    { 0x10, 0x18, 0x18 }, // LEVEL_JRB
-    { 0x0c, 0x0c, 0x20 }, // LEVEL_THI
-    { 0x18, 0x18, 0x18 }, // LEVEL_TTC
-    { 0x20, 0x20, 0x20 }, // LEVEL_RR
-    { 0x08, 0x08, 0x08 }, // LEVEL_CASTLE_GROUNDS
-    { 0x28, 0x28, 0x28 }, // LEVEL_BITDW
-    { 0x28, 0x28, 0x28 }, // LEVEL_VCUTM
-    { 0x28, 0x28, 0x28 }, // LEVEL_BITFS
-    { 0x10, 0x10, 0x10 }, // LEVEL_SA
-    { 0x28, 0x28, 0x28 }, // LEVEL_BITS
-    { 0x08, 0x30, 0x30 }, // LEVEL_LLL
-    { 0x10, 0x20, 0x20 }, // LEVEL_DDD
-    { 0x08, 0x08, 0x08 }, // LEVEL_WF
-    { 0x00, 0x00, 0x00 }, // LEVEL_ENDING
-    { 0x08, 0x08, 0x08 }, // LEVEL_CASTLE_COURTYARD
-    { 0x28, 0x28, 0x28 }, // LEVEL_PSS
-    { 0x28, 0x28, 0x28 }, // LEVEL_COTMC
-    { 0x20, 0x20, 0x20 }, // LEVEL_TOTWC
-    { 0x40, 0x40, 0x40 }, // LEVEL_BOWSER_1
-    { 0x28, 0x28, 0x28 }, // LEVEL_WMOTR
-    { 0x70, 0x00, 0x00 }, // LEVEL_UNKNOWN_32
-    { 0x40, 0x40, 0x40 }, // LEVEL_BOWSER_2
-    { 0x40, 0x40, 0x40 }, // LEVEL_BOWSER_3
-    { 0x00, 0x00, 0x00 }, // LEVEL_UNKNOWN_35
-    { 0x08, 0x08, 0x08 }, // LEVEL_TTM
-    { 0x00, 0x00, 0x00 }, // LEVEL_UNKNOWN_37
-    { 0x00, 0x00, 0x00 }, // LEVEL_UNKNOWN_38
+    #include "levels/level_defines.h"
 };
-STATIC_ASSERT(ARRAY_COUNT(gAreaEchoLevel) == LEVEL_COUNT, "change this array if you are adding levels");
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
 
-#ifdef VERSION_JP
-#define VAL_DIFF 25000
-#else
-#define VAL_DIFF 60000
-#endif
+#define STUB_LEVEL(_0, _1, _2, volume, _4, _5, _6, _7, _8) volume,
+#define DEFINE_LEVEL(_0, _1, _2, _3, _4, volume, _6, _7, _8, _9, _10) volume,
 
-u16 D_80332028[] = {
+u16 D_80332028[LEVEL_COUNT] = {
     20000,    // LEVEL_NONE
-    20000,    // LEVEL_UNKNOWN_1
-    20000,    // LEVEL_UNKNOWN_2
-    20000,    // LEVEL_UNKNOWN_3
-    28000,    // LEVEL_BBH
-    17000,    // LEVEL_CCM
-    20000,    // LEVEL_CASTLE
-    16000,    // LEVEL_HMC
-    15000,    // LEVEL_SSL
-    15000,    // LEVEL_BOB
-    14000,    // LEVEL_SL
-    17000,    // LEVEL_WDW
-    20000,    // LEVEL_JRB
-    20000,    // LEVEL_THI
-    18000,    // LEVEL_TTC
-    20000,    // LEVEL_RR
-    25000,    // LEVEL_CASTLE_GROUNDS
-    16000,    // LEVEL_BITDW
-    30000,    // LEVEL_VCUTM
-    16000,    // LEVEL_BITFS
-    20000,    // LEVEL_SA
-    16000,    // LEVEL_BITS
-    22000,    // LEVEL_LLL
-    17000,    // LEVEL_DDD
-    13000,    // LEVEL_WF
-    20000,    // LEVEL_ENDING
-    20000,    // LEVEL_CASTLE_COURTYARD
-    20000,    // LEVEL_PSS
-    18000,    // LEVEL_COTMC
-    20000,    // LEVEL_TOTWC
-    VAL_DIFF, // LEVEL_BOWSER_1
-    20000,    // LEVEL_WMOTR
-    20000,    // LEVEL_UNKNOWN_32
-    VAL_DIFF, // LEVEL_BOWSER_2
-    VAL_DIFF, // LEVEL_BOWSER_3
-    20000,    // LEVEL_UNKNOWN_35
-    15000,    // LEVEL_TTM
-    20000,    // LEVEL_UNKNOWN_37
-    20000,    // LEVEL_UNKNOWN_38
+    #include "levels/level_defines.h"
 };
 
-#undef VAL_DIFF
-
-STATIC_ASSERT(ARRAY_COUNT(D_80332028) == LEVEL_COUNT, "change this array if you are adding levels");
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
 
 #define AUDIO_MAX_DISTANCE US_FLOAT(22000.0)
 
@@ -407,12 +306,12 @@ u8 sBackgroundMusicDefaultVolume[] = {
 STATIC_ASSERT(ARRAY_COUNT(sBackgroundMusicDefaultVolume) == SEQ_COUNT,
               "change this array if you are adding sequences");
 
-u8 gPlayer0CurSeqId = SEQUENCE_NONE;
+u8 sPlayer0CurSeqId = SEQUENCE_NONE;
 u8 sMusicDynamicDelay = 0;
 u8 D_803320A4[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // pointers to head of list
 u8 D_803320B0[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // pointers to head of list
-u8 D_803320BC[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-u8 D_803320C8[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // sizes of D_80360C38
+u8 D_803320BC[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // only used for debugging
+u8 sMaxChannelsForSoundBank[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
 // Banks 2 and 7 both grew from 0x30 sounds to 0x40 in size in US.
 #ifdef VERSION_JP
@@ -426,8 +325,8 @@ u8 sNumSoundsPerBank[SOUND_BANK_COUNT] = {
 #undef BANK27_SIZE
 
 f32 gDefaultSoundArgs[3] = { 0.0f, 0.0f, 0.0f };
-f32 gUnusedSoundArgs[3] = { 1.0f, 1.0f, 1.0f };
-u8 gSoundBankDisabled[16] = { 0 };
+f32 sUnusedSoundArgs[3] = { 1.0f, 1.0f, 1.0f };
+u8 sSoundBankDisabled[16] = { 0 };
 u8 D_80332108 = 0;
 u8 sHasStartedFadeOut = FALSE;
 u16 D_80332110 = 0;
@@ -445,8 +344,8 @@ u8 sUnused8033323C = 0; // never read, set to 0
 u16 *gCurrAiBuffer;
 struct Sound sSoundRequests[0x100];
 struct ChannelVolumeScaleFade D_80360928[SEQUENCE_PLAYERS][CHANNELS_MAX];
-u8 D_80360C28[SOUND_BANK_COUNT];
-u8 D_80360C38[SOUND_BANK_COUNT][1];
+u8 sUsedChannelsForSoundBank[SOUND_BANK_COUNT];
+u8 sCurrentSound[SOUND_BANK_COUNT][MAX_CHANNELS_PER_SOUND]; // index into gSoundBanks
 // list item memory for D_803320A4 and D_803320B0
 struct SoundCharacteristics gSoundBanks[SOUND_BANK_COUNT][40];
 u8 D_80363808[SOUND_BANK_COUNT];
@@ -538,7 +437,7 @@ void unused_8031E4F0(void) {
 }
 
 void unused_8031E568(void) {
-    stubbed_printf("COUNT %8d\n", gActiveAudioFrames);
+    stubbed_printf("COUNT %8d\n", gAudioFrameCount);
 }
 #endif
 
@@ -627,14 +526,14 @@ static void func_8031D838(s32 player, FadeT fadeInTime, u8 targetVolume) {
 }
 
 struct SPTask *create_next_audio_frame_task(void) {
-    u32 t2;
+    u32 samplesRemainingInAI;
     s32 writtenCmds;
     s32 index;
     OSTask_t *task;
     s32 oldDmaCount;
     s32 flags;
 
-    gActiveAudioFrames++;
+    gAudioFrameCount++;
     if (gAudioLoadLock != AUDIO_LOCK_NOT_LOADING) {
         stubbed_printf("DAC:Lost 1 Frame.\n");
         return NULL;
@@ -644,10 +543,19 @@ struct SPTask *create_next_audio_frame_task(void) {
     gCurrAiBufferIndex++;
     gCurrAiBufferIndex %= NUMAIBUFFERS;
     index = (gCurrAiBufferIndex - 2 + NUMAIBUFFERS) % NUMAIBUFFERS;
-    t2 = osAiGetLength() / 4;
+    samplesRemainingInAI = osAiGetLength() / 4;
 
-    // Graphics lags behind a little, so make sure audio does too by playing the
-    // sound that was generated two frames ago.
+    // Audio is triple buffered; the audio interface reads from two buffers
+    // while the third is being written by the RSP. More precisely, the
+    // lifecycle is:
+    // - this function computes an audio command list
+    // - wait for vblank
+    // - the command list is sent to the RSP (we could have sent it to the
+    //   RSP before the vblank, but that gives the RSP less time to finish)
+    // - wait for vblank
+    // - the RSP is now expected to be finished, and we can send its output
+    //   on to the AI
+    // Here we thus send to the AI the sound that was generated two frames ago.
     if (gAiBufferLengths[index] != 0) {
         osAiSetNextBuffer(gAiBuffers[index], gAiBufferLengths[index] * 4);
     }
@@ -666,12 +574,13 @@ struct SPTask *create_next_audio_frame_task(void) {
 
     index = gCurrAiBufferIndex;
     gCurrAiBuffer = gAiBuffers[index];
-    gAiBufferLengths[index] = (((D_80226D74 - t2) + 0x40) & 0xfff0) + 0x10;
+    gAiBufferLengths[index] = ((gSamplesPerFrameTarget - samplesRemainingInAI +
+         EXTRA_BUFFERED_AI_SAMPLES_TARGET) & ~0xf) + SAMPLES_TO_OVERPRODUCE;
     if (gAiBufferLengths[index] < gMinAiBufferLength) {
         gAiBufferLengths[index] = gMinAiBufferLength;
     }
-    if (gAiBufferLengths[index] > D_80226D74 + 0x10) {
-        gAiBufferLengths[index] = D_80226D74 + 0x10;
+    if (gAiBufferLengths[index] > gSamplesPerFrameTarget + SAMPLES_TO_OVERPRODUCE) {
+        gAiBufferLengths[index] = gSamplesPerFrameTarget + SAMPLES_TO_OVERPRODUCE;
     }
 
     if (sGameLoopTicked != 0) {
@@ -684,7 +593,7 @@ struct SPTask *create_next_audio_frame_task(void) {
     flags = 0;
 
     gAudioCmd = synthesis_execute(gAudioCmd, &writtenCmds, gCurrAiBuffer, gAiBufferLengths[index]);
-    D_80226EB8 = ((D_80226EB8 + gActiveAudioFrames) * gActiveAudioFrames);
+    gAudioRandom = ((gAudioRandom + gAudioFrameCount) * gAudioFrameCount);
 
     index = gAudioTaskIndex;
     gAudioTask->msgqueue = NULL;
@@ -736,7 +645,7 @@ static void process_sound_request(u32 bits, f32 *pos) {
 
     bankIndex = (bits & SOUNDARGS_MASK_BANK) >> SOUNDARGS_SHIFT_BANK;
     soundId = (bits & SOUNDARGS_MASK_SOUNDID) >> SOUNDARGS_SHIFT_SOUNDID;
-    if (soundId >= sNumSoundsPerBank[bankIndex] || gSoundBankDisabled[bankIndex]) {
+    if (soundId >= sNumSoundsPerBank[bankIndex] || sSoundBankDisabled[bankIndex]) {
         return;
     }
 
@@ -882,9 +791,9 @@ static void func_8031E16C(u8 bankIndex) {
                     (u32) gSoundBanks[bankIndex][soundIndex].distance + 0x4c * (0xff - val);
             }
 
-            for (i = 0; i < D_803320C8[bankIndex]; i++) {
+            for (i = 0; i < sMaxChannelsForSoundBank[bankIndex]; i++) {
                 if (sp98[i] >= gSoundBanks[bankIndex][soundIndex].priority) {
-                    for (j = D_803320C8[bankIndex] - 1; j > i; j--) {
+                    for (j = sMaxChannelsForSoundBank[bankIndex] - 1; j > i; j--) {
                         sp98[j] = sp98[j - 1];
                         sp88[j] = sp88[j - 1];
                         sp78[j] = sp78[j - 1];
@@ -892,7 +801,7 @@ static void func_8031E16C(u8 bankIndex) {
                     sp98[i] = gSoundBanks[bankIndex][soundIndex].priority;
                     sp88[i] = soundIndex;
                     sp78[i] = gSoundBanks[bankIndex][soundIndex].soundStatus;
-                    i = D_803320C8[bankIndex];
+                    i = sMaxChannelsForSoundBank[bankIndex];
                 }
             }
             sp77++;
@@ -901,55 +810,55 @@ static void func_8031E16C(u8 bankIndex) {
     }
 
     D_803320BC[bankIndex] = sp77;
-    D_80360C28[bankIndex] = D_803320C8[bankIndex];
+    sUsedChannelsForSoundBank[bankIndex] = sMaxChannelsForSoundBank[bankIndex];
 
-    for (i = 0; i < D_80360C28[bankIndex]; i++) {
-        for (soundIndex = 0; soundIndex < D_80360C28[bankIndex]; soundIndex++) {
-            if (sp88[soundIndex] != 0xff && D_80360C38[bankIndex][i] == sp88[soundIndex]) {
+    for (i = 0; i < sUsedChannelsForSoundBank[bankIndex]; i++) {
+        for (soundIndex = 0; soundIndex < sUsedChannelsForSoundBank[bankIndex]; soundIndex++) {
+            if (sp88[soundIndex] != 0xff && sCurrentSound[bankIndex][i] == sp88[soundIndex]) {
                 sp88[soundIndex] = 0xff;
                 soundIndex = 0xfe;
             }
         }
 
         if (soundIndex != 0xff) {
-            if (D_80360C38[bankIndex][i] != 0xff) {
-                if (gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundBits == NO_SOUND) {
-                    if (gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundStatus
+            if (sCurrentSound[bankIndex][i] != 0xff) {
+                if (gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundBits == NO_SOUND) {
+                    if (gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundStatus
                         == SOUND_STATUS_PLAYING) {
-                        gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundStatus =
+                        gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundStatus =
                             SOUND_STATUS_STOPPED;
-                        func_8031DFE8(bankIndex, D_80360C38[bankIndex][i]);
+                        func_8031DFE8(bankIndex, sCurrentSound[bankIndex][i]);
                     }
                 }
-                val2 = gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundBits
+                val2 = gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundBits
                        & (SOUND_LO_BITFLAG_UNK8 | SOUNDARGS_MASK_STATUS);
                 if (val2 >= (SOUND_LO_BITFLAG_UNK8 | SOUND_STATUS_PLAYING)
-                    && gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundStatus
+                    && gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundStatus
                            != SOUND_STATUS_STOPPED) {
 #ifndef VERSION_JP
-                    func_8031E0E4(bankIndex, D_80360C38[bankIndex][i]);
+                    func_8031E0E4(bankIndex, sCurrentSound[bankIndex][i]);
 #endif
-                    gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundBits = NO_SOUND;
-                    gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundStatus = SOUND_STATUS_STOPPED;
-                    func_8031DFE8(bankIndex, D_80360C38[bankIndex][i]);
+                    gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundBits = NO_SOUND;
+                    gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundStatus = SOUND_STATUS_STOPPED;
+                    func_8031DFE8(bankIndex, sCurrentSound[bankIndex][i]);
                 } else {
                     if (val2 == SOUND_STATUS_PLAYING
-                        && gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundStatus
+                        && gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundStatus
                                != SOUND_STATUS_STOPPED) {
-                        gSoundBanks[bankIndex][D_80360C38[bankIndex][i]].soundStatus =
+                        gSoundBanks[bankIndex][sCurrentSound[bankIndex][i]].soundStatus =
                             SOUND_STATUS_STARTING;
                     }
                 }
             }
-            D_80360C38[bankIndex][i] = 0xff;
+            sCurrentSound[bankIndex][i] = 0xff;
         }
     }
 
-    for (soundIndex = 0; soundIndex < D_80360C28[bankIndex]; soundIndex++) {
+    for (soundIndex = 0; soundIndex < sUsedChannelsForSoundBank[bankIndex]; soundIndex++) {
         if (sp88[soundIndex] != 0xff) {
-            for (i = 0; i < D_80360C28[bankIndex]; i++) {
-                if (D_80360C38[bankIndex][i] == 0xff) {
-                    D_80360C38[bankIndex][i] = sp88[soundIndex];
+            for (i = 0; i < sUsedChannelsForSoundBank[bankIndex]; i++) {
+                if (sCurrentSound[bankIndex][i] == 0xff) {
+                    sCurrentSound[bankIndex][i] = sp88[soundIndex];
                     gSoundBanks[bankIndex][sp88[soundIndex]].soundBits =
                         (gSoundBanks[bankIndex][sp88[soundIndex]].soundBits & ~SOUNDARGS_MASK_STATUS)
                         + 1;
@@ -1044,7 +953,7 @@ static f32 get_sound_dynamics(u8 bankIndex, u8 item, f32 arg2) {
             if (intensity >= 0.08f)
 #endif
             {
-                intensity -= (f32)(D_80226EB8 & 0xf) / US_FLOAT(192.0);
+                intensity -= (f32)(gAudioRandom & 0xf) / US_FLOAT(192.0);
             }
         }
     } else {
@@ -1060,7 +969,7 @@ static f32 get_sound_freq_scale(u8 bankIndex, u8 item) {
     if (!(gSoundBanks[bankIndex][item].soundBits & SOUND_PL_BITFLAG_UNK8)) {
         f2 = gSoundBanks[bankIndex][item].distance / AUDIO_MAX_DISTANCE;
         if (gSoundBanks[bankIndex][item].soundBits & SOUND_PL_BITFLAG_UNK2) {
-            f2 += (f32)(D_80226EB8 & 0xff) / US_FLOAT(64.0);
+            f2 += (f32)(gAudioRandom & 0xff) / US_FLOAT(64.0);
         }
     } else {
         f2 = 0.0f;
@@ -1137,8 +1046,8 @@ void update_game_sound(void) {
 
     for (bankIndex = 0; bankIndex < SOUND_BANK_COUNT; bankIndex++) {
         func_8031E16C(bankIndex);
-        for (j = 0; j < 1; j++) {
-            index = D_80360C38[bankIndex][j];
+        for (j = 0; j < MAX_CHANNELS_PER_SOUND; j++) {
+            index = sCurrentSound[bankIndex][j];
             if (index < 0xff && gSoundBanks[bankIndex][index].soundStatus != SOUND_STATUS_STOPPED) {
                 soundStatus = gSoundBanks[bankIndex][index].soundBits & SOUNDARGS_MASK_STATUS;
                 soundId = (gSoundBanks[bankIndex][index].soundBits >> SOUNDARGS_SHIFT_SOUNDID);
@@ -1313,8 +1222,8 @@ void update_game_sound(void) {
             channelIndex++;
         }
 
-        // D_80360C28[i] = D_803320C8[i] = 1, so this doesn't do anything
-        channelIndex += D_803320C8[bankIndex] - D_80360C28[bankIndex];
+        // sUsedChannelsForSoundBank[i] = sMaxChannelsForSoundBank[i] = 1, so this doesn't do anything
+        channelIndex += sMaxChannelsForSoundBank[bankIndex] - sUsedChannelsForSoundBank[bankIndex];
     }
 }
 
@@ -1326,7 +1235,7 @@ void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
     u8 i;
 
     if (player == 0) {
-        gPlayer0CurSeqId = seqId & 0x7f;
+        sPlayer0CurSeqId = seqId & 0x7f;
         sBackgroundMusicForDynamics = SEQUENCE_NONE;
         sCurrentMusicDynamic = 0xff;
         sMusicDynamicDelay = 2;
@@ -1351,7 +1260,7 @@ void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
 
 void sequence_player_fade_out(u8 player, u16 fadeTimer) {
     if (player == 0) {
-        gPlayer0CurSeqId = SEQUENCE_NONE;
+        sPlayer0CurSeqId = SEQUENCE_NONE;
     }
     sequence_player_fade_out_internal(player, fadeTimer);
 }
@@ -1396,19 +1305,19 @@ void func_8031F96C(u8 player) {
 }
 
 #ifdef NON_MATCHING
+
 void process_level_music_dynamics(void) {
-    u8 musicDynIndex;       // sp57
-    s16 conditionValues[8]; // sp44
-    u8 conditionTypes[8];   // sp3C
-    s16 dur1;               // sp3A
-    s16 dur2;               // sp38
-    u32 conditionBits;      // s0
-    u32 tempBits;           // v1
-    u16 bit;                // a1
-    u8 condIndex;           // a0 (same as numConditions?)
-    u8 i;                   // s1
+    s32 conditionBits;      // s0
+    u8 musicDynIndex;       // sp57 87
     u8 j;                   // v0
-    u16 bit2;               // s0, v1
+    s16 conditionValues[8]; // sp44 68
+    u8 conditionTypes[8];   // sp3C 60
+    s16 dur1;               // sp3A 58
+    s16 dur2;               // sp38 56
+    u16 bit;                // a1 (in first loop), s0, v1
+    u8 i;                   // s1
+    u8 condIndex;           // a0, v1
+    u32 tempBits;           // v1
 
     func_8031F96C(0);
     func_8031F96C(2);
@@ -1416,7 +1325,7 @@ void process_level_music_dynamics(void) {
     if (sMusicDynamicDelay != 0) {
         sMusicDynamicDelay--;
     } else {
-        sBackgroundMusicForDynamics = gPlayer0CurSeqId;
+        sBackgroundMusicForDynamics = sPlayer0CurSeqId;
     }
 
     if (sBackgroundMusicForDynamics != sLevelDynamics[gCurrLevelNum][0]) {
@@ -1427,12 +1336,9 @@ void process_level_music_dynamics(void) {
     musicDynIndex = sLevelDynamics[gCurrLevelNum][1] & 0xff;
     i = 2;
     while (conditionBits & 0xff00) {
-        condIndex = 0;
-        for (j = 0, bit = 0x8000; j<8; j++, bit = bit>> 1) {
+        for (j = 0, condIndex = 0, bit = 0x8000; j < 8; j++, bit = bit >> 1) {
             if (conditionBits & bit) {
-                s16 val = sLevelDynamics[gCurrLevelNum][i];
-                conditionValues[condIndex] = val;
-                i++;
+                conditionValues[condIndex] = sLevelDynamics[gCurrLevelNum][i++];
                 conditionTypes[condIndex] = j;
                 condIndex++;
             }
@@ -1440,7 +1346,6 @@ void process_level_music_dynamics(void) {
 
         for (j = 0; j < condIndex; j++) {
             // (having all 'temp' share a single variable affects regalloc)
-            UNUSED s16 temp;
             switch (conditionTypes[j]) {
                 case MARIO_X_GE: {
                     s16 temp = gMarioStates[0].pos[0];
@@ -1479,14 +1384,14 @@ void process_level_music_dynamics(void) {
                     break;
                 }
                 case MARIO_IS_IN_AREA: {
-                    s16 temp = gCurrAreaIndex;
-                    if (temp != conditionValues[j])
+                    //s16 temp = gCurrAreaIndex;
+                    if (gCurrAreaIndex != conditionValues[j])
                         j = condIndex + 1;
                     break;
                 }
                 case MARIO_IS_IN_ROOM: {
-                    s16 temp = gMarioCurrentRoom;
-                    if (temp != conditionValues[j])
+                    //s16 temp = gMarioCurrentRoom;
+                    if (gMarioCurrentRoom != conditionValues[j])
                         j = condIndex + 1;
                     break;
                 }
@@ -1497,7 +1402,8 @@ void process_level_music_dynamics(void) {
             // The area matches. Break out of the loop.
             tempBits = 0;
         } else {
-            tempBits = sLevelDynamics[gCurrLevelNum][i++];
+            tempBits = sLevelDynamics[gCurrLevelNum][i];
+            i++;
             musicDynIndex = tempBits & 0xff, tempBits &= 0xff00;
         }
 
@@ -1505,7 +1411,7 @@ void process_level_music_dynamics(void) {
     }
 
     if (musicDynIndex != sCurrentMusicDynamic) {
-        bit2 = 1;
+        bit = 1;
         if (sCurrentMusicDynamic == 0xff) {
             dur1 = 1;
             dur2 = 1;
@@ -1515,13 +1421,13 @@ void process_level_music_dynamics(void) {
         }
 
         for (i = 0; i < CHANNELS_MAX; i++) {
-            if (sMusicDynamics[musicDynIndex].bits1 & bit2) {
+            if (sMusicDynamics[musicDynIndex].bits1 & bit) {
                 fade_channel_volume_scale(0, i, sMusicDynamics[musicDynIndex].volScale1, dur1);
             }
-            if (sMusicDynamics[musicDynIndex].bits2 & bit2) {
+            if (sMusicDynamics[musicDynIndex].bits2 & bit) {
                 fade_channel_volume_scale(0, i, sMusicDynamics[musicDynIndex].volScale2, dur2);
             }
-            bit2 <<= 1;
+            bit <<= 1;
         }
 
         sCurrentMusicDynamic = musicDynIndex;
@@ -1581,7 +1487,7 @@ u8 func_803200E4(u16 fadeTimer) {
     u8 vol = 0xff;
     u8 temp;
 
-    if (gPlayer0CurSeqId == SEQUENCE_NONE || gPlayer0CurSeqId == SEQ_EVENT_CUTSCENE_CREDITS) {
+    if (sPlayer0CurSeqId == SEQUENCE_NONE || sPlayer0CurSeqId == SEQ_EVENT_CUTSCENE_CREDITS) {
         return 0xff;
     }
 
@@ -1612,7 +1518,7 @@ u8 func_803200E4(u16 fadeTimer) {
         if (vol != 0xff) {
             func_8031D838(0, fadeTimer, vol);
         } else {
-            gSequencePlayers[0].volume = sBackgroundMusicDefaultVolume[gPlayer0CurSeqId] / 127.0f;
+            gSequencePlayers[0].volume = sBackgroundMusicDefaultVolume[sPlayer0CurSeqId] / 127.0f;
             func_8031D7B0(0, fadeTimer);
         }
     }
@@ -1636,8 +1542,8 @@ void sound_init(void) {
             gSoundBanks[i][j].soundStatus = SOUND_STATUS_STOPPED;
         }
 
-        for (j = 0; j < 1; j++) {
-            D_80360C38[i][j] = 0xff;
+        for (j = 0; j < MAX_CHANNELS_PER_SOUND; j++) {
+            sCurrentSound[i][j] = 0xff;
         }
 
         D_803320A4[i] = 0;
@@ -1674,7 +1580,7 @@ void sound_init(void) {
     sCapVolumeTo40 = FALSE;
     D_80332110 = 0;
     sUnused80332114 = 0;
-    gPlayer0CurSeqId = 0xff;
+    sPlayer0CurSeqId = 0xff;
     gSoundMode = SOUND_MODE_STEREO;
     sBackgroundMusicQueueSize = 0;
     D_8033211C = 0;
@@ -1684,22 +1590,23 @@ void sound_init(void) {
     sSoundRequestCount = 0;
 }
 
-void unused_8032050C(u8 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
+// (unused)
+void get_currently_playing_sound(u8 bankIndex, u8 *numPlayingSounds, u8 *arg2, u8 *soundId) {
     u8 i;
-    u8 counter = 0;
+    u8 count = 0;
 
-    for (i = 0; i < D_803320C8[arg0]; i++) {
-        if (D_80360C38[arg0][i] != 0xff) {
-            counter++;
+    for (i = 0; i < sMaxChannelsForSoundBank[bankIndex]; i++) {
+        if (sCurrentSound[bankIndex][i] != 0xff) {
+            count++;
         }
     }
 
-    *arg1 = counter;
-    *arg2 = D_803320BC[arg0];
-    if (D_80360C38[arg0][0] != 0xff) {
-        *arg3 = (u8)(gSoundBanks[arg0][D_80360C38[arg0][0]].soundBits >> SOUNDARGS_SHIFT_SOUNDID);
+    *numPlayingSounds = count;
+    *arg2 = D_803320BC[bankIndex];
+    if (sCurrentSound[bankIndex][0] != 0xff) {
+        *soundId = (u8)(gSoundBanks[bankIndex][sCurrentSound[bankIndex][0]].soundBits >> SOUNDARGS_SHIFT_SOUNDID);
     } else {
-        *arg3 = 0xff;
+        *soundId = 0xff;
     }
 }
 
@@ -1759,7 +1666,7 @@ void sound_banks_disable(UNUSED u8 player, u16 bankMask) {
 
     for (i = 0; i < SOUND_BANK_COUNT; i++) {
         if (bankMask & 1) {
-            gSoundBankDisabled[i] = TRUE;
+            sSoundBankDisabled[i] = TRUE;
         }
         bankMask = bankMask >> 1;
     }
@@ -1778,7 +1685,7 @@ void sound_banks_enable(UNUSED u8 player, u16 bankMask) {
 
     for (i = 0; i < SOUND_BANK_COUNT; i++) {
         if (bankMask & 1) {
-            gSoundBankDisabled[i] = FALSE;
+            sSoundBankDisabled[i] = FALSE;
         }
         bankMask = bankMask >> 1;
     }
@@ -1787,7 +1694,7 @@ void sound_banks_enable(UNUSED u8 player, u16 bankMask) {
 u8 unused_803209D8(u8 player, u8 channelIndex, u8 arg2) {
     u8 ret = 0;
     if (gSequencePlayers[player].channels[channelIndex] != &gSequenceChannelNone) {
-        gSequencePlayers[player].channels[channelIndex]->unk0b10 = arg2;
+        gSequencePlayers[player].channels[channelIndex]->stopSomething2 = arg2;
         ret = arg2;
     }
     return ret;
@@ -1815,7 +1722,7 @@ void play_dialog_sound(u8 dialogID) {
 
 #ifndef VERSION_JP
     // "You've stepped on the (Wing|Metal|Vanish) Cap Switch"
-    if (dialogID == 10 || dialogID == 11 || dialogID == 12) {
+    if (dialogID == DIALOG_010 || dialogID == DIALOG_011 || dialogID == DIALOG_012) {
         play_puzzle_jingle();
     }
 #endif
@@ -1961,7 +1868,7 @@ void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) 
     UNUSED u32 dummy;
 
     sUnused80332118 = 0;
-    if (gPlayer0CurSeqId == 0xff || gPlayer0CurSeqId == SEQ_MENU_TITLE_SCREEN) {
+    if (sPlayer0CurSeqId == 0xff || sPlayer0CurSeqId == SEQ_MENU_TITLE_SCREEN) {
         return;
     }
 

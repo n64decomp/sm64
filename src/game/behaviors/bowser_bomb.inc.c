@@ -15,7 +15,7 @@ void bhv_bowser_bomb_loop(void) {
         o->activeFlags = 0;
     }
 
-    SetObjectVisibility(o, 7000);
+    set_object_visibility(o, 7000);
 }
 
 void bhv_bowser_bomb_explosion_loop(void) {

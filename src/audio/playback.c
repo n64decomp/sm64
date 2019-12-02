@@ -11,7 +11,7 @@
 
 s32 note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLayer);
 
-void func_80318870(struct Note *note) {
+void note_init(struct Note *note) {
     if (note->parentLayer->adsr.releaseRate == 0) {
         adsr_init(&note->adsr, note->parentLayer->seqChannel->adsr.envelope, &note->adsrVolScale);
     } else {
@@ -26,7 +26,7 @@ void note_disable2(struct Note *note) {
     note_disable(note);
 }
 
-void func_80318908(void) {
+void process_notes(void) {
     f32 scale;
     f32 frequency;
     u8 reverb;
@@ -144,7 +144,7 @@ void seq_channel_layer_decay_release_internal(struct SequenceChannelLayer *seqLa
         return;
     }
 
-    seqLayer->unk1 = 0;
+    seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
     if (note->adsr.state != ADSR_STATE_DECAY) {
         attributes->freqScale = seqLayer->noteFreqScale;
         attributes->velocity = seqLayer->noteVelocity;
@@ -183,8 +183,7 @@ void seq_channel_layer_note_release(struct SequenceChannelLayer *seqLayer) {
     seq_channel_layer_decay_release_internal(seqLayer, ADSR_STATE_RELEASE);
 }
 
-// wave synthesizer
-void func_80318F04(struct Note *note, struct SequenceChannelLayer *seqLayer) {
+void build_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLayer) {
     s32 i;
     s32 j;
     s32 pos;
@@ -239,9 +238,9 @@ void func_80318F04(struct Note *note, struct SequenceChannelLayer *seqLayer) {
     osWritebackDCache(note->synthesisBuffers->samples, sizeof(note->synthesisBuffers->samples));
 }
 
-void func_80319164(struct Note *note, struct SequenceChannelLayer *seqLayer) {
+void init_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLayer) {
     s32 sampleCount = note->sampleCount;
-    func_80318F04(note, seqLayer);
+    build_synthetic_wave(note, seqLayer);
     if (sampleCount != 0) {
         note->samplePosInt *= note->sampleCount / sampleCount;
     } else {
@@ -422,14 +421,14 @@ s32 note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLayer
     note->bankId = seqLayer->seqChannel->bankId;
     note->stereoHeadsetEffects = seqLayer->seqChannel->stereoHeadsetEffects;
     note->sound = seqLayer->sound;
-    seqLayer->unk1 = 3;
+    seqLayer->status = SOUND_LOAD_STATUS_DISCARDABLE; // "loaded"
     seqLayer->note = note;
     seqLayer->seqChannel->noteUnused = note;
     seqLayer->seqChannel->layerUnused = seqLayer;
     if (note->sound == NULL) {
-        func_80318F04(note, seqLayer);
+        build_synthetic_wave(note, seqLayer);
     }
-    func_80318870(note);
+    note_init(note);
     return FALSE;
 }
 
@@ -495,7 +494,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
         if (!(ret = alloc_note_from_disabled(&seqLayer->seqChannel->notePool, seqLayer))
             && !(ret = alloc_note_from_decaying(&seqLayer->seqChannel->notePool, seqLayer))
             && !(ret = alloc_note_from_active(&seqLayer->seqChannel->notePool, seqLayer))) {
-            seqLayer->unk1 = 0;
+            seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
             return NULL;
         }
         return ret;
@@ -508,7 +507,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
             && !(ret = alloc_note_from_decaying(&seqLayer->seqChannel->seqPlayer->notePool, seqLayer))
             && !(ret = alloc_note_from_active(&seqLayer->seqChannel->notePool, seqLayer))
             && !(ret = alloc_note_from_active(&seqLayer->seqChannel->seqPlayer->notePool, seqLayer))) {
-            seqLayer->unk1 = 0;
+            seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
             return NULL;
         }
         return ret;
@@ -518,7 +517,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
         if (!(ret = alloc_note_from_disabled(&gNoteFreeLists, seqLayer))
             && !(ret = alloc_note_from_decaying(&gNoteFreeLists, seqLayer))
             && !(ret = alloc_note_from_active(&gNoteFreeLists, seqLayer))) {
-            seqLayer->unk1 = 0;
+            seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
             return NULL;
         }
         return ret;
@@ -533,13 +532,13 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
         && !(ret = alloc_note_from_active(&seqLayer->seqChannel->notePool, seqLayer))
         && !(ret = alloc_note_from_active(&seqLayer->seqChannel->seqPlayer->notePool, seqLayer))
         && !(ret = alloc_note_from_active(&gNoteFreeLists, seqLayer))) {
-        seqLayer->unk1 = 0;
+        seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
         return NULL;
     }
     return ret;
 }
 
-void func_80319BC8(void) {
+void reclaim_notes(void) {
     struct Note *note;
     s32 i;
     s32 cond;
@@ -559,7 +558,7 @@ void func_80319BC8(void) {
                 note->priority = NOTE_PRIORITY_STOPPING;
             } else if (note->parentLayer->seqChannel->seqPlayer->muted) {
                 if (note->parentLayer->seqChannel->muteBehavior
-                    & (MUTE_BEHAVIOR_80 | MUTE_BEHAVIOR_40)) {
+                    & (MUTE_BEHAVIOR_STOP_SCRIPT | MUTE_BEHAVIOR_STOP_NOTES)) {
                     cond = TRUE;
                 }
             } else {

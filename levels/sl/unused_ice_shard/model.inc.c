@@ -1,12 +1,8 @@
-// 0x0700A910 - 0x0700A918
-static const Ambient sl_seg7_light_0700A910 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0700A918 - 0x0700A928
-static const Light sl_seg7_light_0700A918 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700A910 - 0x0700A928
+static const Lights1 sl_seg7_lights_0700A910 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0700A928 - 0x0700A958
 static const Vtx sl_seg7_vertex_0700A928[] = {
@@ -17,8 +13,8 @@ static const Vtx sl_seg7_vertex_0700A928[] = {
 
 // 0x0700A958 - 0x0700A980
 static const Gfx sl_seg7_dl_0700A958[] = {
-    gsSPLight(&sl_seg7_light_0700A918, 1),
-    gsSPLight(&sl_seg7_light_0700A910, 2),
+    gsSPLight(&sl_seg7_lights_0700A910.l, 1),
+    gsSPLight(&sl_seg7_lights_0700A910.a, 2),
     gsSPVertex(sl_seg7_vertex_0700A928, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPEndDisplayList(),

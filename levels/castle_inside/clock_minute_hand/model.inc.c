@@ -1,22 +1,14 @@
-// 0x07057FD8 - 0x07057FE0
-static const Ambient inside_castle_seg7_light_07057FD8 = {
-    {{0x3f, 0x33, 0x19}, 0, {0x3f, 0x33, 0x19}, 0}
-};
+// 0x07057FD8 - 0x07057FF0
+static const Lights1 inside_castle_seg7_lights_07057FD8 = gdSPDefLights1(
+    0x3f, 0x33, 0x19,
+    0xff, 0xcc, 0x65, 0x28, 0x28, 0x28
+);
 
-// 0x07057FE0 - 0x07057FF0
-static const Light inside_castle_seg7_light_07057FE0 = {
-    {{0xff, 0xcc, 0x65}, 0, {0xff, 0xcc, 0x65}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07057FF0 - 0x07057FF8
-static const Ambient inside_castle_seg7_light_07057FF0 = {
-    {{0x3f, 0x00, 0x00}, 0, {0x3f, 0x00, 0x00}, 0}
-};
-
-// 0x07057FF8 - 0x07058008
-static const Light inside_castle_seg7_light_07057FF8 = {
-    {{0xff, 0x00, 0x00}, 0, {0xff, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07057FF0 - 0x07058008
+static const Lights1 inside_castle_seg7_lights_07057FF0 = gdSPDefLights1(
+    0x3f, 0x00, 0x00,
+    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x07058008 - 0x07058108
 static const Vtx inside_castle_seg7_vertex_07058008[] = {
@@ -168,8 +160,8 @@ static const Gfx inside_castle_seg7_dl_07058718[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, inside_09004800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&inside_castle_seg7_light_07057FE0, 1),
-    gsSPLight(&inside_castle_seg7_light_07057FD8, 2),
+    gsSPLight(&inside_castle_seg7_lights_07057FD8.l, 1),
+    gsSPLight(&inside_castle_seg7_lights_07057FD8.a, 2),
     gsSPVertex(inside_castle_seg7_vertex_07058008, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  4, 0x0,  6,  4,  3, 0x0),
@@ -199,8 +191,8 @@ static const Gfx inside_castle_seg7_dl_07058718[] = {
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),
     gsSP2Triangles( 0, 10,  1, 0x0,  7, 11,  8, 0x0),
-    gsSPLight(&inside_castle_seg7_light_07057FF8, 1),
-    gsSPLight(&inside_castle_seg7_light_07057FF0, 2),
+    gsSPLight(&inside_castle_seg7_lights_07057FF0.l, 1),
+    gsSPLight(&inside_castle_seg7_lights_07057FF0.a, 2),
     gsSPVertex(inside_castle_seg7_vertex_070585A8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),

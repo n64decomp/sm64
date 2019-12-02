@@ -1,6 +1,6 @@
 // 0x0700ED94 - 0x0700EF6C
 const MacroObject sl_seg7_area_1_macro_objs[] = {
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/  90, /*pos*/  4086,  1024,   400, /*behParam*/ 86),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/  90, /*pos*/  4086,  1024,   400, /*behParam*/ DIALOG_086),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin_2,        /*yaw*/   0, /*pos*/  1285,  2210,   385),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin_2,        /*yaw*/   0, /*pos*/  1728,  2560,  -671),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin_2,        /*yaw*/   0, /*pos*/  1371,  2188,  -500),
@@ -36,10 +36,10 @@ const MacroObject sl_seg7_area_1_macro_objs[] = {
     MACRO_OBJECT(/*preset*/ macro_yellow_coin,          /*yaw*/   0, /*pos*/ -1520,  1040,   940),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin,          /*yaw*/   0, /*pos*/ -1340,  1280,  1020),
     MACRO_OBJECT(/*preset*/ macro_yellow_coin,          /*yaw*/   0, /*pos*/ -1180,  1520,  1120),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 295, /*pos*/  -835,  1125, -3856, /*behParam*/ 61),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 180, /*pos*/ -5050,  1020,  6026, /*behParam*/ 16),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 295, /*pos*/  -835,  1125, -3856, /*behParam*/ DIALOG_061),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 180, /*pos*/ -5050,  1020,  6026, /*behParam*/ DIALOG_016),
     MACRO_OBJECT(/*preset*/ macro_fly_guy,              /*yaw*/   0, /*pos*/  2766,  1522, -3633),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 135, /*pos*/ -3600,  1024,  -800, /*behParam*/ 148),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,      /*yaw*/ 135, /*pos*/ -3600,  1024,  -800, /*behParam*/ DIALOG_148),
     MACRO_OBJECT(/*preset*/ macro_moneybag,             /*yaw*/   0, /*pos*/  2440,  1024,  4840),
     MACRO_OBJECT(/*preset*/ macro_moneybag,             /*yaw*/   0, /*pos*/ -2400,  1177, -4200),
     MACRO_OBJECT(/*preset*/ macro_box_1up_running_away, /*yaw*/   0, /*pos*/ -3380,  1360, -4140),

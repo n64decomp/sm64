@@ -1,5 +1,5 @@
-#ifndef _AUDIO_MEMORY_H
-#define _AUDIO_MEMORY_H
+#ifndef AUDIO_MEMORY_H
+#define AUDIO_MEMORY_H
 
 #include "internal.h"
 
@@ -49,7 +49,6 @@ struct SoundMultiPool
 extern u8 gAudioHeap[];
 extern s16 gVolume;
 extern s8 gReverbDownsampleRate;
-extern u8 sReverbDownsampleRateLog;
 extern struct SoundAllocPool gAudioInitPool;
 extern struct SoundAllocPool gNotesAndBuffersPool;
 extern struct SoundMultiPool gSeqLoadedPool;
@@ -63,4 +62,4 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
 void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 arg2);
 void audio_reset_session(struct AudioSessionSettings *preset);
 
-#endif /* _AUDIO_MEMORY_H */
+#endif /* AUDIO_MEMORY_H */

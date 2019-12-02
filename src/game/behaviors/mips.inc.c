@@ -66,7 +66,7 @@ s16 bhv_mips_find_furthest_waypoint_to_mario(void) {
         z = waypoint->pos[2];
 
         // Is the waypoint within 800 units of MIPS?
-        if (IsPointCloseToObject(o, x, y, z, 800)) {
+        if (is_point_close_to_object(o, x, y, z, 800)) {
             // Is this further from Mario than the last waypoint?
             distanceToMario =
                 sqr(x - gMarioObject->header.gfx.pos[0]) + sqr(z - gMarioObject->header.gfx.pos[2]);
@@ -89,7 +89,7 @@ void bhv_mips_act_wait_for_nearby_mario(void) {
     UNUSED s16 collisionFlags = 0;
 
     o->oForwardVel = 0.0f;
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     // If Mario is within 500 units...
     if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 500)) {
@@ -129,7 +129,7 @@ void bhv_mips_act_follow_path(void) {
     o->oForwardVel = 45.0f;
 #endif
     o->oMoveAngleYaw = o->oPathedTargetYaw;
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     // If we are at the end of the path, do idle animation and wait for Mario.
     if (followStatus == PATH_REACHED_END) {
@@ -166,7 +166,7 @@ void bhv_mips_act_fall_down(void) {
     s16 collisionFlags = 0;
 #endif
 
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
     o->header.gfx.unk38.animFrame = 0;
 
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) == 1) {
@@ -187,7 +187,7 @@ void bhv_mips_act_idle(void) {
     UNUSED s16 collisionFlags = 0;
 
     o->oForwardVel = 0;
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     // Spawn a star if he was just picked up for the first time.
     if (o->oMipsStarStatus == MIPS_STAR_STATUS_SHOULD_SPAWN_STAR) {
@@ -238,9 +238,9 @@ void bhv_mips_held(void) {
     if (o->oMipsStarStatus == MIPS_STAR_STATUS_HAVENT_SPAWNED_STAR) {
         // Choose dialog based on which MIPS encounter this is.
         if (o->oBehParams2ndByte == 0)
-            dialogID = 84;
+            dialogID = DIALOG_084;
         else
-            dialogID = 162;
+            dialogID = DIALOG_162;
 
         if (set_mario_npc_dialog(1) == 2) {
             o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;

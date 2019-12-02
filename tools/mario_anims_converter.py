@@ -137,7 +137,7 @@ try:
             structobj.append("{" + ",".join(arr) + "},")
 
     print("#include \"types.h\"")
-    print("#include \"stddef.h\"")
+    print("#include <stddef.h>")
     print("")
 
     print("const struct MarioAnimsObj {")

@@ -27,9 +27,9 @@ static struct ObjectHitbox sMovingBlueCoinHitbox = {
 };
 
 s32 CoinStep(s16 *collisionFlagsPtr) {
-    *collisionFlagsPtr = ObjectStep();
+    *collisionFlagsPtr = object_step();
 
-    ObjCheckFloorDeath(*collisionFlagsPtr, D_803600E0);
+    obj_check_floor_death(*collisionFlagsPtr, sObjFloor);
 
     if ((*collisionFlagsPtr & 0x1) != 0 && (*collisionFlagsPtr & 0x8) == 0) /* bit 0, bit 3 */
     {
@@ -44,7 +44,7 @@ void MovingCoinFlickerLoop(void) {
     s16 collisionFlags;
 
     CoinStep(&collisionFlags);
-    ObjFlickerAndDisappear(o, 0);
+    obj_flicker_and_disappear(o, 0);
 }
 
 void CoinCollected(void) {
@@ -117,7 +117,7 @@ void bhv_moving_blue_coin_loop(void) {
             break;
 
         case MOV_BCOIN_ACT_MOVING:
-            collisionFlags = ObjectStep();
+            collisionFlags = object_step();
             if ((collisionFlags & 0x1) != 0) /* bit 0 */
             {
                 o->oForwardVel += 25.0f;
@@ -129,7 +129,7 @@ void bhv_moving_blue_coin_loop(void) {
             if (o->oForwardVel > 75.0)
                 o->oForwardVel = 75.0f;
 
-            ObjFlickerAndDisappear(o, 600);
+            obj_flicker_and_disappear(o, 600);
             break;
     }
 
@@ -183,7 +183,7 @@ void bhv_blue_coin_sliding_loop(void) {
             if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 500) == 1)
                 o->oAction = 1;
 
-            SetObjectVisibility(o, 3000);
+            set_object_visibility(o, 3000);
             break;
 
         case 1:
@@ -192,7 +192,7 @@ void bhv_blue_coin_sliding_loop(void) {
 
         case 2:
             func_802E54DC();
-            SetObjectVisibility(o, 3000);
+            set_object_visibility(o, 3000);
             break;
 
         case 3:
@@ -231,7 +231,7 @@ void bhv_blue_coin_jumping_loop(void) {
                 o->oVelY = 50.0;
             }
 
-            ObjectStep();
+            object_step();
 
             if (o->oTimer == 15) {
                 obj_become_tangible();
@@ -245,7 +245,7 @@ void bhv_blue_coin_jumping_loop(void) {
 
         case 2:
             func_802E54DC();
-            SetObjectVisibility(o, 3000);
+            set_object_visibility(o, 3000);
             break;
 
         case 3:

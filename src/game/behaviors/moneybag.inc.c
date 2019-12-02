@@ -110,9 +110,9 @@ void MoneybagJump(s8 collisionFlags) {
 void MoneybagMoveAroundLoop(void) {
     s16 collisionFlags;
 
-    ObjDisplaceHome(o, o->oHomeX, o->oHomeY, o->oHomeZ, 200);
+    obj_return_and_displace_home(o, o->oHomeX, o->oHomeY, o->oHomeZ, 200);
 
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     if (((collisionFlags & OBJ_COL_FLAGS_LANDED) == OBJ_COL_FLAGS_LANDED)
         && (o->oMoneybagJumpState == MONEYBAG_JUMP_LANDING)) {
@@ -138,7 +138,7 @@ void MoneybagReturnHomeLoop(void) {
     s16 sp22 = atan2s(sp24, sp28);
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, sp22, 0x800);
 
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
     if (((collisionFlags & OBJ_COL_FLAGS_LANDED) == OBJ_COL_FLAGS_LANDED)
         && (o->oMoneybagJumpState == MONEYBAG_JUMP_LANDING))
         o->oMoneybagJumpState = MONEYBAG_JUMP_WALK_HOME;
@@ -146,7 +146,7 @@ void MoneybagReturnHomeLoop(void) {
     MoneybagJump(collisionFlags);
     MoneybagCheckMarioCollision();
 
-    if (IsPointCloseToObject(o, o->oHomeX, o->oHomeY, o->oHomeZ, 100)) {
+    if (is_point_close_to_object(o, o->oHomeX, o->oHomeY, o->oHomeZ, 100)) {
         spawn_object(o, MODEL_YELLOW_COIN, bhvMoneybagHidden);
 #ifndef VERSION_JP
         PlaySound2(SOUND_GENERAL_VANISH_SFX);
@@ -172,7 +172,7 @@ void MoneybagDisappearLoop(void) {
 
 void MoneybagDeathLoop(void) {
     if (o->oTimer == 1) {
-        ObjSpawnYellowCoins(o, 5);
+        obj_spawn_yellow_coins(o, 5);
         create_sound_spawner(SOUND_GENERAL_SPLATTERING);
         func_802A3004();
         o->activeFlags = 0;

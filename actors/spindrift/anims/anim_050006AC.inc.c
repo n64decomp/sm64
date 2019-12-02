@@ -199,14 +199,10 @@ const Gfx spindrift_seg5_dl_05002900[] = {
 };
 
 // 0x05002970
-static const Ambient spindrift_seg5_light_05002970 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x05002978
-static const Light spindrift_seg5_light_05002978 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spindrift_seg5_lights_05002970 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05002988
 static const Vtx spindrift_seg5_vertex_05002988[] = {
@@ -222,8 +218,8 @@ const Gfx spindrift_seg5_dl_050029C8[] = {
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPClearGeometryMode(G_CULL_BACK),
-    gsSPLight(&spindrift_seg5_light_05002978, 1),
-    gsSPLight(&spindrift_seg5_light_05002970, 2),
+    gsSPLight(&spindrift_seg5_lights_05002970.l, 1),
+    gsSPLight(&spindrift_seg5_lights_05002970.a, 2),
     gsSPVertex(spindrift_seg5_vertex_05002988, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPSetGeometryMode(G_CULL_BACK),
@@ -247,14 +243,10 @@ const Gfx spindrift_seg5_dl_05002A20[] = {
 };
 
 // 0x05002A80
-static const Ambient spindrift_seg5_light_05002A80 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x05002A88
-static const Light spindrift_seg5_light_05002A88 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spindrift_seg5_lights_05002A80 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05002A98
 static const Vtx spindrift_seg5_vertex_05002A98[] = {
@@ -270,8 +262,8 @@ const Gfx spindrift_seg5_dl_05002AD8[] = {
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPClearGeometryMode(G_CULL_BACK),
-    gsSPLight(&spindrift_seg5_light_05002A88, 1),
-    gsSPLight(&spindrift_seg5_light_05002A80, 2),
+    gsSPLight(&spindrift_seg5_lights_05002A80.l, 1),
+    gsSPLight(&spindrift_seg5_lights_05002A80.a, 2),
     gsSPVertex(spindrift_seg5_vertex_05002A98, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSPSetGeometryMode(G_CULL_BACK),
@@ -295,14 +287,10 @@ const Gfx spindrift_seg5_dl_05002B30[] = {
 };
 
 // 0x05002B90
-static const Ambient spindrift_seg5_light_05002B90 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x05002B98
-static const Light spindrift_seg5_light_05002B98 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 spindrift_seg5_lights_05002B90 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05002BA8
 static const Vtx spindrift_seg5_vertex_05002BA8[] = {
@@ -329,8 +317,8 @@ const Gfx spindrift_seg5_dl_05002C98[] = {
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPClearGeometryMode(G_CULL_BACK),
-    gsSPLight(&spindrift_seg5_light_05002B98, 1),
-    gsSPLight(&spindrift_seg5_light_05002B90, 2),
+    gsSPLight(&spindrift_seg5_lights_05002B90.l, 1),
+    gsSPLight(&spindrift_seg5_lights_05002B90.a, 2),
     gsSPVertex(spindrift_seg5_vertex_05002BA8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

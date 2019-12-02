@@ -68,7 +68,7 @@ void bhv_bowling_ball_roll_loop(void) {
     s32 sp18;
 
     func_802EDA6C();
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     //! Uninitialzed parameter, but the parameter is unused in the called function
     sp18 = obj_follow_path(sp18);
@@ -144,7 +144,7 @@ void bhv_bowling_ball_loop(void) {
     if (o->oBehParams2ndByte != 4)
         func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
 
-    SetObjectVisibility(o, 4000);
+    set_object_visibility(o, 4000);
 }
 
 void bhv_generic_bowling_ball_spawner_init(void) {
@@ -215,7 +215,7 @@ void bhv_bob_pit_bowling_ball_init(void) {
 
 void bhv_bob_pit_bowling_ball_loop(void) {
     struct FloorGeometry *sp1c;
-    UNUSED s16 collisionFlags = ObjectStep();
+    UNUSED s16 collisionFlags = object_step();
 
     find_floor_height_and_data(o->oPosX, o->oPosY, o->oPosZ, &sp1c);
     if ((sp1c->normalX == 0) && (sp1c->normalZ == 0))
@@ -224,7 +224,7 @@ void bhv_bob_pit_bowling_ball_loop(void) {
     func_802EDA14();
     func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
     PlaySound(SOUND_ENV_UNKNOWN2);
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 void bhv_free_bowling_ball_init(void) {
@@ -239,7 +239,7 @@ void bhv_free_bowling_ball_init(void) {
 }
 
 void bhv_free_bowling_ball_roll_loop(void) {
-    s16 collisionFlags = ObjectStep();
+    s16 collisionFlags = object_step();
     func_802EDA14();
 
     if (o->oForwardVel > 10.0f) {

@@ -123,7 +123,7 @@ extern void bhv_menu_button_manager_init(void);
 extern void bhv_menu_button_manager_loop(void);
 extern Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, struct GraphNode *node,
                                                     f32 mtx[4][4]);
-extern void lvl_init_menu_values_and_cursor_pos(s32 arg, s32 unused);
-extern int lvl_update_obj_and_load_file_selected(s32 arg, s32 unused);
+extern s32 lvl_init_menu_values_and_cursor_pos(s32 arg, s32 unused);
+extern s32 lvl_update_obj_and_load_file_selected(s32 arg, s32 unused);
 
 #endif /* FILE_SELECT_H */

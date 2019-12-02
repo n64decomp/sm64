@@ -25,14 +25,10 @@ ALIGNED8 static const u8 whomp_seg6_texture_0601EB60[] = {
 };
 
 // 0x0601F360
-static const Ambient whomp_seg6_light_0601F360 = {
-    {{0x4c, 0x4c, 0x4c}, 0, {0x4c, 0x4c, 0x4c}, 0}
-};
-
-// 0x0601F368
-static const Light whomp_seg6_light_0601F368 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 whomp_seg6_lights_0601F360 = gdSPDefLights1(
+    0x4c, 0x4c, 0x4c,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0601F378
 static const Vtx whomp_seg6_vertex_0601F378[] = {
@@ -75,8 +71,8 @@ const Gfx whomp_seg6_dl_0601F4F8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, whomp_seg6_texture_0601EB60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&whomp_seg6_light_0601F368, 1),
-    gsSPLight(&whomp_seg6_light_0601F360, 2),
+    gsSPLight(&whomp_seg6_lights_0601F360.l, 1),
+    gsSPLight(&whomp_seg6_lights_0601F360.a, 2),
     gsSPVertex(whomp_seg6_vertex_0601F378, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  4, 0x0,  7,  8,  9, 0x0),
@@ -129,14 +125,10 @@ const Gfx whomp_seg6_dl_0601F5E0[] = {
 };
 
 // 0x0601F678
-static const Ambient whomp_seg6_light_0601F678 = {
-    {{0x4c, 0x4c, 0x4c}, 0, {0x4c, 0x4c, 0x4c}, 0}
-};
-
-// 0x0601F680
-static const Light whomp_seg6_light_0601F680 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 whomp_seg6_lights_0601F678 = gdSPDefLights1(
+    0x4c, 0x4c, 0x4c,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0601F690
 static const Vtx whomp_seg6_vertex_0601F690[] = {
@@ -173,8 +165,8 @@ const Gfx whomp_seg6_dl_0601F7F0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, whomp_seg6_texture_0601EB60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&whomp_seg6_light_0601F680, 1),
-    gsSPLight(&whomp_seg6_light_0601F678, 2),
+    gsSPLight(&whomp_seg6_lights_0601F678.l, 1),
+    gsSPLight(&whomp_seg6_lights_0601F678.a, 2),
     gsSPVertex(whomp_seg6_vertex_0601F690, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  4, 0x0,  7,  8,  9, 0x0),
@@ -203,14 +195,10 @@ const Gfx whomp_seg6_dl_0601F880[] = {
 };
 
 // 0x0601F8E0
-static const Ambient whomp_seg6_light_0601F8E0 = {
-    {{0x4c, 0x4c, 0x4c}, 0, {0x4c, 0x4c, 0x4c}, 0}
-};
-
-// 0x0601F8E8
-static const Light whomp_seg6_light_0601F8E8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 whomp_seg6_lights_0601F8E0 = gdSPDefLights1(
+    0x4c, 0x4c, 0x4c,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0601F8F8
 static const Vtx whomp_seg6_vertex_0601F8F8[] = {
@@ -247,8 +235,8 @@ const Gfx whomp_seg6_dl_0601FA58[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, whomp_seg6_texture_0601EB60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&whomp_seg6_light_0601F8E8, 1),
-    gsSPLight(&whomp_seg6_light_0601F8E0, 2),
+    gsSPLight(&whomp_seg6_lights_0601F8E0.l, 1),
+    gsSPLight(&whomp_seg6_lights_0601F8E0.a, 2),
     gsSPVertex(whomp_seg6_vertex_0601F8F8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  4, 0x0,  7,  8,  9, 0x0),
@@ -349,14 +337,10 @@ const Gfx whomp_seg6_dl_0601FCA8[] = {
 };
 
 // 0x0601FD18
-static const Ambient whomp_seg6_light_0601FD18 = {
-    {{0x4c, 0x4c, 0x4c}, 0, {0x4c, 0x4c, 0x4c}, 0}
-};
-
-// 0x0601FD20
-static const Light whomp_seg6_light_0601FD20 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 whomp_seg6_lights_0601FD18 = gdSPDefLights1(
+    0x4c, 0x4c, 0x4c,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0601FD30
 static const Vtx whomp_seg6_vertex_0601FD30[] = {
@@ -381,8 +365,8 @@ const Gfx whomp_seg6_dl_0601FE10[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, whomp_seg6_texture_0601EB60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&whomp_seg6_light_0601FD20, 1),
-    gsSPLight(&whomp_seg6_light_0601FD18, 2),
+    gsSPLight(&whomp_seg6_lights_0601FD18.l, 1),
+    gsSPLight(&whomp_seg6_lights_0601FD18.a, 2),
     gsSPVertex(whomp_seg6_vertex_0601FD30, 14, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 2,  1,  4, 0x0,  4,  3,  2, 0x0),
@@ -410,14 +394,10 @@ const Gfx whomp_seg6_dl_0601FEA8[] = {
 };
 
 // 0x0601FF08
-static const Ambient whomp_seg6_light_0601FF08 = {
-    {{0x4c, 0x4c, 0x4c}, 0, {0x4c, 0x4c, 0x4c}, 0}
-};
-
-// 0x0601FF10
-static const Light whomp_seg6_light_0601FF10 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 whomp_seg6_lights_0601FF08 = gdSPDefLights1(
+    0x4c, 0x4c, 0x4c,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0601FF20
 static const Vtx whomp_seg6_vertex_0601FF20[] = {
@@ -436,8 +416,8 @@ const Gfx whomp_seg6_dl_0601FFA0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, whomp_seg6_texture_0601EB60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&whomp_seg6_light_0601FF10, 1),
-    gsSPLight(&whomp_seg6_light_0601FF08, 2),
+    gsSPLight(&whomp_seg6_lights_0601FF08.l, 1),
+    gsSPLight(&whomp_seg6_lights_0601FF08.a, 2),
     gsSPVertex(whomp_seg6_vertex_0601FF20, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  2,  1, 0x0,  1,  5,  4, 0x0),

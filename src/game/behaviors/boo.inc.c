@@ -459,16 +459,16 @@ static void ActionBoo4(void) {
 
     // If there are no remaining "minion" boos, show the dialog of the Big Boo
     if (obj_nearest_object_with_behavior(bhvGhostHuntBoo) == NULL) {
-        dialogID = 108;
+        dialogID = DIALOG_108;
     } else {
-        dialogID = 107;
+        dialogID = DIALOG_107;
     }
 
     if (obj_update_dialog(2, 2, dialogID, 0)) {
         create_sound_spawner(SOUND_OBJ_DYING_ENEMY1);
         mark_object_for_deletion(o);
         
-        if (dialogID == 108) { // If the Big Boo should spawn, play the jingle
+        if (dialogID == DIALOG_108) { // If the Big Boo should spawn, play the jingle
             play_puzzle_jingle();
         }
     }

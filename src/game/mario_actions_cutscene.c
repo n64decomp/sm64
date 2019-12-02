@@ -23,6 +23,8 @@
 #include "engine/behavior_script.h"
 #include "behavior_data.h"
 #include "object_list_processor.h"
+#include "level_table.h"
+#include "dialog_ids.h"
 
 // TODO: put this elsewhere
 enum SaveOption { SAVE_OPT_SAVE_AND_CONTINUE = 1, SAVE_OPT_SAVE_AND_QUIT, SAVE_OPT_CONTINUE_DONT_SAVE };
@@ -230,7 +232,7 @@ static void Unknown80256FF8(u16 *a0) {
 
 /**
  * get_star_collection_dialog: Determine what dialog should show when Mario
- ** collects a star.
+ * collects a star.
  * Determines if Mario has collected enough stars to get a dialog for it, and
  * if so, return the dialog ID. Otherwise, return 0
  */
@@ -242,7 +244,7 @@ s32 get_star_collection_dialog(struct MarioState *m) {
     for (i = 0; i < 6; i++) {
         numStarsRequired = sStarsNeededForDialog[i];
         if (m->unkB8 < numStarsRequired && m->numStars >= numStarsRequired) {
-            dialogID = i + 0x8D;
+            dialogID = i + DIALOG_141;
             break;
         }
     }
@@ -411,7 +413,7 @@ s32 act_reading_npc_dialog(struct MarioState *m) {
         if (m->flags & MARIO_CAP_IN_HAND) {
             set_mario_action(m, ACT_PUTTING_ON_CAP, 0);
         } else {
-            set_mario_action(m, m->heldObj == NULL ? ACT_IDLE : ACT_UNKNOWN_007, 0);
+            set_mario_action(m, m->heldObj == NULL ? ACT_IDLE : ACT_HOLD_IDLE, 0);
         }
     }
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
@@ -624,7 +626,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
                 } else {
                     enable_time_stop();
-                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? 13 : 14);
+                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013 : DIALOG_014);
                     m->actionState = 1;
                 }
                 break;
@@ -800,10 +802,10 @@ s32 act_unlocking_key_door(struct MarioState *m) {
 
     switch (m->marioObj->header.gfx.unk38.animFrame) {
         case 79:
-            play_sound(SOUND_GENERAL_SWITCH4, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_GENERAL_DOOR_INSERT_KEY, m->marioObj->header.gfx.cameraToObject);
             break;
         case 111:
-            play_sound(SOUND_GENERAL_SWITCH2, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_GENERAL_DOOR_TURN_KEY, m->marioObj->header.gfx.cameraToObject);
             break;
     }
 
@@ -852,7 +854,7 @@ s32 act_unlocking_star_door(struct MarioState *m) {
         case 3:
             if (is_anim_at_end(m)) {
                 save_file_set_flags(get_door_save_file_flag(m->usedObj));
-                set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, 38);
+                set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, DIALOG_038);
             }
             break;
     }
@@ -972,7 +974,7 @@ s32 act_warp_door_spawn(struct MarioState *m) {
         }
     } else if (m->usedObj->oAction == 0) {
         if (gShouldNotPlayCastleMusic == TRUE && gCurrLevelNum == LEVEL_CASTLE) {
-            set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, 21);
+            set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, DIALOG_021);
         } else {
             set_mario_action(m, ACT_IDLE, 0);
         }
@@ -1822,7 +1824,7 @@ static s32 jumbo_star_cutscene_taking_off(struct MarioState *m) {
 
         switch (animFrame) {
             case 3:
-                play_sound(SOUND_MARIO_YAH_WAH_HOO + (D_80226EB8 % 3 << 16),
+                play_sound(SOUND_MARIO_YAH_WAH_HOO + (gAudioRandom % 3 << 16),
                            m->marioObj->header.gfx.cameraToObject);
                 break;
 

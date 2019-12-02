@@ -27,16 +27,6 @@ pipeline {
         sh 'make -j4 VERSION=us'
       }
     }
-    stage('Build J Source, NON_MATCHING') {
-      steps {
-        sh 'make -j4 VERSION=jp NON_MATCHING=1'
-      }
-    }
-    stage('Build U Source, NON_MATCHING') {
-      steps {
-        sh 'make -j4 VERSION=us NON_MATCHING=1'
-      }
-    }
   }
   environment {
     QEMU_IRIX = credentials('qemu-irix')

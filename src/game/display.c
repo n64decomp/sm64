@@ -55,7 +55,7 @@ void my_rsp_init(void) {
 
     gSPSetGeometryMode(gDisplayListHead++, G_SHADE | G_SHADING_SMOOTH | G_CULL_BACK | G_LIGHTING);
 
-    gSPNumLights(gDisplayListHead++, 1);
+    gSPNumLights(gDisplayListHead++, NUMLIGHTS_1);
     gSPTexture(gDisplayListHead++, 0, 0, 0, G_TX_RENDERTILE, G_OFF);
 
     // @bug Nintendo did not explicitly define the clipping ratio.

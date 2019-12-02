@@ -1,14 +1,10 @@
 // Purple Switch
 
 // 0x0800C090
-static const Ambient purple_switch_seg8_light_0800C090 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x0800C098
-static const Light purple_switch_seg8_light_0800C098 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 purple_switch_seg8_lights_0800C090 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0800C0A8
 ALIGNED8 static const u8 purple_switch_seg8_texture_0800C0A8[] = {
@@ -53,8 +49,8 @@ const Gfx purple_switch_seg8_dl_0800C668[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, purple_switch_seg8_texture_0800C0A8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 4 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&purple_switch_seg8_light_0800C098, 1),
-    gsSPLight(&purple_switch_seg8_light_0800C090, 2),
+    gsSPLight(&purple_switch_seg8_lights_0800C090.l, 1),
+    gsSPLight(&purple_switch_seg8_lights_0800C090.a, 2),
     gsSPVertex(purple_switch_seg8_vertex_0800C528, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  4, 0x0,  7,  8,  9, 0x0),

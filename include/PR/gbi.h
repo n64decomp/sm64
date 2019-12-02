@@ -297,19 +297,19 @@
  * G_MTX: parameter flags
  */
 #ifdef	F3DEX_GBI_2
-# define G_MTX_MODELVIEW	0x00	/* matrix types */
-# define G_MTX_PROJECTION	0x04
-# define G_MTX_MUL		0x00	/* concat or load */
-# define G_MTX_LOAD		0x02
-# define G_MTX_NOPUSH		0x00	/* push or not */
-# define G_MTX_PUSH		0x01
+# define G_MTX_MODELVIEW    0x00	/* matrix types */
+# define G_MTX_PROJECTION   0x04
+# define G_MTX_MUL          0x00	/* concat or load */
+# define G_MTX_LOAD         0x02
+# define G_MTX_NOPUSH       0x00	/* push or not */
+# define G_MTX_PUSH         0x01
 #else	/* F3DEX_GBI_2 */
-# define G_MTX_MODELVIEW	0x00	/* matrix types */
-# define G_MTX_PROJECTION	0x01
-# define G_MTX_MUL		0x00	/* concat or load */
-# define G_MTX_LOAD		0x02
-# define G_MTX_NOPUSH		0x00	/* push or not */
-# define G_MTX_PUSH		0x04
+# define G_MTX_MODELVIEW    0x00	/* matrix types */
+# define G_MTX_PROJECTION   0x01
+# define G_MTX_MUL          0x00	/* concat or load */
+# define G_MTX_LOAD         0x02
+# define G_MTX_NOPUSH       0x00	/* push or not */
+# define G_MTX_PUSH         0x04
 #endif	/* F3DEX_GBI_2 */
 
 /*
@@ -1719,7 +1719,7 @@ typedef struct {
  */
 typedef union {
 	Gwords		words;
-#if !defined(F3D_OLD) && !defined(__x86_64__) && !defined(__i386__)
+#if !defined(F3D_OLD) && IS_BIG_ENDIAN && !IS_64_BIT
 	Gdma		dma;
 	Gtri		tri;
 	Gline3D		line;
@@ -1738,7 +1738,7 @@ typedef union {
 	Gsettilesize	settilesize;
 	Gloadtlut	loadtlut;
 #endif
-        long long int	force_structure_alignment;
+	long long int	force_structure_alignment;
 } Gfx;
 
 /*

@@ -1,44 +1,28 @@
 // Bookend
 
-// Unreferenced Light
-UNUSED static const Ambient bookend_light_1 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 bookend_lights_unused1 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// Unreferenced Light
-UNUSED static const Light bookend_light_2 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 bookend_lights_unused2 = gdSPDefLights1(
+    0x03, 0x19, 0x09,
+    0x0c, 0x66, 0x26, 0x28, 0x28, 0x28
+);
 
-// Unreferenced Light
-UNUSED static const Ambient bookend_light_3 = {
-    {{0x03, 0x19, 0x09}, 0, {0x03, 0x19, 0x09}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 bookend_lights_unused3 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// Unreferenced Light
-UNUSED static const Light bookend_light_4 = {
-    {{0x0c, 0x66, 0x26}, 0, {0x0c, 0x66, 0x26}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced Light
-UNUSED static const Ambient bookend_light_5 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// Unreferenced Light
-UNUSED static const Light bookend_light_6 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced Light
-UNUSED static const Ambient bookend_light_7 = {
-    {{0x3f, 0x00, 0x00}, 0, {0x3f, 0x00, 0x00}, 0}
-};
-
-// Unreferenced Light
-UNUSED static const Light bookend_light_8 = {
-    {{0xff, 0x00, 0x00}, 0, {0xff, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 bookend_lights_unused4 = gdSPDefLights1(
+    0x3f, 0x00, 0x00,
+    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x05000060
 ALIGNED8 static const u8 bookend_seg5_texture_05000060[] = {
@@ -66,14 +50,10 @@ ALIGNED8 static const u8 bookend_seg5_texture_05001060[] = {
 };
 
 // 0x05001860
-static const Ambient bookend_seg5_light_05001860 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05001868
-static const Light bookend_seg5_light_05001868 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bookend_seg5_lights_05001860 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001878
 static const Vtx bookend_seg5_vertex_05001878[] = {
@@ -96,8 +76,8 @@ const Gfx bookend_seg5_dl_050018F8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bookend_seg5_texture_05000060),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bookend_seg5_light_05001868, 1),
-    gsSPLight(&bookend_seg5_light_05001860, 2),
+    gsSPLight(&bookend_seg5_lights_05001860.l, 1),
+    gsSPLight(&bookend_seg5_lights_05001860.a, 2),
     gsSPVertex(bookend_seg5_vertex_05001878, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -136,14 +116,10 @@ const Gfx bookend_seg5_dl_05001978[] = {
 };
 
 // 0x05001A08
-static const Ambient bookend_seg5_light_05001A08 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05001A10
-static const Light bookend_seg5_light_05001A10 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bookend_seg5_lights_05001A08 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001A20
 static const Vtx bookend_seg5_vertex_05001A20[] = {
@@ -166,8 +142,8 @@ const Gfx bookend_seg5_dl_05001AA0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bookend_seg5_texture_05000060),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bookend_seg5_light_05001A10, 1),
-    gsSPLight(&bookend_seg5_light_05001A08, 2),
+    gsSPLight(&bookend_seg5_lights_05001A08.l, 1),
+    gsSPLight(&bookend_seg5_lights_05001A08.a, 2),
     gsSPVertex(bookend_seg5_vertex_05001A20, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
@@ -206,14 +182,10 @@ const Gfx bookend_seg5_dl_05001B20[] = {
 };
 
 // 0x05001BB0
-static const Ambient bookend_seg5_light_05001BB0 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05001BB8
-static const Light bookend_seg5_light_05001BB8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bookend_seg5_lights_05001BB0 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001BC8
 static const Vtx bookend_seg5_vertex_05001BC8[] = {
@@ -244,8 +216,8 @@ const Gfx bookend_seg5_dl_05001CC8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bookend_seg5_texture_05000860),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bookend_seg5_light_05001BB8, 1),
-    gsSPLight(&bookend_seg5_light_05001BB0, 2),
+    gsSPLight(&bookend_seg5_lights_05001BB0.l, 1),
+    gsSPLight(&bookend_seg5_lights_05001BB0.a, 2),
     gsSPVertex(bookend_seg5_vertex_05001BC8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -283,14 +255,10 @@ const Gfx bookend_seg5_dl_05001D68[] = {
 };
 
 // 0x05001DE0
-static const Ambient bookend_seg5_light_05001DE0 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05001DE8
-static const Light bookend_seg5_light_05001DE8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bookend_seg5_lights_05001DE0 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05001DF8
 static const Vtx bookend_seg5_vertex_05001DF8[] = {
@@ -321,8 +289,8 @@ const Gfx bookend_seg5_dl_05001EF8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bookend_seg5_texture_05000860),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bookend_seg5_light_05001DE8, 1),
-    gsSPLight(&bookend_seg5_light_05001DE0, 2),
+    gsSPLight(&bookend_seg5_lights_05001DE0.l, 1),
+    gsSPLight(&bookend_seg5_lights_05001DE0.a, 2),
     gsSPVertex(bookend_seg5_vertex_05001DF8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -360,14 +328,10 @@ const Gfx bookend_seg5_dl_05001F98[] = {
 };
 
 // 0x05002010
-static const Ambient bookend_seg5_light_05002010 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x05002018
-static const Light bookend_seg5_light_05002018 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bookend_seg5_lights_05002010 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05002028
 static const Vtx bookend_seg5_vertex_05002028[] = {
@@ -390,8 +354,8 @@ const Gfx bookend_seg5_dl_050020E8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bookend_seg5_texture_05000460),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bookend_seg5_light_05002018, 1),
-    gsSPLight(&bookend_seg5_light_05002010, 2),
+    gsSPLight(&bookend_seg5_lights_05002010.l, 1),
+    gsSPLight(&bookend_seg5_lights_05002010.a, 2),
     gsSPVertex(bookend_seg5_vertex_05002028, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),
@@ -417,14 +381,10 @@ const Gfx bookend_seg5_dl_05002140[] = {
 };
 
 // 0x050021B0
-static const Ambient bookend_seg5_light_050021B0 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x050021B8
-static const Light bookend_seg5_light_050021B8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bookend_seg5_lights_050021B0 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x050021C8
 static const Vtx bookend_seg5_vertex_050021C8[] = {
@@ -447,8 +407,8 @@ const Gfx bookend_seg5_dl_05002288[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bookend_seg5_texture_05000460),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bookend_seg5_light_050021B8, 1),
-    gsSPLight(&bookend_seg5_light_050021B0, 2),
+    gsSPLight(&bookend_seg5_lights_050021B0.l, 1),
+    gsSPLight(&bookend_seg5_lights_050021B0.a, 2),
     gsSPVertex(bookend_seg5_vertex_050021C8, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

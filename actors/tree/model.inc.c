@@ -1,14 +1,10 @@
 // Tree
 
 // 0x0302DE10
-static const Ambient tree_seg3_light_0302DE10 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x0302DE18
-static const Light tree_seg3_light_0302DE18 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 tree_seg3_lights_0302DE10 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0302DE28
 ALIGNED8 static const u8 tree_seg3_texture_0302DE28[] = {
@@ -99,8 +95,8 @@ const Gfx tree_seg3_dl_03030FA0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, tree_seg3_texture_0302FF60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&tree_seg3_light_0302DE18, 1),
-    gsSPLight(&tree_seg3_light_0302DE10, 2),
+    gsSPLight(&tree_seg3_lights_0302DE10.l, 1),
+    gsSPLight(&tree_seg3_lights_0302DE10.a, 2),
     gsSPVertex(tree_seg3_vertex_03030F60, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
@@ -136,8 +132,8 @@ const Gfx tree_seg3_dl_03032088[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, tree_seg3_texture_03031048),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&tree_seg3_light_0302DE18, 1),
-    gsSPLight(&tree_seg3_light_0302DE10, 2),
+    gsSPLight(&tree_seg3_lights_0302DE10.l, 1),
+    gsSPLight(&tree_seg3_lights_0302DE10.a, 2),
     gsSPVertex(tree_seg3_vertex_03032048, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
@@ -168,8 +164,8 @@ const Gfx tree_seg3_dl_03032170[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, tree_seg3_texture_0302FF60),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&tree_seg3_light_0302DE18, 1),
-    gsSPLight(&tree_seg3_light_0302DE10, 2),
+    gsSPLight(&tree_seg3_lights_0302DE10.l, 1),
+    gsSPLight(&tree_seg3_lights_0302DE10.a, 2),
     gsSPVertex(tree_seg3_vertex_03032130, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
@@ -205,8 +201,8 @@ const Gfx tree_seg3_dl_03033258[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, tree_seg3_texture_03032218),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&tree_seg3_light_0302DE18, 1),
-    gsSPLight(&tree_seg3_light_0302DE10, 2),
+    gsSPLight(&tree_seg3_lights_0302DE10.l, 1),
+    gsSPLight(&tree_seg3_lights_0302DE10.a, 2),
     gsSPVertex(tree_seg3_vertex_03033218, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),

@@ -1,22 +1,14 @@
-// 0x07009458 - 0x07009460
-static const Ambient vcutm_seg7_light_07009458 = {
-    {{0x22, 0x22, 0x22}, 0, {0x22, 0x22, 0x22}, 0}
-};
+// 0x07009458 - 0x07009470
+static const Lights1 vcutm_seg7_lights_07009458 = gdSPDefLights1(
+    0x22, 0x22, 0x22,
+    0x88, 0x88, 0x88, 0x28, 0x28, 0x28
+);
 
-// 0x07009460 - 0x07009470
-static const Light vcutm_seg7_light_07009460 = {
-    {{0x88, 0x88, 0x88}, 0, {0x88, 0x88, 0x88}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07009470 - 0x07009478
-static const Ambient vcutm_seg7_light_07009470 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x07009478 - 0x07009488
-static const Light vcutm_seg7_light_07009478 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07009470 - 0x07009488
+static const Lights1 vcutm_seg7_lights_07009470 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x07009488 - 0x07009578
 static const Vtx vcutm_seg7_vertex_07009488[] = {
@@ -61,8 +53,8 @@ static const Gfx vcutm_seg7_dl_07009628[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, vcutm_seg7_texture_07001800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&vcutm_seg7_light_07009460, 1),
-    gsSPLight(&vcutm_seg7_light_07009458, 2),
+    gsSPLight(&vcutm_seg7_lights_07009458.l, 1),
+    gsSPLight(&vcutm_seg7_lights_07009458.a, 2),
     gsSPVertex(vcutm_seg7_vertex_07009488, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),
@@ -71,8 +63,8 @@ static const Gfx vcutm_seg7_dl_07009628[] = {
     gsSPVertex(vcutm_seg7_vertex_07009578, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP1Triangle( 4,  5,  6, 0x0),
-    gsSPLight(&vcutm_seg7_light_07009478, 1),
-    gsSPLight(&vcutm_seg7_light_07009470, 2),
+    gsSPLight(&vcutm_seg7_lights_07009470.l, 1),
+    gsSPLight(&vcutm_seg7_lights_07009470.a, 2),
     gsSPVertex(vcutm_seg7_vertex_070095E8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),

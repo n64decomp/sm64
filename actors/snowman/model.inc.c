@@ -3,45 +3,29 @@
 // ???
 UNUSED static const u64 snowman_unused_1 = 1;
 
-// Unreferenced light
-UNUSED static const Ambient snowman_light_1 = {
-    {{0x0d, 0x0c, 0x28}, 0, {0x0d, 0x0c, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 snowman_lights_unused1 = gdSPDefLights1(
+    0x0d, 0x0c, 0x28,
+    0x35, 0x32, 0xa2, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light snowman_light_2 = {
-    {{0x35, 0x32, 0xa2}, 0, {0x35, 0x32, 0xa2}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 snowman_lights_unused2 = gdSPDefLights1(
+    0x3f, 0x00, 0x00,
+    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Ambient snowman_light_3 = {
-    {{0x3f, 0x00, 0x00}, 0, {0x3f, 0x00, 0x00}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 snowman_lights_unused3 = gdSPDefLights1(
+    0x08, 0x07, 0x04,
+    0x23, 0x1c, 0x12, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light snowman_light_4 = {
-    {{0xff, 0x00, 0x00}, 0, {0xff, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient snowman_light_5 = {
-    {{0x08, 0x07, 0x04}, 0, {0x08, 0x07, 0x04}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light snowman_light_6 = {
-    {{0x23, 0x1c, 0x12}, 0, {0x23, 0x1c, 0x12}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient snowman_light_7 = {
-    {{0x03, 0x03, 0x02}, 0, {0x03, 0x03, 0x02}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light snowman_light_8 = {
-    {{0x0e, 0x0d, 0x0b}, 0, {0x0e, 0x0d, 0x0b}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 snowman_lights_unused4 = gdSPDefLights1(
+    0x03, 0x03, 0x02,
+    0x0e, 0x0d, 0x0b, 0x28, 0x28, 0x28
+);
 
 // 0x05008C70
 ALIGNED8 static const u8 snowman_seg5_texture_05008C70[] = {
@@ -69,14 +53,10 @@ ALIGNED8 static const u8 snowman_seg5_texture_0500BC70[] = {
 };
 
 // 0x0500C470
-static const Ambient snowman_seg5_light_0500C470 = {
-    {{0x1c, 0x0f, 0x07}, 0, {0x1c, 0x0f, 0x07}, 0}
-};
-
-// 0x0500C478
-static const Light snowman_seg5_light_0500C478 = {
-    {{0x38, 0x1e, 0x0e}, 0, {0x38, 0x1e, 0x0e}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 snowman_seg5_lights_0500C470 = gdSPDefLights1(
+    0x1c, 0x0f, 0x07,
+    0x38, 0x1e, 0x0e, 0x28, 0x28, 0x28
+);
 
 // 0x0500C488
 static const Vtx snowman_seg5_vertex_0500C488[] = {
@@ -88,8 +68,8 @@ static const Vtx snowman_seg5_vertex_0500C488[] = {
 
 // 0x0500C4C8 - 0x0500C500
 const Gfx snowman_seg5_dl_0500C4C8[] = {
-    gsSPLight(&snowman_seg5_light_0500C478, 1),
-    gsSPLight(&snowman_seg5_light_0500C470, 2),
+    gsSPLight(&snowman_seg5_lights_0500C470.l, 1),
+    gsSPLight(&snowman_seg5_lights_0500C470.a, 2),
     gsSPVertex(snowman_seg5_vertex_0500C488, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP1Triangle( 0,  3,  1, 0x0),
@@ -203,14 +183,10 @@ const Gfx snowman_seg5_dl_0500C760[] = {
 };
 
 // 0x0500C7D0
-static const Ambient snowman_seg5_light_0500C7D0 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0500C7D8
-static const Light snowman_seg5_light_0500C7D8 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 snowman_seg5_lights_0500C7D0 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0500C7E8
 static const Vtx snowman_seg5_vertex_0500C7E8[] = {
@@ -250,8 +226,8 @@ const Gfx snowman_seg5_dl_0500C978[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, snowman_seg5_texture_05008C70),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&snowman_seg5_light_0500C7D8, 1),
-    gsSPLight(&snowman_seg5_light_0500C7D0, 2),
+    gsSPLight(&snowman_seg5_lights_0500C7D0.l, 1),
+    gsSPLight(&snowman_seg5_lights_0500C7D0.a, 2),
     gsSPVertex(snowman_seg5_vertex_0500C7E8, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  4, 0x0),
     gsSP2Triangles( 4,  1,  0, 0x0,  5,  4,  3, 0x0),

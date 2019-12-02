@@ -539,6 +539,7 @@ void func_802652F0(struct MarioState *m) {
                     if (val04 > 8.0f) {
                         m->actionTimer = 2;
                     } else {
+                        //! (Speed Crash) If Mario's speed is more than 2^17.
                         if ((val14 = (s32)(val04 / 4.0f * 0x10000)) < 0x1000) {
                             val14 = 0x1000;
                         }
@@ -556,6 +557,7 @@ void func_802652F0(struct MarioState *m) {
                     if (val04 > 8.0f) {
                         m->actionTimer = 2;
                     } else {
+                        //! (Speed Crash) If Mario's speed is more than 2^17.
                         if ((val14 = (s32)(val04 * 0x10000)) < 0x1000) {
                             val14 = 0x1000;
                         }
@@ -572,6 +574,7 @@ void func_802652F0(struct MarioState *m) {
                     } else if (val04 > 22.0f) {
                         m->actionTimer = 3;
                     } else {
+                        //! (Speed Crash) If Mario's speed is more than 2^17.
                         val14 = (s32)(val04 / 4.0f * 0x10000);
                         set_mario_anim_with_accel(m, MARIO_ANIM_WALKING, val14);
                         func_80263AD4(m, 10, 49);
@@ -584,6 +587,7 @@ void func_802652F0(struct MarioState *m) {
                     if (val04 < 18.0f) {
                         m->actionTimer = 2;
                     } else {
+                        //! (Speed Crash) If Mario's speed is more than 2^17.
                         val14 = (s32)(val04 / 4.0f * 0x10000);
                         set_mario_anim_with_accel(m, MARIO_ANIM_RUNNING, val14);
                         func_80263AD4(m, 9, 45);
@@ -618,6 +622,7 @@ void func_8026570C(struct MarioState *m) {
                 if (val04 > 6.0f) {
                     m->actionTimer = 1;
                 } else {
+                    //! (Speed Crash) Crashes if Mario's speed exceeds or equals 2^15.
                     val0C = (s32)(val04 * 0x10000);
                     set_mario_anim_with_accel(m, MARIO_ANIM_SLOW_WALK_WITH_LIGHT_OBJ, val0C);
                     func_80263AD4(m, 12, 62);
@@ -632,6 +637,7 @@ void func_8026570C(struct MarioState *m) {
                 } else if (val04 > 11.0f) {
                     m->actionTimer = 2;
                 } else {
+                    //! (Speed Crash) Crashes if Mario's speed exceeds or equals 2^15.
                     val0C = (s32)(val04 * 0x10000);
                     set_mario_anim_with_accel(m, MARIO_ANIM_WALK_WITH_LIGHT_OBJ, val0C);
                     func_80263AD4(m, 12, 62);
@@ -644,6 +650,7 @@ void func_8026570C(struct MarioState *m) {
                 if (val04 < 8.0f) {
                     m->actionTimer = 1;
                 } else {
+                    //! (Speed Crash) Crashes if Mario's speed exceeds or equals 2^16.
                     val0C = (s32)(val04 / 2.0f * 0x10000);
                     set_mario_anim_with_accel(m, MARIO_ANIM_RUN_WITH_LIGHT_OBJ, val0C);
                     func_80263AD4(m, 10, 49);
@@ -667,6 +674,7 @@ void func_802659E8(struct MarioState *m, Vec3f startPos) {
     f32 dx = m->pos[0] - startPos[0];
     f32 dz = m->pos[2] - startPos[2];
     f32 movedDistance = sqrtf(dx * dx + dz * dz);
+    //! (Speed Crash) If a wall is after moving 16384 distance, this crashes.
     s32 val04 = (s32)(movedDistance * 2.0f * 0x10000);
 
     if (m->forwardVel > 6.0f) {
@@ -711,6 +719,8 @@ void func_80265C28(struct MarioState *m, s16 startYaw) {
 
     if (animID == MARIO_ANIM_WALKING || animID == MARIO_ANIM_RUNNING) {
         dYaw = m->faceAngle[1] - startYaw;
+        //! (Speed Crash) These casts can cause a crash if (dYaw * forwardVel / 12) or
+        //! (forwardVel * 170) exceed or equal 2^31.
         val02 = -(s16)(dYaw * m->forwardVel / 12.0f);
         val00 = (s16)(m->forwardVel * 170.0f);
 
@@ -741,6 +751,9 @@ void func_80265DBC(struct MarioState *m, s16 startYaw) {
     struct MarioBodyState *val0C = m->marioBodyState;
     struct Object *marioObj = m->marioObj;
     s16 dYaw = m->faceAngle[1] - startYaw;
+    //! (Speed Crash) These casts can cause a crash if (dYaw * forwardVel / 12) or
+    //! (forwardVel * 170) exceed or equal 2^31. Harder (if not impossible to do)
+    //! while on a Koopa Shell making this less of an issue.
     s16 val04 = -(s16)(dYaw * m->forwardVel / 12.0f);
     s16 val02 = (s16)(m->forwardVel * 170.0f);
 
@@ -928,7 +941,7 @@ s32 act_hold_heavy_walking(struct MarioState *m) {
     }
 
     if (m->input & INPUT_UNKNOWN_5) {
-        return set_mario_action(m, ACT_UNKNOWN_008, 0);
+        return set_mario_action(m, ACT_HOLD_HEAVY_IDLE, 0);
     }
 
     m->intendedMag *= 0.1f;
@@ -1111,6 +1124,7 @@ s32 act_decelerating(struct MarioState *m) {
         adjust_sound_for_speed(m);
         m->particleFlags |= PARTICLE_DUST;
     } else {
+        // (Speed Crash) Crashes if speed exceeds 2^17.
         if ((val0C = (s32)(m->forwardVel / 4.0f * 0x10000)) < 0x1000) {
             val0C = 0x1000;
         }
@@ -1151,7 +1165,7 @@ s32 act_hold_decelerating(struct MarioState *m) {
     }
 
     if (update_decelerating_speed(m)) {
-        return set_mario_action(m, ACT_UNKNOWN_007, 0);
+        return set_mario_action(m, ACT_HOLD_IDLE, 0);
     }
 
     m->intendedMag *= 0.4f;
@@ -1176,6 +1190,7 @@ s32 act_hold_decelerating(struct MarioState *m) {
         adjust_sound_for_speed(m);
         m->particleFlags |= PARTICLE_DUST;
     } else {
+        //! (Speed Crash) This crashes if Mario has more speed than 2^15 speed.
         if ((val0C = (s32)(m->forwardVel * 0x10000)) < 0x1000) {
             val0C = 0x1000;
         }

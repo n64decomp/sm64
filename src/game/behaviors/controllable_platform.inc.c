@@ -30,7 +30,7 @@ void bhv_controllable_platform_sub_loop(void) {
             if (gMarioObject->platform == o) {
                 D_80331694 = o->oBehParams2ndByte;
                 o->oAction = 1;
-                PlaySound2(SOUND_GENERAL_SWITCH3);
+                PlaySound2(SOUND_GENERAL_MOVING_PLATFORM_SWITCH);
             }
             break;
 
@@ -167,33 +167,33 @@ void bhv_controllable_platform_loop(void) {
 
         case 1:
             o->oVelZ = 10.0f;
-            sp54[0] = func_802E478C(sp48, o->oPosX + 250.0, o->oPosY, o->oPosZ + 300.0, 50.0f);
-            sp54[1] = func_802E478C(sp3C, o->oPosX, o->oPosY, o->oPosZ + 300.0, 50.0f);
-            sp54[2] = func_802E478C(sp30, o->oPosX - 250.0, o->oPosY, o->oPosZ + 300.0, 50.0f);
+            sp54[0] = obj_find_wall_displacement(sp48, o->oPosX + 250.0, o->oPosY, o->oPosZ + 300.0, 50.0f);
+            sp54[1] = obj_find_wall_displacement(sp3C, o->oPosX, o->oPosY, o->oPosZ + 300.0, 50.0f);
+            sp54[2] = obj_find_wall_displacement(sp30, o->oPosX - 250.0, o->oPosY, o->oPosZ + 300.0, 50.0f);
             func_802F3FD8(2, sp54, sp48, sp3C, sp30);
             break;
 
         case 2:
             o->oVelZ = -10.0f;
-            sp54[0] = func_802E478C(sp48, o->oPosX + 250.0, o->oPosY, o->oPosZ - 300.0, 50.0f);
-            sp54[1] = func_802E478C(sp3C, o->oPosX, o->oPosY, o->oPosZ - 300.0, 50.0f);
-            sp54[2] = func_802E478C(sp30, o->oPosX - 250.0, o->oPosY, o->oPosZ - 300.0, 50.0f);
+            sp54[0] = obj_find_wall_displacement(sp48, o->oPosX + 250.0, o->oPosY, o->oPosZ - 300.0, 50.0f);
+            sp54[1] = obj_find_wall_displacement(sp3C, o->oPosX, o->oPosY, o->oPosZ - 300.0, 50.0f);
+            sp54[2] = obj_find_wall_displacement(sp30, o->oPosX - 250.0, o->oPosY, o->oPosZ - 300.0, 50.0f);
             func_802F3FD8(1, sp54, sp48, sp3C, sp30);
             break;
 
         case 3:
             o->oVelX = 10.0f;
-            sp54[0] = func_802E478C(sp48, o->oPosX + 300.0, o->oPosY, o->oPosZ + 250.0, 50.0f);
-            sp54[1] = func_802E478C(sp3C, o->oPosX + 300.0, o->oPosY, o->oPosZ, 50.0f);
-            sp54[2] = func_802E478C(sp30, o->oPosX + 300.0, o->oPosY, o->oPosZ - 250.0, 50.0f);
+            sp54[0] = obj_find_wall_displacement(sp48, o->oPosX + 300.0, o->oPosY, o->oPosZ + 250.0, 50.0f);
+            sp54[1] = obj_find_wall_displacement(sp3C, o->oPosX + 300.0, o->oPosY, o->oPosZ, 50.0f);
+            sp54[2] = obj_find_wall_displacement(sp30, o->oPosX + 300.0, o->oPosY, o->oPosZ - 250.0, 50.0f);
             func_802F3FD8(4, sp54, sp48, sp3C, sp30);
             break;
 
         case 4:
             o->oVelX = -10.0f;
-            sp54[0] = func_802E478C(sp48, o->oPosX - 300.0, o->oPosY, o->oPosZ + 250.0, 50.0f);
-            sp54[1] = func_802E478C(sp3C, o->oPosX - 300.0, o->oPosY, o->oPosZ, 50.0f);
-            sp54[2] = func_802E478C(sp30, o->oPosX - 300.0, o->oPosY, o->oPosZ - 250.0, 50.0f);
+            sp54[0] = obj_find_wall_displacement(sp48, o->oPosX - 300.0, o->oPosY, o->oPosZ + 250.0, 50.0f);
+            sp54[1] = obj_find_wall_displacement(sp3C, o->oPosX - 300.0, o->oPosY, o->oPosZ, 50.0f);
+            sp54[2] = obj_find_wall_displacement(sp30, o->oPosX - 300.0, o->oPosY, o->oPosZ - 250.0, 50.0f);
             func_802F3FD8(3, sp54, sp48, sp3C, sp30);
             break;
 
@@ -203,7 +203,7 @@ void bhv_controllable_platform_loop(void) {
             break;
 
         case 6:
-            if (ObjFlickerAndDisappear(o, 150))
+            if (obj_flicker_and_disappear(o, 150))
                 spawn_object_abs_with_rot(o, 0, MODEL_HMC_METAL_PLATFORM, bhvControllablePlatform,
                                           o->oHomeX, o->oHomeY, o->oHomeZ, 0, 0, 0);
             break;

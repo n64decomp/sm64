@@ -21,7 +21,7 @@ void bhv_bobomb_init(void) {
 
 void func_802E5B7C(void) {
     if (((o->oBehParams >> 8) & 0x1) == 0) {
-        ObjSpawnYellowCoins(o, 1);
+        obj_spawn_yellow_coins(o, 1);
         o->oBehParams = 0x100;
         set_object_respawn_info_bits(o, 1);
     }
@@ -71,13 +71,13 @@ void BobombPatrolLoop(void) {
     sp22 = o->header.gfx.unk38.animFrame;
     o->oForwardVel = 5.0;
 
-    collisionFlags = ObjectStep();
-    if ((ObjLeaveIfMarioIsNearHome(o, o->oHomeX, o->oHomeY, o->oHomeZ, 400) == 1)
-        && (func_802E46C0(o->oMoveAngleYaw, o->oAngleToMario, 0x2000) == 1)) {
+    collisionFlags = object_step();
+    if ((obj_return_home_if_safe(o, o->oHomeX, o->oHomeY, o->oHomeZ, 400) == 1)
+        && (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, o->oAngleToMario, 0x2000) == 1)) {
         o->oBobombFuseLit = 1;
         o->oAction = BOBOMB_ACT_CHASE_MARIO;
     }
-    ObjCheckFloorDeath(collisionFlags, D_803600E0);
+    obj_check_floor_death(collisionFlags, sObjFloor);
 }
 
 void BobombChaseMarioLoop(void) {
@@ -87,18 +87,18 @@ void BobombChaseMarioLoop(void) {
     sp1a = ++o->header.gfx.unk38.animFrame;
     o->oForwardVel = 20.0;
 
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     if (sp1a == 5 || sp1a == 16)
         PlaySound2(SOUND_OBJ_BOBOMB_WALK);
 
     obj_turn_toward_object(o, gMarioObject, 16, 0x800);
-    ObjCheckFloorDeath(collisionFlags, D_803600E0);
+    obj_check_floor_death(collisionFlags, sObjFloor);
 }
 
 void BobombLaunchedLoop(void) {
     s16 collisionFlags = 0;
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
     if ((collisionFlags & 0x1) == 1)
         o->oAction = BOBOMB_ACT_EXPLODE; /* bit 0 */
 }
@@ -122,7 +122,7 @@ void GenericBobombFreeLoop(void) {
             break;
 
         case BOBOMB_ACT_LAVA_DEATH:
-            if (ObjLavaDeath() == 1)
+            if (obj_lava_death() == 1)
                 create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
             break;
 
@@ -149,7 +149,7 @@ void StationaryBobombFreeLoop(void) {
             break;
 
         case BOBOMB_ACT_LAVA_DEATH:
-            if (ObjLavaDeath() == 1)
+            if (obj_lava_death() == 1)
                 create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
             break;
 
@@ -293,7 +293,7 @@ void BobombBuddyIdleLoop(void) {
     o->oBobombBuddyPosYCopy = o->oPosY;
     o->oBobombBuddyPosZCopy = o->oPosZ;
 
-    collisionFlags = ObjectStep();
+    collisionFlags = object_step();
 
     if ((sp1a == 5) || (sp1a == 16))
         PlaySound2(SOUND_OBJ_BOBOMB_WALK);
@@ -373,9 +373,9 @@ void BobombBuddyTalkLoop(void) {
 
             case BOBOMB_BUDDY_ROLE_CANNON:
                 if (gCurrCourseNum == COURSE_BOB)
-                    BobombBuddyCannonLoop(4, 105);
+                    BobombBuddyCannonLoop(DIALOG_004, DIALOG_105);
                 else
-                    BobombBuddyCannonLoop(47, 106);
+                    BobombBuddyCannonLoop(DIALOG_047, DIALOG_106);
                 break;
         }
     }
@@ -408,7 +408,7 @@ void BobombBuddyActionLoop(void) {
             break;
     }
 
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }
 
 void bhv_bobomb_buddy_loop(void) {

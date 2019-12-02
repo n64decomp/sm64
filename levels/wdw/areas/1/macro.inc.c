@@ -1,6 +1,6 @@
 // 0x070160D8 - 0x0701633C
 const MacroObject wdw_seg7_area_1_macro_objs[] = {
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,             /*yaw*/   0, /*pos*/ -2077,  2816,  -660, /*behParam*/ 81),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,             /*yaw*/   0, /*pos*/ -2077,  2816,  -660, /*behParam*/ DIALOG_081),
     MACRO_OBJECT(/*preset*/ macro_bobomb_buddy_opens_cannon,   /*yaw*/   0, /*pos*/    -2,  2944,  3583),
     MACRO_OBJECT(/*preset*/ macro_coin_ring_horizontal,        /*yaw*/   0, /*pos*/ -2057,  2800,  -500),
     MACRO_OBJECT(/*preset*/ macro_coin_line_horizontal,        /*yaw*/  90, /*pos*/  1500,  1741,  2191),
@@ -59,7 +59,7 @@ const MacroObject wdw_seg7_area_1_macro_objs[] = {
     MACRO_OBJECT(/*preset*/ macro_box_three_coins,             /*yaw*/   0, /*pos*/  3388,  1600,  1155),
     MACRO_OBJECT(/*preset*/ macro_coin_line_horizontal,        /*yaw*/  90, /*pos*/   740,  3072, -3560),
     MACRO_OBJECT(/*preset*/ macro_box_star_2,                  /*yaw*/   0, /*pos*/  1550,  4350,   100),
-    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,             /*yaw*/   0, /*pos*/   740,  3060, -3680, /*behParam*/ 53),
+    MACRO_OBJECT_WITH_BEH_PARAM(/*preset*/ macro_wooden_signpost,             /*yaw*/   0, /*pos*/   740,  3060, -3680, /*behParam*/ DIALOG_053),
     MACRO_OBJECT(/*preset*/ macro_breakable_box_three_coins,   /*yaw*/   0, /*pos*/  4500,     0,  1040),
     MACRO_OBJECT_END(),
 };

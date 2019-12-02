@@ -1,34 +1,22 @@
 // Birds
 
 // 0x05000000
-static const Ambient birds_seg5_light_05000000 = {
-    {{0x07, 0x24, 0x2c}, 0, {0x07, 0x24, 0x2c}, 0}
-};
-
-// 0x05000008
-static const Light birds_seg5_light_05000008 = {
-    {{0x1d, 0x91, 0xb0}, 0, {0x1d, 0x91, 0xb0}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 birds_seg5_lights_05000000 = gdSPDefLights1(
+    0x07, 0x24, 0x2c,
+    0x1d, 0x91, 0xb0, 0x28, 0x28, 0x28
+);
 
 // 0x05000018
-static const Ambient birds_seg5_light_05000018 = {
-    {{0x33, 0x27, 0x0d}, 0, {0x33, 0x27, 0x0d}, 0}
-};
-
-// 0x05000020
-static const Light birds_seg5_light_05000020 = {
-    {{0xce, 0x9d, 0x34}, 0, {0xce, 0x9d, 0x34}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 birds_seg5_lights_05000018 = gdSPDefLights1(
+    0x33, 0x27, 0x0d,
+    0xce, 0x9d, 0x34, 0x28, 0x28, 0x28
+);
 
 // 0x05000030
-static const Ambient birds_seg5_light_05000030 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x05000038
-static const Light birds_seg5_light_05000038 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 birds_seg5_lights_05000030 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x05000048
 static const Vtx birds_seg5_vertex_05000048[] = {
@@ -150,8 +138,8 @@ static const Vtx birds_seg5_vertex_050004C8[] = {
 
 // 0x05000528 - 0x05000598
 const Gfx birds_seg5_dl_05000528[] = {
-    gsSPLight(&birds_seg5_light_05000008, 1),
-    gsSPLight(&birds_seg5_light_05000000, 2),
+    gsSPLight(&birds_seg5_lights_05000000.l, 1),
+    gsSPLight(&birds_seg5_lights_05000000.a, 2),
     gsSPVertex(birds_seg5_vertex_05000048, 9, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 4,  3,  2, 0x0,  5,  3,  6, 0x0),
@@ -163,16 +151,16 @@ const Gfx birds_seg5_dl_05000528[] = {
 
 // 0x05000598 - 0x05000600
 const Gfx birds_seg5_dl_05000598[] = {
-    gsSPLight(&birds_seg5_light_05000008, 1),
-    gsSPLight(&birds_seg5_light_05000000, 2),
+    gsSPLight(&birds_seg5_lights_05000000.l, 1),
+    gsSPLight(&birds_seg5_lights_05000000.a, 2),
     gsSPVertex(birds_seg5_vertex_050000D8, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
-    gsSPLight(&birds_seg5_light_05000008, 1),
-    gsSPLight(&birds_seg5_light_05000000, 2),
+    gsSPLight(&birds_seg5_lights_05000000.l, 1),
+    gsSPLight(&birds_seg5_lights_05000000.a, 2),
     gsSPVertex(birds_seg5_vertex_05000108, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
-    gsSPLight(&birds_seg5_light_05000008, 1),
-    gsSPLight(&birds_seg5_light_05000000, 2),
+    gsSPLight(&birds_seg5_lights_05000000.l, 1),
+    gsSPLight(&birds_seg5_lights_05000000.a, 2),
     gsSPVertex(birds_seg5_vertex_05000138, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPEndDisplayList(),
@@ -180,8 +168,8 @@ const Gfx birds_seg5_dl_05000598[] = {
 
 // 0x05000600 - 0x05000670
 const Gfx birds_seg5_dl_05000600[] = {
-    gsSPLight(&birds_seg5_light_05000008, 1),
-    gsSPLight(&birds_seg5_light_05000000, 2),
+    gsSPLight(&birds_seg5_lights_05000000.l, 1),
+    gsSPLight(&birds_seg5_lights_05000000.a, 2),
     gsSPVertex(birds_seg5_vertex_05000168, 9, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  0, 0x0),
     gsSP2Triangles( 0,  3,  4, 0x0,  5,  3,  6, 0x0),
@@ -193,8 +181,8 @@ const Gfx birds_seg5_dl_05000600[] = {
 
 // 0x05000670 - 0x050007E0
 const Gfx birds_seg5_dl_05000670[] = {
-    gsSPLight(&birds_seg5_light_05000008, 1),
-    gsSPLight(&birds_seg5_light_05000000, 2),
+    gsSPLight(&birds_seg5_lights_05000000.l, 1),
+    gsSPLight(&birds_seg5_lights_05000000.a, 2),
     gsSPVertex(birds_seg5_vertex_050001F8, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  1,  9, 10, 0x0),
@@ -210,16 +198,16 @@ const Gfx birds_seg5_dl_05000670[] = {
     gsSP1Triangle( 7,  6, 15, 0x0),
     gsSPVertex(birds_seg5_vertex_050003F8, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
-    gsSPLight(&birds_seg5_light_05000038, 1),
-    gsSPLight(&birds_seg5_light_05000030, 2),
+    gsSPLight(&birds_seg5_lights_05000030.l, 1),
+    gsSPLight(&birds_seg5_lights_05000030.a, 2),
     gsSPVertex(birds_seg5_vertex_05000428, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  0,  7, 0x0,  7,  8,  6, 0x0),
     gsSP2Triangles( 9,  7,  2, 0x0,  2,  7,  0, 0x0),
     gsSP2Triangles( 2,  3,  9, 0x0,  7,  9,  8, 0x0),
     gsSP1Triangle( 5,  4,  1, 0x0),
-    gsSPLight(&birds_seg5_light_05000020, 1),
-    gsSPLight(&birds_seg5_light_05000018, 2),
+    gsSPLight(&birds_seg5_lights_05000018.l, 1),
+    gsSPLight(&birds_seg5_lights_05000018.a, 2),
     gsSPVertex(birds_seg5_vertex_050004C8, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  4, 0x0),
     gsSP1Triangle( 1,  3,  5, 0x0),

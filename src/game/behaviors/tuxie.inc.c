@@ -62,11 +62,11 @@ void ActionTuxiesMother1(void) {
                 sp2C = (o->oBehParams >> 0x10) & 0xFF;
                 sp28 = (o->prevObj->oBehParams >> 0x10) & 0xFF;
                 if (sp2C == sp28)
-                    dialogID = 58;
+                    dialogID = DIALOG_058;
                 else
-                    dialogID = 59;
+                    dialogID = DIALOG_059;
                 if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, dialogID)) {
-                    if (dialogID == 58)
+                    if (dialogID == DIALOG_058)
                         o->oSubAction = 1;
                     else
                         o->oSubAction = 2;
@@ -128,7 +128,7 @@ void ActionTuxiesMother0(void) {
                         o->oSubAction++;
                 break;
             case 1:
-                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, 57))
+                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, DIALOG_057))
                     o->oSubAction++;
                 break;
             case 2:
@@ -294,7 +294,7 @@ void bhv_small_penguin_loop(void) {
 /** Geo switch logic for Tuxie's mother's eyes. Cases 0-4. Interestingly, case
  * 4 is unused, and is the eye state seen in Shoshinkai 1995 footage.
  */
-s32 geo_switch_tuxie_mother_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
+Gfx *geo_switch_tuxie_mother_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
     struct Object *obj;
     struct GraphNodeSwitchCase *switchCase;
     s32 timer;
@@ -323,5 +323,5 @@ s32 geo_switch_tuxie_mother_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *m
             if (obj->oForwardVel > 5.0f)
                 switchCase->selectedCase = 3;
     }
-    return 0;
+    return NULL;
 }

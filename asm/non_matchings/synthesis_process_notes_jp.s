@@ -9,7 +9,7 @@ glabel D_80337BC8
     .word 0x407FFEDA, 0
 
 .text
-glabel process_notes
+glabel synthesis_process_notes
 /* 0CF480 80314480 27BDFE88 */  addiu $sp, $sp, -0x178
 /* 0CF484 80314484 3C0E8022 */  lui   $t6, %hi(gMaxSimultaneousNotes) # $t6, 0x8022
 /* 0CF488 80314488 8DCE6D70 */  lw    $t6, %lo(gMaxSimultaneousNotes)($t6)

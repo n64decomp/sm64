@@ -8,16 +8,6 @@
  */
 
 // Bug Fixes
-// --| Categories
-/// Turn on bug fixes for really bad, C standard breaking code. This is
-/// enabled automatically when building with non-IDO compilers, or if
-/// NON_MATCHING is set.
-#if !defined(__sgi) || defined(NON_MATCHING)
-#define BUGFIXES_CRITICAL 1
-#else
-#define BUGFIXES_CRITICAL 0
-#endif
-
 // --| US Version Nintendo Bug Fixes
 /// Fixes bug where obtaining over 999 coins sets the number of lives to 999 (or -25)
 #define BUGFIX_MAX_LIVES (0 || VERSION_US || VERSION_EU)
@@ -32,13 +22,6 @@
 #define BUGFIX_PIRANHA_PLANT_SLEEP_DAMAGE (0 || VERSION_US || VERSION_EU)
 /// Fixes bug where it shows a star when you grab a key in bowser battle stages
 #define BUGFIX_STAR_BOWSER_KEY (0 || VERSION_US || VERSION_EU)
-
-// --| Goddard / Mario Head Bug Fixes
-/// Goddard left out important and necessary return statements; this puts them back in
-#define BUGFIX_GODDARD_MISSING_RETURN (0 || BUGFIXES_CRITICAL)
-/// It seems that Goddard only declared, not prototyped some functions. This lead to
-/// incorrect promotion of floats to doubles.
-#define BUGFIX_GODDARD_BAD_DECLARATIONS (0 || BUGFIXES_CRITICAL)
 
 // Screen Size Defines
 #define SCREEN_WIDTH 320

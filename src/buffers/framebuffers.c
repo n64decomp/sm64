@@ -3,7 +3,7 @@
 #include "sm64.h"
 
 // 0x70800 bytes
-#if BUGFIXES_CRITICAL
+#ifdef AVOID_UB
 u16 gFrameBuffers[3][SCREEN_WIDTH * SCREEN_HEIGHT];
 #else
 u16 gFrameBuffer0[SCREEN_WIDTH * SCREEN_HEIGHT];

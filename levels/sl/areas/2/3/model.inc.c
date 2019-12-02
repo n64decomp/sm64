@@ -1,12 +1,8 @@
-// 0x0700BD68 - 0x0700BD70
-static const Ambient sl_seg7_light_0700BD68 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0700BD70 - 0x0700BD80
-static const Light sl_seg7_light_0700BD70 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700BD68 - 0x0700BD80
+static const Lights1 sl_seg7_lights_0700BD68 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0700BD80 - 0x0700BE70
 static const Vtx sl_seg7_vertex_0700BD80[] = {
@@ -211,8 +207,8 @@ static const Gfx sl_seg7_dl_0700C720[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, snow_09000800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&sl_seg7_light_0700BD70, 1),
-    gsSPLight(&sl_seg7_light_0700BD68, 2),
+    gsSPLight(&sl_seg7_lights_0700BD68.l, 1),
+    gsSPLight(&sl_seg7_lights_0700BD68.a, 2),
     gsSPVertex(sl_seg7_vertex_0700BD80, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),

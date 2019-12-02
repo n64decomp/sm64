@@ -56,7 +56,7 @@ void func_802EFC44(void) {
     UNUSED s16 sp1E;
 
     o->oPathedStartWaypoint = segmented_to_virtual(&ccm_seg7_trajectory_snowman);
-    sp26 = func_802E4204();
+    sp26 = object_step_without_floor_orient();
     sp20 = obj_follow_path(sp20);
     o->oSnowmansBottomUnkF8 = o->oPathedTargetYaw;
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oSnowmansBottomUnkF8, 0x400);
@@ -66,7 +66,7 @@ void func_802EFC44(void) {
 
     if (sp20 == -1) {
         sp1E = (u16) o->oAngleToMario - (u16) o->oMoveAngleYaw;
-        if (func_802E46C0(o->oMoveAngleYaw, o->oAngleToMario, 0x2000) == 1 && o->oSnowmansBottomUnk1AC == 1) {
+        if (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, o->oAngleToMario, 0x2000) == 1 && o->oSnowmansBottomUnk1AC == 1) {
             o->oSnowmansBottomUnkF8 = o->oAngleToMario;
         } else {
             o->oSnowmansBottomUnkF8 = o->oMoveAngleYaw;
@@ -78,12 +78,12 @@ void func_802EFC44(void) {
 void func_802EFDA0(void) {
     UNUSED s16 sp26;
 
-    sp26 = func_802E4204();
+    sp26 = object_step_without_floor_orient();
     if (o->oForwardVel > 70.0)
         o->oForwardVel = 70.0f;
 
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oSnowmansBottomUnkF8, 0x400);
-    if (IsPointCloseToObject(o, -4230.0f, -1344.0f, 1813.0f, 300)) {
+    if (is_point_close_to_object(o, -4230.0f, -1344.0f, 1813.0f, 300)) {
         func_802AA618(0, 0, 70.0f);
         o->oMoveAngleYaw = atan2s(1813.0f - o->oPosZ, -4230.0f - o->oPosX);
         o->oVelY = 80.0f;
@@ -104,7 +104,7 @@ void func_802EFDA0(void) {
 void func_802EFF58(void) {
     UNUSED s16 sp1E;
 
-    sp1E = func_802E4204();
+    sp1E = object_step_without_floor_orient();
     if ((sp1E & 0x09) == 0x09) {
         o->oAction = 4;
         obj_become_intangible();
@@ -125,7 +125,7 @@ void bhv_snowmans_bottom_loop(void) {
         case 0:
             if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 400) == 1
                 && set_mario_npc_dialog(1) == 2) {
-                sp1E = cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, 110);
+                sp1E = cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, DIALOG_110);
                 if (sp1E) {
                     o->oForwardVel = 10.0f;
                     o->oAction = 1;
@@ -156,7 +156,7 @@ void bhv_snowmans_bottom_loop(void) {
     }
 
     func_802EFB2C();
-    SetObjectVisibility(o, 8000);
+    set_object_visibility(o, 8000);
     obj_scale(o->oSnowmansBottomUnkF4);
     o->oGraphYOffset = o->oSnowmansBottomUnkF4 * 180.0f;
 }
@@ -190,7 +190,7 @@ void bhv_snowmans_head_loop(void) {
 
     switch (o->oAction) {
         case 0:
-            if (func_802E4A38(&o->oSnowmansHeadUnkF4, 109, 400.0f, 1))
+            if (trigger_obj_dialog_when_facing(&o->oSnowmansHeadUnkF4, DIALOG_109, 400.0f, 1))
                 o->oAction = 1;
             break;
 
@@ -198,13 +198,13 @@ void bhv_snowmans_head_loop(void) {
             break;
 
         case 2:
-            sp1C = func_802E4204();
+            sp1C = object_step_without_floor_orient();
             if (sp1C & 0x08)
                 o->oAction = 3;
             break;
 
         case 3:
-            func_802E4204();
+            object_step_without_floor_orient();
             if (o->oPosY < -994.0f) {
                 o->oPosY = -994.0f;
                 o->oAction = 4;
@@ -214,7 +214,7 @@ void bhv_snowmans_head_loop(void) {
             break;
 
         case 4:
-            if (func_802E4A38(&o->oSnowmansHeadUnkF4, 111, 700.0f, 2)) {
+            if (trigger_obj_dialog_when_facing(&o->oSnowmansHeadUnkF4, DIALOG_111, 700.0f, 2)) {
                 func_802A3004();
                 create_star(-4700.0f, -1024.0f, 1890.0f);
                 o->oAction = 1;

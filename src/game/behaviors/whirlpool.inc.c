@@ -31,7 +31,7 @@ void func_802E70DC(void) {
     f32 normalX = sinRoll * cosPitch;
     f32 normalY = cosPitch * cosRoll;
     f32 normalZ = sinPitch;
-    ObjOrientGraph(o, normalX, normalY, normalZ);
+    obj_orient_graph(o, normalX, normalY, normalZ);
 }
 
 void bhv_whirlpool_loop(void) {

@@ -1,22 +1,14 @@
-// 0x07005730 - 0x07005738
-static const Ambient sl_seg7_light_07005730 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
+// 0x07005730 - 0x07005748
+static const Lights1 sl_seg7_lights_07005730 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x07005738 - 0x07005748
-static const Light sl_seg7_light_07005738 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07005748 - 0x07005750
-static const Ambient sl_seg7_light_07005748 = {
-    {{0x00, 0x00, 0x00}, 0, {0x00, 0x00, 0x00}, 0}
-};
-
-// 0x07005750 - 0x07005760
-static const Light sl_seg7_light_07005750 = {
-    {{0x00, 0x00, 0x00}, 0, {0x00, 0x00, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07005748 - 0x07005760
+static const Lights1 sl_seg7_lights_07005748 = gdSPDefLights1(
+    0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
+);
 
 // 0x07005760 - 0x070057D0
 static const Vtx sl_seg7_vertex_07005760[] = {
@@ -484,13 +476,13 @@ static const Gfx sl_seg7_dl_07006D70[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, snow_09008800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&sl_seg7_light_07005738, 1),
-    gsSPLight(&sl_seg7_light_07005730, 2),
+    gsSPLight(&sl_seg7_lights_07005730.l, 1),
+    gsSPLight(&sl_seg7_lights_07005730.a, 2),
     gsSPVertex(sl_seg7_vertex_07005760, 7, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP1Triangle( 3,  6,  4, 0x0),
-    gsSPLight(&sl_seg7_light_07005750, 1),
-    gsSPLight(&sl_seg7_light_07005748, 2),
+    gsSPLight(&sl_seg7_lights_07005748.l, 1),
+    gsSPLight(&sl_seg7_lights_07005748.a, 2),
     gsSPVertex(sl_seg7_vertex_070057D0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
@@ -501,8 +493,8 @@ static const Gfx sl_seg7_dl_07006DE8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, snow_09005000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&sl_seg7_light_07005738, 1),
-    gsSPLight(&sl_seg7_light_07005730, 2),
+    gsSPLight(&sl_seg7_lights_07005730.l, 1),
+    gsSPLight(&sl_seg7_lights_07005730.a, 2),
     gsSPVertex(sl_seg7_vertex_07005810, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  5,  6, 0x0,  7,  8,  9, 0x0),

@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-extern u32 D_80226EB8;
+extern u32 gAudioRandom;
 
 extern struct Object *gMarioObject;
 extern struct Object *gLuigiObject;

@@ -1,14 +1,10 @@
 // Blue Coin Switch
 
 // 0x08000000
-static const Ambient blue_coin_switch_seg8_light_08000000 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x08000008
-static const Light blue_coin_switch_seg8_light_08000008 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 blue_coin_switch_seg8_lights_08000000 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x08000018
 ALIGNED8 static const u8 blue_coin_switch_seg8_texture_08000018[] = {
@@ -53,8 +49,8 @@ const Gfx blue_coin_switch_seg8_dl_08000D58[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, blue_coin_switch_seg8_texture_08000018),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&blue_coin_switch_seg8_light_08000008, 1),
-    gsSPLight(&blue_coin_switch_seg8_light_08000000, 2),
+    gsSPLight(&blue_coin_switch_seg8_lights_08000000.l, 1),
+    gsSPLight(&blue_coin_switch_seg8_lights_08000000.a, 2),
     gsSPVertex(blue_coin_switch_seg8_vertex_08000C18, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),

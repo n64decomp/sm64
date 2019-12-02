@@ -40,7 +40,7 @@ void bhv_hidden_star_trigger_loop(void) {
         if (hiddenStar != NULL) {
             hiddenStar->oHiddenStarTriggerCounter++;
             if (hiddenStar->oHiddenStarTriggerCounter != 5) {
-                SpawnOrangeNumber(hiddenStar->oHiddenStarTriggerCounter, 0, 0, 0);
+                spawn_orange_number(hiddenStar->oHiddenStarTriggerCounter, 0, 0, 0);
             }
 
 #ifdef VERSION_JP

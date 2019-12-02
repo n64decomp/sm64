@@ -14,6 +14,7 @@
 #include "engine/surface_collision.h"
 #include "interaction.h"
 #include "camera.h"
+#include "level_table.h"
 
 #define POLE_NONE 0
 #define POLE_TOUCHED_FLOOR 1

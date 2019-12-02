@@ -1,12 +1,8 @@
-// 0x0704A1B8 - 0x0704A1C0
-static const Ambient inside_castle_seg7_light_0704A1B8 = {
-    {{0x3d, 0x3d, 0x3f}, 0, {0x3d, 0x3d, 0x3f}, 0}
-};
-
-// 0x0704A1C0 - 0x0704A1D0
-static const Light inside_castle_seg7_light_0704A1C0 = {
-    {{0xf5, 0xf5, 0xff}, 0, {0xf5, 0xf5, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0704A1B8 - 0x0704A1D0
+static const Lights1 inside_castle_seg7_lights_0704A1B8 = gdSPDefLights1(
+    0x3d, 0x3d, 0x3f,
+    0xf5, 0xf5, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0704A1D0 - 0x0704A290
 static const Vtx inside_castle_seg7_vertex_0704A1D0[] = {
@@ -26,8 +22,8 @@ static const Vtx inside_castle_seg7_vertex_0704A1D0[] = {
 
 // 0x0704A290 - 0x0704A2E0
 static const Gfx inside_castle_seg7_dl_0704A290[] = {
-    gsSPLight(&inside_castle_seg7_light_0704A1C0, 1),
-    gsSPLight(&inside_castle_seg7_light_0704A1B8, 2),
+    gsSPLight(&inside_castle_seg7_lights_0704A1B8.l, 1),
+    gsSPLight(&inside_castle_seg7_lights_0704A1B8.a, 2),
     gsSPVertex(inside_castle_seg7_vertex_0704A1D0, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  7,  5, 0x0),

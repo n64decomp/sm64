@@ -1,7 +1,10 @@
-#ifndef _AUDIO_SYNTHESIS_H
-#define _AUDIO_SYNTHESIS_H
+#ifndef AUDIO_SYNTHESIS_H
+#define AUDIO_SYNTHESIS_H
 
 #include "internal.h"
+
+#define DEFAULT_LEN_1CH 0x140
+#define DEFAULT_LEN_2CH 0x280
 
 #define MAX_UPDATES_PER_FRAME 4
 
@@ -46,4 +49,4 @@ void note_set_frequency(struct Note *note, f32 frequency);
 void note_enable(struct Note *note);
 void note_disable(struct Note *note);
 
-#endif /* _AUDIO_SYNTHESIS_H */
+#endif /* AUDIO_SYNTHESIS_H */

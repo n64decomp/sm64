@@ -1,54 +1,34 @@
 // King Bobomb
 
-// Unreferenced light
-UNUSED static const Ambient king_bobomb_light_1 = {
-    {{0x36, 0x1e, 0x00}, 0, {0x36, 0x1e, 0x00}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 king_bobomb_lights_unused1 = gdSPDefLights1(
+    0x36, 0x1e, 0x00,
+    0xd9, 0x7a, 0x00, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light king_bobomb_light_2 = {
-    {{0xd9, 0x7a, 0x00}, 0, {0xd9, 0x7a, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 king_bobomb_lights_unused2 = gdSPDefLights1(
+    0x00, 0x00, 0x3f,
+    0x00, 0x00, 0xff, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Ambient king_bobomb_light_3 = {
-    {{0x00, 0x00, 0x3f}, 0, {0x00, 0x00, 0x3f}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 king_bobomb_lights_unused3 = gdSPDefLights1(
+    0x3c, 0x28, 0x00,
+    0xf1, 0xa2, 0x00, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Light king_bobomb_light_4 = {
-    {{0x00, 0x00, 0xff}, 0, {0x00, 0x00, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 king_bobomb_lights_unused4 = gdSPDefLights1(
+    0x2c, 0x2c, 0x2c,
+    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
+);
 
-// Unreferenced light
-UNUSED static const Ambient king_bobomb_light_5 = {
-    {{0x3c, 0x28, 0x00}, 0, {0x3c, 0x28, 0x00}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light king_bobomb_light_6 = {
-    {{0xf1, 0xa2, 0x00}, 0, {0xf1, 0xa2, 0x00}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient king_bobomb_light_7 = {
-    {{0x2c, 0x2c, 0x2c}, 0, {0x2c, 0x2c, 0x2c}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light king_bobomb_light_8 = {
-    {{0xb2, 0xb2, 0xb2}, 0, {0xb2, 0xb2, 0xb2}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Ambient king_bobomb_light_9 = {
-    {{0x06, 0x06, 0x06}, 0, {0x06, 0x06, 0x06}, 0}
-};
-
-// Unreferenced light
-UNUSED static const Light king_bobomb_light_10 = {
-    {{0x19, 0x19, 0x19}, 0, {0x19, 0x19, 0x19}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// Unreferenced light group
+UNUSED static const Lights1 king_bobomb_lights_unused5 = gdSPDefLights1(
+    0x06, 0x06, 0x06,
+    0x19, 0x19, 0x19, 0x28, 0x28, 0x28
+);
 
 // 0x05000078
 ALIGNED8 static const u8 king_bobomb_seg5_texture_05000078[] = {
@@ -317,14 +297,10 @@ const Gfx king_bobomb_seg5_dl_0500A978[] = {
 };
 
 // 0x0500A9E8
-static const Ambient king_bobomb_seg5_light_0500A9E8 = {
-    {{0x6f, 0x56, 0x11}, 0, {0x6f, 0x56, 0x11}, 0}
-};
-
-// 0x0500A9F0
-static const Light king_bobomb_seg5_light_0500A9F0 = {
-    {{0xde, 0xad, 0x23}, 0, {0xde, 0xad, 0x23}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 king_bobomb_seg5_lights_0500A9E8 = gdSPDefLights1(
+    0x6f, 0x56, 0x11,
+    0xde, 0xad, 0x23, 0x28, 0x28, 0x28
+);
 
 // 0x0500AA00
 static const Vtx king_bobomb_seg5_vertex_0500AA00[] = {
@@ -364,8 +340,8 @@ static const Vtx king_bobomb_seg5_vertex_0500AB00[] = {
 
 // 0x0500ABC0 - 0x0500AD08
 const Gfx king_bobomb_seg5_dl_0500ABC0[] = {
-    gsSPLight(&king_bobomb_seg5_light_0500A9F0, 1),
-    gsSPLight(&king_bobomb_seg5_light_0500A9E8, 2),
+    gsSPLight(&king_bobomb_seg5_lights_0500A9E8.l, 1),
+    gsSPLight(&king_bobomb_seg5_lights_0500A9E8.a, 2),
     gsSPVertex(king_bobomb_seg5_vertex_0500AA00, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 1,  4,  5, 0x0,  1,  5,  6, 0x0),
@@ -400,14 +376,10 @@ const Gfx king_bobomb_seg5_dl_0500AD08[] = {
 };
 
 // 0x0500AD38
-static const Ambient king_bobomb_seg5_light_0500AD38 = {
-    {{0x6f, 0x4f, 0x10}, 0, {0x6f, 0x4f, 0x10}, 0}
-};
-
-// 0x0500AD40
-static const Light king_bobomb_seg5_light_0500AD40 = {
-    {{0xde, 0x9e, 0x20}, 0, {0xde, 0x9e, 0x20}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 king_bobomb_seg5_lights_0500AD38 = gdSPDefLights1(
+    0x6f, 0x4f, 0x10,
+    0xde, 0x9e, 0x20, 0x28, 0x28, 0x28
+);
 
 // 0x0500AD50
 static const Vtx king_bobomb_seg5_vertex_0500AD50[] = {
@@ -448,8 +420,8 @@ static const Vtx king_bobomb_seg5_vertex_0500AE50[] = {
 
 // 0x0500AF20 - 0x0500B068
 const Gfx king_bobomb_seg5_dl_0500AF20[] = {
-    gsSPLight(&king_bobomb_seg5_light_0500AD40, 1),
-    gsSPLight(&king_bobomb_seg5_light_0500AD38, 2),
+    gsSPLight(&king_bobomb_seg5_lights_0500AD38.l, 1),
+    gsSPLight(&king_bobomb_seg5_lights_0500AD38.a, 2),
     gsSPVertex(king_bobomb_seg5_vertex_0500AD50, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSP2Triangles( 1,  4,  5, 0x0,  1,  5,  2, 0x0),
@@ -540,14 +512,10 @@ const Gfx king_bobomb_seg5_dl_0500B188[] = {
 };
 
 // 0x0500B200
-static const Ambient king_bobomb_seg5_light_0500B200 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x0500B208
-static const Light king_bobomb_seg5_light_0500B208 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 king_bobomb_seg5_lights_0500B200 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0500B218
 static const Vtx king_bobomb_seg5_vertex_0500B218[] = {
@@ -564,8 +532,8 @@ const Gfx king_bobomb_seg5_dl_0500B278[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, king_bobomb_seg5_texture_05004878),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&king_bobomb_seg5_light_0500B208, 1),
-    gsSPLight(&king_bobomb_seg5_light_0500B200, 2),
+    gsSPLight(&king_bobomb_seg5_lights_0500B200.l, 1),
+    gsSPLight(&king_bobomb_seg5_lights_0500B200.a, 2),
     gsSPVertex(king_bobomb_seg5_vertex_0500B218, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  2,  4, 0x0),
     gsSP2Triangles( 2,  3,  0, 0x0,  4,  5,  3, 0x0),
@@ -589,14 +557,10 @@ const Gfx king_bobomb_seg5_dl_0500B2D0[] = {
 };
 
 // 0x0500B330
-static const Ambient king_bobomb_seg5_light_0500B330 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0500B338
-static const Light king_bobomb_seg5_light_0500B338 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 king_bobomb_seg5_lights_0500B330 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0500B348
 static const Vtx king_bobomb_seg5_vertex_0500B348[] = {
@@ -612,8 +576,8 @@ static const Vtx king_bobomb_seg5_vertex_0500B348[] = {
 
 // 0x0500B3C8 - 0x0500B418
 const Gfx king_bobomb_seg5_dl_0500B3C8[] = {
-    gsSPLight(&king_bobomb_seg5_light_0500B338, 1),
-    gsSPLight(&king_bobomb_seg5_light_0500B330, 2),
+    gsSPLight(&king_bobomb_seg5_lights_0500B330.l, 1),
+    gsSPLight(&king_bobomb_seg5_lights_0500B330.a, 2),
     gsSPVertex(king_bobomb_seg5_vertex_0500B348, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  4, 0x0),
     gsSP2Triangles( 2,  4,  5, 0x0,  2,  5,  0, 0x0),
@@ -634,14 +598,10 @@ const Gfx king_bobomb_seg5_dl_0500B418[] = {
 };
 
 // 0x0500B458
-static const Ambient king_bobomb_seg5_light_0500B458 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
-
-// 0x0500B460
-static const Light king_bobomb_seg5_light_0500B460 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 king_bobomb_seg5_lights_0500B458 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x0500B470
 static const Vtx king_bobomb_seg5_vertex_0500B470[] = {
@@ -680,8 +640,8 @@ const Gfx king_bobomb_seg5_dl_0500B5F0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, king_bobomb_seg5_texture_05006078),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&king_bobomb_seg5_light_0500B460, 1),
-    gsSPLight(&king_bobomb_seg5_light_0500B458, 2),
+    gsSPLight(&king_bobomb_seg5_lights_0500B458.l, 1),
+    gsSPLight(&king_bobomb_seg5_lights_0500B458.a, 2),
     gsSPVertex(king_bobomb_seg5_vertex_0500B470, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  0, 0x0),
     gsSP2Triangles( 0,  2,  3, 0x0,  5,  4,  3, 0x0),

@@ -1,28 +1,23 @@
-#ifndef _SCREEN_TRANSITION_H
-#define _SCREEN_TRANSITION_H
+#ifndef SCREEN_TRANSITION_H
+#define SCREEN_TRANSITION_H
 
 #include "types.h"
 
-// extern ? D_8032FF60;
-// extern ? D_8032FF64;
-// extern ? D_8032FF68;
+enum TextureTransitionID
+{
+    TEX_TRANS_STAR,
+    TEX_TRANS_CIRCLE,
+    TEX_TRANS_MARIO,
+    TEX_TRANS_BOWSER
+};
 
-// extern ? func_802CAAE0(?);
-// extern ? func_802CAB60(?);
-// extern ? func_802CADB4(?);
-// extern ? func_802CAF38(?);
-// extern ? func_802CB0E4(?);
-// extern ? func_802CB140(?);
-// extern ? func_802CB19C(?);
-// extern ? func_802CB274(?);
-// extern ? func_802CB384(?);
-// extern ? func_802CB400(?);
-// extern ? func_802CB484(?);
-// extern ? func_802CB508(?);
-// extern ? func_802CB6A0(?);
-// extern ? func_802CB9F8(?);
-int func_802CC108(s8 sp23, s8 sp27, u8 sp2B, struct WarpTransitionData *sp2C);
-// extern ? func_802CC2E8(?);
-extern Gfx *Geo18_802CD1E8(s32 run, struct GraphNode *node, UNUSED f32 mtx[4][4]);
+enum TextureTransitionType
+{
+    TRANS_TYPE_MIRROR,
+    TRANS_TYPE_CLAMP
+};
 
-#endif /* _SCREEN_TRANSITION_H */
+extern int render_screen_transition(s8 fadeTimer, s8 transType, u8 transTime, struct WarpTransitionData *transData);
+extern Gfx *geo_cannon_circle_base(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]);
+
+#endif /* SCREEN_TRANSITION_H */

@@ -7,8 +7,8 @@
 // data
 extern struct ObjGroup *gMarioFaceGrp;
 extern struct ObjShape *D_801A82E4;
-extern struct ObjShape *gShapeSilSpark;
 extern struct ObjShape *gShapeRedSpark;
+extern struct ObjShape *gShapeSilverSpark;
 extern struct ObjShape *gShapeRedStar;
 extern struct ObjShape *gShapeSilverStar;
 
@@ -25,7 +25,7 @@ extern s32 load_mario_head(void (*aniFn)(struct ObjAnimator *));
 extern void load_shapes2(void);
 
 // see bad_declarations.h
-#if !GD_USE_BAD_DECLARATIONS
+#ifndef GD_USE_BAD_DECLARATIONS
 extern struct ObjFace* make_face_with_colour(f32, f32, f32);
 #endif
 

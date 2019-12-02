@@ -79,7 +79,7 @@ void bhv_falling_pillar_loop(void) {
             break;
 
         case FALLING_PILLAR_ACT_TURNING:
-            func_802E4204();
+            object_step_without_floor_orient();
 
             // Calculate angle in front of Mario and turn towards it.
             angleInFrontOfMario = bhv_falling_pillar_calculate_angle_in_front_of_mario();
@@ -91,7 +91,7 @@ void bhv_falling_pillar_loop(void) {
             break;
 
         case FALLING_PILLAR_ACT_FALLING:
-            func_802E4204();
+            object_step_without_floor_orient();
 
             // Start falling slowly, with increasing acceleration each frame.
             o->oFallingPillarPitchAcceleration += 4.0f;

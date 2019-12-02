@@ -18,6 +18,7 @@
 #include "behavior_data.h"
 #include "text_strings.h"
 #include "file_select.h"
+#include "dialog_ids.h"
 
 /**
  * @file file_select.c
@@ -2042,13 +2043,13 @@ static void print_save_file_scores(s8 fileIndex) {
     unsigned char textMario[] = { TEXT_MARIO };
 #ifdef VERSION_JP
     unsigned char textFileLetter[] = { TEXT_ZERO };
-    void **levelNameTable = segmented_to_virtual(seg2_level_name_table);
+    void **levelNameTable = segmented_to_virtual(seg2_course_name_table);
 #endif
     unsigned char textHiScore[] = { TEXT_HI_SCORE };
     unsigned char textMyScore[] = { TEXT_MY_SCORE };
 #ifdef VERSION_US
     unsigned char textFileLetter[] = { TEXT_ZERO };
-    void **levelNameTable = segmented_to_virtual(seg2_level_name_table);
+    void **levelNameTable = segmented_to_virtual(seg2_course_name_table);
 #endif
 
     textFileLetter[0] = fileIndex + ASCII_TO_DIALOG('A'); // get letter of file selected
@@ -2070,33 +2071,33 @@ static void print_save_file_scores(s8 fileIndex) {
 #ifdef VERSION_JP
 #define PADCHAR 0
 #define PRINT_COURSE_SCORES(courseIndex, pad)                                                               \
-    print_menu_generic_string(23 + (pad * 3), 35 + 12 * courseIndex, segmented_to_virtual(levelNameTable[courseIndex]));  \
-    print_score_file_star_score(fileIndex, courseIndex, 152, 35 + 12 * courseIndex);                        \
-    print_score_file_course_coin_score(fileIndex, courseIndex, 213, 35 + 12 * courseIndex);
+    print_menu_generic_string(23 + (pad * 3), 23 + 12 * courseIndex, segmented_to_virtual(levelNameTable[courseIndex - 1]));  \
+    print_score_file_star_score(fileIndex, courseIndex - 1, 152, 23 + 12 * courseIndex);                        \
+    print_score_file_course_coin_score(fileIndex, courseIndex - 1, 213, 23 + 12 * courseIndex);
 #else
 #define PADCHAR 1
 #define PRINT_COURSE_SCORES(courseIndex, pad)                                                               \
-    print_menu_generic_string(23 + (pad * 3), 35 + 12 * courseIndex, segmented_to_virtual(levelNameTable[courseIndex]));  \
-    print_score_file_star_score(fileIndex, courseIndex, 171, 35 + 12 * courseIndex);                        \
-    print_score_file_course_coin_score(fileIndex, courseIndex, 213, 35 + 12 * courseIndex);
+    print_menu_generic_string(23 + (pad * 3), 23 + 12 * courseIndex, segmented_to_virtual(levelNameTable[courseIndex - 1]));  \
+    print_score_file_star_score(fileIndex, courseIndex - 1, 171, 23 + 12 * courseIndex);                        \
+    print_score_file_course_coin_score(fileIndex, courseIndex - 1, 213, 23 + 12 * courseIndex);
 #endif
 
     // Course values are indexed, from Bob-omb Battlefield to Rainbow Ride
-    PRINT_COURSE_SCORES(0, PADCHAR) // BOB
-    PRINT_COURSE_SCORES(1, PADCHAR) // WF
-    PRINT_COURSE_SCORES(2, PADCHAR) // JRB
-    PRINT_COURSE_SCORES(3, PADCHAR) // CCM
-    PRINT_COURSE_SCORES(4, PADCHAR) // BBH
-    PRINT_COURSE_SCORES(5, PADCHAR) // HMC
-    PRINT_COURSE_SCORES(6, PADCHAR) // LLL
-    PRINT_COURSE_SCORES(7, PADCHAR) // SSL
-    PRINT_COURSE_SCORES(8, PADCHAR) // DDD
-    PRINT_COURSE_SCORES(9, 0)  // SL
-    PRINT_COURSE_SCORES(10, 0) // WDW
-    PRINT_COURSE_SCORES(11, 0) // TTM
-    PRINT_COURSE_SCORES(12, 0) // THI
-    PRINT_COURSE_SCORES(13, 0) // TTC
-    PRINT_COURSE_SCORES(14, 0) // RR
+    PRINT_COURSE_SCORES(COURSE_BOB, PADCHAR) // BOB
+    PRINT_COURSE_SCORES(COURSE_WF, PADCHAR) // WF
+    PRINT_COURSE_SCORES(COURSE_JRB, PADCHAR) // JRB
+    PRINT_COURSE_SCORES(COURSE_CCM, PADCHAR) // CCM
+    PRINT_COURSE_SCORES(COURSE_BBH, PADCHAR) // BBH
+    PRINT_COURSE_SCORES(COURSE_HMC, PADCHAR) // HMC
+    PRINT_COURSE_SCORES(COURSE_LLL, PADCHAR) // LLL
+    PRINT_COURSE_SCORES(COURSE_SSL, PADCHAR) // SSL
+    PRINT_COURSE_SCORES(COURSE_DDD, PADCHAR) // DDD
+    PRINT_COURSE_SCORES(COURSE_SL, 0)  // SL
+    PRINT_COURSE_SCORES(COURSE_WDW, 0) // WDW
+    PRINT_COURSE_SCORES(COURSE_TTM, 0) // TTM
+    PRINT_COURSE_SCORES(COURSE_THI, 0) // THI
+    PRINT_COURSE_SCORES(COURSE_TTC, 0) // TTC
+    PRINT_COURSE_SCORES(COURSE_RR, 0) // RR
 
 #undef PRINT_COURSE_SCORES
 #undef PADCHAR
@@ -2187,7 +2188,7 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
  * Relocates cursor position of the last save if the game goes back to the Mario Screen
  * either completing a course choosing "SAVE & QUIT" or having a game over.
  */
-void lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
+s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
     sSelectedButtonID = MENU_BUTTON_NONE;
     sCurrentMenuLevel = MENU_LAYER_MAIN;
     sTextBaseAlpha = 0;
@@ -2223,6 +2224,11 @@ void lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
     sMainMenuTimer = 0;
     sEraseYesNoHoverState = MENU_ERASE_HOVER_NONE;
     sSoundMode = save_file_get_sound_mode();
+
+    //! no return value
+#ifdef AVOID_UB
+    return 0;
+#endif
 }
 
 /**
@@ -2230,7 +2236,7 @@ void lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
  * When a save file is selected, it returns fileNum value
  * defined in load_main_menu_save_file.
  */
-int lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
+s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
     area_update_objects();
     return sSelectedFileNum;
 }

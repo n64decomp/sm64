@@ -1,22 +1,14 @@
-// 0x07004A18 - 0x07004A20
-static const Ambient jrb_seg7_light_07004A18 = {
-    {{0x1e, 0x27, 0x3a}, 0, {0x1e, 0x27, 0x3a}, 0}
-};
+// 0x07004A18 - 0x07004A30
+static const Lights1 jrb_seg7_lights_07004A18 = gdSPDefLights1(
+    0x1e, 0x27, 0x3a,
+    0x79, 0x9f, 0xeb, 0x28, 0x28, 0x28
+);
 
-// 0x07004A20 - 0x07004A30
-static const Light jrb_seg7_light_07004A20 = {
-    {{0x79, 0x9f, 0xeb}, 0, {0x79, 0x9f, 0xeb}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07004A30 - 0x07004A38
-static const Ambient jrb_seg7_light_07004A30 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x07004A38 - 0x07004A48
-static const Light jrb_seg7_light_07004A38 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07004A30 - 0x07004A48
+static const Lights1 jrb_seg7_lights_07004A30 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x07004A48 - 0x07004AC8
 static const Vtx jrb_seg7_vertex_07004A48[] = {
@@ -51,8 +43,8 @@ static const Gfx jrb_seg7_dl_07004B88[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, water_09001800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&jrb_seg7_light_07004A20, 1),
-    gsSPLight(&jrb_seg7_light_07004A18, 2),
+    gsSPLight(&jrb_seg7_lights_07004A18.l, 1),
+    gsSPLight(&jrb_seg7_lights_07004A18.a, 2),
     gsSPVertex(jrb_seg7_vertex_07004A48, 8, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 2,  1,  4, 0x0,  2,  4,  5, 0x0),
@@ -65,8 +57,8 @@ static const Gfx jrb_seg7_dl_07004BF0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, water_09004800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&jrb_seg7_light_07004A38, 1),
-    gsSPLight(&jrb_seg7_light_07004A30, 2),
+    gsSPLight(&jrb_seg7_lights_07004A30.l, 1),
+    gsSPLight(&jrb_seg7_lights_07004A30.a, 2),
     gsSPVertex(jrb_seg7_vertex_07004AC8, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 3,  6,  4, 0x0,  6,  7,  4, 0x0),

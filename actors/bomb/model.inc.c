@@ -1,14 +1,10 @@
 // Bomb
 
 // 0x06057AA8
-static const Ambient bomb_seg6_light_06057AA8 = {
-    {{0x3f, 0x3f, 0x3f}, 0, {0x3f, 0x3f, 0x3f}, 0}
-};
-
-// 0x06057AB0
-static const Light bomb_seg6_light_06057AB0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+static const Lights1 bomb_seg6_lights_06057AA8 = gdSPDefLights1(
+    0x3f, 0x3f, 0x3f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x06057AC0
 ALIGNED8 static const u8 bomb_seg6_texture_06057AC0[] = {
@@ -177,8 +173,8 @@ const Gfx bomb_seg6_dl_0605A8A8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bomb_seg6_texture_06059AC0),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bomb_seg6_light_06057AB0, 1),
-    gsSPLight(&bomb_seg6_light_06057AA8, 2),
+    gsSPLight(&bomb_seg6_lights_06057AA8.l, 1),
+    gsSPLight(&bomb_seg6_lights_06057AA8.a, 2),
     gsSPVertex(bomb_seg6_vertex_0605A340, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

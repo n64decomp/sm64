@@ -1,22 +1,14 @@
-// 0x07022E78 - 0x07022E80
-static const Ambient hmc_seg7_light_07022E78 = {
-    {{0x79, 0x79, 0x79}, 0, {0x79, 0x79, 0x79}, 0}
-};
+// 0x07022E78 - 0x07022E90
+static const Lights1 hmc_seg7_lights_07022E78 = gdSPDefLights1(
+    0x79, 0x79, 0x79,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x07022E80 - 0x07022E90
-static const Light hmc_seg7_light_07022E80 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x07022E90 - 0x07022E98
-static const Ambient hmc_seg7_light_07022E90 = {
-    {{0x4f, 0x64, 0x5b}, 0, {0x4f, 0x64, 0x5b}, 0}
-};
-
-// 0x07022E98 - 0x07022EA8
-static const Light hmc_seg7_light_07022E98 = {
-    {{0xa8, 0xd3, 0xc0}, 0, {0xa8, 0xd3, 0xc0}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07022E90 - 0x07022EA8
+static const Lights1 hmc_seg7_lights_07022E90 = gdSPDefLights1(
+    0x4f, 0x64, 0x5b,
+    0xa8, 0xd3, 0xc0, 0x28, 0x28, 0x28
+);
 
 // 0x07022EA8 - 0x07022EE8
 static const Vtx hmc_seg7_vertex_07022EA8[] = {
@@ -51,8 +43,8 @@ static const Gfx hmc_seg7_dl_07022FE8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hmc_seg7_texture_07003800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&hmc_seg7_light_07022E80, 1),
-    gsSPLight(&hmc_seg7_light_07022E78, 2),
+    gsSPLight(&hmc_seg7_lights_07022E78.l, 1),
+    gsSPLight(&hmc_seg7_lights_07022E78.a, 2),
     gsSPVertex(hmc_seg7_vertex_07022EA8, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSPEndDisplayList(),
@@ -60,8 +52,8 @@ static const Gfx hmc_seg7_dl_07022FE8[] = {
 
 // 0x07023030 - 0x07023090
 static const Gfx hmc_seg7_dl_07023030[] = {
-    gsSPLight(&hmc_seg7_light_07022E98, 1),
-    gsSPLight(&hmc_seg7_light_07022E90, 2),
+    gsSPLight(&hmc_seg7_lights_07022E90.l, 1),
+    gsSPLight(&hmc_seg7_lights_07022E90.a, 2),
     gsSPVertex(hmc_seg7_vertex_07022EE8, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  3,  2, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  5,  7,  6, 0x0),

@@ -21,9 +21,6 @@
 #define DMEM_ADDR_WET_LEFT_CH 0x740
 #define DMEM_ADDR_WET_RIGHT_CH 0x880
 
-#define DEFAULT_LEN_1CH 0x140
-#define DEFAULT_LEN_2CH 0x280
-
 #define aSetLoadBufferPair(pkt, c, off)                                                                \
     aSetBuffer(pkt, 0, c + DMEM_ADDR_WET_LEFT_CH, 0, DEFAULT_LEN_1CH - c);                             \
     aLoadBuffer(pkt, VIRTUAL_TO_PHYSICAL2(&gSynthesisReverb.ringBuffer.left[off]));                    \
@@ -49,7 +46,7 @@ struct VolumeChange {
 };
 
 u64 *synthesis_do_one_audio_update(u16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateIndex);
-u64 *process_notes(u16 *aiBuf, s32 bufLen, u64 *cmd);
+u64 *synthesis_process_notes(u16 *aiBuf, s32 bufLen, u64 *cmd);
 u64 *load_wave_samples(u64 *cmd, struct Note *note, s32 nSamplesToLoad);
 u64 *final_resample(u64 *cmd, struct Note *note, s32 count, u16 pitch, u16 dmemIn, u32 flags);
 u64 *process_envelope(u64 *cmd, struct Note *note, s32 nSamples, u16 inBuf, s32 headsetPanSettings,
@@ -185,7 +182,7 @@ u64 *synthesis_do_one_audio_update(u16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateI
     if (gSynthesisReverb.useReverb == 0) {
 
         aClearBuffer(cmd++, DMEM_ADDR_LEFT_CH, DEFAULT_LEN_2CH);
-        cmd = process_notes(aiBuf, bufLen, cmd);
+        cmd = synthesis_process_notes(aiBuf, bufLen, cmd);
     } else {
         if (gReverbDownsampleRate == 1) {
             // Put the oldest samples in the ring buffer into the wet channels
@@ -224,7 +221,7 @@ u64 *synthesis_do_one_audio_update(u16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateI
                  /*out*/ DMEM_ADDR_LEFT_CH);
             aDMEMMove(cmd++, DMEM_ADDR_LEFT_CH, DMEM_ADDR_WET_LEFT_CH, DEFAULT_LEN_2CH);
         }
-        cmd = process_notes(aiBuf, bufLen, cmd);
+        cmd = synthesis_process_notes(aiBuf, bufLen, cmd);
         if (gReverbDownsampleRate == 1) {
             aSetSaveBufferPair(cmd++, 0, v1->lengths[0], v1->startPos);
             if (v1->lengths[1] != 0) {
@@ -246,7 +243,7 @@ u64 *synthesis_do_one_audio_update(u16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateI
 }
 
 #ifdef NON_MATCHING
-u64 *process_notes(u16 *aiBuf, s32 bufLen, u64 *cmd) {
+u64 *synthesis_process_notes(u16 *aiBuf, s32 bufLen, u64 *cmd) {
     s32 noteIndex;                           // sp174
     struct Note *note;                       // s7
     struct AudioBankSample *audioBookSample; // sp164
@@ -571,9 +568,9 @@ u64 *process_notes(u16 *aiBuf, s32 bufLen, u64 *cmd) {
 }
 
 #elif defined(VERSION_JP)
-GLOBAL_ASM("asm/non_matchings/process_notes_jp.s")
+GLOBAL_ASM("asm/non_matchings/synthesis_process_notes_jp.s")
 #else
-GLOBAL_ASM("asm/non_matchings/process_notes_us.s")
+GLOBAL_ASM("asm/non_matchings/synthesis_process_notes_us.s")
 #endif
 
 u64 *load_wave_samples(u64 *cmd, struct Note *note, s32 nSamplesToLoad) {

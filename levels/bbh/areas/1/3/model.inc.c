@@ -1,22 +1,14 @@
-// 0x070079B0 - 0x070079B8
-static const Ambient bbh_seg7_light_070079B0 = {
-    {{0x3f, 0x51, 0x66}, 0, {0x3f, 0x51, 0x66}, 0}
-};
+// 0x070079B0 - 0x070079C8
+static const Lights1 bbh_seg7_lights_070079B0 = gdSPDefLights1(
+    0x3f, 0x51, 0x66,
+    0x9e, 0xcc, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x070079B8 - 0x070079C8
-static const Light bbh_seg7_light_070079B8 = {
-    {{0x9e, 0xcc, 0xff}, 0, {0x9e, 0xcc, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x070079C8 - 0x070079D0
-static const Ambient bbh_seg7_light_070079C8 = {
-    {{0x66, 0x66, 0x66}, 0, {0x66, 0x66, 0x66}, 0}
-};
-
-// 0x070079D0 - 0x070079E0
-static const Light bbh_seg7_light_070079D0 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x070079C8 - 0x070079E0
+static const Lights1 bbh_seg7_lights_070079C8 = gdSPDefLights1(
+    0x66, 0x66, 0x66,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x070079E0 - 0x07007AA0
 static const Vtx bbh_seg7_vertex_070079E0[] = {
@@ -47,8 +39,8 @@ static const Gfx bbh_seg7_dl_07007AE0[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, spooky_09006000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bbh_seg7_light_070079B8, 1),
-    gsSPLight(&bbh_seg7_light_070079B0, 2),
+    gsSPLight(&bbh_seg7_lights_070079B0.l, 1),
+    gsSPLight(&bbh_seg7_lights_070079B0.a, 2),
     gsSPVertex(bbh_seg7_vertex_070079E0, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  6,  7, 0x0),
@@ -61,8 +53,8 @@ static const Gfx bbh_seg7_dl_07007B48[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bbh_seg7_texture_07001000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bbh_seg7_light_070079D0, 1),
-    gsSPLight(&bbh_seg7_light_070079C8, 2),
+    gsSPLight(&bbh_seg7_lights_070079C8.l, 1),
+    gsSPLight(&bbh_seg7_lights_070079C8.a, 2),
     gsSPVertex(bbh_seg7_vertex_07007AA0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),

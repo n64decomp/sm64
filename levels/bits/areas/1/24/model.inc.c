@@ -1,12 +1,8 @@
-// 0x07013890 - 0x07013898
-static const Ambient bits_seg7_light_07013890 = {
-    {{0x14, 0x2f, 0x29}, 0, {0x14, 0x2f, 0x29}, 0}
-};
-
-// 0x07013898 - 0x070138A8
-static const Light bits_seg7_light_07013898 = {
-    {{0x50, 0xbf, 0xa7}, 0, {0x50, 0xbf, 0xa7}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07013890 - 0x070138A8
+static const Lights1 bits_seg7_lights_07013890 = gdSPDefLights1(
+    0x14, 0x2f, 0x29,
+    0x50, 0xbf, 0xa7, 0x28, 0x28, 0x28
+);
 
 // 0x070138A8 - 0x07013998
 static const Vtx bits_seg7_vertex_070138A8[] = {
@@ -77,8 +73,8 @@ static const Gfx bits_seg7_dl_07013BA8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sky_09007000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&bits_seg7_light_07013898, 1),
-    gsSPLight(&bits_seg7_light_07013890, 2),
+    gsSPLight(&bits_seg7_lights_07013890.l, 1),
+    gsSPLight(&bits_seg7_lights_07013890.a, 2),
     gsSPVertex(bits_seg7_vertex_070138A8, 15, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSP2Triangles( 6,  7,  8, 0x0,  9, 10, 11, 0x0),

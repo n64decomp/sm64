@@ -48,7 +48,7 @@ void CheckWaterRingCollection(f32 avgScale, struct Object *ringManager) {
     f32 marioDistInFront = WaterRingCalcMarioDistInFront();
     struct Object *ringSpawner;
 
-    if (!IsPointCloseToObject(o, gMarioObject->header.gfx.pos[0],
+    if (!is_point_close_to_object(o, gMarioObject->header.gfx.pos[0],
                               gMarioObject->header.gfx.pos[1] + 80.0f, gMarioObject->header.gfx.pos[2],
                               (avgScale + 0.2) * 120.0)) {
         o->oWaterRingMarioDistInFront = marioDistInFront;
@@ -62,7 +62,7 @@ void CheckWaterRingCollection(f32 avgScale, struct Object *ringManager) {
                 || (ringSpawner->oWaterRingSpawnerRingsCollected == 0)) {
                 ringSpawner->oWaterRingSpawnerRingsCollected++;
                 if (ringSpawner->oWaterRingSpawnerRingsCollected < 6) {
-                    SpawnOrangeNumber(ringSpawner->oWaterRingSpawnerRingsCollected, 0, -40, 0);
+                    spawn_orange_number(ringSpawner->oWaterRingSpawnerRingsCollected, 0, -40, 0);
 #ifdef VERSION_JP
                     play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
 #else
@@ -124,7 +124,7 @@ void JetStreamWaterRingNotCollectedLoop(void) {
 
     o->oPosY += 10.0f;
     o->oFaceAngleYaw += 0x100;
-    SetObjectVisibility(o, 5000);
+    set_object_visibility(o, 5000);
 
     if (ringSpawner->oWaterRingSpawnerRingsCollected == 4
         && o->oWaterRingIndex == ringManager->oWaterRingMgrLastRingCollected + 1)
@@ -212,7 +212,7 @@ void MantaRayWaterRingNotCollectedLoop(void) {
 
     CheckWaterRingCollection(avgScale, ringManager);
     SetWaterRingScale(avgScale);
-    SetObjectVisibility(o, 5000);
+    set_object_visibility(o, 5000);
 
     if (ringSpawner->oWaterRingSpawnerRingsCollected == 4
         && o->oWaterRingIndex == ringManager->oWaterRingMgrLastRingCollected + 1)

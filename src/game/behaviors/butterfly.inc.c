@@ -108,5 +108,5 @@ void bhv_butterfly_loop(void) {
             break;
     }
 
-    SetObjectVisibility(o, 3000);
+    set_object_visibility(o, 3000);
 }

@@ -1,12 +1,8 @@
-// 0x07000000 - 0x07000008
-static const Ambient sa_light_07000000 = {
-    {{0x00, 0x7f, 0x99}, 0, {0x00, 0x7f, 0x99}, 0}
-};
-
-// 0x07000008 - 0x07000018
-static const Light sa_light_07000008 = {
-    {{0x00, 0xd4, 0xff}, 0, {0x00, 0xd4, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x07000000 - 0x07000018
+static const Lights1 sa_lights = gdSPDefLights1(
+    0x00, 0x7f, 0x99,
+    0x00, 0xd4, 0xff, 0x28, 0x28, 0x28
+);
 
 // 0x07000018 - 0x070000D8
 static const Vtx sa_vertex_07000018[] = {
@@ -738,8 +734,8 @@ static const Gfx sa_dl_070023E8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, inside_0900B000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&sa_light_07000008, 1),
-    gsSPLight(&sa_light_07000000, 2),
+    gsSPLight(&sa_lights.l, 1),
+    gsSPLight(&sa_lights.a, 2),
     gsSPVertex(sa_vertex_07000018, 12, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSP2Triangles( 0,  4,  5, 0x0,  0,  5,  1, 0x0),

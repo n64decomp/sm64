@@ -1,22 +1,14 @@
-// 0x0700CB60 - 0x0700CB68
-static const Ambient ttm_seg7_light_0700CB60 = {
-    {{0x7f, 0x7f, 0x7f}, 0, {0x7f, 0x7f, 0x7f}, 0}
-};
+// 0x0700CB60 - 0x0700CB78
+static const Lights1 ttm_seg7_lights_0700CB60 = gdSPDefLights1(
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+);
 
-// 0x0700CB68 - 0x0700CB78
-static const Light ttm_seg7_light_0700CB68 = {
-    {{0xff, 0xff, 0xff}, 0, {0xff, 0xff, 0xff}, 0, {0x28, 0x28, 0x28}, 0}
-};
-
-// 0x0700CB78 - 0x0700CB80
-static const Ambient ttm_seg7_light_0700CB78 = {
-    {{0x5d, 0x5d, 0x5d}, 0, {0x5d, 0x5d, 0x5d}, 0}
-};
-
-// 0x0700CB80 - 0x0700CB90
-static const Light ttm_seg7_light_0700CB80 = {
-    {{0xbb, 0xbb, 0xbb}, 0, {0xbb, 0xbb, 0xbb}, 0, {0x28, 0x28, 0x28}, 0}
-};
+// 0x0700CB78 - 0x0700CB90
+static const Lights1 ttm_seg7_lights_0700CB78 = gdSPDefLights1(
+    0x5d, 0x5d, 0x5d,
+    0xbb, 0xbb, 0xbb, 0x28, 0x28, 0x28
+);
 
 // 0x0700CB90 - 0x0700CBF0
 static const Vtx ttm_seg7_vertex_0700CB90[] = {
@@ -48,12 +40,12 @@ static const Gfx ttm_seg7_dl_0700CC60[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mountain_09004000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&ttm_seg7_light_0700CB68, 1),
-    gsSPLight(&ttm_seg7_light_0700CB60, 2),
+    gsSPLight(&ttm_seg7_lights_0700CB60.l, 1),
+    gsSPLight(&ttm_seg7_lights_0700CB60.a, 2),
     gsSPVertex(ttm_seg7_vertex_0700CB90, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
-    gsSPLight(&ttm_seg7_light_0700CB80, 1),
-    gsSPLight(&ttm_seg7_light_0700CB78, 2),
+    gsSPLight(&ttm_seg7_lights_0700CB78.l, 1),
+    gsSPLight(&ttm_seg7_lights_0700CB78.a, 2),
     gsSPVertex(ttm_seg7_vertex_0700CBF0, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPEndDisplayList(),
@@ -64,8 +56,8 @@ static const Gfx ttm_seg7_dl_0700CCC8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mountain_09003800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&ttm_seg7_light_0700CB68, 1),
-    gsSPLight(&ttm_seg7_light_0700CB60, 2),
+    gsSPLight(&ttm_seg7_lights_0700CB60.l, 1),
+    gsSPLight(&ttm_seg7_lights_0700CB60.a, 2),
     gsSPVertex(ttm_seg7_vertex_0700CC20, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),

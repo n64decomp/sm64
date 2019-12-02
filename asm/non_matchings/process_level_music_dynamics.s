@@ -30,8 +30,8 @@ glabel process_level_music_dynamics # US: 803208EC
 /* 0DAA8C 8031FA8C 10000005 */  b     .L8031FAA4
 /* 0DAA90 8031FA90 A06E0000 */   sb    $t6, ($v1)
 .L8031FA94:
-/* 0DAA94 8031FA94 3C0F8033 */  lui   $t7, %hi(gPlayer0CurSeqId) # $t7, 0x8033
-/* 0DAA98 8031FA98 91EF209C */  lbu   $t7, %lo(gPlayer0CurSeqId)($t7)
+/* 0DAA94 8031FA94 3C0F8033 */  lui   $t7, %hi(sPlayer0CurSeqId) # $t7, 0x8033
+/* 0DAA98 8031FA98 91EF209C */  lbu   $t7, %lo(sPlayer0CurSeqId)($t7)
 /* 0DAA9C 8031FA9C 3C018033 */  lui   $at, %hi(sBackgroundMusicForDynamics) # $at, 0x8033
 /* 0DAAA0 8031FAA0 A02F1EB0 */  sb    $t7, %lo(sBackgroundMusicForDynamics)($at)
 .L8031FAA4:

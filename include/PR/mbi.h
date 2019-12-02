@@ -1,6 +1,8 @@
 #ifndef _MBI_H_
 #define	_MBI_H_
 
+#include "platform_info.h"
+
 /**************************************************************************
  *									  *
  *		 Copyright (C) 1994, Silicon Graphics, Inc.		  *
