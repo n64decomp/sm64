@@ -163,12 +163,12 @@
  * 0x0F: Create a camera scene graph node.
  *   0x01: unused
  *   0x02: s16 camera type
- *   0x04: s16 fromX
- *   0x06: s16 fromY
- *   0x08: s16 fromZ
- *   0x0A: s16 toX
- *   0x0C: s16 toY
- *   0x0E: s16 toZ
+ *   0x04: s16 posX
+ *   0x06: s16 posY
+ *   0x08: s16 posZ
+ *   0x0A: s16 focusX
+ *   0x0C: s16 focusY
+ *   0x0E: s16 focusZ
  *   0x10: GraphNodeFunc function
  */
 #define GEO_CAMERA(type, x1, y1, z1, x2, y2, z2, function) \

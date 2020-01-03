@@ -290,7 +290,7 @@ extern f32 obj_lateral_dist_to_home(void);
 extern void obj_set_pos_to_home(void);
 void obj_set_pos_to_home_and_stop(void);
 extern void obj_shake_y(f32);
-void func_802A11B4(struct Object*, s32);
+void obj_start_cam_event(struct Object *obj, s32 cameraEvent);
 // extern ? Unknown802A11E4(?);
 void obj_set_billboard(struct Object *a0);
 void obj_set_hitbox_radius_and_height(f32,f32);

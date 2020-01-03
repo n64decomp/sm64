@@ -63,7 +63,8 @@ void yoshi_idle_loop(void) {
         o->oAction = YOSHI_ACT_TALK;
 
     // Credits; Yoshi appears at this position overlooking the castle near the end of the credits
-    if (gPlayerStatusForCamera->unk1C[1] == 11 || gPlayerStatusForCamera->unk1C[1] == 12) {
+    if (gPlayerCameraState->cameraEvent == CAM_EVENT_START_ENDING ||
+        gPlayerCameraState->cameraEvent == CAM_EVENT_START_END_WAVING) {
         o->oAction = YOSHI_ACT_CREDITS;
         o->oPosX = -1798.0f;
         o->oPosY = 3174.0f;
@@ -76,7 +77,7 @@ void yoshi_talk_loop(void) {
         SetObjAnimation(0);
         if (set_mario_npc_dialog(1) == 2) {
             o->activeFlags |= 0x20;
-            if (cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, DIALOG_161)) {
+            if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, DIALOG_161)) {
                 o->activeFlags &= ~0x20;
                 o->oInteractStatus = 0;
                 o->oHomeX = sYoshiHomeLocations[2];
@@ -122,7 +123,7 @@ void yoshi_finish_jumping_and_despawn_loop(void) {
     o->oVelY -= 2.0;
     if (o->oPosY < 2100.0f) {
         set_mario_npc_dialog(0);
-        gCutsceneActive = 1;
+        gObjCutsceneDone = TRUE;
         sYoshiDead = 1;
         o->activeFlags = 0;
     }

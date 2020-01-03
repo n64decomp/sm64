@@ -10,7 +10,7 @@ s8 *D_8032F96C[] = { D_8032F8F0, D_8032F924, D_8032F948 };
 
 void func_802BCF78(void) {
     if (o->oDistanceToMario < 3000.0f)
-        ShakeScreen(1);
+        ShakeScreen(SHAKE_POS_SMALL);
 }
 
 void func_802BCFC4(f32 a0, f32 a1, s16 a2, s16 a3) // 0x18 0x1c 0x22 0x26

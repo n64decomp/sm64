@@ -79,8 +79,7 @@ s32 envfx_init_snow(s32 mode) {
             break;
     }
 
-    gEnvFxBuffer = (struct EnvFxParticle *) mem_pool_alloc(
-        D_8033A124, gSnowParticleMaxCount * sizeof(struct EnvFxParticle));
+    gEnvFxBuffer = mem_pool_alloc(gEffectsMemoryPool, gSnowParticleMaxCount * sizeof(struct EnvFxParticle));
     if (!gEnvFxBuffer) {
         return 0;
     }
@@ -137,7 +136,7 @@ void envfx_update_snowflake_count(s32 mode, Vec3s marioPos) {
 void envfx_cleanup_snow(void *snowParticleArray) {
     if (gEnvFxMode) {
         if (snowParticleArray) {
-            mem_pool_free(D_8033A124, snowParticleArray);
+            mem_pool_free(gEffectsMemoryPool, snowParticleArray);
         }
         gEnvFxMode = ENVFX_MODE_NONE;
     }

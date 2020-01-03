@@ -50,7 +50,7 @@ void bhv_grand_star_loop(void) {
         } else if (o->oVelY < 0.0f && o->oPosY < o->oHomeY + 200.0f) {
             o->oPosY = o->oHomeY + 200.0f;
             func_802B29B0();
-            gCutsceneActive = 1;
+            gObjCutsceneDone = 1;
             set_mario_npc_dialog(0);
             o->oAction++;
             o->oInteractStatus = 0;

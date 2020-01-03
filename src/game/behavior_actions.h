@@ -2,7 +2,7 @@
 #define _BEHAVIOR_ACTIONS_H
 
 extern void func_802AA618(s32,s32,f32);
-extern void bhv_spawn_star_objects(u32);
+extern void bhv_spawn_star_no_level_exit(u32);
 extern void bhv_star_door_loop_2();
 extern void spawn_triangle_break_particles(s16,s16,f32,s16);
 extern void func_802ADA94(void);
@@ -61,8 +61,8 @@ void bhv_koopa_shell_underwater_loop(void);
 void BehFadingWarpLoop(void);
 void bhv_warp_loop(void);
 void bhv_white_puff_exploding_loop(void);
-void bhv_unused_080c_init(void);
-void bhv_unused_080c_loop(void);
+void bhv_spawned_star_init(void);
+void bhv_spawned_star_loop(void);
 void bhv_coin_init(void);
 void bhv_coin_loop(void);
 void bhv_coin_inside_boo_loop(void);

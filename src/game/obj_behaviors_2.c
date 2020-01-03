@@ -142,7 +142,7 @@ static s16 obj_get_pitch_from_vel(void) {
  */
 static s32 obj_update_race_proposition_dialog(s16 dialogID) {
     s32 dialogResponse =
-        obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0 | DIALOG_UNK2_LEAVE_TIME_STOP_ENABLED, CUTSCENE_DIALOG_2, dialogID);
+        obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0 | DIALOG_UNK2_LEAVE_TIME_STOP_ENABLED, CUTSCENE_RACE_DIALOG, dialogID);
 
     if (dialogResponse == 2) {
         set_mario_npc_dialog(0);

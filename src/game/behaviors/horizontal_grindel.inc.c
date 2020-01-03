@@ -8,7 +8,7 @@ void bhv_horizontal_grindel_update(void) {
         if (!o->oHorizontalGrindelOnGround) {
             PlaySound2(SOUND_OBJ_THWOMP);
             o->oHorizontalGrindelOnGround = TRUE;
-            func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
+            set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
 
             o->oHorizontalGrindelDistToHome = obj_lateral_dist_to_home();
             o->oForwardVel = 0.0f;

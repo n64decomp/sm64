@@ -50,7 +50,11 @@ static u8 *sPoolEnd;
 static struct MainPoolBlock *sPoolListHeadL;
 static struct MainPoolBlock *sPoolListHeadR;
 
-struct MemoryPool *D_8033A124;
+/**
+ * Memory pool for small graphical effects that aren't connected to Objects.
+ * Used for colored text, paintings, and environmental snow and bubbles.
+ */
+struct MemoryPool *gEffectsMemoryPool;
 
 static struct MainPoolState *gMainPoolState = NULL;
 

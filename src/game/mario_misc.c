@@ -108,21 +108,21 @@ static void bhvToadMessage_opaque(void) {
 }
 
 static void bhvToadMessage_talking(void) {
-    if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG_1, gCurrentObject->oToadMessageDialogId) != 0) {
+    if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId) != 0) {
         gCurrentObject->oToadMessageRecentlyTalked = 1;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
         switch (gCurrentObject->oToadMessageDialogId) {
             case TOAD_STAR_1_DIALOG:
                 gCurrentObject->oToadMessageDialogId = TOAD_STAR_1_DIALOG_AFTER;
-                bhv_spawn_star_objects(0);
+                bhv_spawn_star_no_level_exit(0);
                 break;
             case TOAD_STAR_2_DIALOG:
                 gCurrentObject->oToadMessageDialogId = TOAD_STAR_2_DIALOG_AFTER;
-                bhv_spawn_star_objects(1);
+                bhv_spawn_star_no_level_exit(1);
                 break;
             case TOAD_STAR_3_DIALOG:
                 gCurrentObject->oToadMessageDialogId = TOAD_STAR_3_DIALOG_AFTER;
-                bhv_spawn_star_objects(2);
+                bhv_spawn_star_no_level_exit(2);
                 break;
         }
     }
@@ -370,11 +370,11 @@ Gfx *Geo18_802773A4(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
 
     if (callContext == GEO_CONTEXT_RENDER) {
         struct GraphNodeRotation *sp20 = (struct GraphNodeRotation *) node->next;
-        u8 *sp1C = (u8 *) gCurGraphNodeCamera->config.levelCamera;
+        struct Camera *camera = gCurGraphNodeCamera->config.camera;
 
-        if (*sp1C == 6) {
-            sp20->rotation[0] = gPlayerStatusForCamera->unk16[1];
-            sp20->rotation[2] = gPlayerStatusForCamera->unk16[0];
+        if (camera->mode == CAMERA_MODE_C_UP) {
+            sp20->rotation[0] = gPlayerCameraState->headRotation[1];
+            sp20->rotation[2] = gPlayerCameraState->headRotation[0];
         } else if (action & 0x20000000) {
             sp20->rotation[0] = sp28->unk12[1];
             sp20->rotation[1] = sp28->unk12[2];

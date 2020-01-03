@@ -28,7 +28,7 @@ void ActionActivateCapSwitch2(void) {
     if (o->oTimer < 5) {
         func_802A3398(2, 4, 0.5f, 0.1f);
         if (o->oTimer == 4) {
-            ShakeScreen(1);
+            ShakeScreen(SHAKE_POS_SMALL);
             func_802A3004();
             spawn_triangle_break_particles(60, 139, 0.3f, o->oBehParams2ndByte);
         }

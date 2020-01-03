@@ -63,7 +63,7 @@ static void eyerok_boss_act_wake_up(void) {
 }
 
 static void eyerok_boss_act_show_intro_text(void) {
-    if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG_1, DIALOG_117)) {
+    if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG, DIALOG_117)) {
         o->oAction = EYEROK_BOSS_ACT_FIGHT;
     }
 }
@@ -117,7 +117,7 @@ static void eyerok_boss_act_fight(void) {
 
 static void eyerok_boss_act_die(void) {
     if (o->oTimer == 60) {
-        if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG_1, DIALOG_118)) {
+        if (obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG, DIALOG_118)) {
             create_star(0.0f, -900.0f, -3700.0f);
         } else {
             o->oTimer -= 1;
@@ -175,7 +175,7 @@ static s32 eyerok_hand_check_attacked(void) {
 
 static void func_8030DBA8(void) {
     PlaySound2(SOUND_OBJ_POUNDING_LOUD);
-    func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
+    set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
     func_802ADA94();
 }
 

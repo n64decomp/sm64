@@ -13,7 +13,7 @@ const GeoLayout ssl_geo_000648[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 20000, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(1, 0, 2000, 6000, -2048, 0, -1024, geo_camera_preset_and_pos),
+            GEO_CAMERA(1, 0, 2000, 6000, -2048, 0, -1024, geo_camera_main),
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, ssl_seg7_dl_07009F48),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, ssl_seg7_dl_0700BA78),

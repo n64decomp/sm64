@@ -349,7 +349,7 @@ void bhv_big_bully_with_minions_loop(void) {
 
             if (collisionFlags == 1) {
                 PlaySound2(SOUND_OBJ_THWOMP);
-                func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
+                set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
                 func_802A3004();
             }
 

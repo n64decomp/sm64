@@ -41,43 +41,6 @@ struct SpawnInfo
     /*0x1C*/ struct SpawnInfo *next;
 };
 
-// Some of these might need to be renamed at some point.
-#define CAMERA_PRESET_NONE              0x00
-#define CAMERA_PRESET_OPEN_CAMERA       0x01
-#define CAMERA_PRESET_REVERSE_TOWER     0x02
-#define CAMERA_PRESET_BEHIND_MARIO      0x03
-#define CAMERA_PRESET_CLOSE             0x04 // Inside Castle / Big Boo's Haunt
-#define CAMERA_PRESET_C_UP_LOOK         0x06
-#define CAMERA_PRESET_WATER_SURFACE     0x08
-#define CAMERA_PRESET_SLIDE_HOOT        0x09
-#define CAMERA_PRESET_INSIDE_CANNON     0x0A
-#define CAMERA_PRESET_BOSS_FIGHT        0x0B
-#define CAMERA_PRESET_PARALLEL_TRACKING 0x0C
-#define CAMERA_PRESET_FIXED_REF_POINT   0x0D
-#define CAMERA_PRESET_PLATFORM_LEVEL    0x0E // Bowser Courses / Rainbow Road
-#define CAMERA_PRESET_FREE_ROAM         0x10
-#define CAMERA_PRESET_SPIRAL_STAIRS     0x11
-
-// Used mostly in camera.c
-struct LevelCamera
-{
-    /*0x00*/ u8 currPreset; // What type of preset the camera uses (see defines above)
-    /*0x01*/ u8 defPreset;
-    /*0x02*/ s16 trueYaw;
-    /*0x04*/ Vec3f focus;
-    /*0x10*/ Vec3f pos;
-    /*0x1C*/ u8 filler1C[0x28-0x1C];
-    /*0x28*/ f32 xFocus;
-    /*0x2C*/ f32 zFocus;
-    /*0x30*/ u8 cutscene;
-    /*0x31*/ u8 filler31[0x9];
-    /*0x3A*/ s16 storedYaw;
-    /*0x3C*/ u8 filler3C[0x64-0x3C];
-    /*0x64*/ u8 unk64;
-    /*0x65*/ u8 filler65[3];
-    /*0x68*/ f32 unk68;
-};
-
 struct UnusedArea28
 {
     /*0x00*/ s16 unk00;
@@ -106,28 +69,13 @@ struct Area
     /*0x18*/ struct WarpNode *paintingWarpNodes;
     /*0x1C*/ struct InstantWarp *instantWarps;
     /*0x20*/ struct SpawnInfo *objectSpawnInfos;
-    /*0x24*/ struct LevelCamera *camera;
+    /*0x24*/ struct Camera *camera;
     /*0x28*/ struct UnusedArea28 *unused28; // Filled by level script 0x3A, but is unused.
     /*0x2C*/ struct Whirlpool *whirlpools[2];
     /*0x34*/ u8 dialog[2]; // Level start dialog number (set by level script cmd 0x30)
     /*0x36*/ u16 musicParam;
     /*0x38*/ u16 musicParam2;
 };
-
-/**
- * Helper macro for defining which areas of a level should zoom out the camera when the game is paused.
- * Because a mask is used by two levels, the pattern will repeat when more than 4 areas are used by a level.
- */
-#define ZOOMOUT_AREA_MASK(level1Area1, level1Area2, level1Area3, level1Area4, \
-                          level2Area1, level2Area2, level2Area3, level2Area4) \
-    ((level2Area4) << 7 |                                                     \
-     (level2Area3) << 6 |                                                     \
-     (level2Area2) << 5 |                                                     \
-     (level2Area1) << 4 |                                                     \
-     (level1Area4) << 3 |                                                     \
-     (level1Area3) << 2 |                                                     \
-     (level1Area2) << 1 |                                                     \
-     (level1Area1) << 0)
 
 // All the transition data to be used in screen_transition.c
 struct WarpTransitionData

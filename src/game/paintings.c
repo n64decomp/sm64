@@ -15,7 +15,7 @@
 s16 gPaintingMarioFloorType;
 float gPaintingMarioXPos, gPaintingMarioYPos, gPaintingMarioZPos;
 struct Thing *D_8035FFA0;
-float (*D_8035FFA4)[3]; // TODO: Use struct
+Vec3f *D_8035FFA4;
 struct Painting *ripplingPainting;
 s8 dddStatus;
 
@@ -495,7 +495,7 @@ s16 painting_conditionally_calculate_point_ripple(struct Painting *painting, s16
 void Print1(struct Painting *painting, s16 *b, s16 c) {
     s16 sp1E;
 
-    D_8035FFA0 = mem_pool_alloc(D_8033A124, c * sizeof(struct Thing));
+    D_8035FFA0 = mem_pool_alloc(gEffectsMemoryPool, c * sizeof(struct Thing));
     if (D_8035FFA0 == NULL) {
     }
     for (sp1E = 0; sp1E < c; sp1E++) {
@@ -509,7 +509,7 @@ void Print1(struct Painting *painting, s16 *b, s16 c) {
 void Print2(s16 *a, s16 b, s16 c) {
     s16 sp46;
 
-    D_8035FFA4 = mem_pool_alloc(D_8033A124, c * 12U); // TODO: Make use sizeof(struct)
+    D_8035FFA4 = mem_pool_alloc(gEffectsMemoryPool, c * sizeof(Vec3f));
     if (D_8035FFA4 == NULL) {
     }
     for (sp46 = 0; sp46 < c; sp46++) {
@@ -753,8 +753,8 @@ Gfx *display_painting_rippling(struct Painting *painting) {
             sp28 = func_802D4874(painting);
             break;
     }
-    mem_pool_free(D_8033A124, D_8035FFA0);
-    mem_pool_free(D_8033A124, D_8035FFA4);
+    mem_pool_free(gEffectsMemoryPool, D_8035FFA0);
+    mem_pool_free(gEffectsMemoryPool, D_8035FFA4);
     return sp28;
 }
 

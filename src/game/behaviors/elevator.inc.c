@@ -2,7 +2,7 @@
 
 void func_802AD01C(void) {
     PlaySound2(SOUND_GENERAL_QUIET_POUND1);
-    ShakeScreen(1);
+    ShakeScreen(SHAKE_POS_SMALL);
 }
 
 void ActionElevator0(void) {
@@ -65,7 +65,7 @@ void ActionElevator2() // Pretty similar code to action 1
 void ActionElevator4() {
     o->oVelY = 0;
     if (o->oTimer == 0) {
-        ShakeScreen(1);
+        ShakeScreen(SHAKE_POS_SMALL);
         PlaySound2(SOUND_GENERAL_METAL_POUND);
     }
     if (!mario_is_in_air_action() && !obj_is_mario_on_platform())
@@ -76,7 +76,7 @@ void ActionElevator3() // nearly identical to action 2
 {
     o->oVelY = 0;
     if (o->oTimer == 0) {
-        ShakeScreen(1);
+        ShakeScreen(SHAKE_POS_SMALL);
         PlaySound2(SOUND_GENERAL_METAL_POUND);
     }
     if (!mario_is_in_air_action() && !obj_is_mario_on_platform())

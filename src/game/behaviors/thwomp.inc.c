@@ -20,7 +20,7 @@ void ActionGrindelThwomp2(void) {
 void ActionGrindelThwomp3(void) {
     if (o->oTimer == 0)
         if (o->oDistanceToMario < 1500.0f) {
-            ShakeScreen(1);
+            ShakeScreen(SHAKE_POS_SMALL);
             PlaySound2(SOUND_OBJ_THWOMP);
         }
     if (o->oTimer > 9)

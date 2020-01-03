@@ -6,8 +6,8 @@ void func_8029B964(struct Object *parent, s16 xOffset, s16 yOffset, s16 zOffset,
     struct Object *sp1C = spawn_object(parent, model, behavior);
 
     sp1C->header.gfx.unk38.animFrame = RandomFloat() * 6.f;
-    sp1C->oEndBirdUnk104 = D_8033B6F0[9].unk4[0];
-    D_8033B6F0[9].unk4[0] += 1.f;
+    sp1C->oEndBirdUnk104 = sCutsceneVars[9].point[0];
+    sCutsceneVars[9].point[0] += 1.f;
     sp1C->oPosX += xOffset;
     sp1C->oPosY += yOffset;
     if (gCutsceneTimer > 700)
@@ -22,14 +22,14 @@ void func_8029B964(struct Object *parent, s16 xOffset, s16 yOffset, s16 zOffset,
 void bhv_intro_scene_loop(void) {
     UNUSED struct Object *sp34;
 
-    if (sCutscenePhase != 0) {
-        gCurrentObject->oPosX = gCurrLevelCamera->pos[0];
-        gCurrentObject->oPosY = gCurrLevelCamera->pos[1];
-        gCurrentObject->oPosZ = gCurrLevelCamera->pos[2];
+    if (gCutsceneObjSpawn != 0) {
+        gCurrentObject->oPosX = gCamera->pos[0];
+        gCurrentObject->oPosY = gCamera->pos[1];
+        gCurrentObject->oPosZ = gCamera->pos[2];
         gCurrentObject->oMoveAnglePitch = 0;
         gCurrentObject->oMoveAngleYaw = 0;
 
-        switch (sCutscenePhase) {
+        switch (gCutsceneObjSpawn) {
             case 6:
                 sp34 = spawn_object(gCurrentObject, MODEL_LAKITU, bhvBeginningLakitu);
                 break;
@@ -71,6 +71,6 @@ void bhv_intro_scene_loop(void) {
                 break;
         }
 
-        sCutscenePhase = 0;
+        gCutsceneObjSpawn = 0;
     }
 }

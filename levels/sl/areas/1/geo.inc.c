@@ -13,7 +13,7 @@ const GeoLayout sl_geo_0003A8[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 20000, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(16, 0, 2000, 6000, 0, 4400, 0, geo_camera_preset_and_pos),
+            GEO_CAMERA(16, 0, 2000, 6000, 0, 4400, 0, geo_camera_main),
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, sl_seg7_dl_07005478),
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, sl_seg7_dl_070056B0),

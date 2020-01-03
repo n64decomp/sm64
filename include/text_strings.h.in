@@ -39,14 +39,14 @@
 #define TEXT_ERASE_FILE TEXT_JPHUD_ERASE_FILE
 #define TEXT_SOUND_SELECT TEXT_JPHUD_SOUND_SELECT
 
-#define TEXT_FILE_MARIO_A _("マリオA")
-#define TEXT_FILE_MARIO_B _("マリオB")
-#define TEXT_FILE_MARIO_C _("マリオC")
-#define TEXT_FILE_MARIO_D _("マリオD")
+#define TEXT_FILE_MARIO_A _("マリオＡ")
+#define TEXT_FILE_MARIO_B _("マリオＢ")
+#define TEXT_FILE_MARIO_C _("マリオＣ")
+#define TEXT_FILE_MARIO_D _("マリオＤ")
 
 // Menu Options
 #define TEXT_SCORE _("スコア")
-#define TEXT_COPY _("コピ-")
+#define TEXT_COPY _("コピー")
 #define TEXT_ERASE _("けす")
 
 // Sound Options
@@ -55,72 +55,72 @@
 #define TEXT_HEADSET _("ヘッドホン")
 
 // Misc Menu Text
-#define TEXT_SAVED_DATA_EXISTS _("ファイルにデ-タがはいってます")
-#define TEXT_NO_SAVED_DATA_EXISTS _("ファイルにデ-タがありません")
+#define TEXT_SAVED_DATA_EXISTS _("ファイルにデータがはいってます")
+#define TEXT_NO_SAVED_DATA_EXISTS _("ファイルにデータがありません")
 
 // Inside a Menu
 #define TEXT_RETURN _("もどる")
 #define TEXT_CHECK_SCORE _("スコアをみる")
-#define TEXT_COPY_FILE_BUTTON _("ファイルコピ-")
+#define TEXT_COPY_FILE_BUTTON _("ファイルコピー")
 #define TEXT_ERASE_FILE_BUTTON _("ファイルけす")
 
 // Score Menu
 #define TEXT_HI_SCORE _("ハイスコア")
 #define TEXT_MY_SCORE _("マイスコア")
-#define TEXT_SCORE_MARIO_A _("マリオA")
-#define TEXT_SCORE_MARIO_B _("マリオB")
-#define TEXT_SCORE_MARIO_C _("マリオC")
-#define TEXT_SCORE_MARIO_D _("マリオD")
+#define TEXT_SCORE_MARIO_A _("マリオＡ")
+#define TEXT_SCORE_MARIO_B _("マリオＢ")
+#define TEXT_SCORE_MARIO_C _("マリオＣ")
+#define TEXT_SCORE_MARIO_D _("マリオＤ")
 
 // Copy Menu
-#define TEXT_COPY_IT_TO_WHERE _("どこにコピ-しますか?")
-#define TEXT_COPYING_COMPLETED _("コピ-おわりました")
+#define TEXT_COPY_IT_TO_WHERE _("どこにコピーしますか？")
+#define TEXT_COPYING_COMPLETED _("コピーおわりました")
 #define TEXT_NO_FILE_TO_COPY_FROM _("からのファイルがありません")
 
 // Erase Menu
-#define TEXT_SURE _("ほんと?")
+#define TEXT_SURE _("ほんと？")
 #define TEXT_YES _("はい")
 #define TEXT_NO _("いいえ")
-#define TEXT_FILE_MARIO_A_JUST_ERASED _("マリオAをけしました")
+#define TEXT_FILE_MARIO_A_JUST_ERASED _("マリオＡをけしました")
 
 /**
  * Menus Text (Pause, Course Completed)
  */
 // Main Courses
-#define TEXT_COURSE _("コ-ス")
+#define TEXT_COURSE _("コース")
 #define TEXT_MYSCORE _("マイスコア")
-#define TEXT_CONTINUE _("つづけて マリオする?")
-#define TEXT_EXIT_COURSE _("コ-スからでる?")
-#define TEXT_CAMERA_ANGLE_R _("Rボタンのカメラきりかえ")
+#define TEXT_CONTINUE _("つづけて　マリオする？")
+#define TEXT_EXIT_COURSE _("コースからでる？")
+#define TEXT_CAMERA_ANGLE_R _("Ｒボタンのカメラきりかえ")
 
 // Camera Options
-#define TEXT_LAKITU_MARIO _("ジュゲム+マリオ")
-#define TEXT_LAKITU_STOP _("ジュゲム+ストップ")
-#define TEXT_NORMAL_UPCLOSE _("(おすすめ)(リアル)")
-#define TEXT_NORMAL_FIXED _("(おすすめ)(とまる)")
+#define TEXT_LAKITU_MARIO _("ジュゲム↔マリオ")
+#define TEXT_LAKITU_STOP _("ジュゲム↔ストップ")
+#define TEXT_NORMAL_UPCLOSE _("（おすすめ）（リアル）")
+#define TEXT_NORMAL_FIXED _("（おすすめ）（とまる）")
 
 // Course Completed Misc Text
-#define TEXT_CATCH _("キャッチ!")
-#define TEXT_CLEAR _("クリア!")
-#define TEXT_HUD_HI_SCORE _("HISCORE")
+#define TEXT_CATCH _("キャッチ！")
+#define TEXT_CLEAR _("クリア！")
+#define TEXT_HUD_HI_SCORE _("ＨＩＳＣＯＲＥ")
 
 // Save Options
-#define TEXT_SAVE_AND_CONTINUE _("セ-ブしてつづける?")
-#define TEXT_SAVE_AND_QUIT _("セ-ブしておわる?")
-#define TEXT_CONTINUE_WITHOUT_SAVING _("セ-ブしないでつづける?")
+#define TEXT_SAVE_AND_CONTINUE _("セーブしてつづける？")
+#define TEXT_SAVE_AND_QUIT _("セーブしておわる？")
+#define TEXT_CONTINUE_WITHOUT_SAVING _("セーブしないでつづける？")
 
 /**
  * Ending Peach cutscene text.
  */
-#define TEXT_FILE_MARIO_EXCLAMATION _("マリオ!!")
-#define TEXT_POWER_STARS_RESTORED _("おしろにスタ-が もどったのね")
-#define TEXT_THANKS_TO_YOU _("みんな あなたのおかげだわ!")
-#define TEXT_THANK_YOU_MARIO _("ありがとう マリオ")
-#define TEXT_SOMETHING_SPECIAL _("なにか おれいをしなくちゃ・・")
-#define TEXT_LISTEN_EVERYBODY _("さあ みんな")
-#define TEXT_LETS_HAVE_CAKE _("おいしいケ-キを やきましょう")
-#define TEXT_FOR_MARIO _("マリオの ために・・・")
-#define TEXT_FILE_MARIO_QUESTION _("マリオ?")
+#define TEXT_FILE_MARIO_EXCLAMATION _("マリオ！！")
+#define TEXT_POWER_STARS_RESTORED _("おしろにスターが　もどったのね")
+#define TEXT_THANKS_TO_YOU _("みんな　あなたのおかげだわ！")
+#define TEXT_THANK_YOU_MARIO _("ありがとう　マリオ")
+#define TEXT_SOMETHING_SPECIAL _("なにか　おれいをしなくちゃ・・")
+#define TEXT_LISTEN_EVERYBODY _("さあ　みんな")
+#define TEXT_LETS_HAVE_CAKE _("おいしいケーキを　やきましょう")
+#define TEXT_FOR_MARIO _("マリオの　ために・・・")
+#define TEXT_FILE_MARIO_QUESTION _("マリオ？")
 
 #endif
 

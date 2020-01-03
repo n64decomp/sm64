@@ -17,11 +17,6 @@ ALIGNED8 const u8 mountain_09001800[] = {
 #include "textures/mountain/ttm_textures.01800.rgba16.inc.c"
 };
 
-// 0x09002000
-ALIGNED8 const u8 mountain_09002000[] = {
-#include "textures/mountain/ttm_textures.02000.rgba16.inc.c"
-};
-
 // 0x09002800
 ALIGNED8 const u8 mountain_09002800[] = {
 #include "textures/mountain/ttm_textures.02800.rgba16.inc.c"
@@ -55,11 +50,6 @@ ALIGNED8 const u8 mountain_09005000[] = {
 // 0x09005800
 ALIGNED8 const u8 mountain_09005800[] = {
 #include "textures/mountain/ttm_textures.05800.rgba16.inc.c"
-};
-
-// 0x09006000
-ALIGNED8 const u8 mountain_09006000[] = {
-#include "textures/mountain/ttm_textures.06000.rgba16.inc.c"
 };
 
 // 0x09006800

@@ -94,8 +94,6 @@ struct Painting
     float vSize;
 };
 
-extern struct MemoryPool *D_8033A124;
-
 extern struct Painting cotmc_painting;
 
 extern struct Painting bob_painting;
@@ -128,7 +126,7 @@ struct Thing { //TODO: Give me a better name
 };
 
 extern struct Thing *D_8035FFA0;
-extern float (*D_8035FFA4)[3];
+extern Vec3f *D_8035FFA4;
 extern struct Painting *ripplingPainting;
 extern s8 dddStatus;
 

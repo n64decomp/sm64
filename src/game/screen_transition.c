@@ -9,6 +9,7 @@
 #include "memory.h"
 #include "geo_misc.h"
 #include "segment2.h"
+#include "camera.h"
 
 u8 sTransitionColorFadeCount[4] = { 0 };
 u16 sTransitionTextureFadeCount[2] = { 0 };
@@ -271,7 +272,7 @@ Gfx *geo_cannon_circle_base(s32 callContext, struct GraphNode *node, UNUSED f32 
     Gfx *dlist = NULL;
 
     if (callContext == GEO_CONTEXT_RENDER && gCurrentArea != NULL
-        && gCurrentArea->camera->currPreset == CAMERA_PRESET_INSIDE_CANNON) {
+        && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
         graphNode->fnNode.node.flags = (graphNode->fnNode.node.flags & 0xFF) | 0x500;
         dlist = render_cannon_circle_base();
     }

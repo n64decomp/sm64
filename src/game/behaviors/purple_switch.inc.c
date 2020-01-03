@@ -31,7 +31,7 @@ void bhv_purple_switch_loop(void) {
             if (o->oTimer == 3) {
                 PlaySound2(SOUND_GENERAL2_PURPLE_SWITCH);
                 o->oAction = PURPLE_SWITCH_TICKING;
-                ShakeScreen(1);
+                ShakeScreen(SHAKE_POS_SMALL);
             }
             break;
         /**

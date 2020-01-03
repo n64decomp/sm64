@@ -11,7 +11,7 @@ struct SpawnInfo;
  */
 #define TIME_STOP_UNKNOWN_0         (1 << 0)
 #define TIME_STOP_ENABLED           (1 << 1)
-#define TIME_STOP_UNKNOWN_2         (1 << 2)
+#define TIME_STOP_DIALOG            (1 << 2)
 #define TIME_STOP_MARIO_AND_DOORS   (1 << 3)
 #define TIME_STOP_ALL_OBJECTS       (1 << 4)
 #define TIME_STOP_MARIO_OPENED_DOOR (1 << 5)

@@ -19,7 +19,7 @@ void ActionKingBobomb0(void) {
             o->oSubAction++;
             func_8031FFB4(0, 60, 40);
         }
-    } else if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, DIALOG_017)) {
+    } else if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, DIALOG_017)) {
         o->oAction = 2;
         o->oFlags |= OBJ_FLAG_HOLDABLE;
     }
@@ -40,7 +40,7 @@ void ActionKingBobomb2(void) {
     }
     if (o->oKingBobombUnk100 == 0) {
         if (obj_check_anim_frame(15))
-            ShakeScreen(1);
+            ShakeScreen(SHAKE_POS_SMALL);
         if (func_802A4AB0(4))
             o->oKingBobombUnk100++;
     } else {
@@ -126,7 +126,7 @@ void ActionKingBobomb6(void) {
             o->oKingBobombUnk104 = 0;
             PlaySound2(SOUND_OBJ_KING_BOBOMB);
             PlaySound2(SOUND_OBJ2_KING_BOBOMB_DAMAGE);
-            ShakeScreen(1);
+            ShakeScreen(SHAKE_POS_SMALL);
             func_802AA618(0, 0, 100.0f);
             o->oInteractType = 8;
             obj_become_tangible();
@@ -154,13 +154,13 @@ void ActionKingBobomb6(void) {
 
 void ActionKingBobomb7(void) {
     set_obj_animation_and_sound_state(2);
-    if (obj_update_dialog_with_cutscene(2, 2, CUTSCENE_DIALOG_1, DIALOG_116)) {
+    if (obj_update_dialog_with_cutscene(2, 2, CUTSCENE_DIALOG, DIALOG_116)) {
         create_sound_spawner(SOUND_OBJ_KING_WHOMP_DEATH);
         obj_hide();
         obj_become_intangible();
         func_802AA618(0, 0, 200.0f);
         spawn_triangle_break_particles(20, 138, 3.0f, 4);
-        ShakeScreen(1);
+        ShakeScreen(SHAKE_POS_SMALL);
 #ifndef VERSION_JP
         obj_spawn_star_at_y_offset(2000.0f, 4500.0f, -4500.0f, 200.0f);
 #else
@@ -229,7 +229,7 @@ void ActionKingBobomb5() { // bobomb returns home
                 o->oKingBobombUnkF8 = 0;
                 set_obj_animation_and_sound_state(7);
                 PlaySound2(SOUND_OBJ_KING_BOBOMB);
-                ShakeScreen(1);
+                ShakeScreen(SHAKE_POS_SMALL);
                 o->oSubAction++;
             }
             break;
@@ -246,7 +246,7 @@ void ActionKingBobomb5() { // bobomb returns home
                 o->oSubAction++;
             break;
         case 4:
-            if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, DIALOG_128))
+            if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, DIALOG_128))
                 o->oAction = 2;
             break;
     }

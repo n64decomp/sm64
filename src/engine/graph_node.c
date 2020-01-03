@@ -187,18 +187,18 @@ struct GraphNodeSwitchCase *init_graph_node_switch_case(struct AllocOnlyPool *po
  * Allocates and returns a newly created camera node
  */
 struct GraphNodeCamera *init_graph_node_camera(struct AllocOnlyPool *pool,
-                                               struct GraphNodeCamera *graphNode, f32 *fromPos,
-                                               f32 *toPos, GraphNodeFunc func, s32 preset) {
+                                               struct GraphNodeCamera *graphNode, f32 *pos,
+                                               f32 *focus, GraphNodeFunc func, s32 mode) {
     if (pool != NULL) {
         graphNode = alloc_only_pool_alloc(pool, sizeof(struct GraphNodeCamera));
     }
 
     if (graphNode != NULL) {
         init_scene_graph_node_links(&graphNode->fnNode.node, GRAPH_NODE_TYPE_CAMERA);
-        vec3f_copy(graphNode->from, fromPos);
-        vec3f_copy(graphNode->to, toPos);
+        vec3f_copy(graphNode->pos, pos);
+        vec3f_copy(graphNode->focus, focus);
         graphNode->fnNode.func = func;
-        graphNode->config.preset = preset;
+        graphNode->config.mode = mode;
         graphNode->roll = 0;
         graphNode->rollScreen = 0;
 

@@ -126,7 +126,7 @@ void AllocPool(void) {
     void *end = (void *) SEG_POOL_END;
 
     main_pool_init(start, end);
-    D_8033A124 = mem_pool_init(0x4000, MEMORY_POOL_LEFT);
+    gEffectsMemoryPool = mem_pool_init(0x4000, MEMORY_POOL_LEFT);
 }
 
 void create_thread(OSThread *thread, OSId id, void (*entry)(void *), void *arg, void *sp, OSPri pri) {

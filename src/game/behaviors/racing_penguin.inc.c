@@ -106,7 +106,7 @@ static void racing_penguin_act_finish_race(void) {
     if (o->oForwardVel != 0.0f) {
         if (o->oTimer > 5 && (o->oMoveFlags & 0x00000200)) {
             PlaySound2(SOUND_OBJ_POUNDING_LOUD);
-            func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
+            set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
             o->oForwardVel = 0.0f;
         }
     } else if (func_802F92B0(2) != 0) {
@@ -144,7 +144,7 @@ static void racing_penguin_act_show_final_text(void) {
             o->oForwardVel = 4.0f;
         }
     } else if (o->oRacingPenguinFinalTextbox > 0) {
-        if ((textResult = obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, o->oRacingPenguinFinalTextbox)) != 0) {
+        if ((textResult = obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, o->oRacingPenguinFinalTextbox)) != 0) {
             o->oRacingPenguinFinalTextbox = -1;
             o->oTimer = 0;
         }

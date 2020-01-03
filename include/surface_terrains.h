@@ -46,7 +46,7 @@
 #define SURFACE_BOSS_FIGHT_CAMERA            0x0065 // Wide camera for BOB and WF bosses
 #define SURFACE_CAMERA_FREE_ROAM             0x0066 // Free roam camera for THI and TTC
 #define SURFACE_THI3_WALLKICK                0x0068 // Surface where there's a wall kick section in THI 3rd area, has no action defined
-#define SURFACE_CAMERA_PLATFORM              0x0069 // Surface that enables far camera for platforms, used in THI
+#define SURFACE_CAMERA_8_DIR                 0x0069 // Surface that enables far camera for platforms, used in THI
 #define SURFACE_CAMERA_MIDDLE                0x006E // Surface camera that returns to the middle, used on the 4 pillars of SSL
 #define SURFACE_CAMERA_ROTATE_RIGHT          0x006F // Surface camera that rotates to the right (Bowser 1 & THI)
 #define SURFACE_CAMERA_ROTATE_LEFT           0x0070 // Surface camera that rotates to the left (BOB & TTM)

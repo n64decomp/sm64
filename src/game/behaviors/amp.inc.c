@@ -66,12 +66,12 @@ static void check_amp_attack(void) {
  * Unhide the amp and grow until normal size, then begin chasing Mario.
  */
 static void homing_amp_appear_loop(void) {
-    // gCameraStatus.camFocAndPosCurrAndGoal[3] is the camera's goal position.
+    // gLakituState.goalPos is the position lakitu is moving towards.
     // In Lakitu and Mario cam, it is usually very close to the current camera position.
     // In Fixed cam, it is the point behind Mario the camera will go to when transitioning
     // to Lakitu cam. Homing amps will point themselves towards this point when appearing.
-    f32 relativeTargetX = gCameraStatus.camFocAndPosCurrAndGoal[3][0] - o->oPosX;
-    f32 relativeTargetZ = gCameraStatus.camFocAndPosCurrAndGoal[3][2] - o->oPosZ;
+    f32 relativeTargetX = gLakituState.goalPos[0] - o->oPosX;
+    f32 relativeTargetZ = gLakituState.goalPos[2] - o->oPosZ;
     s16 targetYaw = atan2s(relativeTargetZ, relativeTargetX);
 
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, targetYaw, 0x1000);

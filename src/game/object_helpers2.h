@@ -72,7 +72,7 @@ s32 obj_update_dialog_with_cutscene(s32 arg0, s32 dialogFlags, s32 cutsceneTable
 s32 obj_has_model(u16);
 extern void obj_align_gfx_with_floor(void);
 // extern ? mario_is_within_rectangle(?);
-void ShakeScreen(s32);
+void ShakeScreen(s32 shake);
 extern s32 attack_collided_non_mario_object(struct Object *obj);
 s32 obj_was_attacked_or_ground_pounded(void);
 void copy_object_behavior_params(struct Object*,struct Object*);

@@ -186,7 +186,7 @@ s32 act_holding_pole(struct MarioState *m) {
 s32 act_climbing_pole(struct MarioState *m) {
     s32 sp24;
     struct Object *marioObj = m->marioObj;
-    s16 cameraAngle = m->area->camera->trueYaw;
+    s16 cameraAngle = m->area->camera->yaw;
 
 #ifndef VERSION_JP
     if (m->health < 0x100) {
@@ -668,7 +668,7 @@ s32 act_in_cannon(struct MarioState *m) {
             m->marioObj->header.gfx.node.flags &= ~0x0001;
             m->usedObj->oInteractStatus = INT_STATUS_INTERACTED;
 
-            m->statusForCamera->unk1C[1] = 1;
+            m->statusForCamera->cameraEvent = CAM_EVENT_CANNON;
             m->statusForCamera->usedObj = m->usedObj;
 
             vec3f_set(m->vel, 0.0f, 0.0f, 0.0f);

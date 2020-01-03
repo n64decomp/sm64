@@ -14,11 +14,11 @@ void intro_lakitu_set_offset_from_camera(struct Object *o, Vec3f offset) {
     Vec3s focusAngles;
     s16 offsetPitch, offsetYaw;
 
-    vec3f_add(offset, gCurrLevelCamera->pos);
-    vec3f_get_dist_and_angle(gCurrLevelCamera->pos, gCurrLevelCamera->focus,
+    vec3f_add(offset, gCamera->pos);
+    vec3f_get_dist_and_angle(gCamera->pos, gCamera->focus,
                              &dist, &focusAngles[0], &focusAngles[1]);
-    vec3f_get_dist_and_angle(gCurrLevelCamera->pos, offset, &dist, &offsetPitch, &offsetYaw);
-    vec3f_set_dist_and_angle(gCurrLevelCamera->pos, offset, dist,
+    vec3f_get_dist_and_angle(gCamera->pos, offset, &dist, &offsetPitch, &offsetYaw);
+    vec3f_set_dist_and_angle(gCamera->pos, offset, dist,
                              focusAngles[0] + offsetPitch, focusAngles[1] + offsetYaw);
     vec3f_to_object_pos(o, offset);
 }
@@ -68,7 +68,7 @@ void bhv_intro_lakitu_loop(void) {
             gCurrentObject->oIntroLakituSplineSegmentProgress = 0.f;
             gCurrentObject->oIntroLakituCloud =
                 spawn_object_relative_with_scale(1, 0, 0, 0, 2.f, gCurrentObject, MODEL_MIST, bhvCloud);
-            if (gCurrLevelCamera->cutscene == CUTSCENE_END_WAVING)
+            if (gCamera->cutscene == CUTSCENE_END_WAVING)
                 gCurrentObject->oAction = 100;
             else
                 gCurrentObject->oAction += 1;
@@ -77,9 +77,9 @@ void bhv_intro_lakitu_loop(void) {
         case 1:
             obj_enable_rendering();
             if ((gCutsceneTimer > 350) && (gCutsceneTimer < 458)) {
-                gCurrentObject->oPosX = gCurrLevelCamera->pos[0];
-                gCurrentObject->oPosY = gCurrLevelCamera->pos[1] + 500.f;
-                gCurrentObject->oPosZ = gCurrLevelCamera->pos[2];
+                gCurrentObject->oPosX = gCamera->pos[0];
+                gCurrentObject->oPosY = gCamera->pos[1] + 500.f;
+                gCurrentObject->oPosZ = gCamera->pos[2];
             }
             if (gCutsceneTimer > 52)
                 PlaySound(SOUND_AIR_LAKITU_FLY_HIGHPRIO);
@@ -136,19 +136,19 @@ void bhv_intro_lakitu_loop(void) {
             vec3f_set(sp58, -1128.f, 560.f, 4664.f);
             gCurrentObject->oMoveAngleYaw += 0x200;
             gCurrentObject->oIntroLakituUnk100 =
-                approach_f32_exponential(gCurrentObject->oIntroLakituUnk100, 100.f, 0.03f);
+                approach_f32_asymptotic(gCurrentObject->oIntroLakituUnk100, 100.f, 0.03f);
             gCurrentObject->oFaceAnglePitch = atan2s(200.f, gCurrentObject->oPosY - 400.f);
-            gCurrentObject->oFaceAngleYaw = approach_s16_exponential(
+            gCurrentObject->oFaceAngleYaw = approach_s16_asymptotic(
                 gCurrentObject->oFaceAngleYaw, gCurrentObject->oMoveAngleYaw + 0x8000, 4);
             vec3f_set_dist_and_angle(sp58, sp4C, gCurrentObject->oIntroLakituUnk100, 0,
                                      gCurrentObject->oMoveAngleYaw);
             sp4C[1] += 150.f * coss((s16) gCurrentObject->oIntroLakituUnk104);
             gCurrentObject->oIntroLakituUnk104 += gCurrentObject->oIntroLakituUnk108;
             gCurrentObject->oIntroLakituUnk108 =
-                approach_f32_exponential(gCurrentObject->oIntroLakituUnk108, 512.f, 0.05f);
+                approach_f32_asymptotic(gCurrentObject->oIntroLakituUnk108, 512.f, 0.05f);
             sp4C[0] += gCurrentObject->oIntroLakituUnk10C;
             gCurrentObject->oIntroLakituUnk10C =
-                approach_f32_exponential(gCurrentObject->oIntroLakituUnk10C, 0.f, 0.05f);
+                approach_f32_asymptotic(gCurrentObject->oIntroLakituUnk10C, 0.f, 0.05f);
             vec3f_to_object_pos(gCurrentObject, sp4C);
 
             if (gCurrentObject->oTimer == 31) {
@@ -175,8 +175,7 @@ void bhv_intro_lakitu_loop(void) {
         case 100:
             obj_enable_rendering();
             vec3f_set(sp64, -100.f, 100.f, 300.f);
-            set_pos_from_face_angle_and_vec3f(sp4C, gCurrLevelCamera->pos, sp64,
-                                              sMarioStatusForCamera->faceAngle);
+            offset_rotated(sp4C, gCamera->pos, sp64, sMarioCamState->faceAngle);
             vec3f_to_object_pos(gCurrentObject, sp4C);
             gCurrentObject->oMoveAnglePitch = 0x1000;
             gCurrentObject->oMoveAngleYaw = 0x9000;
@@ -189,11 +188,11 @@ void bhv_intro_lakitu_loop(void) {
             object_pos_to_vec3f(sp4C, gCurrentObject);
             if (gCurrentObject->oTimer > 60) {
                 gCurrentObject->oForwardVel =
-                    approach_f32_exponential(gCurrentObject->oForwardVel, -10.f, 0.05f);
+                    approach_f32_asymptotic(gCurrentObject->oForwardVel, -10.f, 0.05f);
                 gCurrentObject->oMoveAngleYaw += 0x78;
                 gCurrentObject->oMoveAnglePitch += 0x40;
                 gCurrentObject->oFaceAngleYaw = camera_approach_s16_symmetric(
-                    gCurrentObject->oFaceAngleYaw, (s16) calculate_yaw(sp4C, gCurrLevelCamera->pos),
+                    gCurrentObject->oFaceAngleYaw, (s16) calculate_yaw(sp4C, gCamera->pos),
                     0x200);
             }
             if (gCurrentObject->oTimer > 105) {
@@ -207,12 +206,12 @@ void bhv_intro_lakitu_loop(void) {
         case 102:
             object_pos_to_vec3f(sp4C, gCurrentObject);
             gCurrentObject->oForwardVel =
-                approach_f32_exponential(gCurrentObject->oForwardVel, 60.f, 0.05f);
+                approach_f32_asymptotic(gCurrentObject->oForwardVel, 60.f, 0.05f);
             gCurrentObject->oFaceAngleYaw = camera_approach_s16_symmetric(
-                gCurrentObject->oFaceAngleYaw, (s16) calculate_yaw(sp4C, gCurrLevelCamera->pos), 0x200);
+                gCurrentObject->oFaceAngleYaw, (s16) calculate_yaw(sp4C, gCamera->pos), 0x200);
             if (gCurrentObject->oTimer < 62)
                 gCurrentObject->oMoveAngleYaw =
-                    approach_s16_exponential(gCurrentObject->oMoveAngleYaw, 0x1800, 0x1E);
+                    approach_s16_asymptotic(gCurrentObject->oMoveAngleYaw, 0x1800, 0x1E);
             gCurrentObject->oMoveAnglePitch =
                 camera_approach_s16_symmetric(gCurrentObject->oMoveAnglePitch, -0x2000, 0x5A);
             gCurrentObject->oFaceAnglePitch = 0;

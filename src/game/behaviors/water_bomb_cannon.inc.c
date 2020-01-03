@@ -28,7 +28,7 @@ void bhv_bubble_cannon_barrel_loop(void) {
                         val04->header.gfx.scale[1] = 1.7f;
                     }
 
-                    func_8027F440(2, o->oPosX, o->oPosY, o->oPosZ);
+                    set_camera_shake_from_point(SHAKE_POS_MEDIUM, o->oPosX, o->oPosY, o->oPosZ);
                 }
             } else {
                 o->oForwardVel = 0.0f;

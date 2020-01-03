@@ -319,7 +319,7 @@ void BobombBuddyCannonLoop(s16 dialogFirstText, s16 dialogSecondText) {
 
     switch (o->oBobombBuddyCannonStatus) {
         case BOBOMB_BUDDY_CANNON_UNOPENED:
-            buddyText = cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, dialogFirstText);
+            buddyText = cutscene_object_with_dialog(CUTSCENE_DIALOG, o, dialogFirstText);
             if (buddyText != 0) {
                 save_file_set_cannon_unlocked();
                 cannonClosed = obj_nearest_object_with_behavior(bhvCannonClosed);
@@ -338,7 +338,7 @@ void BobombBuddyCannonLoop(s16 dialogFirstText, s16 dialogSecondText) {
             break;
 
         case BOBOMB_BUDDY_CANNON_OPENED:
-            buddyText = cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, dialogSecondText);
+            buddyText = cutscene_object_with_dialog(CUTSCENE_DIALOG, o, dialogSecondText);
             if (buddyText != 0)
                 o->oBobombBuddyCannonStatus = BOBOMB_BUDDY_CANNON_STOP_TALKING;
             break;
@@ -361,7 +361,7 @@ void BobombBuddyTalkLoop(void) {
 
         switch (o->oBobombBuddyRole) {
             case BOBOMB_BUDDY_ROLE_ADVICE:
-                if (cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, o->oBehParams2ndByte) != BOBOMB_BUDDY_BP_STYPE_GENERIC) {
+                if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, o->oBehParams2ndByte) != BOBOMB_BUDDY_BP_STYPE_GENERIC) {
                     set_mario_npc_dialog(0);
 
                     o->activeFlags &= ~0x20; /* bit 5 */

@@ -13,7 +13,7 @@ const GeoLayout ttc_geo_0003B8[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 12800, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(2, 0, 2000, 6000, 0, 0, 0, geo_camera_preset_and_pos),
+            GEO_CAMERA(2, 0, 2000, 6000, 0, 0, 0, geo_camera_main),
             GEO_OPEN_NODE(),
                GEO_ASM(   0, geo_movtex_pause_control),
                GEO_ASM(0x1400, geo_movtex_update_horizontal),

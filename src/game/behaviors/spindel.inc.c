@@ -74,6 +74,6 @@ void bhv_spindel_loop(void) {
         o->oPosY = o->oHomeY + sp1C;
 
         if (o->oTimer + 1 == sp18 * 8)
-            func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
+            set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
     }
 }

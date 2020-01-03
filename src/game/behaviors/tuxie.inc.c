@@ -65,7 +65,7 @@ void ActionTuxiesMother1(void) {
                     dialogID = DIALOG_058;
                 else
                     dialogID = DIALOG_059;
-                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, dialogID)) {
+                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, dialogID)) {
                     if (dialogID == DIALOG_058)
                         o->oSubAction = 1;
                     else
@@ -128,7 +128,7 @@ void ActionTuxiesMother0(void) {
                         o->oSubAction++;
                 break;
             case 1:
-                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG_1, DIALOG_057))
+                if (obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, DIALOG_057))
                     o->oSubAction++;
                 break;
             case 2:

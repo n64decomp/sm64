@@ -511,7 +511,7 @@ s32 act_reading_sign(struct MarioState *m) {
     switch (m->actionState) {
         // start dialog
         case 0:
-            stop_mario(1);
+            trigger_cutscene_dialog(1);
             enable_time_stop();
             // reading sign
             set_mario_animation(m, MARIO_ANIM_FIRST_PERSON);
@@ -531,7 +531,7 @@ s32 act_reading_sign(struct MarioState *m) {
         // in dialog
         case 2:
             // dialog finished
-            if (gCurrLevelCamera->cutscene == 0) {
+            if (gCamera->cutscene == 0) {
                 disable_time_stop();
                 set_mario_action(m, ACT_IDLE, 0);
             }
@@ -650,7 +650,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
 }
 
 s32 act_star_dance(struct MarioState *m) {
-    m->faceAngle[1] = m->area->camera->trueYaw;
+    m->faceAngle[1] = m->area->camera->yaw;
     set_mario_animation(m, m->actionState == 2 ? MARIO_ANIM_RETURN_FROM_STAR_DANCE
                                                : MARIO_ANIM_STAR_DANCE);
     general_star_dance_handler(m, 0);
@@ -662,7 +662,7 @@ s32 act_star_dance(struct MarioState *m) {
 }
 
 s32 act_star_dance_water(struct MarioState *m) {
-    m->faceAngle[1] = m->area->camera->trueYaw;
+    m->faceAngle[1] = m->area->camera->yaw;
     set_mario_animation(m, m->actionState == 2 ? MARIO_ANIM_RETURN_FROM_WATER_STAR_DANCE
                                                : MARIO_ANIM_WATER_STAR_DANCE);
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
@@ -1430,9 +1430,8 @@ s32 act_teleport_fade_in(struct MarioState *m) {
     if (m->actionTimer++ == 32) {
         if (m->pos[1] < m->waterLevel - 100) {
             // Check if the camera is not underwater.
-            if (m->area->camera->currPreset != CAMERA_PRESET_WATER_SURFACE) {
-                // camera related function?
-                func_80285BD8(m->area->camera, 8, 1);
+            if (m->area->camera->mode != CAMERA_MODE_WATER_SURFACE) {
+                set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
             }
             set_mario_action(m, ACT_WATER_IDLE, 0);
         } else {
@@ -1449,7 +1448,7 @@ s32 act_teleport_fade_in(struct MarioState *m) {
 s32 act_shocked(struct MarioState *m) {
     play_sound_if_no_flag(m, SOUND_MARIO_WAAAOOOW, MARIO_ACTION_SOUND_PLAYED);
     play_sound(SOUND_MOVING_SHOCKED, m->marioObj->header.gfx.cameraToObject);
-    set_camera_shake(SHAKE_SHOCK);
+    set_camera_shake_from_hit(SHAKE_SHOCK);
 
     if (set_mario_animation(m, MARIO_ANIM_SHOCKED) == 0) {
         m->actionTimer++;
@@ -1647,13 +1646,13 @@ static void advance_cutscene_step(struct MarioState *m) {
 
 static void intro_cutscene_hide_hud_and_mario(struct MarioState *m) {
     gHudDisplay.flags = HUD_DISPLAY_NONE;
-    m->statusForCamera->unk1C[1] = 9;
+    m->statusForCamera->cameraEvent = CAM_EVENT_START_INTRO;
     m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
     advance_cutscene_step(m);
 }
 
 static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
-    if ((s16) m->statusForCamera->unk1C[1] != 9) {
+    if ((s16) m->statusForCamera->cameraEvent != CAM_EVENT_START_INTRO) {
         if (m->actionTimer++ == 37) {
             sIntroWarpPipeObj =
                 spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_CASTLE_GROUNDS_WARP_PIPE,
@@ -1728,7 +1727,7 @@ static void intro_cutscene_lower_pipe(struct MarioState *m) {
 }
 
 static void intro_cutscene_set_mario_to_idle(struct MarioState *m) {
-    if (gCurrLevelCamera->cutscene == 0) {
+    if (gCamera->cutscene == 0) {
         gCameraMovementFlags &= ~CAM_MOVE_C_UP_MODE;
         set_mario_action(m, ACT_IDLE, 0);
     }
@@ -1794,7 +1793,7 @@ static void jumbo_star_cutscene_falling(struct MarioState *m) {
     } else {
         set_mario_animation(m, MARIO_ANIM_GENERAL_LAND);
         if (is_anim_at_end(m)) {
-            m->statusForCamera->unk1C[1] = 10;
+            m->statusForCamera->cameraEvent = CAM_EVENT_START_GRAND_STAR;
             advance_cutscene_step(m);
         }
     }
@@ -1962,7 +1961,7 @@ static f32 func_8025BC14(struct Object *o) {
 // make mario fall and soften wing cap gravity
 static void end_peach_cutscene_mario_falling(struct MarioState *m) {
     if (m->actionTimer == 1) {
-        m->statusForCamera->unk1C[1] = 11;
+        m->statusForCamera->cameraEvent = CAM_EVENT_START_ENDING;
     }
 
     m->input |= INPUT_A_DOWN;
@@ -2444,11 +2443,11 @@ static s32 act_credits_cutscene(struct MarioState *m) {
     s32 width;
     s32 height;
 
-    m->statusForCamera->unk1C[1] = 13;
+    m->statusForCamera->cameraEvent = CAM_EVENT_START_CREDITS;
     // checks if mario is underwater (JRB, DDD, SA, etc.)
     if (m->pos[1] < m->waterLevel - 100) {
-        if (m->area->camera->currPreset != CAMERA_PRESET_BEHIND_MARIO) {
-            func_80285BD8(m->area->camera, 3, 1);
+        if (m->area->camera->mode != CAMERA_MODE_BEHIND_MARIO) {
+            set_camera_mode(m->area->camera, CAMERA_MODE_BEHIND_MARIO, 1);
         }
         set_mario_animation(m, MARIO_ANIM_WATER_IDLE);
         vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
@@ -2499,7 +2498,7 @@ static s32 act_credits_cutscene(struct MarioState *m) {
 
 static s32 act_end_waving_cutscene(struct MarioState *m) {
     if (m->actionState == 0) {
-        m->statusForCamera->unk1C[1] = 12;
+        m->statusForCamera->cameraEvent = CAM_EVENT_START_END_WAVING;
 
         sEndPeachObj = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_PEACH, bhvEndPeach, 60, 906,
                                                  -1180, 0, 0, 0);

@@ -309,7 +309,7 @@ struct MarioState
     /*0x88*/ struct Object *marioObj;
     /*0x8C*/ struct SpawnInfo *spawnInfo;
     /*0x90*/ struct Area *area;
-    /*0x94*/ struct CameraPlayerStatus *statusForCamera;
+    /*0x94*/ struct PlayerCameraState *statusForCamera;
     /*0x98*/ struct MarioBodyState *marioBodyState;
     /*0x9C*/ struct Controller *controller;
     /*0xA0*/ struct MarioAnimation *animation;

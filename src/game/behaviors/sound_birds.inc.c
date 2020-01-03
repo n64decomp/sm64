@@ -1,7 +1,7 @@
 // sound_birds.inc.c
 
 void bhv_birds_sound_loop(void) {
-    if (gCurrLevelCamera->currPreset == CAMERA_PRESET_BEHIND_MARIO)
+    if (gCamera->mode == CAMERA_MODE_BEHIND_MARIO)
         return;
 
     switch (o->oBehParams2ndByte) {

@@ -50,7 +50,7 @@ extern const BehaviorScript bhvWarp[];
 extern const BehaviorScript bhvWarpPipe[];
 extern const BehaviorScript bhvWhitePuffExplosion[];
 extern const BehaviorScript bhvSpawnedStar[];
-extern const BehaviorScript bhvUnused080C[];
+extern const BehaviorScript bhvSpawnedStarNoLevelExit[];
 extern const BehaviorScript bhvMrIBlueCoin[];
 extern const BehaviorScript bhvCoinInsideBoo[];
 extern const BehaviorScript bhvCoinFormationSpawn[];

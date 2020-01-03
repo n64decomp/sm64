@@ -1,5 +1,6 @@
 #ifndef _MATH_UTIL_H_
 #define _MATH_UTIL_H_
+#include "types.h"
 
 /*
  * The sine and cosine tables overlap, but "#define gCosineTable (gSineTable +
@@ -58,9 +59,9 @@ void mtxf_to_mtx(Mtx *a, f32 b[4][4]);
 void mtxf_rotate_xy(Mtx *a, s16 b);
 void get_pos_from_transform_mtx(Vec3f a, f32 b[4][4], f32 c[4][4]);
 void vec3f_get_dist_and_angle(Vec3f from, Vec3f to, f32 *dist, s16 *pitch, s16 *yaw);
-void vec3f_set_dist_and_angle(Vec3f a, Vec3f b, f32 c, s16 d, s16 e);
-s32 approach_s32(s32 a, s32 b, s32 c, s32 d);
-f32 approach_f32(f32 a, f32 b, f32 c, f32 d);
+void vec3f_set_dist_and_angle(Vec3f from, Vec3f to, f32  dist, s16  pitch, s16  yaw);
+s32 approach_s32(s32 current, s32 target, s32 inc, s32 dec);
+f32 approach_f32(f32 current, f32 target, f32 inc, f32 dec);
 s16 atan2s(f32 a, f32 b);
 f32 atan2f(f32 a, f32 b);
 void spline_get_weights(Vec4f a, f32 b, UNUSED s32 c);

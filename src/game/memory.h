@@ -20,7 +20,7 @@ struct MemoryPool;
 // Declaring this variable extern puts it in the wrong place in the bss order
 // when this file is included from memory.c (first instead of last). Hence,
 // ifdef hack. It was very likely subject to bss reordering originally.
-extern struct MemoryPool *D_8033A124;
+extern struct MemoryPool *gEffectsMemoryPool;
 #endif
 
 uintptr_t set_segment_base_addr(s32 segment, void *addr);

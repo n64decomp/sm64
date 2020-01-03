@@ -356,7 +356,7 @@ static void level_cmd_begin_area(void) {
         gAreas[areaIndex].unk04 = (struct GraphNode *) screenArea;
 
         if (node != NULL) {
-            gAreas[areaIndex].camera = (struct LevelCamera *) node->config.levelCamera;
+            gAreas[areaIndex].camera = (struct Camera *) node->config.camera;
         } else {
             gAreas[areaIndex].camera = NULL;
         }

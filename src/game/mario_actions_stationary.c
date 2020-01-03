@@ -1062,20 +1062,21 @@ s32 act_first_person(struct MarioState *m) {
     sp1C = 0U < (m->input & (INPUT_UNKNOWN_10 | 0xC));
     if (m->actionState == 0) {
         func_80248C28(2);
-        func_80285BD8(m->area->camera, 6, 0x10);
+        set_camera_mode(m->area->camera, CAMERA_MODE_C_UP, 0x10);
         m->actionState = 1;
     } else {
         if (!(m->input & INPUT_FIRST_PERSON) || sp1C) {
             func_80248CB8(2);
-            func_80285BD8(m->area->camera, -1, 1);
+            // Go back to the last camera mode
+            set_camera_mode(m->area->camera, -1, 1);
             return set_mario_action(m, ACT_IDLE, 0);
         }
     }
 
     if (m->floor->type == SURFACE_LOOK_UP_WARP) {
         if (save_file_get_total_star_count(gCurrSaveFileNum - 1, 0, 0x18) >= 10) {
-            sp1A = m->statusForCamera->unk16[0];
-            sp18 = ((m->statusForCamera->unk16[1] * 4) / 3) + m->faceAngle[1];
+            sp1A = m->statusForCamera->headRotation[0];
+            sp18 = ((m->statusForCamera->headRotation[1] * 4) / 3) + m->faceAngle[1];
             if (sp1A == -0x1800) {
                 if (sp18 < -0x6FFF || sp18 >= 0x7000) {
                     level_trigger_warp(m, 1);

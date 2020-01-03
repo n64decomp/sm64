@@ -1,3 +1,18 @@
+Refresh #5
+1.) mem_error_screen.inc.c updated for C (#775)
+2.) updated patch_libultra_math to work directly on libultra.a (#781)
+3.) Enhancement: Debug boxes (#783)
+4.) Label effects MemoryPool (#784)
+5.) Use full-width characters for JP text and rename mislabeled stuff (#772)
+6.) Small asset extraction fixes (#785)
+7.) Fix incremental asset extraction after the last PR (#790)
+8.) Labelled behavior script commands, tidied up behavior scripts and ren…
+9.) Document camera.c (#741)
+10.) Fix a HMC texture asset (#795)
+11.) Fix UB in angle conversion for paintings. Needed for pc-port. (#796)
+12.) Fix PSS texture assets (#801)
+13.) Fix some camera typos (#802)
+
 Refresh #4
 1.) Label screen_transition.c (#737)
 2.) Revamp macros (#738)

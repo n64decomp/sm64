@@ -15,25 +15,23 @@
 // Argument 10: Specify dynamic music tables for levels, if specified. _ for none.
 // Argument 11: Specify level camera table, if specified. _ for none.
 
-// NOTE: Be sure to edit zoomOutAreaMasks in camera.c, as there isnt a good way to macro those right now.
-// TODO: Figure something out for zoomOutAreaMasks?
-#ifndef SKIP_FIRST_LAST_STUBS // this is needed for the zoomOutAreaMasks array which has a weird way of doing the bit array packs.
+// NOTE: Be sure to edit sZoomOutAreaMasks in camera.c, as there isnt a good way to macro those right now.
+// TODO: Figure something out for sZoomOutAreaMasks?
 STUB_LEVEL(  "",               LEVEL_UNKNOWN_1,        COURSE_NONE,                                 20000,    0x00, 0x00, 0x00, _,         _)
-#endif
 STUB_LEVEL(  "",               LEVEL_UNKNOWN_2,        COURSE_NONE,                                 20000,    0x00, 0x00, 0x00, _,         _)
 STUB_LEVEL(  "",               LEVEL_UNKNOWN_3,        COURSE_NONE,                                 20000,    0x00, 0x00, 0x00, _,         _)
-DEFINE_LEVEL("TERESA OBAKE",   LEVEL_BBH,              COURSE_BBH,      bbh,              spooky,   28000,    0x28, 0x28, 0x28, sDynBbh,   TableCameraBBH)
-DEFINE_LEVEL("YYAMA1 % YSLD1", LEVEL_CCM,              COURSE_CCM,      ccm,              snow,     17000,    0x10, 0x38, 0x38, _,         TableCameraCCM)
-DEFINE_LEVEL("SELECT ROOM",    LEVEL_CASTLE,           COURSE_NONE,     castle_inside,    inside,   20000,    0x20, 0x20, 0x30, _,         TableCameraInside)
-DEFINE_LEVEL("HORROR DUNGEON", LEVEL_HMC,              COURSE_HMC,      hmc,              cave,     16000,    0x28, 0x28, 0x28, sDynHmc,   TableCameraHMC)
-DEFINE_LEVEL("SABAKU % PYRMD", LEVEL_SSL,              COURSE_SSL,      ssl,              generic,  15000,    0x08, 0x30, 0x30, _,         TableCameraSSL)
+DEFINE_LEVEL("TERESA OBAKE",   LEVEL_BBH,              COURSE_BBH,      bbh,              spooky,   28000,    0x28, 0x28, 0x28, sDynBbh,   sCamBBH)
+DEFINE_LEVEL("YYAMA1 % YSLD1", LEVEL_CCM,              COURSE_CCM,      ccm,              snow,     17000,    0x10, 0x38, 0x38, _,         sCamCCM)
+DEFINE_LEVEL("SELECT ROOM",    LEVEL_CASTLE,           COURSE_NONE,     castle_inside,    inside,   20000,    0x20, 0x20, 0x30, _,         sCamCastle)
+DEFINE_LEVEL("HORROR DUNGEON", LEVEL_HMC,              COURSE_HMC,      hmc,              cave,     16000,    0x28, 0x28, 0x28, sDynHmc,   sCamHMC)
+DEFINE_LEVEL("SABAKU % PYRMD", LEVEL_SSL,              COURSE_SSL,      ssl,              generic,  15000,    0x08, 0x30, 0x30, _,         sCamSSL)
 DEFINE_LEVEL("BATTLE FIELD",   LEVEL_BOB,              COURSE_BOB,      bob,              generic,  15000,    0x08, 0x08, 0x08, _,         _)
-DEFINE_LEVEL("YUKIYAMA2",      LEVEL_SL,               COURSE_SL,       sl,               snow,     14000,    0x10, 0x28, 0x28, _,         TableCameraSL)
+DEFINE_LEVEL("YUKIYAMA2",      LEVEL_SL,               COURSE_SL,       sl,               snow,     14000,    0x10, 0x28, 0x28, _,         sCamSL)
 DEFINE_LEVEL("POOL KAI",       LEVEL_WDW,              COURSE_WDW,      wdw,              grass,    17000,    0x10, 0x18, 0x18, sDynWdw,   _)
 DEFINE_LEVEL("WTDG % TINBOTU", LEVEL_JRB,              COURSE_JRB,      jrb,              water,    20000,    0x10, 0x18, 0x18, sDynJrb,   _)
-DEFINE_LEVEL("BIG WORLD",      LEVEL_THI,              COURSE_THI,      thi,              grass,    20000,    0x0c, 0x0c, 0x20, _,         TableCameraTHI)
+DEFINE_LEVEL("BIG WORLD",      LEVEL_THI,              COURSE_THI,      thi,              grass,    20000,    0x0c, 0x0c, 0x20, _,         sCamTHI)
 DEFINE_LEVEL("CLOCK TOWER",    LEVEL_TTC,              COURSE_TTC,      ttc,              machine,  18000,    0x18, 0x18, 0x18, _,         _)
-DEFINE_LEVEL("RAINBOW CRUISE", LEVEL_RR,               COURSE_RR,       rr,               sky,      20000,    0x20, 0x20, 0x20, _,         TableCameraRR)
+DEFINE_LEVEL("RAINBOW CRUISE", LEVEL_RR,               COURSE_RR,       rr,               sky,      20000,    0x20, 0x20, 0x20, _,         sCamRR)
 DEFINE_LEVEL("MAIN MAP",       LEVEL_CASTLE_GROUNDS,   COURSE_NONE,     castle_grounds,   outside,  25000,    0x08, 0x08, 0x08, _,         _)
 DEFINE_LEVEL("EXT1 YOKO SCRL", LEVEL_BITDW,            COURSE_BITDW,    bitdw,            sky,      16000,    0x28, 0x28, 0x28, _,         _)
 DEFINE_LEVEL("EXT7 HORI MINI", LEVEL_VCUTM,            COURSE_VCUTM,    vcutm,            outside,  30000,    0x28, 0x28, 0x28, _,         _)
@@ -46,7 +44,7 @@ DEFINE_LEVEL("MOUNTAIN",       LEVEL_WF,               COURSE_WF,       wf,     
 DEFINE_LEVEL("ENDING",         LEVEL_ENDING,           COURSE_CAKE_END, ending,           generic,  20000,    0x00, 0x00, 0x00, _,         _)
 DEFINE_LEVEL("URANIWA",        LEVEL_CASTLE_COURTYARD, COURSE_NONE,     castle_courtyard, outside,  20000,    0x08, 0x08, 0x08, _,         _)
 DEFINE_LEVEL("EXT4 MINI SLID", LEVEL_PSS,              COURSE_PSS,      pss,              mountain, 20000,    0x28, 0x28, 0x28, _,         _)
-DEFINE_LEVEL("IN THE FALL",    LEVEL_COTMC,            COURSE_COTMC,    cotmc,            cave,     18000,    0x28, 0x28, 0x28, _,         TableCameraCotMC)
+DEFINE_LEVEL("IN THE FALL",    LEVEL_COTMC,            COURSE_COTMC,    cotmc,            cave,     18000,    0x28, 0x28, 0x28, _,         sCamCotMC)
 DEFINE_LEVEL("EXT6 MARIO FLY", LEVEL_TOTWC,            COURSE_TOTWC,    totwc,            sky,      20000,    0x20, 0x20, 0x20, _,         _)
 DEFINE_LEVEL("KUPPA1",         LEVEL_BOWSER_1,         COURSE_BITDW,    bowser_1,         generic,  VAL_DIFF, 0x40, 0x40, 0x40, _,         _)
 DEFINE_LEVEL("EXT8 BLUE SKY",  LEVEL_WMOTR,            COURSE_WMOTR,    wmotr,            generic,  20000,    0x28, 0x28, 0x28, _,         _)
@@ -56,6 +54,4 @@ DEFINE_LEVEL("KUPPA3",         LEVEL_BOWSER_3,         COURSE_BITS,     bowser_3
 STUB_LEVEL(  "",               LEVEL_UNKNOWN_35,       COURSE_NONE,                                 20000,    0x00, 0x00, 0x00, _,         _)
 DEFINE_LEVEL("DONKEY % SLID2", LEVEL_TTM,              COURSE_TTM,      ttm,              mountain, 15000,    0x08, 0x08, 0x08, _,         _)
 STUB_LEVEL(  "",               LEVEL_UNKNOWN_37,       COURSE_NONE,                                 20000,    0x00, 0x00, 0x00, _,         _)
-#ifndef SKIP_FIRST_LAST_STUBS
 STUB_LEVEL(  "",               LEVEL_UNKNOWN_38,       COURSE_NONE,                                 20000,    0x00, 0x00, 0x00, sDynUnk38, _)
-#endif

@@ -2,7 +2,7 @@
 
 void bhv_explosion_init(void) {
     create_sound_spawner(SOUND_GENERAL2_BOBOMB_EXPLOSION);
-    set_camera_shake_2(SHAKE_2_UNKNOWN_1);
+    set_environmental_camera_shake(SHAKE_ENV_EXPLOSION);
 
     o->oOpacity = 255;
 }

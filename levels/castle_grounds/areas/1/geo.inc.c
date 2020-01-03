@@ -13,7 +13,7 @@ const GeoLayout castle_grounds_geo_00073C[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 20000, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(16, 0, 1500, 2500, 0, 1500, -12000, geo_camera_preset_and_pos),
+            GEO_CAMERA(16, 0, 1500, 2500, 0, 1500, -12000, geo_camera_main),
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, castle_grounds_seg7_dl_07006D70),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, castle_grounds_seg7_dl_070095F0),

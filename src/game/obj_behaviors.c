@@ -693,7 +693,7 @@ s16 trigger_obj_dialog_when_facing(s32 *inDialog, s16 dialogID, f32 dist, s32 ac
         *inDialog = 1;
 
         if (set_mario_npc_dialog(actionArg) == 2) { //If Mario is speaking.
-            dialogueResponse = cutscene_object_with_dialog(CUTSCENE_DIALOG_1, o, dialogID);
+            dialogueResponse = cutscene_object_with_dialog(CUTSCENE_DIALOG, o, dialogID);
             if (dialogueResponse != 0) {
                 set_mario_npc_dialog(0);
                 *inDialog = 0;

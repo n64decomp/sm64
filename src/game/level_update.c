@@ -533,15 +533,14 @@ void check_instant_warp(void) {
                 gMarioState->marioObj->oPosY = gMarioState->pos[1];
                 gMarioState->marioObj->oPosZ = gMarioState->pos[2];
 
-                cameraAngle = gMarioState->area->camera->trueYaw;
+                cameraAngle = gMarioState->area->camera->yaw;
 
                 change_area(warp->area);
                 gMarioState->area = gCurrentArea;
 
-                instant_warp_camera_update(warp->displacement[0], warp->displacement[1],
-                                           warp->displacement[2]);
+                warp_camera(warp->displacement[0], warp->displacement[1], warp->displacement[2]);
 
-                gMarioState->area->camera->trueYaw = cameraAngle;
+                gMarioState->area->camera->yaw = cameraAngle;
             }
         }
     }

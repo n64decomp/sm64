@@ -11,7 +11,7 @@ void bhv_bowser_bomb_loop(void) {
     {
         spawn_object(o, MODEL_BOWSER_FLAMES, bhvBowserBombExplosion);
         create_sound_spawner(SOUND_GENERAL_BOWSER_BOMB_EXPLOSION);
-        func_8027F440(3, o->oPosX, o->oPosY, o->oPosZ);
+        set_camera_shake_from_point(SHAKE_POS_LARGE, o->oPosX, o->oPosY, o->oPosZ);
         o->activeFlags = 0;
     }
 

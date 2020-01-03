@@ -13,7 +13,7 @@ const GeoLayout thi_geo_000608[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 20000, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(1, 0, 2000, 6000, 0, 0, 0, geo_camera_preset_and_pos),
+            GEO_CAMERA(1, 0, 2000, 6000, 0, 0, 0, geo_camera_main),
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, thi_seg7_dl_07005260),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, thi_seg7_dl_07006968),

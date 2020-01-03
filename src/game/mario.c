@@ -718,19 +718,20 @@ s16 find_floor_slope(struct MarioState *m, s16 yawOffset) {
  */
 void update_mario_sound_and_camera(struct MarioState *m) {
     u32 action = m->action;
-    s32 camPreset = m->area->camera->currPreset;
+    s32 camPreset = m->area->camera->mode;
 
     if (action == ACT_FIRST_PERSON) {
         func_80248CB8(2);
         gCameraMovementFlags &= ~CAM_MOVE_C_UP_MODE;
-        func_80285BD8(m->area->camera, -1, 1);
+        // Go back to the last camera mode
+        set_camera_mode(m->area->camera, -1, 1);
     } else if (action == ACT_SLEEPING) {
         func_80248CB8(2);
     }
 
     if (!(action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER))) {
-        if (camPreset == CAMERA_PRESET_BEHIND_MARIO || camPreset == CAMERA_PRESET_WATER_SURFACE) {
-            func_80285BD8(m->area->camera, m->area->camera->defPreset, 1);
+        if (camPreset == CAMERA_MODE_BEHIND_MARIO || camPreset == CAMERA_MODE_WATER_SURFACE) {
+            set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
         }
     }
 }
@@ -1159,7 +1160,7 @@ s32 check_common_hold_action_exits(struct MarioState *m) {
  * Transitions Mario from a submerged action to a walking action.
  */
 s32 transition_submerged_to_walking(struct MarioState *m) {
-    func_80285BD8(m->area->camera, m->area->camera->defPreset, 1);
+    set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
 
     vec3s_set(m->angleVel, 0, 0, 0);
 
@@ -1188,8 +1189,8 @@ s32 set_water_plunge_action(struct MarioState *m) {
         m->faceAngle[0] = 0;
     }
 
-    if (m->area->camera->currPreset != CAMERA_PRESET_WATER_SURFACE) {
-        func_80285BD8(m->area->camera, CAMERA_PRESET_WATER_SURFACE, 1);
+    if (m->area->camera->mode != CAMERA_MODE_WATER_SURFACE) {
+        set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
     }
 
     return set_mario_action(m, ACT_WATER_PLUNGE, 0);
@@ -1304,7 +1305,7 @@ void update_mario_joystick_inputs(struct MarioState *m) {
     }
 
     if (m->intendedMag > 0.0f) {
-        m->intendedYaw = atan2s(-controller->stickY, controller->stickX) + m->area->camera->trueYaw;
+        m->intendedYaw = atan2s(-controller->stickY, controller->stickX) + m->area->camera->yaw;
         m->input |= INPUT_NONZERO_ANALOG;
     } else {
         m->intendedYaw = m->faceAngle[1];
@@ -1424,19 +1425,19 @@ void set_submerged_cam_preset_and_spawn_bubbles(struct MarioState *m) {
 
     if ((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) {
         heightBelowWater = (f32)(m->waterLevel - 80) - m->pos[1];
-        camPreset = m->area->camera->currPreset;
+        camPreset = m->area->camera->mode;
 
         if ((m->action & ACT_FLAG_METAL_WATER)) {
-            if (camPreset != CAMERA_PRESET_CLOSE) {
-                func_80285BD8(m->area->camera, CAMERA_PRESET_CLOSE, 1);
+            if (camPreset != CAMERA_MODE_CLOSE) {
+                set_camera_mode(m->area->camera, CAMERA_MODE_CLOSE, 1);
             }
         } else {
-            if ((heightBelowWater > 800.0f) && (camPreset != CAMERA_PRESET_BEHIND_MARIO)) {
-                func_80285BD8(m->area->camera, CAMERA_PRESET_BEHIND_MARIO, 1);
+            if ((heightBelowWater > 800.0f) && (camPreset != CAMERA_MODE_BEHIND_MARIO)) {
+                set_camera_mode(m->area->camera, CAMERA_MODE_BEHIND_MARIO, 1);
             }
 
-            if ((heightBelowWater < 400.0f) && (camPreset != CAMERA_PRESET_WATER_SURFACE)) {
-                func_80285BD8(m->area->camera, CAMERA_PRESET_WATER_SURFACE, 1);
+            if ((heightBelowWater < 400.0f) && (camPreset != CAMERA_MODE_WATER_SURFACE)) {
+                set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
             }
 
             if ((m->action & ACT_FLAG_INTANGIBLE) == 0) {
@@ -1850,7 +1851,7 @@ void init_mario_from_save_file(void) {
     gMarioState->flags = 0;
     gMarioState->action = 0;
     gMarioState->spawnInfo = &gPlayerSpawnInfos[0];
-    gMarioState->statusForCamera = &gPlayerStatusForCamera[0];
+    gMarioState->statusForCamera = &gPlayerCameraState[0];
     gMarioState->marioBodyState = &gBodyStates[0];
     gMarioState->controller = &gControllers[0];
     gMarioState->animation = &D_80339D10;

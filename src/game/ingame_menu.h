@@ -92,13 +92,13 @@ enum DialogSpecialChars {
     DIALOG_CHAR_MULTI_THE = 0xD1, // 'the'
     DIALOG_CHAR_MULTI_YOU = 0xD2, // 'you'
 #endif
-    DIALOG_CHAR_HANDAKUTEN = 0x6E,
+    DIALOG_CHAR_PERIOD = 0x6E,
     DIALOG_CHAR_COMMA = 0x6F,
     DIALOG_CHAR_SPACE = 0x9E,
-    DIALOG_CHAR_STAR_COUNT = 0xE0,        // number of stars
+    DIALOG_CHAR_STAR_COUNT = 0xE0, // number of stars
     DIALOG_CHAR_UMLAUT = 0xE9,
-    DIALOG_CHAR_PREFIX_DAKUTEN = 0xF0,    // prefix for kana or hira with dakuten
-    DIALOG_CHAR_PREFIX_HANDAKUTEN = 0xF1, // prefix for kana or hira with handakuten
+    DIALOG_CHAR_DAKUTEN = 0xF0,
+    DIALOG_CHAR_PERIOD_OR_HANDAKUTEN = 0xF1,
     DIALOG_CHAR_STAR_FILLED = 0xFA,
     DIALOG_CHAR_STAR_OPEN = 0xFD,
     DIALOG_CHAR_NEWLINE = 0xFE,

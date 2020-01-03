@@ -384,7 +384,7 @@ void ukiki_act_go_to_cage(void) {
         case UKIKI_SUB_ACT_CAGE_TALK_TO_MARIO:
             set_obj_animation_and_sound_state(UKIKI_ANIM_HANDSTAND);
 
-            if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG_1, DIALOG_080)) {
+            if (obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG, DIALOG_080)) {
                 o->oSubAction++;
             }
             break;

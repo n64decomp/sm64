@@ -142,7 +142,7 @@ void bhv_bowling_ball_loop(void) {
     }
 
     if (o->oBehParams2ndByte != 4)
-        func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
+        set_camera_shake_from_point(SHAKE_POS_BOWLING_BALL, o->oPosX, o->oPosY, o->oPosZ);
 
     set_object_visibility(o, 4000);
 }
@@ -222,7 +222,7 @@ void bhv_bob_pit_bowling_ball_loop(void) {
         o->oForwardVel = 28.0f;
 
     func_802EDA14();
-    func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
+    set_camera_shake_from_point(SHAKE_POS_BOWLING_BALL, o->oPosX, o->oPosY, o->oPosZ);
     PlaySound(SOUND_ENV_UNKNOWN2);
     set_object_visibility(o, 3000);
 }
@@ -243,7 +243,7 @@ void bhv_free_bowling_ball_roll_loop(void) {
     func_802EDA14();
 
     if (o->oForwardVel > 10.0f) {
-        func_8027F440(4, o->oPosX, o->oPosY, o->oPosZ);
+        set_camera_shake_from_point(SHAKE_POS_BOWLING_BALL, o->oPosX, o->oPosY, o->oPosZ);
         PlaySound(SOUND_ENV_UNKNOWN2);
     }
 

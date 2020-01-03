@@ -9,13 +9,14 @@
  * Make sure that USE_EXT_RAM is defined in include/segments.h
     #define USE_EXT_RAM
  *
- * There are 6 files you will need to edit:
+ * There are 7 files you will need to edit:
  * src/game/main.c
  * src/engine/level_script.h
  * include/text_strings.h.in
- * levels/entry.s
- * levels/intro/script.s
- * levels/intro/geo.s
+ * levels/entry.c
+ * levels/intro/script.c
+ * levels/intro/geo.c
+ * levels/intro/header.h
  *
  * First, in main.c, you will need to add this line below the includes:
    #include "../enhancements/mem_error_screen.inc.c"
@@ -45,48 +46,55 @@
     #define TEXT_PJ64 _("If you are using PJ64 1.6, go to:\nOptions > Settings > Rom Settings Tab > Memory Size\nthen select 8 MB from the drop-down box.")
     #define TEXT_PJ64_2 _("If you are using PJ64 2.X, go to:\nOptions > Settings > Config: > Memory Size, select 8 MB")
  *
- * In levels/entry.s, simply append the following to the file:
-    glabel level_script_entry_error_screen
-        init_level
-        sleep 2
-        blackout FALSE
-        set_reg 0
-        execute 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_error_screen
-        jump level_script_entry_error_screen
-    .align 4
+ * In levels/entry.c, simply append the following to the file:
+    const LevelScript level_script_entry_error_screen[] {
+        INIT_LEVEL(),
+        SLEEP(2),
+        BLACKOUT(FALSE),
+        SET_REG(0),
+        EXECUTE(0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_error_screen),
+        JUMP(level_script_entry_error_screen),
+    };
  *
- * In levels/intro/script.s, add the following to the top of the file:
-    glabel level_intro_entry_error_screen
-        init_level
-        fixed_load _goddardSegmentStart, _goddardSegmentRomStart, _goddardSegmentRomEnd
-        load_mio0 0x07, _intro_segment_7SegmentRomStart, _intro_segment_7SegmentRomEnd
-        alloc_level_pool
+ * In levels/intro/script.c, add the following to the top of the file:
+    const LevelScript level_intro_entry_error_screen[] {
+        INIT_LEVEL(),
+        FIXED_LOAD(_goddardSegmentStart, _goddardSegmentRomStart, _goddardSegmentRomEnd),
+        LOAD_MIO0(0x07, _intro_segment_7SegmentRomStart, _intro_segment_7SegmentRomEnd),
+        ALLOC_LEVEL_POOL(),
 
-        area 1, intro_geo_error_screen
-        end_area
+        AREA(1, intro_geo_error_screen),
+		END_AREA(),
 
-        free_level_pool
-        load_area 1
-        sleep 32767
-        exit_and_execute 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_error_screen
+        FREE_LEVEL_POOL(),
+        LOAD_AREA(1),
+        SLEEP(32767),
+        EXIT_AND_EXECUTE(0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_error_screen),
+	};
  *
- * Finally, add the following to the top of levels/intro/geo.s:
-    glabel intro_geo_error_screen
-        geo_node_screen_area 0, 160, 120, 160, 120
-        geo_open_node
-            geo_zbuffer 0
-            geo_open_node
-                geo_node_ortho 100
-                geo_open_node
-                    geo_background 0x0001
-                geo_close_node
-            geo_close_node
-            geo_zbuffer 0
-            geo_open_node
-                geo_asm 0, geo18_display_error_message
-            geo_close_node
-        geo_close_node
-        geo_end
+ * Add the following to the top of levels/intro/geo.c:
+    const GeoLayout intro_geo_error_screen[] {
+        GEO_NODE_SCREEN_AREA(0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
+        GEO_OPEN_NODE(),
+            GEO_ZBUFFER(0),
+            GEO_OPEN_NODE(),
+                GEO_NODE_ORTHO(100),
+                GEO_OPEN_NODE(),
+                    GEO_BACKGROUND_COLOR(0x0001),
+                GEO_CLOSE_NODE(),
+            GEO_CLOSE_NODE(),
+            GEO_ZBUFFER(0),
+            GEO_OPEN_NODE(),
+                GEO_ASM(0, geo18_display_error_message),
+            GEO_CLOSE_NODE(),
+        GEO_CLOSE_NODE(),
+        GEO_END(),
+	};
+	
+ * Finally, add the following to the bottom of levels/intro/header.h:
+    extern const GeoLayout intro_geo_error_screen[];
+    extern const LevelScript level_intro_entry_error_screen[];
+    extern Gfx *geo18_display_error_message(u32 run, UNUSED struct GraphNode *sp44, UNUSED u32 sp48);
  */
 /* clang-format on */
 

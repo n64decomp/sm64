@@ -65,20 +65,20 @@ UNUSED s32 D_8038BCA8;
  * might be for Mario and Luigi, and the other 10 could be different cameras for
  * different rooms / boss fights. An area might be structured like this:
  *
- * geo_camera preset_player //Mario cam
+ * geo_camera mode_player //Mario cam
  * geo_open_node
  *   geo_render_obj
  *   geo_assign_as_view 1   // currently unused geo command
  * geo_close_node
  *
- * geo_camera preset_player //Luigi cam
+ * geo_camera mode_player //Luigi cam
  * geo_open_node
  *   geo_render_obj
  *   geo_copy_view 1        // currently unused geo command
  *   geo_assign_as_view 2
  * geo_close_node
  *
- * geo_camera preset_boss //boss fight cam
+ * geo_camera mode_boss //boss fight cam
  * geo_assign_as_view 3
  * ...
  *
@@ -348,26 +348,26 @@ void geo_layout_cmd_node_switch_case(void) {
 }
 
 /*
- 0x0F: Create a camera scene graph node (GraphNodeCamera)
+ 0x0F: Create a camera scene graph node (GraphNodeCamera). The focus sets the Camera's areaCen position.
   cmd+0x02: s16 camera type (changes from course to course)
-  cmd+0x04: s16 fromX
-  cmd+0x06: s16 fromY
-  cmd+0x08: s16 fromZ
-  cmd+0x0A: s16 toX
-  cmd+0x0C: s16 toY
-  cmd+0x0E: s16 toZ
+  cmd+0x04: s16 posX
+  cmd+0x06: s16 posY
+  cmd+0x08: s16 posZ
+  cmd+0x0A: s16 focusX
+  cmd+0x0C: s16 focusY
+  cmd+0x0E: s16 focusZ
   cmd+0x10: GraphNodeFunc func
 */
 void geo_layout_cmd_node_camera(void) {
     struct GraphNodeCamera *graphNode;
     s16 *cmdPos = (s16 *) &gGeoLayoutCommand[4];
 
-    Vec3f fromPos, toPos;
+    Vec3f pos, focus;
 
-    cmdPos = read_vec3s_to_vec3f(fromPos, cmdPos);
-    cmdPos = read_vec3s_to_vec3f(toPos, cmdPos);
+    cmdPos = read_vec3s_to_vec3f(pos, cmdPos);
+    cmdPos = read_vec3s_to_vec3f(focus, cmdPos);
 
-    graphNode = init_graph_node_camera(gGraphNodePool, NULL, fromPos, toPos,
+    graphNode = init_graph_node_camera(gGraphNodePool, NULL, pos, focus,
                                        (GraphNodeFunc) cur_geo_cmd_ptr(0x10), cur_geo_cmd_s16(0x02));
 
     register_scene_graph_node(&graphNode->fnNode.node);

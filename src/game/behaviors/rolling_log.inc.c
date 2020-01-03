@@ -97,7 +97,7 @@ void func_802F2820(void) {
         o->oRollingLogUnkF4 = 0;
         o->oAction = 2;
         PlaySound2(SOUND_GENERAL_BIG_POUND);
-        func_8027F440(3, o->oPosX, o->oPosY, o->oPosZ);
+        set_camera_shake_from_point(SHAKE_POS_LARGE, o->oPosX, o->oPosY, o->oPosZ);
     }
 }
 

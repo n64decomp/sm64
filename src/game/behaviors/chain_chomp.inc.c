@@ -336,7 +336,7 @@ static void chain_chomp_released_break_gate(void) {
  */
 static void chain_chomp_released_jump_away(void) {
     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
-        gCutsceneActive = TRUE;
+        gObjCutsceneDone = TRUE;
         o->oChainChompReleaseStatus = CHAIN_CHOMP_RELEASED_END_CUTSCENE;
     }
 }
@@ -538,7 +538,7 @@ void bhv_chain_chomp_gate_init(void) {
 void bhv_chain_chomp_gate_update(void) {
     if (o->parentObj->oChainChompHitGate) {
         func_802A3034(SOUND_GENERAL_WALL_EXPLOSION);
-        func_8027F440(1, o->oPosX, o->oPosY, o->oPosZ);
+        set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
         func_802AA618(0, 0x7F, 200.0f);
         spawn_triangle_break_particles(30, 0x8A, 3.0f, 4);
         mark_object_for_deletion(o);

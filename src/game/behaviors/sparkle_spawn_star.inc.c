@@ -12,7 +12,7 @@ struct ObjectHitbox sSparkleSpawnStarHitbox = {
     /* hurtboxHeight: */ 0,
 };
 
-void bhv_unused_080c_init(void) {
+void bhv_spawned_star_init(void) {
     s32 sp24;
     if (!(o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT))
         o->oBehParams = o->parentObj->oBehParams;
@@ -53,7 +53,7 @@ void func_802AA918(void) {
         o->oAngleVelYaw -= 0x40;
 }
 
-void bhv_unused_080c_loop(void) {
+void bhv_spawned_star_loop(void) {
     if (o->oAction == 0) {
         if (o->oTimer == 0) {
             cutscene_object(CUTSCENE_STAR_SPAWN, o);
@@ -89,14 +89,14 @@ void bhv_unused_080c_loop(void) {
         if (o->oVelY < -4.0f)
             o->oVelY = -4.0f;
         if (o->oVelY < 0 && o->oPosY < o->oHomeY) {
-            gCutsceneActive = 1;
+            gObjCutsceneDone = TRUE;
             o->oVelY = 0;
             o->oGravity = 0;
             o->oAction++;
         }
         spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
     } else if (o->oAction == 2) {
-        if (gCurrLevelCamera->cutscene == 0 && gCutsceneNumber == 0) {
+        if (gCamera->cutscene == 0 && gRecentCutscene == 0) {
             clear_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
             o->activeFlags &= ~0x20;
             o->oAction++;
@@ -110,8 +110,8 @@ void bhv_unused_080c_loop(void) {
     o->oInteractStatus = 0;
 }
 
-void bhv_spawn_star_objects(u32 sp20) {
-    struct Object *sp1C = spawn_object(o, MODEL_STAR, bhvUnused080C);
+void bhv_spawn_star_no_level_exit(u32 sp20) {
+    struct Object *sp1C = spawn_object(o, MODEL_STAR, bhvSpawnedStarNoLevelExit);
     sp1C->oBehParams = sp20 << 24;
     sp1C->oInteractionSubtype = INT_SUBTYPE_NO_EXIT;
     set_object_angle(sp1C, 0, 0, 0);

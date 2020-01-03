@@ -185,7 +185,8 @@ void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n) {
     s32 srcIndex = 0;
 
     // Don't continue if there is no memory to do so.
-    if ((sTextLabels[sTextLabelsCount] = (struct TextLabel *) mem_pool_alloc(D_8033A124, 60)) == NULL) {
+    if ((sTextLabels[sTextLabelsCount] = mem_pool_alloc(gEffectsMemoryPool,
+                                                        sizeof(struct TextLabel))) == NULL) {
         return;
     }
 
@@ -235,7 +236,8 @@ void print_text(s32 x, s32 y, const char *str) {
     s32 srcIndex = 0;
 
     // Don't continue if there is no memory to do so.
-    if ((sTextLabels[sTextLabelsCount] = (struct TextLabel *) mem_pool_alloc(D_8033A124, 60)) == NULL) {
+    if ((sTextLabels[sTextLabelsCount] = mem_pool_alloc(gEffectsMemoryPool,
+                                                        sizeof(struct TextLabel))) == NULL) {
         return;
     }
 
@@ -268,7 +270,8 @@ void print_text_centered(s32 x, s32 y, const char *str) {
     s32 srcIndex = 0;
 
     // Don't continue if there is no memory to do so.
-    if ((sTextLabels[sTextLabelsCount] = (struct TextLabel *) mem_pool_alloc(D_8033A124, 60)) == NULL) {
+    if ((sTextLabels[sTextLabelsCount] = mem_pool_alloc(gEffectsMemoryPool,
+                                                        sizeof(struct TextLabel))) == NULL) {
         return;
     }
 
@@ -454,7 +457,7 @@ void render_text_labels(void) {
             }
         }
 
-        mem_pool_free(D_8033A124, (void *) sTextLabels[i]);
+        mem_pool_free(gEffectsMemoryPool, sTextLabels[i]);
     }
 
     gSPDisplayList(gDisplayListHead++, dl_hud_img_end);

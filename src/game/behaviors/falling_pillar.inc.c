@@ -105,7 +105,7 @@ void bhv_falling_pillar_loop(void) {
                 o->oPosZ += coss(o->oFaceAngleYaw) * 500.0f;
 
                 // Make the camera shake and spawn dust clouds.
-                func_8027F440(2, o->oPosX, o->oPosY, o->oPosZ);
+                set_camera_shake_from_point(SHAKE_POS_MEDIUM, o->oPosX, o->oPosY, o->oPosZ);
                 func_802AA618(0, 0, 92.0f);
 
                 // Go invisible.

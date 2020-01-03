@@ -15,12 +15,12 @@ void bhv_end_birds_2_loop(void) {
             gCurrentObject->oAction += 1;
             break;
         case 1:
-            vec3f_get_dist_and_angle(gCurrLevelCamera->pos, gCurrLevelCamera->focus, &sp34, &sp32,
+            vec3f_get_dist_and_angle(gCamera->pos, gCamera->focus, &sp34, &sp32,
                                      &sp30);
             sp30 += 0x1000;
             sp32 += 0; // nice work, Nintendo
-            vec3f_set_dist_and_angle(gCurrLevelCamera->pos, sp3C, 14000.f, sp32, sp30);
-            func_8029A7DC(gCurrentObject, sp3C, 0, 0, 8, 8);
+            vec3f_set_dist_and_angle(gCamera->pos, sp3C, 14000.f, sp32, sp30);
+            obj_rotate_towards_point(gCurrentObject, sp3C, 0, 0, 8, 8);
 
             if ((gCurrentObject->oEndBirdUnk104 == 0.f) && (gCurrentObject->oTimer == 0))
                 PlaySound2(SOUND_GENERAL_BIRDS_FLY_AWAY);
