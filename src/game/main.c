@@ -25,6 +25,10 @@ OSThread gIdleThread;
 OSThread gMainThread;
 OSThread gGameLoopThread;
 OSThread gSoundThread;
+OSIoMesg gDmaIoMesg;
+OSMesg D_80339BEC;
+OSMesgQueue gDmaMesgQueue;
+OSMesgQueue gSIEventMesgQueue;
 OSMesgQueue gPIMesgQueue;
 OSMesgQueue gIntrMesgQueue;
 OSMesgQueue gSPTaskMesgQueue;
@@ -33,10 +37,6 @@ OSMesg gPIMesgBuf[32];
 OSMesg gSIEventMesgBuf[1];
 OSMesg gIntrMesgBuf[16];
 OSMesg gUnknownMesgBuf[16];
-OSIoMesg gDmaIoMesg;
-OSMesg D_80339BEC;
-OSMesgQueue gDmaMesgQueue;
-OSMesgQueue gSIEventMesgQueue;
 
 struct VblankHandler *gVblankHandler1 = NULL;
 struct VblankHandler *gVblankHandler2 = NULL;
@@ -408,8 +408,10 @@ void thread1_idle(UNUSED void *arg) {
     } else {
         osViSetMode(&osViModeTable[OS_VI_PAL_LAN1]);
     }
-#else
+#elif defined(VERSION_JP)
     osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
+#else // VERSION_EU
+    osViSetMode(&osViModeTable[OS_VI_PAL_LAN1]);
 #endif
     osViBlack(TRUE);
     osViSetSpecialFeatures(OS_VI_DITHER_FILTER_ON);

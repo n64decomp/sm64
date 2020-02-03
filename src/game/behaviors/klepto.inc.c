@@ -121,7 +121,7 @@ static void klepto_change_target(void) {
     o->oHomeY = sKleptoTargetPositions[o->oKleptoTargetNumber][1] + o->oKleptoUnkF8;
     o->oHomeZ = sKleptoTargetPositions[o->oKleptoTargetNumber][2];
 
-    o->oKleptoUnkFC = obj_lateral_dist_to_home() / 2.0f;
+    o->oKleptoUnkFC = obj_lateral_dist_to_home() / 2;
 }
 
 static void klepto_circle_target(f32 radius, f32 targetSpeed) {

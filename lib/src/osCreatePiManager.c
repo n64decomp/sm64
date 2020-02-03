@@ -3,11 +3,14 @@
 #define OS_PI_MGR_MESG_BUFF_SIZE 1
 
 OSMgrArgs piMgrArgs = { 0 };
+#ifdef VERSION_EU
+OSPiHandle *D_80302DFC = NULL;
+#endif
 OSThread piMgrThread;
 u32 piMgrStack[0x400]; // stack bottom
 OSMesgQueue __osPiMesgQueue;
 OSMesg piMgrMesgBuff[OS_PI_MGR_MESG_BUFF_SIZE + 1];
-s32 osPiRawStartDma(s32 dir, u32 cart_addr, void *dram_addr, size_t size);
+
 extern u32 gOsPiAccessQueueCreated;
 extern OSMesgQueue gOsPiMessageQueue;
 void __osDevMgrMain(void *);
@@ -37,6 +40,9 @@ void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf, s32 cmdMsgC
         piMgrArgs.unk0c = &__osPiMesgQueue;
         piMgrArgs.unk10 = &gOsPiMessageQueue;
         piMgrArgs.dma_func = osPiRawStartDma;
+#ifdef VERSION_EU
+        piMgrArgs.edma_func = osEPiRawStartDma;
+#endif
         osCreateThread(&piMgrThread, 0, __osDevMgrMain, (void *) &piMgrArgs, &piMgrStack[0x400], pri);
         osStartThread(&piMgrThread);
         __osRestoreInt(int_disabled);

@@ -44,9 +44,7 @@ void bhv_fire_piranha_plant_init(void) {
             o->oNumLootCoins = 2;
         }
     }
-
-    sNumKilledFirePiranhaPlants = 0;
-    sNumActiveFirePiranhaPlants = 0;
+    sNumActiveFirePiranhaPlants = sNumKilledFirePiranhaPlants = 0;
 }
 
 static void fire_piranha_plant_act_hide(void) {
@@ -114,7 +112,7 @@ static void fire_piranha_plant_act_grow(void) {
                 }
             }
         }
-    } else if (o->oFirePiranhaPlantScale > o->oFirePiranhaPlantNeutralScale / 2.0f) {
+    } else if (o->oFirePiranhaPlantScale > o->oFirePiranhaPlantNeutralScale / 2) {
         obj_become_tangible();
     }
 }

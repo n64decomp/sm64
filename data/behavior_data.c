@@ -2842,7 +2842,7 @@ const BehaviorScript bhvInitializeChangingWaterLevel[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvTornadoSandParticle[] = {
+const BehaviorScript bhvTweesterSandParticle[] = {
     BEGIN(OBJ_LIST_UNIMPORTANT),
     OR_INT(oFlags, (OBJ_FLAG_MOVE_XZ_USING_FVEL | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     BILLBOARD(),
@@ -2851,7 +2851,7 @@ const BehaviorScript bhvTornadoSandParticle[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvTornado[] = {
+const BehaviorScript bhvTweester[] = {
     BEGIN(OBJ_LIST_POLELIKE),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ 0, /*Drag*/ 0, /*Friction*/ 0, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
@@ -5869,12 +5869,12 @@ const BehaviorScript bhvPenguinRaceShortcutCheck[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvCoffinManager[] = {
+const BehaviorScript bhvCoffinSpawner[] = {
     BEGIN(OBJ_LIST_SURFACE),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     CALL_NATIVE(bhv_init_room),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_coffin_manager_loop),
+        CALL_NATIVE(bhv_coffin_spawner_loop),
     END_LOOP(),
 };
 

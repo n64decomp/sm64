@@ -50,6 +50,10 @@ if len(mybin) != len(basebin):
     print("Modified ROM has different size...")
     exit(1)
 
+if mybin == basebin:
+    print("No differences!")
+    exit(0)
+
 def search_map(rom_addr):
     ram_offset = None
     last_ram = 0

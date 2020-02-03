@@ -55,7 +55,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             }
 
             if (m->actionArg == 2) {
-                m->marioBodyState->unk0B = 4;
+                m->marioBodyState->punchState = (0 << 6) | 4;
             }
             break;
 
@@ -91,7 +91,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             }
 
             if (m->actionArg == 5) {
-                m->marioBodyState->unk0B = 68;
+                m->marioBodyState->punchState = (1 << 6) | 4;
             }
             break;
 
@@ -114,7 +114,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             play_mario_action_sound(m, SOUND_MARIO_PUNCH_HOO, 1);
             animFrame = set_mario_animation(m, MARIO_ANIM_GROUND_KICK);
             if (animFrame == 0) {
-                m->marioBodyState->unk0B = 134;
+                m->marioBodyState->punchState = (2 << 6) | 6;
             }
 
             if (animFrame >= 0 && animFrame < 8) {

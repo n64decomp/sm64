@@ -525,7 +525,7 @@ void bhv_racing_penguin_init(void);
 void bhv_racing_penguin_update(void);
 void bhv_penguin_race_finish_line_update(void);
 void bhv_penguin_race_shortcut_check_update(void);
-void bhv_coffin_manager_loop(void);
+void bhv_coffin_spawner_loop(void);
 void bhv_coffin_loop(void);
 void bhv_clam_loop(void);
 void bhv_skeeter_update(void);

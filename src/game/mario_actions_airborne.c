@@ -442,13 +442,9 @@ s32 act_jump(struct MarioState *m) {
 }
 
 s32 act_double_jump(struct MarioState *m) {
-    s32 animation;
-
-    if (m->vel[1] >= 0.0f) {
-        animation = MARIO_ANIM_DOUBLE_JUMP_RISE;
-    } else {
-        animation = MARIO_ANIM_DOUBLE_JUMP_FALL;
-    }
+    s32 animation = (m->vel[1] >= 0.0f) 
+        ? MARIO_ANIM_DOUBLE_JUMP_RISE 
+        : MARIO_ANIM_DOUBLE_JUMP_FALL;
 
     if (check_kick_or_dive_in_air(m)) {
         return TRUE;
@@ -906,7 +902,7 @@ s32 act_ground_pound(struct MarioState *m) {
             play_sound(SOUND_ACTION_SPIN, m->marioObj->header.gfx.cameraToObject);
         }
 
-        m->actionTimer += 1;
+        m->actionTimer++;
         if (m->actionTimer >= m->marioObj->header.gfx.unk38.curAnim->unk08 + 4) {
             play_sound(SOUND_MARIO_GROUND_POUND_WAH, m->marioObj->header.gfx.cameraToObject);
             m->actionState = 1;
@@ -1577,7 +1573,7 @@ s32 act_jump_kick(struct MarioState *m) {
 
     animFrame = m->marioObj->header.gfx.unk38.animFrame;
     if (animFrame == 0) {
-        m->marioBodyState->unk0B = 0x86;
+        m->marioBodyState->punchState = (2 << 6) | 6;
     }
     if (animFrame >= 0 && animFrame < 8) {
         m->flags |= MARIO_KICKING;

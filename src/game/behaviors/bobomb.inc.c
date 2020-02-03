@@ -99,7 +99,7 @@ void BobombChaseMarioLoop(void) {
 void BobombLaunchedLoop(void) {
     s16 collisionFlags = 0;
     collisionFlags = object_step();
-    if ((collisionFlags & 0x1) == 1)
+    if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) == OBJ_COL_FLAG_GROUNDED)
         o->oAction = BOBOMB_ACT_EXPLODE; /* bit 0 */
 }
 
@@ -307,7 +307,7 @@ void BobombBuddyIdleLoop(void) {
 
 /**
  * Function for the Bob-omb Buddy cannon guy.
- * dialogFirstText is the first dialogID called when Bob-omb Buddy 
+ * dialogFirstText is the first dialogID called when Bob-omb Buddy
  * starts to talk to Mario to prepare the cannon(s) for him.
  * Then the camera goes to the nearest cannon, to play the "prepare cannon" cutscene
  * dialogSecondText is called after Bob-omb Buddy has the cannon(s) ready and
@@ -361,7 +361,8 @@ void BobombBuddyTalkLoop(void) {
 
         switch (o->oBobombBuddyRole) {
             case BOBOMB_BUDDY_ROLE_ADVICE:
-                if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, o->oBehParams2ndByte) != BOBOMB_BUDDY_BP_STYPE_GENERIC) {
+                if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, o->oBehParams2ndByte)
+                    != BOBOMB_BUDDY_BP_STYPE_GENERIC) {
                     set_mario_npc_dialog(0);
 
                     o->activeFlags &= ~0x20; /* bit 5 */

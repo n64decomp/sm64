@@ -605,12 +605,7 @@ void *func_802D3CF0(u8 *img, s16 tWidth, s16 tHeight, s16 *d, s16 e, s16 f, u8 g
     if (verts == NULL || sp80 == NULL) {
     }
 
-    gDPSetTextureImage(sp7C++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, img);
-    gDPTileSync(sp7C++);
-    gDPSetTile(sp7C++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
-        G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
-    gDPLoadSync(sp7C++);
-    gDPLoadBlock(sp7C++, G_TX_LOADTILE, 0, 0, tWidth * tHeight - 1, CALC_DXT(tWidth, G_IM_SIZ_16b_BYTES))
+    gLoadBlockTexture(sp7C++, tWidth, tHeight, G_IM_FMT_RGBA, img);
 
     for (sp9E = 0; sp9E < sp90; sp9E++) {
         sp9A = e * 3 + sp9E * 15 + 2;

@@ -382,6 +382,18 @@
     #define BBH_DYNAMIC_SURFACE_ROOM 0
     #define BBH_OUTSIDE_ROOM 13
 
+/* Coffin Spawner */
+    /* oAction */
+    #define COFFIN_SPAWNER_ACT_COFFINS_UNLOADED 0
+
+/* Coffin */
+    /* oAction */
+    #define COFFIN_ACT_IDLE     0
+    #define COFFIN_ACT_STAND_UP 1
+
+    /* oBehParams2ndByte */
+    #define COFFIN_BP_STATIC 0
+
 /* WDW Arrow Lift */
     /* oAction */
     #define ARROW_LIFT_ACT_IDLE 0
@@ -852,6 +864,17 @@
     #define SKEETER_ACT_IDLE 0
     #define SKEETER_ACT_LUNGE 1
     #define SKEETER_ACT_WALK 2
+
+/* Tweester */
+    /* oAction */
+    #define TWEESTER_ACT_IDLE  0
+    #define TWEESTER_ACT_CHASE 1
+    #define TWEESTER_ACT_HIDE  2
+
+    /* oSubAction */
+    #define TWEESTER_SUB_ACT_WAIT  0
+
+    #define TWEESTER_SUB_ACT_CHASE 0
 
 /* Triplet butterfly */
     /* oAction */

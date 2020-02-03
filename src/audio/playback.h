@@ -28,5 +28,15 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer);
 void reclaim_notes(void);
 void note_init_all(void);
 
+#ifdef VERSION_EU
+struct AudioBankSound *func_eu_802e4e5c(struct Instrument *instrument, s32 semitone);
+struct Drum *func_eu_802e4fb8(s32 bankId, s32 drumId);
+void note_init_volume(struct Note *note);
+void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb);
+void note_set_frequency(struct Note *note, f32 frequency);
+void note_enable(struct Note *note);
+void note_disable(struct Note *note);
+#endif
+
 
 #endif /* _AUDIO_PLAYBACK_H */

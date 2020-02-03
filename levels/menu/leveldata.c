@@ -6,7 +6,9 @@
 #include "macro_preset_names.h"
 #include "special_preset_names.h"
 #include "textures.h"
-
+#ifdef VERSION_EU
+#include "text_strings.h"
+#endif
 #include "make_const_nonconst.h"
 
 // 0x07000000 - 0x07000018
@@ -1777,6 +1779,8 @@ const Gfx dl_menu_rgba16_wood_course[] = {
     gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2),
 #ifdef VERSION_EU
     gsSPEndDisplayList(),
+};
+const Gfx dl_menu_rgba16_wood_course_end[] = {
 #else
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture_menu_course_upper),
 #endif
@@ -1835,3 +1839,23 @@ const Collision main_menu_seg7_collision[] = {
     COL_TRI_STOP(),
     COL_END(),
 };
+
+#ifdef VERSION_EU
+
+// Duplicate course name tables; the main menu needs all languages loaded at
+// once since it switches language, so the copies in segment 19 aren't good
+// enough.
+
+#define COURSE_TABLE eu_course_strings_en_table
+#include "text/us/define_courses.inc.c"
+#undef COURSE_TABLE
+
+#define COURSE_TABLE eu_course_strings_fr_table
+#include "text/fr/define_courses.inc.c"
+#undef COURSE_TABLE
+
+#define COURSE_TABLE eu_course_strings_de_table
+#include "text/de/define_courses.inc.c"
+#undef COURSE_TABLE
+
+#endif

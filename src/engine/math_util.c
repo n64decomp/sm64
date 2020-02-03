@@ -159,17 +159,12 @@ void mtxf_copy(Mat4 dest, Mat4 src) {
 void mtxf_identity(Mat4 mtx) {
     register s32 i;
     register f32 *dest;
-
+    // Note: These loops need to be on one line to match on PAL
     // initialize everything except the first and last cells to 0
-    // (this need to be on one line to match on PAL)
-    for (dest = (f32 *) mtx + 1, i = 0; i < 14; dest++, i++) {
-        *dest = 0;
-    }
+    for (dest = (f32 *) mtx + 1, i = 0; i < 14; dest++, i++) *dest = 0;
 
     // initialize the diagonal cells to 1
-    for (dest = (f32 *) mtx, i = 0; i < 4; dest += 5, i++) {
-        *dest = 1;
-    }
+    for (dest = (f32 *) mtx, i = 0; i < 4; dest += 5, i++) *dest = 1;
 }
 
 /**

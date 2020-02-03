@@ -28,7 +28,6 @@
 #include "spawn_sound.h"
 #include "geo_misc.h"
 #include "save_file.h"
-#include "room.h"
 #include "level_table.h"
 
 extern struct Animation *wiggler_seg5_anims_0500C874[];
@@ -113,6 +112,12 @@ extern struct Animation *spiny_seg5_anims_05016EAC[];
 
 #define o gCurrentObject
 
+/**
+ * The treadmill that plays sounds and controls the others on random setting.
+ */
+struct Object *sMasterTreadmill;
+
+
 f32 sObjSavedPosX;
 f32 sObjSavedPosY;
 f32 sObjSavedPosZ;
@@ -165,7 +170,9 @@ static s32 obj_is_near_to_and_facing_mario(f32 maxDist, s16 maxAngleDiff) {
     return FALSE;
 }
 
-static void obj_perform_position_op(s32 op) {
+//! Although having no return value, this function
+//! must be u32 to match other functions on -O2.
+static BAD_RETURN(u32) obj_perform_position_op(s32 op) {
     switch (op) {
         case POS_OP_SAVE_POSITION:
             sObjSavedPosX = o->oPosX;
@@ -655,17 +662,27 @@ static s32 obj_resolve_collisions_and_turn(s16 targetYaw, s16 turnSpeed) {
     }
 }
 
+// TODO Likely scrub C, needs true matching code.
 static void obj_die_if_health_non_positive(void) {
+#ifdef VERSION_EU
+    s32 new_var;
+#endif
+
     if (o->oHealth <= 0) {
         if (o->oDeathSound == 0) {
             func_802A3034(SOUND_OBJ_DEFAULT_DEATH);
         } else if (o->oDeathSound > 0) {
+#ifdef VERSION_EU
+            new_var = o->oDeathSound;
+            func_802A3034(new_var);
+#else
             func_802A3034(o->oDeathSound);
+#endif
         } else {
             func_802A3004();
         }
 
-        if (o->oNumLootCoins < 0) {
+        if ((s32)o->oNumLootCoins < 0) {
             spawn_object(o, MODEL_BLUE_COIN, bhvMrIBlueCoin);
         } else {
             spawn_object_loot_yellow_coins(o, o->oNumLootCoins, 20.0f);

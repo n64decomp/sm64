@@ -83,7 +83,7 @@ static void enemy_lakitu_update_speed_and_angle(void) {
     }
 
     // Change move angle toward mario faster when farther from mario
-    turnSpeed = (s16)(distToMario * 2.0f);
+    turnSpeed = (s16)(distToMario * 2);
     clamp_s16(&turnSpeed, 0xC8, 0xFA0);
     obj_rotate_yaw_toward(o->oAngleToMario, turnSpeed);
 }

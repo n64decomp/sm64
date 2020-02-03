@@ -26,7 +26,7 @@ void ActionTuxiesMother2(void) {
     f32 sp24;
     UNUSED s32 unused;
     struct Object *sp1C = obj_find_nearest_object_with_behavior(bhvSmallPenguin, &sp24);
-    UNUSED s32 unused2;
+
     if (obj_find_nearby_held_actor(bhvUnused20E0, 1000.0f) != NULL) {
         if (o->oSubAction == 0) {
             set_obj_animation_and_sound_state(0);

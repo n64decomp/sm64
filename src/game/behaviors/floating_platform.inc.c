@@ -17,10 +17,10 @@ f32 func_802F54F8(void) {
 }
 
 void func_802F55CC(void) {
-    s16 sp6 = (gMarioObject->header.gfx.pos[0] - o->oPosX) * coss(-o->oMoveAngleYaw)
-              + (gMarioObject->header.gfx.pos[2] - o->oPosZ) * sins(-o->oMoveAngleYaw);
-    s16 sp4 = (gMarioObject->header.gfx.pos[2] - o->oPosZ) * coss(-o->oMoveAngleYaw)
-              - (gMarioObject->header.gfx.pos[0] - o->oPosX) * sins(-o->oMoveAngleYaw);
+    s16 sp6 = (gMarioObject->header.gfx.pos[0] - o->oPosX) * coss(-1*o->oMoveAngleYaw)
+              + (gMarioObject->header.gfx.pos[2] - o->oPosZ) * sins(-1*o->oMoveAngleYaw);
+    s16 sp4 = (gMarioObject->header.gfx.pos[2] - o->oPosZ) * coss(-1*o->oMoveAngleYaw)
+              - (gMarioObject->header.gfx.pos[0] - o->oPosX) * sins(-1*o->oMoveAngleYaw);
 
     if (gMarioObject->platform == o) {
         o->oFaceAnglePitch = sp4 * 2;

@@ -1,4 +1,5 @@
 #include "libultra_internal.h"
+#include "hardware.h"
 #include <macros.h>
 
 #define PIF_ADDR_START (void *) 0x1FC007FC
@@ -10,9 +11,23 @@ typedef struct {
     u32 instr03;
 } exceptionPreamble;
 
+#ifdef VERSION_EU
+extern u32 EU_D_802f4330(u32, void (*));
+extern void D_802F4380();
+
+#endif
 u32 D_80365CD0; // maybe initialized?
 u64 osClockRate = 62500000;
 u32 D_80334808 = 0;
+
+#ifdef VERSION_EU
+u32 EU_D_80336C40;
+u32 EU_D_80336C44;
+
+u32 D_8030208C = OS_IM_ALL;
+u32 EU_D_80302090 = 0;
+u8 EU_unusedZeroes[8] = { 0 };
+#endif
 
 #define EXCEPTION_TLB_MISS 0x80000000
 #define EXCEPTION_XTLB_MISS 0x80000080
@@ -25,6 +40,11 @@ extern exceptionPreamble __osExceptionPreamble;
 void osInitialize(void) {
     u32 sp34;
     u32 sp30 = 0;
+
+#ifdef VERSION_EU
+    UNUSED u32 eu_sp34;
+    UNUSED u32 eu_sp30;
+#endif
     UNUSED u32 sp2c;
     D_80365CD0 = TRUE;
     __osSetSR(__osGetSR() | 0x20000000);
@@ -53,4 +73,16 @@ void osInitialize(void) {
     if (osResetType == RESET_TYPE_COLD_RESET) {
         bzero(osAppNmiBuffer, sizeof(osAppNmiBuffer));
     }
+#ifdef VERSION_EU
+    eu_sp30 = HW_REG(PI_STATUS_REG, u32);
+    while (eu_sp30 & PI_STATUS_ERROR) {
+        eu_sp30 = HW_REG(PI_STATUS_REG, u32);
+    };
+    if (!((eu_sp34 = HW_REG(ASIC_STATUS, u32)) & _64DD_PRESENT_MASK)) {
+        EU_D_80302090 = 1;
+        EU_D_802f4330(1, D_802F4380);
+    } else {
+        EU_D_80302090 = 0;
+    }
+#endif
 }

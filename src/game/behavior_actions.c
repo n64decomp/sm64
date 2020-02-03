@@ -35,7 +35,6 @@
 #include "platform_displacement.h"
 #include "interaction.h"
 #include "ingame_menu.h"
-#include "room.h"
 #include "rendering_graph_node.h"
 #include "level_table.h"
 
@@ -211,16 +210,18 @@ Gfx *Geo18_802B1BB0(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {
 #include "behaviors/boo_cage.inc.c"
 
 // not in behavior file
-void func_802B2328(
-    s32 n, s32 a1, s32 a2,
-    s32 r) // n is the number of objects to spawn, r if the rate of change of phase (frequency?)
-{
+// n is the number of objects to spawn, r if the rate of change of phase (frequency?)
+void func_802B2328(s32 n, s32 a1, s32 a2, s32 r) {
     s32 i;
     s16 separation = 0x10000 / n; // Evenly spread around a circle
     for (i = 0; i < n; i++) {
         spawn_object_relative(0, sins(D_8035FF10 + i * separation) * a1, (i + 1) * a2,
                               coss(D_8035FF10 + i * separation) * a1, o, MODEL_NONE, bhvSparkleSpawn);
     }
+
+  if (1)
+  {
+  }
 
     D_8035FF10 += r * 0x100;
 }

@@ -1,5 +1,5 @@
 #include <ultra64.h>
-
+#include "prevent_bss_reordering.h"
 #include "sm64.h"
 #include "game.h"
 #include "sound_init.h"
@@ -418,7 +418,7 @@ s32 act_reading_npc_dialog(struct MarioState *m) {
     }
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
-    vec3s_set(m->marioBodyState->unk12, m->actionTimer, 0, 0);
+    vec3s_set(m->marioBodyState->headAngle, m->actionTimer, 0, 0);
 
     if (m->actionState != 8) {
         m->actionState++;
@@ -499,7 +499,7 @@ s32 act_reading_automatic_dialog(struct MarioState *m) {
         }
     }
     // apply head turn
-    vec3s_set(m->marioBodyState->unk12, m->actionTimer, 0, 0);
+    vec3s_set(m->marioBodyState->headAngle, m->actionTimer, 0, 0);
     return FALSE;
 }
 
@@ -1651,9 +1651,15 @@ static void intro_cutscene_hide_hud_and_mario(struct MarioState *m) {
     advance_cutscene_step(m);
 }
 
+#ifdef VERSION_EU
+    #define TIMER_SPAWN_PIPE 47
+#else
+    #define TIMER_SPAWN_PIPE 37
+#endif
+
 static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
     if ((s16) m->statusForCamera->cameraEvent != CAM_EVENT_START_INTRO) {
-        if (m->actionTimer++ == 37) {
+        if (m->actionTimer++ == TIMER_SPAWN_PIPE) {
             sIntroWarpPipeObj =
                 spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_CASTLE_GROUNDS_WARP_PIPE,
                                           bhvStaticObject, -1328, 60, 4664, 0, 180, 0);
@@ -1661,6 +1667,13 @@ static void intro_cutscene_peach_lakitu_scene(struct MarioState *m) {
         }
     }
 }
+#undef TIMER_SPAWN_PIPE
+
+#ifdef VERSION_EU
+    #define TIMER_RAISE_PIPE 28
+#else
+    #define TIMER_RAISE_PIPE 38
+#endif
 
 static void intro_cutscene_raise_pipe(struct MarioState *m) {
     sIntroWarpPipeObj->oPosY = camera_approach_f32_symmetric(sIntroWarpPipeObj->oPosY, 260.0f, 10.0f);
@@ -1669,11 +1682,12 @@ static void intro_cutscene_raise_pipe(struct MarioState *m) {
         play_sound(SOUND_MENU_EXIT_PIPE, sIntroWarpPipeObj->header.gfx.cameraToObject);
     }
 
-    if (m->actionTimer++ == 38) {
+    if (m->actionTimer++ == TIMER_RAISE_PIPE) {
         m->vel[1] = 60.0f;
         advance_cutscene_step(m);
     }
 }
+#undef TIMER_RAISE_PIPE
 
 static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
     if (m->actionTimer == 25) {
@@ -1683,9 +1697,15 @@ static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
     if (m->actionTimer++ >= 118) {
         m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
 
-        play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
-#ifndef VERSION_JP
+#ifdef VERSION_EU
+        // For some reason these calls were swapped.
         play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
+        play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
+#else
+        play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
+    #ifndef VERSION_JP
+        play_sound_if_no_flag(m, SOUND_ACTION_HIT_3, MARIO_ACTION_SOUND_PLAYED);
+    #endif
 #endif
 
         set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
@@ -1920,10 +1940,15 @@ static s32 act_jumbo_star_cutscene(struct MarioState *m) {
     return FALSE;
 }
 
+// TODO: (Scrub C) This function almost certainly has a version that matches for both -g and -O2
 static void generate_yellow_sparkles(s16 x, s16 y, s16 z, f32 radius) {
     s16 offsetX = radius * coss(sSparkleGenTheta) * sins(sSparkleGenPhi);
     s16 offsetY = radius * sins(sSparkleGenTheta);
     s16 offsetZ = radius * coss(sSparkleGenTheta) * coss(sSparkleGenPhi);
+#ifdef VERSION_EU
+    s16 dTheta = 0x3800;
+    s16 dPhi = 0x6000;
+#endif
 
     spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_NONE, bhvSparkleSpawn, x + offsetX, y + offsetY,
                               z + offsetZ, 0, 0, 0);
@@ -1936,9 +1961,15 @@ static void generate_yellow_sparkles(s16 x, s16 y, s16 z, f32 radius) {
     spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_NONE, bhvSparkleSpawn, x - offsetX, y - offsetY,
                               z - offsetZ, 0, 0, 0);
 
+#ifdef VERSION_EU
+    sSparkleGenTheta += dTheta;
+    sSparkleGenPhi += dPhi;
+#else
     sSparkleGenTheta += 0x3800;
     sSparkleGenPhi += 0x6000;
+#endif        
 }
+
 
 // not sure what this does, returns the height of the floor, but idk about the
 // other stuff (animation related?)
@@ -2012,6 +2043,14 @@ static void end_peach_cutscene_summon_jumbo_star(struct MarioState *m) {
     play_sound(SOUND_AIR_PEACH_TWINKLE, sEndJumboStarObj->header.gfx.cameraToObject);
 }
 
+#ifdef VERSION_EU
+    #define TIMER_FADE_IN_PEACH 201
+    #define TIMER_DESCEND_PEACH 280
+#else 
+    #define TIMER_FADE_IN_PEACH 276
+    #define TIMER_DESCEND_PEACH 355
+#endif
+
 // free peach from the stained glass window
 static void end_peach_cutscene_spawn_peach(struct MarioState *m) {
     if (m->actionTimer == 1) {
@@ -2046,13 +2085,15 @@ static void end_peach_cutscene_spawn_peach(struct MarioState *m) {
         sEndToadAnims[0] = 4;
         sEndToadAnims[1] = 5;
     }
-    if (m->actionTimer >= 276) {
+
+    if (m->actionTimer >= TIMER_FADE_IN_PEACH) {
         sEndPeachObj->oOpacity = camera_approach_f32_symmetric(sEndPeachObj->oOpacity, 255.0f, 2.0f);
     }
     if (m->actionTimer >= 40) {
         generate_yellow_sparkles(0, 2628, -1300, 150.0f);
     }
-    if (m->actionTimer == 355) {
+
+    if (m->actionTimer == TIMER_DESCEND_PEACH) {
         advance_cutscene_step(m);
     }
     // probably added sounds later and missed the previous >= 40 check
@@ -2060,6 +2101,12 @@ static void end_peach_cutscene_spawn_peach(struct MarioState *m) {
         play_sound(SOUND_AIR_PEACH_TWINKLE, sEndPeachObj->header.gfx.cameraToObject);
     }
 }
+
+#ifdef VERSION_EU
+    #define TIMER_RUN_TO_PEACH 531
+#else 
+    #define TIMER_RUN_TO_PEACH 584
+#endif
 
 // descend peach
 static void end_peach_cutscene_descend_peach(struct MarioState *m) {
@@ -2082,10 +2129,12 @@ static void end_peach_cutscene_descend_peach(struct MarioState *m) {
 
     play_sound(SOUND_AIR_PEACH_TWINKLE, sEndPeachObj->header.gfx.cameraToObject);
 
-    if (m->actionTimer >= 584) {
+    if (m->actionTimer >= TIMER_RUN_TO_PEACH) {
         advance_cutscene_step(m);
     }
 }
+
+#undef TIMER_RUN_TO_PEACH
 
 // mario runs to peach
 static void end_peach_cutscene_run_to_peach(struct MarioState *m) {
@@ -2170,6 +2219,14 @@ static void end_peach_cutscene_dialog_1(struct MarioState *m) {
     }
 }
 
+#ifdef VERSION_EU
+    #define TIMER_SOMETHING_SPECIAL 150
+    #define TIMER_PEACH_KISS        260
+#else 
+    #define TIMER_SOMETHING_SPECIAL 130
+    #define TIMER_PEACH_KISS        200
+#endif
+
 // dialog 2
 // "...and it's all thanks to you!"
 // "Thank you Mario!"
@@ -2196,18 +2253,21 @@ static void end_peach_cutscene_dialog_2(struct MarioState *m) {
 #endif
             break;
 
-        case 130:
+        case TIMER_SOMETHING_SPECIAL:
             set_cutscene_message(160, 227, 4, 40);
 #ifndef VERSION_JP
             play_sound(SOUND_PEACH_SOMETHING_SPECIAL, sEndPeachObj->header.gfx.cameraToObject);
 #endif
             break;
 
-        case 200:
+        case TIMER_PEACH_KISS:
             advance_cutscene_step(m);
             break;
     }
 }
+
+#undef TIMER_SOMETHING_SPECIAL
+#undef TIMER_PEACH_KISS
 
 static void end_peach_cutscene_kiss_from_peach(struct MarioState *m) {
     sEndPeachAnimation = 10;
@@ -2439,6 +2499,16 @@ static s32 act_end_peach_cutscene(struct MarioState *m) {
     return FALSE;
 }
 
+#ifdef VERSION_EU
+    #define TIMER_CREDITS_SHOW      51
+    #define TIMER_CREDITS_PROGRESS  80
+    #define TIMER_CREDITS_WARP     160
+#else 
+    #define TIMER_CREDITS_SHOW      61
+    #define TIMER_CREDITS_PROGRESS  90
+    #define TIMER_CREDITS_WARP     200
+#endif
+
 static s32 act_credits_cutscene(struct MarioState *m) {
     s32 width;
     s32 height;
@@ -2461,7 +2531,7 @@ static s32 act_credits_cutscene(struct MarioState *m) {
         }
     }
 
-    if (m->actionTimer >= 61) {
+    if (m->actionTimer >= TIMER_CREDITS_SHOW) {
         if (m->actionState < 40) {
             m->actionState += 2;
         }
@@ -2479,15 +2549,15 @@ static s32 act_credits_cutscene(struct MarioState *m) {
         func_8027A220(&sEndCutsceneVp, 0, 0, 0, 0);
     }
 
-    if (m->actionTimer == 90) {
+    if (m->actionTimer == TIMER_CREDITS_PROGRESS) {
         reset_cutscene_msg_fade();
     }
 
-    if (m->actionTimer >= 90) {
+    if (m->actionTimer >= TIMER_CREDITS_PROGRESS) {
         sDispCreditsEntry = gCurrCreditsEntry;
     }
 
-    if (m->actionTimer++ == 200) {
+    if (m->actionTimer++ == TIMER_CREDITS_WARP) {
         level_trigger_warp(m, 24);
     }
 

@@ -1,3 +1,12 @@
+Refresh #6
+1.) Make tools work on MinGW (#804) 
+2.) Document mario_misc (#628) 
+3.) add patch_libmalloc.py script to work around compiler crashes (#811) 
+4.) Label the coffins file. (#829) 
+5.) Convert enhancements into patches (#827) 
+6.) Document Tweester.inc.c (#840) 
+7.) EU OK and cleanup EU (#782)
+
 Refresh #5
 1.) mem_error_screen.inc.c updated for C (#775)
 2.) updated patch_libultra_math to work directly on libultra.a (#781)

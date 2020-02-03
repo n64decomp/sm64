@@ -22,4 +22,15 @@ extern Gfx *geo_exec_flying_carpet_timer_update(s32 callContext, struct GraphNod
 extern Gfx *geo_exec_flying_carpet_create(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
 extern Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
 
+#define gLoadBlockTexture(dl, width, height, format, image)                                                  \
+{                                                                                                            \
+    gDPSetTextureImage((dl), (format), G_IM_SIZ_16b, 1, (image));                                            \
+    gDPTileSync((dl));                                                                                       \
+    gDPSetTile((dl), (format), G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, \
+               G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);                                                      \
+    gDPLoadSync((dl));                                                                                       \
+    gDPLoadBlock((dl), G_TX_LOADTILE, 0, 0, (width) * (height) - 1, CALC_DXT((width), G_IM_SIZ_16b_BYTES))   \
+}
+
+
 #endif /* _TRANSPARENT_TEXTURE_H */

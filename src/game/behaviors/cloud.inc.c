@@ -129,7 +129,7 @@ static void cloud_act_main(void) {
         cloud_fwoosh_update();
     }
 
-    localOffset = 2.0f * coss(localOffsetPhase) * o->header.gfx.scale[0];
+    localOffset = 2 * coss(localOffsetPhase) * o->header.gfx.scale[0];
 
     o->oPosX = o->oCloudCenterX + localOffset;
     o->oPosY = o->oCloudCenterY + localOffset + 12.0f * o->header.gfx.scale[0];
@@ -193,7 +193,7 @@ void bhv_cloud_part_update(void) {
         }
 
         // Move back and forth along (1, 1, 1)
-        localOffset = 2.0f * coss(localOffsetPhase) * size;
+        localOffset = 2 * coss(localOffsetPhase) * size;
 
         cloudRadius = 25.0f * size;
 

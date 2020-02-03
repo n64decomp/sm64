@@ -7,6 +7,18 @@
 #include <ultra64.h>
 #include "macros.h"
 
+
+// Certain functions are marked as having return values, but do not
+// actually return a value. This causes undefined behavior, which we'd rather
+// avoid on modern GCC. This only impacts -O2 and can matter for both the function
+// itself and functions that call it.
+#ifdef AVOID_UB
+    #define BAD_RETURN(cmd) void
+#else
+    #define BAD_RETURN(cmd) cmd
+#endif
+
+
 struct Controller
 {
   /*0x00*/ s16 rawStickX;       //
@@ -233,16 +245,16 @@ struct Surface
 struct MarioBodyState
 {
     /*0x00*/ u32 action;
-    /*0x04*/ s8 capState;
+    /*0x04*/ s8 capState; /// see MarioCapGSCId
     /*0x05*/ s8 eyeState;
     /*0x06*/ s8 handState;
-    /*0x07*/ s8 unk07;
+    /*0x07*/ s8 wingFlutter; /// whether Mario's wing cap wings are fluttering
     /*0x08*/ s16 modelState;
     /*0x0A*/ s8 grabPos;
-    /*0x0B*/ u8 unk0B;
-    /*0x0C*/ Vec3s unkC;
-    /*0x12*/ Vec3s unk12;
-    /*0x18*/ Vec3f unk18;
+    /*0x0B*/ u8 punchState; /// 2 bits for type of punch, 6 bits for punch animation timer
+    /*0x0C*/ Vec3s torsoAngle;
+    /*0x12*/ Vec3s headAngle;
+    /*0x18*/ Vec3f heldObjLastPosition; /// also known as HOLP
     u8 padding[4];
 };
 

@@ -23,7 +23,6 @@
 #include "behavior_actions.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
-#include "room.h"
 #include "envfx_bubbles.h"
 #include "ingame_menu.h"
 #include "interaction.h"
@@ -148,7 +147,7 @@ s32 obj_find_wall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ) 
     hitbox.x = objNewX;
     hitbox.y = objY;
     hitbox.z = objNewZ;
-    hitbox.offsetY = o->hitboxHeight / 2.0f;
+    hitbox.offsetY = o->hitboxHeight / 2;
     hitbox.radius = o->hitboxRadius;
 
     if (find_wall_collisions(&hitbox) != 0) {
@@ -275,7 +274,7 @@ void calc_new_obj_vel_and_pos_y(struct Surface *objFloor, f32 objFloorY, f32 obj
 
         // Bounces an object if the ground is hit fast enough.
         if (o->oVelY < -17.5) {
-            o->oVelY = -(o->oVelY / 2.0f);
+            o->oVelY = -(o->oVelY / 2);
         } else {
             o->oVelY = 0;
         }
@@ -413,7 +412,7 @@ void obj_splash(s32 waterY, s32 objY) {
  * Generic object move function. Handles walls, water, floors, and gravity.
  * Returns flags for certain interactions.
  */
-s32 object_step(void) {
+s16 object_step(void) {
     f32 objX = o->oPosX;
     f32 objY = o->oPosY;
     f32 objZ = o->oPosZ;
@@ -463,15 +462,9 @@ s32 object_step(void) {
 /**
  * Takes an object step but does not orient with the object's floor.
  * Used for boulders, falling pillars, and the rolling snowman body.
- *
- * TODO: Fix fake EU matching.
  */
-s32 object_step_without_floor_orient(void) {
-#ifdef VERSION_EU
-    s32 collisionFlags = 0;
-#else
+s16 object_step_without_floor_orient(void) {
     s16 collisionFlags = 0;
-#endif
     sOrientObjWithFloor = FALSE;
     collisionFlags = object_step();
     sOrientObjWithFloor = TRUE;

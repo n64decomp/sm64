@@ -42,19 +42,27 @@ struct MemoryBlock {
     u32 size;
 };
 
-static uintptr_t sSegmentTable[32];
+extern uintptr_t sSegmentTable[32];
+extern u32 sPoolFreeSpace;
+extern u8 *sPoolStart;
+extern u8 *sPoolEnd;
+extern struct MainPoolBlock *sPoolListHeadL;
+extern struct MainPoolBlock *sPoolListHeadR;
 
-static u32 sPoolFreeSpace;
-static u8 *sPoolStart;
-static u8 *sPoolEnd;
-static struct MainPoolBlock *sPoolListHeadL;
-static struct MainPoolBlock *sPoolListHeadR;
 
 /**
  * Memory pool for small graphical effects that aren't connected to Objects.
  * Used for colored text, paintings, and environmental snow and bubbles.
  */
 struct MemoryPool *gEffectsMemoryPool;
+
+uintptr_t sSegmentTable[32];
+u32 sPoolFreeSpace;
+u8 *sPoolStart;
+u8 *sPoolEnd;
+struct MainPoolBlock *sPoolListHeadL;
+struct MainPoolBlock *sPoolListHeadR;
+
 
 static struct MainPoolState *gMainPoolState = NULL;
 
@@ -151,14 +159,14 @@ u32 main_pool_free(void *addr) {
         }
         sPoolListHeadL = block;
         sPoolListHeadL->next = NULL;
-        sPoolFreeSpace += (u8 *) oldListHead - (u8 *) sPoolListHeadL;
+        sPoolFreeSpace += (uintptr_t) oldListHead - (uintptr_t) sPoolListHeadL;
     } else {
         while (oldListHead->prev != NULL) {
             oldListHead = oldListHead->prev;
         }
         sPoolListHeadR = block->next;
         sPoolListHeadR->prev = NULL;
-        sPoolFreeSpace += (u8 *) sPoolListHeadR - (u8 *) oldListHead;
+        sPoolFreeSpace += (uintptr_t) sPoolListHeadR - (uintptr_t) oldListHead;
     }
     return sPoolFreeSpace;
 }
@@ -537,9 +545,10 @@ s32 func_80278AD4(struct MarioAnimation *a, u32 index) {
     u32 size;
 
     if (index < sp20->count) {
-        addr = sp20->srcAddr + sp20->anim[index].offset;
-        size = sp20->anim[index].size;
-
+        do { 
+            addr = sp20->srcAddr + sp20->anim[index].offset;
+            size = sp20->anim[index].size;
+        } while (0);
         if (a->currentAnimAddr != addr) {
             dma_read((u8 *) a->targetAnim, addr, addr + size);
             a->currentAnimAddr = addr;

@@ -83,9 +83,7 @@ void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 
 
         // Add leading pad to fit width.
         if (width > numDigits) {
-            for (len = 0; len < width - numDigits; len++) {
-                dest[len] = pad;
-            }
+            for (len = 0; len < width - numDigits; len++) dest[len] = pad;
 
             // Needs 1 length to print negative prefix.
             if (negative == TRUE) {
@@ -117,9 +115,7 @@ void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 
     {
         numDigits = 1;
         if (width > numDigits) {
-            for (len = 0; len < width - numDigits; len++) {
-                dest[len] = pad;
-            }
+            for (len = 0; len < width - numDigits; len++) dest[len] = pad;
         }
         dest[len] = '0';
     }

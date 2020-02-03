@@ -738,12 +738,12 @@ void func_80265C28(struct MarioState *m, s16 startYaw) {
             val00 = 0;
         }
 
-        val0C->unkC[2] = approach_s32(val0C->unkC[2], val02, 0x400, 0x400);
-        val0C->unkC[0] = approach_s32(val0C->unkC[0], val00, 0x400, 0x400);
+        val0C->torsoAngle[2] = approach_s32(val0C->torsoAngle[2], val02, 0x400, 0x400);
+        val0C->torsoAngle[0] = approach_s32(val0C->torsoAngle[0], val00, 0x400, 0x400);
         ;
     } else {
-        val0C->unkC[2] = 0;
-        val0C->unkC[0] = 0;
+        val0C->torsoAngle[2] = 0;
+        val0C->torsoAngle[0] = 0;
     }
 }
 
@@ -771,11 +771,11 @@ void func_80265DBC(struct MarioState *m, s16 startYaw) {
         val02 = 0;
     }
 
-    val0C->unkC[2] = approach_s32(val0C->unkC[2], val04, 0x200, 0x200);
-    val0C->unkC[0] = approach_s32(val0C->unkC[0], val02, 0x200, 0x200);
-    val0C->unk12[2] = -val0C->unkC[2];
+    val0C->torsoAngle[2] = approach_s32(val0C->torsoAngle[2], val04, 0x200, 0x200);
+    val0C->torsoAngle[0] = approach_s32(val0C->torsoAngle[0], val02, 0x200, 0x200);
+    val0C->headAngle[2] = -val0C->torsoAngle[2];
 
-    marioObj->header.gfx.angle[2] = val0C->unkC[2];
+    marioObj->header.gfx.angle[2] = val0C->torsoAngle[2];
     marioObj->header.gfx.pos[1] += 45.0f;
 }
 
@@ -1351,8 +1351,8 @@ s32 act_burning_ground(struct MarioState *m) {
 
 void func_80267814(struct MarioState *m) {
     s16 intendedDYaw = m->intendedYaw - m->faceAngle[1];
-    m->marioBodyState->unkC[0] = (s32)(5461.3335f * m->intendedMag / 32.0f * coss(intendedDYaw));
-    m->marioBodyState->unkC[2] = (s32)(-(5461.3335f * m->intendedMag / 32.0f * sins(intendedDYaw)));
+    m->marioBodyState->torsoAngle[0] = (s32)(5461.3335f * m->intendedMag / 32.0f * coss(intendedDYaw));
+    m->marioBodyState->torsoAngle[2] = (s32)(-(5461.3335f * m->intendedMag / 32.0f * sins(intendedDYaw)));
 }
 
 void common_slide_action(struct MarioState *m, u32 endAction, u32 airAction, s32 animation) {

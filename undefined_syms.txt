@@ -1,11 +1,7 @@
 /* libultra OS symbols */
-osTvType = 0x80000300;
-osRomBase = 0x80000308;
-osResetType = 0x8000030C;
-osMemSize = 0x80000318;
-osAppNmiBuffer = 0x8000031C;
 
 /* boot and osException symbols */
+/* most of these should be in hardware.h */
 D_80000000 = 0x80000000;
 D_A4000000 = 0xA4000000;
 D_A40004C0 = 0xA40004C0;
@@ -32,6 +28,3 @@ D_B0000014 = 0xB0000014;
 D_C0000000 = 0xC0000000;
 D_C0000008 = 0xC0000008;
 D_C000000C = 0xC000000C;
-
-/* EU symbols */
-__osGetCurrFaultedThread = 0x802EF700;

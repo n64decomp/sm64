@@ -37,7 +37,6 @@ ifeq ($(VERSION),us)
   TARGET := sm64.us
 else
 ifeq ($(VERSION),eu)
-  $(warning Building EU is experimental and is prone to breaking. Try at your own risk.)
   VERSION_CFLAGS := -DVERSION_EU
   VERSION_ASFLAGS := --defsym VERSION_EU=1
   GRUCODE_CFLAGS := -DF3D_NEW
@@ -193,7 +192,7 @@ GODDARD_O_FILES := $(foreach file,$(GODDARD_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 DEP_FILES := $(O_FILES:.o=.d) $(ULTRA_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
 
 # Files with GLOBAL_ASM blocks
-GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(wildcard src/audio/*.c) $(wildcard src/game/*.c)
+GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(wildcard src/**/*.c)
 GLOBAL_ASM_O_FILES = $(foreach file,$(GLOBAL_ASM_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 GLOBAL_ASM_DEP = $(BUILD_DIR)/src/audio/non_matching_dep
 
@@ -316,10 +315,14 @@ $(BUILD_DIR)/include/text_menu_strings.h: include/text_menu_strings.h.in
 ifeq ($(VERSION),eu)
 TEXT_DIRS := text/de text/us text/fr
 
-# EU encoded text inserted into individual segment 0x19 files
+# EU encoded text inserted into individual segment 0x19 files,
+# and course data also duplicated in leveldata.c
 $(BUILD_DIR)/bin/eu/translation_en.o: $(BUILD_DIR)/text/us/define_text.inc.c
 $(BUILD_DIR)/bin/eu/translation_de.o: $(BUILD_DIR)/text/de/define_text.inc.c
 $(BUILD_DIR)/bin/eu/translation_fr.o: $(BUILD_DIR)/text/fr/define_text.inc.c
+$(BUILD_DIR)/levels/menu/leveldata.o: $(BUILD_DIR)/text/us/define_courses.inc.c
+$(BUILD_DIR)/levels/menu/leveldata.o: $(BUILD_DIR)/text/de/define_courses.inc.c
+$(BUILD_DIR)/levels/menu/leveldata.o: $(BUILD_DIR)/text/fr/define_courses.inc.c
 
 else
 TEXT_DIRS := text/$(VERSION)
@@ -327,6 +330,10 @@ TEXT_DIRS := text/$(VERSION)
 # non-EU encoded text inserted into segment 0x02
 $(BUILD_DIR)/bin/segment2.o: $(BUILD_DIR)/text/$(VERSION)/define_text.inc.c
 endif
+
+$(BUILD_DIR)/text/%/define_courses.inc.c: text/define_courses.inc.c text/%/courses.h
+	$(CPP) $(VERSION_CFLAGS) $< -o $@ -I text/$*/
+	$(TEXTCONV) charmap.txt $@ $@
 
 $(BUILD_DIR)/text/%/define_text.inc.c: text/define_text.inc.c text/%/courses.h text/%/dialogs.h
 	$(CPP) $(VERSION_CFLAGS) $< -o $@ -I text/$*/
@@ -443,6 +450,9 @@ $(BUILD_DIR)/assets/demo_data.c: assets/demo_data.json $(wildcard assets/demos/*
 
 
 # Source code
+$(BUILD_DIR)/levels/%/leveldata.o: OPT_FLAGS := -g
+$(BUILD_DIR)/actors/%.o: OPT_FLAGS := -g
+$(BUILD_DIR)/bin/%.o: OPT_FLAGS := -g
 $(BUILD_DIR)/src/goddard/%.o: OPT_FLAGS := -g
 $(BUILD_DIR)/src/goddard/%.o: MIPSISET := -mips1
 $(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
@@ -460,6 +470,13 @@ ifeq ($(VERSION),eu)
 $(BUILD_DIR)/lib/src/_Litob.o: OPT_FLAGS := -O3
 $(BUILD_DIR)/lib/src/_Ldtob.o: OPT_FLAGS := -O3
 $(BUILD_DIR)/lib/src/_Printf.o: OPT_FLAGS := -O3
+$(BUILD_DIR)/lib/src/sprintf.o: OPT_FLAGS := -O3
+
+# enable loop unrolling except for external.c (external.c might also have used
+# unrolling, but it makes one loop harder to match)
+$(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2
+$(BUILD_DIR)/src/audio/load.o: OPT_FLAGS := -O2
+$(BUILD_DIR)/src/audio/external.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
 endif
 
 ifeq ($(NON_MATCHING),0)

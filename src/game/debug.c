@@ -11,7 +11,6 @@
 #include "main.h"
 #include "debug.h"
 #include "object_list_processor.h"
-#include "room.h"
 #include "behavior_data.h"
 
 #define DEBUG_INFO_NOFLAGS (0 << 0)
@@ -205,7 +204,7 @@ void print_mapinfo(void) {
     struct Surface *pfloor;
     UNUSED f32 bgY;
     UNUSED f32 water;
-    // s32 area;
+    UNUSED s32 area;
     // s32 angY;
     //
     // angY = gCurrentObject->oMoveAngleYaw / 182.044000;
@@ -523,6 +522,7 @@ void try_do_mario_debug_object_spawn(void) {
 
 // TODO: figure out what this is
 static void Unknown802CA8B4(void) {
+#ifndef VERSION_EU
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED) {
         print_debug_top_down_objectinfo("BOUND   %x", gCurrentObject->oMoveFlags);
     }
@@ -550,6 +550,7 @@ static void Unknown802CA8B4(void) {
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_8) {
         print_debug_top_down_objectinfo("OUT SCOPE %x", gCurrentObject->oMoveFlags);
     }
+#endif
 }
 
 // unused, what is this?

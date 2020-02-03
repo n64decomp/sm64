@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 #include "libmio0.h"
 #include "utils.h"
@@ -291,6 +295,17 @@ int mio0_encode(const unsigned char *in, unsigned int length, unsigned char *out
    return bytes_written;
 }
 
+static FILE *mio0_open_out_file(const char *out_file) {
+   if (strcmp(out_file, "-") == 0) {
+#if defined(_WIN32) || defined(_WIN64)
+      _setmode(_fileno(stdout), _O_BINARY);
+#endif
+      return stdout;
+   } else {
+      return fopen(out_file, "wb");
+   }
+}
+
 int mio0_decode_file(const char *in_file, unsigned long offset, const char *out_file)
 {
    mio0_header_t head;
@@ -339,7 +354,7 @@ int mio0_decode_file(const char *in_file, unsigned long offset, const char *out_
    }
 
    // open output file
-   out = fopen(out_file, "wb");
+   out = mio0_open_out_file(out_file);
    if (out == NULL) {
       ret_val = 4;
       goto free_all;
@@ -352,7 +367,9 @@ int mio0_decode_file(const char *in_file, unsigned long offset, const char *out_
    }
 
    // clean up
-   fclose(out);
+   if (out != stdout) {
+      fclose(out);
+   }
 free_all:
    if (out_buf) {
       free(out_buf);
@@ -402,7 +419,7 @@ int mio0_encode_file(const char *in_file, const char *out_file)
    bytes_encoded = mio0_encode(in_buf, file_size, out_buf);
 
    // open output file
-   out = fopen(out_file, "wb");
+   out = mio0_open_out_file(out_file);
    if (out == NULL) {
       ret_val = 4;
       goto free_all;
@@ -415,7 +432,9 @@ int mio0_encode_file(const char *in_file, const char *out_file)
    }
 
    // clean up
-   fclose(out);
+   if (out != stdout) {
+      fclose(out);
+   }
 free_all:
    if (out_buf) {
       free(out_buf);
@@ -459,7 +478,7 @@ static void print_usage(void)
          "\n"
          "File arguments:\n"
          " FILE        input file\n"
-         " [OUTPUT]    output file (default: FILE.out)\n");
+         " [OUTPUT]    output file (default: FILE.out), \"-\" for stdout\n");
    exit(1);
 }
 
@@ -473,7 +492,7 @@ static void parse_arguments(int argc, char *argv[], arg_config *config)
       exit(1);
    }
    for (i = 1; i < argc; i++) {
-      if (argv[i][0] == '-') {
+      if (argv[i][0] == '-' && argv[i][1] != '\0') {
          switch (argv[i][1]) {
             case 'c':
                config->compress = 1;

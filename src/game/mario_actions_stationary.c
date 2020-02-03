@@ -1059,7 +1059,7 @@ s32 act_first_person(struct MarioState *m) {
     s16 sp1A;
     s16 sp18;
 
-    sp1C = 0U < (m->input & (INPUT_UNKNOWN_10 | 0xC));
+    sp1C = 0 != (m->input & (INPUT_UNKNOWN_10 | 0xC));
     if (m->actionState == 0) {
         func_80248C28(2);
         set_camera_mode(m->area->camera, CAMERA_MODE_C_UP, 0x10);

@@ -17,14 +17,33 @@ pipeline {
         sh './extract_assets.py jp us eu'
       }
     }
+    stage('Build U Source') {
+      steps {
+        sh 'make -j4 VERSION=us'
+      }
+    }
+    stage('Build E Source') {
+      steps {
+        sh 'make -j4 VERSION=eu'
+      }
+    }
     stage('Build J Source') {
       steps {
         sh 'make -j4 VERSION=jp'
       }
     }
-    stage('Build U Source') {
+    stage('Test Enhancements') {
       steps {
-        sh 'make -j4 VERSION=us'
+        sh '''
+          set -e
+          for f in enhancements/*.patch
+          do
+            git clean -fd .
+            git checkout -- .
+            echo 'y' | tools/apply_patch.sh "$f"
+            make -j4 VERSION=us COMPARE=0
+          done
+        '''
       }
     }
   }

@@ -541,14 +541,11 @@ static void ActionBooGivingStar1(void) {
     f32 sp1C;
     
     if (o->oHealth == 3) {
-        sp22 = 0x180;
-        sp1C = 0.5f;
+        sp22 = 0x180; sp1C = 0.5f;
     } else if (o->oHealth == 2) {
-        sp22 = 0x240;
-        sp1C = 0.6f;
+        sp22 = 0x240; sp1C = 0.6f;
     } else {
-        sp22 = 0x300;
-        sp1C = 0.8f;
+        sp22 = 0x300; sp1C = 0.8f;
     }
     
     boo_chase_mario(-100.0f, sp22, sp1C);

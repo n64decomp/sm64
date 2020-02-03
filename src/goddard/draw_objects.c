@@ -12,7 +12,6 @@
 #include "gd_math.h"
 #include "shape_helper.h"
 #include "renderer.h"
-#include "prevent_bss_reordering.h"
 #include "draw_objects.h"
 
 /**

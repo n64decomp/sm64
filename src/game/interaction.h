@@ -120,7 +120,7 @@ extern u32 mario_check_object_grab(struct MarioState *);
 extern u32 get_door_save_file_flag(struct Object *);
 extern void mario_process_interactions(struct MarioState *);
 extern void mario_handle_special_floors(struct MarioState *);
-extern void init_bully_collision_data(
+extern BAD_RETURN(s32) init_bully_collision_data(
     struct BullyCollisionData *data,
     f32 posX,
     f32 posZ,

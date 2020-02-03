@@ -115,7 +115,7 @@ void bhv_wiggler_body_part_update(void) {
 /**
  * Initialize the segment data and spawn the body part objects.
  */
-static void wiggler_init_segments(void) {
+void wiggler_init_segments(void) {
     s32 i;
     struct ChainSegment *segments;
     struct Object *bodyPart;
@@ -127,14 +127,14 @@ static void wiggler_init_segments(void) {
         // represents body part i.
         o->oWigglerSegments = segments;
         for (i = 0; i <= 3; i++) {
-            chain_segment_init(&segments[i]);
+            chain_segment_init(segments + i);
 
-            segments[i].posX = o->oPosX;
-            segments[i].posY = o->oPosY;
-            segments[i].posZ = o->oPosZ;
+            (segments + i)->posX = o->oPosX;
+            (segments + i)->posY = o->oPosY;
+            (segments + i)->posZ = o->oPosZ;
 
-            segments[i].pitch = o->oFaceAnglePitch;
-            segments[i].yaw = o->oFaceAngleYaw;
+            (segments + i)->pitch = o->oFaceAnglePitch;
+            (segments + i)->yaw = o->oFaceAngleYaw;
         }
 
         o->header.gfx.unk38.animFrame = -1;
@@ -152,6 +152,10 @@ static void wiggler_init_segments(void) {
         o->oAction = WIGGLER_ACT_WALK;
         obj_unhide();
     }
+
+#if defined(VERSION_EU) || defined(AVOID_UB)
+    o->oHealth = 4; // This fixes Wiggler reading UB on his first frame of his acceleration, as his health is not set.
+#endif
 }
 
 /**
@@ -161,7 +165,7 @@ static void wiggler_init_segments(void) {
  * for a body part to get stuck on geometry and separate from the rest of the
  * body.
  */
-static void wiggler_update_segments(void) {
+ void wiggler_update_segments(void) {
     struct ChainSegment *prevBodyPart;
     struct ChainSegment *bodyPart;
     f32 dx;
@@ -230,8 +234,8 @@ static void wiggler_act_walk(void) {
     } else {
         //! Every object's health is initially 2048, and wiggler's doesn't change
         //  to 4 until after this runs the first time. It indexes out of bounds
-        //  and uses the value 113762.3 for one frame on US. This is fixed down
-        //  below in bhv_wiggler_update if AVOID_UB is defined.
+        //  and uses the value 113762.3 for one frame on US. This is fixed up
+        //  in wiggler_init_segments if AVOID_UB is defined.
         obj_forward_vel_approach(sWigglerSpeeds[o->oHealth - 1], 1.0f);
 
         if (o->oWigglerWalkAwayFromWallTimer != 0) {
@@ -280,7 +284,6 @@ static void wiggler_act_walk(void) {
         }
     }
 }
-
 /**
  * Squish and unsquish, then show text and enter either the walking or shrinking
  * action.
@@ -399,10 +402,6 @@ void bhv_wiggler_update(void) {
     // PARTIAL_UPDATE
 
     if (o->oAction == WIGGLER_ACT_UNINITIALIZED) {
-#ifdef AVOID_UB
-        // See comment in wiggler_act_walk
-        o->oHealth = 4;
-#endif
         wiggler_init_segments();
     } else {
         if (o->oAction == WIGGLER_ACT_FALL_THROUGH_FLOOR) {

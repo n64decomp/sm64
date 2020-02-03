@@ -106,7 +106,7 @@ void piranha_plant_act_sleeping(void) {
  * to the biting state.
  */
 void piranha_plant_act_woken_up(void) {
-#if BUGFIX_PIRANHA_PLANT_SLEEP_DAMAGE
+#if BUGFIX_PIRANHA_PLANT_SLEEP_DAMAGE || defined(VERSION_EU)
     /**
      * Make Piranha Plants damage the player while awake. This call is only
      * necessary in the US version because it is set to 3 by default and is

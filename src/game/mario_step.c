@@ -71,8 +71,8 @@ void transfer_bully_speed(struct BullyCollisionData *obj1, struct BullyCollision
     //! Bully battery
 }
 
-void init_bully_collision_data(struct BullyCollisionData *data, f32 posX, f32 posZ, f32 forwardVel,
-                               s16 yaw, f32 conversionRatio, f32 radius) {
+BAD_RETURN(s32) init_bully_collision_data(struct BullyCollisionData *data, f32 posX, f32 posZ,
+                               f32 forwardVel, s16 yaw, f32 conversionRatio, f32 radius) {
     if (forwardVel < 0.0f) {
         forwardVel *= -1.0f;
         yaw += 0x8000;
@@ -564,7 +564,7 @@ void apply_gravity(struct MarioState *m) {
             m->vel[1] = -16.0f;
         }
     } else if ((m->flags & MARIO_WING_CAP) && m->vel[1] < 0.0f && (m->input & INPUT_A_DOWN)) {
-        m->marioBodyState->unk07 = 1;
+        m->marioBodyState->wingFlutter = TRUE;
 
         m->vel[1] -= 2.0f;
         if (m->vel[1] < -37.5f) {

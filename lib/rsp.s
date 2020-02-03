@@ -5,7 +5,12 @@
 
 .balign 16
 glabel rspF3DBootStart
+    .ifndef VERSION_EU
     .incbin "lib/PR/boot/F3D_boot.bin"
+    .else
+    .incbin "lib/PR/boot/F3D_boot_eu.bin"
+    .half 0
+    .endif
 glabel rspF3DBootEnd
 
 .balign 16
@@ -131,7 +136,11 @@ glabel rspS2DEXEnd
 .ifndef F3DEX_GBI_SHARED /* Use regular Fast3D data (default) */
 glabel rspF3DDataStart
     .ifndef F3D_OLD /* OS 2.0H (J2 and IQ) */
+    .ifdef VERSION_EU
+    .incbin "lib/PR/f3d/new/F3D_data_EU.bin"
+    .else
     .incbin "lib/PR/f3d/new/F3D_data.bin"
+    .endif
     .else /* OS 2.0D (US and JP) */
     .incbin "lib/PR/f3d/old/F3D_data.bin"
     .endif

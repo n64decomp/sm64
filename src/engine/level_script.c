@@ -372,7 +372,11 @@ static void level_cmd_end_area(void) {
 
 static void level_cmd_load_model_from_dl(void) {
     s16 val1 = CMD_GET(s16, 2) & 0x0FFF;
+#ifdef VERSION_EU
+    s16 val2 = (CMD_GET(s16, 2) & 0xFFFF) >> 12;
+#else
     s16 val2 = CMD_GET(u16, 2) >> 12;
+#endif
     void *val3 = CMD_GET(void *, 4);
 
     if (val1 < 256) {
@@ -401,7 +405,11 @@ static void level_cmd_23(void) {
     } arg2;
 
     s16 model = CMD_GET(s16, 2) & 0x0FFF;
+#ifdef VERSION_EU
+    s16 arg0H = (CMD_GET(s16, 2) & 0xFFFF) >> 12;
+#else
     s16 arg0H = CMD_GET(u16, 2) >> 12;
+#endif
     void *arg1 = CMD_GET(void *, 4);
     // load an f32, but using an integer load instruction for some reason (hence the union)
     arg2.i = CMD_GET(s32, 8);

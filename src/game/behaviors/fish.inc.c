@@ -9,28 +9,16 @@ void ActionFish0(void) {
     struct Object *sp28;
     switch (o->oBehParams2ndByte) {
         case 0:
-            model = MODEL_FISH;
-            sp38 = 20;
-            sp30 = 1500.0f;
-            sp2C = blue_fish_seg3_anims_0301C2B0;
+            model = MODEL_FISH;            sp38 = 20;            sp30 = 1500.0f;            sp2C = blue_fish_seg3_anims_0301C2B0;
             break;
         case 1:
-            model = MODEL_FISH;
-            sp38 = 5;
-            sp30 = 1500.0f;
-            sp2C = blue_fish_seg3_anims_0301C2B0;
+            model = MODEL_FISH;            sp38 = 5;            sp30 = 1500.0f;            sp2C = blue_fish_seg3_anims_0301C2B0;
             break;
         case 2:
-            model = MODEL_CYAN_FISH;
-            sp38 = 20;
-            sp30 = 1500.0f;
-            sp2C = cyan_fish_seg6_anims_0600E264;
+            model = MODEL_CYAN_FISH;            sp38 = 20;            sp30 = 1500.0f;            sp2C = cyan_fish_seg6_anims_0600E264;
             break;
         case 3:
-            model = MODEL_CYAN_FISH;
-            sp38 = 5;
-            sp30 = 1500.0f;
-            sp2C = cyan_fish_seg6_anims_0600E264;
+            model = MODEL_CYAN_FISH;            sp38 = 5;            sp30 = 1500.0f;            sp2C = cyan_fish_seg6_anims_0600E264;
             break;
     }
     if (o->oDistanceToMario < sp30 || gCurrLevelNum == LEVEL_SA) {

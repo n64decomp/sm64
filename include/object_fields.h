@@ -132,7 +132,7 @@
 #define /*0x1B4*/ oWallAngle                  OBJECT_FIELD_U32(0x4B)
 #define /*0x1B8*/ oFloorType                  OBJECT_FIELD_S16(0x4C, 0)
 #define /*0x1BA*/ oFloorRoom                  OBJECT_FIELD_S16(0x4C, 1)
-#define /*0x1BC*/ oUnk1BC                     OBJECT_FIELD_S32(0x4D)
+#define /*0x1BC*/ oAngleToHome                OBJECT_FIELD_S32(0x4D)
 #define /*0x1C0*/ oFloor                      OBJECT_FIELD_SURFACE(0x4E)
 #define /*0x1C4*/ oDeathSound                 OBJECT_FIELD_S32(0x4F)
 
@@ -1042,8 +1042,8 @@
 #define /*0x0F4*/ oTumblingBridgeUnkF4 OBJECT_FIELD_S32(0x1B)
 
 /* Tweester */
-#define /*0x0F4*/ oTweesterUnkF4 OBJECT_FIELD_S32(0x1B)
-#define /*0x0F8*/ oTweesterUnkF8 OBJECT_FIELD_S32(0x1C)
+#define /*0x0F4*/ oTweesterScaleTimer OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oTweesterUnused     OBJECT_FIELD_S32(0x1C)
 
 /* Ukiki */
 #define /*0x0F4*/ oUkikiTauntCounter   OBJECT_FIELD_S16(0x1B, 0)

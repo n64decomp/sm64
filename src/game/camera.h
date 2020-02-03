@@ -339,22 +339,12 @@ struct HandheldShakePoint
     /*0x08*/ Vec3s point;
 }; // size = 0x10
 
-// Camera command procedures are marked as returning s32, but none of them
-// actually return a value. This causes undefined behavior, which we'd rather
-// avoid on modern GCC. Hence, typedef. Interestingly, the void vs s32
-// difference doesn't affect -g codegen, only -O2.
-#ifdef AVOID_UB
-typedef void CmdRet;
-#else
-typedef s32 CmdRet;
-#endif
-
 // These are the same type, but the name that is used depends on context.
 /**
  * A function that is called by CameraTriggers and cutscene shots.
  * These are concurrent: multiple CameraEvents can occur on the same frame.
  */
-typedef CmdRet (*CameraEvent)(struct Camera *c);
+typedef BAD_RETURN(s32) (*CameraEvent)(struct Camera *c);
 /**
  * The same type as a CameraEvent, but because these are generally longer, and happen in sequential
  * order, they're are called "shots," a term taken from cinematography.
@@ -667,6 +657,10 @@ struct LakituState
 // bss order hack to not affect BSS order. if possible, remove me, but it will be hard to match otherwise
 #ifndef INCLUDED_FROM_CAMERA_C
 // BSS
+extern s16 sSelectionFlags;
+extern s16 sCameraSideCFlags;
+extern s16 sCameraSoundFlags;
+extern u16 sCButtonsPressed;
 extern struct PlayerCameraState gPlayerCameraState[2];
 extern struct LakituState gLakituState;
 extern s16 gCameraMovementFlags;

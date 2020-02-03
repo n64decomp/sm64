@@ -13,7 +13,6 @@
 #include "surface_collision.h"
 #include "game/mario.h"
 #include "game/object_list_processor.h"
-#include "game/room.h"
 #include "surface_load.h"
 
 s32 unused8038BE90;
@@ -601,17 +600,19 @@ static void unused_80383604(void) {
 /**
  * Applies an object's tranformation to the object's vertices.
  */
-static void transform_object_vertices(s16 **data, s16 *vertexData) {
+void transform_object_vertices(s16 **data, s16 *vertexData) {
     register s16 *vertices;
+    
+#ifdef VERSION_EU
+    register f32 vx, vy, vz;
     register s32 numVertices;
-
-    register f32 vx;
-    register f32 vy;
-    register f32 vz;
+#else
+    register s32 numVertices;
+    register f32 vx, vy, vz;
+#endif
 
     Mat4 *objectTransform;
     Mat4 m;
-    UNUSED s16 unused;
 
     objectTransform = &gCurrentObject->transform;
 
@@ -646,7 +647,7 @@ static void transform_object_vertices(s16 **data, s16 *vertexData) {
  * Load in the surfaces for the gCurrentObject. This includes setting the flags,
  * exertion, and room.
  */
-static void load_object_surfaces(s16 **data, s16 *vertexData) {
+void load_object_surfaces(s16 **data, s16 *vertexData) {
     s32 surfaceType;
     s32 i;
     s32 numSurfaces;

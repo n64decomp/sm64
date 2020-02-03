@@ -64,7 +64,7 @@ void bhv_pokey_body_part_update(void) {
                     o->parentObj->oPokeyAliveBodyPartFlags | 1 << (o->oBehParams2ndByte - 1);
 
                 o->parentObj->oPokeyAliveBodyPartFlags =
-                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ 0xFFFFFFFF);
+                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ ~0);
 
                 o->oBehParams2ndByte -= 1;
             }
@@ -118,7 +118,7 @@ void bhv_pokey_body_part_update(void) {
                 }
 
                 o->parentObj->oPokeyAliveBodyPartFlags =
-                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ 0xFFFFFFFF);
+                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ ~0);
             } else if (o->parentObj->oPokeyHeadWasKilled) {
                 obj_become_intangible();
 

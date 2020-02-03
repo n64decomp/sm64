@@ -175,9 +175,17 @@ void create_task_structure(void) {
     gGfxSPTask->task.t.ucode_data_size = SP_UCODE_DATA_SIZE;
     gGfxSPTask->task.t.dram_stack = (u64 *) gGfxSPTaskStack;
     gGfxSPTask->task.t.dram_stack_size = SP_DRAM_STACK_SIZE8;
+    #ifdef VERSION_EU
+    // terrible hack
+    gGfxSPTask->task.t.output_buff = 
+        (u64 *)((u8 *) gGfxSPTaskOutputBuffer - 0x670 + 0x280);
+    gGfxSPTask->task.t.output_buff_size =
+        (u64 *)((u8 *) gGfxSPTaskOutputBuffer+ 0x280 + 0x17790);
+    #else
     gGfxSPTask->task.t.output_buff = gGfxSPTaskOutputBuffer;
     gGfxSPTask->task.t.output_buff_size =
         (u64 *)((u8 *) gGfxSPTaskOutputBuffer + sizeof(gGfxSPTaskOutputBuffer));
+    #endif
     gGfxSPTask->task.t.data_ptr = (u64 *) &gGfxPool->buffer;
     gGfxSPTask->task.t.data_size = entries * sizeof(Gfx);
     gGfxSPTask->task.t.yield_data_ptr = (u64 *) gGfxSPTaskYieldBuffer;
@@ -223,9 +231,8 @@ void func_80247D84(void) {
         sp18 += D_8032C648++ * (SCREEN_WIDTH / 4);
 
         for (sp24 = 0; sp24 < ((SCREEN_HEIGHT / 16) + 1); sp24++) {
-            for (sp20 = 0; sp20 < (SCREEN_WIDTH / 4); sp20++) {
-                *sp18++ = 0;
-            }
+            // Must be on one line to match -O2
+            for (sp20 = 0; sp20 < (SCREEN_WIDTH / 4); sp20++) *sp18++ = 0;
             sp18 += ((SCREEN_WIDTH / 4) * 14);
         }
     }

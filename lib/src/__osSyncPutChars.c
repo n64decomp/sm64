@@ -6,6 +6,7 @@ typedef struct {
     u8 unk01 : 2;
     u8 unk2[3];
 } unkStruct;
+
 u32 D_80334A40 = 0;
 u32 D_80334A44 = 1;
 

@@ -55,11 +55,17 @@ extern struct SoundMultiPool gSeqLoadedPool;
 extern struct SoundMultiPool gBankLoadedPool;
 extern u8 gBankLoadStatus[64];
 extern u8 gSeqLoadStatus[256];
+extern volatile u8 gAudioResetStatus;
+extern u8 gAudioResetPresetIdToLoad;
 
 void *soundAlloc(struct SoundAllocPool *pool, u32 size);
 void sound_init_main_pools(s32 sizeForAudioInitPool);
 void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg3, s32 id);
 void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 arg2);
+#ifdef VERSION_EU
+void audio_reset_session(void);
+#else
 void audio_reset_session(struct AudioSessionSettings *preset);
+#endif
 
 #endif /* AUDIO_MEMORY_H */

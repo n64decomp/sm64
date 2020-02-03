@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "gd_types.h"
 #include "bad_declarations.h"
-#include "prevent_bss_reordering.h"
 
 #include "gd_main.h"
 #include "draw_objects.h"

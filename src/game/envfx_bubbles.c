@@ -381,54 +381,30 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
     switch (mode) {
         case ENVFX_FLOWERS:
             envfx_update_flower(camTo);
-            vertex1[0] = 50;
-            vertex1[1] = 0;
-            vertex1[2] = 0;
-            vertex2[0] = 0;
-            vertex2[1] = 75;
-            vertex2[2] = 0;
-            vertex3[0] = -50;
-            vertex3[1] = 0;
-            vertex3[2] = 0;
+            vertex1[0] = 50;  vertex1[1] = 0;  vertex1[2] = 0;
+            vertex2[0] = 0;   vertex2[1] = 75; vertex2[2] = 0;
+            vertex3[0] = -50; vertex3[1] = 0;  vertex3[2] = 0;
             break;
 
         case ENVFX_LAVA_BUBBLES:
             envfx_update_lava(camTo);
-            vertex1[0] = 100;
-            vertex1[1] = 0;
-            vertex1[2] = 0;
-            vertex2[0] = 0;
-            vertex2[1] = 150;
-            vertex2[2] = 0;
-            vertex3[0] = -100;
-            vertex3[1] = 0;
-            vertex3[2] = 0;
+            vertex1[0] = 100;  vertex1[1] = 0;   vertex1[2] = 0;
+            vertex2[0] = 0;    vertex2[1] = 150; vertex2[2] = 0;
+            vertex3[0] = -100; vertex3[1] = 0;   vertex3[2] = 0;
             break;
 
         case ENVFX_WHIRLPOOL_BUBBLES:
             envfx_update_whirlpool();
-            vertex1[0] = 40;
-            vertex1[1] = 0;
-            vertex1[2] = 0;
-            vertex2[0] = 0;
-            vertex2[1] = 60;
-            vertex2[2] = 0;
-            vertex3[0] = -40;
-            vertex3[1] = 0;
-            vertex3[2] = 0;
+            vertex1[0] = 40;  vertex1[1] = 0;  vertex1[2] = 0;
+            vertex2[0] = 0;   vertex2[1] = 60; vertex2[2] = 0;
+            vertex3[0] = -40; vertex3[1] = 0;  vertex3[2] = 0;
             break;
 
         case ENVFX_JETSTREAM_BUBBLES:
             envfx_update_jetstream();
-            vertex1[0] = 40;
-            vertex1[1] = 0;
-            vertex1[2] = 0;
-            vertex2[0] = 0;
-            vertex2[1] = 60;
-            vertex2[2] = 0;
-            vertex3[0] = -40;
-            vertex3[1] = 0;
-            vertex3[2] = 0;
+            vertex1[0] = 40;  vertex1[1] = 0;  vertex1[2] = 0;
+            vertex2[0] = 0;   vertex2[1] = 60; vertex2[2] = 0;
+            vertex3[0] = -40; vertex3[1] = 0;  vertex3[2] = 0;
             break;
     }
 }
@@ -441,7 +417,7 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
 #if defined(VERSION_EU) && !defined(NON_MATCHING)
 void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
                                  Vtx *template);
-GLOBAL_ASM("asm/non_matchings/append_bubble_vertex_buffer_eu.s")
+GLOBAL_ASM("asm/non_matchings/eu/append_bubble_vertex_buffer.s")
 #else
 void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
                                  Vtx *template) {
@@ -518,8 +494,8 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
 
     Gfx *gfxStart;
 
-    gfxStart = alloc_display_list(
-        ((sBubbleParticleMaxCount / 5) * 10 + sBubbleParticleMaxCount + 3) * sizeof(Gfx));
+    gfxStart = alloc_display_list(((sBubbleParticleMaxCount / 5) * 10 + sBubbleParticleMaxCount + 3)
+                                  * sizeof(Gfx));
     if (gfxStart == NULL) {
         return NULL;
     }

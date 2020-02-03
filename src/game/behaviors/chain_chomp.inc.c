@@ -298,7 +298,7 @@ static void chain_chomp_released_lunge_around(void) {
                 o->oHomeX = 1450.0f;
                 o->oHomeZ = 562.0f;
                 o->oMoveAngleYaw = obj_angle_to_home();
-                o->oForwardVel = obj_lateral_dist_to_home() / 8.0f;
+                o->oForwardVel = obj_lateral_dist_to_home() / 8;
                 o->oVelY = 50.0f;
             }
         }

@@ -164,8 +164,8 @@
 #define ACT_FLAG_CONTROL_JUMP_HEIGHT         /* 0x02000000 */ (1 << 25)
 #define ACT_FLAG_ALLOW_FIRST_PERSON          /* 0x04000000 */ (1 << 26)
 #define ACT_FLAG_PAUSE_EXIT                  /* 0x08000000 */ (1 << 27)
-#define ACT_FLAG_SWIMMING_OR_FLYING          /* 0x10000000 */ (1 << 28) // not checked by game
-#define ACT_FLAG_WATER_OR_TEXT               /* 0x20000000 */ (1 << 29) // not checked by game
+#define ACT_FLAG_SWIMMING_OR_FLYING          /* 0x10000000 */ (1 << 28)
+#define ACT_FLAG_WATER_OR_TEXT               /* 0x20000000 */ (1 << 29)
 #define ACT_FLAG_THROWING                    /* 0x80000000 */ (1 << 31)
 
 #define ACT_UNINITIALIZED              0x00000000 // (0x000)

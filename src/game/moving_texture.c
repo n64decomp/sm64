@@ -12,7 +12,7 @@
 #include "engine/surface_collision.h"
 #include "geo_misc.h"
 #include "rendering_graph_node.h"
-#include "room.h"
+#include "object_list_processor.h"
 
 /**
  * This file contains functions for generating display lists with moving textures
@@ -448,19 +448,9 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
         if (textureId == TEXTURE_MIST) { // an ia16 texture
             if (0) {
             }
-            gDPSetTextureImage(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
-            gDPTileSync(gfx++);
-            gDPSetTile(gfx++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
-                G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
-            gDPLoadSync(gfx++);
-            gDPLoadBlock(gfx++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
+            gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_IA, gMovtexIdToTexture[textureId]);
         } else { // any rgba16 texture
-            gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[textureId]);
-            gDPTileSync(gfx++);
-            gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
-                G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
-            gDPLoadSync(gfx++);
-            gDPLoadBlock(gfx++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
+            gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_RGBA, gMovtexIdToTexture[textureId]);
             if (0) {
             }
         }
@@ -830,12 +820,7 @@ Gfx *movtex_gen_list(s16 *movtexVerts, struct MovtexObject *movtexList, s8 attrL
     }
 
     gSPDisplayList(gfx++, movtexList->beginDl);
-    gDPSetTextureImage(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, gMovtexIdToTexture[movtexList->textureId]);
-    gDPTileSync(gfx++);
-    gDPSetTile(gfx++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, 
-        G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
-    gDPLoadSync(gfx++);
-    gDPLoadBlock(gfx++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
+    gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_RGBA, gMovtexIdToTexture[movtexList->textureId]);
     gSPVertex(gfx++, VIRTUAL_TO_PHYSICAL2(verts), movtexList->vtx_count, 0);
     gSPDisplayList(gfx++, movtexList->triDl);
     gSPDisplayList(gfx++, movtexList->endDl);

@@ -127,7 +127,7 @@ void MoneybagMoveAroundLoop(void) {
     MoneybagCheckMarioCollision();
 
     if (!is_point_within_radius_of_mario(o->oHomeX, o->oHomeY, o->oHomeZ, 800)
-        && ((collisionFlags & 0x9) == 9))
+        && ((collisionFlags & OBJ_COL_FLAGS_LANDED) == OBJ_COL_FLAGS_LANDED))
         o->oAction = MONEYBAG_ACT_RETURN_HOME;
 }
 

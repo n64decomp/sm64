@@ -16,7 +16,10 @@
 
 #include "dynlists/dynlists.h"
 #include "dynlists/dynlist_macros.h"
+
+#ifndef VERSION_EU
 #include <prevent_bss_reordering.h>
+#endif
 
 // types
 struct UnkData {

@@ -8,33 +8,7 @@
 
 s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char *fmt, va_list args);
 
-const char *const gCauseDesc[18] = {
-    "Interrupt",
-    "TLB modification",
-    "TLB exception on load",
-    "TLB exception on store",
-    "Address error on load",
-    "Address error on store",
-    "Bus error on inst.",
-    "Bus error on data",
-    "System call exception",
-    "Breakpoint exception",
-    "Reserved instruction",
-    "Coprocessor unusable",
-    "Arithmetic overflow",
-    "Trap exception",
-    "Virtual coherency on inst.",
-    "Floating point exception",
-    "Watchpoint exception",
-    "Virtual coherency on data",
-};
-
-const char *const gFpcsrDesc[6] = {
-    "Unimplemented operation", "Invalid operation", "Division by zero", "Overflow", "Underflow",
-    "Inexact operation",
-};
-
-const u8 gCrashScreenCharToGlyph[128] = {
+u8 gCrashScreenCharToGlyph[128] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 41, -1, -1, -1, 43, -1, -1, 37, 38, -1, 42,
     -1, 39, 44, -1, 0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  36, -1, -1, -1, -1, 40, -1, 10,
@@ -44,7 +18,7 @@ const u8 gCrashScreenCharToGlyph[128] = {
 };
 
 // Bit-compressed font. '#' = 1, '.' = 0
-const u32 gCrashScreenFont[7 * 9] = {
+u32 gCrashScreenFont[7 * 9 + 1] = {
     0x70871c30, // .###.. ..#... .###.. .###.. ..##.. ..
     0x8988a250, // #...#. .##... #...#. #...#. .#.#.. ..
     0x88808290, // #...#. ..#... ....#. ....#. #..#.. ..
@@ -116,7 +90,37 @@ const u32 gCrashScreenFont[7 * 9] = {
     0x20821000, // ..#... ..#... ..#... .#.... ...... ..
     0x00022200, // ...... ...... ..#... #...#. ...... ..
     0x20800020, // ..#... ..#... ...... ...... ..#... ..
+    0x00000000,
 };
+
+
+char *gCauseDesc[18] = {
+    "Interrupt",
+    "TLB modification",
+    "TLB exception on load",
+    "TLB exception on store",
+    "Address error on load",
+    "Address error on store",
+    "Bus error on inst.",
+    "Bus error on data",
+    "System call exception",
+    "Breakpoint exception",
+    "Reserved instruction",
+    "Coprocessor unusable",
+    "Arithmetic overflow",
+    "Trap exception",
+    "Virtual coherency on inst.",
+    "Floating point exception",
+    "Watchpoint exception",
+    "Virtual coherency on data",
+};
+
+char *gFpcsrDesc[6] = {
+    "Unimplemented operation", "Invalid operation", "Division by zero", "Overflow", "Underflow",
+    "Inexact operation",
+};
+
+
 
 extern u64 osClockRate;
 

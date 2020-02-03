@@ -35,6 +35,10 @@ u16 gDialogColorFadeTimer;
 s8 gLastDialogLineNum;
 s32 gDialogVariable;
 u16 gDialogTextAlpha;
+#ifdef VERSION_EU
+s16 gDialogX; // D_8032F69A
+s16 gDialogY; // D_8032F69C
+#endif
 s16 gCutsceneMsgXOffset;
 s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
@@ -106,18 +110,15 @@ s8 gDialogBoxType = DIALOG_TYPE_ROTATE;
 s16 gDialogID = -1;
 s16 gLastDialogPageStrPos = 0;
 s16 gDialogTextPos = 0; // EU: D_802FD64C
+#ifdef VERSION_EU
+s32 gInGameLanguage = 0;
+#endif
 s8 gDialogLineNum = 1;
 s8 gLastDialogResponse = 0;
 u8 gMenuHoldKeyIndex = 0;
 u8 gMenuHoldKeyTimer = 0;
 s32 gDialogResponse = 0;
 
-#ifdef VERSION_EU
-// TODO: where do these belong?
-s16 gDialogX; // D_8032F69A
-s16 gDialogY; // D_8032F69C
-s32 gInGameLanguage;
-#endif
 
 void create_dl_identity_matrix(void) {
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
@@ -126,26 +127,10 @@ void create_dl_identity_matrix(void) {
         return;
     }
 
-    matrix->m[0][0] = 0x00010000;
-    matrix->m[1][0] = 0x00000000;
-    matrix->m[2][0] = 0x00000000;
-    matrix->m[3][0] = 0x00000000;
-
-    matrix->m[0][1] = 0x00000000;
-    matrix->m[1][1] = 0x00010000;
-    matrix->m[2][1] = 0x00000000;
-    matrix->m[3][1] = 0x00000000;
-
-    matrix->m[0][2] = 0x00000001;
-    matrix->m[1][2] = 0x00000000;
-    matrix->m[2][2] = 0x00000000;
-    matrix->m[3][2] = 0x00000000;
-
-    matrix->m[0][3] = 0x00000000;
-    matrix->m[1][3] = 0x00000001;
-    matrix->m[2][3] = 0x00000000;
-    matrix->m[3][3] = 0x00000000;
-
+    matrix->m[0][0] = 0x00010000;    matrix->m[1][0] = 0x00000000;    matrix->m[2][0] = 0x00000000;    matrix->m[3][0] = 0x00000000;
+    matrix->m[0][1] = 0x00000000;    matrix->m[1][1] = 0x00010000;    matrix->m[2][1] = 0x00000000;    matrix->m[3][1] = 0x00000000;
+    matrix->m[0][2] = 0x00000001;    matrix->m[1][2] = 0x00000000;    matrix->m[2][2] = 0x00000000;    matrix->m[3][2] = 0x00000000;
+    matrix->m[0][3] = 0x00000000;    matrix->m[1][3] = 0x00000001;    matrix->m[2][3] = 0x00000000;    matrix->m[3][3] = 0x00000000;
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
 }
@@ -877,8 +862,7 @@ void int_to_str(s32 num, u8 *dst) {
     s8 pos = 0;
 
     if (num > 999) {
-        dst[0] = 0x00;
-        dst[1] = DIALOG_CHAR_TERMINATOR;
+        dst[0] = 0x00; dst[1] = DIALOG_CHAR_TERMINATOR;
         return;
     }
 
@@ -1212,7 +1196,7 @@ u32 ensure_nonnegative(s16 value) {
 #if defined(VERSION_EU) && !defined(NON_MATCHING)
 // TODO: EU is not quite matching
 void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 lowerBound);
-GLOBAL_ASM("asm/non_matchings/handle_dialog_text_and_pages_eu.s")
+GLOBAL_ASM("asm/non_matchings/eu/handle_dialog_text_and_pages.s")
 #else
 #ifdef VERSION_JP
 void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog)
@@ -1833,9 +1817,15 @@ void render_dialog_entries(void) {
     if (gLastDialogPageStrPos == -1 && gLastDialogResponse == 1) {
         render_dialog_triangle_choice();
     }
-
+    #ifdef VERSION_EU
+    #undef BORDER_HEIGHT
+    #define BORDER_HEIGHT 8
+    #endif
     gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 2, 2, SCREEN_WIDTH - BORDER_HEIGHT/2, SCREEN_HEIGHT - BORDER_HEIGHT/2);
-
+    #ifdef VERSION_EU
+    #undef BORDER_HEIGHT
+    #define BORDER_HEIGHT 1
+    #endif
     if (gLastDialogPageStrPos != -1 && gDialogBoxState == DIALOG_STATE_VERTICAL) {
         render_dialog_string_color(dialog->linesPerBox);
     }
@@ -1943,11 +1933,11 @@ void do_cutscene_handler(void) {
             break;
         case LANGUAGE_FRENCH:
             x = get_str_x_pos_from_center(gCutsceneMsgXOffset, gEndCutsceneStringsFr[gCutsceneMsgIndex], 10.0f);
-            print_generic_string(x, 240 - gCutsceneMsgYOffset, gEndCutsceneStringsFr[gCutsceneMsgIndex + 8]);
+            print_generic_string(x, 240 - gCutsceneMsgYOffset, gEndCutsceneStringsFr[gCutsceneMsgIndex]);
             break;
         case LANGUAGE_GERMAN:
             x = get_str_x_pos_from_center(gCutsceneMsgXOffset, gEndCutsceneStringsDe[gCutsceneMsgIndex], 10.0f);
-            print_generic_string(x, 240 - gCutsceneMsgYOffset, gEndCutsceneStringsDe[gCutsceneMsgIndex + 16]);
+            print_generic_string(x, 240 - gCutsceneMsgYOffset, gEndCutsceneStringsDe[gCutsceneMsgIndex]);
             break;
     }
 #else
@@ -2806,7 +2796,7 @@ void render_course_complete_lvl_info_and_hud_str(void) {
     u8 textCatch[] = { TEXT_CATCH };
     u8 textClear[] = { TEXT_CLEAR };
 #elif defined(VERSION_EU)
-    UNUSED u8 textClear[] = { TEXT_CLEAR }; // unused in EU
+    UNUSED u8 textCatch[] = { TEXT_CATCH }; // unused in EU
     u8 textSymStar[] = { GLYPH_STAR, GLYPH_SPACE };
 #define textCourse gTextCourseArr[gInGameLanguage]
 #else

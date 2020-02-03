@@ -230,7 +230,7 @@ const LevelScript script_func_global_5[] = {
 const LevelScript script_func_global_6[] = {
     LOAD_MODEL_FROM_GEO(MODEL_POKEY_HEAD,              pokey_head_geo),
     LOAD_MODEL_FROM_GEO(MODEL_POKEY_BODY_PART,         pokey_body_part_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_TORNADO,                 tornado_seg5_geo_05014630),
+    LOAD_MODEL_FROM_GEO(MODEL_TWEESTER,                tweester_geo),
     LOAD_MODEL_FROM_GEO(MODEL_KLEPTO,                  klepto_geo),
     LOAD_MODEL_FROM_GEO(MODEL_EYEROK_LEFT_HAND,        eyerok_left_hand_geo),
     LOAD_MODEL_FROM_GEO(MODEL_EYEROK_RIGHT_HAND,       eyerok_right_hand_geo),

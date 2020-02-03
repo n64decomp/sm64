@@ -1,6 +1,6 @@
 #ifndef _ULTRA64_THREAD_H_
 #define _ULTRA64_THREAD_H_
-
+#include "ultratypes.h"
 /* Recommended priorities for system threads */
 #define OS_PRIORITY_MAX      255
 #define OS_PRIORITY_VIMGR    254

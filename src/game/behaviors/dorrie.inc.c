@@ -1,5 +1,5 @@
 
-static void dorrie_raise_head(void) {
+void dorrie_raise_head(void) {
     s16 startAngle;
     f32 xzDisp;
     f32 yDisp;
@@ -15,7 +15,7 @@ static void dorrie_raise_head(void) {
                   gMarioObject->oPosZ + xzDisp * coss(o->oMoveAngleYaw));
 }
 
-static void dorrie_act_move(void) {
+void dorrie_act_move(void) {
     s16 startYaw;
     s16 targetYaw;
     s16 targetSpeed;
@@ -54,13 +54,13 @@ static void dorrie_act_move(void) {
     o->oAngleVelYaw = o->oMoveAngleYaw - startYaw;
 }
 
-static void dorrie_begin_head_raise(s32 liftingMario) {
+void dorrie_begin_head_raise(s32 liftingMario) {
     o->oDorrieLiftingMario = liftingMario;
     o->oAction = DORRIE_ACT_RAISE_HEAD;
     o->oDorrieHeadRaiseSpeed = 0;
 }
 
-static void dorrie_act_lower_head(void) {
+void dorrie_act_lower_head(void) {
     if (func_802F92EC(2, 35)) {
         func_8029F6F0();
 
@@ -92,7 +92,7 @@ static void dorrie_act_lower_head(void) {
     }
 }
 
-static void dorrie_act_raise_head(void) {
+void dorrie_act_raise_head(void) {
     o->collisionData = segmented_to_virtual(dorrie_seg6_collision_0600F644);
     if (func_8029F788()) {
         o->oAction = DORRIE_ACT_MOVE;

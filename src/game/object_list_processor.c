@@ -17,14 +17,9 @@
 #include "object_helpers.h"
 #include "platform_displacement.h"
 #include "engine/surface_load.h"
-#include "room.h"
 #include "object_list_processor.h"
 #include "mario.h"
 
-/**
- * Nodes used to represent the doubly linked object lists.
- */
-struct ObjectNode gObjectListArray[16];
 
 /**
  * Flags controlling what debug info is displayed.
@@ -147,6 +142,29 @@ s32 gNumStaticSurfaces;
  * A pool used by chain chomp and wiggler to allocate their body parts.
  */
 struct MemoryPool *gObjectMemoryPool;
+
+
+s16 gCheckingSurfaceCollisionsForCamera;
+s16 gFindFloorIncludeSurfaceIntangible;
+s16 *gEnvironmentRegions;
+s32 gEnvironmentLevels[20];
+s8 gDoorAdjacentRooms[60][2];
+s16 gMarioCurrentRoom;
+s16 D_8035FEE2;
+s16 D_8035FEE4;
+s16 gTHIWaterDrained;
+s16 gTTCSpeedSetting;
+s16 gMarioShotFromCannon;
+s16 gCCMEnteredSlide;
+s16 gNumRoomedObjectsInMarioRoom;
+s16 gNumRoomedObjectsNotInMarioRoom;
+s16 gWDWWaterLevelChanging;
+s16 gMarioOnMerryGoRound;
+
+/**
+ * Nodes used to represent the doubly linked object lists.
+ */
+struct ObjectNode gObjectListArray[16];
 
 /**
  * The order that object lists are processed in a frame.

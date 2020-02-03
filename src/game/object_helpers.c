@@ -23,7 +23,6 @@
 #include "obj_behaviors.h"
 #include "interaction.h"
 #include "object_list_processor.h"
-#include "room.h"
 #include "level_table.h"
 #include "dialog_ids.h"
 
@@ -396,10 +395,8 @@ s16 angle_to_object(struct Object *obj1, struct Object *obj2) {
     f32 z1, x1, z2, x2;
     s16 angle;
 
-    z1 = obj1->oPosZ;
-    z2 = obj2->oPosZ;
-    x1 = obj1->oPosX;
-    x2 = obj2->oPosX;
+    z1 = obj1->oPosZ; z2 = obj2->oPosZ; //ordering of instructions..
+    x1 = obj1->oPosX; x2 = obj2->oPosX;
 
     angle = atan2s(z2 - z1, x2 - x1);
     return angle;
@@ -982,19 +979,17 @@ void func_8029F684(f32 f12, f32 f14) {
     }
 }
 
-void func_8029F6F0(void) {
+BAD_RETURN(s16) func_8029F6F0(void) {
     if (o->header.gfx.unk38.animFrame >= 0) {
         o->header.gfx.unk38.animFrame--;
     }
 }
 
-void func_8029F728(void) {
+BAD_RETURN(s32) func_8029F728(void) {
     s32 sp4 = o->header.gfx.unk38.animFrame;
     s32 sp0 = o->header.gfx.unk38.curAnim->unk08 - 2;
-
-    if (sp4 == sp0) {
-        o->header.gfx.unk38.animFrame--;
-    }
+    
+    if (sp4 == sp0) o->header.gfx.unk38.animFrame--;
 }
 
 s32 func_8029F788(void) {
@@ -1203,19 +1198,19 @@ struct Surface *obj_update_floor_height_and_get_floor(void) {
 static void apply_drag_to_value(f32 *value, f32 dragStrength) {
     f32 decel;
 
-    if (*value != 0.0f) {
+    if (*value != 0) {
         //! Can overshoot if |*value| > 1/(dragStrength * 0.0001)
         decel = (*value) * (*value) * (dragStrength * 0.0001L);
 
         if (*value > 0) {
             *value -= decel;
             if (*value < 0.001L) {
-                *value = 0.0f;
+                *value = 0;
             }
         } else {
             *value += decel;
             if (*value > -0.001L) {
-                *value = 0.0f;
+                *value = 0;
             }
         }
     }
@@ -1828,8 +1823,9 @@ void obj_move_standard(s16 steepSlopeAngleDegrees) {
     //  Objects that do this will be marked with //PARTIAL_UPDATE.
     if (!(o->activeFlags & (ACTIVE_FLAG_FAR_AWAY | ACTIVE_FLAG_IN_DIFFERENT_ROOM))) {
         if (steepSlopeAngleDegrees < 0) {
-            careAboutEdgesAndSteepSlopes = TRUE;
-            steepSlopeAngleDegrees = -steepSlopeAngleDegrees;
+            // clang-format off
+            careAboutEdgesAndSteepSlopes = TRUE; steepSlopeAngleDegrees = -steepSlopeAngleDegrees;
+            // clang-format on
         }
 
         steepSlopeNormalY = coss(steepSlopeAngleDegrees * (0x10000 / 360));
@@ -2065,7 +2061,7 @@ void chain_segment_init(struct ChainSegment *segment) {
 }
 
 f32 random_f32_around_zero(f32 diameter) {
-    return RandomFloat() * diameter - diameter / 2.0f;
+    return RandomFloat() * diameter - diameter / 2;
 }
 
 void scale_object_random(struct Object *obj, f32 rangeLength, f32 minScale) {
@@ -2102,10 +2098,75 @@ void func_802A2A38(void) {
     o->oPosZ += o->oVelZ;
 }
 
+#if defined(VERSION_EU)
+//this is a test to see if object is possibly built wrong
+//it matches
+struct Object_test
+{
+    /*0x000*/ struct ObjectNode header;
+    /*0x068*/ struct Object *parentObj;
+    /*0x06C*/ struct Object *prevObj;
+    /*0x070*/ u32 collidedObjInteractTypes;
+    /*0x074*/ s16 activeFlags;
+    /*0x076*/ s16 numCollidedObjs;
+    /*0x078*/ struct Object *collidedObjs[4];
+    /*0x088*/
+    union
+    {
+        struct  {
+            u8 pad[0xF*4];
+            s32 MoveAnglePitch;
+            s32 MoveAngleYaw;
+            s32 MoveAngleRoll;
+            u8 pad2[0x4B*4-0xF*4-3*4];
+            struct {
+                u32 WallAngle;
+            } special;
+        } moving;
+        // Object fields. See object_fields.h.
+        u32 asU32[0x50];
+        s32 asS32[0x50];
+        s16 asS16[0x50][2];
+        f32 asF32[0x50];
+        s16 *asS16P[0x50];
+        s32 *asS32P[0x50];
+        struct Animation **asAnims[0x50];
+        struct Waypoint *asWaypoint[0x50];
+        struct ChainSegment *asChainSegment[0x50];
+        struct Object *asObject[0x50];
+        struct Surface *asSurface[0x50];
+        void *asVoidPtr[0x50];
+        const void *asConstVoidPtr[0x50];
+    } rawData;
+    /*0x1C8*/ u32 unused1;
+    /*0x1CC*/ const BehaviorScript *behScript;
+    /*0x1D0*/ u32 stackIndex;
+    /*0x1D4*/ uintptr_t stack[8];
+    /*0x1F4*/ s16 unk1F4;
+    /*0x1F6*/ s16 respawnInfoType;
+    /*0x1F8*/ f32 hitboxRadius;
+    /*0x1FC*/ f32 hitboxHeight;
+    /*0x200*/ f32 hurtboxRadius;
+    /*0x204*/ f32 hurtboxHeight;
+    /*0x208*/ f32 hitboxDownOffset;
+    /*0x20C*/ const BehaviorScript *behavior;
+    /*0x210*/ u32 unused2;
+    /*0x214*/ struct Object *platform;
+    /*0x218*/ void *collisionData;
+    /*0x21C*/ Mat4 transform;
+    /*0x25C*/ void *respawnInfo;
+};
+
+s16 obj_reflect_move_angle_off_wall(void) {
+    s16 angle = ((struct Object_test*)o)->rawData.moving.special.WallAngle - (s16) ((struct Object_test*)o)->rawData.moving.MoveAngleYaw + (s16) ((struct Object_test*)o)->rawData.moving.special.WallAngle  +0x8000;
+    return angle;
+}
+#else
 s16 obj_reflect_move_angle_off_wall(void) {
     s16 angle = o->oWallAngle - ((s16) o->oMoveAngleYaw - (s16) o->oWallAngle) + 0x8000;
     return angle;
 }
+#endif
 
 void obj_spawn_particles(struct SpawnParticlesInfo *info) {
     struct Object *particle;
@@ -2285,7 +2346,7 @@ s32 func_802A32E0(void) {
     return spF;
 }
 
-static void nop_802A3380(UNUSED s32 sp0, UNUSED s32 sp4) {
+void nop_802A3380(UNUSED s32 sp0, UNUSED s32 sp4) {
 }
 
 void func_802A3398(s32 a0, s32 a1, f32 sp10, f32 sp14) {
@@ -2312,7 +2373,7 @@ void func_802A3470(void) {
     obj_scale(gDebugInfo[5][3] / 100.0f + 1.0l);
 }
 
-static void nop_802A3544(void) {
+void nop_802A3544(void) {
 }
 
 s32 obj_is_mario_on_platform(void) {
@@ -2860,6 +2921,28 @@ s32 obj_check_grabbed_mario(void) {
     return FALSE;
 }
 
+#if defined(VERSION_EU) // Fake match
+s32 player_performed_grab_escape_action(void) {
+    s32 result = FALSE;
+    s32 grabEscape = TRUE;
+    // using register here causes less differences with non-EU versions
+    register f32 stickMag = gPlayer1Controller->stickMag;
+    if (stickMag < 30.0f) {
+        sGrabReleaseState = 0;
+    }
+
+    if (sGrabReleaseState == 0 && stickMag > 40.0f) {
+        sGrabReleaseState = grabEscape;
+        result = TRUE;
+    }
+
+    if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+        result = TRUE;
+    }
+
+    return result;
+}
+#else
 s32 player_performed_grab_escape_action(void) {
     s32 result = FALSE;
 
@@ -2878,6 +2961,7 @@ s32 player_performed_grab_escape_action(void) {
 
     return result;
 }
+#endif
 
 void obj_unused_play_footstep_sound(s32 animFrame1, s32 animFrame2, s32 sound) {
     if (obj_check_anim_frame(animFrame1) || obj_check_anim_frame(animFrame2)) {

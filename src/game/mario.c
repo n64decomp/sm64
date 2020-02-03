@@ -350,7 +350,8 @@ void play_mario_heavy_landing_sound_once(struct MarioState *m, u32 soundBits) {
 void play_mario_sound(struct MarioState *m, s32 actionSound, s32 marioSound) {
     if (actionSound == SOUND_ACTION_TERRAIN_JUMP) {
         play_mario_action_sound(
-            m, (m->flags & MARIO_METAL_CAP) ? SOUND_ACTION_METAL_JUMP : SOUND_ACTION_TERRAIN_JUMP, 1);
+                m, (m->flags & MARIO_METAL_CAP) ? (s32)SOUND_ACTION_METAL_JUMP 
+                                                : (s32)SOUND_ACTION_TERRAIN_JUMP, 1);
     } else {
         play_sound_if_no_flag(m, actionSound, MARIO_ACTION_SOUND_PLAYED);
     }
@@ -1214,7 +1215,7 @@ void squish_mario_model(struct MarioState *m) {
         }
         // If timer is less than 16, rubber-band Mario's size scale up and down.
         else if (m->squishTimer <= 16) {
-            m->squishTimer--;
+            m->squishTimer -= 1;
 
             m->marioObj->header.gfx.scale[1] =
                 1.0f - ((sSquishScaleOverTime[15 - m->squishTimer] * 0.6f) / 100.0f);
@@ -1223,7 +1224,7 @@ void squish_mario_model(struct MarioState *m) {
 
             m->marioObj->header.gfx.scale[2] = m->marioObj->header.gfx.scale[0];
         } else {
-            m->squishTimer--;
+            m->squishTimer -= 1;
 
             vec3f_set(m->marioObj->header.gfx.scale, 1.4f, 0.4f, 1.4f);
         }
@@ -1525,7 +1526,7 @@ void mario_reset_bodystate(struct MarioState *m) {
     bodyState->eyeState = MARIO_EYES_BLINK;
     bodyState->handState = MARIO_HAND_FISTS;
     bodyState->modelState = 0;
-    bodyState->unk07 = 0;
+    bodyState->wingFlutter = FALSE;
 
     m->flags &= ~MARIO_METAL_SHOCK;
 }
@@ -1650,7 +1651,7 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
 
     if ((m->flags & MARIO_TELEPORTING) && (m->fadeWarpOpacity != 0xFF)) {
         bodyState->modelState &= ~0xFF;
-        bodyState->modelState |= (m->fadeWarpOpacity | 0x100);
+        bodyState->modelState |= (0x100 | m->fadeWarpOpacity);
     }
 }
 
@@ -1820,7 +1821,7 @@ void init_mario(void) {
 
     mario_reset_bodystate(gMarioState);
     update_mario_info_for_cam(gMarioState);
-    gMarioState->marioBodyState->unk0B = 0;
+    gMarioState->marioBodyState->punchState = 0;
 
     gMarioState->marioObj->oPosX = gMarioState->pos[0];
     gMarioState->marioObj->oPosY = gMarioState->pos[1];

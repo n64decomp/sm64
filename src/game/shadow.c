@@ -12,7 +12,7 @@
 #include "mario.h"
 #include "memory.h"
 #include "rendering_graph_node.h"
-#include "room.h"
+#include "object_list_processor.h"
 #include "segment2.h"
 #include "save_file.h"
 #include "geo_misc.h"
@@ -106,10 +106,10 @@ shadowRectangle rectangles[2] = {
 };
 
 // See shadow.h for documentation.
-s8 sMarioOnFlyingCarpet;
-s16 sSurfaceTypeBelowShadow;
 s8 gShadowAboveWaterOrLava;
 s8 gMarioOnIceOrCarpet;
+s8 sMarioOnFlyingCarpet;
+s16 sSurfaceTypeBelowShadow;
 
 /**
  * Let (oldZ, oldX) be the relative coordinates of a point on a rectangle,

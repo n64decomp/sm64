@@ -5,9 +5,10 @@
 
 /* Types */
 
-typedef struct
-{
+typedef struct {
+#ifndef VERSION_EU
     u32 errStatus;
+#endif
     void *dramAddr;
     void *C2Addr;
     u32 sectorSize;
@@ -15,20 +16,21 @@ typedef struct
     u32 C1ErrSector[4];
 } __OSBlockInfo;
 
-typedef struct
-{
-    u32 cmdType;
-    u16 transferMode;
-    u16 blockNum;
-    s32 sectorNum;
-    uintptr_t devAddr;
-    u32 bmCtlShadow;
-    u32 seqCtlShadow;
-    __OSBlockInfo block[2];
+typedef struct {
+    u32 cmdType;       // 0
+    u16 transferMode;  // 4
+    u16 blockNum;      // 6
+    s32 sectorNum;     // 8
+    uintptr_t devAddr; // c
+#ifdef VERSION_EU
+    u32 unk10; //error status added moved to blockinfo
+#endif
+    u32 bmCtlShadow;        // 10
+    u32 seqCtlShadow;       // 14
+    __OSBlockInfo block[2]; // 18
 } __OSTranxInfo;
 
-typedef struct OSPiHandle_s
-{
+typedef struct OSPiHandle_s {
     struct OSPiHandle_s *next;
     u8 type;
     u8 latency;
@@ -41,27 +43,26 @@ typedef struct OSPiHandle_s
     __OSTranxInfo transferInfo;
 } OSPiHandle;
 
-typedef struct
-{
+typedef struct {
     u8 type;
     uintptr_t address;
 } OSPiInfo;
 
-typedef struct
-{
+typedef struct {
     u16 type;
     u8 pri;
     u8 status;
     OSMesgQueue *retQueue;
 } OSIoMesgHdr;
 
-typedef struct
-{
+typedef struct {
     /*0x00*/ OSIoMesgHdr hdr;
     /*0x08*/ void *dramAddr;
     /*0x0C*/ uintptr_t devAddr;
     /*0x10*/ size_t size;
-    //OSPiHandle *piHandle; //from the official definition
+#ifdef VERSION_EU
+    OSPiHandle *piHandle; // from the official definition
+#endif
 } OSIoMesg;
 
 /* Definitions */
@@ -74,12 +75,13 @@ typedef struct
 
 /* Functions */
 
-s32 osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction,
-                 uintptr_t devAddr, void *vAddr, size_t nbytes, OSMesgQueue *mq);
-void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf,
-                       s32 cmdMsgCnt);
+s32 osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction, uintptr_t devAddr, void *vAddr,
+                 size_t nbytes, OSMesgQueue *mq);
+void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf, s32 cmdMsgCnt);
 OSMesgQueue *osPiGetCmdQueue(void);
 s32 osPiWriteIo(uintptr_t devAddr, u32 data);
 s32 osPiReadIo(uintptr_t devAddr, u32 *data);
 
+s32 osPiRawStartDma(s32 dir, u32 cart_addr, void *dram_addr, size_t size);
+s32 osEPiRawStartDma(OSPiHandle *piHandle, s32 dir, u32 cart_addr, void *dram_addr, size_t size);
 #endif

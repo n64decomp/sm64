@@ -85,8 +85,7 @@ void bhv_goomba_triplet_spawner_update(void) {
                 0x10000
                 / (((o->oBehParams2ndByte & GOOMBA_TRIPLET_SPAWNER_BP_EXTRA_GOOMBAS_MASK) >> 2) + 3);
 
-            goombaFlag = 1 << 8;
-            for (angle = 0; angle < 0xFFFF; angle += dAngle, goombaFlag <<= 1) {
+            for (angle = 0, goombaFlag = 1 << 8; angle < 0xFFFF; angle += dAngle, goombaFlag <<= 1) {
                 // Only spawn goombas which haven't been killed yet
                 if (!(o->oBehParams & goombaFlag)) {
                     dx = 500.0f * coss(angle);

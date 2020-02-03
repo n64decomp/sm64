@@ -75,8 +75,10 @@ void bhv_coin_loop(void) {
         }
     }
     if (o->oTimer == 0)
-#ifndef VERSION_JP
+#ifdef VERSION_US
         PlaySound2(SOUND_GENERAL_COIN_SPURT_2);
+#elif VERSION_EU
+        PlaySound2(SOUND_GENERAL_COIN_SPURT_EU);
 #else
         PlaySound2(SOUND_GENERAL_COIN_SPURT);
 #endif

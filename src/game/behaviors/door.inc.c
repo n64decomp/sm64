@@ -1,6 +1,12 @@
 // door.c.inc
 
-s32 D_8032F300[][2] = { { 0x40000, 3 }, { 0x80000, 4 }, { 0x10000, 1 }, { 0x20000, 2 }, { -1, 0 }, };
+struct DoorAction
+{
+    u32 flag;
+    s32 action;
+};
+
+struct DoorAction D_8032F300[] = { { 0x40000, 3 }, { 0x80000, 4 }, { 0x10000, 1 }, { 0x20000, 2 }, { -1, 0 }, };
 
 s32 D_8032F328[] = { SOUND_GENERAL_OPEN_WOOD_DOOR, SOUND_GENERAL_OPEN_IRON_DOOR };
 
@@ -39,13 +45,15 @@ void func_802AC1CC(void) {
 
 void bhv_door_loop(void) {
     s32 sp1C = 0;
-    while (D_8032F300[sp1C][0] != -1) {
-        if (obj_clear_interact_status_flag(D_8032F300[sp1C][0])) {
+    
+    while (D_8032F300[sp1C].flag != (u32)~0) {
+        if (obj_clear_interact_status_flag(D_8032F300[sp1C].flag)) {
             func_802AC0B8();
-            obj_change_action(D_8032F300[sp1C][1]);
+            obj_change_action(D_8032F300[sp1C].action);
         }
         sp1C++;
     }
+
     switch (o->oAction) {
         case 0:
             set_obj_animation_and_sound_state(0);

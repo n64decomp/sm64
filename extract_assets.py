@@ -164,15 +164,17 @@ def main():
         assets = todo[key]
         lang, mio0 = key
         if mio0 == "@sound":
-            with tempfile.NamedTemporaryFile(prefix="ctl") as ctl_file:
-                with tempfile.NamedTemporaryFile(prefix="tbl") as tbl_file:
+            with tempfile.NamedTemporaryFile(prefix="ctl", delete=False) as ctl_file:
+                with tempfile.NamedTemporaryFile(prefix="tbl", delete=False) as tbl_file:
                     rom = roms[lang]
                     size, locs = asset_map["@sound ctl " + lang]
                     offset = locs[lang][0]
                     ctl_file.write(rom[offset : offset + size])
+                    ctl_file.close()
                     size, locs = asset_map["@sound tbl " + lang]
                     offset = locs[lang][0]
                     tbl_file.write(rom[offset : offset + size])
+                    tbl_file.close()
                     args = [
                         "python3",
                         "tools/disassemble_sound.py",
@@ -183,7 +185,11 @@ def main():
                     for (asset, pos, size, meta) in assets:
                         print("extracting", asset)
                         args.append(asset + ":" + str(pos))
-                    subprocess.run(args, check=True)
+                    try:
+                        subprocess.run(args, check=True)
+                    finally:
+                        os.unlink(ctl_file.name)
+                        os.unlink(tbl_file.name)
             continue
 
         if mio0 is not None:
@@ -194,7 +200,7 @@ def main():
                     "-o",
                     str(mio0),
                     "baserom." + lang + ".z64",
-                    "/dev/stdout",
+                    "-",
                 ],
                 check=True,
                 stdout=subprocess.PIPE,

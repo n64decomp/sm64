@@ -1,5 +1,10 @@
 #include <ultra64.h>
 #include <macros.h>
+
+#ifdef VERSION_EU
+#include "prevent_bss_reordering.h"
+#endif
+
 #include "gd_types.h"
 #include "gd_macros.h"
 #include "joints.h"

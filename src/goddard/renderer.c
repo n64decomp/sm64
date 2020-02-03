@@ -3,7 +3,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#ifndef VERSION_EU
 #include "prevent_bss_reordering.h"
+#endif
 #include "gd_types.h"
 #include "gd_macros.h"
 #include "dynlists/dynlists.h"
@@ -80,6 +82,25 @@ struct DynListBankInfo {
 };
 
 // bss
+#ifdef VERSION_EU
+static OSMesgQueue D_801BE830; // controller msg queue
+static OSMesg D_801BE848[10];
+u8 EUpad1[0x40];
+static OSMesgQueue D_801BE8B0;
+static OSMesgQueue sGdDMAQueue; // @ 801BE8C8
+// static u32 unref_801be870[16];
+// static u32 unref_801be8e0[25];
+// static u32 unref_801be948[13];
+u8 EUpad2[0x64];
+static OSMesg sGdMesgBuf[1]; // @ 801BE944
+u8 EUpad3[0x34];
+static OSMesg D_801BE97C; // msg buf for D_801BE8B0 queue
+static OSIoMesg D_801BE980;
+static struct ObjView *D_801BE994; // store if View flag 0x40 set
+
+u8 EUpad4[0x88];
+#endif
+
 static OSContStatus D_801BAE60[4];
 static OSContPad sGdContPads[4];    // @ 801BAE70
 static OSContPad sPrevFrameCont[4]; // @ 801BAE88
@@ -142,6 +163,7 @@ static s32 sPickBufPosition;                         // @ 801BE784
 static s16 *sPickBuf;                                // @ 801BE788
 static LookAt D_801BE790[2];
 static LookAt D_801BE7D0[3];
+#ifndef VERSION_EU
 static OSMesgQueue D_801BE830; // controller msg queue
 static OSMesg D_801BE848[10];
 static u32 unref_801be870[16];
@@ -153,6 +175,7 @@ static u32 unref_801be948[13];
 static OSMesg D_801BE97C; // msg buf for D_801BE8B0 queue
 static OSIoMesg D_801BE980;
 static struct ObjView *D_801BE994; // store if View flag 0x40 set
+#endif
 
 // data
 static u32 unref_801a8670 = 0;

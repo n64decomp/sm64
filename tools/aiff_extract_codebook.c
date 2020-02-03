@@ -169,32 +169,7 @@ int main(int argc, char **argv)
     fclose(ifile);
 
     if (coefTable == NULL) {
-        // Missing codebook, execute tabledesign instead
-        const char *procDirs[] = {
-            "/proc/self/exe", // Linux
-            "/proc/curproc/exe", // FreeBSD
-            "/proc/self/path/a.out", // Solaris
-        };
-        char buf[0x1000 + 0x100];
-        s32 bufSize = 0x1000, found = 0;
-        for (s32 i = 0; i < 3; i++) {
-            ssize_t ret = readlink(procDirs[i], buf, bufSize);
-            if (ret > 0 && ret < bufSize) {
-                found = 1;
-                break;
-            }
-        }
-        if (!found) {
-            // Not able to determine filename, let's guess
-            strcpy(buf, "./tools/");
-        }
-        char *sep = strrchr(buf, '/');
-        if (sep == NULL) {
-            sep = buf + strlen(buf);
-        }
-        *sep++ = '/';
-        strcpy(sep, "tabledesign");
-        execl(buf, "tabledesign", "-s", "1", infilename, NULL);
+        execl("./tools/tabledesign", "tabledesign", "-s", "1", infilename, NULL);
     } else {
         printf("%d\n%d\n", order, npredictors);
         for (s32 i = 0; i < npredictors; i++) {

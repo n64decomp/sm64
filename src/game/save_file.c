@@ -96,7 +96,7 @@ static s32 write_eeprom_data(void *buffer, s32 size) {
  * Sum the bytes in data to data + size - 2. The last two bytes are ignored
  * because that is where the checksum is stored.
  */
-static s32 calc_checksum(u8 *data, s32 size) {
+static u16 calc_checksum(u8 *data, s32 size) {
     u16 chksum = 0;
 
     while (size-- > 2) {
@@ -262,7 +262,8 @@ void save_file_erase(s32 fileIndex) {
     save_file_do_save(fileIndex);
 }
 
-void save_file_copy(s32 srcFileIndex, s32 destFileIndex) {
+//! Needs to be s32 to match on -O2, despite no return value.
+BAD_RETURN(s32) save_file_copy(s32 srcFileIndex, s32 destFileIndex) {
     UNUSED s32 pad;
 
     touch_high_score_ages(destFileIndex);
@@ -448,18 +449,18 @@ s32 save_file_get_total_star_count(s32 fileIndex, s32 minCourse, s32 maxCourse) 
     return save_file_get_course_star_count(fileIndex, -1) + count;
 }
 
-void save_file_set_flags(s32 flags) {
+void save_file_set_flags(u32 flags) {
     gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags |= (flags | SAVE_FLAG_FILE_EXISTS);
     gSaveFileModified = TRUE;
 }
 
-void save_file_clear_flags(s32 flags) {
+void save_file_clear_flags(u32 flags) {
     gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags &= ~flags;
     gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags |= SAVE_FLAG_FILE_EXISTS;
     gSaveFileModified = TRUE;
 }
 
-s32 save_file_get_flags(void) {
+u32 save_file_get_flags(void) {
     if (gCurrCreditsEntry != 0 || gCurrDemoInput != NULL) {
         return 0;
     }
@@ -470,8 +471,8 @@ s32 save_file_get_flags(void) {
  * Return the bitset of obtained stars in the specified course.
  * If course is -1, return the bitset of obtained castle secret stars.
  */
-s32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
-    s32 starFlags;
+u32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
+    u32 starFlags;
 
     if (courseIndex == -1) {
         starFlags = (gSaveBuffer.files[fileIndex][0].flags >> 24) & 0x7F;
@@ -486,7 +487,7 @@ s32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
  * Add to the bitset of obtained stars in the specified course.
  * If course is -1, add ot the bitset of obtained castle secret stars.
  */
-void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, s32 starFlags) {
+void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
     if (courseIndex == -1) {
         gSaveBuffer.files[fileIndex][0].flags |= starFlags << 24;
     } else {

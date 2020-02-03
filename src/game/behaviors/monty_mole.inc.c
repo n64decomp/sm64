@@ -178,11 +178,25 @@ void bhv_monty_mole_hole_update(void) {
 
 /**
  * Spawn dirt particles when rising out of the ground.
+ *
+ * TODO: (Scrub C) monty_mole_spawn_dirt_particles, water_bomb_spawn_explode_particles, and
+ * func_80306ED4 all have similar issues with their functions, none of which match legitimately.
  */
-static void monty_mole_spawn_dirt_particles(s8 offsetY, s8 velYBase) {
+void monty_mole_spawn_dirt_particles(s8 offsetY, s8 velYBase) {
+#if defined(VERSION_JP) || defined(VERSION_US)
     sMontyMoleRiseFromGroundParticles.offsetY = offsetY;
     sMontyMoleRiseFromGroundParticles.velYBase = velYBase;
     obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);
+#else
+    s8 tempVelYBase = velYBase;
+    s8 tempOffsetY = offsetY;
+
+    do {
+        sMontyMoleRiseFromGroundParticles.offsetY = tempOffsetY;
+        sMontyMoleRiseFromGroundParticles.velYBase = tempVelYBase;
+        obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);
+    } while (0);
+#endif
 }
 
 /**

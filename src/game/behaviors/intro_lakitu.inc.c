@@ -118,7 +118,11 @@ void bhv_intro_lakitu_loop(void) {
 #endif
             break;
         case 2:
+#ifdef VERSION_EU
+            if (gCutsceneTimer > 599) {
+#else
             if (gCutsceneTimer > 720) {
+#endif
                 gCurrentObject->oAction += 1;
                 gCurrentObject->oIntroLakituUnk100 = 1400.f;
                 gCurrentObject->oIntroLakituUnk104 = -4096.f;

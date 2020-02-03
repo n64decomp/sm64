@@ -63,36 +63,11 @@ const struct DialogEntry *const seg2_dialog_table[] = {
 
 // == courses ==
 // (defines en_course_name_table etc.)
+// The game duplicates this in levels/menu/leveldata.c in EU, so we split
+// it out into a separate include file.
 
-#define COURSE_ACTS(id, name, a,b,c,d,e,f) \
-    static const u8 course_name_ ## id[] = { name };
-
-#define SECRET_STAR(id, name) \
-    static const u8 course_name_ ## id[] = { name };
-
-#define CASTLE_SECRET_STARS(str) \
-    static const u8 course_name_castle_secret_stars[] = { str };
-
-#define EXTRA_TEXT(id, str)
-
-#include "courses.h"
-
-#undef COURSE_ACTS
-#undef SECRET_STAR
-#undef CASTLE_SECRET_STARS
-
-#define COURSE_ACTS(id, name, a,b,c,d,e,f) course_name_ ## id,
-#define SECRET_STAR(id, name) course_name_ ## id,
-#define CASTLE_SECRET_STARS(str) course_name_castle_secret_stars,
-
-const u8 *const seg2_course_name_table[] = {
-#include "courses.h"
-    NULL
-};
-
-#undef COURSE_ACTS
-#undef SECRET_STAR
-#undef CASTLE_SECRET_STARS
+#define COURSE_TABLE seg2_course_name_table
+#include "define_courses.inc.c"
 
 // == acts ==
 // (defines en_act_name_table etc.)

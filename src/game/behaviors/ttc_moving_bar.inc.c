@@ -100,7 +100,7 @@ static void ttc_moving_bar_act_extend(void) {
         && o->oTTCMovingBarSpeed > -8.0f && o->oTTCMovingBarSpeed < 8.0f) {
         // Begin retracting
         o->oAction = TTC_MOVING_BAR_ACT_RETRACT;
-        o->oTTCMovingBarSpeed = 0;
+        o->oTTCMovingBarSpeed = 0.0f;
     } else {
         f32 accel;
 

@@ -1,4 +1,3 @@
-
 struct ObjectHitbox sMrBlizzardHitbox = {
     /* interactType:      */ INTERACT_MR_BLIZZARD,
     /* downOffset:        */ 24,
@@ -38,13 +37,34 @@ struct ObjectHitbox sMrBlizzardSnowballHitbox = {
     /* hurtboxHeight:     */ 25,
 };
 
-static void func_80306ED4(s8 arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
-    D_80331A00.count = arg0;
-    D_80331A00.offsetY = arg1;
-    D_80331A00.forwardVelBase = arg2;
-    D_80331A00.velYBase = arg3;
-    D_80331A00.sizeBase = arg4;
+/**
+ * TODO: (Scrub C) monty_mole_spawn_dirt_particles, water_bomb_spawn_explode_particles, and
+ * func_80306ED4 all have similar issues with their functions, none of which match legitimately.
+ */
+void func_80306ED4(s8 count, s8 offsetY, s8 forwardVelBase, s8 velYBase, s8 sizeBase) {
+#if defined(VERSION_JP) || defined(VERSION_US)
+    D_80331A00.count = count;
+    D_80331A00.offsetY = offsetY;
+    D_80331A00.forwardVelBase = forwardVelBase;
+    D_80331A00.velYBase = velYBase;
+    D_80331A00.sizeBase = sizeBase;
     obj_spawn_particles(&D_80331A00);
+#else
+    s8 tempSizeBase = sizeBase;
+    s8 tempVelYBase = velYBase;
+    s8 tempForwardVelBase = forwardVelBase;
+    s8 tempOffsetY = offsetY;
+    s8 tempCount = count;
+
+    do {
+    D_80331A00.count = tempCount;
+    D_80331A00.offsetY = tempOffsetY;
+    D_80331A00.forwardVelBase = tempForwardVelBase;
+    D_80331A00.velYBase = tempVelYBase;
+    D_80331A00.sizeBase = tempSizeBase;
+    obj_spawn_particles(&D_80331A00);
+    } while (0);
+#endif
 }
 
 void bhv_mr_blizzard_init(void) {

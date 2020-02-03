@@ -1,16 +1,17 @@
 #include "libultra_internal.h"
 
+
 // TODO: document
 OSTimer D_80365D80;
 OSTimer *D_80334830 = &D_80365D80;
 OSTime _osCurrentTime;
 u32 D_80365DA8;
-u32 D_80365DAC;
+u32 __osViIntrCount;
 u32 D_80365DB0;
 void __osTimerServicesInit() {
     _osCurrentTime = 0;
     D_80365DA8 = 0;
-    D_80365DAC = 0;
+    __osViIntrCount = 0;
     D_80334830->prev = D_80334830;
     D_80334830->next = D_80334830->prev;
     D_80334830->remaining = 0;

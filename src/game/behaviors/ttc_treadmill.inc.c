@@ -21,13 +21,6 @@ static s16 sTTCTreadmillSpeeds[] = {
     /* TTC_SPEED_STOPPED */ 0,
 };
 
-// TODO: bss
-
-/**
- * The treadmill that plays sounds and controls the others on random setting.
- */
-struct Object *sMasterTreadmill;
-
 extern s16 ttc_movtex_tris_big_surface_treadmill[];
 extern s16 ttc_movtex_tris_small_surface_treadmill[];
 

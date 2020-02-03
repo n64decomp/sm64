@@ -21,8 +21,14 @@
 // FIXME: I'm not sure all of these variables belong in this file, but I don't
 // know of a good way to split them
 struct Controller gControllers[3];
+struct SPTask *gGfxSPTask;
+Gfx *gDisplayListHead;
+u8 *gGfxPoolEnd;
+struct GfxPool *gGfxPool;
 OSContStatus gControllerStatuses[4];
 OSContPad gControllerPads[4];
+u8 gControllerBits;
+s8 gEepromProbe;
 OSMesgQueue gGameVblankQueue;
 OSMesgQueue D_80339CB8;
 OSMesg D_80339CD0;
@@ -32,13 +38,6 @@ uintptr_t gPhysicalFrameBuffers[3];
 uintptr_t gPhysicalZBuffer;
 void *D_80339CF0;
 void *D_80339CF4;
-struct SPTask *gGfxSPTask;
-Gfx *gDisplayListHead;
-u8 *gGfxPoolEnd;
-struct GfxPool *gGfxPool;
-u8 gControllerBits;
-s8 gEepromProbe;
-
 struct MarioAnimation D_80339D10;
 struct MarioAnimation gDemo;
 UNUSED u8 filler80339D30[0x90];

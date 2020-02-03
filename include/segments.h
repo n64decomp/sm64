@@ -15,14 +15,23 @@
 
 #define SEG_POOL_START   0x8005C000
 #define SEG_POOL_END     SEG_BUFFERS
+
 #define SEG_GODDARD      0x8016F000
+
 #define SEG_BUFFERS      0x801C1000
+
 #ifdef VERSION_EU
 #define SEG_MAIN         0x80241800 // TODO: Investigate why it's different?
 #else
 #define SEG_MAIN         0x80246000
 #endif
+
+#ifdef VERSION_EU
+#define SEG_ENGINE       0x8036FF00
+#else
 #define SEG_ENGINE       0x80378800
+#endif
+
 #define SEG_FRAMEBUFFERS 0x8038F800
 
 #else /* Use Expansion Pak space for pool. */

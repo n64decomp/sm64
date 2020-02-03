@@ -219,11 +219,7 @@ void envfx_update_snow_normal(s32 snowCylinderX, s32 snowCylinderY, s32 snowCyli
             (gEnvFxBuffer + i)->isAlive = 1;
         } else {
             (gEnvFxBuffer + i)->xPos += RandomFloat() * 2 - 1.0f + (s16)(deltaX / 1.2);
-#ifdef VERSION_EU
-            (gEnvFxBuffer + i)->yPos -= (s16)(deltaY * 0.8) + 2;
-#else
-            (gEnvFxBuffer + i)->yPos -= -(s16)(deltaY * 0.8) + 2;
-#endif
+            (gEnvFxBuffer + i)->yPos -= 2 -(s16)(deltaY * 0.8);
             (gEnvFxBuffer + i)->zPos += RandomFloat() * 2 - 1.0f + (s16)(deltaZ / 1.2);
         }
     }
@@ -257,11 +253,7 @@ void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCy
             (gEnvFxBuffer + i)->isAlive = 1;
         } else {
             (gEnvFxBuffer + i)->xPos += RandomFloat() * 2 - 1.0f + (s16)(deltaX / 1.2) + 20.0f;
-#ifdef VERSION_EU
-            (gEnvFxBuffer + i)->yPos -= (s16)(deltaY * 0.8) + 5;
-#else
-            (gEnvFxBuffer + i)->yPos -= -(s16)(deltaY * 0.8) + 5;
-#endif
+            (gEnvFxBuffer + i)->yPos -= 5 -(s16)(deltaY * 0.8);
             (gEnvFxBuffer + i)->zPos += RandomFloat() * 2 - 1.0f + (s16)(deltaZ / 1.2);
         }
     }
@@ -351,7 +343,7 @@ void rotate_triangle_vertices(Vec3s vertex1, Vec3s vertex2, Vec3s vertex3, s16 p
  */
 #if defined(VERSION_EU) && !defined(NON_MATCHING)
 void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3);
-GLOBAL_ASM("asm/non_matchings/append_snowflake_vertex_buffer_eu.s")
+GLOBAL_ASM("asm/non_matchings/eu/append_snowflake_vertex_buffer.s")
 #else
 void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3) {
     s32 i = 0;

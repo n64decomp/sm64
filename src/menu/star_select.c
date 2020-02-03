@@ -17,6 +17,7 @@
 #include "behavior_data.h"
 #include "text_strings.h"
 #include "star_select.h"
+#include "game/eu_translation.h"
 
 /**
  * @file star_select.c
@@ -201,12 +202,33 @@ void bhv_act_selector_loop(void) {
 /**
  * Print the course number selected with the wood rgba16 course texture.
  */
-static void print_course_number(void) {
+#ifdef VERSION_EU
+void print_course_number(s16 language) {
+#else
+void print_course_number(void) {
+#endif
     u8 courseNum[4];
 
     create_dl_translation_matrix(MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
 
     gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course);
+
+#ifdef VERSION_EU
+    switch (language) {
+        case 0:
+            gSPDisplayList(gDisplayListHead++, dl_menu_texture_course_upper);
+            break;
+        case 1:
+            gSPDisplayList(gDisplayListHead++, dl_menu_texture_niveau_upper);
+            break;
+        case 2:
+            gSPDisplayList(gDisplayListHead++, dl_menu_texture_kurs_upper);
+            break;
+    }
+    
+    gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course_end);
+#endif
+
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
@@ -231,21 +253,53 @@ static void print_course_number(void) {
 /**
  * Print act selector strings, some with special checks.
  */
-static void print_act_selector_strings(void) {
-// TODO: EU relocates level and act name tables to translation segment 0x19
-#ifndef VERSION_EU
+void print_act_selector_strings(void) {
+#ifdef VERSION_EU
+    unsigned char myScore[][10] = { {TEXT_MYSCORE}, {TEXT_MY_SCORE_FR}, {TEXT_MY_SCORE_DE} };
+#else
     unsigned char myScore[] = { TEXT_MYSCORE };
+#endif
     unsigned char starNumbers[] = { TEXT_ZERO };
+
+#ifdef VERSION_EU
+    u8 **levelNameTbl;
+    u8 *currLevelName;
+    u8 **actNameTbl;
+#else
     u8 **levelNameTbl = segmented_to_virtual(seg2_course_name_table);
     u8 *currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
     u8 **actNameTbl = segmented_to_virtual(seg2_act_name_table);
+#endif
     u8 *selectedActName;
+#ifndef VERSION_EU
     s16 lvlNameX;
     s16 actNameX;
+#endif
     s8 i;
+#ifdef VERSION_EU
+    s16 language = eu_get_language();
+#endif
 
     create_dl_ortho_matrix();
 
+#ifdef VERSION_EU
+    switch (language) {
+        case 0:
+            actNameTbl = segmented_to_virtual(act_name_table_eu_en);
+            levelNameTbl = segmented_to_virtual(course_name_table_eu_en);
+            break;
+        case 1:
+            actNameTbl = segmented_to_virtual(act_name_table_eu_fr);
+            levelNameTbl = segmented_to_virtual(course_name_table_eu_fr);
+            break;
+        case 2:
+            actNameTbl = segmented_to_virtual(act_name_table_eu_de);
+            levelNameTbl = segmented_to_virtual(course_name_table_eu_de);
+            break;
+    }
+    currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
+#endif
+    
     // Print the coin highscore.
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
@@ -256,33 +310,56 @@ static void print_act_selector_strings(void) {
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
     // Print the "MY SCORE" text if the coin score is more than 0
     if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0) {
+#ifdef VERSION_EU
+        print_generic_string(95, 118, myScore[language]);
+#else
         print_generic_string(102, 118, myScore);
+#endif
     }
     // Print the level name; add 3 to skip the number and spacing to get to the actual string to center.
+    // TODO: There has to be a way to merge these, but US seems to need lvlNameX and EU doesn't
+    // TODO: allow it to be declared.
+#ifdef VERSION_EU
+    print_generic_string(get_str_x_pos_from_center(160, currLevelName + 3, 10.0f), 33, currLevelName + 3);
+#else
     lvlNameX = get_str_x_pos_from_center(160, currLevelName + 3, 10.0f);
     print_generic_string(lvlNameX, 33, currLevelName + 3);
+#endif
+
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 
+#ifdef VERSION_EU
+    print_course_number((u32)language);
+#else
     print_course_number();
+#endif
 
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
     // Print the name of the selected act.
     if (sVisibleStars != 0) {
         selectedActName = segmented_to_virtual(actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedActIndex]);
+// TODO: Same merge issues as levelNameX above.
+#ifdef VERSION_EU
+        print_menu_generic_string(get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f), 81, selectedActName);
+#else
         actNameX = get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f);
         print_menu_generic_string(actNameX, 81, selectedActName);
+#endif
     }
 
     // Print the numbers above each star.
     for (i = 1; i <= sVisibleStars; i++) {
         starNumbers[0] = i;
+#ifdef VERSION_EU
+        print_menu_generic_string(143 - sVisibleStars * 15 + i * 30 , 38, starNumbers);
+#else
         print_menu_generic_string(i * 34 - sVisibleStars * 17 + 139, 38, starNumbers);
+#endif
     }
 
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
-#endif // !VERSION_EU
-}
+ }
 
 /**
  * Geo function that Print act selector strings.
@@ -330,15 +407,19 @@ s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
 s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
     if (sActSelectorMenuTimer >= 11) {
         // If any of these buttons are pressed, play sound and go to course act
+#ifndef VERSION_EU
         if ((gPlayer3Controller->buttonPressed & A_BUTTON)
          || (gPlayer3Controller->buttonPressed & START_BUTTON)
          || (gPlayer3Controller->buttonPressed & B_BUTTON)) {
+#else
+        if ((gPlayer3Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG))) {
+#endif
 #ifdef VERSION_JP
             play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
 #else
             play_sound(SOUND_MENU_STAR_SOUND_LETS_A_GO, gDefaultSoundArgs);
 #endif
-            if (sInitSelectedActNum > sSelectedActIndex) {
+            if (sInitSelectedActNum >= sSelectedActIndex + 1) {
                 sLoadedActNum = sSelectedActIndex + 1;
             } else {
                 sLoadedActNum = sInitSelectedActNum;

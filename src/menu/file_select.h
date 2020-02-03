@@ -68,12 +68,23 @@ enum MenuButtonTypes {
     MENU_BUTTON_ERASE_MAX,
 
     // Sound Mode Menu (SOUND SELECT)
+    // This menu includes language settings on PAL
     MENU_BUTTON_SOUND_MODE = MENU_BUTTON_ERASE_MAX,
-    MENU_BUTTON_SOUND_MIN,
-    MENU_BUTTON_STEREO = MENU_BUTTON_SOUND_MIN,
+    MENU_BUTTON_OPTION_MIN,
+    MENU_BUTTON_STEREO = MENU_BUTTON_OPTION_MIN,
     MENU_BUTTON_MONO,
     MENU_BUTTON_HEADSET,
-    MENU_BUTTON_SOUND_MAX
+
+#ifdef VERSION_EU
+    // Language Menu
+    MENU_BUTTON_LANGUAGE_MIN,
+    MENU_BUTTON_LANGUAGE_ENGLISH = MENU_BUTTON_LANGUAGE_MIN,
+    MENU_BUTTON_LANGUAGE_FRENCH,
+    MENU_BUTTON_LANGUAGE_GERMAN,
+    MENU_BUTTON_LANGUAGE_RETURN,
+#endif
+
+    MENU_BUTTON_OPTION_MAX
 };
 
 enum ScoreMenuMessageID {
@@ -111,6 +122,12 @@ enum EraseMenuActionPhase {
 
 enum SoundModeMenuActionPhase {
     SOUND_MODE_PHASE_MAIN
+};
+
+enum Languages {
+    LANGUAGE_EN,
+    LANGUAGE_FR,
+    LANGUAGE_DE
 };
 
 extern u32 gGlobalTimer;

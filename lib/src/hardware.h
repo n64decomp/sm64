@@ -66,6 +66,9 @@
 #define PI_STATUS_IOBUSY 0x2
 #define PI_STATUS_ERROR 0x3
 
+#define PI_STATUS_RESET_CONTROLLER 0x1
+#define PI_STATUS_CLEAR_INTR 0x2
+
 #define SI_DRAM_ADDR_REG 0x04800000
 #define SI_PIF_ADDR_RD64B_REG 0x04800004
 #define SI_PIF_ADDR_WR64B_REG 0x04800010
@@ -82,4 +85,43 @@
 #define MI_INTR_REG 0x04300008
 #define MI_INTR_MASK_REG 0x0430000C
 
+//https://github.com/LuigiBlood/64dd/wiki/Registers
+#define ASIC_STATUS 0x05000508
+
+#define DATA_REQUEST              0x40000000
+#define C2_TRANSFER               0x10000000
+#define BUFFER_MANAGER_ERROR      0x08000000
+#define BUFFER_MANAGER_INTERRUPT  0x04000000
+#define MECHANIC_INTERRUPT        0x02000000
+#define DISK_PRESENT              0x01000000
+#define BUSY_STATE                0x00800000
+#define RESET_STATE               0x00400000
+#define MOTOR_NOT_SPINNING        0x00100000
+#define HEAD_RETRACTED            0x00080000
+#define WRITE_PROTECT_ERROR       0x00040000
+#define MECHANIC_ERROR            0x00020000
+#define DISK_CHANGE               0x00010000
+
+#define _64DD_PRESENT_MASK 0xFFFF
+
+
+//ro
+#define ASIC_BM_STATUS 0x05000510
+
+#define MICRO_STATUS 0x02000000
+#define C1_DOUBLE 0x00400000
+#define C1_SINGLE 0x00200000
+
+//wo
+#define ASIC_BM_CTL 0x05000510
+#define BUFFER_MANAGER_RESET 0x10000000
+#define MECHANIC_INTERRUPT_RESET 0x01000000
+/*- Start Buffer Manager      (0x80000000)
+- Buffer Manager Mode       (0x40000000)
+- BM Interrupt Mask         (0x20000000)
+- Buffer Manager Reset      (0x10000000)
+- Disable OR Check?         (0x08000000)
+- Disable C1 Correction     (0x04000000)
+- Block Transfer            (0x02000000)
+- Mechanic Interrupt Reset  (0x01000000)*/
 #endif

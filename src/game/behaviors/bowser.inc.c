@@ -831,9 +831,9 @@ s32 func_802B5F20(void) {
 
 void func_802B60B8(void) {
     obj_scale(0);
-    o->oForwardVel = 0.0f;
-    o->oVelY = 0.0f;
-    o->oGravity = 0.0f;
+    o->oForwardVel = 0;
+    o->oVelY = 0;
+    o->oGravity = 0;
 }
 
 s32 func_802B6120(void) {
@@ -1448,7 +1448,7 @@ void bhv_flame_bowser_loop(void) {
         obj_become_tangible();
         if (o->oTimer > o->oFlameUnkF4 * 10 + 5.0f) {
             o->oFlameUnkF4 -= 0.15;
-            if (o->oFlameUnkF4 <= 0.0f)
+            if (o->oFlameUnkF4 <= 0)
                 func_802B7A58();
         }
     }
