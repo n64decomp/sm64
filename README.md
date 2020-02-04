@@ -15,6 +15,38 @@ A prior copy of the game is required to extract the required assets.
 
 ## Installation
 
+### Docker
+
+#### 1. Copy baserom(s) for asset extraction
+
+For each version (jp/us/eu) that you want to build a ROM for, put an existing ROM at
+`./baserom.<version>.z64` for asset extraction.
+
+#### 2. Create Docker Image
+
+Run the following command and replace <version> with us,jp, or eu.
+
+```
+docker image build --build-arg version=<version> -t sm64:1.0 .
+```
+
+#### 3. Enter image/Copy built file
+
+Create a shell into the Docker image with this command:
+```
+ docker run -it sm64:1.0 /bin/bash
+```
+
+You can find the built files in the /build folder.
+
+You can also skip the previous step and copy the built rom out using the following command.
+Change the versions if you are not using a us build.
+```
+docker cp sm64:/sm64/build/us/sm64.us.z64 ./sm64.us.z64
+```
+
+
+
 ### Linux
 
 #### 1. Copy baserom(s) for asset extraction
