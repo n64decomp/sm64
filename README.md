@@ -27,14 +27,14 @@ For each version (jp/us/eu) that you want to build a ROM for, put an existing RO
 Run the following command and replace <version> with us,jp, or eu.
 
 ```
-docker image build --build-arg version=<version> -t sm64:1.0 .
+docker image build --build-arg version=<version> -t sm64 .
 ```
 
 #### 3. Enter image/Copy built file
 
 Create a shell into the Docker image with this command:
 ```
- docker run -it sm64:1.0 /bin/bash
+ docker run -it sm64 /bin/bash
 ```
 
 You can find the built files in the /build folder.
