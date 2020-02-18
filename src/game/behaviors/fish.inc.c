@@ -59,7 +59,7 @@ void fish_act_spawn(void) {
         for (i = 0; i < schoolQuantity; i++) {
             fishObject = spawn_object(o, model, bhvFishGroup2);
             fishObject->oBehParams2ndByte = o->oBehParams2ndByte;
-            func_8029EE20 obj_enable_animation(fishObject, fishAnimation, 0);
+            func_8029EE20(fishObject, fishAnimation, 0);
             translate_object_xyz_random(fishObject, 700.0f);
         }
         o->oAction = 1;
