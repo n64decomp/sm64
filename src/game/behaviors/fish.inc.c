@@ -1,13 +1,15 @@
 /**
- * Behaviour and spawner for Fish located in the Secret Aquarium and other levels.
+ * @file fish.inc.c
+ * Implements behaviour and spawning for fish located in the Secret Aquarium and other levels.
  *
  */
 
 /**
- * Set certain settings such as animations, colour, and spawn quanitity.
- * Chosen settings dependant on parameter o->oBehParams2ndByte
+ * Spawns fish with settings chosen by the field o->oBehParams2ndByte.
+ * These settings are animations, colour, and spawn quanitity.
+ * Fish spawning restricted to a set distance from Mario.
  */
-void fish_group_act_spawn(void) {
+void fish_act_spawn(void) {
     s32 i;
     s32 schoolQuantity;
     s16 model;
@@ -15,34 +17,59 @@ void fish_group_act_spawn(void) {
     struct Animation **fishAnimation;
     struct Object *fishObject;
     switch (o->oBehParams2ndByte) {
+        
+        // Blue fish with a quanitiy of twenty.
         case 0:
-            model = MODEL_FISH;            schoolQuantity = 20;            minDistToMario = 1500.0f;            fishAnimation = blue_fish_seg3_anims_0301C2B0;
+            model = MODEL_FISH;
+            schoolQuantity = 20;
+            minDistToMario = 1500.0f;
+            fishAnimation = blue_fish_seg3_anims_0301C2B0;
             break;
+            
+        // Blue fish with a quanitiy of five.
         case 1:
-            model = MODEL_FISH;            schoolQuantity = 5;            minDistToMario = 1500.0f;            fishAnimation = blue_fish_seg3_anims_0301C2B0;
+            model = MODEL_FISH;
+            schoolQuantity = 5;
+            minDistToMario = 1500.0f;
+            fishAnimation = blue_fish_seg3_anims_0301C2B0;
             break;
+            
+        // Cyan fish with a quanitiy of twenty.
         case 2:
-            model = MODEL_CYAN_FISH;            schoolQuantity = 20;            minDistToMario = 1500.0f;            fishAnimation = cyan_fish_seg6_anims_0600E264;
+            model = MODEL_CYAN_FISH;
+            schoolQuantity = 20;
+            minDistToMario = 1500.0f;
+            fishAnimation = cyan_fish_seg6_anims_0600E264;
             break;
+            
+        // Cyan fish with a quanitiy of five.
         case 3:
-            model = MODEL_CYAN_FISH;            schoolQuantity = 5;            minDistToMario = 1500.0f;            fishAnimation = cyan_fish_seg6_anims_0600E264;
+            model = MODEL_CYAN_FISH;
+            schoolQuantity = 5;
+            minDistToMario = 1500.0f;
+            fishAnimation = cyan_fish_seg6_anims_0600E264;
             break;
     }
-    // If Distance to Mario is lower than 1500 or the current level is Secret Aquarium,
-    // then spawn the schoolQuantity of fish. Fish moves at random.
+    /**
+     * If Distance to Mario is lower than 1500 or the current level is Secret Aquarium,
+     * then spawn and animate the schoolQuantity of fish.
+     * Fish moves at random with a range of 700.0f.
+     */
     if (o->oDistanceToMario < minDistToMario || gCurrLevelNum == LEVEL_SA) {
         for (i = 0; i < schoolQuantity; i++) {
             fishObject = spawn_object(o, model, bhvFishGroup2);
             fishObject->oBehParams2ndByte = o->oBehParams2ndByte;
-            func_8029EE20(fishObject, fishAnimation, 0);
+            func_8029EE20 obj_enable_animation(fishObject, fishAnimation, 0);
             translate_object_xyz_random(fishObject, 700.0f);
         }
         o->oAction = 1;
     }
 }
 
-// If the current level is not Secret Aquarium and the distance from
-// mario minus o->oPosY is greater than 2000.0f then remove fish.
+/**
+ * If the current level is not Secret Aquarium and the distance from
+ * mario minus o->oPosY is greater than 2000.0f then set action to two.
+ */
 void bhv_fish_action_1(void) {
     if (gCurrLevelNum != LEVEL_SA) {
         if (gMarioObject->oPosY - o->oPosY > 2000.0f) {
@@ -51,67 +78,91 @@ void bhv_fish_action_1(void) {
     }
 }
 
-// Sets action to zero.
+/*
+ * Sets fish->action to zero.
+ */
 void bhv_fish_action_2(void) {
     o->oAction = 0;
 }
 
-// An array of actions
+/*
+ * An array of action methods
+ */
 void (*sFishActions[])(void) = { fish_group_act_spawn, bhv_fish_action_1, bhv_fish_action_2 };
 
-// Calls an array of actions
-void bhv_fish_loop(void) {
+/*
+ * Calls an array of actions based on the value of o->oAction
+ */
+void fish_act_loop(void) {
     obj_call_action_function(sFishActions);
 }
 
-// Move object up or down towards a fish group by speed
-// In Secret Aquarium increment amount is always ten.
-void regroup_fish(s32 speed) {
-    f32 parentY = o->parentObj->oPosY;
+/* 
+ * Move object up or down towards a fish group by the speed variable
+ * In Secret Aquarium, the speed variable is always ten.
+ */
+void fish_regroup(s32 speed) {
+    // Set pPosY to the parentY.
+    f32 pPosY = o->parentObj->oPosY;
+    
+    // If level is SA and fish group height is below 500 then speed = 10. 
     if (gCurrLevelNum == LEVEL_SA) {
-        if (500.0f < absf(o->oPosY - o->oFishGroupUnkF8)) {
+        if (500.0f < absf(o->oPosY - o->oFishGroup1)) {
             speed = 10;
         }
-            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
-    } else if (parentY - 100.0f - o->oFishGroupUnk10C < o->oPosY
-               && o->oPosY < parentY + 1000.0f + o->oFishGroupUnk10C) {
-        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
+            //Move fish group heighth if level is SA at incremented speed.
+            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroup1, speed);
+     /*
+     * For other levels, if the fish group heighth is lower than o->oPosY - 100 and
+     * o->PosY is lower than the pPosY + 1000f + fish group Y then
+     * have the fish symmetrically approach the target fish group.
+     */
+    } else if (pPosY - 100.0f - o->oFishGroupUnk10C < o->oPosY
+               && o->oPosY < pPosY + 1000.0f + o->oFishGroupUnk10C) {
+        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroup1, speed);
     }
 }
-
-// Moves fish forward at a random velocity.
-// In SA move fish group UnkFC at a slower speed.
-void bhv_fish_group_1(void) {
+/*
+ * Moves fish forward at a random velocity.
+ * In SA move fish group UnkFC at a slower speed.
+ */
+void fish_group_act_rotation(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
+    
+    // Animation accel altered by timer.
     if (o->oTimer < 10) {
         func_8029ED98(0, 2.0f);
-    }
-    else {
+    } else {
         func_8029ED98(0, 1.0f);
     }
+    
+    /*
+     * Sets fish groups forward velocity to a random float.
+     * Assigns random floats to fish groups UnkFC and Unk104, value dependant on level.
+     */
     if (o->oTimer == 0) {
         o->oForwardVel = RandomFloat() * 2 + 3.0f;
         if (gCurrLevelNum == LEVEL_SA) {
             o->oFishGroupUnkFC = RandomFloat() * 700.0f;
-        }
-        else {
+        } else {
             o->oFishGroupUnkFC = RandomFloat() * 100.0f;
         }
         o->oFishGroupUnk104 = RandomFloat() * 500 + 200.0f;
     }
-    // Rotate fish towards mario
-    o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    
+    // Rotate fish towards mario at a rate of 5.625 degrees (0x400)
+    o->oFishGroup1 = gMarioObject->oPosY + o->oFishGroupUnkFC;
     obj_rotate_yaw_toward(o->oAngleToMario, 0x400);
+    
     // If fish groups are too close regroup
     if (o->oPosY < o->oFishGroupUnkF4 - 50.0f) {
         if (fishY < 0.0f) {
             fishY = 0.0f - fishY;
         }
         if (fishY < 500.0f) {
-            regroup_fish(2);
-        }
-        else {
-            regroup_fish(4);
+            fish_regroup(2);
+        } else {
+            fish_regroup(4);
         }
     } else {
         o->oPosY = o->oFishGroupUnkF4 - 50.0f;
@@ -119,39 +170,43 @@ void bhv_fish_group_1(void) {
             o->oPosY = o->oPosY - 1.0f;
         }
     }
+    
     // Remove fish if its distance to mario is smaller than his distance to Unk104 + 150.0f
     if (o->oDistanceToMario < o->oFishGroupUnk104 + 150.0f) {
         o->oAction = 2;
     }
 }
 
-void bhv_fish_group_2(void) {
+/*
+ * Moves fish in relation to distance from each other and Mario.
+ */
+void fish_group_act_move(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
     s32 distance;
-    o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    o->oFishGroup1 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    // Set fish groups to random floats when timer reaches zero and plays sound effect.
     if (o->oTimer == 0) {
         o->oFishGroupUnk110 = RandomFloat() * 300.0f;
         o->oFishGroupUnk100 = RandomFloat() * 1024.0f + 1024.0f;
         o->oFishGroupUnk108 = RandomFloat() * 4.0f + 8.0f + 5.0f;
+        // variable distance, is unused.
         if (o->oDistanceToMario < 600.0f) {
             distance = 1;
-        }
-        else {
+        } else {
             distance = (s32)(1.0 / (o->oDistanceToMario / 600.0));
         }
-            distance *= 127;
-            PlaySound2(SOUND_GENERAL_MOVING_WATER);
+        distance *= 127;
+        PlaySound2(SOUND_GENERAL_MOVING_WATER);
     }
     if (o->oTimer < LEVEL_SA) {
         func_8029ED98(0, 4.0f);
-    }
-    else {
+    } else {
         func_8029ED98(0, 1.0f);
     }
     if (o->oForwardVel < o->oFishGroupUnk108) {
         o->oForwardVel = o->oForwardVel + 0.5;
     }
-    o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    o->oFishGroup1 = gMarioObject->oPosY + o->oFishGroupUnkFC;
     // Rotate fish towards mario
     obj_rotate_yaw_toward(o->oAngleToMario + 0x8000, o->oFishGroupUnk100);
     // If fish groups are too close regroup
@@ -160,10 +215,9 @@ void bhv_fish_group_2(void) {
             fishY = 0.0f - fishY;
         }
         if (fishY < 500.0f) {
-            regroup_fish(2);
-        }
-        else {
-            regroup_fish(4);
+            fish_regroup(2);
+        } else {
+            fish_regroup(4);
         }
     } else {
         o->oPosY = o->oFishGroupUnkF4 - 50.0f;
@@ -171,12 +225,15 @@ void bhv_fish_group_2(void) {
             o->oPosY -= 1.0f;
         }
     }
+    // If distance to mario is too great, then set o->oAction to one.
     if (o->oDistanceToMario > o->oFishGroupUnk110 + 500.0f) {
         o->oAction = 1;
     }
 }
-// Randomly move/animate/scale fish
-void bhv_fish_group_0(void) {
+/*
+ * Animate fish and alter scaling at random
+ */
+void fish_group_act_animate(void) {
     func_8029ED98(0, 1.0f);
     o->header.gfx.unk38.animFrame = (s16)(RandomFloat() * 28.0f);
     o->oFishGroupUnk10C = RandomFloat() * 300.0f;
@@ -185,10 +242,14 @@ void bhv_fish_group_0(void) {
 }
 
 // Array of methods
-void (*sFishGroupActions[])(void) = { bhv_fish_group_0, bhv_fish_group_1, bhv_fish_group_2 };
+void (*sFishGroupActions[])(void) = { fish_group_act_animate, fish_group_act_rotation, fish_group_act_move };
 
-// In SA alter fish pathing if they hit a wall.
-void bhv_fish_group_2_loop(void) // TODO rename
+/*
+ * Main loop for fish
+ * Sets fish group UnkF4 to the water level unless the map is SA
+ * Resolve wall collisions.
+ */
+void bhv_fish_act_loop(void)
 {
     UNUSED s32 unused[4];
     obj_scale(1.0f);
@@ -198,36 +259,25 @@ void bhv_fish_group_2_loop(void) // TODO rename
     }
     o->oWallHitboxRadius = 30.0f;
     obj_resolve_wall_collisions();
-    // Cleanup fish if they are nil
+    
+    // Delete all fish below the water depth bounds of -10000.0f.
     if (gCurrLevelNum != LEVEL_UNKNOWN_32) {
         if (o->oFishGroupUnkF4 < -10000.0f) {
             mark_object_for_deletion(o);
             return;
         }
+        
+    // Unreachable code, perhaps for debugging or testing.
     } else {
-        // Call above methods and apply movement engine to fish.
         o->oFishGroupUnkF4 = 1000.0f;
     }
-        obj_call_action_function(sFishGroupActions);
-        obj_move_using_fvel_and_gravity();
-        // if a fish has action set to two, then delete it.
+    
+    // Call fish action methods and apply physics engine.
+    obj_call_action_function(sFishGroupActions);
+    obj_move_using_fvel_and_gravity();
+    
+    // If the parent object an action set to two, then delete the fish object.
     if (o->parentObj->oAction == 2) {
         mark_object_for_deletion(o);
     }
 }
-
-/**
--opening comment should generally explain at a high level what the object is, where it occurs in the game, etc, not how it behaves unless its behavior does something really weird
-- opening comment is wrong because there are multiple behaviors in the file
--bhv_fish_spawner should probably be renamed fish_group_act_spawn; the bhv prefix is reserved for init/loop functions 
-- don't ever capitalize variable names!
-- the action functions should be renamed to explain what they do, ex. fish_group_act_respawn
-- bhvFish should probably be renamed to bhvFishGroup or bhvFishSpawner and bhvFishGroup2 should be renamed to bhvFish, if I understand this right; your sparse comments don't clarify what the objects even are
-- don't name the action functions bhv_fish_group_0 through 2 esp when the behavior is named bhvFishGroup2 it's very confusing
-- bhv_regroup_fish shouldn't have the bhv prefix, use the fish_ prefix instead since it's for the fishobject
-- your file doesn't even compile because you didn't rename ActionFishGroup1 but you did rename it in the action array
-- you didn't name all the variables in the functions, nor did you rename object fields
-- nitpick but you need to be more liberal with newlines before your comments/in the code
-- // if a fish has action set to two, then slap someone with it then throw it out. please no
-- need more comments everywhere, ideally after reading the file once you should be able to easily understand how the object works, I still barely understand it after reading the code multiple times for this review
-*/
