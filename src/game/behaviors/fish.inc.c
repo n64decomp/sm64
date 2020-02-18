@@ -70,7 +70,7 @@ void fish_act_spawn(void) {
  * If the current level is not Secret Aquarium and the distance from
  * mario minus o->oPosY is greater than 2000.0f then set action to two.
  */
-void bhv_fish_action_1(void) {
+void fish_action_chkDistance(void) {
     if (gCurrLevelNum != LEVEL_SA) {
         if (gMarioObject->oPosY - o->oPosY > 2000.0f) {
             o->oAction = 2;
@@ -81,19 +81,19 @@ void bhv_fish_action_1(void) {
 /*
  * Sets fish->action to zero.
  */
-void bhv_fish_action_2(void) {
+void fish_action_set(void) {
     o->oAction = 0;
 }
 
 /*
  * An array of action methods
  */
-void (*sFishActions[])(void) = { fish_group_act_spawn, bhv_fish_action_1, bhv_fish_action_2 };
+void (*sFishActions[])(void) = { fish_act_spawn, fish_action_chkDistance, fish_action_set };
 
 /*
  * Calls an array of actions based on the value of o->oAction
  */
-void fish_act_loop(void) {
+void bhv_fish_loop(void) {
     obj_call_action_function(sFishActions);
 }
 
@@ -249,7 +249,7 @@ void (*sFishGroupActions[])(void) = { fish_group_act_animate, fish_group_act_rot
  * Sets fish group UnkF4 to the water level unless the map is SA
  * Resolve wall collisions.
  */
-void bhv_fish_act_loop(void)
+void bhv_fish_loop(void)
 {
     UNUSED s32 unused[4];
     obj_scale(1.0f);
