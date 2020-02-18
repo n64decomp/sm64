@@ -8,6 +8,7 @@
  * Chosen settings dependant on parameter o->oBehParams2ndByte
  */
 void fish_group_act_spawn(void) {
+    s32 i;
     s32 schoolQuantity;
     s16 model;
     f32 minDistToMario;
@@ -30,7 +31,6 @@ void fish_group_act_spawn(void) {
     // If Distance to Mario is lower than 1500 or the current level is Secret Aquarium,
     // then spawn the schoolQuantity of fish. Fish moves at random.
     if (o->oDistanceToMario < minDistToMario || gCurrLevelNum == LEVEL_SA) {
-        s32 i;
         for (i = 0; i < schoolQuantity; i++) {
             fishObject = spawn_object(o, model, bhvFishGroup2);
             fishObject->oBehParams2ndByte = o->oBehParams2ndByte;
