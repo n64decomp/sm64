@@ -107,11 +107,11 @@ void fish_regroup(s32 speed) {
     
     // If level is SA and fish group height is below 500 then speed = 10. 
     if (gCurrLevelNum == LEVEL_SA) {
-        if (500.0f < absf(o->oPosY - o->oFishGroup1)) {
+        if (500.0f < absf(o->oPosY - o->oFishGroupUnkF8)) {
             speed = 10;
         }
             //Move fish group heighth if level is SA at incremented speed.
-            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroup1, speed);
+            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
      /*
      * For other levels, if the fish group heighth is lower than o->oPosY - 100 and
      * o->PosY is lower than the pPosY + 1000f + fish group Y then
@@ -119,7 +119,7 @@ void fish_regroup(s32 speed) {
      */
     } else if (pPosY - 100.0f - o->oFishGroupUnk10C < o->oPosY
                && o->oPosY < pPosY + 1000.0f + o->oFishGroupUnk10C) {
-        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroup1, speed);
+        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
     }
 }
 /*
@@ -151,7 +151,7 @@ void fish_group_act_rotation(void) {
     }
     
     // Rotate fish towards mario at a rate of 5.625 degrees (0x400)
-    o->oFishGroup1 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
     obj_rotate_yaw_toward(o->oAngleToMario, 0x400);
     
     // If fish groups are too close regroup
@@ -183,7 +183,7 @@ void fish_group_act_rotation(void) {
 void fish_group_act_move(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
     s32 distance;
-    o->oFishGroup1 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
     // Set fish groups to random floats when timer reaches zero and plays sound effect.
     if (o->oTimer == 0) {
         o->oFishGroupUnk110 = RandomFloat() * 300.0f;
@@ -206,7 +206,7 @@ void fish_group_act_move(void) {
     if (o->oForwardVel < o->oFishGroupUnk108) {
         o->oForwardVel = o->oForwardVel + 0.5;
     }
-    o->oFishGroup1 = gMarioObject->oPosY + o->oFishGroupUnkFC;
+    o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
     // Rotate fish towards mario
     obj_rotate_yaw_toward(o->oAngleToMario + 0x8000, o->oFishGroupUnk100);
     // If fish groups are too close regroup
