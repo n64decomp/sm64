@@ -71,8 +71,8 @@ void regroup_fish(s32 speed) {
     if (gCurrLevelNum == LEVEL_SA) {
         if (500.0f < absf(o->oPosY - o->oFishGroupUnkF8)) {
             speed = 10;
-            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
         }
+            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
     } else if (parentY - 100.0f - o->oFishGroupUnk10C < o->oPosY
                && o->oPosY < parentY + 1000.0f + o->oFishGroupUnk10C) {
         o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroupUnkF8, speed);
@@ -96,8 +96,8 @@ void bhv_fish_group_1(void) {
         }
         else {
             o->oFishGroupUnkFC = RandomFloat() * 100.0f;
-            o->oFishGroupUnk104 = RandomFloat() * 500 + 200.0f;
         }
+        o->oFishGroupUnk104 = RandomFloat() * 500 + 200.0f;
     }
     // Rotate fish towards mario
     o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
@@ -138,9 +138,9 @@ void bhv_fish_group_2(void) {
         }
         else {
             distance = (s32)(1.0 / (o->oDistanceToMario / 600.0));
+        }
             distance *= 127;
             PlaySound2(SOUND_GENERAL_MOVING_WATER);
-        }
     }
     if (o->oTimer < LEVEL_SA) {
         func_8029ED98(0, 4.0f);
