@@ -5,7 +5,7 @@
 /**
  * The array [0x88, 0x1C8) in struct Object consists of fields that can vary by
  * object type. These macros provide access to these fields.
- */
+ */ 
 
 #ifdef OBJECT_FIELDS_INDEX_DIRECTLY
 #define OBJECT_FIELD_U32(index)           index
