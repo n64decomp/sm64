@@ -483,19 +483,19 @@
 #define /*0x0F4*/ oFireSpitterScaleVel OBJECT_FIELD_F32(0x1B)
 
 /* Blue Fish */
-#define /*0x0F4*/ oBlueFish1 OBJECT_FIELD_F32(0x1B)
-#define /*0x0F8*/ oBlueFish2 OBJECT_FIELD_S32(0x1C)
-#define /*0x100*/ oBlueFish3 OBJECT_FIELD_F32(0x1E)
+#define /*0x0F4*/ oBlueFishRandomVel OBJECT_FIELD_F32(0x1B)
+#define /*0x0F8*/ oBlueFishRandomTime OBJECT_FIELD_S32(0x1C)
+#define /*0x100*/ oBlueFishRandomAngle OBJECT_FIELD_F32(0x1E)
 
 /* Fish Group */
-#define /*0x0F4*/ oFishGroup1 OBJECT_FIELD_F32(0x1B)
-#define /*0x0F8*/ oFishGroup2 OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oFishGroup3 OBJECT_FIELD_F32(0x1D)
-#define /*0x100*/ oFishGroup4 OBJECT_FIELD_S32(0x1E)
-#define /*0x104*/ oFishGroup5 OBJECT_FIELD_F32(0x1F)
-#define /*0x108*/ oFishGroup6 OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oFishGroup7 OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oFishGroup8 OBJECT_FIELD_F32(0x22)
+#define /*0x0F4*/ oFishWaterLevel    OBJECT_FIELD_F32(0x1B)
+#define /*0x0F8*/ oFishPosY          OBJECT_FIELD_F32(0x1C)
+#define /*0x0FC*/ oFishRandomOffset    OBJECT_FIELD_F32(0x1D)
+#define /*0x100*/ oFishRandomSpeed     OBJECT_FIELD_S32(0x1E)
+#define /*0x104*/ oFishRandomDistance  OBJECT_FIELD_F32(0x1F)
+#define /*0x108*/ oFishRandomVel       OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oFishRandomYDistance OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oFishRandomDistance2 OBJECT_FIELD_F32(0x22)
 
 /* Flame */
 #define /*0x0F4*/ oFlameUnkF4  OBJECT_FIELD_F32(0x1B)
