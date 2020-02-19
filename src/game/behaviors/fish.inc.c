@@ -182,7 +182,8 @@ void fish_group_act_rotation(void) {
  */
 void fish_group_act_move(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
-    s32 distance;
+    // Marked unused, but has arithmetic performed on it in a useless manner.
+    UNUSED s32 distance;
     o->oFishGroupUnkF8 = gMarioObject->oPosY + o->oFishGroupUnkFC;
     // Set fish groups to random floats when timer reaches zero and plays sound effect.
     if (o->oTimer == 0) {
