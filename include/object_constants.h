@@ -197,6 +197,19 @@
     #define BOBOMB_BUDDY_HAS_NOT_TALKED 0
     #define BOBOMB_BUDDY_HAS_TALKED 2
 
+/* Fish */
+    /* oAction */
+    #define FISH_INIT 0
+    #define FISH_ACTIVE 1
+    #define FISH_RESPAWN 2
+
+/* Blue_Fish */
+    /* oAction */
+    #define BLUE_FISH_SPAWN 0
+    #define BLUE_FISH_RANDOM_YAW 1
+    #define BLUE_FISH_RANDOM_PITCH 2
+    #define BLUE_FISH_RANDOM_YAW_2 3
+
 /* Cannon Trap Door */
     /* oAction */
     #define CANNON_TRAP_DOOR_ACT_CLOSED 0
