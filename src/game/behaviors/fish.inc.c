@@ -61,7 +61,7 @@ void fish_act_spawn(void) {
             func_8029EE20(fishObject, fishAnimation, 0);
             translate_object_xyz_random(fishObject, 700.0f);
         }
-        o->oAction = 1;
+        o->oAction = FISH_ACTIVE;
     }
 }
 
@@ -72,7 +72,7 @@ void fish_act_spawn(void) {
 void fish_act_check_distance(void) {
     if (gCurrLevelNum != 20) {
         if (gMarioObject->oPosY - o->oPosY > 2000.0f) {
-            o->oAction = 2;
+            o->oAction = FISH_RESPAWN;
         }
     }
 }
@@ -81,7 +81,7 @@ void fish_act_check_distance(void) {
  * Sets fish->action to zero.
  */
 void fish_act_set(void) {
-    o->oAction = 0;
+    o->oAction = FISH_INIT;
 }
 
 /**
@@ -172,7 +172,7 @@ void fish_group_act_rotation(void) {
     
     // If distance to mario is smaller than his distance to Unk104 + 150.0f
     if (o->oDistanceToMario < o->oFishRandomDistance + 150.0f) {
-        o->oAction = 2;
+        o->oAction = FISH_RESPAWN;
     }
 }
 
@@ -229,7 +229,7 @@ void fish_group_act_move(void) {
     }
     // If distance to mario is too great, then set o->oAction to one.
     if (o->oDistanceToMario > o->oFishRandomDistance2 + 500.0f) {
-        o->oAction = 1;
+        o->oAction = FISH_ACTIVE;
     }
 }
 /**
@@ -240,7 +240,7 @@ void fish_group_act_animate(void) {
     o->header.gfx.unk38.animFrame = (s16)(RandomFloat() * 28.0f);
     o->oFishRandomYDistance = RandomFloat() * 300.0f;
     obj_scale(RandomFloat() * 0.4 + 0.8);
-    o->oAction = 1;
+    o->oAction = FISH_ACTIVE;
 }
 
 // Array of methods
@@ -279,7 +279,7 @@ void bhv_fish_group_2_loop(void)
     obj_move_using_fvel_and_gravity();
     
     // If the parent object an action set to two, then delete the fish object.
-    if (o->parentObj->oAction == 2) {
+    if (o->parentObj->oAction == FISH_RESPAWN) {
         mark_object_for_deletion(o);
     }
 }
