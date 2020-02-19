@@ -483,19 +483,19 @@
 #define /*0x0F4*/ oFireSpitterScaleVel OBJECT_FIELD_F32(0x1B)
 
 /* Blue Fish */
-#define /*0x0F4*/ oBlueFishUnkF4  OBJECT_FIELD_F32(0x1B)
-#define /*0x0F8*/ oBlueFishUnkF8  OBJECT_FIELD_S32(0x1C)
-#define /*0x100*/ oBlueFishUnk100 OBJECT_FIELD_F32(0x1E)
+#define /*0x0F4*/ oBlueFish1 OBJECT_FIELD_F32(0x1B)
+#define /*0x0F8*/ oBlueFish2 OBJECT_FIELD_S32(0x1C)
+#define /*0x100*/ oBlueFish3 OBJECT_FIELD_F32(0x1E)
 
 /* Fish Group */
-#define /*0x0F4*/ oFishGroupUnkF4  OBJECT_FIELD_F32(0x1B)
-#define /*0x0F8*/ oFishGroupUnkF8  OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oFishGroupUnkFC  OBJECT_FIELD_F32(0x1D)
-#define /*0x100*/ oFishGroupUnk100 OBJECT_FIELD_S32(0x1E)
-#define /*0x104*/ oFishGroupUnk104 OBJECT_FIELD_F32(0x1F)
-#define /*0x108*/ oFishGroupUnk108 OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oFishGroupUnk10C OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oFishGroupUnk110 OBJECT_FIELD_F32(0x22)
+#define /*0x0F4*/ oFishGroup1 OBJECT_FIELD_F32(0x1B)
+#define /*0x0F8*/ oFishGroup2 OBJECT_FIELD_F32(0x1C)
+#define /*0x0FC*/ oFishGroup3 OBJECT_FIELD_F32(0x1D)
+#define /*0x100*/ oFishGroup4 OBJECT_FIELD_S32(0x1E)
+#define /*0x104*/ oFishGroup5 OBJECT_FIELD_F32(0x1F)
+#define /*0x108*/ oFishGroup6 OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oFishGroup7 OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oFishGroup8 OBJECT_FIELD_F32(0x22)
 
 /* Flame */
 #define /*0x0F4*/ oFlameUnkF4  OBJECT_FIELD_F32(0x1B)
