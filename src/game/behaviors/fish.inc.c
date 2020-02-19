@@ -106,19 +106,19 @@ void fish_regroup(s32 speed) {
     
     // If level is SA and fish group height is below 500 then speed = 10. 
     if (gCurrLevelNum == 20) {
-        if (500.0f < absf(o->oPosY - o->oFishGroup2)) {
+        if (500.0f < absf(o->oPosY - o->oFishPosY)) {
             speed = 10;
         }
             //Move fish group height if level is SA at incremented speed.
-            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroup2, speed);
+            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishPosY, speed);
      /**
      * For other levels, if the fish group height is lower than o->oPosY - 100 and
      * o->PosY is lower than the pPosY + 1000f + fish group Y then
      * have the fish symmetrically approach the target fish group.
      */
-    } else if (pPosY - 100.0f - o->oFishGroup7 < o->oPosY
-               && o->oPosY < pPosY + 1000.0f + o->oFishGroup7) {
-        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishGroup2, speed);
+    } else if (pPosY - 100.0f - o->oFishRandomYDistance < o->oPosY
+               && o->oPosY < pPosY + 1000.0f + o->oFishRandomYDistance) {
+        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishPosY, speed);
     }
 }
 /**
@@ -142,19 +142,19 @@ void fish_group_act_rotation(void) {
     if (o->oTimer == 0) {
         o->oForwardVel = RandomFloat() * 2 + 3.0f;
         if (gCurrLevelNum == 20) {
-            o->oFishGroup3 = RandomFloat() * 700.0f;
+            o->oFishRandomOffset = RandomFloat() * 700.0f;
         } else {
-            o->oFishGroup3 = RandomFloat() * 100.0f;
+            o->oFishRandomOffset = RandomFloat() * 100.0f;
         }
-        o->oFishGroup5 = RandomFloat() * 500 + 200.0f;
+        o->oFishRandomDistance = RandomFloat() * 500 + 200.0f;
     }
     
     // Rotate fish towards mario at a rate of 5.625 degrees (0x400)
-    o->oFishGroup2 = gMarioObject->oPosY + o->oFishGroup3;
+    o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     obj_rotate_yaw_toward(o->oAngleToMario, 0x400);
     
     // If fish groups are too close regroup
-    if (o->oPosY < o->oFishGroup1 - 50.0f) {
+    if (o->oPosY < o->oFishWaterLevel - 50.0f) {
         if (fishY < 0.0f) {
             fishY = 0.0f - fishY;
         }
@@ -164,14 +164,14 @@ void fish_group_act_rotation(void) {
             fish_regroup(4);
         }
     } else {
-        o->oPosY = o->oFishGroup1 - 50.0f;
+        o->oPosY = o->oFishWaterLevel - 50.0f;
         if (fishY > 300.0f) {
             o->oPosY = o->oPosY - 1.0f;
         }
     }
     
-    // Remove fish if its distance to mario is smaller than his distance to Unk104 + 150.0f
-    if (o->oDistanceToMario < o->oFishGroup5 + 150.0f) {
+    // If distance to mario is smaller than his distance to Unk104 + 150.0f
+    if (o->oDistanceToMario < o->oFishRandomDistance + 150.0f) {
         o->oAction = 2;
     }
 }
@@ -183,12 +183,12 @@ void fish_group_act_move(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
     // Marked unused, but has arithmetic performed on it in a useless manner.
     UNUSED s32 distance;
-    o->oFishGroup2 = gMarioObject->oPosY + o->oFishGroup3;
+    o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     // Set fish groups to random floats when timer reaches zero and plays sound effect.
     if (o->oTimer == 0) {
-        o->oFishGroup8 = RandomFloat() * 300.0f;
-        o->oFishGroup4 = RandomFloat() * 1024.0f + 1024.0f;
-        o->oFishGroup6 = RandomFloat() * 4.0f + 8.0f + 5.0f;
+        o->oFishRandomDistance2 = RandomFloat() * 300.0f;
+        o->oFishRandomSpeed = RandomFloat() * 1024.0f + 1024.0f;
+        o->oFishRandomVel = RandomFloat() * 4.0f + 8.0f + 5.0f;
         // variable distance, is unused.
         if (o->oDistanceToMario < 600.0f) {
             distance = 1;
@@ -205,14 +205,14 @@ void fish_group_act_move(void) {
         func_8029ED98(0, 1.0f);
     }
     // Set forward velocity
-    if (o->oForwardVel < o->oFishGroup6) {
+    if (o->oForwardVel < o->oFishRandomVel) {
         o->oForwardVel = o->oForwardVel + 0.5;
     }
-    o->oFishGroup2 = gMarioObject->oPosY + o->oFishGroup3;
+    o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     // Rotate fish towards mario
-    obj_rotate_yaw_toward(o->oAngleToMario + 0x8000, o->oFishGroup4);
+    obj_rotate_yaw_toward(o->oAngleToMario + 0x8000, o->oFishRandomSpeed);
     // If fish groups are too close regroup
-    if (o->oPosY < o->oFishGroup1 - 50.0f) {
+    if (o->oPosY < o->oFishWaterLevel - 50.0f) {
         if (fishY < 0.0f) {
             fishY = 0.0f - fishY;
         }
@@ -222,13 +222,13 @@ void fish_group_act_move(void) {
             fish_regroup(4);
         }
     } else {
-        o->oPosY = o->oFishGroup1 - 50.0f;
+        o->oPosY = o->oFishWaterLevel - 50.0f;
         if (fishY > 300.0f) {
             o->oPosY -= 1.0f;
         }
     }
     // If distance to mario is too great, then set o->oAction to one.
-    if (o->oDistanceToMario > o->oFishGroup8 + 500.0f) {
+    if (o->oDistanceToMario > o->oFishRandomDistance2 + 500.0f) {
         o->oAction = 1;
     }
 }
@@ -238,7 +238,7 @@ void fish_group_act_move(void) {
 void fish_group_act_animate(void) {
     func_8029ED98(0, 1.0f);
     o->header.gfx.unk38.animFrame = (s16)(RandomFloat() * 28.0f);
-    o->oFishGroup7 = RandomFloat() * 300.0f;
+    o->oFishRandomYDistance = RandomFloat() * 300.0f;
     obj_scale(RandomFloat() * 0.4 + 0.8);
     o->oAction = 1;
 }
@@ -255,23 +255,23 @@ void bhv_fish_group_2_loop(void)
 {
     UNUSED s32 unused[4];
     obj_scale(1.0f);
-    o->oFishGroup1 = find_water_level(o->oPosX, o->oPosZ);
+    o->oFishWaterLevel = find_water_level(o->oPosX, o->oPosZ);
     if (gCurrLevelNum == 20) {
-        o->oFishGroup1 = 0.0f;
+        o->oFishWaterLevel = 0.0f;
     }
     o->oWallHitboxRadius = 30.0f;
     obj_resolve_wall_collisions();
     
     // Delete all fish below the water depth bounds of -10000.0f.
     if (gCurrLevelNum != LEVEL_UNKNOWN_32) {
-        if (o->oFishGroup1 < -10000.0f) {
+        if (o->oFishWaterLevel < -10000.0f) {
             mark_object_for_deletion(o);
             return;
         }
         
     // Unreachable code, perhaps for debugging or testing.
     } else {
-        o->oFishGroup1 = 1000.0f;
+        o->oFishWaterLevel = 1000.0f;
     }
     
     // Call fish action methods and apply physics engine.
