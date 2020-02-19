@@ -190,7 +190,6 @@ void fish_group_act_move(void) {
         o->oFishGroupUnk110 = RandomFloat() * 300.0f;
         o->oFishGroupUnk100 = RandomFloat() * 1024.0f + 1024.0f;
         o->oFishGroupUnk108 = RandomFloat() * 4.0f + 8.0f + 5.0f;
-        // variable distance, is unused.
         if (o->oDistanceToMario < 600.0f) {
             distance = 1;
         } else {
