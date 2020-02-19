@@ -249,7 +249,7 @@ void (*sFishGroupActions[])(void) = { fish_group_act_animate, fish_group_act_rot
  * Sets fish group UnkF4 to the water level unless the map is SA
  * Resolve wall collisions.
  */
-void bhv_fish_loop(void)
+void bhv_fish_group_2_loop(void)
 {
     UNUSED s32 unused[4];
     obj_scale(1.0f);
