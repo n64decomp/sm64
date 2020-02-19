@@ -198,11 +198,13 @@ void fish_group_act_move(void) {
         distance *= 127;
         PlaySound2(SOUND_GENERAL_MOVING_WATER);
     }
+    // Enable fish animation. Parameters differ if oTimer < SA.
     if (o->oTimer < LEVEL_SA) {
         func_8029ED98(0, 4.0f);
     } else {
         func_8029ED98(0, 1.0f);
     }
+    // Set forward velocity
     if (o->oForwardVel < o->oFishGroupUnk108) {
         o->oForwardVel = o->oForwardVel + 0.5;
     }
