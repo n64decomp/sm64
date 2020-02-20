@@ -209,7 +209,7 @@ extern const BehaviorScript bhvUnused20E0[];
 extern const BehaviorScript bhvSmallPenguin[];
 extern const BehaviorScript bhvFish2[];
 extern const BehaviorScript bhvFish3[];
-extern const BehaviorScript bhvFishLoop[];
+extern const BehaviorScript bhvLargeFishGroup[];
 extern const BehaviorScript bhvFishCommon[];
 extern const BehaviorScript bhvFishManagement[];
 extern const BehaviorScript bhvWdwExpressElevator[];
