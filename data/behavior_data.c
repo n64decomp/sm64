@@ -2497,7 +2497,7 @@ const BehaviorScript bhvFish3[] = {
     GOTO(bhvLargeFishGroup + 1),
 };
 
-const BehaviorScript bhvLargeFishGroup[] = {
+const BehaviorScript bhvFishLoop[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     // Large fish group - common:
     DISABLE_RENDERING(),
@@ -2507,12 +2507,12 @@ const BehaviorScript bhvLargeFishGroup[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvFishGroup2[] = {
+const BehaviorScript bhvFishManagement[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     SET_HOME(),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_fish_group_2_loop),
+        CALL_NATIVE(fish_boundary_management_loop),
     END_LOOP(),
 };
 
