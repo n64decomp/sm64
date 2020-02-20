@@ -2497,7 +2497,7 @@ const BehaviorScript bhvFish3[] = {
     GOTO(bhvFishLoop + 1),
 };
 
-const BehaviorScript bhvFishLoop[] = {
+const BehaviorScript bhvLargeFishGroup[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     // Large fish group - common:
     DISABLE_RENDERING(),
