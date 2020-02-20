@@ -205,10 +205,10 @@
 
 /* Blue_Fish */
     /* oAction */
-    #define BLUE_FISH_SPAWN 0
-    #define BLUE_FISH_RANDOM_YAW 1
-    #define BLUE_FISH_RANDOM_PITCH 2
-    #define BLUE_FISH_RANDOM_YAW_2 3
+    #define BLUE_FISH_ACT_DIVE 0
+    #define BLUE_FISH_ACT_TURN 1
+    #define BLUE_FISH_ACT_ASCEND 2
+    #define BLUE_FISH_RANDOM_ACT_TURN_BACK 3
 
 /* Cannon Trap Door */
     /* oAction */
