@@ -199,16 +199,16 @@
 
 /* Fish */
     /* oAction */
-    #define FISH_INIT 0
-    #define FISH_ACTIVE 1
-    #define FISH_RESPAWN 2
+    #define FISH_ACT_INIT 0
+    #define FISH_ACT_ACTIVE 1
+    #define FISH_ACT_RESPAWN 2
 
 /* Blue_Fish */
     /* oAction */
     #define BLUE_FISH_ACT_DIVE 0
     #define BLUE_FISH_ACT_TURN 1
     #define BLUE_FISH_ACT_ASCEND 2
-    #define BLUE_FISH_RANDOM_ACT_TURN_BACK 3
+    #define BLUE_FISH_ACT_TURN_BACK 3
 
 /* Cannon Trap Door */
     /* oAction */
