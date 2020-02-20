@@ -54,44 +54,45 @@ void fish_act_spawn(void) {
      * then spawn and animate the schoolQuantity of fish.
      * Fish moves at random with a max-range of 700.0f.
      */
-    if (o->oDistanceToMario < minDistToMario || gCurrLevelNum == 20) {
+    if (o->oDistanceToMario < minDistToMario || gCurrLevelNum == LEVEL_SA) {
         for (i = 0; i < schoolQuantity; i++) {
             fishObject = spawn_object(o, model, bhvFishGroup2);
             fishObject->oBehParams2ndByte = o->oBehParams2ndByte;
             func_8029EE20(fishObject, fishAnimation, 0);
             translate_object_xyz_random(fishObject, 700.0f);
         }
-        o->oAction = FISH_ACTIVE;
+        o->oAction = FISH_ACT_ACTIVE;
     }
 }
 
 /**
  * If the current level is not Secret Aquarium and the distance from
- * mario->PosY minus o->oPosY is greater than 2000.0f then set oAction to FISH_RESPAWN.
+ * mario->PosY minus o->oPosY is greater than 2000.0f then set oAction to FISH_ACT_RESPAWN.
  */
 void fish_act_check_distance(void) {
-    if (gCurrLevelNum != 20) {
+    if (gCurrLevelNum != LEVEL_SA) {
         if (gMarioObject->oPosY - o->oPosY > 2000.0f) {
-            o->oAction = FISH_RESPAWN;
+            o->oAction = FISH_ACT_RESPAWN;
         }
     }
 }
 
 /**
- * set oAction flag to FISH_INIT.
+ * set oAction flag to FISH_ACT_INIT.
  */
 void fish_act_set(void) {
-    o->oAction = FISH_INIT;
+    o->oAction = FISH_ACT_INIT;
 }
 
 /**
  * An array of action methods
  */
-void (*sFishActions[])(void) = { fish_act_spawn, fish_act_check_distance, fish_act_set };
+void (*sFishActions[])(void) = {
+    fish_act_spawn,
+    fish_act_check_distance,
+    fish_act_set 
+};
 
-/**
- * Calls an array of actions based on the value of o->oAction
- */
 void bhv_fish_loop(void) {
     obj_call_action_function(sFishActions);
 }
@@ -105,20 +106,20 @@ void fish_regroup(s32 speed) {
     f32 pPosY = o->parentObj->oPosY;
     
     // If level is SA and fish height minus oPosY is higher than 500 then speed = 10. 
-    if (gCurrLevelNum == 20) {
+    if (gCurrLevelNum == LEVEL_SA) {
         if (500.0f < absf(o->oPosY - o->oFishPosY)) {
             speed = 10;
         }
         // Increase fish Y coord at the incremented speed.
         o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishPosY, speed);
      /**
-     * For other levels, if oFishRandomYDistance - pPosy - 100.0f is lower than 
+     * For other levels, if oFishDepthDistance - pPosy - 100.0f is lower than 
      * o->oPosY - 100 and * o->PosY is lower than the pPosY + 1000.0f +
-     * oFishRandomYDistance then have the fish 
+     * oFishDepthDistance then have the fish 
      * symmetrically approach the target oFishPosY.
      */
-    } else if (pPosY - 100.0f - o->oFishRandomYDistance < o->oPosY
-               && o->oPosY < pPosY + 1000.0f + o->oFishRandomYDistance) {
+    } else if (pPosY - 100.0f - o->oFishDepthDistance < o->oPosY
+               && o->oPosY < pPosY + 1000.0f + o->oFishDepthDistance) {
         o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishPosY, speed);
     }
 }
@@ -136,19 +137,19 @@ void fish_group_act_rotation(void) {
     }
     
     /**
-     * Assigns oForwardVel, oFishRandomOffset, & oFishRandomDistance to a random floats.
+     * Assigns oForwardVel, oFishRandomOffset, & oFishRespawnDistance to a random floats.
      */
     if (o->oTimer == 0) {
         o->oForwardVel = RandomFloat() * 2 + 3.0f;
-        if (gCurrLevelNum == 20) {
+        if (gCurrLevelNum == LEVEL_SA) {
             o->oFishRandomOffset = RandomFloat() * 700.0f;
         } else {
             o->oFishRandomOffset = RandomFloat() * 100.0f;
         }
-        o->oFishRandomDistance = RandomFloat() * 500 + 200.0f;
+        o->oFishRespawnDistance = RandomFloat() * 500 + 200.0f;
     }
     
-    // Rotate fish towards mario at a rate of 5.625 degrees (0x400)
+    // Rotate fish towards Mario at a rate of 0x400.
     o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     obj_rotate_yaw_toward(o->oAngleToMario, 0x400);
     
@@ -171,10 +172,10 @@ void fish_group_act_rotation(void) {
     
     /**
      * Delete current fish but create a new one if distance to mario is
-     * smaller than his distance to oFishRandomDistance + 150.0f.
+     * smaller than his distance to oFishRespawnDistance + 150.0f.
      */
-    if (o->oDistanceToMario < o->oFishRandomDistance + 150.0f) {
-        o->oAction = FISH_RESPAWN;
+    if (o->oDistanceToMario < o->oFishRespawnDistance + 150.0f) {
+        o->oAction = FISH_ACT_RESPAWN;
     }
 }
 
@@ -191,7 +192,7 @@ void fish_group_act_move(void) {
      * This allows fish to move naturally.
      */
     if (o->oTimer == 0) {
-        o->oFishRandomDistance2 = RandomFloat() * 300.0f;
+        o->oFishActiveDistance = RandomFloat() * 300.0f;
         o->oFishRandomSpeed = RandomFloat() * 1024.0f + 1024.0f;
         o->oFishRandomVel = RandomFloat() * 4.0f + 8.0f + 5.0f;
         if (o->oDistanceToMario < 600.0f) {
@@ -232,8 +233,8 @@ void fish_group_act_move(void) {
         }
     }
     // If distance to mario is too great, then set fish to active.
-    if (o->oDistanceToMario > o->oFishRandomDistance2 + 500.0f) {
-        o->oAction = FISH_ACTIVE;
+    if (o->oDistanceToMario > o->oFishActiveDistance + 500.0f) {
+        o->oAction = FISH_ACT_ACTIVE;
     }
 }
 /**
@@ -242,9 +243,9 @@ void fish_group_act_move(void) {
 void fish_group_act_animate(void) {
     func_8029ED98(0, 1.0f);
     o->header.gfx.unk38.animFrame = (s16)(RandomFloat() * 28.0f);
-    o->oFishRandomYDistance = RandomFloat() * 300.0f;
+    o->oFishDepthDistance = RandomFloat() * 300.0f;
     obj_scale(RandomFloat() * 0.4 + 0.8);
-    o->oAction = FISH_ACTIVE;
+    o->oAction = FISH_ACT_ACTIVE;
 }
 
 /**
@@ -259,7 +260,7 @@ void (*sFishGroupActions[])(void) = {
 /**
  * Main loop for fish
  */
-void bhv_fish_group_2_loop(void)
+void fish_boundary_management_loop(void)
 {
     UNUSED s32 unused[4];
     obj_scale(1.0f);
@@ -269,7 +270,7 @@ void bhv_fish_group_2_loop(void)
      * This prevents accidental deletion.
      */
     o->oFishWaterLevel = find_water_level(o->oPosX, o->oPosZ);
-    if (gCurrLevelNum == 20) {
+    if (gCurrLevelNum == LEVEL_SA) {
         o->oFishWaterLevel = 0.0f;
     }
     // Apply hitbox and resolve wall collisions 
@@ -293,7 +294,7 @@ void bhv_fish_group_2_loop(void)
     obj_move_using_fvel_and_gravity();
     
     // If the parent object an action set to two, then delete the fish object.
-    if (o->parentObj->oAction == FISH_RESPAWN) {
+    if (o->parentObj->oAction == 2) {
         mark_object_for_deletion(o);
     }
 }
