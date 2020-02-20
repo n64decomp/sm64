@@ -52,7 +52,7 @@ void fish_act_spawn(void) {
     /**
      * If Distance to Mario is lower than 1500 or the current level is Secret Aquarium,
      * then spawn and animate the schoolQuantity of fish.
-     * Fish moves at random with a range of 700.0f.
+     * Fish moves at random with a max-range of 700.0f.
      */
     if (o->oDistanceToMario < minDistToMario || gCurrLevelNum == 20) {
         for (i = 0; i < schoolQuantity; i++) {
@@ -67,7 +67,7 @@ void fish_act_spawn(void) {
 
 /**
  * If the current level is not Secret Aquarium and the distance from
- * mario minus o->oPosY is greater than 2000.0f then set action to two.
+ * mario->PosY minus o->oPosY is greater than 2000.0f then set oAction to FISH_RESPAWN.
  */
 void fish_act_check_distance(void) {
     if (gCurrLevelNum != 20) {
@@ -78,7 +78,7 @@ void fish_act_check_distance(void) {
 }
 
 /**
- * Sets fish->action to zero.
+ * set oAction flag to FISH_INIT.
  */
 void fish_act_set(void) {
     o->oAction = FISH_INIT;
@@ -97,24 +97,25 @@ void bhv_fish_loop(void) {
 }
 
 /**
- * Move object up or down towards a fish group by the speed variable
+ * Move object up or down towards oFishPosY by the speed variable
  * In Secret Aquarium, the speed variable is always ten.
  */
 void fish_regroup(s32 speed) {
     // Set pPosY to the parentY.
     f32 pPosY = o->parentObj->oPosY;
     
-    // If level is SA and fish group height is below 500 then speed = 10. 
+    // If level is SA and fish height minus oPosY is higher than 500 then speed = 10. 
     if (gCurrLevelNum == 20) {
         if (500.0f < absf(o->oPosY - o->oFishPosY)) {
             speed = 10;
         }
-            //Move fish group height if level is SA at incremented speed.
-            o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishPosY, speed);
+        // Increase fish Y coord at the incremented speed.
+        o->oPosY = approach_f32_symmetric(o->oPosY, o->oFishPosY, speed);
      /**
-     * For other levels, if the fish group height is lower than o->oPosY - 100 and
-     * o->PosY is lower than the pPosY + 1000f + fish group Y then
-     * have the fish symmetrically approach the target fish group.
+     * For other levels, if oFishRandomYDistance - pPosy - 100.0f is lower than 
+     * o->oPosY - 100 and * o->PosY is lower than the pPosY + 1000.0f +
+     * oFishRandomYDistance then have the fish 
+     * symmetrically approach the target oFishPosY.
      */
     } else if (pPosY - 100.0f - o->oFishRandomYDistance < o->oPosY
                && o->oPosY < pPosY + 1000.0f + o->oFishRandomYDistance) {
@@ -122,13 +123,12 @@ void fish_regroup(s32 speed) {
     }
 }
 /**
- * Moves fish forward at a random velocity.
- * In SA move fish group UnkFC at a slower speed.
+ * Moves fish forward at a random velocity and sets a random rotation.
  */
 void fish_group_act_rotation(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
     
-    // Animation accel altered by timer.
+    // Animation accel parameters altered by timer.
     if (o->oTimer < 10) {
         func_8029ED98(0, 2.0f);
     } else {
@@ -136,8 +136,7 @@ void fish_group_act_rotation(void) {
     }
     
     /**
-     * Sets fish groups forward velocity to a random float.
-     * Assigns random floats to fish groups UnkFC and Unk104, value dependant on level.
+     * Assigns oForwardVel, oFishRandomOffset, & oFishRandomDistance to a random floats.
      */
     if (o->oTimer == 0) {
         o->oForwardVel = RandomFloat() * 2 + 3.0f;
@@ -153,7 +152,7 @@ void fish_group_act_rotation(void) {
     o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     obj_rotate_yaw_toward(o->oAngleToMario, 0x400);
     
-    // If fish groups are too close regroup
+    // If fish groups are too close, call fish_regroup()
     if (o->oPosY < o->oFishWaterLevel - 50.0f) {
         if (fishY < 0.0f) {
             fishY = 0.0f - fishY;
@@ -170,7 +169,10 @@ void fish_group_act_rotation(void) {
         }
     }
     
-    // If distance to mario is smaller than his distance to Unk104 + 150.0f
+    /**
+     * Delete current fish but create a new one if distance to mario is
+     * smaller than his distance to oFishRandomDistance + 150.0f.
+     */
     if (o->oDistanceToMario < o->oFishRandomDistance + 150.0f) {
         o->oAction = FISH_RESPAWN;
     }
@@ -184,12 +186,14 @@ void fish_group_act_move(void) {
     // Marked unused, but has arithmetic performed on it in a useless manner.
     UNUSED s32 distance;
     o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
-    // Set fish groups to random floats when timer reaches zero and plays sound effect.
+    /**
+     * Set fish variables to random floats when timer reaches zero and plays sound effect.
+     * This allows fish to move naturally.
+     */
     if (o->oTimer == 0) {
         o->oFishRandomDistance2 = RandomFloat() * 300.0f;
         o->oFishRandomSpeed = RandomFloat() * 1024.0f + 1024.0f;
         o->oFishRandomVel = RandomFloat() * 4.0f + 8.0f + 5.0f;
-        // variable distance, is unused.
         if (o->oDistanceToMario < 600.0f) {
             distance = 1;
         } else {
@@ -211,7 +215,7 @@ void fish_group_act_move(void) {
     o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     // Rotate fish towards mario
     obj_rotate_yaw_toward(o->oAngleToMario + 0x8000, o->oFishRandomSpeed);
-    // If fish groups are too close regroup
+    // If fish groups are too close, call fish_regroup()
     if (o->oPosY < o->oFishWaterLevel - 50.0f) {
         if (fishY < 0.0f) {
             fishY = 0.0f - fishY;
@@ -227,7 +231,7 @@ void fish_group_act_move(void) {
             o->oPosY -= 1.0f;
         }
     }
-    // If distance to mario is too great, then set o->oAction to one.
+    // If distance to mario is too great, then set fish to active.
     if (o->oDistanceToMario > o->oFishRandomDistance2 + 500.0f) {
         o->oAction = FISH_ACTIVE;
     }
@@ -243,26 +247,36 @@ void fish_group_act_animate(void) {
     o->oAction = FISH_ACTIVE;
 }
 
-// Array of methods
-void (*sFishGroupActions[])(void) = { fish_group_act_animate, fish_group_act_rotation, fish_group_act_move };
+/**
+ * Array of methods
+ */
+void (*sFishGroupActions[])(void) = { 
+    fish_group_act_animate, 
+    fish_group_act_rotation, 
+    fish_group_act_move
+};
 
 /**
  * Main loop for fish
- * Sets fish group UnkF4 to the water level unless the map is SA
- * Resolve wall collisions.
  */
 void bhv_fish_group_2_loop(void)
 {
     UNUSED s32 unused[4];
     obj_scale(1.0f);
+    /**
+     * Tracks water level.
+     * In SA oFishWaterLevel is set to zero because fish cannot exit the water.
+     * This prevents accidental deletion.
+     */
     o->oFishWaterLevel = find_water_level(o->oPosX, o->oPosZ);
     if (gCurrLevelNum == 20) {
         o->oFishWaterLevel = 0.0f;
     }
+    // Apply hitbox and resolve wall collisions 
     o->oWallHitboxRadius = 30.0f;
     obj_resolve_wall_collisions();
     
-    // Delete all fish below the water depth bounds of -10000.0f.
+    // Delete fish below the water depth bounds of -10000.0f.
     if (gCurrLevelNum != LEVEL_UNKNOWN_32) {
         if (o->oFishWaterLevel < -10000.0f) {
             mark_object_for_deletion(o);
