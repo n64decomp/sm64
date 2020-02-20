@@ -123,9 +123,9 @@ void bhv_blue_fish_spawn_loop(void) {
             }
             break;
             
-        // Sets oAction to the spawn phase.
+        // Sets oAction to the BLUE_FISH_ACT_DIVE phase.
         case BLUE_FISH_ACT_ASCEND:
-            o->oAction = BLUE_FISH_SPAWN;
+            o->oAction = BLUE_FISH_ACT_DIVE;
             break;
     }
 }
