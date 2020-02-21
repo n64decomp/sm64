@@ -294,7 +294,7 @@ void fish_boundary_management_loop(void)
     obj_move_using_fvel_and_gravity();
     
     // If the parent object an action set to two, then delete the fish object.
-    if (o->parentObj->oAction == 2) {
+    if (o->parentObj->oAction == FISH_ACT_RESPAWN) {
         mark_object_for_deletion(o);
     }
 }
