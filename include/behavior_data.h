@@ -168,7 +168,7 @@ extern const BehaviorScript bhvFlameMovingForwardGrowing[];
 extern const BehaviorScript bhvFlameBowser[];
 extern const BehaviorScript bhvFlameLargeBurningOut[];
 extern const BehaviorScript bhvBlueFish[];
-extern const BehaviorScript bhvTankFishGroup[];
+extern const BehaviorScript bhvBlueFishSpawn[];
 extern const BehaviorScript bhvCheckerboardElevatorGroup[];
 extern const BehaviorScript bhvCheckerboardPlatformSub[];
 extern const BehaviorScript bhvBowserKeyUnlockDoor[];
