@@ -89,7 +89,7 @@ void bhv_blue_fish_movement_loop(void) {
     obj_move_using_fvel_and_gravity();
     
     // Deletes object if the parent has oAction set to two.
-    if (o->parentObj->oAction == 2) {
+    if (o->parentObj->oAction == BLUE_FISH_ACT_ASCEND) {
         mark_object_for_deletion(o);
     }
 }
