@@ -98,7 +98,7 @@ void bhv_blue_fish_movement_loop(void) {
  * Spawns fifteen fish if Mario resides in room fifteen or seven.
  * They move at random within 200.0f
  */
-void bhv_blue_fish_tank_spawn_loop(void) {
+void bhv_tank_fish_group_loop(void) {
     struct Object *fish;
     s32 i;
     switch (o->oAction) {
