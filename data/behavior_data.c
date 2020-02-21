@@ -2075,7 +2075,7 @@ const BehaviorScript bhvFlameLargeBurningOut[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvBlueFishMovement[] = {
+const BehaviorScript bhvBlueFish[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     SET_HOME(),
@@ -2086,7 +2086,7 @@ const BehaviorScript bhvBlueFishMovement[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvBlueFishSpawn[] = {
+const BehaviorScript bhvTankFishGroup[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HOME(),
