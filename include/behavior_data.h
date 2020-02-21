@@ -211,7 +211,7 @@ extern const BehaviorScript bhvFish2[];
 extern const BehaviorScript bhvFish3[];
 extern const BehaviorScript bhvLargeFishGroup[];
 extern const BehaviorScript bhvFishCommon[];
-extern const BehaviorScript bhvFishManagement[];
+extern const BehaviorScript bhvFish[];
 extern const BehaviorScript bhvWdwExpressElevator[];
 extern const BehaviorScript bhvWdwExpressElevatorPlatform[];
 extern const BehaviorScript bhvChirpChirp[];
