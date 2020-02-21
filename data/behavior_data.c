@@ -2091,7 +2091,7 @@ const BehaviorScript bhvTankFishGroup[] = {
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HOME(),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_blue_fish_spawn_loop),
+        CALL_NATIVE(bhv_tank_fish_group_loop),
     END_LOOP(),
 };
 
