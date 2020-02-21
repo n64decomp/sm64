@@ -492,10 +492,10 @@
 #define /*0x0F8*/ oFishPosY            OBJECT_FIELD_F32(0x1C)
 #define /*0x0FC*/ oFishRandomOffset    OBJECT_FIELD_F32(0x1D)
 #define /*0x100*/ oFishRandomSpeed     OBJECT_FIELD_S32(0x1E)
-#define /*0x104*/ oFishRespawnDistance  OBJECT_FIELD_F32(0x1F)
+#define /*0x104*/ oFishRespawnDistance OBJECT_FIELD_F32(0x1F)
 #define /*0x108*/ oFishRandomVel       OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oFishDepthDistance OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oFishActiveDistance OBJECT_FIELD_F32(0x22)
+#define /*0x10C*/ oFishDepthDistance   OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oFishActiveDistance  OBJECT_FIELD_F32(0x22)
 
 /* Flame */
 #define /*0x0F4*/ oFlameUnkF4  OBJECT_FIELD_F32(0x1B)
