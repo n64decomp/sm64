@@ -2488,13 +2488,13 @@ const BehaviorScript bhvSmallPenguin[] = {
 const BehaviorScript bhvFish2[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     SET_INT(oBehParams2ndByte, 0),
-    GOTO(bhvFishLoop + 1),
+    GOTO(bhvLargeFishGroup + 1),
 };
 
 const BehaviorScript bhvFish3[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     SET_INT(oBehParams2ndByte, 1),
-    GOTO(bhvFishLoop + 1),
+    GOTO(bhvLargeFishGroup + 1),
 };
 
 const BehaviorScript bhvLargeFishGroup[] = {
