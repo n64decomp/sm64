@@ -10,11 +10,11 @@ void bhv_blue_fish_movement_loop(void) {
     f32 randomSwitch;
     switch (o->oAction) {
         
-        // Initial phase after spawning
+        // Initial dive phase after spawning
         case BLUE_FISH_ACT_DIVE:
             func_8029ED98(0, 1.0f);
             
-            // If oTimer equals zero, then assign random values to floats and rotate fish.
+            // Assigns random values to variables that help determine natural motion.
             if (o->oTimer == 0) {
                 o->oBlueFishRandomAngle = RandomSign() << 11;
                 o->oBlueFishRandomVel = RandomFloat() * 2;
@@ -29,7 +29,7 @@ void bhv_blue_fish_movement_loop(void) {
                 }
             }
             
-            // Set forward velocity and progress oAction
+            // Set forward velocity and progress oAction to BLUE_FISH_ACT_TURN.
             o->oForwardVel = o->oBlueFishRandomVel + 3.0f;
             if (o->oTimer >= o->oBlueFishRandomTime + 60) {
                 o->oAction++;
@@ -55,7 +55,7 @@ void bhv_blue_fish_movement_loop(void) {
             }
             break;
             
-        // Animates and adjusts pitch velocity.
+        // Animates and adjusts pitch to an upward direction.
         case BLUE_FISH_ACT_ASCEND:
             func_8029ED98(0, 1.0f);
             
@@ -77,7 +77,7 @@ void bhv_blue_fish_movement_loop(void) {
             func_8029ED98(0, 2.0f);
             o->oMoveAngleYaw = (s32)(o->oBlueFishRandomAngle + o->oMoveAngleYaw);
             
-            // Sets oAction to the BLUE_FISH_ACT_DIVE if the timer equals fifteen.
+            // Sets the fish back to the BLUE_FISH_ACT_DIVE phase.
             if (o->oTimer == 15) {
                 o->oAction = BLUE_FISH_ACT_DIVE;
             }
@@ -88,21 +88,21 @@ void bhv_blue_fish_movement_loop(void) {
     o->oVelY = -sins(o->oFaceAnglePitch) * o->oForwardVel;
     obj_move_using_fvel_and_gravity();
     
-    // Deletes object if the parent has oAction set to two.
-    if (o->parentObj->oAction == BLUE_FISH_ACT_ASCEND) {
+    // Deletes object if the parent has oAction set to BLUE_FISH_ACT_DUPLICATE.
+    if (o->parentObj->oAction == BLUE_FISH_ACT_DUPLICATE) {
         mark_object_for_deletion(o);
     }
 }
 
 /**
- * Spawns fifteen fish if mario resides in room fifteen or seven.
- * It moves at random within 200.0f
+ * Spawns fifteen fish if Mario resides in room fifteen or seven.
+ * They move at random within 200.0f
  */
-void bhv_blue_fish_spawn_loop(void) {
+void bhv_blue_fish_tank_spawn_loop(void) {
     struct Object *fish;
     s32 i;
     switch (o->oAction) {
-        case BLUE_FISH_ACT_DIVE:
+        case BLUE_FISH_ACT_SPAWN:
             if (gMarioCurrentRoom == 15 || gMarioCurrentRoom == 7) {
                 
                 // spawns fifteen fish and moves them within 200.0f
@@ -111,21 +111,21 @@ void bhv_blue_fish_spawn_loop(void) {
                     translate_object_xyz_random(fish, 200.0f);
                 }
                 
-                // Proceed to BLUE_FISH_ACT_TURN phase.
+                // Proceed to BLUE_FISH_ACT_ROOM phase.
                 o->oAction++;
             }
             break;
             
-        // Sets next oAction phase if mario is not in rooms fifteen and seven.
-        case BLUE_FISH_ACT_TURN:
+        // Sets next oAction phase if Mario is not in rooms fifteen and seven.
+        case BLUE_FISH_ACT_ROOM:
             if (gMarioCurrentRoom != 15 && gMarioCurrentRoom != 7) {
                 o->oAction++;
             }
             break;
             
-        // Sets oAction to the BLUE_FISH_ACT_DIVE phase.
-        case BLUE_FISH_ACT_ASCEND:
-            o->oAction = BLUE_FISH_ACT_DIVE;
+        // Sets oAction to the BLUE_FISH_ACT_SPAWN phase.
+        case BLUE_FISH_ACT_DUPLICATE:
+            o->oAction = BLUE_FISH_ACT_SPAWN;
             break;
     }
 }
