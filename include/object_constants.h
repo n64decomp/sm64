@@ -209,6 +209,11 @@
     #define BLUE_FISH_ACT_TURN 1
     #define BLUE_FISH_ACT_ASCEND 2
     #define BLUE_FISH_ACT_TURN_BACK 3
+    
+    /* oAction: bhv_blue_fish_spawn_loop */
+    #define BLUE_FISH_ACT_SPAWN 0
+    #define BLUE_FISH_ACT_ROOM 1
+    #define BLUE_FISH_ACT_DUPLICATE 2
 
 /* Cannon Trap Door */
     /* oAction */
