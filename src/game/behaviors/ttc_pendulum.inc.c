@@ -36,7 +36,7 @@ void bhv_ttc_pendulum_update(void) {
         // Play sound
         if (o->oTTCPendulumSoundTimer != 0) {
             if (--o->oTTCPendulumSoundTimer == 0) {
-                PlaySound2(SOUND_GENERAL_PENDULUM_SWING);
+                cur_obj_play_sound_2(SOUND_GENERAL_PENDULUM_SWING);
             }
         }
 

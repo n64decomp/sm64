@@ -29,9 +29,9 @@ extern struct EuAudioCmd sAudioCmd[0x100];
 
 void func_8031D690(s32 player, FadeT fadeInTime);
 void sequence_player_fade_out_internal(s32 player, FadeT fadeOutTime);
-void func_802ad668(void);
+void port_eu_init_queues(void);
 void decrease_sample_dma_ttls(void);
-s32 func_eu_802E2AA0(void);
+s32 audio_shut_down_and_reset_step(void);
 void func_802ad7ec(u32);
 
 struct SPTask *create_next_audio_frame_task(void) {
@@ -76,7 +76,7 @@ struct SPTask *create_next_audio_frame_task(void) {
     }
 
     if (gAudioResetStatus != 0) {
-        if (func_eu_802E2AA0() == 0) {
+        if (audio_shut_down_and_reset_step() == 0) {
             if (gAudioResetStatus == 0) {
                 osSendMesg(OSMesgQueues[3], (OSMesg) (s32) gAudioResetPresetIdToLoad, OS_MESG_NOBLOCK);
             }
@@ -164,14 +164,14 @@ void eu_process_audio_cmd(struct EuAudioCmd *cmd) {
     case 0xf1:
         for (i = 0; i < 4; i++) {
             gSequencePlayers[i].muted = TRUE;
-            gSequencePlayers[i].unk_eu = TRUE;
+            gSequencePlayers[i].recalculateVolume = TRUE;
         }
         break;
 
     case 0xf2:
         for (i = 0; i < 4; i++) {
             gSequencePlayers[i].muted = FALSE;
-            gSequencePlayers[i].unk_eu = TRUE;
+            gSequencePlayers[i].recalculateVolume = TRUE;
         }
         break;
     }
@@ -207,7 +207,7 @@ void func_8031D690(s32 player, FadeT fadeInTime) {
     }
 }
 
-void func_802ad668(void) {
+void port_eu_init_queues(void) {
     D_EU_80302010 = 0;
     D_EU_80302014 = 0;
     osCreateMesgQueue(OSMesgQueues[0], &OSMesg0, 1);
@@ -262,8 +262,8 @@ void func_802ad7ec(u32 arg0) {
             else if ((cmd->u.s.op & 0x40) != 0) {
                 switch (cmd->u.s.op) {
                 case 0x41:
-                    seqPlayer->unkEu28 = cmd->u2.as_f32;
-                    seqPlayer->unk_eu = TRUE;
+                    seqPlayer->fadeVolumeScale = cmd->u2.as_f32;
+                    seqPlayer->recalculateVolume = TRUE;
                     break;
 
                 case 0x47:
@@ -286,19 +286,19 @@ void func_802ad7ec(u32 arg0) {
                     switch (cmd->u.s.op) {
                     case 1:
                         chan->volumeScale = cmd->u2.as_f32;
-                        chan->unk1.as_bitfields.unk0b40 = TRUE;
+                        chan->changes.as_bitfields.volume = TRUE;
                         break;
                     case 2:
                         chan->volume = cmd->u2.as_f32;
-                        chan->unk1.as_bitfields.unk0b40 = TRUE;
+                        chan->changes.as_bitfields.volume = TRUE;
                         break;
                     case 3:
-                        chan->unk9 = cmd->u2.as_s8;
-                        chan->unk1.as_bitfields.unk0b20 = TRUE;
+                        chan->newPan = cmd->u2.as_s8;
+                        chan->changes.as_bitfields.pan = TRUE;
                         break;
                     case 4:
                         chan->freqScale = cmd->u2.as_f32;
-                        chan->unk1.as_bitfields.unk0b80 = TRUE;
+                        chan->changes.as_bitfields.freqScale = TRUE;
                         break;
                     case 5:
                         chan->reverb = cmd->u2.as_s8;
@@ -319,8 +319,8 @@ void func_802ad7ec(u32 arg0) {
     }
 }
 
-void func_802ada64(void) {
-    func_802ad668();
+void port_eu_init(void) {
+    port_eu_init_queues();
 }
 
 #endif

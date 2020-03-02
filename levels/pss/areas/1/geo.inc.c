@@ -23,7 +23,7 @@ const GeoLayout pss_geo_000100[] = {
                GEO_DISPLAY_LIST(LAYER_OPAQUE, pss_seg7_dl_0700E2B0),
                GEO_DISPLAY_LIST(LAYER_OPAQUE_DECAL, pss_seg7_dl_0700E3E8),
                GEO_RENDER_OBJ(),
-               GEO_ASM(0, geo_enfvx_main),
+               GEO_ASM(0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

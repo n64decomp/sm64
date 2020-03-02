@@ -1,6 +1,6 @@
 #include <ultra64.h>
 #include "sm64.h"
-#include "memory.h"
+#include "heap.h"
 #include "load.h"
 #include "data.h"
 #include "seqplayer.h"
@@ -753,10 +753,8 @@ void func_8031D838(s32 player, FadeT fadeInTime, u8 targetVolume) {
 #ifdef VERSION_EU
 extern void func_802ad7a0(void);
 
-void maybe_tick_game_sound(void)
-{
-    if (sGameLoopTicked != 0)
-    {
+void maybe_tick_game_sound(void) {
+    if (sGameLoopTicked != 0) {
         update_game_sound();
         sGameLoopTicked = 0;
     }
@@ -764,6 +762,7 @@ void maybe_tick_game_sound(void)
 }
 
 void func_eu_802e9bec(s32 player, s32 channel, s32 arg2) {
+    // EU verson of unused_803209D8
     // chan->stopSomething2 = arg2?
     func_802ad770(0x08000000 | (player & 0xff) << 16 | (channel & 0xff) << 8, (s8) arg2);
 }
@@ -1607,12 +1606,6 @@ void update_game_sound(void) {
 #undef ARG2_VAL1
 #undef ARG2_VAL2
 
-#if defined(VERSION_EU) && !defined(NON_MATCHING)
-// Just regalloc differences
-void play_sequence(u8 player, u8 seqId, u16 fadeTimer);
-GLOBAL_ASM("asm/non_matchings/eu/play_sequence.s")
-#else
-
 void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
     u8 temp_ret;
     u8 i;
@@ -1629,13 +1622,13 @@ void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
     }
 
 #ifdef VERSION_EU
-    func_802ad770(0x46000000 | (player & 0xff) << 16, seqId & 0x80);
-    func_802ad74c(0x82000000 | (player & 0xff) << 16 | ((seqId & 0x7f) & 0xff) << 8, fadeTimer);
+    func_802ad770(0x46000000 | ((u8)(u32)player) << 16, seqId & 0x80);
+    func_802ad74c(0x82000000 | ((u8)(u32)player) << 16 | ((u8)(seqId & 0x7f)) << 8, fadeTimer);
 
     if (player == 0) {
         temp_ret = func_803200E4(0);
         if (temp_ret != 0xff) {
-            gSequencePlayers[0].unkEu28 = (f32) temp_ret / US_FLOAT(127.0);
+            gSequencePlayers[0].fadeVolumeScale = (f32) temp_ret / US_FLOAT(127.0);
         }
     }
 #else
@@ -1653,7 +1646,6 @@ void play_sequence(u8 player, u8 seqId, u16 fadeTimer) {
     }
 #endif
 }
-#endif
 
 void sequence_player_fade_out(u8 player, u16 fadeTimer) {
 #ifdef VERSION_EU
@@ -2440,7 +2432,7 @@ void sound_reset(u8 presetId) {
     sGameLoopTicked = 0;
     disable_all_sequence_players();
     sound_init();
-#if defined(VERSION_JP) || defined(VERSION_US)
+#if defined(VERSION_JP) || defined(VERSION_US) || defined(VERSION_SH)
     audio_reset_session(&gAudioSessionPresets[presetId]);
 #else
     audio_reset_session_eu(presetId);

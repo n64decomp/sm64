@@ -283,7 +283,7 @@ extern const Gfx sparkles_animation_seg4_dl_04035348[];
 extern const Gfx sparkles_animation_seg4_dl_04035360[];
 
 // stomp_smoke
-extern const GeoLayout spot_on_ground_geo[];
+extern const GeoLayout small_water_splash_geo[];
 extern const GeoLayout mario_TODO_geo_0000E0[];
 extern const Gfx stomp_smoke_seg4_dl_04025148[];
 extern const Gfx stomp_smoke_seg4_dl_04025190[];
@@ -326,15 +326,15 @@ extern const Gfx water_splash_seg4_dl_040326D0[];
 extern const Gfx water_splash_seg4_dl_040326E8[];
 
 // water_waves
-extern const GeoLayout water_waves_surface_geo[];
-extern const GeoLayout water_waves_geo[];
-extern const Gfx water_waves_seg4_dl_04027358[];
-extern const Gfx water_waves_seg4_dl_040273A0[];
-extern const Gfx water_waves_seg4_dl_040273D8[];
-extern const Gfx water_waves_seg4_dl_040273F0[];
-extern const Gfx water_waves_seg4_dl_04027408[];
-extern const Gfx water_waves_seg4_dl_04027420[];
-extern const Gfx water_waves_seg4_dl_04027438[];
+extern const GeoLayout idle_water_wave_geo[];
+extern const GeoLayout wave_trail_geo[];
+extern const Gfx water_wave_seg4_dl_04027358[];
+extern const Gfx water_wave_seg4_dl_040273A0[];
+extern const Gfx water_wave_seg4_dl_040273D8[];
+extern const Gfx water_wave_seg4_dl_040273F0[];
+extern const Gfx water_wave_seg4_dl_04027408[];
+extern const Gfx water_wave_seg4_dl_04027420[];
+extern const Gfx water_wave_seg4_dl_04027438[];
 
 // white_particle_small
 extern const Gfx white_particle_small_dl_begin[];

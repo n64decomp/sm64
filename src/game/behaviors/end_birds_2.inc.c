@@ -11,7 +11,7 @@ void bhv_end_birds_2_loop(void) {
 
     switch (gCurrentObject->oAction) {
         case 0:
-            obj_scale(0.7f);
+            cur_obj_scale(0.7f);
             gCurrentObject->oAction += 1;
             break;
         case 1:
@@ -23,9 +23,9 @@ void bhv_end_birds_2_loop(void) {
             obj_rotate_towards_point(gCurrentObject, sp3C, 0, 0, 8, 8);
 
             if ((gCurrentObject->oEndBirdUnk104 == 0.f) && (gCurrentObject->oTimer == 0))
-                PlaySound2(SOUND_GENERAL_BIRDS_FLY_AWAY);
+                cur_obj_play_sound_2(SOUND_GENERAL_BIRDS_FLY_AWAY);
             break;
     }
 
-    func_802A2A38();
+    cur_obj_set_pos_via_transform();
 }

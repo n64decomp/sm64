@@ -19,14 +19,14 @@ void bhv_ukiki_cage_star_loop(void) {
         case UKIKI_CAGE_STAR_ACT_IN_CAGE:
             // Initialization to see if the star is collected (blue) or not (yellow).
             if (o->oTimer == 0) {
-                if (func_802A377C(1)
+                if (bit_shift_left(1)
                     & save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1)) {
-                        obj_set_model(MODEL_TRANSPARENT_STAR);
+                        cur_obj_set_model(MODEL_TRANSPARENT_STAR);
                     }
             }
 
-            copy_object_pos(o, o->parentObj);
-            copy_object_behavior_params(o, o->parentObj);
+            obj_copy_pos(o, o->parentObj);
+            obj_copy_behavior_params(o, o->parentObj);
 
             // When they cage hides itself, spawn particles and the star.
             if (o->parentObj->oAction == UKIKI_CAGE_ACT_HIDE) {
@@ -34,10 +34,10 @@ void bhv_ukiki_cage_star_loop(void) {
             }
             break;
         case UKIKI_CAGE_STAR_ACT_SPAWN_STAR:
-            mark_object_for_deletion(o);
-            func_802A3004();
+            obj_mark_for_deletion(o);
+            spawn_mist_particles();
             spawn_triangle_break_particles(20, 138, 0.7, 3);
-            create_star(2500.0f, -1200.0f, 1300.0f);
+            spawn_default_star(2500.0f, -1200.0f, 1300.0f);
             break;
     }
 
@@ -73,8 +73,8 @@ void ukiki_cage_act_spin(void) {
  */
 void ukiki_cage_act_fall(void) {
     //! (PARTIAL_UPDATE)
-    obj_update_floor_and_walls();
-    obj_move_standard(78);
+    cur_obj_update_floor_and_walls();
+    cur_obj_move_standard(78);
     if (o->oMoveFlags & (OBJ_MOVE_LANDED | OBJ_MOVE_ENTERED_WATER)) {
         o->oAction = UKIKI_CAGE_ACT_HIDE;
     }
@@ -87,7 +87,7 @@ void ukiki_cage_act_fall(void) {
  * hiding the object?
  */
 void ukiki_cage_act_hide(void) {
-    obj_hide();
+    cur_obj_hide();
 }
 
 /**
@@ -102,5 +102,5 @@ void (*sUkikiCageActions[])(void) = {
  * Main behavior loop for the cage. Only calls the relevant action.
  */
 void bhv_ukiki_cage_loop(void) {
-    obj_call_action_function(sUkikiCageActions);
+    cur_obj_call_action_function(sUkikiCageActions);
 }

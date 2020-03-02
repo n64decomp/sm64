@@ -62,8 +62,10 @@ static const Gfx ttm_seg7_painting_dl_07012430[] = {
 };
 
 // 0x07012450 - 0x0701296A
-static const PaintingData ttm_seg7_painting_points_07012450[] = {
-    85,
+static const PaintingData ttm_seg7_painting_texture_map_bottom_07012450[] = {
+    85, // num mappings
+    // Format:
+    // mesh vtx ID, texture X, texture Y
       49, 2016,  889,
       53, 2016,  685,
       55, 1843,  787,
@@ -150,8 +152,9 @@ static const PaintingData ttm_seg7_painting_points_07012450[] = {
      150,  649,    0,
      153,  -32,    0,
 
-// ttm_seg7_painting_triangles_07012650:
-    132,
+    132, // num groups
+    // Grouped by 5 + one remainder group,
+    // = 15 vertices per group + a few extra triangles
     13,  8,  5,
      0,  1,  2,
      3,  0,  4,
@@ -288,8 +291,10 @@ static const PaintingData ttm_seg7_painting_points_07012450[] = {
 
 
 // 0x0701296C - 0x07012E84
-static const PaintingData ttm_seg7_painting_points_0701296C[] = {
-    85,
+static const PaintingData ttm_seg7_painting_top_0701296C[] = {
+    85, // num mappings
+    // Format:
+    // mesh vtx ID, texture X, texture Y
        0, 2016,   72,
        1, 2016,    0,
        2, 1843,    0,
@@ -376,8 +381,9 @@ static const PaintingData ttm_seg7_painting_points_0701296C[] = {
      152,  -32,  685,
      153,  -32,  992,
 
-// ttm_seg7_painting_triangles_07012B6C:
-    132,
+    132, // num groups
+    // Grouped by 5 + one remainder group,
+    // = 15 vertices per group + a few extra triangles
     10,  7, 13,
      0,  1,  2,
      3,  0,  2,
@@ -514,9 +520,9 @@ static const PaintingData ttm_seg7_painting_points_0701296C[] = {
 
 
 // 0x07012E88
-static const PaintingData *const ttm_seg7_painting_data_07012E88[] = {
-    ttm_seg7_painting_points_07012450,
-    ttm_seg7_painting_points_0701296C,
+static const PaintingData *const ttm_seg7_painting_texture_maps_07012E88[] = {
+    ttm_seg7_painting_texture_map_bottom_07012450,
+    ttm_seg7_painting_top_0701296C,
 };
 
 UNUSED static const u64 ttm_unused_0 = 0x0;
@@ -546,23 +552,26 @@ static const u8 *const ttm_seg7_painting_textures_07012EF8[] = {
 // 0x07012F00 (PaintingData)
 struct Painting ttm_slide_painting = {
     /* id */ 0x0000,
-    /* Face Count */ 0x02,
-    /* Ripple Shape */ RIPPLE_SHAPE_WAVE,
+    /* Image Count */ 0x02,
+    /* Texture Type */ PAINTING_IMAGE,
     /* Floor Status */ 0x00, 0x00, 0x00 /* which of the painting's nearby special floors Mario's on */,
     /* Ripple Status */ 0x00,
     /* Rotation */    0.0f,   90.0f,
     /* Position */ 3072.0f, 921.6f, -819.2f,
-    /* Ripple Magnitude */    0.0f,   20.0f,  80.0f,
-    1.0f, 0.9608f, 0.9524f,
-    0.0f,   0.24f,   0.14f,
-    0.0f,   40.0f,   30.0f,
-    0.0f,
-    0.0f,    0.0f,
-    ttm_seg7_painting_dl_07012E98,
-    ttm_seg7_painting_data_07012E88,
-    ttm_seg7_painting_textures_07012EF8,
-    64, 32,
-    ttm_seg7_painting_dl_07012430,
-    RIPPLE_TRIGGER_PROXIMITY, 0xFF, 0x00, 0x00, 0x00,
-    460.8f,
+    /*                         curr   passive     entry */
+    /* Ripple Magnitude */     0.0f,    20.0f,    80.0f,
+    /* Ripple Decay */         1.0f,  0.9608f,  0.9524f,
+    /* Ripple Rate */          0.0f,    0.24f,    0.14f,
+    /* Ripple Dispersion */    0.0f,    40.0f,    30.0f,
+    /* Curr Ripple Timer */    0.0f,
+    /* Curr Ripple x, y */     0.0f,    0.0f,
+    /* Normal DList */ ttm_seg7_painting_dl_07012E98,
+    /* Texture Maps */ ttm_seg7_painting_texture_maps_07012E88,
+    /* Textures */     ttm_seg7_painting_textures_07012EF8,
+    /* Texture w, h */ 64, 32,
+    /* Ripple DList */ ttm_seg7_painting_dl_07012430,
+    /* Ripple Trigger */ RIPPLE_TRIGGER_PROXIMITY,
+    /* Alpha */ 0xFF,
+    /* Mario Below */  0x00, 0x00, 0x00, /* Whether or not Mario is below the painting */
+    /* Size */  460.8f,
 };

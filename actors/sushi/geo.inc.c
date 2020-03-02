@@ -8,7 +8,7 @@ const GeoLayout sushi_geo[] = {
          GEO_OPEN_NODE(),
             GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, sushi_seg5_dl_0500A768),
             GEO_OPEN_NODE(),
-               GEO_ASM(0, Geo18_802B798C),
+               GEO_ASM(0, geo_update_body_rot_from_parent),
             GEO_CLOSE_NODE(),
             GEO_OPEN_NODE(),
                GEO_ANIMATED_PART(LAYER_OPAQUE, 201, 0, 0, sushi_seg5_dl_05009DD0),

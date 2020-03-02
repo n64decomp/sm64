@@ -14,7 +14,7 @@ void bhv_camera_lakitu_init(void) {
     if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
         // Despawn unless this is the very beginning of the game
         if (gShouldNotPlayCastleMusic != TRUE) {
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
         }
     } else {
         spawn_object_relative_with_scale(CLOUD_BP_LAKITU_CLOUD, 0, 0, 0, 2.0f, o, MODEL_MIST, bhvCloud);
@@ -64,7 +64,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
     s16 targetMovePitch;
     s16 targetMoveYaw;
 
-    PlaySound(SOUND_AIR_LAKITU_FLY);
+    cur_obj_play_sound_1(SOUND_AIR_LAKITU_FLY);
 
     // Face toward mario
     o->oFaceAnglePitch = obj_turn_pitch_toward_mario(120.0f, 0);
@@ -74,7 +74,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
     if (o->oCameraLakituFinishedDialog) {
         approach_f32_ptr(&o->oCameraLakituSpeed, 60.0f, 3.0f);
         if (o->oDistanceToMario > 6000.0f) {
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
         }
 
         targetMovePitch = -0x3000;
@@ -115,7 +115,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                     }
                 }
             }
-        } else if (obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0, CUTSCENE_DIALOG, DIALOG_034) != 0) {
+        } else if (cur_obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0, CUTSCENE_DIALOG, DIALOG_034) != 0) {
             o->oCameraLakituFinishedDialog = TRUE;
         }
     }
@@ -124,11 +124,11 @@ static void camera_lakitu_intro_act_show_dialog(void) {
     obj_move_pitch_approach(targetMovePitch, o->oCameraLakituPitchVel);
 
     o->oCameraLakituYawVel = approach_s16_symmetric(o->oCameraLakituYawVel, 0x7D0, 0x64);
-    obj_rotate_yaw_toward(targetMoveYaw, o->oCameraLakituYawVel);
+    cur_obj_rotate_yaw_toward(targetMoveYaw, o->oCameraLakituYawVel);
 
     // vel y is explicitly computed, so gravity doesn't apply
     obj_compute_vel_from_move_pitch(o->oCameraLakituSpeed);
-    obj_move_using_fvel_and_gravity();
+    cur_obj_move_using_fvel_and_gravity();
 }
 
 /**
@@ -153,9 +153,9 @@ void bhv_camera_lakitu_update(void) {
         } else {
             f32 val0C = (f32) 0x875C3D / 0x800 - gLakituState.curPos[0];
             if (gLakituState.curPos[0] < 1700.0f || val0C < 0.0f) {
-                obj_hide();
+                cur_obj_hide();
             } else {
-                obj_unhide();
+                cur_obj_unhide();
 
                 o->oPosX = gLakituState.curPos[0];
                 o->oPosY = gLakituState.curPos[1];
@@ -164,8 +164,8 @@ void bhv_camera_lakitu_update(void) {
                 o->oHomeX = gLakituState.curFocus[0];
                 o->oHomeZ = gLakituState.curFocus[2];
 
-                o->oFaceAngleYaw = -obj_angle_to_home();
-                o->oFaceAnglePitch = atan2s(obj_lateral_dist_to_home(),
+                o->oFaceAngleYaw = -cur_obj_angle_to_home();
+                o->oFaceAnglePitch = atan2s(cur_obj_lateral_dist_to_home(),
                                             o->oPosY - gLakituState.curFocus[1]);
 
                 o->oPosX = (f32) 0x875C3D / 0x800 + val0C;

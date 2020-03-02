@@ -495,14 +495,14 @@ s32 let_go_of_ledge(struct MarioState *m) {
     return set_mario_action(m, ACT_SOFT_BONK, 0);
 }
 
-void func_8025F0DC(struct MarioState *m) {
+void climb_up_ledge(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_IDLE_HEAD_LEFT);
     m->pos[0] += 14.0f * sins(m->faceAngle[1]);
     m->pos[2] += 14.0f * coss(m->faceAngle[1]);
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
 }
 
-void func_8025F188(struct MarioState *m) {
+void update_ledge_climb_camera(struct MarioState *m) {
     f32 sp4;
 
     if (m->actionTimer < 14) {
@@ -524,7 +524,7 @@ void update_ledge_climb(struct MarioState *m, s32 animation, u32 endAction) {
     if (is_anim_at_end(m)) {
         set_mario_action(m, endAction, 0);
         if (endAction == ACT_IDLE) {
-            func_8025F0DC(m);
+            climb_up_ledge(m);
         }
     }
 }
@@ -595,7 +595,7 @@ s32 act_ledge_climb_slow(struct MarioState *m) {
     if (m->actionTimer >= 28
         && (m->input
             & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE))) {
-        func_8025F0DC(m);
+        climb_up_ledge(m);
         return check_common_action_exits(m);
     }
 
@@ -605,7 +605,7 @@ s32 act_ledge_climb_slow(struct MarioState *m) {
 
     update_ledge_climb(m, MARIO_ANIM_SLOW_LEDGE_GRAB, ACT_IDLE);
 
-    func_8025F188(m);
+    update_ledge_climb_camera(m);
     if (m->marioObj->header.gfx.unk38.animFrame == 17) {
         m->action = ACT_LEDGE_CLIMB_SLOW_2;
     }
@@ -638,7 +638,7 @@ s32 act_ledge_climb_fast(struct MarioState *m) {
     if (m->marioObj->header.gfx.unk38.animFrame == 8) {
         play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
     }
-    func_8025F188(m);
+    update_ledge_climb_camera(m);
 
     return FALSE;
 }

@@ -517,7 +517,7 @@ const GeoLayout geo_bbh_000F00[] = {
                   GEO_BRANCH(1, geo_bbh_000EB0), // 0x0E000EB0
                GEO_CLOSE_NODE(),
                GEO_RENDER_OBJ(),
-               GEO_ASM(0, geo_enfvx_main),
+               GEO_ASM(0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

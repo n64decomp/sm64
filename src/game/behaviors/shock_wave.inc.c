@@ -6,13 +6,13 @@ void bhv_bowser_shock_wave_loop(void) {
     f32 sp2C, sp28, sp24, sp20;
     s16 sp1E = 70;
     o->oBowserShockWaveUnkF4 = o->oTimer * 10;
-    obj_scale(o->oBowserShockWaveUnkF4);
+    cur_obj_scale(o->oBowserShockWaveUnkF4);
     if (gGlobalTimer % 3)
         o->oOpacity -= 1;
     if (o->oTimer > sp1E)
         o->oOpacity -= 5;
     if (o->oOpacity <= 0)
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     if (o->oTimer < sp1E && mario_is_in_air_action() == 0) {
         sp2C = o->oBowserShockWaveUnkF4 * D_8032F420[0];
         sp28 = o->oBowserShockWaveUnkF4 * D_8032F420[1];

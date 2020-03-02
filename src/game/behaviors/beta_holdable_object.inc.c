@@ -21,9 +21,9 @@ void bhv_beta_holdable_object_init(void) {
  */
 static void beta_holdable_object_drop(void) {
     // Re-enable rendering
-    obj_enable_rendering();
+    cur_obj_enable_rendering();
 
-    obj_get_dropped();
+    cur_obj_get_dropped();
 
     o->oHeldState = HELD_FREE;
 
@@ -35,10 +35,10 @@ static void beta_holdable_object_drop(void) {
  * Throw the object.
  */
 static void beta_holdable_object_throw(void) {
-    // obj_enable_rendering_2 just calls obj_enable_rendering and does
+    // cur_obj_enable_rendering_2 just calls cur_obj_enable_rendering and does
     // nothing else; it's useless here. Maybe it originally did more?
-    obj_enable_rendering_2();
-    obj_enable_rendering();
+    cur_obj_enable_rendering_2();
+    cur_obj_enable_rendering();
 
     o->oHeldState = HELD_FREE;
 
@@ -64,7 +64,7 @@ void bhv_beta_holdable_object_loop(void) {
 
         case HELD_HELD:
             // Disable rendering to hide the object while it's held
-            obj_disable_rendering();
+            cur_obj_disable_rendering();
             break;
 
         case HELD_THROWN:

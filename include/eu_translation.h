@@ -3,6 +3,14 @@
 
 #include "types.h"
 
+// PAL changes most text to arrays for each language. This define allows these
+// differences to be combined.
+#ifdef VERSION_EU
+    #define LANGUAGE_ARRAY(cmd) cmd[LANGUAGE_FUNCTION]
+#else
+    #define LANGUAGE_ARRAY(cmd) cmd
+#endif
+
 // EU translations are contained in three segment 0x19 compressed data blocks
 extern u8 _translation_en_mio0SegmentRomStart[];
 extern u8 _translation_en_mio0SegmentRomEnd[];

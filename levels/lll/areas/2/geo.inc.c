@@ -24,7 +24,7 @@ const GeoLayout lll_geo_000EC0[] = {
                GEO_ASM(0x2202, geo_movtex_draw_nocolor),
                GEO_ASM(0x2202, geo_movtex_draw_water_regions),
                GEO_RENDER_OBJ(),
-               GEO_ASM(   0, geo_enfvx_main),
+               GEO_ASM(   0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

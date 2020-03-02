@@ -53,7 +53,7 @@ void bhv_ttc_pit_block_init(void) {
 void bhv_ttc_pit_block_update(void) {
     if (o->oTimer > o->oTTCPitBlockWaitTime) {
         // Forward vel and gravity are zero, so this just does posY += velY
-        obj_move_using_fvel_and_gravity();
+        cur_obj_move_using_fvel_and_gravity();
 
         if (clamp_f32(&o->oPosY, o->oHomeY, o->oTTCPitBlockPeakY)) {
             o->oTTCPitBlockDir = o->oTTCPitBlockDir ^ 0x1;

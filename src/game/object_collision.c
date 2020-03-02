@@ -7,7 +7,7 @@
 #include "object_list_processor.h"
 #include "interaction.h"
 
-struct Object *Unknown802C8460(struct Object *a) {
+struct Object *debug_print_obj_collision(struct Object *a) {
     struct Object *sp24;
     UNUSED s32 unused;
     s32 i;
@@ -22,7 +22,7 @@ struct Object *Unknown802C8460(struct Object *a) {
     return NULL;
 }
 
-int func_802C8504(struct Object *a, struct Object *b) {
+int detect_object_hitbox_overlap(struct Object *a, struct Object *b) {
     f32 sp3C = a->oPosY - a->hitboxDownOffset;
     f32 sp38 = b->oPosY - b->hitboxDownOffset;
     f32 dx = a->oPosX - b->oPosX;
@@ -59,7 +59,7 @@ int func_802C8504(struct Object *a, struct Object *b) {
     //! no return value
 }
 
-int func_802C870C(struct Object *a, struct Object *b) {
+int detect_object_hurtbox_overlap(struct Object *a, struct Object *b) {
     f32 sp3C = a->oPosY - a->hitboxDownOffset;
     f32 sp38 = b->oPosY - b->hitboxDownOffset;
     f32 sp34 = a->oPosX - b->oPosX;
@@ -91,7 +91,7 @@ int func_802C870C(struct Object *a, struct Object *b) {
     //! no return value
 }
 
-void func_802C88A8(struct Object *a) {
+void clear_object_collision(struct Object *a) {
     struct Object *sp4 = (struct Object *) a->header.next;
 
     while (sp4 != a) {
@@ -104,12 +104,12 @@ void func_802C88A8(struct Object *a) {
     }
 }
 
-void func_802C8918(struct Object *a, struct Object *b, struct Object *c) {
+void check_collision_in_list(struct Object *a, struct Object *b, struct Object *c) {
     if (a->oIntangibleTimer == 0) {
         while (b != c) {
             if (b->oIntangibleTimer == 0) {
-                if (func_802C8504(a, b) && b->hurtboxRadius != 0.0f) {
-                    func_802C870C(a, b);
+                if (detect_object_hitbox_overlap(a, b) && b->hurtboxRadius != 0.0f) {
+                    detect_object_hurtbox_overlap(a, b);
                 }
             }
             b = (struct Object *) b->header.next;
@@ -117,50 +117,50 @@ void func_802C8918(struct Object *a, struct Object *b, struct Object *c) {
     }
 }
 
-void func_802C89CC(void) {
+void check_player_object_collision(void) {
     struct Object *sp1C = (struct Object *) &gObjectLists[OBJ_LIST_PLAYER];
     struct Object *sp18 = (struct Object *) sp1C->header.next;
 
     while (sp18 != sp1C) {
-        func_802C8918(sp18, (struct Object *) sp18->header.next, sp1C);
-        func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_POLELIKE].next,
+        check_collision_in_list(sp18, (struct Object *) sp18->header.next, sp1C);
+        check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_POLELIKE].next,
                       (struct Object *) &gObjectLists[OBJ_LIST_POLELIKE]);
-        func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next,
+        check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_LEVEL].next,
                       (struct Object *) &gObjectLists[OBJ_LIST_LEVEL]);
-        func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_GENACTOR].next,
+        check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_GENACTOR].next,
                       (struct Object *) &gObjectLists[OBJ_LIST_GENACTOR]);
-        func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_PUSHABLE].next,
+        check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_PUSHABLE].next,
                       (struct Object *) &gObjectLists[OBJ_LIST_PUSHABLE]);
-        func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_SURFACE].next,
+        check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_SURFACE].next,
                       (struct Object *) &gObjectLists[OBJ_LIST_SURFACE]);
-        func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_DESTRUCTIVE].next,
+        check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_DESTRUCTIVE].next,
                       (struct Object *) &gObjectLists[OBJ_LIST_DESTRUCTIVE]);
         sp18 = (struct Object *) sp18->header.next;
     }
 }
 
-void func_802C8AD4(void) {
+void check_pushable_object_collision(void) {
     struct Object *sp1C = (struct Object *) &gObjectLists[OBJ_LIST_PUSHABLE];
     struct Object *sp18 = (struct Object *) sp1C->header.next;
 
     while (sp18 != sp1C) {
-        func_802C8918(sp18, (struct Object *) sp18->header.next, sp1C);
+        check_collision_in_list(sp18, (struct Object *) sp18->header.next, sp1C);
         sp18 = (struct Object *) sp18->header.next;
     }
 }
 
-void func_802C8B50(void) {
+void check_destructive_object_collision(void) {
     struct Object *sp1C = (struct Object *) &gObjectLists[OBJ_LIST_DESTRUCTIVE];
     struct Object *sp18 = (struct Object *) sp1C->header.next;
 
     while (sp18 != sp1C) {
         if (sp18->oDistanceToMario < 2000.0f && !(sp18->activeFlags & ACTIVE_FLAG_UNK9)) {
-            func_802C8918(sp18, (struct Object *) sp18->header.next, sp1C);
-            func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_GENACTOR].next,
+            check_collision_in_list(sp18, (struct Object *) sp18->header.next, sp1C);
+            check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_GENACTOR].next,
                           (struct Object *) &gObjectLists[OBJ_LIST_GENACTOR]);
-            func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_PUSHABLE].next,
+            check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_PUSHABLE].next,
                           (struct Object *) &gObjectLists[OBJ_LIST_PUSHABLE]);
-            func_802C8918(sp18, (struct Object *) gObjectLists[OBJ_LIST_SURFACE].next,
+            check_collision_in_list(sp18, (struct Object *) gObjectLists[OBJ_LIST_SURFACE].next,
                           (struct Object *) &gObjectLists[OBJ_LIST_SURFACE]);
         }
         sp18 = (struct Object *) sp18->header.next;
@@ -168,14 +168,14 @@ void func_802C8B50(void) {
 }
 
 void detect_object_collisions(void) {
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_POLELIKE]);
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_PLAYER]);
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_PUSHABLE]);
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_GENACTOR]);
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_LEVEL]);
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_SURFACE]);
-    func_802C88A8((struct Object *) &gObjectLists[OBJ_LIST_DESTRUCTIVE]);
-    func_802C89CC();
-    func_802C8B50();
-    func_802C8AD4();
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_POLELIKE]);
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_PLAYER]);
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_PUSHABLE]);
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_GENACTOR]);
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_LEVEL]);
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_SURFACE]);
+    clear_object_collision((struct Object *) &gObjectLists[OBJ_LIST_DESTRUCTIVE]);
+    check_player_object_collision();
+    check_destructive_object_collision();
+    check_pushable_object_collision();
 }

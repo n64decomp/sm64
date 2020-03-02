@@ -17,7 +17,7 @@ const GeoLayout bowser_2_geo_000188[] = {
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, bowser_2_seg7_dl_07001930),
                GEO_RENDER_OBJ(),
-               GEO_ASM(12, geo_enfvx_main),
+               GEO_ASM(12, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

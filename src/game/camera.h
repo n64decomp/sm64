@@ -684,8 +684,8 @@ extern void reset_camera(struct Camera *);
 extern void init_camera(struct Camera *);
 extern void select_mario_cam_mode(void);
 extern Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context);
-extern void dummy_802877D8(struct Camera *);
-extern void dummy_802877EC(struct Camera *);
+extern void stub_camera_2(struct Camera *);
+extern void stub_camera_3(struct Camera *);
 extern void vec3f_sub(Vec3f dst, Vec3f src);
 extern void object_pos_to_vec3f(Vec3f, struct Object *);
 extern void vec3f_to_object_pos(struct Object *, Vec3f); // static (ASM)

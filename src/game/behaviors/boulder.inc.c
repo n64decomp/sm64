@@ -10,13 +10,13 @@ void bhv_big_boulder_init(void) {
     o->oBuoyancy = 2.0f;
 }
 
-void func_802F05DC(void) {
+void boulder_act_1(void) {
     s16 sp1E;
 
     sp1E = object_step_without_floor_orient();
     if ((sp1E & 0x09) == 0x01 && o->oVelY > 10.0f) {
-        PlaySound2(SOUND_GENERAL_GRINDEL_ROLL);
-        func_802A3004();
+        cur_obj_play_sound_2(SOUND_GENERAL_GRINDEL_ROLL);
+        spawn_mist_particles();
     }
 
     if (o->oForwardVel > 70.0)
@@ -27,7 +27,7 @@ void func_802F05DC(void) {
 }
 
 void bhv_big_boulder_loop(void) {
-    obj_scale(1.5f);
+    cur_obj_scale(1.5f);
     o->oGraphYOffset = 270.0f;
     switch (o->oAction) {
         case 0:
@@ -36,13 +36,13 @@ void bhv_big_boulder_loop(void) {
             break;
 
         case 1:
-            func_802F05DC();
-            func_802EFB84(1.5f);
-            PlaySound(SOUND_ENV_UNKNOWN2);
+            boulder_act_1();
+            adjust_rolling_face_pitch(1.5f);
+            cur_obj_play_sound_1(SOUND_ENV_UNKNOWN2);
             break;
     }
 
-    func_802EFB2C();
+    set_rolling_sphere_hitbox();
 }
 
 void bhv_big_boulder_generator_loop(void) {

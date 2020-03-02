@@ -3,7 +3,7 @@
 #define OS_PI_MGR_MESG_BUFF_SIZE 1
 
 OSMgrArgs piMgrArgs = { 0 };
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 OSPiHandle *D_80302DFC = NULL;
 #endif
 OSThread piMgrThread;

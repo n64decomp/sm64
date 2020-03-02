@@ -79,7 +79,7 @@ void spawn_macro_abs_special(u32 model, const BehaviorScript *behavior, s16 x, s
     newObj->oMacroUnk110 = (f32) unkC;
 }
 
-static void Unknown802E142C(const BehaviorScript *behavior, s16 a1[]) {
+static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
     struct Object *sp3C;
     s16 model;
 

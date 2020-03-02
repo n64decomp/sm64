@@ -8,7 +8,7 @@ void bhv_sliding_snow_mound_loop(void) {
             if (o->oTimer >= 118)
                 o->oAction = 1;
 
-            PlaySound(SOUND_ENV_SINK_QUICKSAND);
+            cur_obj_play_sound_1(SOUND_ENV_SINK_QUICKSAND);
             break;
 
         case 1:

@@ -40,7 +40,7 @@ static void platform_on_track_reset(void) {
 static void platform_on_track_mario_not_on_platform(void) {
     if (!((u16)(o->oBehParams >> 16) & PLATFORM_ON_TRACK_BP_DONT_DISAPPEAR)) {
         // Once oTimer reaches 150, blink 40 times
-        if (obj_wait_then_blink(150, 40)) {
+        if (cur_obj_wait_then_blink(150, 40)) {
             platform_on_track_reset();
             o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
         }
@@ -129,9 +129,9 @@ static void platform_on_track_act_move_along_track(void) {
     s16 initialAngle;
 
     if (!o->oPlatformOnTrackIsNotSkiLift) {
-        PlaySound(SOUND_ENV_ELEVATOR3);
+        cur_obj_play_sound_1(SOUND_ENV_ELEVATOR3);
     } else if (!o->oPlatformOnTrackIsNotHMC) {
-        PlaySound(SOUND_ENV_ELEVATOR1);
+        cur_obj_play_sound_1(SOUND_ENV_ELEVATOR1);
     }
 
     // Fall after reaching the last waypoint if desired
@@ -143,7 +143,7 @@ static void platform_on_track_act_move_along_track(void) {
         if (o->oPlatformOnTrackPrevWaypointFlags != 0 && !o->oPlatformOnTrackIsNotSkiLift) {
             if (o->oPlatformOnTrackPrevWaypointFlags == WAYPOINT_FLAGS_END
                 || o->oPlatformOnTrackPrevWaypointFlags == WAYPOINT_FLAGS_PLATFORM_ON_TRACK_PAUSE) {
-                PlaySound2(SOUND_GENERAL_UNKNOWN4_LOWPRIO);
+                cur_obj_play_sound_2(SOUND_GENERAL_UNKNOWN4_LOWPRIO);
 
                 o->oForwardVel = 0.0f;
                 if (o->oPlatformOnTrackPrevWaypointFlags == WAYPOINT_FLAGS_END) {
@@ -228,7 +228,7 @@ static void platform_on_track_act_pause_briefly(void) {
  * and eventually blinking and disappearing.
  */
 static void platform_on_track_act_fall(void) {
-    obj_move_using_vel_and_gravity();
+    cur_obj_move_using_vel_and_gravity();
 
     if (gMarioObject->platform != o) {
         platform_on_track_mario_not_on_platform();
@@ -306,6 +306,6 @@ void bhv_track_ball_update(void) {
     s16 relativeIndex =
         (s16) o->oBehParams2ndByte - (s16) o->parentObj->oPlatformOnTrackBaseBallIndex - 1;
     if (relativeIndex < 1 || relativeIndex > 5) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     }
 }

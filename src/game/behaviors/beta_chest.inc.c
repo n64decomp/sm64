@@ -12,7 +12,7 @@
  */
 void bhv_beta_chest_bottom_init(void) {
     // Set the object's model
-    obj_set_model(MODEL_TREASURE_CHEST_BASE);
+    cur_obj_set_model(MODEL_TREASURE_CHEST_BASE);
 
     // ??? Pointless code?
     // Maybe chests were originally intended to have random yaws.
@@ -33,7 +33,7 @@ void bhv_beta_chest_bottom_init(void) {
  * with radius 200 units and height 200 units.
  */
 void bhv_beta_chest_bottom_loop(void) {
-    obj_push_mario_away_from_cylinder(200.0f, 200.0f);
+    cur_obj_push_mario_away_from_cylinder(200.0f, 200.0f);
 }
 
 /**

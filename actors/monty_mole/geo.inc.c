@@ -30,7 +30,7 @@ const GeoLayout monty_mole_geo[] = {
                   GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, monty_mole_seg5_dl_050039D0),
                   GEO_OPEN_NODE(),
                      GEO_ANIMATED_PART(LAYER_OPAQUE, 80, 0, 0, monty_mole_seg5_dl_05003F50),
-                     GEO_ASM(0, Geo18_8029D890),
+                     GEO_ASM(0, geo_update_projectile_pos_from_parent),
                   GEO_CLOSE_NODE(),
                GEO_CLOSE_NODE(),
             GEO_CLOSE_NODE(),

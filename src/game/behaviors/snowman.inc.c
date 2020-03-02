@@ -27,22 +27,22 @@ void bhv_snowmans_bottom_init(void) {
     o->oForwardVel = 0;
     o->oSnowmansBottomUnkF4 = 0.4f;
 
-    sp34 = obj_nearest_object_with_behavior(bhvSnowmansHead);
+    sp34 = cur_obj_nearest_object_with_behavior(bhvSnowmansHead);
     if (sp34 != NULL) {
         o->parentObj = sp34;
     }
     spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvSnowmansBodyCheckpoint, -402, 461, -2898, 0, 0, 0);
 }
 
-void func_802EFB2C(void) {
-    set_object_hitbox(o, &sRollingSphereHitbox);
+void set_rolling_sphere_hitbox(void) {
+    obj_set_hitbox(o, &sRollingSphereHitbox);
 
     if ((o->oInteractStatus & INT_STATUS_INTERACTED) != 0) {
         o->oInteractStatus = 0;
     }
 }
 
-void func_802EFB84(f32 f12) {
+void adjust_rolling_face_pitch(f32 f12) {
     o->oFaceAnglePitch += (s16)(o->oForwardVel * (100.0f / f12));
     o->oSnowmansBottomUnkF4 += o->oForwardVel * 1e-4;
 
@@ -50,14 +50,14 @@ void func_802EFB84(f32 f12) {
         o->oSnowmansBottomUnkF4 = 1.0f;
 }
 
-void func_802EFC44(void) {
+void snowmans_bottom_act_1(void) {
     UNUSED s16 sp26;
     s32 sp20;
     UNUSED s16 sp1E;
 
     o->oPathedStartWaypoint = segmented_to_virtual(&ccm_seg7_trajectory_snowman);
     sp26 = object_step_without_floor_orient();
-    sp20 = obj_follow_path(sp20);
+    sp20 = cur_obj_follow_path(sp20);
     o->oSnowmansBottomUnkF8 = o->oPathedTargetYaw;
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oSnowmansBottomUnkF8, 0x400);
 
@@ -75,7 +75,7 @@ void func_802EFC44(void) {
     }
 }
 
-void func_802EFDA0(void) {
+void snowmans_bottom_act_2(void) {
     UNUSED s16 sp26;
 
     sp26 = object_step_without_floor_orient();
@@ -84,7 +84,7 @@ void func_802EFDA0(void) {
 
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oSnowmansBottomUnkF8, 0x400);
     if (is_point_close_to_object(o, -4230.0f, -1344.0f, 1813.0f, 300)) {
-        func_802AA618(0, 0, 70.0f);
+        spawn_mist_particles_variable(0, 0, 70.0f);
         o->oMoveAngleYaw = atan2s(1813.0f - o->oPosZ, -4230.0f - o->oPosX);
         o->oVelY = 80.0f;
         o->oForwardVel = 15.0f;
@@ -92,7 +92,7 @@ void func_802EFDA0(void) {
 
         o->parentObj->oAction = 2;
         o->parentObj->oVelY = 100.0f;
-        PlaySound2(SOUND_OBJ_SNOWMAN_BOUNCE);
+        cur_obj_play_sound_2(SOUND_OBJ_SNOWMAN_BOUNCE);
     }
 
     if (o->oTimer == 200) {
@@ -101,17 +101,17 @@ void func_802EFDA0(void) {
     }
 }
 
-void func_802EFF58(void) {
+void snowmans_bottom_act_3(void) {
     UNUSED s16 sp1E;
 
     sp1E = object_step_without_floor_orient();
     if ((sp1E & 0x09) == 0x09) {
         o->oAction = 4;
-        obj_become_intangible();
+        cur_obj_become_intangible();
     }
 
     if ((sp1E & 0x01) != 0) {
-        func_802AA618(0, 0, 70.0f);
+        spawn_mist_particles_variable(0, 0, 70.0f);
         o->oPosX = -4230.0f;
         o->oPosZ = 1813.0f;
         o->oForwardVel = 0.0f;
@@ -135,29 +135,29 @@ void bhv_snowmans_bottom_loop(void) {
             break;
 
         case 1:
-            func_802EFC44();
-            func_802EFB84(o->oSnowmansBottomUnkF4);
-            PlaySound(SOUND_ENV_UNKNOWN2);
+            snowmans_bottom_act_1();
+            adjust_rolling_face_pitch(o->oSnowmansBottomUnkF4);
+            cur_obj_play_sound_1(SOUND_ENV_UNKNOWN2);
             break;
 
         case 2:
-            func_802EFDA0();
-            func_802EFB84(o->oSnowmansBottomUnkF4);
-            PlaySound(SOUND_ENV_UNKNOWN2);
+            snowmans_bottom_act_2();
+            adjust_rolling_face_pitch(o->oSnowmansBottomUnkF4);
+            cur_obj_play_sound_1(SOUND_ENV_UNKNOWN2);
             break;
 
         case 3:
-            func_802EFF58();
+            snowmans_bottom_act_3();
             break;
 
         case 4:
-            obj_push_mario_away_from_cylinder(210.0f, 550);
+            cur_obj_push_mario_away_from_cylinder(210.0f, 550);
             break;
     }
 
-    func_802EFB2C();
+    set_rolling_sphere_hitbox();
     set_object_visibility(o, 8000);
-    obj_scale(o->oSnowmansBottomUnkF4);
+    cur_obj_scale(o->oSnowmansBottomUnkF4);
     o->oGraphYOffset = o->oSnowmansBottomUnkF4 * 180.0f;
 }
 
@@ -168,7 +168,7 @@ void bhv_snowmans_head_init(void) {
     sp37 = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
     sp36 = (o->oBehParams >> 24) & 0xFF;
 
-    obj_scale(0.7f);
+    cur_obj_scale(0.7f);
 
     o->oGravity = 5.0f;
     o->oFriction = 0.999f;
@@ -208,21 +208,21 @@ void bhv_snowmans_head_loop(void) {
             if (o->oPosY < -994.0f) {
                 o->oPosY = -994.0f;
                 o->oAction = 4;
-                PlaySound2(SOUND_OBJ_SNOWMAN_EXPLODE);
+                cur_obj_play_sound_2(SOUND_OBJ_SNOWMAN_EXPLODE);
                 play_puzzle_jingle();
             }
             break;
 
         case 4:
             if (trigger_obj_dialog_when_facing(&o->oSnowmansHeadUnkF4, DIALOG_111, 700.0f, 2)) {
-                func_802A3004();
-                create_star(-4700.0f, -1024.0f, 1890.0f);
+                spawn_mist_particles();
+                spawn_default_star(-4700.0f, -1024.0f, 1890.0f);
                 o->oAction = 1;
             }
             break;
     }
 
-    obj_push_mario_away_from_cylinder(180.0f, 150.0f);
+    cur_obj_push_mario_away_from_cylinder(180.0f, 150.0f);
 }
 
 void bhv_snowmans_body_checkpoint_loop(void) {

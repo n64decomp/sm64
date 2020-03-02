@@ -516,7 +516,7 @@ glabel L_EU_802E7B6C
 /* 0A75E4 802E7DE4 91E40006 */  lbu   $a0, 6($t7)
 /* 0A75E8 802E7DE8 02584821 */  addu  $t1, $s2, $t8
 /* 0A75EC 802E7DEC 01289021 */  addu  $s2, $t1, $t0
-/* 0A75F0 802E7DF0 0C0B93EE */  jal   func_eu_802e4fb8
+/* 0A75F0 802E7DF0 0C0B93EE */  jal   get_drum
 /* 0A75F4 802E7DF4 324500FF */   andi  $a1, $s2, 0xff
 /* 0A75F8 802E7DF8 14400005 */  bnez  $v0, .L80201E20
 /* 0A75FC 802E7DFC 24430004 */   addiu $v1, $v0, 4
@@ -575,7 +575,7 @@ glabel L_EU_802E7B6C
 .L80201EC8:
 /* 0A76B8 802E7EB8 1080000A */  beqz  $a0, .L80201EF4
 /* 0A76BC 802E7EBC 3C013F80 */   li    $at, 0x3F800000 # 1.000000
-/* 0A76C0 802E7EC0 0C0B9397 */  jal   func_eu_802e4e5c
+/* 0A76C0 802E7EC0 0C0B9397 */  jal   instrument_get_audio_bank_sound
 /* 0A76C4 802E7EC4 00C02825 */   move  $a1, $a2
 /* 0A76C8 802E7EC8 8E2B0048 */  lw    $t3, 0x48($s1)
 /* 0A76CC 802E7ECC 004B6826 */  xor   $t5, $v0, $t3
@@ -674,7 +674,7 @@ glabel L_EU_802E7F50
 .L80202030:
 /* 0A7820 802E8020 10800011 */  beqz  $a0, .L80202078
 /* 0A7824 802E8024 3C038030 */   lui   $v1, %hi(gNoteFrequencies)
-/* 0A7828 802E8028 0C0B9397 */  jal   func_eu_802e4e5c
+/* 0A7828 802E8028 0C0B9397 */  jal   instrument_get_audio_bank_sound
 /* 0A782C 802E802C 00000000 */   nop
 /* 0A7830 802E8030 8E2C0048 */  lw    $t4, 0x48($s1)
 /* 0A7834 802E8034 3C038030 */  lui   $v1, %hi(gNoteFrequencies) # $v1, 0x8030

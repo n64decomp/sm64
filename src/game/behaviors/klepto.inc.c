@@ -30,12 +30,12 @@ static s32 func_8030F158(void) {
         func_802F932C(5);
     } else if (o->oSoundStateID == 5) {
         if (func_802F932C(0)) {
-            PlaySound2(SOUND_GENERAL_SWISH_WATER);
+            cur_obj_play_sound_2(SOUND_GENERAL_SWISH_WATER);
             o->header.gfx.unk38.animFrame = 9;
         }
     } else {
-        if (obj_check_anim_frame(9)) {
-            PlaySound2(SOUND_GENERAL_SWISH_WATER);
+        if (cur_obj_check_anim_frame(9)) {
+            cur_obj_play_sound_2(SOUND_GENERAL_SWISH_WATER);
         }
         return TRUE;
     }
@@ -49,9 +49,9 @@ static void func_8030F218(void) {
             o->oKleptoUnk1AE = 0;
         } else {
             if (o->oSoundStateID == 0) {
-                if (obj_check_anim_frame(9)) {
-                    PlaySound2(SOUND_GENERAL_SWISH_WATER);
-                    set_obj_animation_and_sound_state(6);
+                if (cur_obj_check_anim_frame(9)) {
+                    cur_obj_play_sound_2(SOUND_GENERAL_SWISH_WATER);
+                    cur_obj_init_animation_with_sound(6);
                 }
             } else if (--o->oKleptoUnk1AE == 0) {
                 o->oKleptoUnk1AE = -random_linear_offset(60, 60);
@@ -121,7 +121,7 @@ static void klepto_change_target(void) {
     o->oHomeY = sKleptoTargetPositions[o->oKleptoTargetNumber][1] + o->oKleptoUnkF8;
     o->oHomeZ = sKleptoTargetPositions[o->oKleptoTargetNumber][2];
 
-    o->oKleptoUnkFC = obj_lateral_dist_to_home() / 2;
+    o->oKleptoUnkFC = cur_obj_lateral_dist_to_home() / 2;
 }
 
 static void klepto_circle_target(f32 radius, f32 targetSpeed) {
@@ -190,14 +190,14 @@ static void klepto_act_wait_for_mario(void) {
 static void klepto_act_turn_toward_mario(void) {
     klepto_target_mario();
 
-    if (func_8030F158() && func_8029F828() && o->oKleptoDistanceToTarget > 800.0f
+    if (func_8030F158() && cur_obj_check_if_at_animation_end() && o->oKleptoDistanceToTarget > 800.0f
         && abs_angle_diff(o->oAngleToMario, o->oFaceAngleYaw) < 0x800 && o->oKleptoUnk1B0 < 0x400) {
-        PlaySound2(SOUND_OBJ_KLEPTO1);
+        cur_obj_play_sound_2(SOUND_OBJ_KLEPTO1);
         o->oAction = KLEPTO_ACT_DIVE_AT_MARIO;
         o->oMoveAngleYaw = o->oFaceAngleYaw;
         o->oFlags |= 0x00000008;
 
-        set_obj_animation_and_sound_state(3);
+        cur_obj_init_animation_with_sound(3);
     }
 
     klepto_circle_target(1000.0f, 40.0f);
@@ -207,8 +207,8 @@ static void klepto_act_turn_toward_mario(void) {
 static void klepto_act_dive_at_mario(void) {
     approach_f32_ptr(&o->oKleptoSpeed, 60.0f, 10.0f);
     if (o->oSoundStateID == 2) {
-        if (obj_check_anim_frame(11)) {
-            PlaySound2(SOUND_GENERAL_SWISH_WATER);
+        if (cur_obj_check_anim_frame(11)) {
+            cur_obj_play_sound_2(SOUND_GENERAL_SWISH_WATER);
         }
 
         if (func_802F932C(0)) {
@@ -224,7 +224,7 @@ static void klepto_act_dive_at_mario(void) {
         if (o->oSoundStateID == 3) {
             func_802F932C(4);
         } else if (o->oVelY > 0.0f && dy > 200.0f) {
-            set_obj_animation_and_sound_state(2);
+            cur_obj_init_animation_with_sound(2);
         }
 
         o->oKleptoUnk1B0 = -0x3000;
@@ -254,13 +254,13 @@ static void klepto_act_dive_at_mario(void) {
 }
 
 static void klepto_act_struck_by_mario(void) {
-    set_obj_animation_and_sound_state(1);
+    cur_obj_init_animation_with_sound(1);
 
     obj_face_pitch_approach(0, 800);
     obj_face_yaw_approach(o->oMoveAngleYaw + 0x8000, 800);
     obj_face_roll_approach(0, 800);
 
-    if (func_8029F788()) {
+    if (cur_obj_check_if_near_animation_end()) {
         o->oAction = KLEPTO_ACT_RETREAT;
         o->oGravity = 0.0f;
 
@@ -274,7 +274,7 @@ static void klepto_act_struck_by_mario(void) {
 }
 
 static void klepto_act_retreat(void) {
-    set_obj_animation_and_sound_state(0);
+    cur_obj_init_animation_with_sound(0);
     approach_f32_ptr(&o->oKleptoSpeed, 40.0f, 10.0f);
 
     obj_move_pitch_approach(o->oKleptoUnk1B0, 1000);
@@ -288,7 +288,7 @@ static void klepto_act_retreat(void) {
             o->oHomeY = 1500.0f;
             o->oKleptoUnk1AE = -100;
             o->oFlags |= 0x00000008;
-            obj_become_tangible();
+            cur_obj_become_tangible();
         }
     }
 }
@@ -302,7 +302,7 @@ static void klepto_act_reset_position(void) {
         o->oHomeY = o->oKleptoDistanceToTarget = 9999.0f;
 
         if (o->oPosY > 5000.0f) {
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
         } else {
             klepto_approach_target(20.0f);
         }
@@ -321,11 +321,11 @@ void obj_set_speed_to_zero(void) {
 void bhv_klepto_update(void) {
     UNUSED s32 unused;
 
-    obj_update_floor_and_walls();
+    cur_obj_update_floor_and_walls();
 
-    o->oKleptoDistanceToTarget = obj_lateral_dist_to_home();
+    o->oKleptoDistanceToTarget = cur_obj_lateral_dist_to_home();
     o->oKleptoUnk1B0 = obj_get_pitch_to_home(o->oKleptoDistanceToTarget);
-    o->oKleptoYawToTarget = obj_angle_to_home();
+    o->oKleptoYawToTarget = cur_obj_angle_to_home();
 
     if (o->oAction == KLEPTO_ACT_STRUCK_BY_MARIO) {
         klepto_act_struck_by_mario();
@@ -357,13 +357,13 @@ void bhv_klepto_update(void) {
         }
 
         if (obj_handle_attacks(&sKleptoHitbox, o->oAction, sKleptoAttackHandlers)) {
-            PlaySound2(SOUND_OBJ_KLEPTO2);
+            cur_obj_play_sound_2(SOUND_OBJ_KLEPTO2);
 
             if (o->oAnimState == KLEPTO_ANIM_STATE_HOLDING_CAP) {
                 save_file_clear_flags(SAVE_FLAG_CAP_ON_KLEPTO);
                 spawn_object(o, MODEL_MARIOS_CAP, bhvNormalCap);
             } else if (o->oAnimState == KLEPTO_ANIM_STATE_HOLDING_STAR) {
-                create_star(-5550.0f, 300.0f, -930.0f);
+                spawn_default_star(-5550.0f, 300.0f, -930.0f);
             }
 
             o->oAnimState = KLEPTO_ANIM_STATE_HOLDING_NOTHING;
@@ -372,16 +372,16 @@ void bhv_klepto_update(void) {
 
             o->oMoveAngleYaw = o->oAngleToMario + 0x8000;
             o->oFlags &= ~0x00000008;
-            obj_become_intangible();
+            cur_obj_become_intangible();
         } else if (gMarioStates[0].action == ACT_SLEEPING
                    || (gMarioStates[0].action
                        & (ACT_FLAG_SHORT_HITBOX | ACT_FLAG_BUTT_OR_STOMACH_SLIDE))) {
-            obj_become_intangible();
+            cur_obj_become_intangible();
         } else {
-            obj_become_tangible();
+            cur_obj_become_tangible();
         }
     }
 
     obj_roll_to_match_yaw_turn(o->oKleptoYawToTarget, 0x3000, 600);
-    obj_move_standard(78);
+    cur_obj_move_standard(78);
 }

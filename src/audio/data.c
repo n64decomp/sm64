@@ -4,10 +4,10 @@
 #include "data.h"
 #include "effects.h"
 
-extern struct OSMesgQueue *OSMesgQueue0;
-extern struct OSMesgQueue *OSMesgQueue1;
-extern struct OSMesgQueue *OSMesgQueue2;
-extern struct OSMesgQueue *OSMesgQueue3;
+extern struct OSMesgQueue OSMesgQueue0;
+extern struct OSMesgQueue OSMesgQueue1;
+extern struct OSMesgQueue OSMesgQueue2;
+extern struct OSMesgQueue OSMesgQueue3;
 
 #ifdef VERSION_EU
 struct ReverbSettingsEU sReverbSettings[] = {
@@ -182,7 +182,7 @@ struct AdsrEnvelope gDefaultEnvelope[] = {
 
 #ifdef VERSION_EU
 struct NoteSubEu gZeroNoteSub = { 0 };
-struct NoteSubEu gDefaultNoteSub = { 1, 1 };
+struct NoteSubEu gDefaultNoteSub = { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, { NULL } };
 
 s16 sSawtoothWaves[256] = {
     0,       1023,   2047,    3071,   4095,    5119,   6143,    7167,   8191,    9215,   10239,

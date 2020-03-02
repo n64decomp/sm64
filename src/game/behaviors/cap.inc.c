@@ -12,8 +12,8 @@ static struct ObjectHitbox sCapHitbox = {
     /* hurtboxHeight:     */ 90,
 };
 
-s32 func_802F0904(void) {
-    set_object_hitbox(o, &sCapHitbox);
+s32 cap_set_hitbox(void) {
+    obj_set_hitbox(o, &sCapHitbox);
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         o->activeFlags = 0;
         o->oInteractStatus = 0;
@@ -23,13 +23,13 @@ s32 func_802F0904(void) {
     return 0;
 }
 
-void func_802F0978(void) {
+void cap_despawn(void) {
     if (o->oTimer > 300) {
         obj_flicker_and_disappear(o, 300);
     }
 }
 
-void func_802F09C0(void) {
+void cap_check_quicksand(void) {
     if (sObjFloor == NULL)
         return;
 
@@ -74,7 +74,7 @@ void func_802F09C0(void) {
     }
 }
 
-void func_802F0B68(void) {
+void cap_sink_quicksand(void) {
     switch (o->oAction) {
         case 10:
             if (o->oTimer < 10) {
@@ -106,7 +106,7 @@ void func_802F0B68(void) {
             break;
     }
 
-    func_802F09C0();
+    cap_check_quicksand();
 }
 
 void bhv_wing_cap_init(void) {
@@ -116,7 +116,7 @@ void bhv_wing_cap_init(void) {
     o->oOpacity = 255;
 }
 
-void func_802F0D70(void) {
+void cap_scale_vertically(void) {
     o->oCapUnkF8 += 0x2000;
     o->header.gfx.scale[1] = coss(o->oCapUnkF8) * 0.3 + 0.7;
     if (o->oCapUnkF8 == 0x10000) {
@@ -125,13 +125,13 @@ void func_802F0D70(void) {
     }
 }
 
-void func_802F0E0C(void) {
+void wing_vanish_cap_act_0(void) {
     s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
     sp1E = object_step();
     if (sp1E & 0x01) {
-        func_802F09C0();
+        cap_check_quicksand();
         if (o->oVelY != 0.0f) {
             o->oCapUnkF4 = 1;
             o->oVelY = 0.0f;
@@ -139,26 +139,26 @@ void func_802F0E0C(void) {
     }
 
     if (o->oCapUnkF4 == 1)
-        func_802F0D70();
+        cap_scale_vertically();
 }
 
 void bhv_wing_vanish_cap_loop(void) {
     switch (o->oAction) {
         case 0:
-            func_802F0E0C();
+            wing_vanish_cap_act_0();
             break;
 
         default:
             object_step();
-            func_802F0B68();
+            cap_sink_quicksand();
             break;
     }
 
     if (o->oTimer > 20)
-        obj_become_tangible();
+        cur_obj_become_tangible();
 
-    func_802F0978();
-    func_802F0904();
+    cap_despawn();
+    cap_set_hitbox();
 }
 
 void bhv_metal_cap_init(void) {
@@ -168,32 +168,32 @@ void bhv_metal_cap_init(void) {
     o->oOpacity = 0xFF;
 }
 
-void func_802F0FE0(void) {
+void metal_cap_act_0(void) {
     s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
     sp1E = object_step();
     if (sp1E & 0x01)
-        func_802F09C0();
+        cap_check_quicksand();
 }
 
 void bhv_metal_cap_loop(void) {
     switch (o->oAction) {
         case 0:
-            func_802F0FE0();
+            metal_cap_act_0();
             break;
 
         default:
             object_step();
-            func_802F0B68();
+            cap_sink_quicksand();
             break;
     }
 
     if (o->oTimer > 20)
-        obj_become_tangible();
+        cur_obj_become_tangible();
 
-    func_802F0904();
-    func_802F0978();
+    cap_set_hitbox();
+    cap_despawn();
 }
 
 void bhv_normal_cap_init(void) {
@@ -205,7 +205,7 @@ void bhv_normal_cap_init(void) {
     save_file_set_cap_pos(o->oPosX, o->oPosY, o->oPosZ);
 }
 
-void func_802F1190(void) {
+void normal_cap_set_save_flags(void) {
     save_file_clear_flags(SAVE_FLAG_CAP_ON_GROUND);
 
     switch (gCurrCourseNum) {
@@ -227,14 +227,14 @@ void func_802F1190(void) {
     }
 }
 
-void func_802F1234(void) {
+void normal_cap_act_0(void) {
     s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
     o->oFaceAnglePitch += o->oForwardVel * 80.0f;
     sp1E = object_step();
     if (sp1E & 0x01) {
-        func_802F09C0();
+        cap_check_quicksand();
 
         if (o->oVelY != 0.0f) {
             o->oCapUnkF4 = 1;
@@ -244,18 +244,18 @@ void func_802F1234(void) {
     }
 
     if (o->oCapUnkF4 == 1)
-        func_802F0D70();
+        cap_scale_vertically();
 }
 
 void bhv_normal_cap_loop(void) {
     switch (o->oAction) {
         case 0:
-            func_802F1234();
+            normal_cap_act_0();
             break;
 
         default:
             object_step();
-            func_802F0B68();
+            cap_sink_quicksand();
             break;
     }
 
@@ -263,9 +263,9 @@ void bhv_normal_cap_loop(void) {
         save_file_set_cap_pos(o->oPosX, o->oPosY, o->oPosZ);
 
     if (o->activeFlags == 0)
-        func_802F1190();
+        normal_cap_set_save_flags();
 
-    if (func_802F0904() == 1)
+    if (cap_set_hitbox() == 1)
         save_file_clear_flags(SAVE_FLAG_CAP_ON_GROUND);
 }
 

@@ -124,12 +124,6 @@ enum SoundModeMenuActionPhase {
     SOUND_MODE_PHASE_MAIN
 };
 
-enum Languages {
-    LANGUAGE_EN,
-    LANGUAGE_FR,
-    LANGUAGE_DE
-};
-
 extern u32 gGlobalTimer;
 
 extern void beh_yellow_background_menu_init(void);

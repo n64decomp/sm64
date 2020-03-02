@@ -21,7 +21,7 @@ const GeoLayout lll_geo_000E00[] = {
                GEO_ASM(   0, geo_movtex_pause_control),
                GEO_ASM(0x2201, geo_movtex_draw_nocolor),
                GEO_RENDER_OBJ(),
-               GEO_ASM(  12, geo_enfvx_main),
+               GEO_ASM(  12, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

@@ -24,11 +24,11 @@ static struct ObjectHitbox sSwoopHitbox = {
  * toward him and enter the move action.
  */
 static void swoop_act_idle(void) {
-    set_obj_animation_and_sound_state(1);
+    cur_obj_init_animation_with_sound(1);
 
     if (approach_f32_ptr(&o->header.gfx.scale[0], 1.0f, 0.05f) && o->oDistanceToMario < 1500.0f) {
-        if (obj_rotate_yaw_toward(o->oAngleToMario, 800)) {
-            PlaySound2(SOUND_OBJ2_SWOOP);
+        if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 800)) {
+            cur_obj_play_sound_2(SOUND_OBJ2_SWOOP);
             o->oAction = SWOOP_ACT_MOVE;
             o->oVelY = -12.0f;
         }
@@ -42,9 +42,9 @@ static void swoop_act_idle(void) {
  * him. Return to home once mario is far away.
  */
 static void swoop_act_move(void) {
-    func_8029ED98(0, 2.0f);
-    if (func_8029F788()) {
-        PlaySound2(SOUND_OBJ_UNKNOWN6);
+    cur_obj_init_animation_with_accel_and_sound(0, 2.0f);
+    if (cur_obj_check_if_near_animation_end()) {
+        cur_obj_play_sound_2(SOUND_OBJ_UNKNOWN6);
     }
 
     if (o->oForwardVel == 0.0f) {
@@ -53,10 +53,10 @@ static void swoop_act_move(void) {
             o->oForwardVel = 10.0f;
             o->oVelY = -10.0f;
         }
-    } else if (obj_mario_far_away()) {
+    } else if (cur_obj_mario_far_away()) {
         // If mario far away, reset
         o->oAction = SWOOP_ACT_IDLE;
-        obj_set_pos_to_home();
+        cur_obj_set_pos_to_home();
         o->header.gfx.scale[0] = o->oForwardVel = o->oVelY = 0.0f;
         o->oFaceAngleRoll = 0;
     } else {
@@ -75,7 +75,7 @@ static void swoop_act_move(void) {
             }
         } else if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
             // Bounce off a wall and don't bounce again for 30 frames.
-            o->oSwoopTargetYaw = obj_reflect_move_angle_off_wall();
+            o->oSwoopTargetYaw = cur_obj_reflect_move_angle_off_wall();
             o->oSwoopBonkCountdown = 30;
         }
 
@@ -86,7 +86,7 @@ static void swoop_act_move(void) {
         obj_move_pitch_approach(o->oSwoopTargetPitch, 140);
 
         // Jitter yaw a bit
-        obj_rotate_yaw_toward(o->oSwoopTargetYaw + (s32)(3000 * coss(4000 * gGlobalTimer)), 1200);
+        cur_obj_rotate_yaw_toward(o->oSwoopTargetYaw + (s32)(3000 * coss(4000 * gGlobalTimer)), 1200);
         obj_roll_to_match_yaw_turn(o->oSwoopTargetYaw, 0x3000, 500);
 
         // Jitter roll a bit
@@ -103,7 +103,7 @@ void bhv_swoop_update(void) {
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         o->oDeathSound = SOUND_OBJ_SWOOP_DEATH;
 
-        obj_update_floor_and_walls();
+        cur_obj_update_floor_and_walls();
 
         switch (o->oAction) {
             case SWOOP_ACT_IDLE:
@@ -114,8 +114,8 @@ void bhv_swoop_update(void) {
                 break;
         }
 
-        obj_scale(o->header.gfx.scale[0]);
-        obj_move_standard(78);
+        cur_obj_scale(o->header.gfx.scale[0]);
+        cur_obj_move_standard(78);
 
         obj_check_attacks(&sSwoopHitbox, o->oAction);
     }

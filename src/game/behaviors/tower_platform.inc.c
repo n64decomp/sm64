@@ -2,7 +2,7 @@
 
 void bhv_wf_solid_tower_platform_loop(void) {
     if (o->parentObj->oAction == 3)
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
 }
 
 void bhv_wf_elevator_tower_platform_loop(void) {
@@ -12,7 +12,7 @@ void bhv_wf_elevator_tower_platform_loop(void) {
                 o->oAction++;
             break;
         case 1:
-            PlaySound(SOUND_ENV_ELEVATOR1);
+            cur_obj_play_sound_1(SOUND_ENV_ELEVATOR1);
             if (o->oTimer > 140)
                 o->oAction++;
             else
@@ -23,7 +23,7 @@ void bhv_wf_elevator_tower_platform_loop(void) {
                 o->oAction++;
             break;
         case 3:
-            PlaySound(SOUND_ENV_ELEVATOR1);
+            cur_obj_play_sound_1(SOUND_ENV_ELEVATOR1);
             if (o->oTimer > 140)
                 o->oAction = 0;
             else
@@ -31,7 +31,7 @@ void bhv_wf_elevator_tower_platform_loop(void) {
             break;
     }
     if (o->parentObj->oAction == 3)
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
 }
 
 void bhv_wf_sliding_tower_platform_loop(void) {
@@ -48,14 +48,14 @@ void bhv_wf_sliding_tower_platform_loop(void) {
             o->oForwardVel = o->oPlatformUnk10C;
             break;
     }
-    obj_compute_vel_xz();
+    cur_obj_compute_vel_xz();
     o->oPosX += o->oVelX;
     o->oPosZ += o->oVelZ;
     if (o->parentObj->oAction == 3)
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
 }
 
-void func_802AF9A4(s16 a, const BehaviorScript *beh) {
+void spawn_and_init_wf_platforms(s16 a, const BehaviorScript *beh) {
     s16 yaw;
     struct Object *platform = spawn_object(o, a, beh);
     yaw = o->oPlatformSpawnerUnkF4 * o->oPlatformSpawnerUnkFC + o->oPlatformSpawnerUnkF8;
@@ -68,7 +68,7 @@ void func_802AF9A4(s16 a, const BehaviorScript *beh) {
     o->oPlatformSpawnerUnkF4++;
 }
 
-void func_802AFAFC(void) {
+void spawn_wf_platform_group(void) {
     UNUSED s32 unused = 8;
     o->oPlatformSpawnerUnkF4 = 0;
     o->oPlatformSpawnerUnkF8 = 0;
@@ -76,14 +76,14 @@ void func_802AFAFC(void) {
     o->oPlatformSpawnerUnk100 = 704.0f;
     o->oPlatformSpawnerUnk104 = 380.0f;
     o->oPlatformSpawnerUnk108 = 3.0f;
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSlidingTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSlidingTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSlidingTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
-    func_802AF9A4(MODEL_WF_TOWER_SQUARE_PLATORM_ELEVATOR, bhvWfElevatorTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSlidingTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSlidingTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSlidingTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM, bhvWfSolidTowerPlatform);
+    spawn_and_init_wf_platforms(MODEL_WF_TOWER_SQUARE_PLATORM_ELEVATOR, bhvWfElevatorTowerPlatform);
 }
 
 void bhv_tower_platform_group_loop(void) {
@@ -95,7 +95,7 @@ void bhv_tower_platform_group_loop(void) {
                 o->oAction++;
             break;
         case 1:
-            func_802AFAFC();
+            spawn_wf_platform_group();
             o->oAction++;
             break;
         case 2:

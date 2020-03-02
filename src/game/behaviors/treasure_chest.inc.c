@@ -59,7 +59,7 @@ void bhv_treasure_chest_top_loop(void) {
 
 void bhv_treasure_chest_bottom_init(void) {
     spawn_object_relative(0, 0, 102, -77, o, MODEL_TREASURE_CHEST_LID, bhvTreasureChestTop);
-    set_object_hitbox(o, &sTreasureChestBottomHitbox);
+    obj_set_hitbox(o, &sTreasureChestBottomHitbox);
 }
 
 void bhv_treasure_chest_bottom_loop(void) {
@@ -76,7 +76,7 @@ void bhv_treasure_chest_bottom_loop(void) {
                             o->parentObj->oTreasureChestUnkF4 = 1;
                             o->parentObj->oTreasureChestUnkF8 = 1;
                             o->oAction = 2;
-                            obj_become_tangible();
+                            cur_obj_become_tangible();
                             play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
                         }
                     }
@@ -90,18 +90,18 @@ void bhv_treasure_chest_bottom_loop(void) {
             break;
 
         case 2:
-            obj_become_intangible();
+            cur_obj_become_intangible();
             if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 500)) {
                 o->parentObj->oTreasureChestUnkF8 = 0;
                 o->oAction = 0;
             }
     }
 
-    obj_push_mario_away_from_cylinder(150.0f, 150.0f);
+    cur_obj_push_mario_away_from_cylinder(150.0f, 150.0f);
     o->oInteractStatus = 0;
 }
 
-void func_802F6E8C(s8 sp3B, s32 sp3C, s32 sp40, s32 sp44, s16 sp4A) {
+void spawn_treasure_chest(s8 sp3B, s32 sp3C, s32 sp40, s32 sp44, s16 sp4A) {
     struct Object *sp34;
     sp34 = spawn_object_abs_with_rot(o, 0, MODEL_TREASURE_CHEST_BASE, bhvTreasureChestBottom, sp3C,
                                      sp40, sp44, 0, sp4A, 0);
@@ -109,10 +109,10 @@ void func_802F6E8C(s8 sp3B, s32 sp3C, s32 sp40, s32 sp44, s16 sp4A) {
 }
 
 void bhv_treasure_chest_ship_init(void) {
-    func_802F6E8C(1, 400, -350, -2700, 0);
-    func_802F6E8C(2, 650, -350, -940, -0x6001);
-    func_802F6E8C(3, -550, -350, -770, 0x5FFF);
-    func_802F6E8C(4, 100, -350, -1700, 0);
+    spawn_treasure_chest(1, 400, -350, -2700, 0);
+    spawn_treasure_chest(2, 650, -350, -940, -0x6001);
+    spawn_treasure_chest(3, -550, -350, -770, 0x5FFF);
+    spawn_treasure_chest(4, 100, -350, -1700, 0);
     o->oTreasureChestUnkF4 = 1;
     o->oTreasureChestUnkFC = 0;
 }
@@ -142,10 +142,10 @@ void bhv_treasure_chest_ship_loop(void) {
 }
 
 void bhv_treasure_chest_jrb_init(void) {
-    func_802F6E8C(1, -1700, -2812, -1150, 0x7FFF);
-    func_802F6E8C(2, -1150, -2812, -1550, 0x7FFF);
-    func_802F6E8C(3, -2400, -2812, -1800, 0x7FFF);
-    func_802F6E8C(4, -1800, -2812, -2100, 0x7FFF);
+    spawn_treasure_chest(1, -1700, -2812, -1150, 0x7FFF);
+    spawn_treasure_chest(2, -1150, -2812, -1550, 0x7FFF);
+    spawn_treasure_chest(3, -2400, -2812, -1800, 0x7FFF);
+    spawn_treasure_chest(4, -1800, -2812, -2100, 0x7FFF);
     o->oTreasureChestUnkF4 = 1;
     o->oTreasureChestUnkFC = 1;
 }
@@ -161,8 +161,8 @@ void bhv_treasure_chest_jrb_loop(void) {
 
         case 1:
             if (o->oTimer == 60) {
-                func_802A3004();
-                create_star(-1800.0f, -2500.0f, -1700.0f);
+                spawn_mist_particles();
+                spawn_default_star(-1800.0f, -2500.0f, -1700.0f);
                 o->oAction = 2;
             }
             break;
@@ -173,10 +173,10 @@ void bhv_treasure_chest_jrb_loop(void) {
 }
 
 void bhv_treasure_chest_init(void) {
-    func_802F6E8C(1, -4500, -5119, 1300, -0x6001);
-    func_802F6E8C(2, -1800, -5119, 1050, 0x1FFF);
-    func_802F6E8C(3, -4500, -5119, -1100, 9102);
-    func_802F6E8C(4, -2400, -4607, 125, 16019);
+    spawn_treasure_chest(1, -4500, -5119, 1300, -0x6001);
+    spawn_treasure_chest(2, -1800, -5119, 1050, 0x1FFF);
+    spawn_treasure_chest(3, -4500, -5119, -1100, 9102);
+    spawn_treasure_chest(4, -2400, -4607, 125, 16019);
 
     o->oTreasureChestUnkF4 = 1;
     o->oTreasureChestUnkFC = 0;
@@ -193,8 +193,8 @@ void bhv_treasure_chest_loop(void) {
 
         case 1:
             if (o->oTimer == 60) {
-                func_802A3004();
-                create_star(-1900.0f, -4000.0f, -1400.0f);
+                spawn_mist_particles();
+                spawn_default_star(-1900.0f, -4000.0f, -1400.0f);
                 o->oAction = 2;
             }
             break;

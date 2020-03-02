@@ -17,20 +17,20 @@ void bhv_sunken_ship_part_loop(void) {
         o->oOpacity = 140;
     else
         o->oOpacity = o->oDistanceToMario * 140.0f / 10000.0;
-    obj_disable_rendering();
+    cur_obj_disable_rendering();
 }
 
 void bhv_ship_part_3_loop(void) {
     s16 sp1E = o->oFaceAnglePitch;
     s16 sp1C = o->oFaceAngleRoll;
-    func_802A3470();
+    cur_obj_set_pos_to_home_with_debug();
     o->oShipPart3UnkF4 += 0x100;
     o->oFaceAnglePitch = sins(o->oShipPart3UnkF4) * 1024.0f;
     o->oFaceAngleRoll = sins(o->oShipPart3UnkF8) * 1024.0f;
     o->oAngleVelPitch = o->oFaceAnglePitch - sp1E;
     o->oAngleVelRoll = o->oFaceAngleRoll - sp1C;
     if (gMarioObject->oPosY > 1000.0f)
-        PlaySound(SOUND_ENV_BOAT_ROCKING1);
+        cur_obj_play_sound_1(SOUND_ENV_BOAT_ROCKING1);
 }
 
 void bhv_jrb_sliding_box_loop(void) {
@@ -44,7 +44,7 @@ void bhv_jrb_sliding_box_loop(void) {
     Vec3f sp20;
     s16 sp1E;
     if (o->oJrbSlidingBoxUnkF4 == NULL) {
-        sp3C = obj_nearest_object_with_behavior(bhvInSunkenShip3);
+        sp3C = cur_obj_nearest_object_with_behavior(bhvInSunkenShip3);
         if (sp3C != NULL) // NULL check only for assignment, not for dereference?
             o->oJrbSlidingBoxUnkF4 = sp3C;
         o->oParentRelativePosX = o->oPosX - sp3C->oPosX;
@@ -80,12 +80,12 @@ void bhv_jrb_sliding_box_loop(void) {
     o->oParentRelativePosZ += o->oJrbSlidingBoxUnkFC;
     if (gMarioObject->oPosY > 1000.0f)
         if (absf(o->oJrbSlidingBoxUnkFC) > 3.0f)
-            PlaySound(SOUND_AIR_ROUGH_SLIDE);
-    set_object_hitbox(o, &sSkullSlidingBoxHitbox);
+            cur_obj_play_sound_1(SOUND_AIR_ROUGH_SLIDE);
+    obj_set_hitbox(o, &sSkullSlidingBoxHitbox);
     if (!(o->oJrbSlidingBoxUnkF8 & 0x7FFF))
-        obj_become_tangible();
-    if (are_objects_collided(o, gMarioObject)) {
+        cur_obj_become_tangible();
+    if (obj_check_if_collided_with_object(o, gMarioObject)) {
         o->oInteractStatus = 0;
-        obj_become_intangible();
+        cur_obj_become_intangible();
     }
 }

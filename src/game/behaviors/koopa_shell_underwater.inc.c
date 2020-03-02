@@ -12,27 +12,27 @@ struct ObjectHitbox sKoopaShellUnderwaterHitbox = {
     /* hurtboxHeight: */ 0,
 };
 
-void func_802AA0D4(void) {
-    set_object_hitbox(o, &sKoopaShellUnderwaterHitbox);
+void set_koopa_shell_underwater_hitbox(void) {
+    obj_set_hitbox(o, &sKoopaShellUnderwaterHitbox);
 }
 
 void bhv_koopa_shell_underwater_loop(void) {
     switch (o->oHeldState) {
         case HELD_FREE:
-            func_802AA0D4();
+            set_koopa_shell_underwater_hitbox();
             break;
         case HELD_HELD:
-            func_8029FA5C(-1, 0);
+            cur_obj_unrender_and_reset_state(-1, 0);
             break;
         case HELD_THROWN:
         case HELD_DROPPED:
-            mark_object_for_deletion(o);
-            func_802A3004();
+            obj_mark_for_deletion(o);
+            spawn_mist_particles();
             break;
     }
     if (o->oInteractStatus & INT_STATUS_STOP_RIDING) {
-        mark_object_for_deletion(o);
-        func_802A3004();
+        obj_mark_for_deletion(o);
+        spawn_mist_particles();
     }
     o->oInteractStatus = 0;
 }

@@ -24,7 +24,7 @@ const GeoLayout ddd_geo_000570[] = {
                GEO_ASM(   0, geo_movtex_pause_control),
                GEO_ASM(0x2302, geo_movtex_draw_water_regions),
                GEO_RENDER_OBJ(),
-               GEO_ASM(  14, geo_enfvx_main),
+               GEO_ASM(  14, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

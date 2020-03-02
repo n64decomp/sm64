@@ -1,6 +1,6 @@
 // star_door.c.inc
 
-void func_802A4DB0(void) {
+void star_door_update_pos(void) {
     o->oVelX = (o->oUnkBC) * coss(o->oMoveAngleYaw);
     o->oVelZ = (o->oUnkBC) * -sins(o->oMoveAngleYaw);
     o->oPosX += o->oVelX;
@@ -10,10 +10,10 @@ void func_802A4DB0(void) {
 void bhv_star_door_loop(void) {
     UNUSED u8 pad[4];
     struct Object *sp18;
-    sp18 = obj_nearest_object_with_behavior(bhvStarDoor);
+    sp18 = cur_obj_nearest_object_with_behavior(bhvStarDoor);
     switch (o->oAction) {
         case 0:
-            obj_become_tangible();
+            cur_obj_become_tangible();
             if (0x30000 & o->oInteractStatus)
                 o->oAction = 1;
             if (sp18 != NULL && sp18->oAction != 0)
@@ -21,10 +21,10 @@ void bhv_star_door_loop(void) {
             break;
         case 1:
             if (o->oTimer == 0 && (s16)(o->oMoveAngleYaw) >= 0)
-                PlaySound2(SOUND_GENERAL_STAR_DOOR_OPEN);
-            obj_become_intangible();
+                cur_obj_play_sound_2(SOUND_GENERAL_STAR_DOOR_OPEN);
+            cur_obj_become_intangible();
             o->oUnkBC = -8.0f;
-            func_802A4DB0();
+            star_door_update_pos();
             if (o->oTimer >= 16)
                 o->oAction++;
             break;
@@ -34,9 +34,9 @@ void bhv_star_door_loop(void) {
             break;
         case 3:
             if (o->oTimer == 0 && (s16)(o->oMoveAngleYaw) >= 0)
-                PlaySound2(SOUND_GENERAL_STAR_DOOR_CLOSE);
+                cur_obj_play_sound_2(SOUND_GENERAL_STAR_DOOR_CLOSE);
             o->oUnkBC = 8.0f;
-            func_802A4DB0();
+            star_door_update_pos();
             if (o->oTimer >= 16)
                 o->oAction++;
             break;

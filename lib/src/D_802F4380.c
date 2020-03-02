@@ -2,7 +2,7 @@
 #include "hardware.h"
 #include "new_func.h"
 #include "macros.h"
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 u32 D_802F4380() {
     u32 sp3c;
     u32 sp38;

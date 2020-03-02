@@ -74,7 +74,7 @@ void bhv_falling_pillar_loop(void) {
                 o->oAction = FALLING_PILLAR_ACT_TURNING;
 
                 // Play the detaching sound.
-                PlaySound2(SOUND_GENERAL_POUND_ROCK);
+                cur_obj_play_sound_2(SOUND_GENERAL_POUND_ROCK);
             }
             break;
 
@@ -106,7 +106,7 @@ void bhv_falling_pillar_loop(void) {
 
                 // Make the camera shake and spawn dust clouds.
                 set_camera_shake_from_point(SHAKE_POS_MEDIUM, o->oPosX, o->oPosY, o->oPosZ);
-                func_802AA618(0, 0, 92.0f);
+                spawn_mist_particles_variable(0, 0, 92.0f);
 
                 // Go invisible.
                 o->activeFlags = 0;
@@ -136,7 +136,7 @@ void bhv_falling_pillar_hitbox_loop(void) {
     o->oPosZ = sins(pitch) * coss(yaw) * yOffset + z;
 
     // Give these a hitbox so they can collide with Mario.
-    set_object_hitbox(o, &sFallingPillarHitbox);
+    obj_set_hitbox(o, &sFallingPillarHitbox);
 
     // When the pillar goes inactive, the hitboxes also go inactive.
     if (o->parentObj->activeFlags == 0)

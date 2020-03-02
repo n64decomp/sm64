@@ -1,5 +1,5 @@
-#ifndef AUDIO_MEMORY_H
-#define AUDIO_MEMORY_H
+#ifndef AUDIO_HEAP_H
+#define AUDIO_HEAP_H
 
 #include "internal.h"
 
@@ -63,9 +63,10 @@ void sound_init_main_pools(s32 sizeForAudioInitPool);
 void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg3, s32 id);
 void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 arg2);
 #ifdef VERSION_EU
+s32 audio_shut_down_and_reset_step(void);
 void audio_reset_session(void);
 #else
 void audio_reset_session(struct AudioSessionSettings *preset);
 #endif
 
-#endif /* AUDIO_MEMORY_H */
+#endif /* AUDIO_HEAP_H */

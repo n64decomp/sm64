@@ -47,25 +47,25 @@ void bhv_donut_platform_update(void) {
             & ((1 << o->oBehParams2ndByte) ^ 0xFFFFFFFF);
 
         if (o->oDistanceToMario > 2500.0f) {
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
         } else {
-            func_802A3C98(150.0f, 1);
+            obj_explode_and_spawn_coins(150.0f, 1);
             create_sound_spawner(SOUND_GENERAL_DONUT_PLATFORM_EXPLOSION);
         }
     } else {
         if (o->oGravity == 0.0f) {
             if (gMarioObject->platform == o) {
-                obj_shake_y(4.0f);
+                cur_obj_shake_y(4.0f);
                 if (o->oTimer > 15) {
                     o->oGravity = -0.1f;
                 }
             } else {
-                obj_set_pos_to_home();
+                cur_obj_set_pos_to_home();
                 o->oTimer = 0;
             }
         } else {
-            obj_update_floor_and_walls();
-            obj_move_standard(78);
+            cur_obj_update_floor_and_walls();
+            cur_obj_move_standard(78);
         }
 
         load_object_collision_model();

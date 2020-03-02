@@ -30,11 +30,11 @@ void bhv_red_coin_init(void) {
     struct Object *hiddenRedCoinStar;
 
     // Set the red coins to have a parent of the closest red coin star.
-    hiddenRedCoinStar = obj_nearest_object_with_behavior(bhvHiddenRedCoinStar);
+    hiddenRedCoinStar = cur_obj_nearest_object_with_behavior(bhvHiddenRedCoinStar);
     if (hiddenRedCoinStar != NULL)
         o->parentObj = hiddenRedCoinStar;
     else {
-        hiddenRedCoinStar = obj_nearest_object_with_behavior(bhvBowserCourseRedCoinStar);
+        hiddenRedCoinStar = cur_obj_nearest_object_with_behavior(bhvBowserCourseRedCoinStar);
         if (hiddenRedCoinStar != NULL) {
             o->parentObj = hiddenRedCoinStar;
         } else {
@@ -42,7 +42,7 @@ void bhv_red_coin_init(void) {
         }
     }
 
-    set_object_hitbox(o, &sRedCoinHitbox);
+    obj_set_hitbox(o, &sRedCoinHitbox);
 }
 
 /**
@@ -74,7 +74,7 @@ void bhv_red_coin_loop(void) {
 #endif
         }
 
-        CoinCollected();
+        coin_collected();
         // Despawn the coin.
         o->oInteractStatus = 0;
     }

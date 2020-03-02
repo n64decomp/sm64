@@ -22,7 +22,7 @@ const GeoLayout wf_geo_000BF8[] = {
                GEO_RENDER_OBJ(),
                GEO_ASM(   0, geo_movtex_pause_control),
                GEO_ASM(0x2401, geo_movtex_draw_water_regions),
-               GEO_ASM(   0, geo_enfvx_main),
+               GEO_ASM(   0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

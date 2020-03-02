@@ -19,7 +19,7 @@ const GeoLayout wmotr_geo_0001F0[] = {
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wmotr_seg7_dl_0700EFD8),
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wmotr_seg7_dl_07010608),
                GEO_RENDER_OBJ(),
-               GEO_ASM(0, geo_enfvx_main),
+               GEO_ASM(0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

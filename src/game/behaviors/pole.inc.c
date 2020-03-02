@@ -21,7 +21,7 @@ void bhv_pole_init(void) {
 }
 
 /**
- * Main loop for bhvGiantPole. It is equivalent to BehClimbDetectLoop() except
+ * Main loop for bhvGiantPole. It is equivalent to bhv_pole_base_loop() except
  * for the fact that it spawns a yellow sphere at the top of the pole on the
  * first frame.
  */
@@ -31,5 +31,5 @@ void bhv_giant_pole_loop(void) {
         topBall = spawn_object(o, MODEL_YELLOW_SPHERE, bhvYellowBall);
         topBall->oPosY += o->hitboxHeight + 50.0f;
     }
-    BehClimbDetectLoop();
+    bhv_pole_base_loop();
 }

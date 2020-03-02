@@ -36,13 +36,13 @@ void bhv_ttc_treadmill_init(void) {
 }
 
 /**
- * Update function for bhvTTCTreadmill. It calls obj_compute_vel_xz afterward.
+ * Update function for bhvTTCTreadmill. It calls cur_obj_compute_vel_xz afterward.
  */
 void bhv_ttc_treadmill_update(void) {
     if (sMasterTreadmill == o || sMasterTreadmill == NULL) {
         sMasterTreadmill = o;
 
-        PlaySound(SOUND_ENV_ELEVATOR2);
+        cur_obj_play_sound_1(SOUND_ENV_ELEVATOR2);
 
         if (gTTCSpeedSetting == TTC_SPEED_RANDOM) {
             // Stay still for 5 frames, then accelerate toward the target speed

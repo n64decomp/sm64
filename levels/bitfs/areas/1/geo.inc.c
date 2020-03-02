@@ -21,7 +21,7 @@ const GeoLayout bitfs_geo_0007A0[] = {
                GEO_ASM(0x1902, geo_movtex_draw_nocolor),
                GEO_ASM(0x1903, geo_movtex_draw_nocolor),
                GEO_RENDER_OBJ(),
-               GEO_ASM(  12, geo_enfvx_main),
+               GEO_ASM(  12, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

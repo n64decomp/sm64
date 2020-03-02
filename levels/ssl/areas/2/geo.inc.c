@@ -24,7 +24,7 @@ const GeoLayout ssl_geo_0007CC[] = {
                GEO_ASM(0x802, geo_movtex_draw_nocolor),
                GEO_ASM(0x803, geo_movtex_draw_nocolor),
                GEO_RENDER_OBJ(),
-               GEO_ASM(   0, geo_enfvx_main),
+               GEO_ASM(   0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

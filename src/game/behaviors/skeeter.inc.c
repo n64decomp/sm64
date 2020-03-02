@@ -27,20 +27,20 @@ static void skeeter_spawn_waves(void) {
 
     for (i = 0; i < 4; i++) {
         spawn_object_relative_with_scale(0, D_80331C38[i].unk00, 0, D_80331C38[i].unk02, 0.8f, o,
-                                         MODEL_WATER_WAVES_SURF, bhvSkeeterWave);
+                                         MODEL_IDLE_WATER_WAVE, bhvSkeeterWave);
     }
 }
 
 static void skeeter_act_idle(void) {
     if (o->oMoveFlags & 0x00000003) {
-        set_obj_animation_and_sound_state(3);
+        cur_obj_init_animation_with_sound(3);
         o->oForwardVel = 0.0f;
 
-        if (o->oTimer > o->oSkeeterWaitTime && func_8029F788()) {
+        if (o->oTimer > o->oSkeeterWaitTime && cur_obj_check_if_near_animation_end()) {
             o->oAction = SKEETER_ACT_WALK;
         }
     } else {
-        set_obj_animation_and_sound_state(1);
+        cur_obj_init_animation_with_sound(1);
 
         if (o->oMoveFlags & 0x00000010) {
             skeeter_spawn_waves();
@@ -49,8 +49,8 @@ static void skeeter_act_idle(void) {
                                    5, 50, 200)) {
                 if (o->oSkeeterWaitTime != 0) {
                     o->oSkeeterWaitTime -= 1;
-                } else if (func_8029F788()) {
-                    PlaySound2(SOUND_OBJ_WALKING_WATER);
+                } else if (cur_obj_check_if_near_animation_end()) {
+                    cur_obj_play_sound_2(SOUND_OBJ_WALKING_WATER);
                     o->oAction = SKEETER_ACT_LUNGE;
                     o->oForwardVel = 80.0f;
                     o->oSkeeterUnk1AC = 0;
@@ -65,15 +65,15 @@ static void skeeter_act_lunge(void) {
         o->oAction = SKEETER_ACT_IDLE;
     } else {
         skeeter_spawn_waves();
-        set_obj_animation_and_sound_state(0);
+        cur_obj_init_animation_with_sound(0);
 
         if (o->oMoveFlags & 0x00000200) {
-            o->oMoveAngleYaw = obj_reflect_move_angle_off_wall();
+            o->oMoveAngleYaw = cur_obj_reflect_move_angle_off_wall();
             o->oForwardVel *= 0.3f;
             o->oFlags &= ~0x00000008;
         }
 
-        if (obj_forward_vel_approach(0.0f, 0.8f) && func_8029F828()) {
+        if (obj_forward_vel_approach(0.0f, 0.8f) && cur_obj_check_if_at_animation_end()) {
             o->oMoveAngleYaw = o->oFaceAngleYaw;
 
             if (o->oDistanceToMario >= 25000.0f) {
@@ -98,7 +98,7 @@ static void skeeter_act_walk(void) {
         obj_forward_vel_approach(o->oSkeeterUnkFC, 0.4f);
         sp24 = 0.12f * o->oForwardVel;
 
-        func_8029ED98(2, sp24);
+        cur_obj_init_animation_with_accel_and_sound(2, sp24);
         func_802F9378(3, 13, SOUND_OBJ_SKEETER_WALK);
 
         if (o->oSkeeterUnkF8 != 0) {
@@ -117,7 +117,7 @@ static void skeeter_act_walk(void) {
                     o->oSkeeterUnkFC = 10.0f;
                     if (o->oSkeeterWaitTime != 0) {
                         o->oSkeeterWaitTime -= 1;
-                    } else if (func_8029F788() != 0) {
+                    } else if (cur_obj_check_if_near_animation_end() != 0) {
                         if (RandomU16() & 0x0003) {
                             o->oSkeeterTargetAngle = obj_random_fixed_turn(0x2000);
                             o->oSkeeterWaitTime = random_linear_offset(100, 100);
@@ -130,7 +130,7 @@ static void skeeter_act_walk(void) {
             }
         }
 
-        obj_rotate_yaw_toward(o->oSkeeterTargetAngle, 0x400);
+        cur_obj_rotate_yaw_toward(o->oSkeeterTargetAngle, 0x400);
     }
 }
 
@@ -138,7 +138,7 @@ void bhv_skeeter_update(void) {
     o->oDeathSound = SOUND_OBJ_SNUFIT_SKEETER_DEATH;
     treat_far_home_as_mario(1000.0f);
 
-    obj_update_floor_and_walls();
+    cur_obj_update_floor_and_walls();
 
     switch (o->oAction) {
         case SKEETER_ACT_IDLE:
@@ -153,14 +153,14 @@ void bhv_skeeter_update(void) {
     }
 
     obj_check_attacks(&sSkeeterHitbox, o->oAction);
-    obj_move_standard(-78);
+    cur_obj_move_standard(-78);
 }
 
 void bhv_skeeter_wave_update(void) {
     if (approach_f32_ptr(&o->header.gfx.scale[0], 0.0f, 0.3f)) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     }
 
-    obj_scale(o->header.gfx.scale[0]);
+    cur_obj_scale(o->header.gfx.scale[0]);
     o->oAnimState = gGlobalTimer / 6;
 }

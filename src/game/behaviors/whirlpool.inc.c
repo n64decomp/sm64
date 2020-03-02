@@ -19,11 +19,11 @@ void bhv_whirlpool_init(void) {
     o->oFaceAngleRoll = 0;
 }
 
-void func_802E70A8(void) {
-    set_object_hitbox(o, &sWhirlpoolHitbox);
+void whirlpool_set_hitbox(void) {
+    obj_set_hitbox(o, &sWhirlpoolHitbox);
 }
 
-void func_802E70DC(void) {
+void whirpool_orient_graph(void) {
     f32 cosPitch = coss(o->oFaceAnglePitch);
     f32 sinPitch = sins(o->oFaceAnglePitch);
     f32 cosRoll = coss(o->oFaceAngleRoll);
@@ -49,7 +49,7 @@ void bhv_whirlpool_loop(void) {
         gEnvFxBubbleConfig[ENVFX_STATE_PITCH] = o->oWhirlpoolInitFacePitch;
         gEnvFxBubbleConfig[ENVFX_STATE_YAW] = o->oWhirlpoolInitFaceRoll;
 
-        func_802E70DC();
+        whirpool_orient_graph();
 
         o->oFaceAngleYaw += 0x1F40;
     } else {
@@ -57,9 +57,9 @@ void bhv_whirlpool_loop(void) {
         gEnvFxBubbleConfig[ENVFX_STATE_PARTICLECOUNT] = 0;
     }
 
-    PlaySound(SOUND_ENV_WATER);
+    cur_obj_play_sound_1(SOUND_ENV_WATER);
 
-    func_802E70A8();
+    whirlpool_set_hitbox();
 }
 
 void bhv_jet_stream_loop(void) {
@@ -71,5 +71,5 @@ void bhv_jet_stream_loop(void) {
     } else
         gEnvFxBubbleConfig[ENVFX_STATE_PARTICLECOUNT] = 0;
 
-    PlaySound(SOUND_ENV_WATER);
+    cur_obj_play_sound_1(SOUND_ENV_WATER);
 }

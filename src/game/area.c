@@ -76,7 +76,7 @@ const char *gNoControllerMsg[] = {
 };
 #endif
 
-void func_8027A220(Vp *a, Vp *b, u8 c, u8 d, u8 e) {
+void override_viewport_and_clip(Vp *a, Vp *b, u8 c, u8 d, u8 e) {
     u16 sp6 = ((c >> 3) << 11) | ((d >> 3) << 6) | ((e >> 3) << 1) | 1;
 
     gFBSetColor = (sp6 << 16) | sp6;
@@ -138,13 +138,13 @@ struct ObjectWarpNode *area_get_warp_node(u8 id) {
     return node;
 }
 
-struct ObjectWarpNode *func_8027A478(struct Object *o) {
+struct ObjectWarpNode *area_get_warp_node_from_params(struct Object *o) {
     u8 sp1F = (o->oBehParams & 0x00FF0000) >> 16;
 
     return area_get_warp_node(sp1F);
 }
 
-void func_8027A4C4(void) {
+void load_obj_warp_nodes(void) {
     struct ObjectWarpNode *sp24;
     struct Object *sp20 = (struct Object *) gObjParentGraphNode.children;
 
@@ -152,7 +152,7 @@ void func_8027A4C4(void) {
         struct Object *sp1C = sp20;
 
         if (sp1C->activeFlags && get_mario_spawn_type(sp1C) != 0) {
-            sp24 = func_8027A478(sp1C);
+            sp24 = area_get_warp_node_from_params(sp1C);
             if (sp24 != NULL) {
                 sp24->object = sp1C;
             }
@@ -192,7 +192,7 @@ void clear_areas(void) {
     }
 }
 
-void func_8027A7C4(void) {
+void clear_area_graph_nodes(void) {
     s32 i;
 
     if (gCurrentArea != NULL) {
@@ -223,12 +223,12 @@ void load_area(s32 index) {
             spawn_objects_from_info(0, gCurrentArea->objectSpawnInfos);
         }
 
-        func_8027A4C4();
+        load_obj_warp_nodes();
         geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_LOAD);
     }
 }
 
-void func_8027A998(void) {
+void unload_area(void) {
     if (gCurrentArea != NULL) {
         unload_objects_from_area(0, gCurrentArea->index);
         geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_UNLOAD);
@@ -249,13 +249,13 @@ void load_mario_area(void) {
     }
 }
 
-void func_8027AA88(void) {
+void unload_mario_area(void) {
     if (gCurrentArea != NULL && (gCurrentArea->flags & 0x01)) {
         unload_objects_from_area(0, gMarioSpawnInfo->activeAreaIndex);
 
         gCurrentArea->flags &= ~0x01;
         if (gCurrentArea->flags == 0) {
-            func_8027A998();
+            unload_area();
         }
     }
 }
@@ -264,7 +264,7 @@ void change_area(s32 index) {
     s32 areaFlags = gCurrentArea->flags;
 
     if (gCurrAreaIndex != index) {
-        func_8027A998();
+        unload_area();
         load_area(index);
 
         gCurrentArea->flags = areaFlags;

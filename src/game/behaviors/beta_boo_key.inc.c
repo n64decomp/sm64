@@ -25,7 +25,7 @@ void bhv_alpha_boo_key_loop(void) {
     o->oFaceAngleRoll += 0x200;
     o->oFaceAngleYaw += 0x200;
 
-    if (are_objects_collided(o, gMarioObject)) {
+    if (obj_check_if_collided_with_object(o, gMarioObject)) {
         // This line makes the object inside the key's parent boo drop.
         // Was this intended to make the boo die when the key is collected?
         // Boos don't read from oBooDeathStatus, they only set it to let the
@@ -38,7 +38,7 @@ void bhv_alpha_boo_key_loop(void) {
         o->parentObj->oBooDeathStatus = BOO_DEATH_STATUS_DYING;
 
         // Delete the object and spawn sparkles
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
         spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
     }
 }
@@ -51,8 +51,8 @@ void bhv_alpha_boo_key_loop(void) {
  */
 static void beta_boo_key_dropped_loop(void) {
     // Apply standard physics to the key
-    obj_update_floor_and_walls();
-    obj_move_standard(78);
+    cur_obj_update_floor_and_walls();
+    cur_obj_move_standard(78);
 
     // Slowly increase the Y offset to make the model aligned correctly.
     // This is spread out over 13 frames so that it's not noticable.
@@ -82,9 +82,9 @@ static void beta_boo_key_dropped_loop(void) {
     // If the key hits the floor or 90 frames have elapsed since it was dropped,
     // become tangible and handle collision.
     if (o->oTimer > 90 || o->oMoveFlags & OBJ_MOVE_LANDED) {
-        obj_become_tangible();
+        cur_obj_become_tangible();
 
-        if (are_objects_collided(o, gMarioObject)) {
+        if (obj_check_if_collided_with_object(o, gMarioObject)) {
             // This interaction status is 0x01, the first interaction status flag.
             // It was only used for Hoot in the final game, but it seems it could've
             // done something else or held some special meaning in beta.
@@ -97,7 +97,7 @@ static void beta_boo_key_dropped_loop(void) {
             o->parentObj->oInteractStatus = INT_STATUS_HOOT_GRABBED_BY_MARIO;
 
             // Delete the object and spawn sparkles
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
             spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
         }
     }
@@ -113,7 +113,7 @@ static void beta_boo_key_drop(void) {
 
     // Update the key to be inside the boo
     struct Object *parent = o->parentObj;
-    copy_object_pos(o, parent);
+    obj_copy_pos(o, parent);
 
     // This if statement to only run this code on the first frame
     // is redundant, since it instantly sets the action to BETA_BOO_KEY_ACT_DROPPED
@@ -147,7 +147,7 @@ static void beta_boo_key_drop(void) {
 static void beta_boo_key_inside_boo_loop(void) {
     // Update the key to be inside the boo at all times
     struct Object *parent = o->parentObj;
-    copy_object_pos(o, parent);
+    obj_copy_pos(o, parent);
 
     // Use a Y offset of 40 to make the key model aligned correctly.
     // (Why didn't they use oGraphYOffset?)
@@ -170,5 +170,5 @@ static void (*sBetaBooKeyActions[])(void) = { beta_boo_key_inside_boo_loop, beta
  * Update function for bhvBetaBooKey.
  */
 void bhv_beta_boo_key_loop(void) {
-    obj_call_action_function(sBetaBooKeyActions);
+    cur_obj_call_action_function(sBetaBooKeyActions);
 }

@@ -6,8 +6,8 @@
 extern struct Surface gWaterSurfacePseudoFloor;
 
 extern f32 get_additive_y_vel_for_jumps(void);
-extern void nop_80254E3C(struct MarioState *);
-extern void nop_80254E50(void);
+extern void stub_mario_step_1(struct MarioState *);
+extern void stub_mario_step_2(void);
 
 extern void mario_bonk_reflection(struct MarioState *, u32);
 extern u32 mario_update_quicksand(struct MarioState *, f32);

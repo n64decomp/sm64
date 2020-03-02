@@ -5,7 +5,7 @@ void bhv_small_piranha_flame_loop(void) {
 
     if ((u16)(o->oBehParams >> 16) == 0) {
         if (o->oTimer > 0) {
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
         } else {
             sp2C = RandomFloat() - 0.5f;
             o->header.gfx.scale[1] = o->header.gfx.scale[2] * (1.0f + 0.7f * sp2C);
@@ -14,13 +14,13 @@ void bhv_small_piranha_flame_loop(void) {
             o->oAnimState = RandomU16();
         }
     } else {
-        obj_update_floor_and_walls();
+        cur_obj_update_floor_and_walls();
         if (approach_f32_ptr(&o->oSmallPiranhaFlameUnkF4, o->oSmallPiranhaFlameUnkF8, 0.6f)) {
-            obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
+            cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
         }
 
         obj_compute_vel_from_move_pitch(o->oSmallPiranhaFlameUnkF4);
-        obj_move_standard(-78);
+        cur_obj_move_standard(-78);
         spawn_object_with_scale(o, o->oSmallPiranhaFlameUnkFC, bhvSmallPiranhaFlame,
                                 0.4f * o->header.gfx.scale[0]);
 
@@ -43,11 +43,11 @@ void bhv_small_piranha_flame_loop(void) {
 }
 
 void bhv_fly_guy_flame_loop(void) {
-    obj_move_using_fvel_and_gravity();
+    cur_obj_move_using_fvel_and_gravity();
 
     if (approach_f32_ptr(&o->header.gfx.scale[0], 0.0f, 0.6f)) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     }
 
-    obj_scale(o->header.gfx.scale[0]);
+    cur_obj_scale(o->header.gfx.scale[0]);
 }

@@ -16,7 +16,7 @@
 
 #include "stomp_smoke/model.inc.c"
 
-#include "water_waves/model.inc.c"
+#include "water_wave/model.inc.c"
 
 #include "sparkle/model.inc.c"
 

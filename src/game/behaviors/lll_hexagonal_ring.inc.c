@@ -1,5 +1,19 @@
 // lll_hexagonal_ring.c.inc
 
+void hexagonal_ring_spawn_flames(void) {
+    struct Object *sp1C;
+    f32 size;
+    sp1C = spawn_object(o, MODEL_RED_FLAME, bhvVolcanoFlames);
+    sp1C->oPosY += 550.0f;
+    sp1C->oMoveAngleYaw = RandomU16() << 0x10 >> 0x10;
+    sp1C->oForwardVel = RandomFloat() * 40.0f + 20.0f;
+    sp1C->oVelY = RandomFloat() * 50.0f + 10.0f;
+    size = RandomFloat() * 6.0 + 3.0;
+    obj_scale_xyz(sp1C, size, size, size);
+    if (RandomFloat() < 0.1)
+        cur_obj_play_sound_2(SOUND_GENERAL_VOLCANO_EXPLOSION);
+}
+
 void bhv_lll_rotating_hexagonal_ring_loop(void) {
     UNUSED s32 unused;
     o->oCollisionDistance = 4000.0f;
@@ -21,7 +35,7 @@ void bhv_lll_rotating_hexagonal_ring_loop(void) {
             if (o->oTimer > 128)
                 o->oAction++;
             o->oAngleVelYaw = 0;
-            func_802BBFDC();
+            hexagonal_ring_spawn_flames();
             break;
         case 3:
             o->oAngleVelYaw = sins(o->oTimer << 7) * 256.0f;

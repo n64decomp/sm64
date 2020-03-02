@@ -413,16 +413,16 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
  * Append 15 vertices to 'gfx', which is enough for 5 bubbles starting at
  * 'index'. The 3 input vertices represent the roated triangle around (0,0,0)
  * that will be translated to bubble positions to draw the bubble image
+ *
+ * TODO: (Scrub C)
  */
-#if defined(VERSION_EU) && !defined(NON_MATCHING)
-void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
-                                 Vtx *template);
-GLOBAL_ASM("asm/non_matchings/eu/append_bubble_vertex_buffer.s")
-#else
 void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
                                  Vtx *template) {
     s32 i = 0;
     Vtx *vertBuf = alloc_display_list(15 * sizeof(Vtx));
+#ifdef VERSION_EU
+    Vtx *p;
+#endif
 
     if (vertBuf == NULL) {
         return;
@@ -430,24 +430,47 @@ void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s verte
 
     for (i = 0; i < 15; i += 3) {
         vertBuf[i] = template[0];
+#ifdef VERSION_EU
+        p = vertBuf;
+        p += i;
+        p[0].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex1[0];
+        p[0].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex1[1];
+        p[0].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex1[2];
+#else
         vertBuf[i].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex1[0];
         vertBuf[i].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex1[1];
         vertBuf[i].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex1[2];
+#endif
 
         vertBuf[i + 1] = template[1];
+#ifdef VERSION_EU
+        p = vertBuf;
+        p += i;
+        p[1].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex2[0];
+        p[1].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex2[1];
+        p[1].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex2[2];
+#else
         vertBuf[i + 1].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex2[0];
         vertBuf[i + 1].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex2[1];
         vertBuf[i + 1].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex2[2];
+#endif
 
         vertBuf[i + 2] = template[2];
+#ifdef VERSION_EU
+        p = vertBuf;
+        p += i;
+        p[2].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex3[0];
+        p[2].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex3[1];
+        p[2].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex3[2];
+#else
         vertBuf[i + 2].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex3[0];
         vertBuf[i + 2].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex3[1];
         vertBuf[i + 2].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex3[2];
+#endif
     }
 
     gSPVertex(gfx, VIRTUAL_TO_PHYSICAL(vertBuf), 15, 0);
 }
-#endif
 
 /**
  * Appends to the enfvx display list a command setting the appropriate texture

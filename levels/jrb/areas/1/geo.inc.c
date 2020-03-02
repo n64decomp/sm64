@@ -26,7 +26,7 @@ const GeoLayout jrb_geo_000A18[] = {
                GEO_ASM(0x1201, geo_movtex_draw_water_regions),
                GEO_ASM(0x1205, geo_movtex_draw_water_regions),
                GEO_RENDER_OBJ(),
-               GEO_ASM(  14, geo_enfvx_main),
+               GEO_ASM(  14, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

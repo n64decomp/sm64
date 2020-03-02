@@ -15,7 +15,7 @@ static struct ObjectHitbox sBubbaHitbox = {
 void bubba_act_0(void) {
     f32 sp24;
 
-    sp24 = obj_lateral_dist_to_home();
+    sp24 = cur_obj_lateral_dist_to_home();
     treat_far_home_as_mario(2000.0f);
     o->oAnimState = 0;
 
@@ -34,7 +34,7 @@ void bubba_act_0(void) {
         }
 
         if ((o->oBubbaUnkFC = o->oMoveFlags & 0x00000200) != 0) {
-            o->oBubbaUnk1AE = obj_reflect_move_angle_off_wall();
+            o->oBubbaUnk1AE = cur_obj_reflect_move_angle_off_wall();
         } else if (o->oTimer > 30 && o->oDistanceToMario < 2000.0f) {
             o->oAction = 1;
         } else if (o->oBubbaUnkF8 != 0) {
@@ -55,7 +55,7 @@ void bubba_act_1(void) {
         o->oAction = 0;
     } else if (o->oBubbaUnk100 != 0) {
         if (--o->oBubbaUnk100 == 0) {
-            PlaySound2(SOUND_OBJ_BUBBA_CHOMP);
+            cur_obj_play_sound_2(SOUND_OBJ_BUBBA_CHOMP);
             o->oAction = 0;
         } else if (o->oBubbaUnk100 < 15) {
             o->oAnimState = 1;
@@ -71,7 +71,7 @@ void bubba_act_1(void) {
             o->oBubbaUnk1AE = o->oAngleToMario;
             o->oBubbaUnk1AC = o->oBubbaUnk104;
 
-            obj_rotate_yaw_toward(o->oBubbaUnk1AE, 400);
+            cur_obj_rotate_yaw_toward(o->oBubbaUnk1AE, 400);
             obj_move_pitch_approach(o->oBubbaUnk1AC, 400);
         }
     } else {
@@ -119,7 +119,7 @@ void bhv_bubba_loop(void) {
         o->hurtboxRadius = 150.0f;
     }
 
-    obj_update_floor_and_walls();
+    cur_obj_update_floor_and_walls();
 
     switch (o->oAction) {
         case 0:
@@ -134,7 +134,7 @@ void bhv_bubba_loop(void) {
         if (o->oMoveFlags & 0x00000008) {
             sp38 = spawn_object(o, MODEL_WATER_SPLASH, bhvWaterSplash);
             if (sp38 != NULL) {
-                scale_object(sp38, 3.0f);
+                obj_scale(sp38, 3.0f);
             }
 
             o->oBubbaUnk108 = o->oVelY;
@@ -163,7 +163,7 @@ void bhv_bubba_loop(void) {
     obj_face_pitch_approach(o->oMoveAnglePitch, 400);
     obj_check_attacks(&sBubbaHitbox, o->oAction);
 
-    obj_move_standard(78);
+    cur_obj_move_standard(78);
 
     o->oFloorHeight += 150.0f;
     if (o->oPosY < o->oFloorHeight) {

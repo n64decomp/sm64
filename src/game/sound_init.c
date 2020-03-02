@@ -73,11 +73,11 @@ static s8 paintingEjectSoundPlayed = FALSE;
 
 static void play_menu_sounds_extra(int a, void *b);
 
-void func_80248C10(void) {
+void reset_volume(void) {
     D_8032C6C0 = 0;
 }
 
-void func_80248C28(s32 a) // Soften volume
+void lower_background_noise(s32 a) // Soften volume
 {
     switch (a) {
         case 1:
@@ -90,7 +90,7 @@ void func_80248C28(s32 a) // Soften volume
     D_8032C6C0 |= a;
 }
 
-void func_80248CB8(s32 a) // harden volume
+void raise_background_noise(s32 a) // harden volume
 {
     switch (a) {
         case 1:
@@ -103,14 +103,14 @@ void func_80248CB8(s32 a) // harden volume
     D_8032C6C0 &= ~a;
 }
 
-void func_80248D48(void) {
+void disable_background_sound(void) {
     if (D_8032C6C4 == 0) {
         D_8032C6C4 = 1;
         sound_banks_disable(2, 0x037A);
     }
 }
 
-void func_80248D90(void) {
+void enable_background_sound(void) {
     if (D_8032C6C4 == 1) {
         D_8032C6C4 = 0;
         sound_banks_enable(2, 0x037A);
@@ -157,9 +157,8 @@ void play_menu_sounds(s16 soundMenuFlags) {
  * Plays the painting eject sound effect if it has not already been played
  */
 void play_painting_eject_sound(void) {
-    if (ripplingPainting != NULL
-        && ripplingPainting->rippleStatus == 2) // ripple when Mario enters painting
-    {
+    if (gRipplingPainting != NULL && gRipplingPainting->state == PAINTING_ENTERED) {
+        // ripple when Mario enters painting
         if (paintingEjectSoundPlayed == FALSE) {
             play_sound(SOUND_GENERAL_PAINTING_EJECT,
                        gMarioStates[0].marioObj->header.gfx.cameraToObject);
@@ -207,14 +206,14 @@ void set_background_music(u16 a, u16 seqArgs, s16 fadeTimer) {
     }
 }
 
-void func_802491FC(s16 fadeOutTime) {
+void fadeout_music(s16 fadeOutTime) {
     func_803210D4(fadeOutTime);
     sCurrentMusic = MUSIC_NONE;
     sCurrentShellMusic = MUSIC_NONE;
     sCurrentCapMusic = MUSIC_NONE;
 }
 
-void func_8024924C(s16 fadeTimer) {
+void fadeout_level_music(s16 fadeTimer) {
     sequence_player_fade_out(0, fadeTimer);
     sCurrentMusic = MUSIC_NONE;
     sCurrentShellMusic = MUSIC_NONE;

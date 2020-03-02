@@ -37,11 +37,11 @@ struct ObjectHitbox sBookSwitchHitbox = {
 
 void flying_bookend_act_0(void) {
     if (obj_is_near_to_and_facing_mario(400.0f, 0x3000)) {
-        PlaySound2(SOUND_OBJ_DEFAULT_DEATH);
+        cur_obj_play_sound_2(SOUND_OBJ_DEFAULT_DEATH);
         o->oAction = 1;
         o->oBookendUnkF4 = o->oFaceAnglePitch + 0x7FFF;
         o->oBookendUnkF8 = o->oFaceAngleRoll - 0x7FFF;
-        obj_set_model(MODEL_BOOKEND_PART);
+        cur_obj_set_model(MODEL_BOOKEND_PART);
     }
 }
 
@@ -64,24 +64,24 @@ void flying_bookend_act_1(void) {
         }
     }
 
-    obj_move_using_fvel_and_gravity();
+    cur_obj_move_using_fvel_and_gravity();
 }
 
 void flying_bookend_act_2(void) {
-    set_obj_animation_and_sound_state(1);
-    obj_update_floor_and_walls();
+    cur_obj_init_animation_with_sound(1);
+    cur_obj_update_floor_and_walls();
 
     if (o->oForwardVel == 0.0f) {
         obj_turn_pitch_toward_mario(120.0f, 1000);
         o->oFaceAnglePitch = o->oMoveAnglePitch + 0x7FFF;
-        obj_rotate_yaw_toward(o->oAngleToMario, 1000);
+        cur_obj_rotate_yaw_toward(o->oAngleToMario, 1000);
 
         if (o->oTimer > 30) {
             obj_compute_vel_from_move_pitch(50.0f);
         }
     }
 
-    obj_move_standard(78);
+    cur_obj_move_standard(78);
 }
 
 void flying_bookend_act_3(void) {
@@ -94,13 +94,13 @@ void flying_bookend_act_3(void) {
     }
 
     obj_forward_vel_approach(50.0f, 2.0f);
-    obj_move_using_fvel_and_gravity();
+    cur_obj_move_using_fvel_and_gravity();
 }
 
 void bhv_flying_bookend_loop(void) {
     if (!(o->activeFlags & 0x0008)) {
         o->oDeathSound = SOUND_OBJ_POUNDING1;
-        obj_scale(o->header.gfx.scale[0]);
+        cur_obj_scale(o->header.gfx.scale[0]);
 
         switch (o->oAction) {
             case 0:
@@ -135,7 +135,7 @@ void bhv_bookend_spawn_loop(void) {
             sp1C = spawn_object(o, MODEL_BOOKEND, bhvFlyingBookend);
             if (sp1C != NULL) {
                 sp1C->oAction = 3;
-                PlaySound2(SOUND_OBJ_DEFAULT_DEATH);
+                cur_obj_play_sound_2(SOUND_OBJ_DEFAULT_DEATH);
             }
             o->oTimer = 0;
         }
@@ -177,7 +177,7 @@ void bookshelf_manager_act_2(void) {
         } else {
             if (o->oBookSwitchManagerUnkF4 >= 3) {
                 if (o->oTimer > 100) {
-                    o->parentObj = obj_nearest_object_with_behavior(bhvHauntedBookshelf);
+                    o->parentObj = cur_obj_nearest_object_with_behavior(bhvHauntedBookshelf);
                     o->parentObj->oAction = 1;
                     o->oPosX = o->parentObj->oPosX;
                     o->oAction = 3;
@@ -204,7 +204,7 @@ void bookshelf_manager_act_3(void) {
 
 void bookshelf_manager_act_4(void) {
     if (o->oBookSwitchManagerUnkF4 >= 3) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else {
         o->oAction = 0;
     }
@@ -240,19 +240,19 @@ void bhv_book_switch_loop(void) {
     o->header.gfx.scale[1] = 0.9f;
 
     if (o->parentObj->oAction == 4) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else {
         sp3C = obj_check_attacks(&sBookSwitchHitbox, o->oAction);
         if (o->parentObj->oBookSwitchManagerUnkF8 != 0 || o->oAction == 1) {
             if (o->oDistanceToMario < 100.0f) {
-                obj_become_tangible();
+                cur_obj_become_tangible();
             } else {
-                obj_become_intangible();
+                cur_obj_become_intangible();
             }
 
             o->oAction = 1;
             if (o->oBookSwitchUnkF4 == 0.0f) {
-                PlaySound2(SOUND_OBJ_DEFAULT_DEATH);
+                cur_obj_play_sound_2(SOUND_OBJ_DEFAULT_DEATH);
             }
 
             if (approach_f32_ptr(&o->oBookSwitchUnkF4, 50.0f, 20.0f)) {
@@ -265,7 +265,7 @@ void bhv_book_switch_loop(void) {
                 o->oTimer = 0;
             }
         } else {
-            obj_become_intangible();
+            cur_obj_become_intangible();
             if (approach_f32_ptr(&o->oBookSwitchUnkF4, 0.0f, 20.0f)) {
                 if (o->oAction != 0) {
                     if (o->parentObj->oBookSwitchManagerUnkF4 == o->oBehParams2ndByte) {
@@ -298,6 +298,6 @@ void bhv_book_switch_loop(void) {
 
         o->oPosX += o->parentObj->oForwardVel;
         o->oPosZ = o->oHomeZ - o->oBookSwitchUnkF4;
-        obj_push_mario_away_from_cylinder(70.0f, 70.0f);
+        cur_obj_push_mario_away_from_cylinder(70.0f, 70.0f);
     }
 }

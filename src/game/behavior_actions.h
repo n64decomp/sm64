@@ -1,20 +1,21 @@
 #ifndef _BEHAVIOR_ACTIONS_H
 #define _BEHAVIOR_ACTIONS_H
 
-extern void func_802AA618(s32,s32,f32);
+extern void spawn_mist_particles_variable(s32,s32,f32);
 extern void bhv_spawn_star_no_level_exit(u32);
 extern void bhv_star_door_loop_2();
 extern void spawn_triangle_break_particles(s16,s16,f32,s16);
-extern void func_802ADA94(void);
-extern void func_802ADBBC(u32);
-extern void func_802ADC20(s16,s16);
-extern s32 func_802B0C54(f32,f32);
-extern s32 func_802B2894(f32*,f32*,f32,f32);
-void func_802B8F7C(Vec3f dest,Vec3f src);
-extern void func_802BCFC4(f32,f32,s16,s16);
+
+extern void spawn_mist_from_global(void);
+extern void clear_particle_flags(u32);
+extern void spawn_wind_particles(s16,s16);
+extern s32 check_if_moving_over_floor(f32,f32);
+extern s32 arc_to_goal_pos(f32*,f32*,f32,f32);
+void vec3f_copy_2(Vec3f dest,Vec3f src);
+extern void tox_box_move(f32,f32,s16,s16);
 extern void play_penguin_walking_sound(s32);
-extern s32 func_802C5A64(s32*);
-extern void func_802C76E0(s32, f32, f32, f32, f32);
+extern s32 update_angle_from_move_flags(s32*);
+extern void cur_obj_spawn_strong_wind_particles(s32, f32, f32, f32, f32);
 
 void bhv_cap_switch_loop(void);
 void bhv_tiny_star_particles_init(void);
@@ -29,7 +30,7 @@ void bhv_mr_i_particle_loop(void);
 void bhv_piranha_particle_loop(void);
 void bhv_giant_pole_loop(void);
 void bhv_pole_init(void);
-void BehClimbDetectLoop(void);
+void bhv_pole_base_loop(void);
 void bhv_thi_huge_island_top_loop(void);
 void bhv_thi_tiny_island_top_loop(void);
 void bhv_king_bobomb_loop(void);
@@ -58,7 +59,7 @@ void bhv_kickable_board_loop(void);
 void bhv_tower_door_loop(void);
 void bhv_wf_rotating_wooden_platform_loop(void);
 void bhv_koopa_shell_underwater_loop(void);
-void BehFadingWarpLoop(void);
+void bhv_fading_warp_loop(void);
 void bhv_warp_loop(void);
 void bhv_white_puff_exploding_loop(void);
 void bhv_spawned_star_init(void);
@@ -85,7 +86,7 @@ void bhv_water_mist_loop(void);
 void bhv_water_mist_spawn_loop(void);
 void bhv_water_mist_2_loop(void);
 void bhv_pound_white_puffs_init(void);
-void bhv_unused_0e40_init(void);
+void bhv_ground_sand_init(void);
 void bhv_ground_snow_init(void);
 void bhv_wind_loop(void);
 void bhv_unused_particle_spawn_loop(void);
@@ -161,7 +162,7 @@ void bhv_flame_moving_forward_growing_loop(void);
 void bhv_flame_bowser_init(void);
 void bhv_flame_bowser_loop(void);
 void bhv_flame_large_burning_out_init(void);
-void bhv_blue_fish_loop(void);
+void bhv_blue_fish_movement_loop(void);
 void bhv_tank_fish_group_loop(void);
 void bhv_checkerboard_elevator_group_init(void);
 void bhv_checkerboard_platform_init(void);
@@ -194,13 +195,13 @@ void bhv_lll_bowser_puzzle_piece_loop(void);
 void bhv_lll_bowser_puzzle_loop(void);
 void bhv_tuxies_mother_loop(void);
 void bhv_small_penguin_loop(void);
+void bhv_large_fish_group_loop(void);
 void bhv_fish_loop(void);
-void bhv_fish_group_2_loop(void);
 void bhv_wdw_express_elevator_loop(void);
-void bhv_bird_chirp_chirp_loop(void);
-void bhv_cheep_cheep_loop(void);
+void bhv_bub_spawner_loop(void);
+void bhv_bub_loop(void);
 void bhv_exclamation_box_loop(void);
-void bhv_rotatin_exclamation_box_loop(void);
+void bhv_rotating_exclamation_box_loop(void);
 void bhv_sound_spawner_init(void);
 void bhv_bowsers_sub_loop(void);
 void bhv_sushi_shark_loop(void);
@@ -241,16 +242,16 @@ void bhv_sparkle_spawn_loop(void);
 void bhv_scuttlebug_loop(void);
 void bhv_scuttlebug_spawn_loop(void);
 void bhv_whomp_loop(void);
-void bhv_water_splash_loop(void);
-void bhv_water_drops_loop(void);
-void bhv_water_surface_white_wave_init(void);
-void bhv_object_bubble_ripples_init(void);
-void bhv_surface_waves_loop(void);
-void bhv_surface_wave_shrinking_init(void);
-void bhv_wave_trail_loop(void);
-void bhv_white_wind_particle_loop(void);
-void bhv_snowman_wind_blowing_loop(void);
-void bhv_walking_penguin_loop(void);
+void bhv_water_splash_spawn_droplets(void);
+void bhv_water_droplet_loop(void);
+void bhv_water_droplet_splash_init(void);
+void bhv_bubble_splash_init(void);
+void bhv_idle_water_wave_loop(void);
+void bhv_shallow_water_splash_init(void);
+void bhv_wave_trail_shrink(void);
+void bhv_strong_wind_particle_loop(void);
+void bhv_sl_snowman_wind_loop(void);
+void bhv_sl_walking_penguin_loop(void);
 void bhv_menu_button_init(void);
 void bhv_menu_button_loop(void);
 void bhv_menu_button_manager_init(void);
@@ -544,32 +545,32 @@ void bhv_intro_peach_loop(void);
 void bhv_end_birds_1_loop(void);
 void bhv_end_birds_2_loop(void);
 void bhv_intro_scene_loop(void);
-void BehDustSmokeLoop(void);
-void BehYoshiLoop(void);
-void bhvLllVolcanoFallingTrap_loop(void);
+void bhv_dust_smoke_loop(void);
+void bhv_yoshi_loop(void);
+void bhv_volcano_trap_loop(void);
 
-extern Gfx *Geo18_802B1BB0(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
+extern Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 
 // Bowser
-extern Gfx *Geo18_802B7D44(s32 a0, struct GraphNode *node, UNUSED s32 a2);
-extern Gfx *Geo18_802B798C(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
+extern Gfx *geo_bits_bowser_coloring(s32 a0, struct GraphNode *node, UNUSED s32 a2);
+extern Gfx *geo_update_body_rot_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 extern Gfx *geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx);
 
 // Tuxie
 extern Gfx *geo_switch_tuxie_mother_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx);
 
 // Cap switch
-extern Gfx *Geo18_802A719C(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
+extern Gfx *geo_update_held_mario_pos(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 
 // Snufit
-extern Gfx *Geo18_8030D93C(s32 arg0, struct GraphNode *node, UNUSED void *arg2);
-extern Gfx *Geo18_8030D9AC(s32 arg0, struct GraphNode *node, UNUSED void *arg2);
+extern Gfx *geo_snufit_move_mask(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
+extern Gfx *geo_snufit_scale_body(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 
 // Bowser key cutscene
-extern Gfx *Geo18_802BA2B0(s32 run, struct GraphNode *node, UNUSED f32 mtx[4][4]);
+extern Gfx *geo_scale_bowser_key(s32 run, struct GraphNode *node, UNUSED f32 mtx[4][4]);
 
 // Water splash
-extern struct WaterSplashParams D_8032FDD0;
-extern struct WaterSplashParams D_8032FE18;
+extern struct WaterDropletParams sShallowWaterSplashDropletParams;
+extern struct WaterDropletParams sShallowWaterWaveDropletParams;
 
 #endif // _BEHAVIOR_ACTIONS_H

@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include <macros.h>
 
-#include "memory.h"
+#include "heap.h"
 #include "data.h"
 #include "load.h"
 #include "seqplayer.h"
@@ -102,7 +102,7 @@ void note_set_resampling_rate(struct Note *note, f32 resamplingRateInput) {
     note->noteSubEu.resamplingRateFixedPoint = (s32) (resamplingRate * 32768.0f);
 }
 
-struct AudioBankSound *func_eu_802e4e5c(struct Instrument *instrument, s32 semitone) {
+struct AudioBankSound *instrument_get_audio_bank_sound(struct Instrument *instrument, s32 semitone) {
     struct AudioBankSound *sound;
     if (semitone < instrument->normalRangeLo) {
         sound = &instrument->lowNotesSound;
@@ -114,7 +114,7 @@ struct AudioBankSound *func_eu_802e4e5c(struct Instrument *instrument, s32 semit
     return sound;
 }
 
-struct Instrument *func_eu_802e4e98(s32 bankId, s32 instId) {
+struct Instrument *get_instrument_inner(s32 bankId, s32 instId) {
     struct Instrument *inst;
 
     if (IS_BANK_LOAD_COMPLETE(bankId) == FALSE) {
@@ -146,7 +146,7 @@ struct Instrument *func_eu_802e4e98(s32 bankId, s32 instId) {
     return NULL;
 }
 
-struct Drum *func_eu_802e4fb8(s32 bankId, s32 drumId) {
+struct Drum *get_drum(s32 bankId, s32 drumId) {
     struct Drum *drum;
     if (drumId >= gCtlEntries[bankId].numDrums) {
         gAudioErrorFlags = ((bankId << 8) + drumId) + 0x4000000;
@@ -223,7 +223,7 @@ void process_notes(void) {
     u8 reverb;
     UNUSED u8 pad3;
     u8 pan;
-    u8 unk;
+    u8 bookOffset;
 #endif
     struct NoteAttributes *attributes;
 #ifndef VERSION_EU
@@ -321,13 +321,13 @@ void process_notes(void) {
                 reverb = attributes->reverb;
                 if (1) {
                 }
-                unk = noteSubEu->unk1b234;
+                bookOffset = noteSubEu->bookOffset;
             } else {
                 frequency = playbackState->parentLayer->noteFreqScale;
                 velocity = playbackState->parentLayer->noteVelocity;
                 pan = playbackState->parentLayer->notePan;
                 reverb = playbackState->parentLayer->seqChannel->reverb;
-                unk = playbackState->parentLayer->seqChannel->unk8 & 0x7; // bitfield?
+                bookOffset = playbackState->parentLayer->seqChannel->bookOffset & 0x7;
             }
 
             frequency *= playbackState->vibratoFreqScale * playbackState->portamentoFreqScale;
@@ -335,7 +335,7 @@ void process_notes(void) {
             velocity = velocity * scale * scale;
             note_set_resampling_rate(note, frequency);
             note_set_vel_pan_reverb(note, velocity, pan, reverb);
-            noteSubEu->unk1b234 = unk;
+            noteSubEu->bookOffset = bookOffset;
             skip:;
         }
 #else
@@ -589,7 +589,7 @@ void init_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLaye
 #ifdef VERSION_EU
     s32 sampleCountIndex;
     s32 waveSampleCountIndex;
-    s32 waveId = seqLayer->euUnk1;
+    s32 waveId = seqLayer->instOrWave;
     if (waveId == 0xff) {
         waveId = seqLayer->seqChannel->instOrWave;
     }
@@ -799,14 +799,14 @@ void note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLaye
     note->prevParentLayer = NO_LAYER;
     note->parentLayer = seqLayer;
     note->priority = seqLayer->seqChannel->notePriority;
-    seqLayer->unkEu0b4 = TRUE;
+    seqLayer->notePropertiesNeedInit = TRUE;
     seqLayer->status = SOUND_LOAD_STATUS_DISCARDABLE; // "loaded"
     seqLayer->note = note;
     seqLayer->seqChannel->noteUnused = note;
     seqLayer->seqChannel->layerUnused = seqLayer;
     seqLayer->noteVelocity = 0.0f;
     note_init(note);
-    instId = seqLayer->euUnk1;
+    instId = seqLayer->instOrWave;
     if (instId == 0xff) {
         instId = seqLayer->seqChannel->instOrWave;
     }
@@ -823,7 +823,7 @@ void note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLaye
     }
     sub->bankId = seqLayer->seqChannel->bankId;
     sub->stereoHeadsetEffects = seqLayer->seqChannel->stereoHeadsetEffects;
-    sub->unk1b567 = seqLayer->seqChannel->reverbIndex & 3;
+    sub->reverbIndex = seqLayer->seqChannel->reverbIndex & 3;
 }
 #else
 s32 note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLayer) {

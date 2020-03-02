@@ -22,7 +22,7 @@ const GeoLayout ttc_geo_0003B8[] = {
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, ttc_seg7_dl_0700B1D8),
                GEO_DISPLAY_LIST(LAYER_ALPHA, ttc_seg7_dl_0700E878),
                GEO_RENDER_OBJ(),
-               GEO_ASM(   0, geo_enfvx_main),
+               GEO_ASM(   0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

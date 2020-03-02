@@ -18,7 +18,7 @@ const GeoLayout sa_geo_000170[] = {
                GEO_DISPLAY_LIST(LAYER_OPAQUE, sa_seg7_dl_07002DE8),
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, sa_seg7_dl_07002FD0),
                GEO_RENDER_OBJ(),
-               GEO_ASM(2, geo_enfvx_main),
+               GEO_ASM(2, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

@@ -16,9 +16,9 @@ void bhv_cannon_closed_init(void) {
     }
 }
 
-void CannonTrapDoorOpeningLoop(void) {
+void cannon_door_act_opening(void) {
     if (o->oTimer == 0)
-        PlaySound2(SOUND_GENERAL_CANNON_UP);
+        cur_obj_play_sound_2(SOUND_GENERAL_CANNON_UP);
 
     if (o->oTimer < 30) {
         o->oVelY = -0.5f;
@@ -55,7 +55,7 @@ void bhv_cannon_closed_loop(void) {
             break;
 
         case CANNON_TRAP_DOOR_ACT_OPENING:
-            CannonTrapDoorOpeningLoop();
+            cannon_door_act_opening();
             break;
     }
 }

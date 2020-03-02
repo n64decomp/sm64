@@ -623,10 +623,10 @@ void transform_object_vertices(s16 **data, s16 *vertexData) {
 
     if (gCurrentObject->header.gfx.throwMatrix == NULL) {
         gCurrentObject->header.gfx.throwMatrix = objectTransform;
-        build_object_transform_from_pos_and_angle(gCurrentObject, O_POS_INDEX, O_FACE_ANGLE_INDEX);
+        obj_build_transform_from_pos_and_angle(gCurrentObject, O_POS_INDEX, O_FACE_ANGLE_INDEX);
     }
 
-    apply_object_scale_to_matrix(gCurrentObject, m, *objectTransform);
+    obj_apply_scale_to_matrix(gCurrentObject, m, *objectTransform);
 
     // Go through all vertices, rotating and translating them to transform the object.
     while (numVertices--) {

@@ -186,7 +186,7 @@ void monty_mole_spawn_dirt_particles(s8 offsetY, s8 velYBase) {
 #if defined(VERSION_JP) || defined(VERSION_US)
     sMontyMoleRiseFromGroundParticles.offsetY = offsetY;
     sMontyMoleRiseFromGroundParticles.velYBase = velYBase;
-    obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);
+    cur_obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);
 #else
     s8 tempVelYBase = velYBase;
     s8 tempOffsetY = offsetY;
@@ -194,7 +194,7 @@ void monty_mole_spawn_dirt_particles(s8 offsetY, s8 velYBase) {
     do {
         sMontyMoleRiseFromGroundParticles.offsetY = tempOffsetY;
         sMontyMoleRiseFromGroundParticles.velYBase = tempVelYBase;
-        obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);
+        cur_obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);
     } while (0);
 #endif
 }
@@ -223,7 +223,7 @@ static void monty_mole_act_select_hole(void) {
 
     // Select a hole to pop out of
     if ((o->oMontyMoleCurrentHole = monty_mole_select_available_hole(minDistToMario)) != NULL) {
-        PlaySound2(SOUND_OBJ2_MONTY_MOLE_APPEAR);
+        cur_obj_play_sound_2(SOUND_OBJ2_MONTY_MOLE_APPEAR);
 
         // Mark hole as unavailable
         o->oMontyMoleCurrentHole->oMontyMoleHoleCooldown = -1;
@@ -248,8 +248,8 @@ static void monty_mole_act_select_hole(void) {
             monty_mole_spawn_dirt_particles(0, 20);
         }
 
-        obj_unhide();
-        obj_become_tangible();
+        cur_obj_unhide();
+        cur_obj_become_tangible();
     }
 }
 
@@ -257,13 +257,13 @@ static void monty_mole_act_select_hole(void) {
  * Move upward until high enough, then enter the spawn rock action.
  */
 static void monty_mole_act_rise_from_hole(void) {
-    set_obj_animation_and_sound_state(1);
+    cur_obj_init_animation_with_sound(1);
 
     if (o->oMontyMoleHeightRelativeToFloor >= 49.0f) {
         o->oPosY = o->oFloorHeight + 50.0f;
         o->oVelY = 0.0f;
 
-        if (func_8029F788()) {
+        if (cur_obj_check_if_near_animation_end()) {
             o->oAction = MONTY_MOLE_ACT_SPAWN_ROCK;
         }
     }
@@ -305,11 +305,11 @@ static void monty_mole_act_begin_jump_into_hole(void) {
  */
 static void monty_mole_act_throw_rock(void) {
     if (func_802F92EC(8, 10)) {
-        PlaySound2(SOUND_OBJ_MONTY_MOLE_ATTACK);
+        cur_obj_play_sound_2(SOUND_OBJ_MONTY_MOLE_ATTACK);
         o->prevObj = NULL;
     }
 
-    if (func_8029F788()) {
+    if (cur_obj_check_if_near_animation_end()) {
         o->oAction = MONTY_MOLE_ACT_BEGIN_JUMP_INTO_HOLE;
     }
 }
@@ -344,17 +344,17 @@ static void monty_mole_hide_in_hole(void) {
     //  action. If no hole is available (e.g. because mario is too far away),
     //  the game will crash because of the line above that accesses
     //  oMontyMoleCurrentHole.
-    obj_become_intangible();
+    cur_obj_become_intangible();
 }
 
 /**
  * Wait to land on the floor, then hide.
  */
 static void monty_mole_act_hide(void) {
-    set_obj_animation_and_sound_state(1);
+    cur_obj_init_animation_with_sound(1);
 
     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
-        obj_hide();
+        cur_obj_hide();
         monty_mole_hide_in_hole();
     } else {
         approach_f32_ptr(&o->oVelY, -4.0f, 0.5f);
@@ -367,7 +367,7 @@ static void monty_mole_act_hide(void) {
  */
 static void monty_mole_act_jump_out_of_hole(void) {
     if (o->oVelY > 0.0f) {
-        set_obj_animation_and_sound_state(9);
+        cur_obj_init_animation_with_sound(9);
     } else {
         func_802F927C(4);
 
@@ -386,7 +386,7 @@ void bhv_monty_mole_update(void) {
     // PARTIAL_UPDATE
 
     o->oDeathSound = SOUND_OBJ_DYING_ENEMY1;
-    obj_update_floor_and_walls();
+    cur_obj_update_floor_and_walls();
 
     o->oMontyMoleHeightRelativeToFloor = o->oPosY - o->oFloorHeight;
 
@@ -452,7 +452,7 @@ void bhv_monty_mole_update(void) {
         o->prevObj = NULL;
     }
 
-    obj_move_standard(78);
+    cur_obj_move_standard(78);
 }
 
 /**
@@ -486,14 +486,14 @@ static void monty_mole_rock_act_held(void) {
  * Move, then despawn after hitting the ground or water.
  */
 static void monty_mole_rock_act_move(void) {
-    obj_update_floor_and_walls();
+    cur_obj_update_floor_and_walls();
 
     if (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_ENTERED_WATER)) {
-        obj_spawn_particles(&sMontyMoleRockBreakParticles);
-        mark_object_for_deletion(o);
+        cur_obj_spawn_particles(&sMontyMoleRockBreakParticles);
+        obj_mark_for_deletion(o);
     }
 
-    obj_move_standard(78);
+    cur_obj_move_standard(78);
 }
 
 /**

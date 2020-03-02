@@ -27,16 +27,16 @@ static struct ObjectHitbox sBooCageHitbox = {
 void bhv_boo_cage_loop(void) {
     UNUSED s32 unused;
 
-    set_object_hitbox(o, &sBooCageHitbox);
+    obj_set_hitbox(o, &sBooCageHitbox);
 
     switch (o->oAction) {
         case BOO_CAGE_ACT_IN_BOO:
             // Don't let Mario enter BBH until the boo is killed
-            obj_become_intangible();
+            cur_obj_become_intangible();
 
             // Useless scale. This is also found in the code for BOO_CAGE_ACT_ON_GROUND.
             // Was the boo cage originally meant to have been shrunk and grow while falling?
-            obj_scale(1.0f);
+            cur_obj_scale(1.0f);
 
             // If the cage's parent boo is killed, set the action to BOO_CAGE_ACT_FALLING,
             // give the cage an initial Y velocity of 60 units/frame, and play the puzzle jingle.
@@ -46,7 +46,7 @@ void bhv_boo_cage_loop(void) {
                 o->oVelY = 60.0f;
                 play_puzzle_jingle();
             } else {
-                copy_object_pos_and_angle(o, o->parentObj);
+                obj_copy_pos_and_angle(o, o->parentObj);
             }
 
             break;
@@ -57,15 +57,15 @@ void bhv_boo_cage_loop(void) {
             o->oFaceAngleRoll = 0;
 
             // Apply standard physics to the cage.
-            obj_update_floor_and_walls();
-            obj_move_standard(-78);
+            cur_obj_update_floor_and_walls();
+            cur_obj_move_standard(-78);
 
             // Spawn sparkles while the cage falls.
             spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
             // When the cage lands/bounces, play a landing/bouncing sound.
             if (o->oMoveFlags & OBJ_MOVE_LANDED) {
-                PlaySound2(SOUND_GENERAL_SOFT_LANDING);
+                cur_obj_play_sound_2(SOUND_GENERAL_SOFT_LANDING);
             }
 
             // Once the cage stops bouncing and settles on the ground,
@@ -80,13 +80,13 @@ void bhv_boo_cage_loop(void) {
             break;
         case BOO_CAGE_ACT_ON_GROUND:
             // Allow Mario to enter the cage once it's still on the ground.
-            obj_become_tangible();
+            cur_obj_become_tangible();
 
             // The other useless scale
-            obj_scale(1.0f);
+            cur_obj_scale(1.0f);
 
             // Set the action to BOO_CAGE_ACT_MARIO_JUMPING_IN when Mario jumps in.
-            if (are_objects_collided(o, gMarioObject)) {
+            if (obj_check_if_collided_with_object(o, gMarioObject)) {
                 o->oAction++;
             }
 

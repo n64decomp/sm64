@@ -4,11 +4,11 @@
 void bhv_bobomb_bully_death_smoke_init(void) {
     o->oPosY -= 300.0f;
 
-    obj_scale(10.0f);
+    cur_obj_scale(10.0f);
 }
 
 void bhv_bobomb_explosion_bubble_init(void) {
-    scale_object_xyz(o, 2.0f, 2.0f, 1.0f);
+    obj_scale_xyz(o, 2.0f, 2.0f, 1.0f);
 
     o->oBobombExpBubGfxExpRateX = (s32)(RandomFloat() * 2048.0f) + 0x800;
     o->oBobombExpBubGfxExpRateY = (s32)(RandomFloat() * 2048.0f) + 0x800;
@@ -28,7 +28,7 @@ void bhv_bobomb_explosion_bubble_loop(void) {
     if (o->oPosY > waterY) {
         o->activeFlags = 0;
         o->oPosY += 5.0f;
-        spawn_object(o, MODEL_SPOT_ON_GROUND, bhvWaterSurfaceWhiteWave2);
+        spawn_object(o, MODEL_SMALL_WATER_SPLASH, bhvObjectWaterSplash);
     }
 
     if (o->oTimer >= 61)

@@ -22,6 +22,8 @@
 
 #ifdef VERSION_EU
 #define SEG_MAIN         0x80241800 // TODO: Investigate why it's different?
+#elif defined(VERSION_SH)
+#define SEG_MAIN         0x80249000
 #else
 #define SEG_MAIN         0x80246000
 #endif

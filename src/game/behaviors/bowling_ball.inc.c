@@ -32,14 +32,14 @@ void bhv_bowling_ball_init(void) {
     o->oBuoyancy = 2.0f;
 }
 
-void func_802EDA14(void) {
-    set_object_hitbox(o, &sBowlingBallHitbox);
+void bowling_ball_set_hitbox(void) {
+    obj_set_hitbox(o, &sBowlingBallHitbox);
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED)
         o->oInteractStatus = 0;
 }
 
-void func_802EDA6C(void) {
+void bowling_ball_set_waypoints(void) {
     switch (o->oBehParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
             o->oPathedWaypointsS16 = segmented_to_virtual(bob_seg7_metal_ball_path0);
@@ -67,11 +67,11 @@ void bhv_bowling_ball_roll_loop(void) {
     s16 collisionFlags;
     s32 sp18;
 
-    func_802EDA6C();
+    bowling_ball_set_waypoints();
     collisionFlags = object_step();
 
     //! Uninitialzed parameter, but the parameter is unused in the called function
-    sp18 = obj_follow_path(sp18);
+    sp18 = cur_obj_follow_path(sp18);
 
     o->oBowlingBallTargetYaw = o->oPathedTargetYaw;
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oBowlingBallTargetYaw, 0x400);
@@ -79,28 +79,28 @@ void bhv_bowling_ball_roll_loop(void) {
         o->oForwardVel = 70.0;
     }
 
-    func_802EDA14();
+    bowling_ball_set_hitbox();
 
     if (sp18 == -1) {
         if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 7000)) {
-            func_802A3004();
-            func_802AA618(0, 0, 92.0f);
+            spawn_mist_particles();
+            spawn_mist_particles_variable(0, 0, 92.0f);
         }
 
         o->activeFlags = 0;
     }
 
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) && (o->oVelY > 5.0f))
-        PlaySound2(SOUND_GENERAL_QUIET_POUND1_LOWPRIO);
+        cur_obj_play_sound_2(SOUND_GENERAL_QUIET_POUND1_LOWPRIO);
 }
 
 void bhv_bowling_ball_initializeLoop(void) {
     s32 sp1c;
 
-    func_802EDA6C();
+    bowling_ball_set_waypoints();
 
     //! Uninitialzed parameter, but the parameter is unused in the called function
-    sp1c = obj_follow_path(sp1c);
+    sp1c = cur_obj_follow_path(sp1c);
 
     o->oMoveAngleYaw = o->oPathedTargetYaw;
 
@@ -123,7 +123,7 @@ void bhv_bowling_ball_initializeLoop(void) {
 
         case BBALL_BP_STYPE_THI_SMALL:
             o->oForwardVel = 10.0f;
-            obj_scale(0.3f);
+            cur_obj_scale(0.3f);
             o->oGraphYOffset = 39.0f;
             break;
     }
@@ -221,9 +221,9 @@ void bhv_bob_pit_bowling_ball_loop(void) {
     if ((sp1c->normalX == 0) && (sp1c->normalZ == 0))
         o->oForwardVel = 28.0f;
 
-    func_802EDA14();
+    bowling_ball_set_hitbox();
     set_camera_shake_from_point(SHAKE_POS_BOWLING_BALL, o->oPosX, o->oPosY, o->oPosZ);
-    PlaySound(SOUND_ENV_UNKNOWN2);
+    cur_obj_play_sound_1(SOUND_ENV_UNKNOWN2);
     set_object_visibility(o, 3000);
 }
 
@@ -240,19 +240,19 @@ void bhv_free_bowling_ball_init(void) {
 
 void bhv_free_bowling_ball_roll_loop(void) {
     s16 collisionFlags = object_step();
-    func_802EDA14();
+    bowling_ball_set_hitbox();
 
     if (o->oForwardVel > 10.0f) {
         set_camera_shake_from_point(SHAKE_POS_BOWLING_BALL, o->oPosX, o->oPosY, o->oPosZ);
-        PlaySound(SOUND_ENV_UNKNOWN2);
+        cur_obj_play_sound_1(SOUND_ENV_UNKNOWN2);
     }
 
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) && !(collisionFlags & OBJ_COL_FLAGS_LANDED))
-        PlaySound2(SOUND_GENERAL_QUIET_POUND1_LOWPRIO);
+        cur_obj_play_sound_2(SOUND_GENERAL_QUIET_POUND1_LOWPRIO);
 
     if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 6000)) {
         o->header.gfx.node.flags |= 0x10; /* bit 4 */
-        obj_become_intangible();
+        cur_obj_become_intangible();
 
         o->oPosX = o->oHomeX;
         o->oPosY = o->oHomeY;
@@ -270,7 +270,7 @@ void bhv_free_bowling_ball_loop(void) {
             if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 3000)) {
                 o->oAction = FREE_BBALL_ACT_ROLL;
                 o->header.gfx.node.flags &= ~0x10; /* bit 4 */
-                obj_become_tangible();
+                cur_obj_become_tangible();
             }
             break;
 

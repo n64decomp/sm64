@@ -43,7 +43,7 @@ void bhv_ttc_elevator_update(void) {
     }
 
     // This is basically equivalent to posY += velY
-    obj_move_using_fvel_and_gravity();
+    cur_obj_move_using_fvel_and_gravity();
 
     // Flip directions if the elevator tries to run away
     if (clamp_f32(&o->oPosY, o->oHomeY, o->oTTCElevatorPeakY)) {

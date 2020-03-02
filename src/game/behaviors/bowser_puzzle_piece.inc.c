@@ -170,7 +170,7 @@ void bhv_lll_bowser_puzzle_piece_update(void) {
     // If we should advance to the next action...
     if (o->oBowserPuzzlePieceContinuePerformingAction == 0) {
         // Start doing the next action.
-        obj_change_action(*nextAction);
+        cur_obj_change_action(*nextAction);
 
         // Advance the pointer to the next action.
         nextAction++;
@@ -200,7 +200,7 @@ void bhv_lll_bowser_puzzle_piece_move(f32 xOffset, f32 zOffset, s32 duration, UN
     } else {
         // On frame 20, play the shifting sound.
         if (o->oTimer == 20)
-            PlaySound2(SOUND_OBJ2_BOWSER_PUZZLE_PIECE_MOVE);
+            cur_obj_play_sound_2(SOUND_OBJ2_BOWSER_PUZZLE_PIECE_MOVE);
 
         // For the number of frames specified by duration, move the piece.
         if (o->oTimer < duration + 20) {
@@ -208,7 +208,7 @@ void bhv_lll_bowser_puzzle_piece_move(f32 xOffset, f32 zOffset, s32 duration, UN
             o->oBowserPuzzlePieceOffsetZ += zOffset;
         } else {
             // This doesn't actually accomplish anything since
-            //   obj_change_action is going to be called before the
+            //   cur_obj_change_action is going to be called before the
             //   next action is performed anyway.
             o->oAction = 2;
 
@@ -255,7 +255,7 @@ void (*sBowserPuzzlePieceActions[])(void) = {
 void bhv_lll_bowser_puzzle_piece_loop(void) {
     bhv_lll_bowser_puzzle_piece_update();
 
-    obj_call_action_function(sBowserPuzzlePieceActions);
+    cur_obj_call_action_function(sBowserPuzzlePieceActions);
 
     o->oPosX = o->oBowserPuzzlePieceOffsetX + o->oHomeX;
     o->oPosY = o->oBowserPuzzlePieceOffsetY + o->oHomeY;

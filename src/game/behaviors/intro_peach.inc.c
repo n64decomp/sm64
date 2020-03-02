@@ -47,7 +47,7 @@ void bhv_intro_peach_loop(void) {
             intro_peach_set_pos_and_opacity(gCurrentObject, 0.f, 8.f);
 
             if (gCurrentObject->oTimer > 60)
-                mark_object_for_deletion(gCurrentObject);
+                obj_mark_for_deletion(gCurrentObject);
             break;
     }
 }

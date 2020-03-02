@@ -461,7 +461,7 @@ s32 mario_execute_object_action(struct MarioState *m) {
     /* clang-format on */
 
     if (!cancel && (m->input & INPUT_IN_WATER)) {
-        m->particleFlags |= PARTICLE_7;
+        m->particleFlags |= PARTICLE_IDLE_WATER_WAVE;
     }
 
     return cancel;

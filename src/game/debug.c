@@ -57,16 +57,16 @@ s8 sDebugInfoButtonSeqID = 0;
 s16 sDebugInfoButtonSeq[] = { U_CBUTTONS, L_CBUTTONS, D_CBUTTONS, R_CBUTTONS, -1 };
 
 // most likely present in an ifdef DEBUG build. TODO: check DD version?
-void Stub802C9890(void) {
+void stub_debug_1(void) {
 }
 
-void Stub802C98A0(void) {
+void stub_debug_2(void) {
 }
 
-void Stub802C98B0(void) {
+void stub_debug_3(void) {
 }
 
-void Stub802C98C0(void) {
+void stub_debug_4(void) {
 }
 
 /*
@@ -436,7 +436,7 @@ static void try_modify_debug_controls(void) {
 }
 
 // possibly a removed debug control (TODO: check DD)
-void stub_802CA5D0(void) {
+void stub_debug_5(void) {
 }
 
 /*
@@ -521,7 +521,7 @@ void try_do_mario_debug_object_spawn(void) {
 }
 
 // TODO: figure out what this is
-static void Unknown802CA8B4(void) {
+static void debug_print_obj_move_flags(void) {
 #ifndef VERSION_EU
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED) {
         print_debug_top_down_objectinfo("BOUND   %x", gCurrentObject->oMoveFlags);
@@ -554,7 +554,7 @@ static void Unknown802CA8B4(void) {
 }
 
 // unused, what is this?
-void Unknown802CAA84(s16 *enemyArr) {
+void debug_enemy_unknown(s16 *enemyArr) {
     // copy b1-b4 over to an unknown s16 array
     enemyArr[4] = gDebugInfo[DEBUG_PAGE_ENEMYINFO][1];
     enemyArr[5] = gDebugInfo[DEBUG_PAGE_ENEMYINFO][2];

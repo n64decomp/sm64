@@ -11,7 +11,7 @@ const GeoLayout jrb_geo_000978[] = {
 const GeoLayout jrb_geo_000990[] = {
    GEO_CULLING_RADIUS(5000),
    GEO_OPEN_NODE(),
-      GEO_ASM(0, Geo18_8029D924),
+      GEO_ASM(0, geo_update_layer_transparency),
       GEO_DISPLAY_LIST(LAYER_TRANSPARENT, jrb_seg7_dl_070090B0),
    GEO_CLOSE_NODE(),
    GEO_END(),
@@ -30,7 +30,7 @@ const GeoLayout jrb_geo_0009B0[] = {
 const GeoLayout jrb_geo_0009C8[] = {
    GEO_CULLING_RADIUS(5000),
    GEO_OPEN_NODE(),
-      GEO_ASM(0, Geo18_8029D924),
+      GEO_ASM(0, geo_update_layer_transparency),
       GEO_DISPLAY_LIST(LAYER_TRANSPARENT, jrb_seg7_dl_07009B30),
    GEO_CLOSE_NODE(),
    GEO_END(),

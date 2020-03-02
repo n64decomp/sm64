@@ -13,16 +13,16 @@
  */
 
 void bhv_unused_poundable_platform(void) {
-    obj_scale(1.02f);
+    cur_obj_scale(1.02f);
 
     if (o->oAction == 0) {
-        if (obj_is_mario_ground_pounding_platform()) {
-            func_802A3004();
+        if (cur_obj_is_mario_ground_pounding_platform()) {
+            spawn_mist_particles();
             spawn_triangle_break_particles(20, 56, 3.0f, 0);
             o->oAction++;
         }
     } else if (o->oTimer > 7) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     }
     load_object_collision_model();
 }

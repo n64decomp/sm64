@@ -8,7 +8,7 @@
 
 .section .text, "ax"
 
-glabel EntryPoint
+glabel entry_point
     lui   $t0, %hi(_mainSegmentNoloadStart) # $t0, 0x8034
     lui   $t1, %lo(_mainSegmentNoloadSizeHi) # lui $t1, 2
     addiu $t0, %lo(_mainSegmentNoloadStart) # addiu $t0, $t0, -0x6df0
@@ -19,9 +19,9 @@ glabel EntryPoint
     sw    $zero, 4($t0)
     bnez  $t1, .L80246010
      addi  $t0, $t0, 8
-    lui   $t2, %hi(Main) # $t2, 0x8024
+    lui   $t2, %hi(main_func) # $t2, 0x8024
     lui   $sp, %hi(gIdleThreadStack) # $sp, 0x8020
-    addiu $t2, %lo(Main) # addiu $t2, $t2, 0x6dc4
+    addiu $t2, %lo(main_func) # addiu $t2, $t2, 0x6dc4
     jr    $t2
      addiu $sp, %lo(gIdleThreadStack) # addiu $sp, $sp, 0xa00
     nop

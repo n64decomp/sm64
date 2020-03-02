@@ -14,8 +14,8 @@ void bhv_purple_switch_loop(void) {
          * switch's middle section, transition to the pressed state.
          */
         case PURPLE_SWITCH_IDLE:
-            obj_set_model(MODEL_PURPLE_SWITCH);
-            obj_scale(1.5f);
+            cur_obj_set_model(MODEL_PURPLE_SWITCH);
+            cur_obj_scale(1.5f);
             if (gMarioObject->platform == o && !(gMarioStates->action & MARIO_UNKNOWN_13)) {
                 if (lateral_dist_between_objects(o, gMarioObject) < 127.5) {
                     o->oAction = PURPLE_SWITCH_PRESSED;
@@ -27,11 +27,11 @@ void bhv_purple_switch_loop(void) {
          * Immediately transition to the ticking state.
          */
         case PURPLE_SWITCH_PRESSED:
-            func_802A3398(2, 3, 1.5f, 0.2f);
+            cur_obj_scale_over_time(2, 3, 1.5f, 0.2f);
             if (o->oTimer == 3) {
-                PlaySound2(SOUND_GENERAL2_PURPLE_SWITCH);
+                cur_obj_play_sound_2(SOUND_GENERAL2_PURPLE_SWITCH);
                 o->oAction = PURPLE_SWITCH_TICKING;
-                ShakeScreen(SHAKE_POS_SMALL);
+                cur_obj_shake_screen(SHAKE_POS_SMALL);
             }
             break;
         /**
@@ -59,7 +59,7 @@ void bhv_purple_switch_loop(void) {
          * idle state.
          */
         case PURPLE_SWITCH_UNPRESSED:
-            func_802A3398(2, 3, 0.2f, 1.5f);
+            cur_obj_scale_over_time(2, 3, 0.2f, 1.5f);
             if (o->oTimer == 3) {
                 o->oAction = PURPLE_SWITCH_IDLE;
             }
@@ -70,7 +70,7 @@ void bhv_purple_switch_loop(void) {
          * unpressed state.
          */
         case PURPLE_SWITCH_WAIT_FOR_MARIO_TO_GET_OFF:
-            if (!obj_is_mario_on_platform()) {
+            if (!cur_obj_is_mario_on_platform()) {
                 o->oAction = PURPLE_SWITCH_UNPRESSED;
             }
             break;

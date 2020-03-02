@@ -19,7 +19,7 @@ void bhv_bobomb_init(void) {
     o->oInteractionSubtype = INT_SUBTYPE_KICKABLE;
 }
 
-void func_802E5B7C(void) {
+void bobomb_spawn_coin(void) {
     if (((o->oBehParams >> 8) & 0x1) == 0) {
         obj_spawn_yellow_coins(o, 1);
         o->oBehParams = 0x100;
@@ -27,22 +27,23 @@ void func_802E5B7C(void) {
     }
 }
 
-void BobombExplodeLoop(void) {
+void bobomb_act_explode(void) {
     struct Object *explosion;
     if (o->oTimer < 5)
-        obj_scale(1.0 + (f32) o->oTimer / 5.0);
+        cur_obj_scale(1.0 + (f32) o->oTimer / 5.0);
     else {
         explosion = spawn_object(o, MODEL_EXPLOSION, bhvExplosion);
         explosion->oGraphYOffset += 100.0f;
 
-        func_802E5B7C();
+        bobomb_spawn_coin();
         create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
         o->activeFlags = 0;
     }
 }
 
-void CheckBobombInteractions(void) {
-    set_object_hitbox(o, &sBobombHitbox);
+
+void bobomb_check_interactions(void) {
+    obj_set_hitbox(o, &sBobombHitbox);
     if ((o->oInteractStatus & INT_STATUS_INTERACTED) != 0) /* bit 15 */
     {
         if ((o->oInteractStatus & INTERACT_GRABBABLE) != 0) /* bit 1 */
@@ -59,11 +60,11 @@ void CheckBobombInteractions(void) {
         o->oInteractStatus = 0;
     }
 
-    if (attack_collided_non_mario_object(o) == 1)
+    if (obj_attack_collided_from_other_object(o) == 1)
         o->oAction = BOBOMB_ACT_EXPLODE;
 }
 
-void BobombPatrolLoop(void) {
+void bobomb_act_patrol(void) {
     UNUSED s8 filler[4];
     UNUSED s16 sp22;
     s16 collisionFlags;
@@ -80,7 +81,7 @@ void BobombPatrolLoop(void) {
     obj_check_floor_death(collisionFlags, sObjFloor);
 }
 
-void BobombChaseMarioLoop(void) {
+void bobomb_act_chase_mario(void) {
     UNUSED u8 filler[4];
     s16 sp1a, collisionFlags;
 
@@ -90,35 +91,35 @@ void BobombChaseMarioLoop(void) {
     collisionFlags = object_step();
 
     if (sp1a == 5 || sp1a == 16)
-        PlaySound2(SOUND_OBJ_BOBOMB_WALK);
+        cur_obj_play_sound_2(SOUND_OBJ_BOBOMB_WALK);
 
     obj_turn_toward_object(o, gMarioObject, 16, 0x800);
     obj_check_floor_death(collisionFlags, sObjFloor);
 }
 
-void BobombLaunchedLoop(void) {
+void bobomb_act_launched(void) {
     s16 collisionFlags = 0;
     collisionFlags = object_step();
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) == OBJ_COL_FLAG_GROUNDED)
         o->oAction = BOBOMB_ACT_EXPLODE; /* bit 0 */
 }
 
-void GenericBobombFreeLoop(void) {
+void generic_bobomb_free_loop(void) {
     switch (o->oAction) {
         case BOBOMB_ACT_PATROL:
-            BobombPatrolLoop();
+            bobomb_act_patrol();
             break;
 
         case BOBOMB_ACT_LAUNCHED:
-            BobombLaunchedLoop();
+            bobomb_act_launched();
             break;
 
         case BOBOMB_ACT_CHASE_MARIO:
-            BobombChaseMarioLoop();
+            bobomb_act_chase_mario();
             break;
 
         case BOBOMB_ACT_EXPLODE:
-            BobombExplodeLoop();
+            bobomb_act_explode();
             break;
 
         case BOBOMB_ACT_LAVA_DEATH:
@@ -132,20 +133,20 @@ void GenericBobombFreeLoop(void) {
             break;
     }
 
-    CheckBobombInteractions();
+    bobomb_check_interactions();
 
     if (o->oBobombFuseTimer >= 151)
         o->oAction = 3;
 }
 
-void StationaryBobombFreeLoop(void) {
+void stationary_bobomb_free_loop(void) {
     switch (o->oAction) {
         case BOBOMB_ACT_LAUNCHED:
-            BobombLaunchedLoop();
+            bobomb_act_launched();
             break;
 
         case BOBOMB_ACT_EXPLODE:
-            BobombExplodeLoop();
+            bobomb_act_explode();
             break;
 
         case BOBOMB_ACT_LAVA_DEATH:
@@ -159,28 +160,28 @@ void StationaryBobombFreeLoop(void) {
             break;
     }
 
-    CheckBobombInteractions();
+    bobomb_check_interactions();
 
     if (o->oBobombFuseTimer >= 151)
         o->oAction = 3;
 }
 
-void BobombFreeLoop(void) {
+void bobomb_free_loop(void) {
     if (o->oBehParams2ndByte == BOBOMB_BP_STYPE_GENERIC)
-        GenericBobombFreeLoop();
+        generic_bobomb_free_loop();
     else
-        StationaryBobombFreeLoop();
+        stationary_bobomb_free_loop();
 }
 
-void BobombHeldLoop(void) {
+void bobomb_held_loop(void) {
     o->header.gfx.node.flags |= 0x10; /* bit 4 */
-    SetObjAnimation(1);
-    obj_set_pos_relative(gMarioObject, 0, 60.0f, 100.0);
+    cur_obj_init_animation(1);
+    cur_obj_set_pos_relative(gMarioObject, 0, 60.0f, 100.0);
 
     o->oBobombFuseLit = 1;
     if (o->oBobombFuseTimer >= 151) {
         //! Although the Bob-omb's action is set to explode when the fuse timer expires,
-        //  BobombExplodeLoop() will not execute until the bob-omb's held state changes.
+        //  bobomb_act_explode() will not execute until the bob-omb's held state changes.
         //  This allows the Bob-omb to be regrabbed indefinitely.
 
         gMarioObject->oInteractStatus |= INTERACT_DAMAGE; /* bit 3 */
@@ -188,18 +189,18 @@ void BobombHeldLoop(void) {
     }
 }
 
-void BobombDroppedLoop(void) {
-    obj_get_dropped();
+void bobomb_dropped_loop(void) {
+    cur_obj_get_dropped();
 
     o->header.gfx.node.flags &= ~0x10; /* bit 4 = 0 */
-    SetObjAnimation(0);
+    cur_obj_init_animation(0);
 
     o->oHeldState = 0;
     o->oAction = BOBOMB_ACT_PATROL;
 }
 
-void BobombThrownLoop(void) {
-    obj_enable_rendering_2();
+void bobomb_thrown_loop(void) {
+    cur_obj_enable_rendering_2();
 
     o->header.gfx.node.flags &= ~0x10; /* bit 4 = 0 */
     o->oHeldState = 0;
@@ -211,7 +212,7 @@ void BobombThrownLoop(void) {
 
 // sp18 = blinkTimer
 
-void ObjRandomBlink(s32 *blinkTimer) {
+void curr_obj_random_blink(s32 *blinkTimer) {
     if (*blinkTimer == 0) {
         if ((s16)(RandomFloat() * 100.0f) == 0) {
             o->oAnimState = 1;
@@ -235,23 +236,23 @@ void bhv_bobomb_loop(void) {
     if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 4000) != 0) {
         switch (o->oHeldState) {
             case HELD_FREE:
-                BobombFreeLoop();
+                bobomb_free_loop();
                 break;
 
             case HELD_HELD:
-                BobombHeldLoop();
+                bobomb_held_loop();
                 break;
 
             case HELD_THROWN:
-                BobombThrownLoop();
+                bobomb_thrown_loop();
                 break;
 
             case HELD_DROPPED:
-                BobombDroppedLoop();
+                bobomb_dropped_loop();
                 break;
         }
 
-        ObjRandomBlink(&o->oBobombBlinkTimer);
+        curr_obj_random_blink(&o->oBobombBlinkTimer);
 
         if (o->oBobombFuseLit == 1) {
             if (o->oBobombFuseTimer >= 121)
@@ -263,7 +264,7 @@ void bhv_bobomb_loop(void) {
                 == 0) /* oBobombFuseTimer % 2 or oBobombFuseTimer % 8 */
                 spawn_object(o, MODEL_SMOKE, bhvBobombFuseSmoke);
 
-            PlaySound(SOUND_AIR_BOBOMB_LIT_FUSE);
+            cur_obj_play_sound_1(SOUND_AIR_BOBOMB_LIT_FUSE);
 
             o->oBobombFuseTimer++;
         }
@@ -274,7 +275,7 @@ void bhv_bobomb_fuse_smoke_init(void) {
     o->oPosX += (s32)(RandomFloat() * 80.0f) - 40;
     o->oPosY += (s32)(RandomFloat() * 80.0f) + 60;
     o->oPosZ += (s32)(RandomFloat() * 80.0f) - 40;
-    obj_scale(1.2f);
+    cur_obj_scale(1.2f);
 }
 
 void bhv_bobomb_buddy_init(void) {
@@ -284,7 +285,7 @@ void bhv_bobomb_buddy_init(void) {
     o->oInteractionSubtype = INT_SUBTYPE_NPC;
 }
 
-void BobombBuddyIdleLoop(void) {
+void bobomb_buddy_act_idle(void) {
     UNUSED u8 filler[4];
     s16 sp1a = o->header.gfx.unk38.animFrame;
     UNUSED s16 collisionFlags = 0;
@@ -296,7 +297,7 @@ void BobombBuddyIdleLoop(void) {
     collisionFlags = object_step();
 
     if ((sp1a == 5) || (sp1a == 16))
-        PlaySound2(SOUND_OBJ_BOBOMB_WALK);
+        cur_obj_play_sound_2(SOUND_OBJ_BOBOMB_WALK);
 
     if (o->oDistanceToMario < 1000.0f)
         o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oAngleToMario, 0x140);
@@ -313,7 +314,7 @@ void BobombBuddyIdleLoop(void) {
  * dialogSecondText is called after Bob-omb Buddy has the cannon(s) ready and
  * then tells Mario that is "Ready for blastoff".
  */
-void BobombBuddyCannonLoop(s16 dialogFirstText, s16 dialogSecondText) {
+void bobomb_buddy_cannon_dialog(s16 dialogFirstText, s16 dialogSecondText) {
     struct Object *cannonClosed;
     s16 buddyText, cutscene;
 
@@ -322,7 +323,7 @@ void BobombBuddyCannonLoop(s16 dialogFirstText, s16 dialogSecondText) {
             buddyText = cutscene_object_with_dialog(CUTSCENE_DIALOG, o, dialogFirstText);
             if (buddyText != 0) {
                 save_file_set_cannon_unlocked();
-                cannonClosed = obj_nearest_object_with_behavior(bhvCannonClosed);
+                cannonClosed = cur_obj_nearest_object_with_behavior(bhvCannonClosed);
                 if (cannonClosed != 0)
                     o->oBobombBuddyCannonStatus = BOBOMB_BUDDY_CANNON_OPENING;
                 else
@@ -331,7 +332,7 @@ void BobombBuddyCannonLoop(s16 dialogFirstText, s16 dialogSecondText) {
             break;
 
         case BOBOMB_BUDDY_CANNON_OPENING:
-            cannonClosed = obj_nearest_object_with_behavior(bhvCannonClosed);
+            cannonClosed = cur_obj_nearest_object_with_behavior(bhvCannonClosed);
             cutscene = cutscene_object(CUTSCENE_PREPARE_CANNON, cannonClosed);
             if (cutscene == -1)
                 o->oBobombBuddyCannonStatus = BOBOMB_BUDDY_CANNON_OPENED;
@@ -355,7 +356,7 @@ void BobombBuddyCannonLoop(s16 dialogFirstText, s16 dialogSecondText) {
     }
 }
 
-void BobombBuddyTalkLoop(void) {
+void bobomb_buddy_act_talk(void) {
     if (set_mario_npc_dialog(1) == 2) {
         o->activeFlags |= 0x20; /* bit 5 */
 
@@ -374,38 +375,38 @@ void BobombBuddyTalkLoop(void) {
 
             case BOBOMB_BUDDY_ROLE_CANNON:
                 if (gCurrCourseNum == COURSE_BOB)
-                    BobombBuddyCannonLoop(DIALOG_004, DIALOG_105);
+                    bobomb_buddy_cannon_dialog(DIALOG_004, DIALOG_105);
                 else
-                    BobombBuddyCannonLoop(DIALOG_047, DIALOG_106);
+                    bobomb_buddy_cannon_dialog(DIALOG_047, DIALOG_106);
                 break;
         }
     }
 }
 
-void BobombBuddyTurnToTalkLoop(void) {
+void bobomb_buddy_act_turn_to_talk(void) {
     s16 sp1e = o->header.gfx.unk38.animFrame;
     if ((sp1e == 5) || (sp1e == 16))
-        PlaySound2(SOUND_OBJ_BOBOMB_WALK);
+        cur_obj_play_sound_2(SOUND_OBJ_BOBOMB_WALK);
 
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oAngleToMario, 0x1000);
     if ((s16) o->oMoveAngleYaw == (s16) o->oAngleToMario)
         o->oAction = BOBOMB_BUDDY_ACT_TALK;
 
-    PlaySound2(SOUND_ACTION_READ_SIGN);
+    cur_obj_play_sound_2(SOUND_ACTION_READ_SIGN);
 }
 
-void BobombBuddyActionLoop(void) {
+void bobomb_buddy_actions(void) {
     switch (o->oAction) {
         case BOBOMB_BUDDY_ACT_IDLE:
-            BobombBuddyIdleLoop();
+            bobomb_buddy_act_idle();
             break;
 
         case BOBOMB_BUDDY_ACT_TURN_TO_TALK:
-            BobombBuddyTurnToTalkLoop();
+            bobomb_buddy_act_turn_to_talk();
             break;
 
         case BOBOMB_BUDDY_ACT_TALK:
-            BobombBuddyTalkLoop();
+            bobomb_buddy_act_talk();
             break;
     }
 
@@ -413,9 +414,9 @@ void BobombBuddyActionLoop(void) {
 }
 
 void bhv_bobomb_buddy_loop(void) {
-    BobombBuddyActionLoop();
+    bobomb_buddy_actions();
 
-    ObjRandomBlink(&o->oBobombBuddyBlinkTimer);
+    curr_obj_random_blink(&o->oBobombBuddyBlinkTimer);
 
     o->oInteractStatus = 0;
 }

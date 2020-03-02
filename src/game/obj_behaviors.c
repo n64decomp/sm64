@@ -78,7 +78,7 @@ void set_yoshi_as_not_dead(void) {
 }
 
 /**
- * An unused geo function. Bears strong similarity to Geo18_802B7D44, and relates something
+ * An unused geo function. Bears strong similarity to geo_bits_bowser_coloring, and relates something
  * of the opacity of an object to something else. Perhaps like, giving a parent object the same
  * opacity?
  */
@@ -395,10 +395,10 @@ void obj_splash(s32 waterY, s32 objY) {
 
     // Spawns waves if near surface of water and plays a noise if entering.
     if ((f32)(waterY + 30) > o->oPosY && o->oPosY > (f32)(waterY - 30)) {
-        spawn_object(o, MODEL_WATER_WAVES_SURF, bhvObjectWaterWave);
+        spawn_object(o, MODEL_IDLE_WATER_WAVE, bhvObjectWaterWave);
 
         if (o->oVelY < -20.0f) {
-            PlaySound2(SOUND_OBJ_DIVING_INTO_WATER);
+            cur_obj_play_sound_2(SOUND_OBJ_DIVING_INTO_WATER);
         }
     }
 
@@ -739,7 +739,7 @@ s32 obj_lava_death(void) {
     }
 
     if ((o->oTimer % 8) == 0) {
-        PlaySound2(SOUND_OBJ_BULLY_EXPLODE_2);
+        cur_obj_play_sound_2(SOUND_OBJ_BULLY_EXPLODE_2);
         deathSmoke = spawn_object(o, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
         deathSmoke->oPosX += RandomFloat() * 20.0f;
         deathSmoke->oPosY += RandomFloat() * 20.0f;

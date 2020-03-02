@@ -31,7 +31,7 @@ void bhv_homing_amp_init(void) {
 
     // Homing amps start at 1/10th their normal size.
     // They grow when they "appear" to Mario.
-    obj_scale(0.1f);
+    cur_obj_scale(0.1f);
 
     // Hide the amp (until Mario gets near).
     o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
@@ -44,7 +44,7 @@ static void check_amp_attack(void) {
     // Strange placement for this call. The hitbox is never cleared.
     // For perspective, this code is run every frame of bhv_circling_amp_loop
     // and every frame of a homing amp's HOMING_AMP_ACT_CHASE action.
-    set_object_hitbox(o, &sAmpHitbox);
+    obj_set_hitbox(o, &sAmpHitbox);
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         // Unnecessary if statement, maybe caused by a macro for
@@ -77,11 +77,11 @@ static void homing_amp_appear_loop(void) {
     o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, targetYaw, 0x1000);
 
     // For 30 frames, make the amp "appear" by increasing its size by 0.03 each frame,
-    // except for the first frame (when oTimer == 0) because the expression in obj_scale
+    // except for the first frame (when oTimer == 0) because the expression in cur_obj_scale
     // evaluates to 0.1, which is the same as it was before. After 30 frames, it ends at
     // a scale factor of 0.97. The amp remains at 97% of its real height for 60 more frames.
     if (o->oTimer < 30) {
-        obj_scale(0.1 + 0.9 * (f32)(o->oTimer / 30.0f));
+        cur_obj_scale(0.1 + 0.9 * (f32)(o->oTimer / 30.0f));
     } else {
         o->oAnimState = 1;
     }
@@ -89,7 +89,7 @@ static void homing_amp_appear_loop(void) {
     // Once the timer becomes greater than 90, i.e. 91 frames have passed,
     // reset the amp's size and start chasing Mario.
     if (o->oTimer >= 91) {
-        obj_scale(1.0f);
+        cur_obj_scale(1.0f);
         o->oAction = HOMING_AMP_ACT_CHASE;
         o->oAmpYPhase = 0;
     }
@@ -181,7 +181,7 @@ static void amp_attack_cooldown_loop(void) {
     o->header.gfx.unk38.animFrame += 2;
     o->oForwardVel = 0;
 
-    obj_become_intangible();
+    cur_obj_become_intangible();
 
     if (o->oTimer >= 31) {
         o->oAnimState = 0;
@@ -189,7 +189,7 @@ static void amp_attack_cooldown_loop(void) {
 
     if (o->oTimer >= 91) {
         o->oAnimState = 1;
-        obj_become_tangible();
+        cur_obj_become_tangible();
         o->oAction = HOMING_AMP_ACT_CHASE;
     }
 }
@@ -213,7 +213,7 @@ void bhv_homing_amp_loop(void) {
 
         case HOMING_AMP_ACT_CHASE:
             homing_amp_chase_loop();
-            PlaySound(SOUND_AIR_AMP_BUZZ);
+            cur_obj_play_sound_1(SOUND_AIR_AMP_BUZZ);
             break;
 
         case HOMING_AMP_ACT_GIVE_UP:
@@ -292,7 +292,7 @@ static void fixed_circling_amp_idle_loop(void) {
     // Oscillate
     o->oAmpYPhase++;
 
-    // Where there is a PlaySound call in the main circling amp update function,
+    // Where there is a cur_obj_play_sound_1 call in the main circling amp update function,
     // there is nothing here. Fixed amps are the only amps that never play
     // the "amp buzzing" sound.
 }
@@ -318,7 +318,7 @@ static void circling_amp_idle_loop(void) {
     // Oscillate
     o->oAmpYPhase++;
 
-    PlaySound(SOUND_AIR_AMP_BUZZ);
+    cur_obj_play_sound_1(SOUND_AIR_AMP_BUZZ);
 }
 
 /**

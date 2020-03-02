@@ -47,9 +47,9 @@ void bhv_pokey_body_part_update(void) {
 
     if (obj_update_standard_actions(3.0f)) {
         if (o->parentObj->oAction == POKEY_ACT_UNLOAD_PARTS) {
-            mark_object_for_deletion(o);
+            obj_mark_for_deletion(o);
         } else {
-            obj_update_floor_and_walls();
+            cur_obj_update_floor_and_walls();
             obj_update_blinking(&o->oPokeyBodyPartBlinkTimer, 30, 60, 4);
 
             // If the body part above us is dead, then decrease body part index
@@ -78,7 +78,7 @@ void bhv_pokey_body_part_update(void) {
             else if (o->parentObj->oPokeyBottomBodyPartSize < 1.0f
                      && o->oBehParams2ndByte + 1 == o->parentObj->oPokeyNumAliveBodyParts) {
                 approach_f32_ptr(&o->parentObj->oPokeyBottomBodyPartSize, 1.0f, 0.1f);
-                obj_scale(o->parentObj->oPokeyBottomBodyPartSize * 3.0f);
+                cur_obj_scale(o->parentObj->oPokeyBottomBodyPartSize * 3.0f);
             }
 
             //! Pausing causes jumps in offset angle
@@ -120,7 +120,7 @@ void bhv_pokey_body_part_update(void) {
                 o->parentObj->oPokeyAliveBodyPartFlags =
                     o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ ~0);
             } else if (o->parentObj->oPokeyHeadWasKilled) {
-                obj_become_intangible();
+                cur_obj_become_intangible();
 
                 if (--o->oPokeyBodyPartDeathDelayAfterHeadKilled < 0) {
                     o->parentObj->oPokeyNumAliveBodyParts -= 1;
@@ -133,7 +133,7 @@ void bhv_pokey_body_part_update(void) {
                 o->oPokeyBodyPartDeathDelayAfterHeadKilled = (o->oBehParams2ndByte << 2) + 20;
             }
 
-            obj_move_standard(-78);
+            cur_obj_move_standard(-78);
         }
     } else {
         o->oAnimState = 1;
@@ -160,7 +160,7 @@ static void pokey_act_uninitialized(void) {
             bodyPart = spawn_object_relative(i, 0, -i * 120 + 480, 0, o, partModel, bhvPokeyBodyPart);
 
             if (bodyPart != NULL) {
-                scale_object(bodyPart, 3.0f);
+                obj_scale(bodyPart, 3.0f);
             }
 
             partModel = MODEL_POKEY_BODY_PART;
@@ -184,13 +184,13 @@ static void pokey_act_wander(void) {
     struct Object *bodyPart;
 
     if (o->oPokeyNumAliveBodyParts == 0) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else if (o->oDistanceToMario > 2500.0f) {
         o->oAction = POKEY_ACT_UNLOAD_PARTS;
         o->oForwardVel = 0.0f;
     } else {
         treat_far_home_as_mario(1000.0f);
-        obj_update_floor_and_walls();
+        cur_obj_update_floor_and_walls();
 
         if (o->oPokeyHeadWasKilled) {
             o->oForwardVel = 0.0f;
@@ -213,7 +213,7 @@ static void pokey_act_wander(void) {
                         o->oPokeyNumAliveBodyParts += 1;
                         o->oPokeyBottomBodyPartSize = 0.0f;
 
-                        scale_object(bodyPart, 0.0f);
+                        obj_scale(bodyPart, 0.0f);
                     }
 
                     o->oTimer = 0;
@@ -266,11 +266,11 @@ static void pokey_act_wander(void) {
                     }
                 }
 
-                obj_rotate_yaw_toward(o->oPokeyTargetYaw, 0x200);
+                cur_obj_rotate_yaw_toward(o->oPokeyTargetYaw, 0x200);
             }
         }
 
-        obj_move_standard(-78);
+        cur_obj_move_standard(-78);
     }
 }
 
@@ -281,7 +281,7 @@ static void pokey_act_wander(void) {
  */
 static void pokey_act_unload_parts(void) {
     o->oAction = POKEY_ACT_UNINITIALIZED;
-    obj_set_pos_to_home();
+    cur_obj_set_pos_to_home();
 }
 
 /**

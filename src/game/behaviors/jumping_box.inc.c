@@ -12,7 +12,7 @@ struct ObjectHitbox sJumpingBoxHitbox = {
     /* hurtboxHeight: */ 250,
 };
 
-void ActionJumpingBox0(void) {
+void jumping_box_act_0(void) {
     if (o->oSubAction == 0) {
         if (o->oJumpingBoxUnkF8-- < 0)
             o->oSubAction++;
@@ -26,45 +26,45 @@ void ActionJumpingBox0(void) {
     }
 }
 
-void ActionJumpingBox1(void) {
+void jumping_box_act_1(void) {
     if (o->oMoveFlags & (0x200 | 0x40 | 0x20 | 0x10 | 0x8 | 0x1)) {
-        mark_object_for_deletion(o);
-        func_802A3004();
+        obj_mark_for_deletion(o);
+        spawn_mist_particles();
     }
 }
 
-void (*sJumpingBoxActions[])(void) = { ActionJumpingBox0, ActionJumpingBox1 };
+void (*sJumpingBoxActions[])(void) = { jumping_box_act_0, jumping_box_act_1 };
 
-void func_802B1F84(void) {
-    obj_set_model(MODEL_BREAKABLE_BOX);
-    obj_scale(0.5f);
-    set_object_hitbox(o, &sJumpingBoxHitbox);
-    obj_update_floor_and_walls();
-    obj_move_standard(78);
-    obj_call_action_function(sJumpingBoxActions);
+void jumping_box_free_update(void) {
+    cur_obj_set_model(MODEL_BREAKABLE_BOX);
+    cur_obj_scale(0.5f);
+    obj_set_hitbox(o, &sJumpingBoxHitbox);
+    cur_obj_update_floor_and_walls();
+    cur_obj_move_standard(78);
+    cur_obj_call_action_function(sJumpingBoxActions);
 }
 
 void bhv_jumping_box_loop(void) {
     switch (o->oHeldState) {
         case HELD_FREE:
-            func_802B1F84();
+            jumping_box_free_update();
             break;
         case HELD_HELD:
-            copy_object_pos(o, gMarioObject);
-            obj_set_model(MODEL_BREAKABLE_BOX_SMALL);
-            func_8029FA5C(-1, 0);
+            obj_copy_pos(o, gMarioObject);
+            cur_obj_set_model(MODEL_BREAKABLE_BOX_SMALL);
+            cur_obj_unrender_and_reset_state(-1, 0);
             break;
         case HELD_THROWN:
-            obj_get_thrown_or_placed(40.0f, 20.0f, 1);
+            cur_obj_get_thrown_or_placed(40.0f, 20.0f, 1);
             break;
         case HELD_DROPPED:
-            obj_get_dropped();
+            cur_obj_get_dropped();
             o->oAction = 1;
             break;
     }
     if (o->oInteractStatus & INTERACT_HIT_FROM_BELOW) {
         create_sound_spawner(SOUND_GENERAL_BREAK_BOX);
-        func_802A3C98(46.0f, 1);
+        obj_explode_and_spawn_coins(46.0f, 1);
     }
     o->oInteractStatus = 0;
 }

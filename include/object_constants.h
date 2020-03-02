@@ -106,24 +106,26 @@
     OBJ_MOVE_UNDERWATER_ON_GROUND)
 
 /* oActiveParticleFlags */
-#define ACTIVE_PARTICLE_0    0x00000001
-#define ACTIVE_PARTICLE_3    0x00000008
-#define ACTIVE_PARTICLE_4    0x00000010
-#define ACTIVE_PARTICLE_5    0x00000020
-#define ACTIVE_PARTICLE_6    0x00000040
-#define ACTIVE_PARTICLE_7    0x00000080
-#define ACTIVE_PARTICLE_8    0x00000100
-#define ACTIVE_PARTICLE_9    0x00000200
-#define ACTIVE_PARTICLE_10   0x00000400
-#define ACTIVE_PARTICLE_11   0x00000800
-#define ACTIVE_PARTICLE_12   0x00001000
-#define ACTIVE_PARTICLE_13   0x00002000
-#define ACTIVE_PARTICLE_14   0x00004000
-#define ACTIVE_PARTICLE_15   0x00008000
-#define ACTIVE_PARTICLE_16   0x00010000
-#define ACTIVE_PARTICLE_17   0x00020000
-#define ACTIVE_PARTICLE_18   0x00040000
-#define ACTIVE_PARTICLE_19   0x00080000
+#define ACTIVE_PARTICLE_0                    (1 <<  0) // 0x00000001
+#define ACTIVE_PARTICLE_UNUSED_1             (1 <<  1) // 0x00000002
+#define ACTIVE_PARTICLE_UNUSED_2             (1 <<  2) // 0x00000004
+#define ACTIVE_PARTICLE_3                    (1 <<  3) // 0x00000008
+#define ACTIVE_PARTICLE_4                    (1 <<  4) // 0x00000010
+#define ACTIVE_PARTICLE_5                    (1 <<  5) // 0x00000020
+#define ACTIVE_PARTICLE_6                    (1 <<  6) // 0x00000040
+#define ACTIVE_PARTICLE_IDLE_WATER_WAVE      (1 <<  7) // 0x00000080
+#define ACTIVE_PARTICLE_SHALLOW_WATER_WAVE   (1 <<  8) // 0x00000100
+#define ACTIVE_PARTICLE_9                    (1 <<  9) // 0x00000200
+#define ACTIVE_PARTICLE_WAVE_TRAIL           (1 << 10) // 0x00000400
+#define ACTIVE_PARTICLE_11                   (1 << 11) // 0x00000800
+#define ACTIVE_PARTICLE_SHALLOW_WATER_SPLASH (1 << 12) // 0x00001000
+#define ACTIVE_PARTICLE_13                   (1 << 13) // 0x00002000
+#define ACTIVE_PARTICLE_14                   (1 << 14) // 0x00004000
+#define ACTIVE_PARTICLE_15                   (1 << 15) // 0x00008000
+#define ACTIVE_PARTICLE_16                   (1 << 16) // 0x00010000
+#define ACTIVE_PARTICLE_17                   (1 << 17) // 0x00020000
+#define ACTIVE_PARTICLE_18                   (1 << 18) // 0x00040000
+#define ACTIVE_PARTICLE_19                   (1 << 19) // 0x00080000
 
 /* oAction */
 #define OBJ_ACT_LAVA_DEATH 100
@@ -196,6 +198,24 @@
     /* oBobombBuddyHasTalkedToMario */
     #define BOBOMB_BUDDY_HAS_NOT_TALKED 0
     #define BOBOMB_BUDDY_HAS_TALKED 2
+
+/* Fish */
+    /* oAction */
+    #define FISH_ACT_INIT 0
+    #define FISH_ACT_ACTIVE 1
+    #define FISH_ACT_RESPAWN 2
+
+/* Blue_Fish */
+    /* oAction */
+    #define BLUE_FISH_ACT_DIVE 0
+    #define BLUE_FISH_ACT_TURN 1
+    #define BLUE_FISH_ACT_ASCEND 2
+    #define BLUE_FISH_ACT_TURN_BACK 3
+    
+    /* oAction: bhv_blue_fish_spawn_loop */
+    #define BLUE_FISH_ACT_SPAWN 0
+    #define BLUE_FISH_ACT_ROOM 1
+    #define BLUE_FISH_ACT_DUPLICATE 2
 
 /* Cannon Trap Door */
     /* oAction */
@@ -733,10 +753,37 @@
     #define PYRAMID_WALL_BP_POSITION_MIDDLE 1
     #define PYRAMID_WALL_BP_POSITION_LOW 2
 
-/* Tuxie */
+/* Penguins (general) */
     /* Walking sounds */
     #define PENGUIN_WALK_BABY 0
     #define PENGUIN_WALK_BIG  1
+    
+    /* Animations */
+    #define PENGUIN_ANIM_WALK 0
+    #define PENGUIN_ANIM_IDLE 3
+    
+/* Racing penguin */
+    /* oAction */
+    #define RACING_PENGUIN_ACT_WAIT_FOR_MARIO 0
+    #define RACING_PENGUIN_ACT_SHOW_INIT_TEXT 1
+    #define RACING_PENGUIN_ACT_PREPARE_FOR_RACE 2
+    #define RACING_PENGUIN_ACT_RACE 3
+    #define RACING_PENGUIN_ACT_FINISH_RACE 4
+    #define RACING_PENGUIN_ACT_SHOW_FINAL_TEXT 5
+    
+/* SL walking penguin */
+    /* oAction */
+    #define SL_WALKING_PENGUIN_ACT_MOVING_FORWARDS 0
+    #define SL_WALKING_PENGUIN_ACT_TURNING_BACK 1
+    #define SL_WALKING_PENGUIN_ACT_RETURNING 2
+    #define SL_WALKING_PENGUIN_ACT_TURNING_FORWARDS 3
+    
+/* Snowman wind */
+    /* oSubAction */
+    #define SL_SNOWMAN_WIND_ACT_IDLE 0
+    #define SL_SNOWMAN_WIND_ACT_TALKING 1
+    #define SL_SNOWMAN_WIND_ACT_BLOWING 2
+
 
 /* Water bomb */
     /* oAction */
@@ -850,20 +897,16 @@
     #define BIRD_BP_SPAWNED 0
     #define BIRD_BP_SPAWNER 1
 
-/* Racing penguin */
-    /* oAction */
-    #define RACING_PENGUIN_ACT_WAIT_FOR_MARIO 0
-    #define RACING_PENGUIN_ACT_SHOW_INIT_TEXT 1
-    #define RACING_PENGUIN_ACT_PREPARE_FOR_RACE 2
-    #define RACING_PENGUIN_ACT_RACE 3
-    #define RACING_PENGUIN_ACT_FINISH_RACE 4
-    #define RACING_PENGUIN_ACT_SHOW_FINAL_TEXT 5
-
 /* Skeeter */
     /* oAction */
     #define SKEETER_ACT_IDLE 0
     #define SKEETER_ACT_LUNGE 1
     #define SKEETER_ACT_WALK 2
+
+/* Snufit */
+    /* oAction */
+    #define SNUFIT_ACT_IDLE  0
+    #define SNUFIT_ACT_SHOOT 1
 
 /* Tweester */
     /* oAction */

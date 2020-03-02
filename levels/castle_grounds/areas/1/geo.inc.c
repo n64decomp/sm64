@@ -26,7 +26,7 @@ const GeoLayout castle_grounds_geo_00073C[] = {
                GEO_ASM(0x1601, geo_movtex_draw_nocolor),
                GEO_ASM(0x1601, geo_movtex_draw_water_regions),
                GEO_RENDER_OBJ(),
-               GEO_ASM(0, geo_enfvx_main),
+               GEO_ASM(0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

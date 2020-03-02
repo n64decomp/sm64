@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include <macros.h>
 
-#include "memory.h"
+#include "heap.h"
 #include "data.h"
 #include "load.h"
 #include "synthesis.h"
@@ -31,7 +31,7 @@ u8 sReverbDownsampleRateLog; // never read
 struct SoundAllocPool gAudioSessionPool;
 struct SoundAllocPool gAudioInitPool;
 struct SoundAllocPool gNotesAndBuffersPool;
-u8 sAudioMemoryPad[0x20]; // probably two unused pools
+u8 sAudioHeapPad[0x20]; // probably two unused pools
 struct SoundAllocPool gSeqAndBankPool;
 struct SoundAllocPool gPersistentCommonPool;
 struct SoundAllocPool gTemporaryCommonPool;
@@ -95,8 +95,7 @@ f64 root_newton_step(f64 x, s32 k, f64 d)
  *
  * @return the root, or 1.0 if d is 0
  */
-f64 kth_root(f64 d, s32 k)
-{
+f64 kth_root(f64 d, s32 k) {
     f64 root = 1.5;
     f64 next;
     f64 diff;
@@ -128,7 +127,7 @@ f64 kth_root(f64 d, s32 k)
 #endif
 
 #ifdef VERSION_EU
-void func_eu_802e1cd0(s32 UNUSED unused, s32 len) {
+void build_vol_rampings_table(s32 UNUSED unused, s32 len) {
     s32 i;
     s32 step;
     s32 d;
@@ -308,30 +307,34 @@ static void unused_803163D4() {
 }
 #endif
 
-#if defined(VERSION_EU) && !defined(NON_MATCHING)
-GLOBAL_ASM("asm/non_matchings/eu/audio/alloc_bank_or_seq.s")
-#else
-
-#ifdef NON_MATCHING
 void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg3, s32 id) {
     // arg3 = 0, 1 or 2?
 
-    u8 *table;  // sp5C
-    u8 isSound; // sp5B
+    struct TemporaryPool *tp; // sp30
+    struct PersistentPool *persistent = &arg0->persistent;
     struct SoundAllocPool *pool;
     void *ret;
-    u32 firstVal;
-    u32 secondVal;
+#ifndef VERSION_EU
+    u16 UNUSED _firstVal;
+    u16 UNUSED _secondVal;
+#else
+    u16 firstVal;
+    u16 secondVal;
+#endif
+    u32 nullID = -1;
+    u8 *table;
+    u8 isSound;
+#ifndef VERSION_EU
+    u16 firstVal;
+    u16 secondVal;
     u32 bothDiscardable;
     u32 leftDiscardable, rightDiscardable;
     u32 leftNotLoaded, rightNotLoaded;
     u32 leftAvail, rightAvail;
-    UNUSED s32 temp;
-    struct TemporaryPool *v1; // sp30
-    struct PersistentPool *persistent = &arg0->persistent;
+#endif
 
     if (arg3 == 0) {
-        v1 = &arg0->temporary;
+        tp = &arg0->temporary;
         if (arg0 == &gSeqLoadedPool) {
             table = gSeqLoadStatus;
             isSound = FALSE;
@@ -340,10 +343,10 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
             isSound = TRUE;
         }
 
-        firstVal = (v1->entries[0].id == -1 ? SOUND_LOAD_STATUS_NOT_LOADED
-                                            : table[v1->entries[0].id]); // a3, a2
-        secondVal =
-            (v1->entries[1].id == -1 ? SOUND_LOAD_STATUS_NOT_LOADED : table[v1->entries[1].id]); // a1
+        firstVal  = (tp->entries[0].id == (s8)nullID ? SOUND_LOAD_STATUS_NOT_LOADED : table[tp->entries[0].id]); // a3, a2
+        secondVal = (tp->entries[1].id == (s8)nullID ? SOUND_LOAD_STATUS_NOT_LOADED : table[tp->entries[1].id]); // a1
+
+#ifndef VERSION_EU
         leftNotLoaded = (firstVal == SOUND_LOAD_STATUS_NOT_LOADED);
         leftDiscardable = (firstVal == SOUND_LOAD_STATUS_DISCARDABLE); // t0
         leftAvail = (firstVal != SOUND_LOAD_STATUS_IN_PROGRESS);
@@ -353,83 +356,111 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
         bothDiscardable = (leftDiscardable && rightDiscardable); // a0
 
         if (leftNotLoaded) {
-            v1->nextSide = 0;
+            tp->nextSide = 0;
         } else if (rightNotLoaded) {
-            v1->nextSide = 1;
+            tp->nextSide = 1;
         } else if (bothDiscardable) {
             // Use the opposite side from last time.
-        } else if (leftDiscardable) {
-            v1->nextSide = 0;
+        } else if (firstVal == SOUND_LOAD_STATUS_DISCARDABLE) { //??!
+            tp->nextSide = 0;
         } else if (rightDiscardable) {
-            v1->nextSide = 1;
+            tp->nextSide = 1;
         } else if (leftAvail) {
-            v1->nextSide = 0;
+            tp->nextSide = 0;
         } else if (rightAvail) {
-            v1->nextSide = 1;
+            tp->nextSide = 1;
         } else {
             // Both left and right sides are being loaded into.
             return NULL;
         }
+#else
+        if (firstVal == SOUND_LOAD_STATUS_NOT_LOADED) {
+            tp->nextSide = 0;
+        } else if (secondVal == SOUND_LOAD_STATUS_NOT_LOADED) {
+            tp->nextSide = 1;
+        } else if ((firstVal == SOUND_LOAD_STATUS_DISCARDABLE) && (secondVal == SOUND_LOAD_STATUS_DISCARDABLE)) {
+            // Use the opposite side from last time.
+        } else if (firstVal == SOUND_LOAD_STATUS_DISCARDABLE) {
+            tp->nextSide = 0;
+        } else if (secondVal == SOUND_LOAD_STATUS_DISCARDABLE) {
+            tp->nextSide = 1;
+        } else if (firstVal != SOUND_LOAD_STATUS_IN_PROGRESS) {
+            tp->nextSide = 0;
+        } else if (secondVal != SOUND_LOAD_STATUS_IN_PROGRESS) {
+            tp->nextSide = 1;
+        } else {
+            // Both left and right sides are being loaded into.
+            return NULL;
+        }
+#endif
 
-        if (v1->entries[v1->nextSide].id != -1) {
-            table[v1->entries[v1->nextSide].id] = SOUND_LOAD_STATUS_NOT_LOADED;
+        pool = &arg0->temporary.pool; // a1
+        if (tp->entries[tp->nextSide].id != (s8)nullID) {
+            table[tp->entries[tp->nextSide].id] = SOUND_LOAD_STATUS_NOT_LOADED;
             if (isSound == TRUE) {
-                discard_bank(v1->entries[v1->nextSide].id);
+                discard_bank(tp->entries[tp->nextSide].id);
             }
         }
 
-        pool = &arg0->temporary.pool; // a1
-        switch (v1->nextSide) {
+        switch (tp->nextSide) {
             case 0:
-                v1->entries[0].ptr = pool->start;
-                v1->entries[0].id = id;
-                v1->entries[0].size = size;
+                tp->entries[0].ptr = pool->start;
+                tp->entries[0].id = id;
+                tp->entries[0].size = size;
 
                 pool->cur = pool->start + size;
 
-                if (v1->entries[1].ptr < pool->cur) {
+                if (tp->entries[1].ptr < pool->cur) {
                     // Throw out the entry on the other side if it doesn't fit.
                     // (possible @bug: what if it's currently being loaded?)
-                    table[v1->entries[1].id] = SOUND_LOAD_STATUS_NOT_LOADED;
+                    table[tp->entries[1].id] = SOUND_LOAD_STATUS_NOT_LOADED;
 
                     switch (isSound) {
                         case FALSE:
-                            discard_sequence(v1->entries[1].id);
+                            discard_sequence(tp->entries[1].id);
                             break;
                         case TRUE:
-                            discard_bank(v1->entries[1].id);
+                            discard_bank(tp->entries[1].id);
                             break;
                     }
 
-                    v1->entries[1].id = -1;
-                    v1->entries[1].ptr = pool->size + pool->start;
+                    tp->entries[1].id = (s32)nullID;
+#ifdef VERSION_EU
+                    tp->entries[1].ptr = pool->start + pool->size;
+#else
+                    tp->entries[1].ptr = pool->size + pool->start;
+#endif
                 }
 
-                ret = v1->entries[0].ptr;
+                ret = tp->entries[0].ptr;
                 break;
 
             case 1:
-                v1->entries[1].ptr = pool->size + pool->start - size - 0x10;
-                v1->entries[1].id = id;
-                v1->entries[1].size = size;
+#ifdef VERSION_EU
+                tp->entries[1].ptr = pool->start + pool->size - size - 0x10;
+#else
+                tp->entries[1].ptr = pool->size + pool->start - size - 0x10;
+#endif
+                tp->entries[1].id = id;
+                tp->entries[1].size = size;
 
-                if (v1->entries[1].ptr < pool->cur) {
-                    table[v1->entries[0].id] = SOUND_LOAD_STATUS_NOT_LOADED;
+                if (tp->entries[1].ptr < pool->cur) {
+                    table[tp->entries[0].id] = SOUND_LOAD_STATUS_NOT_LOADED;
 
                     switch (isSound) {
                         case FALSE:
-                            discard_sequence(v1->entries[0].id);
+                            discard_sequence(tp->entries[0].id);
                             break;
                         case TRUE:
-                            discard_bank(v1->entries[0].id);
+                            discard_bank(tp->entries[0].id);
                             break;
                     }
 
-                    v1->entries[0].id = -1;
+                    tp->entries[0].id = (s32)nullID;
                     pool->cur = pool->start;
                 }
 
-                ret = v1->entries[1].ptr;
+                ret = tp->entries[1].ptr;
                 break;
 
             default:
@@ -438,19 +469,31 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
 
         // Switch sides for next time in case both entries are
         // SOUND_LOAD_STATUS_DISCARDABLE.
-        v1->nextSide ^= 1;
+        tp->nextSide ^= 1;
 
         return ret;
     }
 
+#ifdef VERSION_EU
+    ret = soundAlloc(&arg0->persistent.pool, arg1 * size);
+    arg0->persistent.entries[arg0->persistent.numEntries].ptr = ret;
+
+    if (ret == NULL)
+#else
     persistent->entries[persistent->numEntries].ptr = soundAlloc(&persistent->pool, arg1 * size);
 
-    if (persistent->entries[persistent->numEntries].ptr == NULL) {
+    if (persistent->entries[persistent->numEntries].ptr == NULL)
+#endif
+    {
         switch (arg3) {
             case 2:
+#ifdef VERSION_EU
+                return alloc_bank_or_seq(arg0, arg1, size, 0, id);
+#else
                 // Prevent tail call optimization.
                 ret = alloc_bank_or_seq(arg0, arg1, size, 0, id);
                 return ret;
+#endif
             case 1:
                 return NULL;
         }
@@ -460,14 +503,12 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
     // Because the buffer is small enough that more don't fit?
     persistent->entries[persistent->numEntries].id = id;
     persistent->entries[persistent->numEntries].size = size;
-    persistent->numEntries++;
-    return persistent->entries[persistent->numEntries - 1].ptr;
-}
-
+#ifdef VERSION_EU
+    return persistent->entries[persistent->numEntries++].ptr;
 #else
-GLOBAL_ASM("asm/non_matchings/alloc_bank_or_seq.s")
+    persistent->numEntries++; return persistent->entries[persistent->numEntries - 1].ptr;
 #endif
-#endif
+}
 
 void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 id) {
     u32 i;
@@ -548,7 +589,7 @@ void decrease_reverb_gain(void) {
 #endif
 
 #ifdef VERSION_EU
-s32 func_eu_802E2AA0(void) {
+s32 audio_shut_down_and_reset_step(void) {
     s32 i;
     s32 j;
     switch (gAudioResetStatus) {
@@ -621,7 +662,6 @@ void wait_for_audio_frames(s32 frames) {
 void audio_reset_session(struct AudioSessionSettings *preset) {
 #else
 void audio_reset_session(void) {
-    // TODO: verify compilation again and try to match better
     struct AudioSessionSettingsEU *preset = &gAudioSessionPresets[gAudioResetPresetIdToLoad];
     struct ReverbSettingsEU *reverbSettings;
 #endif
@@ -886,7 +926,7 @@ void audio_reset_session(void) {
     init_sample_dma_buffers(gMaxSimultaneousNotes);
 
 #ifdef VERSION_EU
-    func_eu_802e1cd0(0, gAudioBufferParameters.samplesPerUpdate);
+    build_vol_rampings_table(0, gAudioBufferParameters.samplesPerUpdate);
 #endif
 
     osWritebackDCacheAll();

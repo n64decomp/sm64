@@ -3,14 +3,14 @@
 
 #include "types.h"
 
-// extern ? Unknown802C8460(?);
-// extern ? func_802C8504(?);
-// extern ? func_802C870C(?);
-// extern ? func_802C88A8(?);
-// extern ? func_802C8918(?);
-// extern ? func_802C89CC(?);
-// extern ? func_802C8AD4(?);
-// extern ? func_802C8B50(?);
+// extern ? debug_print_obj_collision(?);
+// extern ? detect_object_hitbox_overlap(?);
+// extern ? detect_object_hurtbox_overlap(?);
+// extern ? clear_object_collision(?);
+// extern ? check_collision_in_list(?);
+// extern ? check_player_object_collision(?);
+// extern ? check_pushable_object_collision(?);
+// extern ? check_destructive_object_collision(?);
 extern void detect_object_collisions(void);
 
 #endif /* _OBJECT_COLLISION_H */

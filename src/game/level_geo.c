@@ -13,7 +13,7 @@
  * Geo function that generates a displaylist for environment effects such as
  * snow or jetstream bubbles.
  */
-Gfx *geo_enfvx_main(s32 callContext, struct GraphNode *node, f32 c[4][4]) {
+Gfx *geo_envfx_main(s32 callContext, struct GraphNode *node, f32 c[4][4]) {
     Vec3s marioPos;
     Vec3s camFrom;
     Vec3s camTo;

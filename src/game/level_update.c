@@ -202,7 +202,7 @@ u16 level_control_timer(s32 timerOp) {
     return gHudDisplay.timer;
 }
 
-u32 pressed_paused(void) {
+u32 pressed_pause(void) {
     u32 val4 = get_dialog_id() >= 0;
     u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
 
@@ -219,28 +219,28 @@ void set_play_mode(s16 playMode) {
     D_80339ECA = 0;
 }
 
-void func_8024975C(s32 arg) {
+void warp_special(s32 arg) {
     sCurrPlayMode = PLAY_MODE_CHANGE_LEVEL;
     D_80339ECA = 0;
     D_80339EE0 = arg;
 }
 
-void func_80249788(u32 arg, u32 color) {
+void fade_into_special_warp(u32 arg, u32 color) {
     if (color != 0) {
         color = 0xFF;
     }
 
-    func_802491FC(190);
+    fadeout_music(190);
     play_transition(WARP_TRANSITION_FADE_INTO_COLOR, 0x10, color, color, color);
     level_set_transition(30, NULL);
 
-    func_8024975C(arg);
+    warp_special(arg);
 }
 
-void nop_802497FC(void) {
+void stub_level_update_1(void) {
 }
 
-void func_8024980C(u32 arg) {
+void load_level_init_text(u32 arg) {
     s32 gotAchievement;
     u32 dialogID = gCurrentArea->dialog[arg];
 
@@ -272,7 +272,7 @@ void func_8024980C(u32 arg) {
     }
 }
 
-void func_8024992C(struct SpawnInfo *spawnInfo, u32 arg1) {
+void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) {
     if (arg1 & 0x00000002) {
         spawnInfo->startAngle[1] += 0x8000;
     }
@@ -377,7 +377,7 @@ void init_mario_after_warp(void) {
         gPlayerSpawnInfos[0].startAngle[2] = 0;
 
         if (marioSpawnType == MARIO_SPAWN_UNKNOWN_01) {
-            func_8024992C(&gPlayerSpawnInfos[0], sWarpDest.arg);
+            init_door_warp(&gPlayerSpawnInfos[0], sWarpDest.arg);
         }
 
         if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL || sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
@@ -458,11 +458,11 @@ void init_mario_after_warp(void) {
 }
 
 // used for warps inside one level
-void func_8024A02C(void) {
+void warp_area(void) {
     if (sWarpDest.type != WARP_TYPE_NOT_WARPING) {
         if (sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
             level_control_timer(TIMER_CONTROL_HIDE);
-            func_8027AA88();
+            unload_mario_area();
             load_area(sWarpDest.areaIdx);
         }
 
@@ -471,7 +471,7 @@ void func_8024A02C(void) {
 }
 
 // used for warps between levels
-void func_8024A094(void) {
+void warp_level(void) {
     gCurrLevelNum = sWarpDest.levelNum;
 
     level_control_timer(TIMER_CONTROL_HIDE);
@@ -480,7 +480,7 @@ void func_8024A094(void) {
     init_mario_after_warp();
 }
 
-void func_8024A0E0(void) {
+void warp_credits(void) {
     s32 marioAction;
 
     switch (sWarpDest.nodeId) {
@@ -562,7 +562,7 @@ void check_instant_warp(void) {
     }
 }
 
-s16 func_8024A48C(s16 arg) {
+s16 music_changed_through_warp(s16 arg) {
     struct ObjectWarpNode *warpNode = area_get_warp_node(arg);
     s16 levelNum = warpNode->node.destLevel & 0x7F;
 
@@ -679,7 +679,7 @@ void initiate_painting_warp(void) {
                 gMarioState->marioObj->header.gfx.node.flags &= ~0x0001;
 
                 play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
-                func_802491FC(398);
+                fadeout_music(398);
             }
         }
     }
@@ -764,7 +764,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_TELEPORT:
                 sDelayedWarpTimer = 20;
                 sSourceWarpNodeId = (m->usedObj->oBehParams & 0x00FF0000) >> 16;
-                val04 = !func_8024A48C(sSourceWarpNodeId);
+                val04 = !music_changed_through_warp(sSourceWarpNodeId);
                 play_transition(WARP_TRANSITION_FADE_INTO_COLOR, 0x14, 0xFF, 0xFF, 0xFF);
                 break;
 
@@ -772,14 +772,14 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sDelayedWarpTimer = 20;
                 sDelayedWarpArg = m->actionArg;
                 sSourceWarpNodeId = (m->usedObj->oBehParams & 0x00FF0000) >> 16;
-                val04 = !func_8024A48C(sSourceWarpNodeId);
+                val04 = !music_changed_through_warp(sSourceWarpNodeId);
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
                 break;
 
             case WARP_OP_WARP_OBJECT:
                 sDelayedWarpTimer = 20;
                 sSourceWarpNodeId = (m->usedObj->oBehParams & 0x00FF0000) >> 16;
-                val04 = !func_8024A48C(sSourceWarpNodeId);
+                val04 = !music_changed_through_warp(sSourceWarpNodeId);
                 play_transition(WARP_TRANSITION_FADE_INTO_STAR, 0x14, 0x00, 0x00, 0x00);
                 break;
 
@@ -801,7 +801,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
         }
 
         if (val04 && gCurrDemoInput == NULL) {
-            func_802491FC((3 * sDelayedWarpTimer / 2) * 8 - 2);
+            fadeout_music((3 * sDelayedWarpTimer / 2) * 8 - 2);
         }
     }
 
@@ -819,27 +819,27 @@ void initiate_delayed_warp(void) {
         reset_dialog_render_state();
 
         if (gDebugLevelSelect && (sDelayedWarpOp & WARP_OP_TRIGGERS_LEVEL_SELECT)) {
-            func_8024975C(-9);
+            warp_special(-9);
         } else if (gCurrDemoInput != NULL) {
             if (sDelayedWarpOp == WARP_OP_DEMO_END) {
-                func_8024975C(-8);
+                warp_special(-8);
             } else {
-                func_8024975C(-2);
+                warp_special(-2);
             }
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
                     save_file_reload();
-                    func_8024975C(-3);
+                    warp_special(-3);
                     break;
 
                 case WARP_OP_CREDITS_END:
-                    func_8024975C(-1);
+                    warp_special(-1);
                     sound_banks_enable(2, 0x03F0);
                     break;
 
                 case WARP_OP_DEMO_NEXT:
-                    func_8024975C(-2);
+                    warp_special(-2);
                     break;
 
                 case WARP_OP_CREDITS_START:
@@ -965,7 +965,7 @@ s32 play_mode_normal(void) {
         }
     }
 
-    func_8024A02C();
+    warp_area();
     check_instant_warp();
 
     if (sTimerRunning && gHudDisplay.timer < 17999) {
@@ -989,8 +989,8 @@ s32 play_mode_normal(void) {
             set_play_mode(PLAY_MODE_CHANGE_LEVEL);
         } else if (sTransitionTimer != 0) {
             set_play_mode(PLAY_MODE_CHANGE_AREA);
-        } else if (pressed_paused()) {
-            func_80248C28(1);
+        } else if (pressed_pause()) {
+            lower_background_noise(1);
             gCameraMovementFlags |= CAM_MOVE_PAUSE_SCREEN;
             set_play_mode(PLAY_MODE_PAUSED);
         }
@@ -1003,17 +1003,17 @@ s32 play_mode_paused(void) {
     if (gPauseScreenMode == 0) {
         set_menu_mode(RENDER_PAUSE_SCREEN);
     } else if (gPauseScreenMode == 1) {
-        func_80248CB8(1);
+        raise_background_noise(1);
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
         set_play_mode(PLAY_MODE_NORMAL);
     } else {
         // Exit level
 
         if (gDebugLevelSelect) {
-            func_80249788(-9, 1);
+            fade_into_special_warp(-9, 1);
         } else {
             initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
-            func_80249788(0, 0);
+            fade_into_special_warp(0, 0);
             gSavedCourseNum = 0;
         }
 
@@ -1033,7 +1033,7 @@ s32 play_mode_frame_advance(void) {
         play_mode_normal();
     } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
-        func_80248CB8(1);
+        raise_background_noise(1);
         set_play_mode(PLAY_MODE_NORMAL);
     } else {
         gCameraMovementFlags |= CAM_MOVE_PAUSE_SCREEN;
@@ -1141,8 +1141,8 @@ s32 update_level(void) {
     }
 
     if (changeLevel) {
-        func_80248C10();
-        func_80248D90();
+        reset_volume();
+        enable_background_sound();
     }
 
     return changeLevel;
@@ -1167,9 +1167,9 @@ s32 init_level(void) {
 
     if (sWarpDest.type != WARP_TYPE_NOT_WARPING) {
         if (sWarpDest.nodeId >= WARP_NODE_CREDITS_MIN) {
-            func_8024A0E0();
+            warp_credits();
         } else {
-            func_8024A094();
+            warp_level();
         }
     } else {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {

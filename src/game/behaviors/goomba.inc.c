@@ -115,7 +115,7 @@ void bhv_goomba_init(void) {
     o->oGoombaScale = sGoombaProperties[o->oGoombaSize].scale;
     o->oDeathSound = sGoombaProperties[o->oGoombaSize].deathSound;
 
-    set_object_hitbox(o, &sGoombaHitbox);
+    obj_set_hitbox(o, &sGoombaHitbox);
 
     o->oDrawingDistance = sGoombaProperties[o->oGoombaSize].drawDistance;
     o->oDamageOrCoinValue = sGoombaProperties[o->oGoombaSize].damage;
@@ -127,7 +127,7 @@ void bhv_goomba_init(void) {
  * Enter the jump action and set initial y velocity.
  */
 static void goomba_begin_jump(void) {
-    PlaySound2(SOUND_OBJ_GOOMBA_ALERT);
+    cur_obj_play_sound_2(SOUND_OBJ_GOOMBA_ALERT);
     o->oAction = GOOMBA_ACT_JUMP;
     o->oForwardVel = 0.0f;
     o->oVelY = 50.0f / 3.0f * o->oGoombaScale;
@@ -209,7 +209,7 @@ static void goomba_act_walk(void) {
             }
         }
 
-        obj_rotate_yaw_toward(o->oGoombaTargetYaw, 0x200);
+        cur_obj_rotate_yaw_toward(o->oGoombaTargetYaw, 0x200);
     }
 }
 
@@ -247,7 +247,7 @@ static void goomba_act_jump(void) {
     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         o->oAction = GOOMBA_ACT_WALK;
     } else {
-        obj_rotate_yaw_toward(o->oGoombaTargetYaw, 0x800);
+        cur_obj_rotate_yaw_toward(o->oGoombaTargetYaw, 0x800);
     }
 }
 
@@ -274,18 +274,18 @@ void bhv_goomba_update(void) {
         // unload
         if (o->parentObj != o) {
             if (o->parentObj->oAction == GOOMBA_TRIPLET_SPAWNER_ACT_UNLOADED) {
-                mark_object_for_deletion(o);
+                obj_mark_for_deletion(o);
             }
         }
 
-        obj_scale(o->oGoombaScale);
+        cur_obj_scale(o->oGoombaScale);
         obj_update_blinking(&o->oGoombaBlinkTimer, 30, 50, 5);
-        obj_update_floor_and_walls();
+        cur_obj_update_floor_and_walls();
 
         if ((animSpeed = o->oForwardVel / o->oGoombaScale * 0.4f) < 1.0f) {
             animSpeed = 1.0f;
         }
-        func_8029ED98(0, animSpeed);
+        cur_obj_init_animation_with_accel_and_sound(0, animSpeed);
 
         switch (o->oAction) {
             case GOOMBA_ACT_WALK:
@@ -310,7 +310,7 @@ void bhv_goomba_update(void) {
             mark_goomba_as_dead();
         }
 
-        obj_move_standard(-78);
+        cur_obj_move_standard(-78);
     } else {
         o->oAnimState = TRUE;
     }

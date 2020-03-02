@@ -72,7 +72,7 @@ void bhv_pyramid_top_explode(void) {
     struct Object *pyramidFragment;
     s16 i;
 
-    func_802AA618(0, 0, 690);
+    spawn_mist_particles_variable(0, 0, 690);
 
     // Generate 30 pyramid fragments with random properties.
     for (i = 0; i < 30; i++) {
@@ -101,7 +101,7 @@ void bhv_pyramid_top_loop(void) {
 
         case PYRAMID_TOP_ACT_SPINNING:
             if (o->oTimer == 0) {
-                PlaySound2(SOUND_GENERAL2_PYRAMID_TOP_SPIN);
+                cur_obj_play_sound_2(SOUND_GENERAL2_PYRAMID_TOP_SPIN);
             }
 
             bhv_pyramid_top_spinning();
@@ -124,7 +124,7 @@ void bhv_pyramid_top_fragment_init(void) {
     o->oFriction = 0.999f;
     o->oBuoyancy = 2.0f;
     o->oAnimState = 3;
-    obj_scale(o->oPyramidTopFragmentsScale);
+    cur_obj_scale(o->oPyramidTopFragmentsScale);
 }
 
 /**
@@ -146,8 +146,8 @@ void bhv_pyramid_top_fragment_loop(void) {
  * top's total count of touched detectors, and deactivate the detector.
  */
 void bhv_pyramid_pillar_touch_detector_loop(void) {
-    obj_become_tangible();
-    if (are_objects_collided(o, gMarioObject) == 1) {
+    cur_obj_become_tangible();
+    if (obj_check_if_collided_with_object(o, gMarioObject) == 1) {
         // Increase the pyramid top's count of pillars touched.
         o->parentObj->oPyramidTopPillarsTouched++;
         o->activeFlags = 0;

@@ -23,7 +23,7 @@ const GeoLayout ccm_geo_0005E8[] = {
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, ccm_seg7_dl_0701FE60),
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, ccm_seg7_dl_070207F0),
                GEO_RENDER_OBJ(),
-               GEO_ASM(0, geo_enfvx_main),
+               GEO_ASM(0, geo_envfx_main),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),

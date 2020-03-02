@@ -4,6 +4,9 @@
 
 .include "macros.inc"
 
+.ifdef VERSION_SH
+.set VERSION_EU, 1 # HACK, someone fix this file, its poorly diff'd!
+.endif
 
 .section .text, "ax"
 

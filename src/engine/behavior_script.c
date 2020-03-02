@@ -92,7 +92,7 @@ static void Unknown80383E44(void) // ?
 }
 
 static s32 beh_cmd_hide(void) {
-    obj_hide();
+    cur_obj_hide();
     gBehCommand++;
     return BEH_CONTINUE;
 }
@@ -122,7 +122,7 @@ static s32 beh_cmd_spawn_child(void) {
 
     struct Object *child = spawn_object_at_origin(gCurrentObject, 0, model, behavior);
 
-    copy_object_pos_and_angle(child, gCurrentObject);
+    obj_copy_pos_and_angle(child, gCurrentObject);
 
     gBehCommand += 3;
     return BEH_CONTINUE;
@@ -134,7 +134,7 @@ static s32 beh_cmd_spawn_obj(void) {
 
     struct Object *object = spawn_object_at_origin(gCurrentObject, 0, model, behavior);
 
-    copy_object_pos_and_angle(object, gCurrentObject);
+    obj_copy_pos_and_angle(object, gCurrentObject);
 
     gCurrentObject->prevObj = object;
 
@@ -149,7 +149,7 @@ static s32 beh_cmd_spawn_child_with_param(void) {
 
     struct Object *child = spawn_object_at_origin(gCurrentObject, 0, model, behavior);
 
-    copy_object_pos_and_angle(child, gCurrentObject);
+    obj_copy_pos_and_angle(child, gCurrentObject);
 
     child->oBehParams2ndByte = behParam;
 
@@ -562,13 +562,13 @@ static s32 Behavior24(void) {
 }
 
 static s32 beh_cmd_begin(void) {
-    if (obj_has_behavior(bhvHauntedChair)) {
+    if (cur_obj_has_behavior(bhvHauntedChair)) {
         bhv_init_room();
     }
-    if (obj_has_behavior(bhvMadPiano)) {
+    if (cur_obj_has_behavior(bhvMadPiano)) {
         bhv_init_room();
     }
-    if (obj_has_behavior(bhvMessagePanel)) {
+    if (cur_obj_has_behavior(bhvMessagePanel)) {
         gCurrentObject->oCollisionDistance = 150.0f;
     }
     gBehCommand++;
@@ -622,7 +622,7 @@ static s32 beh_cmd_scale(void) {
     UNUSED u8 sp1f = (u8)((gBehCommand[0] >> 16) & 0xFF);
     s16 sp1c = gBehCommand[0] & 0xFFFF;
 
-    obj_scale((f32) sp1c / 100.0f);
+    cur_obj_scale((f32) sp1c / 100.0f);
 
     gBehCommand++;
     return BEH_CONTINUE;
@@ -658,9 +658,10 @@ static s32 beh_cmd_bit_clear_int32(void) {
     return BEH_CONTINUE;
 }
 
-static s32 beh_cmd_spawn_water_splash(void) {
-    struct WaterSplashParams *arg0 = (struct WaterSplashParams *) gBehCommand[1];
-    spawn_water_splash(gCurrentObject, arg0);
+static s32 beh_cmd_spawn_water_droplet(void) {
+    struct WaterDropletParams *dropletParams = (struct WaterDropletParams *) gBehCommand[1];
+    spawn_water_droplet(gCurrentObject, dropletParams);
+    
     gBehCommand += 2;
     return BEH_CONTINUE;
 }
@@ -738,7 +739,7 @@ static BehCommandProc BehaviorJumpTable[] = {
     beh_cmd_tex_anim_rate,
     beh_cmd_disable_rendering,
     Behavior36,
-    beh_cmd_spawn_water_splash,
+    beh_cmd_spawn_water_droplet,
 };
 
 void cur_object_exec_behavior(void) {
@@ -757,7 +758,7 @@ void cur_object_exec_behavior(void) {
     }
 
     if (flagsLo & OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO) {
-        gCurrentObject->oAngleToMario = angle_to_object(gCurrentObject, gMarioObject);
+        gCurrentObject->oAngleToMario = obj_angle_to_object(gCurrentObject, gMarioObject);
     }
 
     if (gCurrentObject->oAction != gCurrentObject->oPrevAction) {
@@ -786,7 +787,7 @@ void cur_object_exec_behavior(void) {
     flagsLo = (s16) gCurrentObject->oFlags;
 
     if (flagsLo & OBJ_FLAG_0010) {
-        obj_set_facing_to_move_angles(gCurrentObject);
+        obj_set_face_angle_to_move_angle(gCurrentObject);
     }
 
     if (flagsLo & OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW) {
@@ -794,19 +795,19 @@ void cur_object_exec_behavior(void) {
     }
 
     if (flagsLo & OBJ_FLAG_MOVE_XZ_USING_FVEL) {
-        obj_move_xz_using_fvel_and_yaw();
+        cur_obj_move_xz_using_fvel_and_yaw();
     }
 
     if (flagsLo & OBJ_FLAG_MOVE_Y_WITH_TERMINAL_VEL) {
-        obj_move_y_with_terminal_vel();
+        cur_obj_move_y_with_terminal_vel();
     }
 
     if (flagsLo & OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT) {
-        build_object_transform_relative_to_parent(gCurrentObject);
+        obj_build_transform_relative_to_parent(gCurrentObject);
     }
 
     if (flagsLo & OBJ_FLAG_0800) {
-        func_802A2270(gCurrentObject);
+        obj_set_throw_matrix_from_transform(gCurrentObject);
     }
 
     if (flagsLo & OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE) {
@@ -814,7 +815,7 @@ void cur_object_exec_behavior(void) {
     }
 
     if (gCurrentObject->oRoom != -1) {
-        obj_enable_rendering_if_mario_in_room();
+        cur_obj_enable_rendering_if_mario_in_room();
     } else if ((flagsLo & OBJ_FLAG_COMPUTE_DIST_TO_MARIO) && gCurrentObject->collisionData == NULL) {
         if (!(flagsLo & OBJ_FLAG_ACTIVE_FROM_AFAR)) {
             if (distanceFromMario > gCurrentObject->oDrawingDistance) {

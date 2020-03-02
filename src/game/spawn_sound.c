@@ -28,14 +28,14 @@ void exec_anim_sound_state(struct SoundState *soundStates) {
             // in the sound state information, -1 (0xFF) is for empty
             // animFrame entries. These checks skips them.
             if ((animFrame = soundStates[stateIdx].animFrame1) >= 0) {
-                if (obj_check_anim_frame(animFrame)) {
-                    PlaySound2(soundStates[stateIdx].soundMagic);
+                if (cur_obj_check_anim_frame(animFrame)) {
+                    cur_obj_play_sound_2(soundStates[stateIdx].soundMagic);
                 }
             }
 
             if ((animFrame = soundStates[stateIdx].animFrame2) >= 0) {
-                if (obj_check_anim_frame(animFrame)) {
-                    PlaySound2(soundStates[stateIdx].soundMagic);
+                if (cur_obj_check_anim_frame(animFrame)) {
+                    cur_obj_play_sound_2(soundStates[stateIdx].soundMagic);
                 }
             }
         } break;
@@ -54,17 +54,16 @@ void create_sound_spawner(s32 soundMagic) {
 
 /*
  * The following 2 functions are relevent to the sound state function
- * above. While only PlaySound2 is used, they may have been intended as
+ * above. While only cur_obj_play_sound_2 is used, they may have been intended as
  * seperate left/right leg functions that went unused.
  */
-void PlaySound(s32 soundMagic) {
+void cur_obj_play_sound_1(s32 soundMagic) {
     if (gCurrentObject->header.gfx.node.flags & 0x0001) {
         play_sound(soundMagic, gCurrentObject->header.gfx.cameraToObject);
     }
 }
 
-// duplicate function, but its the used one
-void PlaySound2(s32 soundMagic) {
+void cur_obj_play_sound_2(s32 soundMagic) {
     if (gCurrentObject->header.gfx.node.flags & 0x0001) {
         play_sound(soundMagic, gCurrentObject->header.gfx.cameraToObject);
     }

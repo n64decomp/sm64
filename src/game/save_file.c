@@ -44,7 +44,7 @@ STATIC_ASSERT(ARRAY_COUNT(gLevelToCourseNumTable) == LEVEL_COUNT - 1,
 
 // This was probably used to set progress to 100% for debugging, but
 // it was removed from the release ROM.
-static void no_op(void) {
+static void stub_save_file_1(void) {
     UNUSED s32 pad;
 }
 
@@ -316,7 +316,7 @@ void save_file_load_all(void) {
         }
     }
 
-    no_op();
+    stub_save_file_1();
 }
 
 /**

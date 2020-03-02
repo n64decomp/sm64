@@ -11,7 +11,7 @@ typedef struct {
     u32 instr03;
 } exceptionPreamble;
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 extern u32 EU_D_802f4330(u32, void (*));
 extern void D_802F4380();
 
@@ -20,7 +20,7 @@ u32 D_80365CD0; // maybe initialized?
 u64 osClockRate = 62500000;
 u32 D_80334808 = 0;
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 u32 EU_D_80336C40;
 u32 EU_D_80336C44;
 
@@ -41,7 +41,7 @@ void osInitialize(void) {
     u32 sp34;
     u32 sp30 = 0;
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
     UNUSED u32 eu_sp34;
     UNUSED u32 eu_sp30;
 #endif
@@ -73,7 +73,7 @@ void osInitialize(void) {
     if (osResetType == RESET_TYPE_COLD_RESET) {
         bzero(osAppNmiBuffer, sizeof(osAppNmiBuffer));
     }
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
     eu_sp30 = HW_REG(PI_STATUS_REG, u32);
     while (eu_sp30 & PI_STATUS_ERROR) {
         eu_sp30 = HW_REG(PI_STATUS_REG, u32);

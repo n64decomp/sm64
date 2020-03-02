@@ -74,8 +74,8 @@ void bhv_pyramid_elevator_loop(void) {
 void bhv_pyramid_elevator_trajectory_marker_ball_loop(void) {
     struct Object *elevator;
 
-    obj_scale(0.15f);
-    elevator = obj_nearest_object_with_behavior(bhvPyramidElevator);
+    cur_obj_scale(0.15f);
+    elevator = cur_obj_nearest_object_with_behavior(bhvPyramidElevator);
 
     if (elevator != NULL) {
         if (elevator->oAction != PYRAMID_ELEVATOR_IDLE) {

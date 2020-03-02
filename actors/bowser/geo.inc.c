@@ -23,7 +23,7 @@ const GeoLayout bowser_geo_0000D8[] = {
             GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, NULL),
             GEO_OPEN_NODE(),
                GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, bowser_seg6_dl_06043698),
-               GEO_ASM(0, Geo18_802B798C),
+               GEO_ASM(0, geo_update_body_rot_from_parent),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
          GEO_ANIMATED_PART(LAYER_OPAQUE, 118, 67, 105, NULL),
@@ -135,7 +135,7 @@ const GeoLayout bowser_geo_000424[] = {
             GEO_ANIMATED_PART(LAYER_TRANSPARENT, 0, 0, 0, NULL),
             GEO_OPEN_NODE(),
                GEO_ANIMATED_PART(LAYER_TRANSPARENT, 0, 0, 0, bowser_seg6_dl_06043698),
-               GEO_ASM(0, Geo18_802B798C),
+               GEO_ASM(0, geo_update_body_rot_from_parent),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
          GEO_ANIMATED_PART(LAYER_TRANSPARENT, 118, 67, 105, NULL),
@@ -251,7 +251,7 @@ const GeoLayout bowser_geo_000770[] = {
             GEO_ANIMATED_PART(LAYER_TRANSPARENT, 0, 0, 0, NULL),
             GEO_OPEN_NODE(),
                GEO_ANIMATED_PART(LAYER_TRANSPARENT, 0, 0, 0, bowser_seg6_dl_06043698),
-               GEO_ASM(0, Geo18_802B798C),
+               GEO_ASM(0, geo_update_body_rot_from_parent),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
          GEO_ANIMATED_PART(LAYER_TRANSPARENT, 118, 67, 105, NULL),
@@ -350,7 +350,7 @@ const GeoLayout bowser_shadow_geo[] = {
 const GeoLayout bowser_geo[] = {
    GEO_NODE_START(),
    GEO_OPEN_NODE(),
-      GEO_ASM(0, Geo18_8029D924),
+      GEO_ASM(0, geo_update_layer_transparency),
 #ifdef VERSION_JP
       GEO_SWITCH_CASE(2, geo_switch_anim_state),
 #endif
@@ -360,20 +360,20 @@ const GeoLayout bowser_geo[] = {
       GEO_OPEN_NODE(),
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, Geo18_802B7D44),
+            GEO_ASM(0, geo_bits_bowser_coloring),
             GEO_BRANCH(1, bowser_geo_0000D8),
          GEO_CLOSE_NODE(),
 
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, Geo18_802B7D44),
+            GEO_ASM(0, geo_bits_bowser_coloring),
             GEO_BRANCH(1, bowser_geo_000424),
          GEO_CLOSE_NODE(),
 
 #ifndef VERSION_JP
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, Geo18_802B7D44),
+            GEO_ASM(0, geo_bits_bowser_coloring),
             GEO_BRANCH(1, bowser_shadow_geo),
          GEO_CLOSE_NODE(),
 #endif
@@ -387,7 +387,7 @@ const GeoLayout bowser_geo[] = {
 const GeoLayout bowser2_geo[] = {
    GEO_NODE_START(),
    GEO_OPEN_NODE(),
-      GEO_ASM(0, Geo18_8029D924),
+      GEO_ASM(0, geo_update_layer_transparency),
 
 #ifdef VERSION_JP
       GEO_SWITCH_CASE(2, geo_switch_anim_state),
@@ -399,20 +399,20 @@ const GeoLayout bowser2_geo[] = {
 
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, Geo18_802B7D44),
+            GEO_ASM(0, geo_bits_bowser_coloring),
             GEO_BRANCH(1, bowser_geo_0000D8),
          GEO_CLOSE_NODE(),
 
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, Geo18_802B7D44),
+            GEO_ASM(0, geo_bits_bowser_coloring),
             GEO_BRANCH(1, bowser_geo_000770),
          GEO_CLOSE_NODE(),
 
 #ifndef VERSION_JP
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, Geo18_802B7D44),
+            GEO_ASM(0, geo_bits_bowser_coloring),
             GEO_BRANCH(1, bowser_shadow_geo),
          GEO_CLOSE_NODE(),
 #endif

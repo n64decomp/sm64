@@ -1707,7 +1707,7 @@ struct ParallelTrackingPoint sBBHLibraryParTrackPath[] = {
 s32 unused_update_mode_5_camera(UNUSED struct Camera *c, UNUSED Vec3f focus, UNUSED Vec3f pos) {
 }
 
-static void unused_80282678(UNUSED s32 unused) {
+static void stub_camera_1(UNUSED s32 unused) {
 }
 
 void mode_boss_fight_camera(struct Camera *c) {
@@ -3053,7 +3053,7 @@ void update_camera(struct Camera *c) {
     c->defMode = gLakituState.defMode;
 
     camera_course_processing(c);
-    dummy_802877EC(c);
+    stub_camera_3(c);
     sCButtonsPressed = find_c_buttons_pressed(sCButtonsPressed, gPlayer1Controller->buttonPressed,
                                               gPlayer1Controller->buttonDown);
 
@@ -3157,7 +3157,7 @@ void update_camera(struct Camera *c) {
     }
     // Start any mario-related cutscenes
     start_cutscene(c, get_cutscene_from_mario_status(c));
-    dummy_802877D8(c);
+    stub_camera_2(c);
     gCheckingSurfaceCollisionsForCamera = FALSE;
     if (gCurrLevelNum != LEVEL_CASTLE) {
         // If fixed camera is selected as the alternate mode, then fix the camera as long as the right
@@ -3529,10 +3529,10 @@ Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context) {
     return NULL;
 }
 
-void dummy_802877D8(UNUSED struct Camera *c) {
+void stub_camera_2(UNUSED struct Camera *c) {
 }
 
-void dummy_802877EC(UNUSED struct Camera *c) {
+void stub_camera_3(UNUSED struct Camera *c) {
 }
 
 void vec3f_sub(Vec3f dst, Vec3f src) {
@@ -5286,7 +5286,7 @@ void approach_camera_height(struct Camera *c, f32 goal, f32 inc) {
     }
 }
 
-void unused_8028C3AC(UNUSED s32 a, UNUSED s32 b, UNUSED s32 c, UNUSED s32 d) {
+void stub_camera_4(UNUSED s32 a, UNUSED s32 b, UNUSED s32 c, UNUSED s32 d) {
 }
 
 /**
@@ -7206,7 +7206,7 @@ void cutscene_unsoften_music(UNUSED struct Camera *c) {
     sequence_player_unlower(0, 60);
 }
 
-static void unused_802905C8(UNUSED struct Camera *c) {
+static void stub_camera_5(UNUSED struct Camera *c) {
 }
 
 BAD_RETURN(s32) cutscene_unused_start(UNUSED struct Camera *c) {
@@ -8175,7 +8175,6 @@ BAD_RETURN(s32) cutscene_bowser_arena_end(struct Camera *c) {
     transition_next_state(c, 20);
     sStatusFlags |= CAM_FLAG_UNUSED_CUTSCENE_ACTIVE;
     sModeOffsetYaw = sMarioCamState->faceAngle[1] + DEGREES(90);
-    //! This appears to do nothing
     gSecondCameraFocus->oBowserUnk88 = 2;
 }
 
@@ -10000,22 +9999,22 @@ BAD_RETURN(s32) cutscene_enter_painting(struct Camera *c) {
     set_fov_function(CAM_FOV_APP_20);
     sStatusFlags |= CAM_FLAG_SMOOTH_MOVEMENT;
 
-    if (ripplingPainting != NULL) {
+    if (gRipplingPainting != NULL) {
         paintingAngle[0] = 0;
-        paintingAngle[1] = (s32)((ripplingPainting->vYRotation / 360.f) * 65536.f); // convert degrees to IAU
+        paintingAngle[1] = (s32)((gRipplingPainting->yaw / 360.f) * 65536.f); // convert degrees to IAU
         paintingAngle[2] = 0;
 
-        focusOffset[0] = ripplingPainting->vSize / 2;
+        focusOffset[0] = gRipplingPainting->size / 2;
         focusOffset[1] = focusOffset[0];
         focusOffset[2] = 0;
 
-        paintingPos[0] = ripplingPainting->vXPos;
-        paintingPos[1] = ripplingPainting->vYPos;
-        paintingPos[2] = ripplingPainting->vZPos;
+        paintingPos[0] = gRipplingPainting->posX;
+        paintingPos[1] = gRipplingPainting->posY;
+        paintingPos[2] = gRipplingPainting->posZ;
 
         offset_rotated(focus, paintingPos, focusOffset, paintingAngle);
         approach_vec3f_asymptotic(c->focus, focus, 0.1f, 0.1f, 0.1f);
-        focusOffset[2] = -(((ripplingPainting->vSize * 1000.f) / 2) / 307.f);
+        focusOffset[2] = -(((gRipplingPainting->size * 1000.f) / 2) / 307.f);
         offset_rotated(focus, paintingPos, focusOffset, paintingAngle);
         floorHeight = find_floor(focus[0], focus[1] + 500.f, focus[2], &highFloor) + 125.f;
 

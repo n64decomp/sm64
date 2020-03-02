@@ -13,7 +13,7 @@
 #define INTERACT_KOOPA          /* 0x00000080 */ (1 <<  7)
 #define INTERACT_UNKNOWN_08     /* 0x00000100 */ (1 <<  8)
 #define INTERACT_BREAKABLE      /* 0x00000200 */ (1 <<  9)
-#define INTERACT_WIND           /* 0x00000400 */ (1 << 10)
+#define INTERACT_STRONG_WIND           /* 0x00000400 */ (1 << 10)
 #define INTERACT_WARP_DOOR      /* 0x00000800 */ (1 << 11)
 #define INTERACT_STAR_OR_KEY    /* 0x00001000 */ (1 << 12)
 #define INTERACT_WARP           /* 0x00002000 */ (1 << 13)
@@ -105,7 +105,7 @@ struct BullyCollisionData {
 
 extern u8 D_03009AC8[];
 
-extern s16 mario_angle_to_object(struct MarioState *, struct Object *);
+extern s16 mario_obj_angle_to_object(struct MarioState *, struct Object *);
 extern void mario_stop_riding_object(struct MarioState *);
 extern void mario_grab_used_object(struct MarioState *);
 extern void mario_drop_held_object(struct MarioState *);

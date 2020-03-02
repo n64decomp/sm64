@@ -305,12 +305,12 @@ void thread5_game_loop(UNUSED void *arg) {
 
     play_music(2, SEQUENCE_ARGS(0, SEQ_SOUND_PLAYER), 0);
     set_sound_mode(save_file_get_sound_mode());
-    func_80247ED8();
+    rendering_init();
 
     while (1) {
         // if the reset timer is active, run the process to reset the game.
         if (gResetTimer) {
-            func_80247D84();
+            draw_reset_bars();
             continue;
         }
         profiler_log_thread5_time(THREAD5_START);
@@ -322,7 +322,7 @@ void thread5_game_loop(UNUSED void *arg) {
         }
 
         audio_game_loop_tick();
-        func_80247FAC();
+        config_gfx_pool();
         read_controller_inputs();
         addr = level_script_execute(addr);
         display_and_vsync();

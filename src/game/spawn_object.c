@@ -363,6 +363,6 @@ struct Object *create_object(const BehaviorScript *behScript) {
  * Mark an object to be unloaded at the end of the frame.
  */
 void mark_obj_for_deletion(struct Object *obj) {
-    //! Same issue as mark_object_for_deletion
+    //! Same issue as obj_mark_for_deletion
     obj->activeFlags = ACTIVE_FLAGS_DEACTIVATED;
 }

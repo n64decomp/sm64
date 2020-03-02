@@ -105,7 +105,7 @@ void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYB
     sWaterBombExplodeParticles.offsetY = offsetY;
     sWaterBombExplodeParticles.forwardVelRange = forwardVelRange;
     sWaterBombExplodeParticles.velYBase = velYBase;
-    obj_spawn_particles(&sWaterBombExplodeParticles);
+    cur_obj_spawn_particles(&sWaterBombExplodeParticles);
 #else
     s8 tempVelYBase = velYBase;
     s8 tempForwardVelRange = forwardVelRange;
@@ -115,7 +115,7 @@ void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYB
         sWaterBombExplodeParticles.offsetY = tempOffsetY;
         sWaterBombExplodeParticles.forwardVelRange = tempForwardVelRange;
         sWaterBombExplodeParticles.velYBase = tempVelYBase;
-        obj_spawn_particles(&sWaterBombExplodeParticles);
+        cur_obj_spawn_particles(&sWaterBombExplodeParticles);
     } while (0);
 #endif
 }
@@ -124,7 +124,7 @@ void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYB
  * Enter the drop action with -40 y vel.
  */
 static void water_bomb_act_init(void) {
-    PlaySound2(SOUND_OBJ_SOMETHING_LANDING);
+    cur_obj_play_sound_2(SOUND_OBJ_SOMETHING_LANDING);
 
     o->oAction = WATER_BOMB_ACT_DROP;
     o->oMoveFlags = 0;
@@ -138,7 +138,7 @@ static void water_bomb_act_init(void) {
 static void water_bomb_act_drop(void) {
     f32 stretch;
 
-    set_object_hitbox(o, &sWaterBombHitbox);
+    obj_set_hitbox(o, &sWaterBombHitbox);
 
     // Explode if touched or if hit water
     if ((o->oInteractStatus & INT_STATUS_INTERACTED) || (o->oMoveFlags & OBJ_MOVE_ENTERED_WATER)) {
@@ -151,7 +151,7 @@ static void water_bomb_act_drop(void) {
             o->oWaterBombOnGround = TRUE;
 
             if ((o->oWaterBombNumBounces += 1.0f) < 3.0f) {
-                PlaySound2(SOUND_OBJ_WATER_BOMB_BOUNCING);
+                cur_obj_play_sound_2(SOUND_OBJ_WATER_BOMB_BOUNCING);
             } else {
                 create_sound_spawner(SOUND_OBJ_DIVING_IN_WATER);
             }
@@ -189,7 +189,7 @@ static void water_bomb_act_drop(void) {
     }
     o->header.gfx.scale[0] = o->header.gfx.scale[2] = 1.0f - stretch;
 
-    obj_move_standard(78);
+    cur_obj_move_standard(78);
 }
 
 /**
@@ -199,7 +199,7 @@ static void water_bomb_act_drop(void) {
 static void water_bomb_act_explode(void) {
     water_bomb_spawn_explode_particles(25, 60, 10);
     o->parentObj->oWaterBombSpawnerBombActive = FALSE;
-    mark_object_for_deletion(o);
+    obj_mark_for_deletion(o);
 }
 
 /**
@@ -207,13 +207,13 @@ static void water_bomb_act_explode(void) {
  */
 static void water_bomb_act_shot_from_cannon(void) {
     if (o->oTimer > 100) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else {
         if (o->oTimer < 7) {
             if (o->oTimer == 1) {
                 water_bomb_spawn_explode_particles(-20, 10, 30);
             }
-            obj_spawn_particles(&sWaterBombCannonParticle);
+            cur_obj_spawn_particles(&sWaterBombCannonParticle);
         }
 
         if (o->header.gfx.scale[1] > 1.2f) {
@@ -221,7 +221,7 @@ static void water_bomb_act_shot_from_cannon(void) {
         }
 
         o->header.gfx.scale[0] = o->header.gfx.scale[2] = 2.0f - o->header.gfx.scale[1];
-        func_802A2A38();
+        cur_obj_set_pos_via_transform();
     }
 }
 
@@ -233,7 +233,7 @@ void bhv_water_bomb_update(void) {
         water_bomb_act_shot_from_cannon();
     } else {
         o->oGraphYOffset = 40.0f * o->header.gfx.scale[1];
-        obj_update_floor_and_walls();
+        cur_obj_update_floor_and_walls();
 
         switch (o->oAction) {
             case WATER_BOMB_ACT_INIT:
@@ -255,7 +255,7 @@ void bhv_water_bomb_update(void) {
  */
 void bhv_water_bomb_shadow_update(void) {
     if (o->parentObj->oAction == WATER_BOMB_ACT_EXPLODE) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else {
         // TODO: What is happening here
         f32 bombHeight = o->parentObj->oPosY - o->parentObj->oFloorHeight;
@@ -263,8 +263,8 @@ void bhv_water_bomb_shadow_update(void) {
             bombHeight = 500.0f;
         }
 
-        copy_object_pos(o, o->parentObj);
+        obj_copy_pos(o, o->parentObj);
         o->oPosY = o->parentObj->oFloorHeight + bombHeight;
-        copy_object_scale(o, o->parentObj);
+        obj_copy_scale(o, o->parentObj);
     }
 }

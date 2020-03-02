@@ -12,13 +12,13 @@ s32 D_8032F328[] = { SOUND_GENERAL_OPEN_WOOD_DOOR, SOUND_GENERAL_OPEN_IRON_DOOR 
 
 s32 D_8032F330[] = { SOUND_GENERAL_CLOSE_WOOD_DOOR, SOUND_GENERAL_CLOSE_IRON_DOOR };
 
-void func_802AC070(s32 sp18) {
-    set_obj_animation_and_sound_state(sp18);
-    if (func_8029F788())
+void door_animation_and_reset(s32 sp18) {
+    cur_obj_init_animation_with_sound(sp18);
+    if (cur_obj_check_if_near_animation_end())
         o->oAction = 0;
 }
 
-void func_802AC0B8(void) {
+void set_door_camera_event(void) {
     if (segmented_to_virtual(bhvDoor) == o->behavior)
         gPlayerCameraState->cameraEvent = CAM_EVENT_DOOR;
     else
@@ -26,53 +26,53 @@ void func_802AC0B8(void) {
     gPlayerCameraState->usedObj = o;
 }
 
-void func_802AC130(void) {
-    s32 sp1C = obj_has_model(MODEL_HMC_METAL_DOOR);
+void play_door_open_noise(void) {
+    s32 sp1C = cur_obj_has_model(MODEL_HMC_METAL_DOOR);
     if (o->oTimer == 0) {
-        PlaySound2(D_8032F328[sp1C]);
+        cur_obj_play_sound_2(D_8032F328[sp1C]);
         gTimeStopState |= TIME_STOP_MARIO_OPENED_DOOR;
     }
     if (o->oTimer == 70) {
-        PlaySound2(D_8032F330[sp1C]);
+        cur_obj_play_sound_2(D_8032F330[sp1C]);
     }
 }
 
-void func_802AC1CC(void) {
-    s32 sp1C = obj_has_model(MODEL_HMC_METAL_DOOR);
+void play_warp_door_open_noise(void) {
+    s32 sp1C = cur_obj_has_model(MODEL_HMC_METAL_DOOR);
     if (o->oTimer == 30)
-        PlaySound2(D_8032F330[sp1C]);
+        cur_obj_play_sound_2(D_8032F330[sp1C]);
 }
 
 void bhv_door_loop(void) {
     s32 sp1C = 0;
     
     while (D_8032F300[sp1C].flag != (u32)~0) {
-        if (obj_clear_interact_status_flag(D_8032F300[sp1C].flag)) {
-            func_802AC0B8();
-            obj_change_action(D_8032F300[sp1C].action);
+        if (cur_obj_clear_interact_status_flag(D_8032F300[sp1C].flag)) {
+            set_door_camera_event();
+            cur_obj_change_action(D_8032F300[sp1C].action);
         }
         sp1C++;
     }
 
     switch (o->oAction) {
         case 0:
-            set_obj_animation_and_sound_state(0);
+            cur_obj_init_animation_with_sound(0);
             break;
         case 1:
-            func_802AC070(1);
-            func_802AC130();
+            door_animation_and_reset(1);
+            play_door_open_noise();
             break;
         case 2:
-            func_802AC070(2);
-            func_802AC130();
+            door_animation_and_reset(2);
+            play_door_open_noise();
             break;
         case 3:
-            func_802AC070(3);
-            func_802AC1CC();
+            door_animation_and_reset(3);
+            play_warp_door_open_noise();
             break;
         case 4:
-            func_802AC070(4);
-            func_802AC1CC();
+            door_animation_and_reset(4);
+            play_warp_door_open_noise();
             break;
     }
     if (o->oAction == 0)

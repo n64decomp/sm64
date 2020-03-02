@@ -14,7 +14,7 @@ void bhv_bitfs_sinking_platform_loop(void) {
 
 // TODO: Named incorrectly. fix
 void bhv_ddd_moving_pole_loop(void) {
-    copy_object_pos_and_angle(o, o->parentObj);
+    obj_copy_pos_and_angle(o, o->parentObj);
 }
 
 void bhv_bitfs_sinking_cage_platform_loop(void) {

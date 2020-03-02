@@ -295,7 +295,7 @@ static void level_cmd_load_mario_head(void) {
 }
 
 static void level_cmd_load_mio0_texture(void) {
-    func_80278304(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
+    load_segment_decompress_heap(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -310,7 +310,7 @@ static void level_cmd_init_level(void) {
 
 static void level_cmd_clear_level(void) {
     clear_objects();
-    func_8027A7C4();
+    clear_area_graph_nodes();
     clear_areas();
     main_pool_pop_state();
 
@@ -630,8 +630,8 @@ static void level_cmd_load_area(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
-static void level_cmd_2A(void) {
-    func_8027A998();
+static void level_cmd_unload_area(void) {
+    unload_area();
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -649,7 +649,7 @@ static void level_cmd_set_mario_start_pos(void) {
 }
 
 static void level_cmd_2C(void) {
-    func_8027AA88();
+    unload_mario_area();
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -692,7 +692,7 @@ static void level_cmd_set_menu_music(void) {
 }
 
 static void level_cmd_38(void) {
-    func_802491FC(CMD_GET(s16, 2));
+    fadeout_music(CMD_GET(s16, 2));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -781,7 +781,7 @@ static void (*LevelScriptJumpTable[])(void) = {
     /*27*/ level_cmd_create_painting_warp_node,
     /*28*/ level_cmd_create_instant_warp,
     /*29*/ level_cmd_load_area,
-    /*2A*/ level_cmd_2A,
+    /*2A*/ level_cmd_unload_area,
     /*2B*/ level_cmd_set_mario_start_pos,
     /*2C*/ level_cmd_2C,
     /*2D*/ level_cmd_2D,

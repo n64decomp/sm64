@@ -21,7 +21,7 @@
  * implementation for flowers (unused), lava bubbles and jetstream bubbles
  * can be found.
  * The main entry point for envfx is at the bottom of this file, which is
- * called from geo_enfvx_main in level_geo.c
+ * called from geo_envfx_main in level_geo.c
  */
 
 // Might be duplicate
@@ -340,14 +340,15 @@ void rotate_triangle_vertices(Vec3s vertex1, Vec3s vertex2, Vec3s vertex3, s16 p
  * 'index' in the buffer. The 3 input vertices represent the roated triangle
  * around (0,0,0) that will be translated to snowflake positions to draw the
  * snowflake image.
+ *
+ * TODO: (Scrub C)
  */
-#if defined(VERSION_EU) && !defined(NON_MATCHING)
-void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3);
-GLOBAL_ASM("asm/non_matchings/eu/append_snowflake_vertex_buffer.s")
-#else
 void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3) {
     s32 i = 0;
     Vtx *vertBuf = (Vtx *) alloc_display_list(15 * sizeof(Vtx));
+#ifdef VERSION_EU
+    Vtx *p;
+#endif
 
     if (vertBuf == NULL) {
         return;
@@ -355,24 +356,47 @@ void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s ve
 
     for (i = 0; i < 15; i += 3) {
         vertBuf[i] = gSnowTempVtx[0];
+#ifdef VERSION_EU
+        p = vertBuf;
+        p += i;
+        p[0].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex1[0];
+        p[0].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex1[1];
+        p[0].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex1[2];
+#else
         vertBuf[i].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex1[0];
         vertBuf[i].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex1[1];
         vertBuf[i].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex1[2];
+#endif
 
         vertBuf[i + 1] = gSnowTempVtx[1];
+#ifdef VERSION_EU
+        p = vertBuf;
+        p += i;
+        p[1].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex2[0];
+        p[1].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex2[1];
+        p[1].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex2[2];
+#else
         vertBuf[i + 1].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex2[0];
         vertBuf[i + 1].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex2[1];
         vertBuf[i + 1].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex2[2];
+#endif
 
         vertBuf[i + 2] = gSnowTempVtx[2];
+#ifdef VERSION_EU
+        p = vertBuf;
+        p += i;
+        p[2].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex3[0];
+        p[2].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex3[1];
+        p[2].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex3[2];
+#else
         vertBuf[i + 2].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex3[0];
         vertBuf[i + 2].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex3[1];
         vertBuf[i + 2].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex3[2];
+#endif
     }
 
     gSPVertex(gfx, VIRTUAL_TO_PHYSICAL(vertBuf), 15, 0);
 }
-#endif
 
 /**
  * Updates positions of snow particles and returns a pointer to a display list

@@ -11,7 +11,7 @@
 #include "walk_smoke/geo.inc.c"
 #include "burn_smoke/geo.inc.c"
 #include "stomp_smoke/geo.inc.c"
-#include "water_waves/geo.inc.c"
+#include "water_wave/geo.inc.c"
 #include "sparkle/geo.inc.c"
 #include "water_splash/geo.inc.c"
 #include "sparkle_animation/geo.inc.c"

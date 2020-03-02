@@ -215,7 +215,7 @@ struct SequencePlayer
     /*0x000, 0x000*/ u8 seqDmaInProgress : 1;
     /*0x000, 0x000*/ u8 bankDmaInProgress : 1;
 #ifdef VERSION_EU
-    /*       0x000*/ u8 unk_eu : 1;
+    /*       0x000*/ u8 recalculateVolume : 1;
 #endif
 #ifndef VERSION_EU
     /*0x001       */ s8 seqVariation;
@@ -251,8 +251,8 @@ struct SequencePlayer
     /*0x020, 0x020*/ f32 volume; // set to 0.0f
     /*0x024, 0x024*/ f32 muteVolumeScale; // set to 0.5f
 #ifdef VERSION_EU
-    /*     , 0x028*/ f32 unkEu28;
-    /*     , 0x02C*/ f32 unkEu2C;
+    /*     , 0x028*/ f32 fadeVolumeScale;
+    /*     , 0x02C*/ f32 appliedFadeVolume;
 #else
     /*            */ u8 pad2[4];
 #endif
@@ -340,12 +340,12 @@ struct SequenceChannel
 #ifdef VERSION_EU
     /*    , 0x01*/ union {
         struct {
-            u8 unk0b80 : 1;
-            u8 unk0b40 : 1;
-            u8 unk0b20 : 1;
+            u8 freqScale : 1;
+            u8 volume : 1;
+            u8 pan : 1;
         } as_bitfields;
         u8 as_u8;
-    } unk1;
+    } changes;
 #endif
     /*0x01, 0x02*/ u8 noteAllocPolicy;
     /*0x02, 0x03*/ u8 muteBehavior;
@@ -354,9 +354,9 @@ struct SequenceChannel
     /*0x05, 0x06*/ u8 bankId;
 #ifdef VERSION_EU
     /*    , 0x07*/ u8 reverbIndex;
-    /*    , 0x08*/ u8 unk8;
-    /*    , 0x09*/ u8 unk9;
-    /*    , 0x0A*/ u8 unkA;
+    /*    , 0x08*/ u8 bookOffset;
+    /*    , 0x09*/ u8 newPan;
+    /*    , 0x0A*/ u8 panChannelWeight; // proportion of pan that comes from the channel (0..128)
 #else
     /*0x06,     */ u8 updatesPerFrameUnused;
 #endif
@@ -374,11 +374,12 @@ struct SequenceChannel
     /*0x1C, 0x20*/ f32 volumeScale;
     /*0x20, 0x24*/ f32 volume;
 #ifndef VERSION_EU
-    /*0x24, 0x28*/ f32 pan;
+    /*0x24,     */ f32 pan;
+    /*0x28,     */ f32 panChannelWeight; // proportion of pan that comes from the channel (0..1)
 #else
-    /*0x24, 0x28*/ s32 pan;
+    /*    , 0x28*/ s32 pan;
+    /*    , 0x2C*/ f32 appliedVolume;
 #endif
-    /*0x28, 0x2C*/ f32 panChannelWeight; // proportion of pan that comes from the channel (0..1)
     /*0x2C, 0x30*/ f32 freqScale;
     /*0x30, 0x34*/ u8 (*dynTable)[][2];
     /*0x34, ????*/ struct Note *noteUnused; // never read
@@ -401,16 +402,16 @@ struct SequenceChannelLayer // Maybe SequenceTrack?
     /*0x00, 0x00*/ u8 stopSomething : 1; // ?
     /*0x00, 0x00*/ u8 continuousNotes : 1; // keep the same note for consecutive notes with the same sound
 #ifdef VERSION_EU
-    /*    , 0x00*/ u8 unkEu0b8 : 1;
-    /*    , 0x00*/ u8 unkEu0b4 : 1;
-    /*    , 0x00*/ u8 unkEu0b2 : 1;
-    /*    , 0x01*/ u8 euUnk1; // euInstOrWave?
+    /*    , 0x00*/ u8 unusedEu0b8 : 1;
+    /*    , 0x00*/ u8 notePropertiesNeedInit : 1;
+    /*    , 0x00*/ u8 ignoreDrumPan : 1;
+    /*    , 0x01*/ u8 instOrWave;
 #endif
     /*0x01, 0x02*/ u8 status;
     /*0x02, 0x03*/ u8 noteDuration; // set to 0x80
     /*0x03, 0x04*/ u8 portamentoTargetNote;
 #ifdef VERSION_EU
-    /*    , 0x05*/ u8 euUnk5; // contains US/JP pan * 128.0f
+    /*    , 0x05*/ u8 pan; // 0..128
     /*    , 0x06*/ u8 notePan;
 #endif
     /*0x04, 0x08*/ struct Portamento portamento;
@@ -422,7 +423,7 @@ struct SequenceChannelLayer // Maybe SequenceTrack?
     /*0x20, 0x24*/ f32 freqScale;
     /*0x24, 0x28*/ f32 velocitySquare;
 #ifndef VERSION_EU
-    /*0x28*/ f32 pan;
+    /*0x28,     */ f32 pan; // 0..1
 #endif
     /*0x2C, 0x2C*/ f32 noteVelocity;
 #ifndef VERSION_EU
@@ -452,7 +453,7 @@ struct NoteSynthesisState
     /*0x01*/ u8 sampleDmaIndex;
     /*0x02*/ u8 prevHeadsetPanRight;
     /*0x03*/ u8 prevHeadsetPanLeft;
-    /*    */ u16 samplePosFrac; //?
+    /*0x04*/ u16 samplePosFrac;
     /*0x08*/ s32 samplePosInt;
     /*0x0C*/ struct NoteSynthesisBuffers *synthesisBuffers;
     /*0x10*/ s16 curVolLeft;
@@ -485,8 +486,8 @@ struct NoteSubEu
     /*0x00*/ u8 stereoStrongLeft : 1;
     /*0x00*/ u8 stereoHeadsetEffects : 1;
     /*0x00*/ u8 usesHeadsetPanEffects : 1;
-    /*0x01*/ u8 unk1b567 : 3;
-    /*0x01*/ u8 unk1b234 : 3;
+    /*0x01*/ u8 reverbIndex : 3;
+    /*0x01*/ u8 bookOffset : 3;
     /*0x01*/ u8 isSyntheticWave : 1;
     /*0x01*/ u8 hasTwoAdpcmParts : 1;
     /*0x02*/ u8 bankId;
@@ -506,7 +507,9 @@ struct Note
     /* U/J, EU  */
     /*0xA4, 0x00*/ struct AudioListItem listItem;
     /*      0x10*/ struct NoteSynthesisState synthesisState;
+#ifdef TARGET_N64
     u8 pad0[12];
+#endif
     /*0x04, 0x30*/ u8 priority;
     /*      0x31*/ u8 waveId;
     /*      0x32*/ u8 sampleCountIndex;
@@ -643,20 +646,40 @@ struct AudioBufferParametersEU {
 
 struct EuAudioCmd {
     union {
+#if IS_BIG_ENDIAN
         struct {
             u8 op;
             u8 arg1;
             u8 arg2;
             u8 arg3;
         } s;
+#else
+        struct {
+            u8 arg3;
+            u8 arg2;
+            u8 arg1;
+            u8 op;
+        } s;
+#endif
         s32 first;
     } u;
     union {
         s32 as_s32;
         u32 as_u32;
         f32 as_f32;
+#if IS_BIG_ENDIAN
         u8 as_u8;
         s8 as_s8;
+#else
+        struct {
+            u8 pad0[3];
+            u8 as_u8;
+        };
+        struct {
+            u8 pad1[3];
+            s8 as_s8;
+        };
+#endif
     } u2;
 };
 

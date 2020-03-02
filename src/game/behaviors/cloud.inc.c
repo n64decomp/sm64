@@ -34,7 +34,7 @@ static void cloud_act_spawn_parts(void) {
         // Spawn fwoosh's face
         spawn_object_relative(5, 0, 0, 0, o, MODEL_FWOOSH, bhvCloudPart);
 
-        obj_scale(3.0f);
+        cur_obj_scale(3.0f);
 
         o->oCloudCenterX = o->oPosX;
         o->oCloudCenterY = o->oPosY;
@@ -48,7 +48,7 @@ static void cloud_act_spawn_parts(void) {
  */
 static void cloud_act_fwoosh_hidden(void) {
     if (o->oDistanceToMario < 2000.0f) {
-        obj_unhide();
+        cur_obj_unhide();
         o->oAction = CLOUD_ACT_SPAWN_PARTS;
     }
 }
@@ -69,10 +69,10 @@ static void cloud_fwoosh_update(void) {
                 o->oCloudBlowing = o->oTimer = 0;
             } else if (o->oCloudGrowSpeed < -0.1f) {
                 // Start blowing once we start shrinking faster than -0.1
-                PlaySound(SOUND_AIR_BLOW_WIND);
-                func_802C76E0(12, 3.0f, 0.0f, -50.0f, 120.0f);
+                cur_obj_play_sound_1(SOUND_AIR_BLOW_WIND);
+                cur_obj_spawn_strong_wind_particles(12, 3.0f, 0.0f, -50.0f, 120.0f);
             } else {
-                PlaySound(SOUND_ENV_WIND1);
+                cur_obj_play_sound_1(SOUND_ENV_WIND1);
             }
         } else {
             // Return to normal size
@@ -94,7 +94,7 @@ static void cloud_fwoosh_update(void) {
             o->oCloudCenterY = o->oHomeY;
         }
 
-        obj_scale(o->header.gfx.scale[0]);
+        cur_obj_scale(o->header.gfx.scale[0]);
     }
 }
 
@@ -141,11 +141,11 @@ static void cloud_act_main(void) {
  */
 static void cloud_act_unload(void) {
     if (o->oBehParams2ndByte != CLOUD_BP_FWOOSH) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else {
         o->oAction = CLOUD_ACT_FWOOSH_HIDDEN;
-        obj_hide();
-        obj_set_pos_to_home();
+        cur_obj_hide();
+        cur_obj_set_pos_to_home();
     }
 }
 
@@ -174,7 +174,7 @@ void bhv_cloud_update(void) {
  */
 void bhv_cloud_part_update(void) {
     if (o->parentObj->oAction == CLOUD_ACT_UNLOAD) {
-        mark_object_for_deletion(o);
+        obj_mark_for_deletion(o);
     } else {
         f32 size = 2.0f / 3.0f * o->parentObj->header.gfx.scale[0];
         s16 angleFromCenter = o->parentObj->oFaceAngleYaw + 0x10000 / 5 * o->oBehParams2ndByte;
@@ -185,7 +185,7 @@ void bhv_cloud_part_update(void) {
 
         f32 cloudRadius;
 
-        obj_scale(size);
+        cur_obj_scale(size);
 
         // Cap fwoosh's face size
         if (o->oBehParams2ndByte == 5 && size > 2.0f) {

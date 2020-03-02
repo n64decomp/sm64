@@ -34,7 +34,7 @@ static void fly_guy_act_idle(void) {
         if (o->oDistanceToMario >= 25000.0f || o->oDistanceToMario < 2000.0f) {
             // Turn toward home or Mario
             obj_face_yaw_approach(o->oAngleToMario, 0x300);
-            if (obj_rotate_yaw_toward(o->oAngleToMario, 0x300)) {
+            if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x300)) {
                 o->oAction = FLY_GUY_ACT_APPROACH_MARIO;
             }
         } else {
@@ -62,7 +62,7 @@ static void fly_guy_act_approach_mario(void) {
 
         // Turn toward home or Mario
         obj_face_yaw_approach(o->oAngleToMario, 0x400);
-        obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
+        cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
 
         // If facing toward mario and we are either near mario laterally or
         // far above him
@@ -97,7 +97,7 @@ static void fly_guy_act_lunge(void) {
 
         o->oVelY += o->oFlyGuyLungeYDecel;
 
-        obj_rotate_yaw_toward(o->oFaceAngleYaw, 0x800);
+        cur_obj_rotate_yaw_toward(o->oFaceAngleYaw, 0x800);
         obj_face_pitch_approach(o->oFlyGuyLungeTargetPitch, 0x400);
 
         // Range [-0x1000, 0x2000]
@@ -149,7 +149,7 @@ static void fly_guy_act_shoot_fire(void) {
             } else {
                 // We have reached below scale 1.2 in the shrinking portion
                 s16 fireMovePitch = obj_turn_pitch_toward_mario(0.0f, 0);
-                PlaySound2(SOUND_OBJ_FLAME_BLOWN);
+                cur_obj_play_sound_2(SOUND_OBJ_FLAME_BLOWN);
                 clamp_s16(&fireMovePitch, 0x800, 0x3000);
 
                 obj_spit_fire(
@@ -179,12 +179,12 @@ void bhv_fly_guy_update(void) {
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         o->oDeathSound = SOUND_OBJ_KOOPA_FLYGUY_DEATH;
 
-        obj_scale(o->header.gfx.scale[0]);
+        cur_obj_scale(o->header.gfx.scale[0]);
         treat_far_home_as_mario(2000.0f);
-        obj_update_floor_and_walls();
+        cur_obj_update_floor_and_walls();
 
         if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
-            o->oMoveAngleYaw = obj_reflect_move_angle_off_wall();
+            o->oMoveAngleYaw = cur_obj_reflect_move_angle_off_wall();
         } else if (o->oMoveFlags & OBJ_MOVE_MASK_IN_WATER) {
             o->oVelY = 6.0f;
         }
@@ -208,7 +208,7 @@ void bhv_fly_guy_update(void) {
                 break;
         }
 
-        obj_move_standard(78);
+        cur_obj_move_standard(78);
         obj_check_attacks(&sFlyGuyHitbox, o->oAction);
     }
 }

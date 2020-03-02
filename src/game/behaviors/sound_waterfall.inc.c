@@ -1,5 +1,5 @@
 // sound_waterfall.inc.c
 
 void bhv_waterfall_sound_loop(void) {
-    PlaySound(SOUND_ENV_WATERFALL2);
+    cur_obj_play_sound_1(SOUND_ENV_WATERFALL2);
 }

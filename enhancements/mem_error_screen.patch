@@ -37,7 +37,7 @@ index 2fda11d7..8ba0a1c9 100644
 +#define TEXT_PJ64 _("If you are using PJ64 1.6, go to:\nOptions > Settings > Rom Settings Tab > Memory Size\nthen select 8 MB from the drop-down box.")
 +#define TEXT_PJ64_2 _("If you are using PJ64 2.X, go to:\nOptions > Settings > Config: > Memory Size, select 8 MB")
 +
- #ifdef VERSION_JP
+ #if defined(VERSION_JP) || defined(VERSION_SH)
  
  /**
 diff --git a/levels/entry.c b/levels/entry.c
@@ -274,10 +274,10 @@ index 00000000..20eeef8f
 +
 +    addr = segmented_to_virtual(level_script_entry_error_screen);
 +
-+    func_80247ED8();
++    rendering_init();
 +
 +    while (1) {
-+        func_80247FAC();
++        config_gfx_pool();
 +        addr = level_script_execute(addr);
 +        display_and_vsync();
 +    }

@@ -12,11 +12,6 @@ ALIGNED8 const u8 spooky_09000800[] = {
 #include "textures/spooky/bbh_textures.00800.rgba16.inc.c"
 };
 
-// 0x09001000
-ALIGNED8 const u8 spooky_09001000[] = {
-#include "textures/spooky/bbh_textures.01000.rgba16.inc.c"
-};
-
 // 0x09001800
 ALIGNED8 const u8 spooky_09001800[] = {
 #include "textures/spooky/bbh_textures.01800.rgba16.inc.c"
