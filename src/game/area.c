@@ -49,17 +49,28 @@ u8 gWarpTransBlue = 0;
 s16 gCurrSaveFileNum = 1;
 s16 gCurrLevelNum = 1;
 
-const BehaviorScript *D_8032CE9C[] = {
-    bhvDoorWarp, bhvStar,    bhvExitPodiumWarp, bhvWarp,    bhvWarpPipe, bhvFadingWarp, bhvWarps60,
-    bhvWarps64,  bhvWarps68, bhvWarps6C,        bhvWarps70, bhvWarps74,  bhvWarps78,    bhvWarps94,
-    bhvWarps7C,  bhvWarps80, bhvWarps88,        bhvWarps84, bhvWarps8C,  bhvWarps90,
+/* 
+ * The following two tables are used in get_mario_spawn_type() to determine spawn type
+ * from warp behavior.
+ * When looping through WARP_BEHAVIOR_SPAWN_TABLE, if the behavior function in the table matches
+ * the spawn behavior executed, the index of that behavior is used with SPAWN_TYPE_FROM_WARP_BHV
+*/
+
+// D _8032CE9C
+const BehaviorScript *WARP_BEHAVIOR_SPAWN_TABLE[] = {
+    bhvDoorWarp, bhvStar,       bhvExitPodiumWarp, bhvWarp,
+    bhvWarpPipe, bhvFadingWarp, bhvWarps60,        bhvWarps64,
+    bhvWarps68,  bhvWarps6C,    bhvDeathWarp,      bhvWarps74,
+    bhvWarps78,  bhvWarps94,    bhvWarps7C,        bhvPaintingDeathWarp,
+    bhvWarps88,  bhvWarps84,    bhvWarps8C,        bhvWarps90,
 };
 
-u8 D_8032CEEC[] = {
+// D_8032CEEC
+u8 SPAWN_TYPE_FROM_WARP_BHV[] = {
     MARIO_SPAWN_UNKNOWN_01, MARIO_SPAWN_UNKNOWN_02, MARIO_SPAWN_UNKNOWN_03, MARIO_SPAWN_UNKNOWN_03,
     MARIO_SPAWN_UNKNOWN_03, MARIO_SPAWN_UNKNOWN_04, MARIO_SPAWN_UNKNOWN_10, MARIO_SPAWN_UNKNOWN_12,
-    MARIO_SPAWN_UNKNOWN_13, MARIO_SPAWN_UNKNOWN_14, MARIO_SPAWN_UNKNOWN_15, MARIO_SPAWN_UNKNOWN_16,
-    MARIO_SPAWN_UNKNOWN_17, MARIO_SPAWN_UNKNOWN_11, MARIO_SPAWN_UNKNOWN_20, MARIO_SPAWN_UNKNOWN_21,
+    MARIO_SPAWN_UNKNOWN_13, MARIO_SPAWN_UNKNOWN_14, MARIO_SPAWN_DEATH,      MARIO_SPAWN_UNKNOWN_16,
+    MARIO_SPAWN_UNKNOWN_17, MARIO_SPAWN_UNKNOWN_11, MARIO_SPAWN_UNKNOWN_20, MARIO_SPAWN_PAINTING_DEATH,
     MARIO_SPAWN_UNKNOWN_22, MARIO_SPAWN_UNKNOWN_23, MARIO_SPAWN_UNKNOWN_24, MARIO_SPAWN_UNKNOWN_25,
 };
 
@@ -120,8 +131,8 @@ u32 get_mario_spawn_type(struct Object *o) {
     const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
     for (i = 0; i < 20; i++) {
-        if (D_8032CE9C[i] == behavior) {
-            return D_8032CEEC[i];
+        if (WARP_BEHAVIOR_SPAWN_TABLE[i] == behavior) {
+            return SPAWN_TYPE_FROM_WARP_BHV[i];
         }
     }
     return 0;
