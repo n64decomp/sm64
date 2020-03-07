@@ -56,7 +56,7 @@ s16 gCurrLevelNum = 1;
  * the spawn behavior executed, the index of that behavior is used with SPAWN_TYPE_FROM_WARP_BHV
 */
 
-// D _8032CE9C
+// D_8032CE9C
 const BehaviorScript *WARP_BEHAVIOR_SPAWN_TABLE[] = {
     bhvDoorWarp, bhvStar,       bhvExitPodiumWarp, bhvWarp,
     bhvWarpPipe, bhvFadingWarp, bhvWarps60,        bhvWarps64,
