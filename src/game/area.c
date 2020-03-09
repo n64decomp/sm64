@@ -52,12 +52,12 @@ s16 gCurrLevelNum = 1;
 /* 
  * The following two tables are used in get_mario_spawn_type() to determine spawn type
  * from warp behavior.
- * When looping through WARP_BEHAVIOR_SPAWN_TABLE, if the behavior function in the table matches
- * the spawn behavior executed, the index of that behavior is used with SPAWN_TYPE_FROM_WARP_BHV
+ * When looping through warpBehaviorSpawnTable, if the behavior function in the table matches
+ * the spawn behavior executed, the index of that behavior is used with spawnTypeFromWarpBhv
 */
 
 // D_8032CE9C
-const BehaviorScript *WARP_BEHAVIOR_SPAWN_TABLE[] = {
+const BehaviorScript *warpBehaviorSpawnTable[] = {
     bhvDoorWarp, bhvStar,       bhvExitPodiumWarp, bhvWarp,
     bhvWarpPipe, bhvFadingWarp, bhvWarps60,        bhvWarps64,
     bhvWarps68,  bhvWarps6C,    bhvDeathWarp,      bhvWarps74,
@@ -66,7 +66,7 @@ const BehaviorScript *WARP_BEHAVIOR_SPAWN_TABLE[] = {
 };
 
 // D_8032CEEC
-u8 SPAWN_TYPE_FROM_WARP_BHV[] = {
+u8 spawnTypeFromWarpBhv[] = {
     MARIO_SPAWN_UNKNOWN_01, MARIO_SPAWN_UNKNOWN_02, MARIO_SPAWN_UNKNOWN_03, MARIO_SPAWN_UNKNOWN_03,
     MARIO_SPAWN_UNKNOWN_03, MARIO_SPAWN_UNKNOWN_04, MARIO_SPAWN_UNKNOWN_10, MARIO_SPAWN_UNKNOWN_12,
     MARIO_SPAWN_UNKNOWN_13, MARIO_SPAWN_UNKNOWN_14, MARIO_SPAWN_DEATH,      MARIO_SPAWN_UNKNOWN_16,
@@ -131,8 +131,8 @@ u32 get_mario_spawn_type(struct Object *o) {
     const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
     for (i = 0; i < 20; i++) {
-        if (WARP_BEHAVIOR_SPAWN_TABLE[i] == behavior) {
-            return SPAWN_TYPE_FROM_WARP_BHV[i];
+        if (warpBehaviorSpawnTable[i] == behavior) {
+            return spawnTypeFromWarpBhv[i];
         }
     }
     return 0;
