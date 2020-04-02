@@ -38,7 +38,7 @@ To build we simply have to mount our local filesystem into the docker container 
 docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 sm64 make VERSION=us -j4
 
 # if your host system is linux you need to tell docker what user should own the output files
-docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 --user "$(id -u):$(id -g)" sm64 make VERSION=us -j4
+docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 --user $UID:$UID sm64 make VERSION=us -j4
 ```
 
 Resulting artifacts can be found in the `build` directory.
