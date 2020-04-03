@@ -30,6 +30,9 @@ struct Controller
   /*0x12*/ u16 buttonPressed;
   /*0x14*/ OSContStatus *statusData;
   /*0x18*/ OSContPad *controllerData;
+#ifdef VERSION_SH
+  /*0x1C*/ int port;
+#endif
 };
 
 typedef f32 Vec2f[2];
@@ -185,10 +188,10 @@ struct Object
     } ptrData;
 #endif
     /*0x1C8*/ u32 unused1;
-    /*0x1CC*/ const BehaviorScript *behScript;
-    /*0x1D0*/ u32 stackIndex;
-    /*0x1D4*/ uintptr_t stack[8];
-    /*0x1F4*/ s16 unk1F4;
+    /*0x1CC*/ const BehaviorScript *curBhvCommand;
+    /*0x1D0*/ u32 bhvStackIndex;
+    /*0x1D4*/ uintptr_t bhvStack[8];
+    /*0x1F4*/ s16 bhvDelayTimer;
     /*0x1F6*/ s16 respawnInfoType;
     /*0x1F8*/ f32 hitboxRadius;
     /*0x1FC*/ f32 hitboxHeight;

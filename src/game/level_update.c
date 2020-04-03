@@ -5,7 +5,7 @@
 #include "dialog_ids.h"
 #include "audio/external.h"
 #include "level_update.h"
-#include "game.h"
+#include "game_init.h"
 #include "level_update.h"
 #include "main.h"
 #include "engine/math_util.h"
@@ -18,7 +18,6 @@
 #include "object_list_processor.h"
 #include "ingame_menu.h"
 #include "obj_behaviors.h"
-#include "display.h"
 #include "save_file.h"
 #include "debug_course.h"
 #ifdef VERSION_EU
@@ -26,6 +25,8 @@
 #include "eu_translation.h"
 #endif
 #include "level_table.h"
+#include "course_table.h"
+#include "thread6.h"
 
 #define PLAY_MODE_NORMAL 0
 #define PLAY_MODE_PAUSED 2
@@ -144,7 +145,7 @@ struct CreditsEntry sCreditsSequence[] = {
     { LEVEL_DDD, 2, -111, -64, { 3948, 1185, -104 }, credits19 },
     { LEVEL_CCM, 1, 33, 31, { 3169, -4607, 5240 }, credits20 },
     { LEVEL_CASTLE_GROUNDS, 1, 1, -128, { 0, 906, -1200 }, NULL },
-    { 0, 0, 1, 0, { 0, 0, 0 }, NULL },
+    { LEVEL_NONE, 0, 1, 0, { 0, 0, 0 }, NULL },
 };
 
 struct MarioState gMarioStates[1];
@@ -328,7 +329,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
         case MARIO_SPAWN_UNKNOWN_14:
             set_mario_action(m, ACT_SPAWN_SPIN_AIRBORNE, 0);
             break;
-        case MARIO_SPAWN_UNKNOWN_15:
+        case MARIO_SPAWN_DEATH:
             set_mario_action(m, ACT_FALLING_DEATH_EXIT, 0);
             break;
         case MARIO_SPAWN_UNKNOWN_16:
@@ -343,7 +344,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
         case MARIO_SPAWN_UNKNOWN_20:
             set_mario_action(m, ACT_EXIT_AIRBORNE, 0);
             break;
-        case MARIO_SPAWN_UNKNOWN_21:
+        case MARIO_SPAWN_PAINTING_DEATH:
             set_mario_action(m, ACT_DEATH_EXIT, 0);
             break;
         case MARIO_SPAWN_UNKNOWN_22:
@@ -435,7 +436,7 @@ void init_mario_after_warp(void) {
         if (gCurrLevelNum == LEVEL_BOB
             && get_current_background_music() != SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE)
             && sTimerRunning != 0) {
-            play_music(0, SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE), 0);
+            play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE), 0);
         }
 #endif
 
@@ -448,7 +449,7 @@ void init_mario_after_warp(void) {
         )
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gDefaultSoundArgs);
 #ifndef VERSION_JP
-        if (sWarpDest.levelNum == 16 && sWarpDest.areaIdx == 1
+        if (sWarpDest.levelNum == LEVEL_CASTLE_GROUNDS && sWarpDest.areaIdx == 1
             && (sWarpDest.nodeId == 7 || sWarpDest.nodeId == 10 || sWarpDest.nodeId == 20
                 || sWarpDest.nodeId == 30)) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gDefaultSoundArgs);
@@ -676,10 +677,14 @@ void initiate_painting_warp(void) {
 
                 set_mario_action(gMarioState, ACT_DISAPPEARED, 0);
 
-                gMarioState->marioObj->header.gfx.node.flags &= ~0x0001;
+                gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
 
                 play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
                 fadeout_music(398);
+#ifdef VERSION_SH
+                queue_rumble_data(80, 70);
+                func_sh_8024C89C(1);
+#endif
             }
         }
     }
@@ -703,7 +708,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_DEMO_END:
                 do {sDelayedWarpTimer = 20;} while (0);
                 sSourceWarpNodeId = WARP_NODE_F0;
-                gSavedCourseNum = 0;
+                gSavedCourseNum = COURSE_NONE;
                 val04 = FALSE;
                 play_transition(WARP_TRANSITION_FADE_INTO_STAR, 0x14, 0x00, 0x00, 0x00);
                 break;
@@ -712,14 +717,14 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sDelayedWarpTimer = 60;
                 sSourceWarpNodeId = WARP_NODE_F0;
                 val04 = FALSE;
-                gSavedCourseNum = 0;
+                gSavedCourseNum = COURSE_NONE;
                 play_transition(WARP_TRANSITION_FADE_INTO_COLOR, 0x3C, 0x00, 0x00, 0x00);
                 break;
 
             case WARP_OP_STAR_EXIT:
                 sDelayedWarpTimer = 32;
                 sSourceWarpNodeId = WARP_NODE_F0;
-                gSavedCourseNum = 0;
+                gSavedCourseNum = COURSE_NONE;
                 play_transition(WARP_TRANSITION_FADE_INTO_MARIO, 0x20, 0x00, 0x00, 0x00);
                 break;
 
@@ -853,7 +858,7 @@ void initiate_delayed_warp(void) {
 
                     gCurrCreditsEntry += 1;
                     gCurrActNum = gCurrCreditsEntry->unk02 & 0x07;
-                    if ((gCurrCreditsEntry + 1)->levelNum == 0) {
+                    if ((gCurrCreditsEntry + 1)->levelNum == LEVEL_NONE) {
                         destWarpNode = WARP_NODE_CREDITS_END;
                     } else {
                         destWarpNode = WARP_NODE_CREDITS_NEXT;
@@ -991,6 +996,9 @@ s32 play_mode_normal(void) {
             set_play_mode(PLAY_MODE_CHANGE_AREA);
         } else if (pressed_pause()) {
             lower_background_noise(1);
+#ifdef VERSION_SH
+            cancel_rumble();
+#endif
             gCameraMovementFlags |= CAM_MOVE_PAUSE_SCREEN;
             set_play_mode(PLAY_MODE_PAUSED);
         }
@@ -1014,7 +1022,7 @@ s32 play_mode_paused(void) {
         } else {
             initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
             fade_into_special_warp(0, 0);
-            gSavedCourseNum = 0;
+            gSavedCourseNum = COURSE_NONE;
         }
 
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
@@ -1204,6 +1212,11 @@ s32 init_level(void) {
             set_background_music(gCurrentArea->musicParam, gCurrentArea->musicParam2, 0);
         }
     }
+#ifdef VERSION_SH
+    if (gCurrDemoInput == NULL) {
+        cancel_rumble();
+    }
+#endif
 
     if (gMarioState->action == ACT_INTRO_CUTSCENE) {
         sound_banks_disable(2, 0x0330);
@@ -1255,7 +1268,7 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
 
     gCurrLevelNum = levelNum;
     gCurrCourseNum = COURSE_NONE;
-    gSavedCourseNum = 0;
+    gSavedCourseNum = COURSE_NONE;
     gCurrCreditsEntry = NULL;
     gSpecialTripleJump = 0;
 

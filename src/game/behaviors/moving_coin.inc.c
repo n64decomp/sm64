@@ -112,16 +112,16 @@ void bhv_moving_blue_coin_loop(void) {
 
     switch (o->oAction) {
         case MOV_BCOIN_ACT_STILL:
-            if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1500) != 0)
+            if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 1500))
                 o->oAction = 1;
             break;
 
         case MOV_BCOIN_ACT_MOVING:
             collisionFlags = object_step();
-            if ((collisionFlags & 0x1) != 0) /* bit 0 */
+            if ((collisionFlags & OBJ_COL_FLAG_GROUNDED)) /* bit 0 */
             {
                 o->oForwardVel += 25.0f;
-                if ((collisionFlags & 0x8) == 0)
+                if (!(collisionFlags & OBJ_COL_FLAG_NO_Y_VEL))
                     cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP); /* bit 3 */
             } else
                 o->oForwardVel *= 0.98;

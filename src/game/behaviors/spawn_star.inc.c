@@ -144,7 +144,7 @@ void bhv_hidden_red_coin_star_init(void) {
     s16 sp36;
     struct Object *sp30;
 
-    if (gCurrCourseNum != 3)
+    if (gCurrCourseNum != COURSE_JRB)
         spawn_object(o, MODEL_TRANSPARENT_STAR, bhvRedCoinStarMarker);
 
     sp36 = count_objects_with_behavior(bhvRedCoin);

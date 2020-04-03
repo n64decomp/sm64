@@ -1,6 +1,5 @@
 #include "libultra_internal.h"
 
-extern OSThread *D_8033489C;
 void __osCleanupThread(void);
 
 // Don't warn about pointer->u64 cast

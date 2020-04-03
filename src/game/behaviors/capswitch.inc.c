@@ -31,6 +31,9 @@ void cap_switch_act_2(void) {
             cur_obj_shake_screen(SHAKE_POS_SMALL);
             spawn_mist_particles();
             spawn_triangle_break_particles(60, 139, 0.3f, o->oBehParams2ndByte);
+#ifdef VERSION_SH
+            queue_rumble_data(5, 80);
+#endif
         }
     } else {
         sp1C = cur_obj_update_dialog_with_cutscene(1, 0x0C, CUTSCENE_CAP_SWITCH_PRESS, 0);

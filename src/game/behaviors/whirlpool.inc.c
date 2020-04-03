@@ -36,7 +36,7 @@ void whirpool_orient_graph(void) {
 
 void bhv_whirlpool_loop(void) {
     if (o->oDistanceToMario < 5000.0f) {
-        o->header.gfx.node.flags &= ~0x10; /* bit 4 */
+        o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
 
         // not sure if actually an array
         gEnvFxBubbleConfig[ENVFX_STATE_PARTICLECOUNT] = 60;
@@ -53,7 +53,7 @@ void bhv_whirlpool_loop(void) {
 
         o->oFaceAngleYaw += 0x1F40;
     } else {
-        o->header.gfx.node.flags |= 0x10; /* bit 4 */
+        o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
         gEnvFxBubbleConfig[ENVFX_STATE_PARTICLECOUNT] = 0;
     }
 

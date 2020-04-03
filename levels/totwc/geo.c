@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/totwc/header.h"
 
 #include "levels/totwc/cloud/geo.inc.c"

@@ -20,12 +20,12 @@ void bhv_wind_loop(void) {
             o->oPosY += 80.0f + random_f32_around_zero(200.0f);
             o->oPosZ += coss(o->oMoveAngleYaw + 0x8000) * sp2E; // -coss(a) * sp2E
             o->oMoveAngleYaw += random_f32_around_zero(4000.0f);
-            o->oForwardVel = RandomFloat() * 70.0f + 50.0f;
+            o->oForwardVel = random_float() * 70.0f + 50.0f;
         } else {
             obj_translate_xz_random(o, 600.0f);
             o->oPosY -= sp2E - 200; // 300
-            o->oVelY = RandomFloat() * 30.0f + 50.0f;
-            o->oMoveAngleYaw = RandomU16();
+            o->oVelY = random_float() * 30.0f + 50.0f;
+            o->oMoveAngleYaw = random_u16();
             o->oForwardVel = 10.0f;
         }
         obj_set_billboard(o);
@@ -33,7 +33,7 @@ void bhv_wind_loop(void) {
     }
     if (o->oTimer > 8)
         obj_mark_for_deletion(o);
-    o->oFaceAnglePitch += 4000.0f + 2000.0f * RandomFloat();
-    o->oFaceAngleYaw += 4000.0f + 2000.0f * RandomFloat();
+    o->oFaceAnglePitch += 4000.0f + 2000.0f * random_float();
+    o->oFaceAngleYaw += 4000.0f + 2000.0f * random_float();
     cur_obj_move_using_fvel_and_gravity();
 }

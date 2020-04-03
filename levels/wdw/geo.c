@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/wdw/header.h"
 
 #include "levels/wdw/square_floating_platform/geo.inc.c"

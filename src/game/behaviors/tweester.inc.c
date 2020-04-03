@@ -143,12 +143,12 @@ void bhv_tweester_sand_particle_loop(void) {
     o->oForwardVel += 15.0f;
     o->oPosY += 22.0f;
 
-    cur_obj_scale(RandomFloat() + 1.0);
+    cur_obj_scale(random_float() + 1.0);
 
     if (o->oTimer == 0) {
         obj_translate_xz_random(o, 100.0f);
-        o->oFaceAnglePitch = RandomU16();
-        o->oFaceAngleYaw = RandomU16();
+        o->oFaceAnglePitch = random_u16();
+        o->oFaceAngleYaw = random_u16();
     }
 
     if (o->oTimer > 15)

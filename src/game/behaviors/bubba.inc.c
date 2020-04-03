@@ -143,7 +143,7 @@ void bhv_bubba_loop(void) {
         } else {
             approach_f32_ptr(&o->oBubbaUnk108, 0.0f, 4.0f);
             if ((o->oBubbaUnk10C -= o->oBubbaUnk108) > 1.0f) {
-                sp36 = RandomU16();
+                sp36 = random_u16();
                 o->oBubbaUnk10C -= 1.0f;
                 spawn_object_relative(0, 150.0f * coss(sp36), 0x64, 150.0f * sins(sp36), o,
                                       MODEL_WHITE_PARTICLE_SMALL, bhvSmallParticleSnow);

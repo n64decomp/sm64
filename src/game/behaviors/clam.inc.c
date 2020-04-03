@@ -13,7 +13,7 @@ struct ObjectHitbox sClamShellHitbox = {
 };
 
 void clam_act_0(void) {
-    if (func_802F92EC(0, 25)) {
+    if (cur_obj_init_anim_check_frame(0, 25)) {
         cur_obj_play_sound_2(SOUND_GENERAL_CLAM_SHELL3);
         spawn_mist_from_global();
         cur_obj_become_tangible();
@@ -36,7 +36,7 @@ void clam_act_1(void) {
 
     if (o->oTimer > 150) {
         o->oAction = 0;
-    } else if (obj_is_rendering_enabled() && func_802F92EC(1, 8)) {
+    } else if (obj_is_rendering_enabled() && cur_obj_init_anim_check_frame(1, 8)) {
         for (val06 = -0x2000; val06 < 0x2000; val06 += 0x555) {
             val04 = (s16)(100.0f * sins(val06));
             val02 = (s16)(100.0f * coss(val06));

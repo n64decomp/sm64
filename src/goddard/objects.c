@@ -435,7 +435,7 @@ void reset_plane(struct ObjPlane *plane) {
 
     sp4C = plane->unk40;
     calc_face_normal(sp4C);
-    plane->unk1C = dot_product_vec3f(&sp4C->vertices[0]->pos, &sp4C->normal);
+    plane->unk1C = gd_dot_vec3f(&sp4C->vertices[0]->pos, &sp4C->normal);
     sp48 = 0.0f;
 
     sp28 = sp4C->normal.x < 0.0f ? -sp4C->normal.x : sp4C->normal.x;
@@ -535,8 +535,8 @@ struct ObjCamera *make_camera(s32 a0, struct GdObj *a1) {
 
     newCam->unk2C = a0 | 0x10;
     newCam->unk30 = a1;
-    set_identity_mat4(&newCam->unk64);
-    set_identity_mat4(&newCam->unkA8);
+    gd_set_identity_mat4(&newCam->unk64);
+    gd_set_identity_mat4(&newCam->unkA8);
 
     newCam->unk180.x = 1.0f;
     newCam->unk180.y = 0.1f;
@@ -1096,7 +1096,7 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp70.y = a2->y;
     sp70.z = a2->z;
 
-    into_unit_vec3f(&sp70);
+    gd_normalize_vec3f(&sp70);
 
     sp7C.x = a1->x;
     sp7C.y = a1->y;
@@ -1106,19 +1106,19 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp1C.y = a0->unkB0.y;
     sp1C.z = a0->unkB0.z;
 
-    func_80196430(&sp1C, &a0->mat128);
+    gd_rotate_and_translate_vec3f(&sp1C, &a0->mat128);
 
     sp7C.x -= sp1C.x;
     sp7C.y -= sp1C.y;
     sp7C.z -= sp1C.z;
 
-    if (into_unit_vec3f(&sp7C) == FALSE) {
+    if (gd_normalize_vec3f(&sp7C) == FALSE) {
         sp7C.x = -sp70.x;
         sp7C.y = -sp70.y;
         sp7C.z = -sp70.z;
     }
 
-    cross_product_vec3f(&sp70, a1, &sp94);
+    gd_cross_vec3f(&sp70, a1, &sp94);
     sp2C = (f32) gd_sqrt_d((sp94.x * sp94.x) + (sp94.z * sp94.z));
 
     if (sp2C > 1000.0) { //? 1000.0f
@@ -1155,7 +1155,7 @@ void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp18.y = a0->unkB0.y;
     sp18.z = a0->unkB0.z;
 
-    func_80196430(&sp18, &a0->mat128);
+    gd_rotate_and_translate_vec3f(&sp18, &a0->mat128);
 
     sp64.x -= sp18.x;
     sp64.y -= sp18.y;
@@ -1165,8 +1165,8 @@ void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp64.y *= 0.01; //? 0.01f;
     sp64.z *= 0.01; //? 0.01f;
 
-    cross_product_vec3f(a2, &sp64, &sp70);
-    limit_vec3f(&sp70, 5.0f);
+    gd_cross_vec3f(a2, &sp64, &sp70);
+    gd_clamp_vec3f(&sp70, 5.0f);
 
     a0->unk80.x += sp70.x;
     a0->unk80.y += sp70.y;
@@ -1183,10 +1183,10 @@ void func_8017E9EC(struct ObjNet *a0) {
     sp5C.y = a0->unkA4.y;
     sp5C.z = a0->unkA4.z;
 
-    into_unit_vec3f(&sp5C);
-    sp18 = magnitude_vec3f(&a0->unkA4);
-    func_801961F4(&sp1C, &sp5C, -sp18);
-    multiply_mat4(&D_801B9DC8, &sp1C, &D_801B9DC8);
+    gd_normalize_vec3f(&sp5C);
+    sp18 = gd_vec3f_magnitude(&a0->unkA4);
+    gd_create_rot_mat_angular(&sp1C, &sp5C, -sp18);
+    gd_mult_mat4f(&D_801B9DC8, &sp1C, &D_801B9DC8);
 }
 
 /* @ 22D264 for 0x90 */
@@ -1344,9 +1344,9 @@ s32 func_8017F054(struct GdObj *a0, struct GdObj *a1) {
         d_get_scale(&sp1C);
         sp48 = d_get_matrix_ptr();
 
-        multiply_mat4(sp4C, sp50, sp48);
-        multiply_mat4(sp4C, sp44, sp40);
-        func_8019415C(sp40, &sp1C);
+        gd_mult_mat4f(sp4C, sp50, sp48);
+        gd_mult_mat4f(sp4C, sp44, sp40);
+        gd_scale_mat4f_by_vec3f(sp40, &sp1C);
     } else {
         set_cur_dynobj(a0);
         sp48 = d_get_matrix_ptr();
@@ -1354,9 +1354,9 @@ s32 func_8017F054(struct GdObj *a0, struct GdObj *a1) {
         sp44 = (Mat4f *) d_get_rot_mtx_ptr();
 
         d_get_scale(&sp1C);
-        set_identity_mat4(sp48);
-        cpy_mat4(sp4C, sp44);
-        func_8019415C(sp44, &sp1C);
+        gd_set_identity_mat4(sp48);
+        gd_copy_mat4f(sp4C, sp44);
+        gd_scale_mat4f_by_vec3f(sp44, &sp1C);
     }
 
     set_cur_dynobj(a0);
@@ -1398,8 +1398,8 @@ s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
         sp50 = (Mat4f *) d_get_rot_mtx_ptr();
 
         d_get_scale(&sp2C);
-        multiply_mat4(sp5C, sp54, sp50);
-        func_8019415C(sp50, &sp2C);
+        gd_mult_mat4f(sp5C, sp54, sp50);
+        gd_scale_mat4f_by_vec3f(sp50, &sp2C);
     } else {
         set_cur_dynobj(a0);
         sp58 = d_get_matrix_ptr();
@@ -1407,8 +1407,8 @@ s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
         sp54 = (Mat4f *) d_get_rot_mtx_ptr();
 
         d_get_scale(&sp2C);
-        cpy_mat4(sp5C, sp54);
-        func_8019415C(sp54, &sp2C);
+        gd_copy_mat4f(sp5C, sp54);
+        gd_scale_mat4f_by_vec3f(sp54, &sp2C);
     }
 
     set_cur_dynobj(a0);
@@ -1426,7 +1426,7 @@ s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
 
 /* @ 22DB9C for 0x38; a0 might be ObjUnk200000* */
 void Unknown8017F3CC(struct Unk8017F3CC *a0) {
-    func_80196430(&a0->unk20, D_801B9E48);
+    gd_rotate_and_translate_vec3f(&a0->unk20, D_801B9E48);
 }
 
 /* @ 22DBD4 for 0x20 */
@@ -1439,7 +1439,7 @@ void func_8017F424(struct GdTriangleF *a0, struct GdTriangleF *a1, f32 a2) {
     Mat4f sp40;
     struct GdTriangleF sp1C;
 
-    set_identity_mat4(&sp40);
+    gd_set_identity_mat4(&sp40);
 
     if (a2 != 0.0f) {
         sp1C.p1.x = a0->p1.x + (a1->p1.x - a0->p1.x) * a2;
@@ -1449,13 +1449,13 @@ void func_8017F424(struct GdTriangleF *a0, struct GdTriangleF *a1, f32 a2) {
         sp1C.p2.y = a0->p2.y + (a1->p2.y - a0->p2.y) * a2;
         sp1C.p2.z = a0->p2.z + (a1->p2.z - a0->p2.z) * a2;
 
-        func_8019415C(&sp40, &a0->p0);
-        func_80194220(&sp40, &sp1C.p1);
-        func_801942E4(&sp40, &sp1C.p2);
+        gd_scale_mat4f_by_vec3f(&sp40, &a0->p0);
+        gd_rot_mat_about_vec(&sp40, &sp1C.p1);
+        gd_add_vec3f_to_mat4f_offset(&sp40, &sp1C.p2);
     } else { // L8017F568
         d_set_scale(a0->p0.x, a0->p0.y, a0->p0.z);
-        func_80194220(&sp40, &a0->p1);
-        func_801942E4(&sp40, &a0->p2);
+        gd_rot_mat_about_vec(&sp40, &a0->p1);
+        gd_add_vec3f_to_mat4f_offset(&sp40, &a0->p2);
     } // L8017F5A4
     d_set_idn_mtx(&sp40);
 }
@@ -1670,10 +1670,10 @@ void move_animator(struct ObjAnimator *animObj) {
                 break;
             case GD_ANIM_TRI_F_4: // GdTriangleF*
                 triPtr = (struct GdTriangleF *) animData->data;
-                set_identity_mat4(&localMtx);
-                func_8019415C(&localMtx, &triPtr->p0);
-                func_80194220(&localMtx, &triPtr->p1);
-                func_801942E4(&localMtx, &triPtr->p2);
+                gd_set_identity_mat4(&localMtx);
+                gd_scale_mat4f_by_vec3f(&localMtx, &triPtr->p0);
+                gd_rot_mat_about_vec(&localMtx, &triPtr->p1);
+                gd_add_vec3f_to_mat4f_offset(&localMtx, &triPtr->p2);
                 d_set_idn_mtx(&localMtx);
                 break;
             case GD_ANIM_STUB:
@@ -1716,15 +1716,15 @@ void drag_picked_object(struct GdObj *inputObj) {
         return;
     }
 
-    sp28 = magnitude_vec3f(&gViewUpdateCamera->unk40);
+    sp28 = gd_vec3f_magnitude(&gViewUpdateCamera->unk40);
     sp28 /= 1000.0f;
 
     spD0.x = ((f32)(ctrl->csrX - ctrl->csrXatApress)) * sp28;
     spD0.y = ((f32) - (ctrl->csrY - ctrl->csrYatApress)) * sp28;
     spD0.z = 0.0f;
 
-    inverse_mat4(&gViewUpdateCamera->unkE8, &sp40);
-    func_80196540(&spD0, &sp40);
+    gd_inverse_mat4f(&gViewUpdateCamera->unkE8, &sp40);
+    gd_mat4f_mult_vec3f(&spD0, &sp40);
 
     obj = inputObj;
     if ((inputObj->drawFlags & OBJ_PICKED) && gGdCtrl.btnApressed) {
@@ -1743,12 +1743,12 @@ void drag_picked_object(struct GdObj *inputObj) {
             case OBJ_TYPE_GADGETS:
                 break;
             case OBJ_TYPE_NETS:
-                inverse_mat4(&((struct ObjNet *) obj)->mat128, &sp80);
+                gd_inverse_mat4f(&((struct ObjNet *) obj)->mat128, &sp80);
                 spC4.x = spD0.x;
                 spC4.y = spD0.y;
                 spC4.z = spD0.z;
 
-                func_80196540(&spC4, &sp80);
+                gd_mat4f_mult_vec3f(&spC4, &sp80);
                 ((struct ObjNet *) obj)->matE8[3][0] += spD0.x;
                 ((struct ObjNet *) obj)->matE8[3][1] += spD0.y;
                 ((struct ObjNet *) obj)->matE8[3][2] += spD0.z;
@@ -1816,9 +1816,9 @@ void move_camera(struct ObjCamera *cam) {
         cam->unkA8[1][1] = 1.0f;
         cam->unkA8[1][2] = 0.0f;
 
-        set_identity_mat4(&cam->unkA8);
+        gd_set_identity_mat4(&cam->unkA8);
     } else {
-        set_identity_mat4(&cam->unkA8);
+        gd_set_identity_mat4(&cam->unkA8);
     }
 
     sp2C = &cam->unk64;
@@ -1856,20 +1856,20 @@ void move_camera(struct ObjCamera *cam) {
             cam->unk128.x -= cam->unk134.x;
         }
 
-        cam->unk128.x = func_80194728(cam->unk128.x, 80.0f);
+        cam->unk128.x = gd_clamp_f32(cam->unk128.x, 80.0f);
 
         cam->unk4C.x = cam->positions[cam->zoom].x;
         cam->unk4C.y = cam->positions[cam->zoom].y;
         cam->unk4C.z = cam->positions[cam->zoom].z;
 
-        func_80194880(cam->unk128.x, &cam->unk4C.y, &cam->unk4C.z);
-        func_80194880(-cam->unk128.y, &cam->unk4C.x, &cam->unk4C.z);
+        gd_rot_2d_vec(cam->unk128.x, &cam->unk4C.y, &cam->unk4C.z);
+        gd_rot_2d_vec(-cam->unk128.y, &cam->unk4C.x, &cam->unk4C.z);
 
         cam->unk40.x += (cam->unk4C.x - cam->unk40.x) * cam->unk17C;
         cam->unk40.y += (cam->unk4C.y - cam->unk40.y) * cam->unk17C;
         cam->unk40.z += (cam->unk4C.z - cam->unk40.z) * cam->unk17C;
     } else {
-        set_identity_mat4(sp2C);
+        gd_set_identity_mat4(sp2C);
     }
 
     spD4.x = cam->unk40.x;
@@ -1880,8 +1880,8 @@ void move_camera(struct ObjCamera *cam) {
     spD4.y += spB0.y;
     spD4.z += spB0.z;
 
-    multiply_mat4(sp2C, &cam->unkA8, &cam->unkA8);
-    func_80196540(&spD4, &cam->unkA8);
+    gd_mult_mat4f(sp2C, &cam->unkA8, &cam->unkA8);
+    gd_mat4f_mult_vec3f(&spD4, &cam->unkA8);
 
     cam->unk14.x = spD4.x;
     cam->unk14.y = spD4.y;
@@ -1942,18 +1942,18 @@ void Unknown8018100C(struct ObjLight *light) {
     D_801A81C0 += 1.0; //? 1.0f
     D_801A81C4 += 0.6; //? 0.6f
 
-    set_identity_mat4(&mtx);
-    absrot_mat4(&mtx, 1, light->unk68.y);
-    absrot_mat4(&mtx, 0, light->unk68.x);
-    absrot_mat4(&mtx, 2, light->unk68.z);
-    func_80196540(&light->unk8C, &mtx);
+    gd_set_identity_mat4(&mtx);
+    gd_absrot_mat4(&mtx, GD_Y_AXIS, light->unk68.y);
+    gd_absrot_mat4(&mtx, GD_X_AXIS, light->unk68.x);
+    gd_absrot_mat4(&mtx, GD_Z_AXIS, light->unk68.z);
+    gd_mat4f_mult_vec3f(&light->unk8C, &mtx);
 
     light->position.x = light->unk8C.x;
     light->position.y = light->unk8C.y;
     light->position.z = light->unk8C.z;
     return;
     // even more unreachable
-    func_80196540(&light->unk80, &mtx);
+    gd_mat4f_mult_vec3f(&light->unk80, &mtx);
     imout(); // this call would cause an issue if it was reachable
 }
 

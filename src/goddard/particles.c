@@ -150,7 +150,7 @@ void func_80182088(struct Connection *cxn) {
     sp4C.x = sp1C->unk20.x - sp18->unk20.x;
     sp4C.y = sp1C->unk20.y - sp18->unk20.y;
     sp4C.z = sp1C->unk20.z - sp18->unk20.z;
-    sp20 = magnitude_vec3f(&sp4C);
+    sp20 = gd_vec3f_magnitude(&sp4C);
     sp24 = sp20 - cxn->unk24;
     sp4C.x /= sp20;
     sp4C.y /= sp20;
@@ -243,7 +243,7 @@ struct Connection *func_801825FC(struct ObjVertex *vtx1, struct ObjVertex *vtx2)
     sp28.x -= sp1C.x;
     sp28.y -= sp1C.y;
     sp28.z -= sp1C.z;
-    sp34->unk24 = magnitude_vec3f(&sp28);
+    sp34->unk24 = gd_vec3f_magnitude(&sp28);
     // Duplicate conditional. Possibly should've checked `vtx2`;
     // Also, this shouldn't be called with particle types...
     if (vtx1->header.type == OBJ_TYPE_PARTICLES && vtx1->header.type == OBJ_TYPE_PARTICLES) {
@@ -303,7 +303,7 @@ void func_80182A08(struct ObjParticle *ptc, struct GdVec3f *b) {
                     sp20->unk38.x = func_8018D560() * 50.0 - 25.0;
                     sp20->unk38.y = func_8018D560() * 50.0 - 25.0;
                     sp20->unk38.z = func_8018D560() * 50.0 - 25.0;
-                } while (magnitude_vec3f(&sp20->unk38) > 30.0);
+                } while (gd_vec3f_magnitude(&sp20->unk38) > 30.0);
                 sp20->unk38.x += b->x;
                 sp20->unk38.y += b->y;
                 sp20->unk38.z += b->z;
@@ -428,7 +428,7 @@ void move_particle(struct ObjParticle *ptc) {
                             sp2C->unk38.x = func_8018D560() * 64.0 - 32.0;
                             sp2C->unk38.y = func_8018D560() * 64.0 - 32.0;
                             sp2C->unk38.z = func_8018D560() * 64.0 - 32.0;
-                        } while (magnitude_vec3f(&sp2C->unk38) > 32.0);
+                        } while (gd_vec3f_magnitude(&sp2C->unk38) > 32.0);
                         sp2C->unk30 = func_8018D560() * 180.0f;
                         sp2C->header.drawFlags &= ~OBJ_NOT_DRAWABLE;
                         sp2C->unk54 |= 8;

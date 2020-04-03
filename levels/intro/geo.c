@@ -11,6 +11,8 @@
 #include "menu/debug_level_select.h"
 #include "menu/intro_geo.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/intro/header.h"
 
 // 0x0E0002D0
@@ -30,13 +32,13 @@ const GeoLayout intro_geo_0002D0[] = {
          GEO_OPEN_NODE(),
             GEO_CAMERA(0, 0, 0, 3200, 0, 0, 0, 0x00000000),
             GEO_OPEN_NODE(),
-               GEO_ASM(0, geo18_title_screen),
+               GEO_ASM(0, geo_title_screen),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),
       GEO_ZBUFFER(0),
       GEO_OPEN_NODE(),
-         GEO_ASM(0, geo18_fade_transition),
+         GEO_ASM(0, geo_fade_transition),
       GEO_CLOSE_NODE(),
    GEO_CLOSE_NODE(),
    GEO_END(),
@@ -50,7 +52,7 @@ const GeoLayout intro_geo_00035C[] = {
       GEO_OPEN_NODE(),
          GEO_NODE_ORTHO(100),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, geo18_intro_backdrop),
+            GEO_ASM(0, geo_intro_backdrop),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),
       GEO_ZBUFFER(1),
@@ -72,7 +74,7 @@ const GeoLayout intro_geo_0003B8[] = {
       GEO_OPEN_NODE(),
          GEO_NODE_ORTHO(100),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, geo18_game_over_tile),
+            GEO_ASM(0, geo_game_over_tile),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),
       GEO_ZBUFFER(1),
@@ -94,7 +96,7 @@ const GeoLayout intro_geo_000414[] = {
       GEO_OPEN_NODE(),
          GEO_NODE_ORTHO(100),
          GEO_OPEN_NODE(),
-            GEO_ASM(0, geo18_intro_backdrop),
+            GEO_ASM(0, geo_intro_backdrop),
          GEO_CLOSE_NODE(),
       GEO_CLOSE_NODE(),
       GEO_ZBUFFER(1),

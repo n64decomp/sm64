@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/hmc/header.h"
 
 #include "levels/hmc/areas/1/grill_door/geo.inc.c"

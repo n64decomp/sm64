@@ -159,7 +159,7 @@ static void goomba_act_walk(void) {
 
     // If walking fast enough, play footstep sounds
     if (o->oGoombaRelativeSpeed > 4.0f / 3.0f) {
-        func_802F9378(2, 17, SOUND_OBJ_GOOMBA_WALK);
+        cur_obj_play_sound_at_anim_range(2, 17, SOUND_OBJ_GOOMBA_WALK);
     }
 
     //! By strategically hitting a wall, steep slope, or another goomba, we can
@@ -198,7 +198,7 @@ static void goomba_act_walk(void) {
                 if (o->oGoombaWalkTimer != 0) {
                     o->oGoombaWalkTimer -= 1;
                 } else {
-                    if (RandomU16() & 3) {
+                    if (random_u16() & 3) {
                         o->oGoombaTargetYaw = obj_random_fixed_turn(0x2000);
                         o->oGoombaWalkTimer = random_linear_offset(100, 100);
                     } else {

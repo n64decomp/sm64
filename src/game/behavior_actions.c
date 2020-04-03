@@ -3,13 +3,12 @@
 #include "sm64.h"
 #include "types.h"
 #include "behavior_actions.h"
-#include "game.h"
+#include "game_init.h"
 #include "main.h"
 #include "mario.h"
 #include "engine/behavior_script.h"
 #include "engine/math_util.h"
 #include "object_helpers.h"
-#include "object_helpers2.h"
 #include "behavior_data.h"
 #include "obj_behaviors.h"
 #include "engine/surface_collision.h"
@@ -22,7 +21,6 @@
 #include "area.h"
 #include "engine/graph_node.h"
 #include "camera.h"
-#include "display.h"
 #include "spawn_object.h"
 #include "mario_actions_cutscene.h"
 #include "object_list_processor.h"
@@ -37,6 +35,7 @@
 #include "ingame_menu.h"
 #include "rendering_graph_node.h"
 #include "level_table.h"
+#include "thread6.h"
 
 #define o gCurrentObject
 

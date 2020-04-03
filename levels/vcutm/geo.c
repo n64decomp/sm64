@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/vcutm/header.h"
 
 #include "levels/vcutm/seesaw/geo.inc.c"

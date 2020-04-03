@@ -8,7 +8,7 @@
 #include "dialog_ids.h"
 #include "audio/external.h"
 #include "mario_misc.h"
-#include "game.h"
+#include "game_init.h"
 #include "hud.h"
 #include "engine/math_util.h"
 #include "area.h"
@@ -19,7 +19,6 @@
 #include "mario_actions_cutscene.h"
 #include "save_file.h"
 #include "object_helpers.h"
-#include "object_helpers2.h"
 #include "print.h"
 #include "spawn_sound.h"
 #include "behavior_actions.h"
@@ -556,8 +555,8 @@ void set_camera_shake_from_hit(s16 shake) {
             break;
 
         case SHAKE_SHOCK:
-            set_camera_pitch_shake(RandomFloat() * 64.f, 0x8, 0x8000);
-            set_camera_yaw_shake(RandomFloat() * 64.f, 0x8, 0x8000);
+            set_camera_pitch_shake(random_float() * 64.f, 0x8, 0x8000);
+            set_camera_yaw_shake(random_float() * 64.f, 0x8, 0x8000);
             break;
     }
 }
@@ -3819,7 +3818,7 @@ void shake_camera_handheld(Vec3f pos, Vec3f focus) {
             sHandheldShakeTimer -= 1.f;
 
             // Code dead, this is set to be 0 before it is used.
-            sHandheldShakeInc = RandomFloat() * 0.5f;
+            sHandheldShakeInc = random_float() * 0.5f;
             if (sHandheldShakeInc < 0.02f) {
                 sHandheldShakeInc = 0.02f;
             }
@@ -4239,15 +4238,15 @@ void random_vec3s(Vec3s dst, s16 xRange, s16 yRange, s16 zRange) {
     f32 tempYRange;
     f32 tempZRange;
 
-    randomFloat = RandomFloat();
+    randomFloat = random_float();
     tempXRange = xRange;
     dst[0] = randomFloat * tempXRange - tempXRange / 2;
 
-    randomFloat = RandomFloat();
+    randomFloat = random_float();
     tempYRange = yRange;
     dst[1] = randomFloat * tempYRange - tempYRange / 2;
 
-    randomFloat = RandomFloat();
+    randomFloat = random_float();
     tempZRange = zRange;
     dst[2] = randomFloat * tempZRange - tempZRange / 2;
 }
@@ -4786,14 +4785,14 @@ s32 offset_yaw_outward_radial(struct Camera *c, s16 areaYaw) {
  * Plays the background music that starts while peach reads the intro message.
  */
 void cutscene_intro_peach_play_message_music(void) {
-    play_music(0, SEQUENCE_ARGS(4, SEQ_EVENT_PEACH_MESSAGE), 0);
+    play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_EVENT_PEACH_MESSAGE), 0);
 }
 
 /**
  * Plays the music that starts after peach fades and lakitu appears.
  */
 void cutscene_intro_peach_play_lakitu_flying_music(void) {
-    play_music(0, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_INTRO), 0);
+    play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_INTRO), 0);
 }
 
 void play_camera_buzz_if_cdown(void) {
@@ -7019,8 +7018,8 @@ static UNUSED void unused_cutscene_mario_dialog_looking_up(UNUSED struct Camera 
  * Lower the volume (US only) and start the peach letter background music
  */
 BAD_RETURN(s32) cutscene_intro_peach_start_letter_music(UNUSED struct Camera *c) {
-#ifdef VERSION_US
-    func_8031FFB4(0, 60, 40);
+#if defined(VERSION_US) || defined(VERSION_SH)
+    func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
 #endif
     cutscene_intro_peach_play_message_music();
 }
@@ -7030,7 +7029,7 @@ BAD_RETURN(s32) cutscene_intro_peach_start_letter_music(UNUSED struct Camera *c)
  */
 BAD_RETURN(s32) cutscene_intro_peach_start_flying_music(UNUSED struct Camera *c) {
 #ifndef VERSION_JP
-    sequence_player_unlower(0, 60);
+    sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
 #endif
     cutscene_intro_peach_play_lakitu_flying_music();
 }
@@ -7041,7 +7040,7 @@ BAD_RETURN(s32) cutscene_intro_peach_start_flying_music(UNUSED struct Camera *c)
  * starts.
  */
 BAD_RETURN(s32) cutscene_intro_peach_eu_lower_volume(UNUSED struct Camera *c) {
-    func_8031FFB4(0, 60, 40);
+    func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
 }
 #endif
 
@@ -7061,12 +7060,7 @@ void player2_rotate_cam(struct Camera *c, s16 minPitch, s16 maxPitch, s16 minYaw
     approach_s16_asymptotic_bool(&sCreditsPlayer2Pitch, -(s16)(gPlayer2Controller->stickY * 265.f), 4);
     vec3f_get_dist_and_angle(c->pos, c->focus, &distCamToFocus, &pitch, &yaw);
 
-#ifdef VERSION_EU
-    if ((pitchCap = 0x3800 - pitch) < 0) {
-#else
-    pitchCap = 0x3800 - pitch;
-    if (pitchCap < 0) {
-#endif
+    pitchCap = 0x3800 - pitch; if (pitchCap < 0) {
         pitchCap = 0;
     }
     if (maxPitch > pitchCap) {
@@ -7199,11 +7193,11 @@ void set_flag_post_door(struct Camera *c) {
 }
 
 void cutscene_soften_music(UNUSED struct Camera *c) {
-    func_8031FFB4(0, 60, 40);
+    func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
 }
 
 void cutscene_unsoften_music(UNUSED struct Camera *c) {
-    sequence_player_unlower(0, 60);
+    sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
 }
 
 static void stub_camera_5(UNUSED struct Camera *c) {
@@ -9601,7 +9595,7 @@ BAD_RETURN(s32) play_sound_intro_turn_on_hud(UNUSED struct Camera *c) {
  * Fly to the pipe. Near the end, the camera jumps to lakitu's position and the hud turns on.
  */
 BAD_RETURN(s32) cutscene_intro_peach_fly_to_pipe(struct Camera *c) {
-#ifdef VERSION_US
+#if defined(VERSION_US) || defined(VERSION_SH)
     cutscene_event(play_sound_intro_turn_on_hud, c, 818, 818);
 #elif VERSION_EU
     cutscene_event(play_sound_intro_turn_on_hud, c, 673, 673);
@@ -11505,7 +11499,7 @@ void set_fov_shake_from_point_preset(u8 preset, f32 posX, f32 posY, f32 posZ) {
  * Offset an object's position in a random direction within the given bounds.
  */
 static UNUSED void unused_displace_obj_randomly(struct Object *o, f32 xRange, f32 yRange, f32 zRange) {
-    f32 rnd = RandomFloat();
+    f32 rnd = random_float();
 
     o->oPosX += (rnd * xRange - xRange / 2.f);
     o->oPosY += (rnd * yRange - yRange / 2.f);
@@ -11516,7 +11510,7 @@ static UNUSED void unused_displace_obj_randomly(struct Object *o, f32 xRange, f3
  * Rotate an object in a random direction within the given bounds.
  */
 static UNUSED void unused_rotate_obj_randomly(struct Object *o, f32 pitchRange, f32 yawRange) {
-    f32 rnd = RandomFloat();
+    f32 rnd = random_float();
 
     o->oMoveAnglePitch += (s16)(rnd * pitchRange - pitchRange / 2.f);
     o->oMoveAngleYaw += (s16)(rnd * yawRange - yawRange / 2.f);

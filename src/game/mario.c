@@ -8,8 +8,7 @@
 #include "behavior_data.h"
 #include "camera.h"
 #include "mario_misc.h"
-#include "display.h"
-#include "game.h"
+#include "game_init.h"
 #include "engine/graph_node.h"
 #include "interaction.h"
 #include "level_update.h"
@@ -31,6 +30,7 @@
 #include "sound_init.h"
 #include "engine/surface_collision.h"
 #include "level_table.h"
+#include "thread6.h"
 
 u32 unused80339F10;
 s8 filler80339F1C[20];
@@ -284,9 +284,9 @@ void play_sound_and_spawn_particles(struct MarioState *m, u32 soundBits, u32 wav
         }
     } else {
         if (m->terrainSoundAddend == (SOUND_TERRAIN_SAND << 16)) {
-            m->particleFlags |= PARTICLE_15;
+            m->particleFlags |= PARTICLE_DIRT;
         } else if (m->terrainSoundAddend == (SOUND_TERRAIN_SNOW << 16)) {
-            m->particleFlags |= PARTICLE_14;
+            m->particleFlags |= PARTICLE_SNOW;
         }
     }
 
@@ -1441,9 +1441,11 @@ void set_submerged_cam_preset_and_spawn_bubbles(struct MarioState *m) {
                 set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
             }
 
+            // As long as Mario isn't drowning or at the top
+            // of the water with his head out, spawn bubbles.
             if ((m->action & ACT_FLAG_INTANGIBLE) == 0) {
                 if ((m->pos[1] < (f32)(m->waterLevel - 160)) || (m->faceAngle[0] < -0x800)) {
-                    m->particleFlags |= PARTICLE_5;
+                    m->particleFlags |= PARTICLE_BUBBLE;
                 }
             }
         }
@@ -1498,6 +1500,16 @@ void update_mario_health(struct MarioState *m) {
         // Play a noise to alert the player when Mario is close to drowning.
         if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300)) {
             play_sound(SOUND_MOVING_ALMOST_DROWNING, gDefaultSoundArgs);
+#ifdef VERSION_SH
+            if (!gRumblePakTimer) {
+                gRumblePakTimer = 36;
+                if (is_rumble_finished_and_queue_empty()) {
+                    queue_rumble_data(3, 30);
+                }
+            }
+        } else {
+            gRumblePakTimer = 0;
+#endif
         }
     }
 }
@@ -1675,6 +1687,21 @@ static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capM
     }
 }
 
+#ifdef VERSION_SH
+void func_sh_8025574C(void) {
+    if (gMarioState->particleFlags & PARTICLE_HORIZONTAL_STAR) {
+        queue_rumble_data(5, 80);
+    } else if (gMarioState->particleFlags & PARTICLE_VERTICAL_STAR) {
+        queue_rumble_data(5, 80);
+    } else if (gMarioState->particleFlags & PARTICLE_TRIANGLE) {
+        queue_rumble_data(5, 80);
+    }
+    if(gMarioState->heldObj && gMarioState->heldObj->behavior == segmented_to_virtual(bhvBobomb)) {
+        reset_rumble_timers();
+    }
+}
+#endif
+
 /**
  * Main function for executing Mario's behavior.
  */
@@ -1753,6 +1780,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         play_infinite_stairs_music();
         gMarioState->marioObj->oInteractStatus = 0;
+#ifdef VERSION_SH
+        func_sh_8025574C();
+#endif
 
         return gMarioState->particleFlags;
     }

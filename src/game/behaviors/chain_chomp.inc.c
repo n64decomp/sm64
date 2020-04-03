@@ -290,7 +290,7 @@ static void chain_chomp_released_lunge_around(void) {
         } else {
             if (++o->oChainChompNumLunges <= 5) {
                 cur_obj_play_sound_2(SOUND_GENERAL_CHAIN_CHOMP1);
-                o->oMoveAngleYaw = o->oAngleToMario + RandomSign() * 0x2000;
+                o->oMoveAngleYaw = o->oAngleToMario + random_sign() * 0x2000;
                 o->oForwardVel = 30.0f;
                 o->oVelY = 50.0f;
             } else {

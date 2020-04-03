@@ -50,11 +50,7 @@ void cap_check_quicksand(void) {
         case SURFACE_MOVING_QUICKSAND:
             o->oAction = 11;
             o->oMoveAngleYaw = (sObjFloor->force & 0xFF) << 8;
-#if defined(VERSION_EU) && !defined(NON_MATCHING)
-            o->oForwardVel = 8 - ((sObjFloor->force & 0xff00) >> 8) * 2;
-#else
-            o->oForwardVel = -((sObjFloor->force & 0xff00) >> 8) * 2 + 8;
-#endif
+            o->oForwardVel = 8 + 2 * (0 - ((sObjFloor->force & 0xFF00) >> 8));
             break;
 
         case SURFACE_INSTANT_QUICKSAND:
@@ -65,11 +61,7 @@ void cap_check_quicksand(void) {
         case SURFACE_INSTANT_MOVING_QUICKSAND:
             o->oAction = 13;
             o->oMoveAngleYaw = (sObjFloor->force & 0xFF) << 8;
-#if defined(VERSION_EU) && !defined(NON_MATCHING)
-            o->oForwardVel = 8 - ((sObjFloor->force & 0xff00) >> 8) * 2;
-#else
-            o->oForwardVel = -((sObjFloor->force & 0xff00) >> 8) * 2 + 8;
-#endif
+            o->oForwardVel = 8 + 2 * (0 - ((sObjFloor->force & 0xFF00) >> 8));
             break;
     }
 }

@@ -37,8 +37,8 @@ static void bird_act_inactive(void) {
 
         // Start with a random yaw, and a random pitch from 1000 to 5000.
         // Positive pitch is downwards.
-        o->oMoveAnglePitch = 5000 - (s32)(4000.0f * RandomFloat());
-        o->oMoveAngleYaw = RandomU16();
+        o->oMoveAnglePitch = 5000 - (s32)(4000.0f * random_float());
+        o->oMoveAngleYaw = random_u16();
 
         o->oBirdSpeed = 40.0f;
 

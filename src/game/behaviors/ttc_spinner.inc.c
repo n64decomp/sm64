@@ -21,7 +21,7 @@ void bhv_ttc_spinner_update(void) {
 
     if (gTTCSpeedSetting == TTC_SPEED_RANDOM) {
         if (o->oTimer > o->oTTCChangeDirTimer) {
-            o->oTTCSpinnerDir = RandomSign();
+            o->oTTCSpinnerDir = random_sign();
             o->oTTCChangeDirTimer = random_mod_offset(30, 30, 4);
             o->oTimer = 0;
         } else if (o->oTimer > 5) {

@@ -32,7 +32,7 @@ static void triplet_butterfly_act_init(void) {
                 spawn_object_relative(i, 0, 0, 0, o, MODEL_BUTTERFLY, bhvTripletButterfly);
             }
 
-            o->oTripletButterflySelectedButterfly = RandomU16() % 3;
+            o->oTripletButterflySelectedButterfly = random_u16() % 3;
         }
 
         //! TODO: Describe this glitch

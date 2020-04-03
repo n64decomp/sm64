@@ -1,10 +1,10 @@
-diff --git a/src/game/game.c b/src/game/game.c
-index ad800839..810e2ba3 100644
---- a/src/game/game.c
-+++ b/src/game/game.c
-@@ -52,6 +52,45 @@ struct DemoInput *gCurrDemoInput = NULL; // demo input sequence
- u16 gDemoInputListID = 0;
- struct DemoInput gRecordedDemoInput = { 0 }; // possibly removed in EU. TODO: Check
+diff --git a/src/game/game_init.c b/src/game/game_init.c
+index 0852a141..004941d8 100644
+--- a/src/game/game_init.c
++++ b/src/game/game_init.c
+@@ -332,6 +332,45 @@ void display_and_vsync(void) {
+     gGlobalTimer++;
+ }
  
 +/*
 + * This enhancement allows you to record gameplay demos for the mario head screen.
@@ -48,7 +48,7 @@ index ad800839..810e2ba3 100644
  // this function records distinct inputs over a 255-frame interval to RAM locations and was likely
  // used to record the demo sequences seen in the final game. This function is unused.
  static void record_demo(void) {
-@@ -85,6 +124,118 @@ static void record_demo(void) {
+@@ -365,6 +404,118 @@ static void record_demo(void) {
      gRecordedDemoInput.timer++;
  }
  
@@ -167,9 +167,9 @@ index ad800839..810e2ba3 100644
  // take the updated controller struct and calculate
  // the new x, y, and distance floats.
  void adjust_analog_stick(struct Controller *controller) {
-@@ -325,6 +476,7 @@ void thread5_game_loop(UNUSED void *arg) {
+@@ -605,6 +756,7 @@ void thread5_game_loop(UNUSED void *arg) {
          audio_game_loop_tick();
-         func_80247FAC();
+         config_gfx_pool();
          read_controller_inputs();
 +        recordingDemo();
          addr = level_script_execute(addr);

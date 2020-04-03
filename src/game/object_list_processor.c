@@ -107,7 +107,7 @@ struct Object *gCurrentObject;
 /**
  * The next object behavior command to be executed.
  */
-const BehaviorScript *gBehCommand;
+const BehaviorScript *gCurBhvCommand;
 
 /**
  * The number of objects that were processed last frame, which may miss some
@@ -196,24 +196,24 @@ struct ParticleProperties {
  * A table mapping particle flags to various properties use when spawning a particle.
  */
 struct ParticleProperties sParticleTypes[] = {
-    { PARTICLE_DUST,                 ACTIVE_PARTICLE_0,                    MODEL_MIST,                 bhvMarioDustGenerator },
-    { PARTICLE_1,                    ACTIVE_PARTICLE_18,                   MODEL_NONE,                 bhvWallTinyStarParticleSpawn },
-    { PARTICLE_4,                    ACTIVE_PARTICLE_4,                    MODEL_NONE,                 bhvPoundTinyStarParticleSpawn },
-    { PARTICLE_SPARKLES,             ACTIVE_PARTICLE_3,                    MODEL_SPARKLES,             bhvSpecialTripleJumpSparkles },
-    { PARTICLE_5,                    ACTIVE_PARTICLE_5,                    MODEL_BUBBLE,               bhvBubbleMario },
-    { PARTICLE_WATER_SPLASH,         ACTIVE_PARTICLE_6,                    MODEL_WATER_SPLASH,         bhvWaterSplash },
+    { PARTICLE_DUST,                 ACTIVE_PARTICLE_DUST,                 MODEL_MIST,                 bhvMistParticleSpawner },
+    { PARTICLE_VERTICAL_STAR,        ACTIVE_PARTICLE_V_STAR,               MODEL_NONE,                 bhvVertStarParticleSpawner },
+    { PARTICLE_HORIZONTAL_STAR,      ACTIVE_PARTICLE_H_STAR,               MODEL_NONE,                 bhvHorStarParticleSpawner },
+    { PARTICLE_SPARKLES,             ACTIVE_PARTICLE_SPARKLES,             MODEL_SPARKLES,             bhvSparkleParticleSpawner },
+    { PARTICLE_BUBBLE,               ACTIVE_PARTICLE_BUBBLE,               MODEL_BUBBLE,               bhvBubbleParticleSpawner },
+    { PARTICLE_WATER_SPLASH,         ACTIVE_PARTICLE_WATER_SPLASH,         MODEL_WATER_SPLASH,         bhvWaterSplash },
     { PARTICLE_IDLE_WATER_WAVE,      ACTIVE_PARTICLE_IDLE_WATER_WAVE,      MODEL_IDLE_WATER_WAVE,      bhvIdleWaterWave },
-    { PARTICLE_9,                    ACTIVE_PARTICLE_9,                    MODEL_WHITE_PARTICLE_SMALL, bhvWaterWaves },
+    { PARTICLE_PLUNGE_BUBBLE,        ACTIVE_PARTICLE_PLUNGE_BUBBLE,        MODEL_WHITE_PARTICLE_SMALL, bhvPlungeBubble },
     { PARTICLE_WAVE_TRAIL,           ACTIVE_PARTICLE_WAVE_TRAIL,           MODEL_WAVE_TRAIL,           bhvWaveTrail },
-    { PARTICLE_11,                   ACTIVE_PARTICLE_11,                   MODEL_RED_FLAME,            bhvFlameMario },
+    { PARTICLE_FIRE,                 ACTIVE_PARTICLE_FIRE,                 MODEL_RED_FLAME,            bhvFireParticleSpawner },
     { PARTICLE_SHALLOW_WATER_WAVE,   ACTIVE_PARTICLE_SHALLOW_WATER_WAVE,   MODEL_NONE,                 bhvShallowWaterWave },
     { PARTICLE_SHALLOW_WATER_SPLASH, ACTIVE_PARTICLE_SHALLOW_WATER_SPLASH, MODEL_NONE,                 bhvShallowWaterSplash },
-    { PARTICLE_LEAVES,               ACTIVE_PARTICLE_13,                   MODEL_NONE,                 bhvSnowLeafParticleSpawn },
-    { PARTICLE_14,                   ACTIVE_PARTICLE_16,                   MODEL_NONE,                 bhvGroundSnow },
-    { PARTICLE_17,                   ACTIVE_PARTICLE_17,                   MODEL_NONE,                 bhvWaterMistSpawn },
-    { PARTICLE_15,                   ACTIVE_PARTICLE_14,                   MODEL_NONE,                 bhvGroundSand },
-    { PARTICLE_16,                   ACTIVE_PARTICLE_15,                   MODEL_NONE,                 bhvPoundWhitePuffs },
-    { PARTICLE_18,                   ACTIVE_PARTICLE_19,                   MODEL_NONE,                 bhvPunchTinyTriangleSpawn },
+    { PARTICLE_LEAF,                 ACTIVE_PARTICLE_LEAF,                 MODEL_NONE,                 bhvLeafParticleSpawner },
+    { PARTICLE_SNOW,                 ACTIVE_PARTICLE_SNOW,                 MODEL_NONE,                 bhvSnowParticleSpawner },
+    { PARTICLE_BREATH,               ACTIVE_PARTICLE_BREATH,               MODEL_NONE,                 bhvBreathParticleSpawner },
+    { PARTICLE_DIRT,                 ACTIVE_PARTICLE_DIRT,                 MODEL_NONE,                 bhvDirtParticleSpawner },
+    { PARTICLE_MIST_CIRCLE,          ACTIVE_PARTICLE_MIST_CIRCLE,          MODEL_NONE,                 bhvMistCircParticleSpawner },
+    { PARTICLE_TRIANGLE,             ACTIVE_PARTICLE_TRIANGLE,             MODEL_NONE,                 bhvTriangleParticleSpawner },
     { 0, 0, MODEL_NONE, NULL },
 };
 
@@ -297,7 +297,7 @@ s32 update_objects_starting_at(struct ObjectNode *objList, struct ObjectNode *fi
         gCurrentObject = (struct Object *) firstObj;
 
         gCurrentObject->header.gfx.node.flags |= GRAPH_RENDER_HAS_ANIMATION;
-        cur_object_exec_behavior();
+        cur_obj_update();
 
         firstObj = firstObj->next;
         count += 1;
@@ -344,7 +344,7 @@ s32 update_objects_during_time_stop(struct ObjectNode *objList, struct ObjectNod
         // Only update if unfrozen
         if (unfrozen) {
             gCurrentObject->header.gfx.node.flags |= GRAPH_RENDER_HAS_ANIMATION;
-            cur_object_exec_behavior();
+            cur_obj_update();
         } else {
             gCurrentObject->header.gfx.node.flags &= ~GRAPH_RENDER_HAS_ANIMATION;
         }
@@ -544,7 +544,7 @@ void clear_objects(void) {
     init_free_object_list();
     clear_object_lists(gObjectListArray);
 
-    stub_80385BF0();
+    stub_behavior_script_2();
     stub_obj_list_processor_1();
 
     for (i = 0; i < OBJECT_POOL_CAPACITY; i++) {

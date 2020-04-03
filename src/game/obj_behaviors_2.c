@@ -1,11 +1,10 @@
 #include <ultra64.h>
 
 #include "sm64.h"
-#include "prevent_bss_reordering.h"
 #include "behavior_actions.h"
 #include "engine/behavior_script.h"
 #include "camera.h"
-#include "display.h"
+#include "game_init.h"
 #include "engine/math_util.h"
 #include "object_helpers.h"
 #include "mario_actions_cutscene.h"
@@ -290,7 +289,7 @@ static void platform_on_track_update_pos_or_spawn_ball(s32 ballIndex, f32 x, f32
     }
 }
 
-static void func_802F8D78(f32 arg0, f32 arg1) {
+static void cur_obj_spin_all_dimensions(f32 arg0, f32 arg1) {
     f32 val24;
     f32 val20;
     f32 val1C;
@@ -385,22 +384,22 @@ static s32 clamp_f32(f32 *value, f32 minimum, f32 maximum) {
     return TRUE;
 }
 
-static void func_802F927C(s32 arg0) {
+static void cur_obj_init_anim_extend(s32 arg0) {
     cur_obj_init_animation_with_sound(arg0);
     cur_obj_extend_animation_if_at_end();
 }
 
-static s32 func_802F92B0(s32 arg0) {
+static s32 cur_obj_init_anim_and_check_if_end(s32 arg0) {
     cur_obj_init_animation_with_sound(arg0);
     return cur_obj_check_if_near_animation_end();
 }
 
-static s32 func_802F92EC(s32 arg0, s32 arg1) {
+static s32 cur_obj_init_anim_check_frame(s32 arg0, s32 arg1) {
     cur_obj_init_animation_with_sound(arg0);
     return cur_obj_check_anim_frame(arg1);
 }
 
-static s32 func_802F932C(s32 arg0) {
+static s32 cur_obj_set_anim_if_at_end(s32 arg0) {
     if (cur_obj_check_if_at_animation_end()) {
         cur_obj_init_animation_with_sound(arg0);
         return TRUE;
@@ -408,7 +407,7 @@ static s32 func_802F932C(s32 arg0) {
     return FALSE;
 }
 
-static s32 func_802F9378(s8 arg0, s8 arg1, u32 sound) {
+static s32 cur_obj_play_sound_at_anim_range(s8 arg0, s8 arg1, u32 sound) {
     s32 val04;
 
     if ((val04 = o->header.gfx.unk38.animAccel / 0x10000) <= 0) {
@@ -517,15 +516,15 @@ static void obj_roll_to_match_yaw_turn(s16 targetYaw, s16 maxRoll, s16 rollSpeed
 }
 
 static s16 random_linear_offset(s16 base, s16 range) {
-    return base + (s16)(range * RandomFloat());
+    return base + (s16)(range * random_float());
 }
 
 static s16 random_mod_offset(s16 base, s16 step, s16 mod) {
-    return base + step * (RandomU16() % mod);
+    return base + step * (random_u16() % mod);
 }
 
 static s16 obj_random_fixed_turn(s16 delta) {
-    return o->oMoveAngleYaw + (s16) RandomSign() * delta;
+    return o->oMoveAngleYaw + (s16) random_sign() * delta;
 }
 
 /**
@@ -662,22 +661,12 @@ static s32 obj_resolve_collisions_and_turn(s16 targetYaw, s16 turnSpeed) {
     }
 }
 
-// TODO Likely scrub C, needs true matching code.
 static void obj_die_if_health_non_positive(void) {
-#ifdef VERSION_EU
-    s32 new_var;
-#endif
-
     if (o->oHealth <= 0) {
         if (o->oDeathSound == 0) {
             spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH);
         } else if (o->oDeathSound > 0) {
-#ifdef VERSION_EU
-            new_var = o->oDeathSound;
-            spawn_mist_particles_with_sound(new_var);
-#else
             spawn_mist_particles_with_sound(o->oDeathSound);
-#endif
         } else {
             spawn_mist_particles();
         }

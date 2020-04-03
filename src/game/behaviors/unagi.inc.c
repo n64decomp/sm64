@@ -110,7 +110,7 @@ void unagi_act_3(void) {
                 o->oUnagiUnk110 = 0.0f;
             }
         } else if (o->oUnagiUnk110 > 0.0f) {
-            if (func_802F92B0(5)) {
+            if (cur_obj_init_anim_and_check_if_end(5)) {
                 o->oUnagiUnk110 = 0.0f;
             }
         } else if (o->oUnagiUnk110 == 0.0f) {

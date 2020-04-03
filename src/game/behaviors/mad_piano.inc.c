@@ -31,7 +31,7 @@ static void mad_piano_act_wait(void) {
 static void mad_piano_act_attack(void) {
     cur_obj_update_floor_and_walls();
     cur_obj_init_animation_with_sound(1);
-    func_802F9378(0, 0, SOUND_OBJ_MAD_PIANO_CHOMPING);
+    cur_obj_play_sound_at_anim_range(0, 0, SOUND_OBJ_MAD_PIANO_CHOMPING);
 
     if (o->oDistanceToMario < 500.0f) {
         o->oTimer = 0;

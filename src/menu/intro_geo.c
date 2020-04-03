@@ -77,7 +77,7 @@ s8 gameOverBackgroundTable[] = {
 s8 gameOverBackgroundFlipOrder[] = { 0x00, 0x01, 0x02, 0x03, 0x07, 0x0B,
                                      0x0a, 0x09, 0x08, 0x04, 0x05, 0x06 };
 
-Gfx *geo18_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) {
+Gfx *geo_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) {
     struct GraphNode *graphNode; // sp4c
     Gfx *displayList;            // sp48
     Gfx *displayListIter;        // sp44
@@ -127,7 +127,7 @@ Gfx *geo18_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) 
     return displayList;
 }
 
-Gfx *geo18_fade_transition(s32 sp40, struct GraphNode *sp44, UNUSED void *context) {
+Gfx *geo_fade_transition(s32 sp40, struct GraphNode *sp44, UNUSED void *context) {
     struct GraphNode *graphNode = sp44; // sp3c
     Gfx *displayList = NULL;            // sp38
     Gfx *displayListIter = NULL;        // sp34
@@ -184,7 +184,7 @@ Gfx *intro_backdrop_one_image(s32 index, s8 *backgroundTable) {
     return displayList;
 }
 
-Gfx *geo18_intro_backdrop(s32 sp48, struct GraphNode *sp4c, UNUSED void *context) {
+Gfx *geo_intro_backdrop(s32 sp48, struct GraphNode *sp4c, UNUSED void *context) {
     struct GraphNodeMore *graphNode; // sp44
     s32 index;                       // sp40
     s8 *backgroundTable;             // sp3c
@@ -211,7 +211,7 @@ Gfx *geo18_intro_backdrop(s32 sp48, struct GraphNode *sp4c, UNUSED void *context
     return displayList;
 }
 
-Gfx *geo18_game_over_tile(s32 sp40, struct GraphNode *sp44, UNUSED void *context) {
+Gfx *geo_game_over_tile(s32 sp40, struct GraphNode *sp44, UNUSED void *context) {
     struct GraphNode *graphNode; // sp3c
     Gfx *displayList;            // sp38
     Gfx *displayListIter;        // sp34

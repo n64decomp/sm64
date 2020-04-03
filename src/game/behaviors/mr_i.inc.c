@@ -4,9 +4,9 @@
 // plant code later on reuses this function.
 void bhv_piranha_particle_loop(void) {
     if (o->oTimer == 0) {
-        o->oVelY = 20.0f + 20.0f * RandomFloat();
-        o->oForwardVel = 20.0f + 20.0f * RandomFloat();
-        o->oMoveAngleYaw = RandomU16();
+        o->oVelY = 20.0f + 20.0f * random_float();
+        o->oForwardVel = 20.0f + 20.0f * random_float();
+        o->oMoveAngleYaw = random_u16();
     }
     cur_obj_move_using_fvel_and_gravity();
 }
@@ -169,12 +169,12 @@ void mr_i_act_2() {
         if (o->oMrIUnk104 == o->oMrIUnk108 + 20) {
             spawn_mr_i_particle();
             o->oMrIUnk104 = 0;
-            o->oMrIUnk108 = (s32)(RandomFloat() * 50.0f + 50.0f);
+            o->oMrIUnk108 = (s32)(random_float() * 50.0f + 50.0f);
         }
         o->oMrIUnk104++;
     } else {
         o->oMrIUnk104 = 0;
-        o->oMrIUnk108 = (s32)(RandomFloat() * 50.0f + 50.0f);
+        o->oMrIUnk108 = (s32)(random_float() * 50.0f + 50.0f);
     }
     if (o->oDistanceToMario > 800.0f)
         o->oAction = 1;
@@ -191,7 +191,7 @@ void mr_i_act_1(void) {
         cur_obj_become_tangible();
         o->oMoveAnglePitch = 0;
         o->oMrIUnk104 = 30;
-        o->oMrIUnk108 = RandomFloat() * 20.0f;
+        o->oMrIUnk108 = random_float() * 20.0f;
         if (o->oMrIUnk108 & 1)
             o->oAngleVelYaw = -256;
         else
@@ -210,7 +210,7 @@ void mr_i_act_1(void) {
         o->oMrIUnk110 = 1;
     if (o->oMrIUnk108 + 80 < o->oMrIUnk104) {
         o->oMrIUnk104 = 0;
-        o->oMrIUnk108 = RandomFloat() * 80.0f;
+        o->oMrIUnk108 = random_float() * 80.0f;
         spawn_mr_i_particle();
     }
 }

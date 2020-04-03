@@ -160,11 +160,8 @@ void bhv_mips_act_wait_for_animation_done(void) {
  * Handles MIPS falling down after being thrown.
  */
 void bhv_mips_act_fall_down(void) {
-#ifdef VERSION_EU
-    s32 collisionFlags = 0;
-#else
+
     s16 collisionFlags = 0;
-#endif
 
     collisionFlags = object_step();
     o->header.gfx.unk38.animFrame = 0;

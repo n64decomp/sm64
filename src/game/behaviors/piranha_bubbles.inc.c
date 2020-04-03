@@ -12,9 +12,9 @@
  */
 void bhv_piranha_plant_waking_bubbles_loop(void) {
     if (o->oTimer == 0) {
-        o->oVelY = RandomFloat() * 10.0f + 5.0f;
-        o->oForwardVel = RandomFloat() * 10.0f + 5.0f;
-        o->oMoveAngleYaw = RandomU16();
+        o->oVelY = random_float() * 10.0f + 5.0f;
+        o->oForwardVel = random_float() * 10.0f + 5.0f;
+        o->oMoveAngleYaw = random_u16();
     }
     cur_obj_move_using_fvel_and_gravity();
 }

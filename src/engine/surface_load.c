@@ -103,6 +103,10 @@ static void clear_static_surfaces(void) {
 
 /**
  * Add a surface to the correct cell list of surfaces.
+ * @param dynamic Determines whether the surface is static or dynamic
+ * @param cellX The X position of the cell in which the surface resides
+ * @param cellZ The Z position of the cell in which the surface resides
+ * @param surface The surface to add
  */
 static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surface *surface) {
     struct SurfaceNode *newNode = alloc_surface_node();
@@ -191,23 +195,24 @@ static s16 max_3(s16 a0, s16 a1, s16 a2) {
 /**
  * Every level is split into 16 * 16 cells of surfaces (to limit computing
  * time). This function determines the lower cell for a given x/z position.
+ * @param coord The coordinate to test
  */
-static s16 lower_cell_index(s16 t) {
+static s16 lower_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
-    t += 0x2000;
-    if (t < 0) {
-        t = 0;
+    coord += 0x2000;
+    if (coord < 0) {
+        coord = 0;
     }
 
     // [0, 16)
-    index = t / 0x400;
+    index = coord / 0x400;
 
     // Include extra cell if close to boundary
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
-    if (t % 0x400 < 50) {
+    if (coord % 0x400 < 50) {
         index -= 1;
     }
 
@@ -222,23 +227,24 @@ static s16 lower_cell_index(s16 t) {
 /**
  * Every level is split into 16 * 16 cells of surfaces (to limit computing
  * time). This function determines the upper cell for a given x/z position.
+ * @param coord The coordinate to test
  */
-static s16 upper_cell_index(s16 t) {
+static s16 upper_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
-    t += 0x2000;
-    if (t < 0) {
-        t = 0;
+    coord += 0x2000;
+    if (coord < 0) {
+        coord = 0;
     }
 
     // [0, 16)
-    index = t / 0x400;
+    index = coord / 0x400;
 
     // Include extra cell if close to boundary
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
-    if (t % 0x400 > 0x400 - 50) {
+    if (coord % 0x400 > 0x400 - 50) {
         index += 1;
     }
 
@@ -254,6 +260,8 @@ static s16 upper_cell_index(s16 t) {
  * Every level is split into 16x16 cells, this takes a surface, finds
  * the appropriate cells (with a buffer), and adds the surface to those
  * cells.
+ * @param surface The surface to check
+ * @param dynamic Boolean determining whether the surface is static or dynamic
  */
 static void add_surface(struct Surface *surface, s32 dynamic) {
     // minY/maxY maybe? s32 instead of s16, though.
@@ -283,12 +291,13 @@ static void add_surface(struct Surface *surface, s32 dynamic) {
     }
 }
 
-static void unused_80382B6C(void) {
+static void stub_surface_load_1(void) {
 }
 
 /**
- * Initialize a surface from reading it's data and putting it into a surface
- * stuct.
+ * Initializes a Surface struct using the given vertex data
+ * @param vertexData The raw data containing vertex positions
+ * @param vertexIndices Helper which tells positions in vertexData to start reading vertices
  */
 static struct Surface *read_surface_data(s16 *vertexData, s16 **vertexIndices) {
     struct Surface *surface;
@@ -602,14 +611,8 @@ static void unused_80383604(void) {
  */
 void transform_object_vertices(s16 **data, s16 *vertexData) {
     register s16 *vertices;
-    
-#ifdef VERSION_EU
     register f32 vx, vy, vz;
     register s32 numVertices;
-#else
-    register s32 numVertices;
-    register f32 vx, vy, vz;
-#endif
 
     Mat4 *objectTransform;
     Mat4 m;

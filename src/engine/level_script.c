@@ -5,7 +5,7 @@
 #include "buffers/framebuffers.h"
 #include "buffers/zbuffer.h"
 #include "game/area.h"
-#include "game/display.h"
+#include "game/game_init.h"
 #include "game/mario.h"
 #include "game/memory.h"
 #include "game/object_helpers.h"

@@ -127,7 +127,7 @@ void chuckya_act_1(void) {
     if (o->oSubAction == 0) {
         if (cur_obj_init_animation_and_check_if_near_end(0))
             o->oSubAction++;
-        o->oChuckyaUnkFC = RandomFloat() * 30.0f + 10.0f;
+        o->oChuckyaUnkFC = random_float() * 30.0f + 10.0f;
         o->oChuckyaUnk100 = 0;
         o->oForwardVel = 0.0f;
     } else {

@@ -12,9 +12,9 @@ f32 water_ring_calc_mario_dist(void) {
 
 void water_ring_init(void) {
     cur_obj_init_animation(0);
-    o->oWaterRingScalePhaseX = (s32)(RandomFloat() * 4096.0f) + 0x1000;
-    o->oWaterRingScalePhaseY = (s32)(RandomFloat() * 4096.0f) + 0x1000;
-    o->oWaterRingScalePhaseZ = (s32)(RandomFloat() * 4096.0f) + 0x1000;
+    o->oWaterRingScalePhaseX = (s32)(random_float() * 4096.0f) + 0x1000;
+    o->oWaterRingScalePhaseY = (s32)(random_float() * 4096.0f) + 0x1000;
+    o->oWaterRingScalePhaseZ = (s32)(random_float() * 4096.0f) + 0x1000;
 
     //! This normal calculation assumes a facing yaw of 0, which is not the case
     //  for the manta ray rings. It also errs by multiplying the normal X by -1.

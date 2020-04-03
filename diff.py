@@ -50,7 +50,7 @@ parser.add_argument('-m', '--make', dest='make', action='store_true',
         help="Automatically run 'make' on the .o file or binary before diffing.")
 parser.add_argument('-l', '--skip-lines', dest='skip_lines', type=int, default=0,
         help="Skip the first N lines of output.")
-parser.add_argument('-s', '--stop-jr-ra', dest='stop_jrra', action='store_true',
+parser.add_argument('-f', '--stop-jr-ra', dest='stop_jrra', action='store_true',
         help="Stop disassembling at the first 'jr ra'. Some functions have multiple return points, so use with care!")
 parser.add_argument('-i', '--ignore-large-imms', dest='ignore_large_imms', action='store_true',
         help="Pretend all large enough immediates are the same.")

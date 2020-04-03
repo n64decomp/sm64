@@ -20,12 +20,9 @@
  */
 static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
                                           struct WallCollisionData *data) {
-#ifdef VERSION_EU
-    UNUSED u8 pad;
-#endif
+    register struct Surface *surf;
     register f32 offset;
     register f32 radius = data->radius;
-    register struct Surface *surf;
     register f32 x = data->x;
     register f32 y = data->y + data->offsetY;
     register f32 z = data->z;

@@ -61,7 +61,7 @@ void dorrie_begin_head_raise(s32 liftingMario) {
 }
 
 void dorrie_act_lower_head(void) {
-    if (func_802F92EC(2, 35)) {
+    if (cur_obj_init_anim_check_frame(2, 35)) {
         cur_obj_reverse_animation();
 
 #ifdef VERSION_JP

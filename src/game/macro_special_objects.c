@@ -93,7 +93,7 @@ static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
 }
 
 struct LoadedPreset {
-    /*0x00*/ const BehaviorScript *beh;
+    /*0x00*/ const BehaviorScript *behavior;
     /*0x04*/ s16 param; // huh? why does the below function swap these.. just use the struct..
     /*0x06*/ s16 model;
 };
@@ -135,7 +135,7 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
 
         // Get the preset values from the MacroObjectPresets list.
         preset.model = MacroObjectPresets[presetID].model;
-        preset.beh = MacroObjectPresets[presetID].beh;
+        preset.behavior = MacroObjectPresets[presetID].behavior;
         preset.param = MacroObjectPresets[presetID].param;
 
         if (preset.param != 0) {
@@ -151,7 +151,7 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
                 spawn_object_abs_with_rot(&gMacroObjectDefaultParent, // Parent object
                                           0,                          // Unused
                                           preset.model,               // Model ID
-                                          preset.beh,                 // Behavior address
+                                          preset.behavior,            // Behavior address
                                           macroObject[MACRO_OBJ_X],   // X-position
                                           macroObject[MACRO_OBJ_Y],   // Y-position
                                           macroObject[MACRO_OBJ_Z],   // Z-position

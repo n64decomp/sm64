@@ -14,6 +14,7 @@
 #include "level_update.h"
 #include "save_file.h"
 #include "camera.h"
+#include "thread6.h"
 
 s32 check_common_idle_cancels(struct MarioState *m) {
     mario_drop_held_object(m);
@@ -22,7 +23,7 @@ s32 check_common_idle_cancels(struct MarioState *m) {
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {
@@ -69,7 +70,7 @@ s32 check_common_hold_idle_cancels(struct MarioState *m) {
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {
@@ -340,7 +341,7 @@ s32 act_waking_up(struct MarioState *m) {
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -368,7 +369,7 @@ s32 act_shivering(struct MarioState *m) {
     s32 sp24;
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -388,7 +389,7 @@ s32 act_shivering(struct MarioState *m) {
         case 0: {
             sp24 = set_mario_animation(m, MARIO_ANIM_SHIVERING_WARMING_HAND);
             if (sp24 == 0x31) {
-                m->particleFlags |= PARTICLE_17;
+                m->particleFlags |= PARTICLE_BREATH;
                 play_sound(SOUND_MARIO_PANTING_COLD, m->marioObj->header.gfx.cameraToObject);
             }
             if (sp24 == 7 || sp24 == 0x51) {
@@ -465,7 +466,7 @@ s32 act_hold_idle(struct MarioState *m) {
 
 s32 act_hold_heavy_idle(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -491,7 +492,7 @@ s32 act_hold_heavy_idle(struct MarioState *m) {
 
 s32 act_standing_against_wall(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE)) {
@@ -532,7 +533,7 @@ s32 act_in_quicksand(struct MarioState *m) {
 
 s32 act_crouching(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {
@@ -548,11 +549,11 @@ s32 act_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_FIRST_PERSON) {
-        return set_mario_action(m, ACT_UNKNOWN_022, 0);
+        return set_mario_action(m, ACT_STOP_CROUCHING, 0);
     }
 
     if (!(m->input & INPUT_Z_DOWN)) {
-        return set_mario_action(m, ACT_UNKNOWN_022, 0);
+        return set_mario_action(m, ACT_STOP_CROUCHING, 0);
     }
 
     if (m->input & INPUT_NONZERO_ANALOG) {
@@ -570,7 +571,7 @@ s32 act_crouching(struct MarioState *m) {
 
 s32 act_panting(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->health >= 0x500) {
@@ -597,7 +598,7 @@ s32 act_hold_panting_unused(struct MarioState *m) {
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->health >= 0x500) {
@@ -624,7 +625,7 @@ void stopping_step(struct MarioState *m, s32 animID, u32 action) {
 
 s32 act_braking_stop(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -646,7 +647,7 @@ s32 act_braking_stop(struct MarioState *m) {
 
 s32 act_butt_slide_stop(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE)) {
@@ -661,13 +662,13 @@ s32 act_butt_slide_stop(struct MarioState *m) {
     return 0;
 }
 
-s32 act_unknown_03F(struct MarioState *m) {
+s32 act_hold_butt_slide_stop(struct MarioState *m) {
     if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
         return drop_and_set_mario_action(m, ACT_IDLE, 0);
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE)) {
@@ -684,7 +685,7 @@ s32 act_unknown_03F(struct MarioState *m) {
 
 s32 act_slide_kick_slide_stop(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -697,7 +698,7 @@ s32 act_slide_kick_slide_stop(struct MarioState *m) {
 
 s32 act_start_crouching(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -722,7 +723,7 @@ s32 act_start_crouching(struct MarioState *m) {
 
 s32 act_stop_crouching(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -747,7 +748,7 @@ s32 act_stop_crouching(struct MarioState *m) {
 
 s32 act_start_crawling(struct MarioState *m) {
     if (m->input & INPUT_FIRST_PERSON) {
-        return set_mario_action(m, ACT_UNKNOWN_022, 0);
+        return set_mario_action(m, ACT_STOP_CROUCHING, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -755,7 +756,7 @@ s32 act_start_crawling(struct MarioState *m) {
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_ABOVE_SLIDE) {
@@ -773,7 +774,7 @@ s32 act_start_crawling(struct MarioState *m) {
 
 s32 act_stop_crawling(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -792,15 +793,21 @@ s32 act_stop_crawling(struct MarioState *m) {
     return 0;
 }
 
-s32 act_unknown_026(struct MarioState *m) {
+s32 act_shockwave_bounce(struct MarioState *m) {
     s16 sp1E;
     f32 sp18;
 
     if (m->marioObj->oInteractStatus & 0x10) {
+#ifdef VERSION_SH
+        queue_rumble_data(70, 40);
+#endif
         return hurt_and_set_mario_action(m, ACT_SHOCKED, 0, 4);
     }
 
     if (m->actionTimer == 0) {
+#ifdef VERSION_SH
+        queue_rumble_data(70, 40);
+#endif
         if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_UNK1) {
             return hurt_and_set_mario_action(m, ACT_BACKWARD_GROUND_KB, 0, 0xc);
         }
@@ -837,7 +844,7 @@ s32 landing_step(struct MarioState *m, s32 arg1, u32 action) {
 
 s32 check_common_landing_cancels(struct MarioState *m, u32 action) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_FIRST_PERSON) {
@@ -946,13 +953,13 @@ s32 act_long_jump_land_stop(struct MarioState *m) {
     return 0;
 }
 
-s32 act_unknown_034(struct MarioState *m) {
+s32 act_hold_jump_land_stop(struct MarioState *m) {
     if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
         return drop_and_set_mario_action(m, ACT_IDLE, 0);
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE)) {
@@ -967,13 +974,13 @@ s32 act_unknown_034(struct MarioState *m) {
     return 0;
 }
 
-s32 act_unknown_035(struct MarioState *m) {
+s32 act_hold_freefall_land_stop(struct MarioState *m) {
     if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
         return drop_and_set_mario_action(m, ACT_IDLE, 0);
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE)) {
@@ -989,7 +996,7 @@ s32 act_unknown_035(struct MarioState *m) {
 
 s32 act_air_throw_land(struct MarioState *m) {
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -1007,7 +1014,7 @@ s32 act_air_throw_land(struct MarioState *m) {
 s32 act_twirl_land(struct MarioState *m) {
     m->actionState = 1;
     if (m->input & INPUT_UNKNOWN_10) {
-        return set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -1039,7 +1046,7 @@ s32 act_twirl_land(struct MarioState *m) {
 s32 act_ground_pound_land(struct MarioState *m) {
     m->actionState = 1;
     if (m->input & INPUT_UNKNOWN_10) {
-        return drop_and_set_mario_action(m, ACT_UNKNOWN_026, 0);
+        return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -1126,42 +1133,42 @@ s32 mario_execute_stationary_action(struct MarioState *m) {
 
     /* clang-format off */
     switch (m->action) {
-        case ACT_IDLE:                  sp24 = act_idle(m);                             break;
-        case ACT_START_SLEEPING:        sp24 = act_start_sleeping(m);                   break;
-        case ACT_SLEEPING:              sp24 = act_sleeping(m);                         break;
-        case ACT_WAKING_UP:             sp24 = act_waking_up(m);                        break;
-        case ACT_PANTING:               sp24 = act_panting(m);                          break;
-        case ACT_HOLD_PANTING_UNUSED:   sp24 = act_hold_panting_unused(m);              break;
-        case ACT_HOLD_IDLE:             sp24 = act_hold_idle(m);                        break;
-        case ACT_HOLD_HEAVY_IDLE:       sp24 = act_hold_heavy_idle(m);                  break;
-        case ACT_IN_QUICKSAND:          sp24 = act_in_quicksand(m);                     break;
-        case ACT_STANDING_AGAINST_WALL: sp24 = act_standing_against_wall(m);            break;
-        case ACT_COUGHING:              sp24 = act_coughing(m);                         break;
-        case ACT_SHIVERING:             sp24 = act_shivering(m);                        break;
-        case ACT_CROUCHING:             sp24 = act_crouching(m);                        break;
-        case ACT_START_CROUCHING:       sp24 = act_start_crouching(m);                  break;
-        case ACT_UNKNOWN_022:           sp24 = act_stop_crouching(m);                   break;
-        case ACT_START_CRAWLING:        sp24 = act_start_crawling(m);                   break;
-        case ACT_UNKNOWN_024:           sp24 = act_stop_crawling(m);                    break;
-        case ACT_SLIDE_KICK_SLIDE_STOP: sp24 = act_slide_kick_slide_stop(m);            break;
-        case ACT_UNKNOWN_026:           sp24 = act_unknown_026(m);                      break;
-        case ACT_FIRST_PERSON:          sp24 = act_first_person(m);                     break;
-        case ACT_JUMP_LAND_STOP:        sp24 = act_jump_land_stop(m);                   break;
-        case ACT_DOUBLE_JUMP_LAND_STOP: sp24 = act_double_jump_land_stop(m);            break;
-        case ACT_FREEFALL_LAND_STOP:    sp24 = act_freefall_land_stop(m);               break;
-        case ACT_SIDE_FLIP_LAND_STOP:   sp24 = act_side_flip_land_stop(m);              break;
-        case ACT_UNKNOWN_034:           sp24 = act_unknown_034(m);                      break;
-        case ACT_UNKNOWN_035:           sp24 = act_unknown_035(m);                      break;
-        case ACT_AIR_THROW_LAND:        sp24 = act_air_throw_land(m);                   break;
-        case ACT_LAVA_BOOST_LAND:       sp24 = act_lava_boost_land(m);                  break;
-        case ACT_TWIRL_LAND:            sp24 = act_twirl_land(m);                       break;
-        case ACT_TRIPLE_JUMP_LAND_STOP: sp24 = act_triple_jump_land_stop(m);            break;
-        case ACT_BACKFLIP_LAND_STOP:    sp24 = act_backflip_land_stop(m);               break;
-        case ACT_LONG_JUMP_LAND_STOP:   sp24 = act_long_jump_land_stop(m);              break;
-        case ACT_GROUND_POUND_LAND:     sp24 = act_ground_pound_land(m);                break;
-        case ACT_BRAKING_STOP:          sp24 = act_braking_stop(m);                     break;
-        case ACT_BUTT_SLIDE_STOP:       sp24 = act_butt_slide_stop(m);                  break;
-        case ACT_UNKNOWN_03F:           sp24 = act_unknown_03F(m);                      break;
+        case ACT_IDLE:                    sp24 = act_idle(m);                             break;
+        case ACT_START_SLEEPING:          sp24 = act_start_sleeping(m);                   break;
+        case ACT_SLEEPING:                sp24 = act_sleeping(m);                         break;
+        case ACT_WAKING_UP:               sp24 = act_waking_up(m);                        break;
+        case ACT_PANTING:                 sp24 = act_panting(m);                          break;
+        case ACT_HOLD_PANTING_UNUSED:     sp24 = act_hold_panting_unused(m);              break;
+        case ACT_HOLD_IDLE:               sp24 = act_hold_idle(m);                        break;
+        case ACT_HOLD_HEAVY_IDLE:         sp24 = act_hold_heavy_idle(m);                  break;
+        case ACT_IN_QUICKSAND:            sp24 = act_in_quicksand(m);                     break;
+        case ACT_STANDING_AGAINST_WALL:   sp24 = act_standing_against_wall(m);            break;
+        case ACT_COUGHING:                sp24 = act_coughing(m);                         break;
+        case ACT_SHIVERING:               sp24 = act_shivering(m);                        break;
+        case ACT_CROUCHING:               sp24 = act_crouching(m);                        break;
+        case ACT_START_CROUCHING:         sp24 = act_start_crouching(m);                  break;
+        case ACT_STOP_CROUCHING:          sp24 = act_stop_crouching(m);                   break;
+        case ACT_START_CRAWLING:          sp24 = act_start_crawling(m);                   break;
+        case ACT_STOP_CRAWLING:           sp24 = act_stop_crawling(m);                    break;
+        case ACT_SLIDE_KICK_SLIDE_STOP:   sp24 = act_slide_kick_slide_stop(m);            break;
+        case ACT_SHOCKWAVE_BOUNCE:        sp24 = act_shockwave_bounce(m);                 break;
+        case ACT_FIRST_PERSON:            sp24 = act_first_person(m);                     break;
+        case ACT_JUMP_LAND_STOP:          sp24 = act_jump_land_stop(m);                   break;
+        case ACT_DOUBLE_JUMP_LAND_STOP:   sp24 = act_double_jump_land_stop(m);            break;
+        case ACT_FREEFALL_LAND_STOP:      sp24 = act_freefall_land_stop(m);               break;
+        case ACT_SIDE_FLIP_LAND_STOP:     sp24 = act_side_flip_land_stop(m);              break;
+        case ACT_HOLD_JUMP_LAND_STOP:     sp24 = act_hold_jump_land_stop(m);              break;
+        case ACT_HOLD_FREEFALL_LAND_STOP: sp24 = act_hold_freefall_land_stop(m);          break;
+        case ACT_AIR_THROW_LAND:          sp24 = act_air_throw_land(m);                   break;
+        case ACT_LAVA_BOOST_LAND:         sp24 = act_lava_boost_land(m);                  break;
+        case ACT_TWIRL_LAND:              sp24 = act_twirl_land(m);                       break;
+        case ACT_TRIPLE_JUMP_LAND_STOP:   sp24 = act_triple_jump_land_stop(m);            break;
+        case ACT_BACKFLIP_LAND_STOP:      sp24 = act_backflip_land_stop(m);               break;
+        case ACT_LONG_JUMP_LAND_STOP:     sp24 = act_long_jump_land_stop(m);              break;
+        case ACT_GROUND_POUND_LAND:       sp24 = act_ground_pound_land(m);                break;
+        case ACT_BRAKING_STOP:            sp24 = act_braking_stop(m);                     break;
+        case ACT_BUTT_SLIDE_STOP:         sp24 = act_butt_slide_stop(m);                  break;
+        case ACT_HOLD_BUTT_SLIDE_STOP:    sp24 = act_hold_butt_slide_stop(m);             break;
     }
     /* clang-format on */
 

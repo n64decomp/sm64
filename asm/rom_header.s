@@ -38,4 +38,9 @@
     .ascii "P"                  /* PAL (Europe) */
 .endif
 
-.byte  0x00                     /* Version */
+.if VERSION_SH == 1
+    .byte 0x03                  /* Version (Shindou) */
+.else
+    .byte  0x00                 /* Version */
+.endif
+

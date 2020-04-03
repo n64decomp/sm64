@@ -1,8 +1,8 @@
-diff --git a/src/game/game.c b/src/game/game.c
-index ad800839..4a37549b 100644
---- a/src/game/game.c
-+++ b/src/game/game.c
-@@ -52,6 +52,47 @@ struct DemoInput *gCurrDemoInput = NULL; // demo input sequence
+diff --git a/src/game/game_init.c b/src/game/game_init.c
+index 0852a141..18c5e8fe 100644
+--- a/src/game/game_init.c
++++ b/src/game/game_init.c
+@@ -56,6 +56,47 @@ struct DemoInput *gCurrDemoInput = NULL; // demo input sequence
  u16 gDemoInputListID = 0;
  struct DemoInput gRecordedDemoInput = { 0 }; // possibly removed in EU. TODO: Check
  
@@ -47,10 +47,10 @@ index ad800839..4a37549b 100644
 +    }
 +}
 +
- // this function records distinct inputs over a 255-frame interval to RAM locations and was likely
- // used to record the demo sequences seen in the final game. This function is unused.
- static void record_demo(void) {
-@@ -334,5 +375,7 @@ void thread5_game_loop(UNUSED void *arg) {
+ /**
+  * Initializes the Reality Display Processor (RDP).
+  * This function initializes settings such as texture filtering mode,
+@@ -614,5 +655,7 @@ void thread5_game_loop(UNUSED void *arg) {
              // amount of free space remaining.
              print_text_fmt_int(180, 20, "BUF %d", gGfxPoolEnd - (u8 *) gDisplayListHead);
          }

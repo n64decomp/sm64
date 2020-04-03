@@ -109,7 +109,7 @@ static void racing_penguin_act_finish_race(void) {
             set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
             o->oForwardVel = 0.0f;
         }
-    } else if (func_802F92B0(2) != 0) {
+    } else if (cur_obj_init_anim_and_check_if_end(2) != 0) {
         o->oAction = RACING_PENGUIN_ACT_SHOW_FINAL_TEXT;
     }
 }

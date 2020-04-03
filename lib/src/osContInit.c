@@ -6,7 +6,6 @@ void __osContGetInitData(u8 *, OSContStatus *);
 
 u32 D_80334810 = 0; // probably initialized
 
-extern u32 D_80365D1C;
 extern u64 osClockRate;
 
 // these probably belong in EEPROMlongread or something

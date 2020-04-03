@@ -24,36 +24,6 @@ static struct ObjectHitbox sWaterBombHitbox = {
     /* hurtboxHeight:     */ 50,
 };
 
-static struct SpawnParticlesInfo sWaterBombExplodeParticles = {
-    /* behParam:        */ 0,
-    /* count:           */ 5,
-    /* model:           */ MODEL_BUBBLE,
-    /* offsetY:         */ 20,
-    /* forwardVelBase:  */ 20,
-    /* forwardVelRange: */ 60,
-    /* velYBase:        */ 10,
-    /* velYRange:       */ 10,
-    /* gravity:         */ -2,
-    /* dragStrength:    */ 0,
-    /* sizeBase:        */ 35.0f,
-    /* sizeRange:       */ 10.0f,
-};
-
-static struct SpawnParticlesInfo sWaterBombCannonParticle = {
-    /* behParam:        */ 0,
-    /* count:           */ 1,
-    /* model:           */ MODEL_BUBBLE,
-    /* offsetY:         */ 236,
-    /* forwardVelBase:  */ 20,
-    /* forwardVelRange: */ 5,
-    /* velYBase:        */ 0,
-    /* velYRange:       */ 0,
-    /* gravity:         */ -2,
-    /* dragStrength:    */ 0,
-    /* sizeBase:        */ 20.0f,
-    /* sizeRange:       */ 5.0f,
-};
-
 /**
  * Update function for bhvWaterBombSpawner.
  * Spawn water bombs targeting mario when he comes in range.
@@ -96,28 +66,27 @@ void bhv_water_bomb_spawner_update(void) {
 
 /**
  * Spawn particles when the water bomb explodes.
- *
- * TODO: (Scrub C) monty_mole_spawn_dirt_particles, water_bomb_spawn_explode_particles, and
- * func_80306ED4 all have similar issues with their functions, none of which match legitimately.
  */
 void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYBase) {
-#if defined(VERSION_JP) || defined(VERSION_US)
+    static struct SpawnParticlesInfo sWaterBombExplodeParticles = {
+        /* behParam:        */ 0,
+        /* count:           */ 5,
+        /* model:           */ MODEL_BUBBLE,
+        /* offsetY:         */ 20,
+        /* forwardVelBase:  */ 20,
+        /* forwardVelRange: */ 60,
+        /* velYBase:        */ 10,
+        /* velYRange:       */ 10,
+        /* gravity:         */ -2,
+        /* dragStrength:    */ 0,
+        /* sizeBase:        */ 35.0f,
+        /* sizeRange:       */ 10.0f,
+    };
+
     sWaterBombExplodeParticles.offsetY = offsetY;
     sWaterBombExplodeParticles.forwardVelRange = forwardVelRange;
     sWaterBombExplodeParticles.velYBase = velYBase;
     cur_obj_spawn_particles(&sWaterBombExplodeParticles);
-#else
-    s8 tempVelYBase = velYBase;
-    s8 tempForwardVelRange = forwardVelRange;
-    s8 tempOffsetY = offsetY;
-    
-    do {
-        sWaterBombExplodeParticles.offsetY = tempOffsetY;
-        sWaterBombExplodeParticles.forwardVelRange = tempForwardVelRange;
-        sWaterBombExplodeParticles.velYBase = tempVelYBase;
-        cur_obj_spawn_particles(&sWaterBombExplodeParticles);
-    } while (0);
-#endif
 }
 
 /**
@@ -206,6 +175,22 @@ static void water_bomb_act_explode(void) {
  * Despawn after 100 frames.
  */
 static void water_bomb_act_shot_from_cannon(void) {
+
+    static struct SpawnParticlesInfo sWaterBombCannonParticle = {
+        /* behParam:        */ 0,
+        /* count:           */ 1,
+        /* model:           */ MODEL_BUBBLE,
+        /* offsetY:         */ 236,
+        /* forwardVelBase:  */ 20,
+        /* forwardVelRange: */ 5,
+        /* velYBase:        */ 0,
+        /* velYRange:       */ 0,
+        /* gravity:         */ -2,
+        /* dragStrength:    */ 0,
+        /* sizeBase:        */ 20.0f,
+        /* sizeRange:       */ 5.0f,
+    };
+
     if (o->oTimer > 100) {
         obj_mark_for_deletion(o);
     } else {

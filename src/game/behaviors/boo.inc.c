@@ -100,7 +100,7 @@ void bhv_courtyard_boo_triplet_init(void) {
                 bhvGhostHuntBoo
             );
 
-            boo->oMoveAngleYaw = RandomU16();
+            boo->oMoveAngleYaw = random_u16();
         }
     }
 }
@@ -412,8 +412,8 @@ static void boo_act_1(void) {
     s32 attackStatus;
     
     if (o->oTimer == 0) {
-        o->oBooNegatedAggressiveness = -RandomFloat() * 5.0f;
-        o->oBooTurningSpeed = (s32)(RandomFloat() * 128.0f);
+        o->oBooNegatedAggressiveness = -random_float() * 5.0f;
+        o->oBooTurningSpeed = (s32)(random_float() * 128.0f);
     }
     
     boo_chase_mario(-100.0f, o->oBooTurningSpeed + 0x180, 0.5f);

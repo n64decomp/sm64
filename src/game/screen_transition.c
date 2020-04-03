@@ -2,7 +2,7 @@
 
 #include "sm64.h"
 #include "area.h"
-#include "game.h"
+#include "game/game_init.h"
 #include "engine/math_util.h"
 #include "engine/graph_node.h"
 #include "screen_transition.h"

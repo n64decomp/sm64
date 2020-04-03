@@ -190,7 +190,7 @@ static void bowser_debug_actions(void) // unused
 }
 
 void bowser_bitdw_act_controller(void) {
-    f32 rand = RandomFloat();
+    f32 rand = random_float();
     if (o->oBowserUnk110 == 0) {
         if (o->oBowserUnkF4 & 2) {
             if (o->oDistanceToMario < 1500.0f)
@@ -221,7 +221,7 @@ void bowser_bitdw_act_controller(void) {
 }
 
 void bowser_bitfs_act_controller(void) {
-    f32 rand = RandomFloat();
+    f32 rand = random_float();
     if (o->oBowserUnk110 == 0) {
         if (o->oBowserUnkF4 & 2) {
             if (o->oDistanceToMario < 1300.0f) // nearby
@@ -247,7 +247,7 @@ void bowser_bitfs_act_controller(void) {
 }
 
 void bowser_general_bits_act_controller(void) {
-    f32 rand = RandomFloat();
+    f32 rand = random_float();
     if (o->oBowserUnkF4 & 2) {
         if (o->oDistanceToMario < 1000.0f) {
             if (rand < 0.4)
@@ -462,9 +462,9 @@ s32 bowser_land(void) {
         cur_obj_start_cam_event(o, CAM_EVENT_BOWSER_JUMP);
         if (BITDW) {
             if (o->oDistanceToMario < 850.0f)
-                gMarioObject->oInteractStatus |= INTERACT_GRABBABLE;
+                gMarioObject->oInteractStatus |= INT_STATUS_MARIO_UNK1;
             else
-                gMarioObject->oInteractStatus |= INTERACT_HOOT; // hmm...
+                gMarioObject->oInteractStatus |= INT_STATUS_HOOT_GRABBED_BY_MARIO; // hmm...
         }
         return 1;
     } else
@@ -548,7 +548,7 @@ void bowser_act_spit_fire_onto_floor(void) {
     if (gHudDisplay.wedges < 4)
         o->oBowserUnk108 = 3;
     else
-        o->oBowserUnk108 = RandomFloat() * 3.0f + 1.0f;
+        o->oBowserUnk108 = random_float() * 3.0f + 1.0f;
     cur_obj_init_animation_with_sound(22);
     if (cur_obj_check_anim_frame(5))
         obj_spit_fire(0, 200, 180, 7.0f, MODEL_RED_FLAME, 30.0f, 10.0f, 0x1000);
@@ -636,7 +636,7 @@ s32 bowser_check_hit_mine(void) {
     f32 sp18;
     mine = cur_obj_find_nearest_object_with_behavior(bhvBowserBomb, &sp18);
     if (mine != NULL && sp18 < 800.0f) {
-        mine->oInteractStatus |= INTERACT_MR_BLIZZARD;
+        mine->oInteractStatus |= INT_STATUS_HIT_MINE;
         return 1;
     }
     return 0;
@@ -830,13 +830,13 @@ s32 bowser_dead_not_bits_end(void) {
     s32 ret = 0;
     if (o->oBowserUnkF8 < 2) {
         if (o->oBowserUnkF8 == 0) {
-            func_8031FFB4(0, 60, 40);
+            func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
             o->oBowserUnkF8++;
         }
         if (cur_obj_update_dialog(2, 18, sBowserDefeatedDialogText[o->oBehParams2ndByte], 0)) {
             o->oBowserUnkF8++;
             cur_obj_play_sound_2(SOUND_GENERAL2_BOWSER_EXPLODE);
-            sequence_player_unlower(0, 60);
+            sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
             sequence_player_fade_out(0, 1);
         }
     } else if (bowser_dead_twirl_into_trophy()) {
@@ -859,12 +859,12 @@ s32 bowser_dead_bits_end(void) {
         else
             dialogID = DIALOG_163;
         if (o->oBowserUnkF8 == 0) {
-            func_8031FFB4(0, 60, 40);
+            func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
             o->oBowserUnkF8++;
         }
         if (cur_obj_update_dialog(2, 18, dialogID, 0)) {
             cur_obj_set_model(MODEL_BOWSER2);
-            sequence_player_unlower(0, 60);
+            sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
             sequence_player_fade_out(0, 1);
             bowser_spawn_grand_star_key();
             o->oBowserUnkF8++;
@@ -1375,7 +1375,7 @@ void bhv_falling_bowser_platform_loop(void) {
 void bowser_flame_despawn(void) {
     obj_mark_for_deletion(o);
     spawn_object_with_scale(o, MODEL_NONE, bhvBlackSmokeUpward, 1.0f);
-    if (RandomFloat() < 0.1)
+    if (random_float() < 0.1)
         spawn_object(o, MODEL_YELLOW_COIN, bhvTemporaryYellowCoin);
 }
 
@@ -1390,20 +1390,20 @@ s32 bowser_flame_should_despawn(s32 a0) {
 }
 
 void bhv_flame_bowser_init(void) {
-    o->oAnimState = (s32)(RandomFloat() * 10.0f);
-    o->oMoveAngleYaw = RandomU16();
-    if (RandomFloat() < 0.2)
+    o->oAnimState = (s32)(random_float() * 10.0f);
+    o->oMoveAngleYaw = random_u16();
+    if (random_float() < 0.2)
         o->oVelY = 80.0f;
     else
         o->oVelY = 20.0f;
     o->oForwardVel = 10.0f;
     o->oGravity = -1.0f;
-    o->oFlameUnkF4 = RandomFloat() + 1.0f;
+    o->oFlameUnkF4 = random_float() + 1.0f;
 }
 
 void bhv_flame_large_burning_out_init(void) {
-    o->oAnimState = (s32)(RandomFloat() * 10.0f);
-    o->oMoveAngleYaw = RandomU16();
+    o->oAnimState = (s32)(random_float() * 10.0f);
+    o->oMoveAngleYaw = random_u16();
     o->oVelY = 10.0f;
     o->oForwardVel = 0.0f;
     o->oFlameUnkF4 = 7.0f;
@@ -1429,7 +1429,7 @@ void bhv_flame_bowser_loop(void) {
             if (cur_obj_has_behavior(bhvFlameLargeBurningOut))
                 o->oFlameUnkF4 = 8.0f;
             else
-                o->oFlameUnkF4 = RandomFloat() * 2 + 6.0f;
+                o->oFlameUnkF4 = random_float() * 2 + 6.0f;
             o->oForwardVel = 0;
             o->oVelY = 0;
             o->oGravity = 0;
@@ -1450,7 +1450,7 @@ void bhv_flame_bowser_loop(void) {
 void bhv_flame_moving_forward_growing_init(void) {
     o->oForwardVel = 30.0f;
     obj_translate_xz_random(o, 80.0f);
-    o->oAnimState = (s32)(RandomFloat() * 10.0f);
+    o->oAnimState = (s32)(random_float() * 10.0f);
     o->oFlameUnkF4 = 3.0f;
 }
 
@@ -1474,15 +1474,15 @@ void bhv_flame_moving_forward_growing_loop(void) {
 }
 
 void bhv_flame_floating_landing_init(void) {
-    o->oAnimState = (s32)(RandomFloat() * 10.0f);
-    o->oMoveAngleYaw = RandomU16();
+    o->oAnimState = (s32)(random_float() * 10.0f);
+    o->oMoveAngleYaw = random_u16();
     if (o->oBehParams2ndByte != 0)
-        o->oForwardVel = RandomFloat() * 5.0f;
+        o->oForwardVel = random_float() * 5.0f;
     else
-        o->oForwardVel = RandomFloat() * 70.0f;
-    o->oVelY = RandomFloat() * 20.0f;
+        o->oForwardVel = random_float() * 70.0f;
+    o->oVelY = random_float() * 20.0f;
     o->oGravity = -1.0f;
-    o->oFlameUnkF8 = RandomFloat() * 64.0f;
+    o->oFlameUnkF8 = random_float() * 64.0f;
 }
 
 void bhv_flame_floating_landing_loop(void) {
@@ -1506,13 +1506,13 @@ void bhv_flame_floating_landing_loop(void) {
 
 void bhv_blue_bowser_flame_init(void) {
     obj_translate_xz_random(o, 80.0f);
-    o->oAnimState = (s32)(RandomFloat() * 10.0f);
+    o->oAnimState = (s32)(random_float() * 10.0f);
     o->oVelY = 7.0f;
     o->oForwardVel = 35.0f;
     o->oFlameUnkF4 = 3.0f;
-    o->oFlameUnkFC = RandomFloat() * 0.5;
+    o->oFlameUnkFC = random_float() * 0.5;
     o->oGravity = 1.0f;
-    o->oFlameUnkF8 = (s32)(RandomFloat() * 64.0f);
+    o->oFlameUnkF8 = (s32)(random_float() * 64.0f);
 }
 
 void bhv_blue_bowser_flame_loop(void) {
@@ -1539,11 +1539,11 @@ void bhv_blue_bowser_flame_loop(void) {
 }
 
 void bhv_flame_bouncing_init(void) {
-    o->oAnimState = (s32)(RandomFloat() * 10.0f);
+    o->oAnimState = (s32)(random_float() * 10.0f);
     o->oVelY = 30.0f;
     o->oForwardVel = 20.0f;
     o->oFlameUnkF4 = o->header.gfx.scale[0];
-    o->oFlameUnkF8 = (s32)(RandomFloat() * 64.0f);
+    o->oFlameUnkF8 = (s32)(random_float() * 64.0f);
 }
 
 void bhv_flame_bouncing_loop(void) {
@@ -1552,7 +1552,7 @@ void bhv_flame_bouncing_loop(void) {
         o->oFlameUnk100 = cur_obj_nearest_object_with_behavior(bhvBowser);
     sp1C = o->oFlameUnk100;
     o->oForwardVel = 15.0f;
-    o->oBounce = -1.0f;
+    o->oBounciness = -1.0f;
     cur_obj_scale(o->oFlameUnkF4);
     obj_set_hitbox(o, &sGrowingBowserFlameHitbox);
     cur_obj_update_floor_and_walls();

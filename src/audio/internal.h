@@ -527,6 +527,12 @@ struct Note
     /*    , 0xB0*/ struct NoteSubEu noteSubEu;
 }; // size = 0xC0
 #else
+struct vNote
+{
+    /* U/J, EU  */
+    /*0x00*/ volatile u8 enabled : 1;
+    long long int force_structure_alignment;
+}; // size = 0xC0
 struct Note
 {
     /* U/J, EU  */

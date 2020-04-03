@@ -13,13 +13,15 @@ for arg in sys.argv[1:]:
         lang = 'us'
     elif arg == '-e':
         lang = 'eu'
+    elif arg == '-s':
+        lang = 'sh'
     else:
         args.append(arg)
 
 if lang is None:
     lang = 'us'
     best = 0
-    for path in ['build/us/sm64.us.z64', 'build/jp/sm64.jp.z64', 'build/eu/sm64.eu.z64']:
+    for path in ['build/us/sm64.us.z64', 'build/jp/sm64.jp.z64', 'build/eu/sm64.eu.z64', 'build/sh/sm64.sh.z64']:
         try:
             mtime = os.path.getmtime(path)
             if mtime > best:
@@ -187,7 +189,7 @@ if diffs > 100:
         i = found_instr_diff
         print("First instruction difference at ROM addr " + hex(i) + ", " + search_map(i))
         print("Bytes:", hexbytes(mybin[i:i+4]), 'vs', hexbytes(basebin[i:i+4]))
-    if lang == 'eu':
+    if lang == 'sh':
         print("Shifted ROM, as expected.")
     else:
         if not os.path.isfile(basemap):

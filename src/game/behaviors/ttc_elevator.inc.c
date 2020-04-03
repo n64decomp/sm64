@@ -34,7 +34,7 @@ void bhv_ttc_elevator_update(void) {
     if (gTTCSpeedSetting == TTC_SPEED_RANDOM) {
         // Occasionally stop for 5 frames then change direction
         if (o->oTimer > o->oTTCElevatorMoveTime) {
-            o->oTTCElevatorDir = RandomSign();
+            o->oTTCElevatorDir = random_sign();
             o->oTTCElevatorMoveTime = random_mod_offset(30, 30, 6);
             o->oTimer = 0;
         } else if (o->oTimer < 5) {

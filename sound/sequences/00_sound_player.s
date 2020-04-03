@@ -7986,11 +7986,7 @@ layer_note0 38, 0x3, 127, 127
 layer_delay 0x2a
 layer_jump .layer_32B7
 
-.ifndef VERSION_US
-  # padding
-  .byte 0
-.endif
-
+.align 2, 0
 .envelope_32C4:
 envelope_line 7 20000
 envelope_line 6 32700

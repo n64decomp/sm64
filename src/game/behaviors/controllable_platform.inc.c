@@ -138,7 +138,7 @@ void controllable_platform_tilt_from_mario(void) {
         if (D_80331694 == 6) {
             D_80331694 = 0;
             o->oTimer = 0;
-            o->header.gfx.node.flags &= ~0x10;
+            o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
         }
     } else {
     }

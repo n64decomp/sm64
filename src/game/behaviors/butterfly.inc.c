@@ -3,8 +3,8 @@
 void bhv_butterfly_init(void) {
     cur_obj_init_animation(1);
 
-    o->oButterflyYPhase = RandomFloat() * 100.0f;
-    o->header.gfx.unk38.animFrame = RandomFloat() * 7.0f;
+    o->oButterflyYPhase = random_float() * 100.0f;
+    o->header.gfx.unk38.animFrame = random_float() * 7.0f;
     o->oHomeX = o->oPosX;
     o->oHomeY = o->oPosY;
     o->oHomeZ = o->oPosZ;

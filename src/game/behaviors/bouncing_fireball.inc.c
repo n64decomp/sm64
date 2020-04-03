@@ -6,7 +6,7 @@ void bhv_bouncing_fireball_flame_loop(void) {
     switch (o->oAction) {
         case 0:
             if (o->oTimer == 0) {
-                o->oAnimState = RandomFloat() * 10.0f;
+                o->oAnimState = random_float() * 10.0f;
                 o->oVelY = 30.0f;
             }
             if (o->oMoveFlags & 1)
@@ -46,7 +46,7 @@ void bhv_bouncing_fireball_loop(void) {
             break;
         case 2:
             if (o->oTimer == 0)
-                o->oBouncingFireBallUnkF4 = RandomFloat() * 100.0f;
+                o->oBouncingFireBallUnkF4 = random_float() * 100.0f;
             if (o->oBouncingFireBallUnkF4 + 100 < o->oTimer)
                 o->oAction = 0;
             break;

@@ -16,7 +16,7 @@ s16 D_8032F2A4[][2] = { { 0, -150 },  { 0, -50 },   { 0, 50 },   { 0, 150 },
                         { -50, 100 }, { -100, 50 }, { 50, 100 }, { 100, 50 } };
 
 s32 bhv_coin_sparkles_init(void) {
-    if (o->oInteractStatus & INT_STATUS_INTERACTED && !(o->oInteractStatus & INTERACT_TEXT)) {
+    if (o->oInteractStatus & INT_STATUS_INTERACTED && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) {
         spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
         obj_mark_for_deletion(o);
         return 1;
@@ -49,9 +49,9 @@ void bhv_temp_coin_loop(void) {
 }
 
 void bhv_coin_init(void) {
-    o->oVelY = RandomFloat() * 10.0f + 30 + o->oCoinUnk110;
-    o->oForwardVel = RandomFloat() * 10.0f;
-    o->oMoveAngleYaw = RandomU16();
+    o->oVelY = random_float() * 10.0f + 30 + o->oCoinUnk110;
+    o->oForwardVel = random_float() * 10.0f;
+    o->oMoveAngleYaw = random_u16();
     cur_obj_set_behavior(bhvYellowCoin);
     obj_set_hitbox(o, &sYellowCoinHitbox);
     cur_obj_become_intangible();
@@ -67,7 +67,7 @@ void bhv_coin_loop(void) {
         if (o->oMoveFlags & OBJ_MOVE_ON_GROUND)
             o->oSubAction = 1;
         if (o->oSubAction == 1) {
-            o->oBounce = 0;
+            o->oBounciness = 0;
             if (sp1C->normal.y < 0.9) {
                 sp1A = atan2s(sp1C->normal.z, sp1C->normal.x);
                 cur_obj_rotate_yaw_toward(sp1A, 0x400);
@@ -258,6 +258,6 @@ void bhv_golden_coin_sparkles_loop(void) {
     UNUSED s32 unused;
     f32 sp24 = 30.0f;
     sp2C = spawn_object(o, MODEL_SPARKLES, bhvCoinSparkles);
-    sp2C->oPosX += RandomFloat() * sp24 - sp24 / 2;
-    sp2C->oPosZ += RandomFloat() * sp24 - sp24 / 2;
+    sp2C->oPosX += random_float() * sp24 - sp24 / 2;
+    sp2C->oPosZ += random_float() * sp24 - sp24 / 2;
 }

@@ -260,7 +260,7 @@ void bhv_circling_amp_init(void) {
 
     // Choose a random point along the amp's circle.
     // The amp's move angle represents its angle along the circle.
-    o->oMoveAngleYaw = RandomU16();
+    o->oMoveAngleYaw = random_u16();
 
     o->oAction = AMP_ACT_IDLE;
 }

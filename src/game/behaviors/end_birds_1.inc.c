@@ -2,7 +2,7 @@
 
 void bhv_end_birds_1_loop(void) {
     Vec3f sp34;
-    UNUSED f32 sp30 = RandomFloat();
+    UNUSED f32 sp30 = random_float();
 
     switch (gCurrentObject->oAction) {
         case 0:

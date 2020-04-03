@@ -7,11 +7,11 @@ void bhv_small_piranha_flame_loop(void) {
         if (o->oTimer > 0) {
             obj_mark_for_deletion(o);
         } else {
-            sp2C = RandomFloat() - 0.5f;
+            sp2C = random_float() - 0.5f;
             o->header.gfx.scale[1] = o->header.gfx.scale[2] * (1.0f + 0.7f * sp2C);
             o->header.gfx.scale[0] = o->header.gfx.scale[2] * (0.9f - 0.5f * sp2C);
 
-            o->oAnimState = RandomU16();
+            o->oAnimState = random_u16();
         }
     } else {
         cur_obj_update_floor_and_walls();

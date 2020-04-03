@@ -1,7 +1,5 @@
 #include "libultra_internal.h"
 
-extern u32 D_80365E00[15];
-extern u32 D_80365E3C;
 extern u8 D_80365D20;
 
 typedef struct {

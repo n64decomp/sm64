@@ -89,7 +89,7 @@ void bhv_intro_lakitu_loop(void) {
                 gCurrentObject->oAction += 1;
 
             switch (gCurrentObject->oTimer) {
-#ifdef VERSION_US
+#if defined(VERSION_US) || defined(VERSION_SH)
                 case 534:
                     cur_obj_play_sound_2(SOUND_ACTION_FLYING_FAST);
                     break;

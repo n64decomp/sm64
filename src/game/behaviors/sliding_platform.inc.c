@@ -19,7 +19,7 @@ void bhv_wf_sliding_platform_init(void) {
             break;
     }
 
-    o->oTimer = RandomFloat() * 100.0f;
+    o->oTimer = random_float() * 100.0f;
 }
 
 void bhv_wf_sliding_platform_loop(void) {

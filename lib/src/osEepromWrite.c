@@ -1,8 +1,14 @@
 #include "libultra_internal.h"
 #include "osContInternal.h"
 
-u32 D_80365E00[0x3c >> 2];
+#ifndef AVOID_UB
+u32 D_80365E00[15];
 u32 D_80365E3C;
+#else
+// Certain code accesses the 16th element (D_80365E3C) in this array, making a seperate
+// definition UB when gcc rearranges those.
+u32 D_80365E00[16];
+#endif
 extern u8 D_80365D20;
 
 typedef struct {

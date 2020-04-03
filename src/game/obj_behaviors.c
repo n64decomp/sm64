@@ -7,11 +7,10 @@
 #include "engine/behavior_script.h"
 #include "engine/surface_collision.h"
 #include "engine/math_util.h"
-#include "display.h"
 #include "object_helpers.h"
 #include "behavior_data.h"
 #include "mario.h"
-#include "game.h"
+#include "game_init.h"
 #include "camera.h"
 #include "mario_actions_cutscene.h"
 #include "object_list_processor.h"
@@ -559,9 +558,9 @@ void obj_return_and_displace_home(struct Object *obj, f32 homeX, UNUSED f32 home
     s16 angleToNewHome;
     f32 homeDistX, homeDistZ;
 
-    if ((s32)(RandomFloat() * 50.0f) == 0) {
-        obj->oHomeX = (f32)(baseDisp * 2) * RandomFloat() - (f32) baseDisp + homeX;
-        obj->oHomeZ = (f32)(baseDisp * 2) * RandomFloat() - (f32) baseDisp + homeZ;
+    if ((s32)(random_float() * 50.0f) == 0) {
+        obj->oHomeX = (f32)(baseDisp * 2) * random_float() - (f32) baseDisp + homeX;
+        obj->oHomeZ = (f32)(baseDisp * 2) * random_float() - (f32) baseDisp + homeZ;
     }
 
     homeDistX = obj->oHomeX - obj->oPosX;
@@ -618,9 +617,9 @@ void obj_spawn_yellow_coins(struct Object *obj, s8 nCoins) {
 
     for (count = 0; count < nCoins; count++) {
         coin = spawn_object(obj, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
-        coin->oForwardVel = RandomFloat() * 20;
-        coin->oVelY = RandomFloat() * 40 + 20;
-        coin->oMoveAngleYaw = RandomU16();
+        coin->oForwardVel = random_float() * 20;
+        coin->oVelY = random_float() * 40 + 20;
+        coin->oMoveAngleYaw = random_u16();
     }
 }
 
@@ -741,10 +740,10 @@ s32 obj_lava_death(void) {
     if ((o->oTimer % 8) == 0) {
         cur_obj_play_sound_2(SOUND_OBJ_BULLY_EXPLODE_2);
         deathSmoke = spawn_object(o, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
-        deathSmoke->oPosX += RandomFloat() * 20.0f;
-        deathSmoke->oPosY += RandomFloat() * 20.0f;
-        deathSmoke->oPosZ += RandomFloat() * 20.0f;
-        deathSmoke->oForwardVel = RandomFloat() * 10.0f;
+        deathSmoke->oPosX += random_float() * 20.0f;
+        deathSmoke->oPosY += random_float() * 20.0f;
+        deathSmoke->oPosZ += random_float() * 20.0f;
+        deathSmoke->oForwardVel = random_float() * 10.0f;
     }
 
     return FALSE;

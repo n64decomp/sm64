@@ -15,12 +15,12 @@ void bhv_blue_fish_movement_loop(void) {
             
             // Assigns random values to variables that help determine natural motion.
             if (o->oTimer == 0) {
-                o->oBlueFishRandomAngle = RandomSign() << 11;
-                o->oBlueFishRandomVel = RandomFloat() * 2;
-                o->oBlueFishRandomTime = (s32)(RandomFloat() * 30) & 0xFE;
+                o->oBlueFishRandomAngle = random_sign() << 11;
+                o->oBlueFishRandomVel = random_float() * 2;
+                o->oBlueFishRandomTime = (s32)(random_float() * 30) & 0xFE;
                 
                 // Adjusts pitch velocity or sets to zero dependant on outcome of randomSwitch.
-                randomSwitch = RandomFloat() * 5;
+                randomSwitch = random_float() * 5;
                 if (randomSwitch < 2.0f) {
                     o->oAngleVelPitch = random_f32_around_zero(128);
                 } else {

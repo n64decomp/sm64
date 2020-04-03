@@ -97,7 +97,7 @@ static void koopa_play_footstep_sound(s8 animFrame1, s8 animFrame2) {
         sound = SOUND_OBJ_KOOPA_WALK;
     }
 
-    func_802F9378(animFrame1, animFrame2, sound);
+    cur_obj_play_sound_at_anim_range(animFrame1, animFrame2, sound);
 }
 
 /**
@@ -120,9 +120,9 @@ static s32 koopa_check_run_from_mario(void) {
  */
 static void koopa_shelled_act_stopped(void) {
     o->oForwardVel = 0.0f;
-    if (func_802F92B0(7)) {
+    if (cur_obj_init_anim_and_check_if_end(7)) {
         o->oAction = KOOPA_SHELLED_ACT_WALK;
-        o->oKoopaTargetYaw = o->oMoveAngleYaw + 0x2000 * (s16) RandomSign();
+        o->oKoopaTargetYaw = o->oMoveAngleYaw + 0x2000 * (s16) random_sign();
     }
 }
 
@@ -132,7 +132,7 @@ static void koopa_shelled_act_stopped(void) {
 static void koopa_walk_start(void) {
     obj_forward_vel_approach(3.0f * o->oKoopaAgility, 0.3f * o->oKoopaAgility);
 
-    if (func_802F92B0(11)) {
+    if (cur_obj_init_anim_and_check_if_end(11)) {
         o->oSubAction += 1;
         o->oKoopaCountdown = random_linear_offset(30, 100);
     }
@@ -157,7 +157,7 @@ static void koopa_walk(void) {
  */
 static void koopa_walk_stop(void) {
     obj_forward_vel_approach(0.0f, 1.0f * o->oKoopaAgility);
-    if (func_802F92B0(10)) {
+    if (cur_obj_init_anim_and_check_if_end(10)) {
         o->oAction = KOOPA_SHELLED_ACT_STOPPED;
     }
 }
@@ -241,12 +241,12 @@ static void koopa_shelled_act_lying(void) {
             o->oMoveAngleYaw = cur_obj_reflect_move_angle_off_wall();
         }
 
-        func_802F927C(5);
+        cur_obj_init_anim_extend(5);
         koopa_dive_update_speed(0.3f);
     } else if (o->oKoopaCountdown != 0) {
         o->oKoopaCountdown -= 1;
         cur_obj_extend_animation_if_at_end();
-    } else if (func_802F92B0(6)) {
+    } else if (cur_obj_init_anim_and_check_if_end(6)) {
         o->oAction = KOOPA_SHELLED_ACT_STOPPED;
     }
 }
@@ -418,15 +418,15 @@ static void koopa_unshelled_act_dive(void) {
     if (o->oForwardVel != 0.0f) {
         if (o->oAction == KOOPA_UNSHELLED_ACT_LYING) {
             o->oAnimState = 1;
-            func_802F927C(2);
+            cur_obj_init_anim_extend(2);
         } else {
-            func_802F927C(5);
+            cur_obj_init_anim_extend(5);
         }
         koopa_dive_update_speed(0.5f);
     } else if (o->oKoopaCountdown != 0) {
         o->oKoopaCountdown -= 1;
         cur_obj_extend_animation_if_at_end();
-    } else if (func_802F92B0(6)) {
+    } else if (cur_obj_init_anim_and_check_if_end(6)) {
         o->oAction = KOOPA_UNSHELLED_ACT_RUN;
     }
 
@@ -437,7 +437,7 @@ end:;
  * Unused action function.
  */
 static void koopa_unshelled_act_unused3(void) {
-    func_802F927C(0);
+    cur_obj_init_anim_extend(0);
 }
 
 /**
@@ -473,7 +473,7 @@ s32 obj_begin_race(s32 noTimer) {
         cur_obj_play_sound_2(SOUND_GENERAL_RACE_GUN_SHOT);
 
         if (!noTimer) {
-            play_music(0, SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE), 0);
+            play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE), 0);
 
             level_control_timer(TIMER_CONTROL_SHOW);
             level_control_timer(TIMER_CONTROL_START);
@@ -662,7 +662,7 @@ static void koopa_the_quick_act_race(void) {
                     // We could perform a goomba double jump if we could deactivate
                     // ktq
                     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
-                        if (func_802F92B0(13)) {
+                        if (cur_obj_init_anim_and_check_if_end(13)) {
                             o->oSubAction -= 1;
                         }
 

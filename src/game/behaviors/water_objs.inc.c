@@ -21,8 +21,8 @@ void bhv_water_air_bubble_loop(void) {
         o->oMoveAngleYaw = obj_angle_to_object(o, gMarioObject);
         cur_obj_move_using_fvel_and_gravity();
     }
-    o->oPosX += RandomFloat() * 4.0f - 2.0f;
-    o->oPosZ += RandomFloat() * 4.0f - 2.0f;
+    o->oPosX += random_float() * 4.0f - 2.0f;
+    o->oPosZ += random_float() * 4.0f - 2.0f;
     if (o->oInteractStatus & INT_STATUS_INTERACTED || o->oTimer > 200) {
         cur_obj_play_sound_2(SOUND_GENERAL_QUIET_BUBBLE);
         obj_mark_for_deletion(o);
@@ -35,19 +35,19 @@ void bhv_water_air_bubble_loop(void) {
 }
 
 void bhv_bubble_wave_init(void) {
-    o->oWaterObjUnkFC  = 0x800 + (s32)(RandomFloat() * 2048.0f);
-    o->oWaterObjUnk100 = 0x800 + (s32)(RandomFloat() * 2048.0f);
+    o->oWaterObjUnkFC  = 0x800 + (s32)(random_float() * 2048.0f);
+    o->oWaterObjUnk100 = 0x800 + (s32)(random_float() * 2048.0f);
     cur_obj_play_sound_2(SOUND_GENERAL_QUIET_BUBBLE);
 }
 
 void scale_bubble_random(void) {
-    cur_obj_scale(RandomFloat() + 1.0);
+    cur_obj_scale(random_float() + 1.0);
 }
 
 void bhv_bubble_maybe_loop(void) {
-    o->oPosY += RandomFloat() * 3.0f + 6.0f;
-    o->oPosX += RandomFloat() * 10.0f - 5.0f;
-    o->oPosZ += RandomFloat() * 10.0f - 5.0f;
+    o->oPosY += random_float() * 3.0f + 6.0f;
+    o->oPosX += random_float() * 10.0f - 5.0f;
+    o->oPosZ += random_float() * 10.0f - 5.0f;
     o->header.gfx.scale[0] = sins(o->oWaterObjUnkF4) * 0.2 + 1.0;
     o->oWaterObjUnkF4 += o->oWaterObjUnkFC;
     o->header.gfx.scale[1] = sins(o->oWaterObjUnkF8) * 0.2 + 1.0;
@@ -79,8 +79,8 @@ void scale_bubble_sin(void) {
 
 void bhv_particle_init(void) {
     obj_scale_xyz(o, 2.0f, 2.0f, 1.0f);
-    o->oWaterObjUnkFC = 0x800 + (s32)(RandomFloat() * 2048.0f);
-    o->oWaterObjUnk100 = 0x800 + (s32)(RandomFloat() * 2048.0f);
+    o->oWaterObjUnkFC = 0x800 + (s32)(random_float() * 2048.0f);
+    o->oWaterObjUnk100 = 0x800 + (s32)(random_float() * 2048.0f);
     obj_translate_xyz_random(o, 100.0f);
 }
 

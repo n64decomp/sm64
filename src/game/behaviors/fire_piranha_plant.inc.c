@@ -91,7 +91,7 @@ static void fire_piranha_plant_act_hide(void) {
 }
 
 static void fire_piranha_plant_act_grow(void) {
-    func_802F927C(4);
+    cur_obj_init_anim_extend(4);
 
     if (approach_f32_ptr(&o->oFirePiranhaPlantScale, o->oFirePiranhaPlantNeutralScale,
                          0.04f * o->oFirePiranhaPlantNeutralScale)) {

@@ -2,7 +2,7 @@
 #define _OBJ_BEHAVIORS_H
 
 #include "types.h"
-#include "object_helpers2.h"
+#include "object_helpers.h"
 #include "engine/surface_collision.h"
 
 extern u8 bob_seg7_metal_ball_path0[];

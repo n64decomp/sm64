@@ -124,13 +124,13 @@ void fish_group_act_rotation(void) {
      * Determines fish movement.
      */
     if (o->oTimer == 0) {
-        o->oForwardVel = RandomFloat() * 2 + 3.0f;
+        o->oForwardVel = random_float() * 2 + 3.0f;
         if (gCurrLevelNum == LEVEL_SA) {
-            o->oFishRandomOffset = RandomFloat() * 700.0f;
+            o->oFishRandomOffset = random_float() * 700.0f;
         } else {
-            o->oFishRandomOffset = RandomFloat() * 100.0f;
+            o->oFishRandomOffset = random_float() * 100.0f;
         }
-        o->oFishRespawnDistance = RandomFloat() * 500 + 200.0f;
+        o->oFishRespawnDistance = random_float() * 500 + 200.0f;
     }
     
     // Interact with Mario through rotating towards him.
@@ -176,9 +176,9 @@ void fish_group_act_move(void) {
      * This allows fish to move in seemingly natural patterns.
      */
     if (o->oTimer == 0) {
-        o->oFishActiveDistance = RandomFloat() * 300.0f;
-        o->oFishRandomSpeed = RandomFloat() * 1024.0f + 1024.0f;
-        o->oFishRandomVel = RandomFloat() * 4.0f + 8.0f + 5.0f;
+        o->oFishActiveDistance = random_float() * 300.0f;
+        o->oFishRandomSpeed = random_float() * 1024.0f + 1024.0f;
+        o->oFishRandomVel = random_float() * 4.0f + 8.0f + 5.0f;
         if (o->oDistanceToMario < 600.0f) {
             distance = 1;
         } else {
@@ -226,9 +226,9 @@ void fish_group_act_move(void) {
  */
 void fish_group_act_animate(void) {
     cur_obj_init_animation_with_accel_and_sound(0, 1.0f);
-    o->header.gfx.unk38.animFrame = (s16)(RandomFloat() * 28.0f);
-    o->oFishDepthDistance = RandomFloat() * 300.0f;
-    cur_obj_scale(RandomFloat() * 0.4 + 0.8);
+    o->header.gfx.unk38.animFrame = (s16)(random_float() * 28.0f);
+    o->oFishDepthDistance = random_float() * 300.0f;
+    cur_obj_scale(random_float() * 0.4 + 0.8);
     o->oAction = FISH_ACT_ACTIVE;
 }
 

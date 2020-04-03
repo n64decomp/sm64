@@ -2,7 +2,7 @@
 
 #include "sm64.h"
 #include "audio/external.h"
-#include "game/game.h"
+#include "game/game_init.h"
 #include "game/memory.h"
 #include "game/area.h"
 #include "game/save_file.h"
@@ -18,6 +18,7 @@
 #include "text_strings.h"
 #include "star_select.h"
 #include "eu_translation.h"
+#include <prevent_bss_reordering.h>
 
 /**
  * @file star_select.c

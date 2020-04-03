@@ -45,16 +45,16 @@ void bub_move_vertically(s32 a0) {
 }
 
 void bub_act_0(void) {
-    o->oCheepCheepUnkFC = RandomFloat() * 100.0f;
-    o->oCheepCheepUnk104 = RandomFloat() * 300.0f;
+    o->oCheepCheepUnkFC = random_float() * 100.0f;
+    o->oCheepCheepUnk104 = random_float() * 300.0f;
     o->oAction = 1;
 }
 
 void bub_act_1(void) {
     f32 dy;
     if (o->oTimer == 0) {
-        o->oForwardVel = RandomFloat() * 2 + 2;
-        o->oCheepCheepUnk108 = RandomFloat();
+        o->oForwardVel = random_float() * 2 + 2;
+        o->oCheepCheepUnk108 = random_float();
     }
     dy = o->oPosY - gMarioObject->oPosY;
     if (o->oPosY < o->oCheepCheepUnkF4 - 50.0f) {

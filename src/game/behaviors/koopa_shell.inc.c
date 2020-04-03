@@ -18,17 +18,17 @@ void koopa_shell_spawn_water_drop(void) {
     spawn_object(o, MODEL_WAVE_TRAIL, bhvObjectWaveTrail);
     if (gMarioStates->forwardVel > 10.0f) {
         drop = spawn_object_with_scale(o, MODEL_WHITE_PARTICLE_SMALL, bhvWaterDroplet, 1.5f);
-        drop->oVelY = RandomFloat() * 30.0f;
+        drop->oVelY = random_float() * 30.0f;
         obj_translate_xz_random(drop, 110.0f);
     }
 }
 
 void bhv_koopa_shell_flame_loop(void) {
     if (o->oTimer == 0) {
-        o->oMoveAngleYaw = RandomU16();
-        o->oVelY = RandomFloat() * 30.0f;
+        o->oMoveAngleYaw = random_u16();
+        o->oVelY = random_float() * 30.0f;
         o->oGravity = -4.0f;
-        o->oAnimState = RandomFloat() * 10.0f;
+        o->oAnimState = random_float() * 10.0f;
         obj_translate_xz_random(o, 110.0f);
         o->oKoopaShellFlameUnkF8 = 4.0f;
     }

@@ -44,7 +44,7 @@ void yoshi_idle_loop(void) {
     UNUSED s16 sp1C = o->header.gfx.unk38.animFrame;
 
     if (o->oTimer > 90) {
-        chosenHome = RandomFloat() * 3.99;
+        chosenHome = random_float() * 3.99;
 
         if (o->oYoshiChosenHome == chosenHome) {
             return;

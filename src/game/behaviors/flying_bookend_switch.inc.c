@@ -47,7 +47,7 @@ void flying_bookend_act_0(void) {
 
 void flying_bookend_act_1(void) {
     if (obj_forward_vel_approach(3.0f, 1.0f)) {
-        if (func_802F92B0(2)) {
+        if (cur_obj_init_anim_and_check_if_end(2)) {
             o->oAction = 2;
             o->oForwardVel = 0.0f;
         } else {
@@ -272,7 +272,7 @@ void bhv_book_switch_loop(void) {
                         play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gDefaultSoundArgs);
                         o->parentObj->oBookSwitchManagerUnkF4 += 1;
                     } else {
-                        sp36 = RandomU16() & 0x1;
+                        sp36 = random_u16() & 0x1;
                         sp34 = gMarioObject->oPosZ + 1.5f * gMarioStates[0].vel[2];
 
                         play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);

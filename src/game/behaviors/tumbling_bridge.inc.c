@@ -17,7 +17,7 @@ void bhv_tumbling_bridge_platform_loop(void) {
         case 0:
             if (gMarioObject->platform == o) {
                 o->oAction++;
-                o->oTumblingBridgeUnkF4 = RandomSign() * 0x80;
+                o->oTumblingBridgeUnkF4 = random_sign() * 0x80;
             }
             break;
         case 1:

@@ -7,7 +7,7 @@
 #include "print.h"
 #include "engine/surface_collision.h"
 #include "mario.h"
-#include "game.h"
+#include "game_init.h"
 #include "main.h"
 #include "debug.h"
 #include "object_list_processor.h"
@@ -391,7 +391,10 @@ static void try_change_debug_page(void) {
  * sDebugSysCursor. This is used to adjust enemy and effect behaviors
  * on the fly. (unused)
  */
-static void try_modify_debug_controls(void) {
+#ifndef VERSION_SH
+static
+#endif
+void try_modify_debug_controls(void) {
     s32 sp4;
 
     if (gPlayer1Controller->buttonPressed & Z_TRIG) {
@@ -521,8 +524,11 @@ void try_do_mario_debug_object_spawn(void) {
 }
 
 // TODO: figure out what this is
-static void debug_print_obj_move_flags(void) {
-#ifndef VERSION_EU
+#ifndef VERSION_SH
+static
+#endif
+void debug_print_obj_move_flags(void) {
+#ifndef VERSION_EU // TODO: Is there a better way to diff this? static EU doesn't seem to work.
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED) {
         print_debug_top_down_objectinfo("BOUND   %x", gCurrentObject->oMoveFlags);
     }

@@ -7,75 +7,92 @@
 #include "debug_utils.h"
 #include "renderer.h"
 
-/* 242300 -> 242338 */
+/**
+ * Finds the square root of a float by treating
+ * it as a double and finding the square root from there.
+ */
 f32 gd_sqrt_f(f32 val) {
     return (f32) gd_sqrt_d(val);
 }
 
-/* 242338 -> 24292C */
-void func_80193B68(Mat4f *mtx, f32 a1, f32 a2, f32 a3, f32 sp78, f32 sp7C, f32 sp80, f32 sp84, f32 sp88,
-                   f32 sp8C) {
-    f32 sp64;
-    struct GdVec3f sp58;
-    struct GdVec3f sp4C;
-    struct GdVec3f sp40;
+/**
+ * Set mtx to a look-at matrix for the camera. The resulting transformation
+ * transforms the world as if there exists a camera at position 'from' pointed
+ * at the position 'to'.
+ * An effective goddard copy of mtxf_lookat.
+ */
+void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 yTo, f32 zTo,
+                     f32 zColY, f32 yColY, f32 xColY) {
+    f32 invLength;
 
-    set_identity_mat4(mtx);
-    sp58.z = sp78 - a1;
-    sp58.y = sp7C - a2;
-    sp58.x = sp80 - a3;
+    struct GdVec3f d;
+    struct GdVec3f colX;
+    struct GdVec3f norm;
 
-    sp64 = ABS(sp58.z) + ABS(sp58.y) + ABS(sp58.x);
+    // No reason to do this? mtx is set lower.
+    gd_set_identity_mat4(mtx);
 
-    if (sp64 > 10000.0f || sp64 < 10.0f) {
-        sp40.x = sp58.z;
-        sp40.y = sp58.y;
-        sp40.z = sp58.x;
-        into_unit_vec3f(&sp40);
-        sp40.x *= 10000.0f;
-        sp40.y *= 10000.0f;
-        sp40.z *= 10000.0f;
+    d.z = xTo - xFrom;
+    d.y = yTo - yFrom;
+    d.x = zTo - zFrom;
 
-        sp58.z = sp40.x;
-        sp58.y = sp40.y;
-        sp58.x = sp40.z;
+    invLength = ABS(d.z) + ABS(d.y) + ABS(d.x);
+
+    // Scales 'd' if smaller than 10 or larger than 10,000 to be
+    // of a magnitude of 10,000.
+    if (invLength > 10000.0f || invLength < 10.0f) {
+        norm.x = d.z;
+        norm.y = d.y;
+        norm.z = d.x;
+        gd_normalize_vec3f(&norm);
+        norm.x *= 10000.0f;
+        norm.y *= 10000.0f;
+        norm.z *= 10000.0f;
+
+        d.z = norm.x;
+        d.y = norm.y;
+        d.x = norm.z;
     }
-    // L80193D44
-    sp64 = -1.0 / gd_sqrt_f(SQ(sp58.z) + SQ(sp58.y) + SQ(sp58.x)); //? -1.0f
-    sp58.z *= sp64;
-    sp58.y *= sp64;
-    sp58.x *= sp64;
-    // 80193DC8
-    sp4C.z = sp88 * sp58.x - sp8C * sp58.y;
-    sp4C.y = sp8C * sp58.z - sp84 * sp58.x;
-    sp4C.x = sp84 * sp58.y - sp88 * sp58.z;
-    sp64 = 1.0 / gd_sqrt_f(SQ(sp4C.z) + SQ(sp4C.y) + SQ(sp4C.x)); //? 1.0f
-    sp4C.z *= sp64;
-    sp4C.y *= sp64;
-    sp4C.x *= sp64;
 
-    sp84 = sp58.y * sp4C.x - sp58.x * sp4C.y;
-    sp88 = sp58.x * sp4C.z - sp58.z * sp4C.x;
-    sp8C = sp58.z * sp4C.y - sp58.y * sp4C.z;
-    sp64 = 1.0 / gd_sqrt_f(SQ(sp84) + SQ(sp88) + SQ(sp8C)); //? 1.0f
-    sp84 *= sp64;
-    sp88 *= sp64;
-    sp8C *= sp64;
-    // 80193FA8
-    (*mtx)[0][0] = sp4C.z;
-    (*mtx)[1][0] = sp4C.y;
-    (*mtx)[2][0] = sp4C.x;
-    (*mtx)[3][0] = -(a1 * sp4C.z + a2 * sp4C.y + a3 * sp4C.x);
+    invLength = -1.0 / gd_sqrt_f(SQ(d.z) + SQ(d.y) + SQ(d.x));
+    d.z *= invLength;
+    d.y *= invLength;
+    d.x *= invLength;
 
-    (*mtx)[0][1] = sp84;
-    (*mtx)[1][1] = sp88;
-    (*mtx)[2][1] = sp8C;
-    (*mtx)[3][1] = -(a1 * sp84 + a2 * sp88 + a3 * sp8C);
+    colX.z = yColY * d.x - xColY * d.y;
+    colX.y = xColY * d.z - zColY * d.x;
+    colX.x = zColY * d.y - yColY * d.z;
 
-    (*mtx)[0][2] = sp58.z;
-    (*mtx)[1][2] = sp58.y;
-    (*mtx)[2][2] = sp58.x;
-    (*mtx)[3][2] = -(a1 * sp58.z + a2 * sp58.y + a3 * sp58.x);
+    invLength = 1.0 / gd_sqrt_f(SQ(colX.z) + SQ(colX.y) + SQ(colX.x));
+
+    colX.z *= invLength;
+    colX.y *= invLength;
+    colX.x *= invLength;
+
+    zColY = d.y * colX.x - d.x * colX.y;
+    yColY = d.x * colX.z - d.z * colX.x;
+    xColY = d.z * colX.y - d.y * colX.z;
+
+    invLength = 1.0 / gd_sqrt_f(SQ(zColY) + SQ(yColY) + SQ(xColY));
+
+    zColY *= invLength;
+    yColY *= invLength;
+    xColY *= invLength;
+
+    (*mtx)[0][0] = colX.z;
+    (*mtx)[1][0] = colX.y;
+    (*mtx)[2][0] = colX.x;
+    (*mtx)[3][0] = -(xFrom * colX.z + yFrom * colX.y + zFrom * colX.x);
+
+    (*mtx)[0][1] = zColY;
+    (*mtx)[1][1] = yColY;
+    (*mtx)[2][1] = xColY;
+    (*mtx)[3][1] = -(xFrom * zColY + yFrom * yColY + zFrom * xColY);
+
+    (*mtx)[0][2] = d.z;
+    (*mtx)[1][2] = d.y;
+    (*mtx)[2][2] = d.x;
+    (*mtx)[3][2] = -(xFrom * d.z + yFrom * d.y + zFrom * d.x);
 
     (*mtx)[0][3] = 0.0f;
     (*mtx)[1][3] = 0.0f;
@@ -83,8 +100,10 @@ void func_80193B68(Mat4f *mtx, f32 a1, f32 a2, f32 a3, f32 sp78, f32 sp7C, f32 s
     (*mtx)[3][3] = 1.0f;
 }
 
-/* 24292C -> 2429F0 */
-void func_8019415C(Mat4f *mtx, struct GdVec3f *vec) {
+/**
+ * Scales a mat4f in each dimension by a vector.
+ */
+void gd_scale_mat4f_by_vec3f(Mat4f *mtx, struct GdVec3f *vec) {
     (*mtx)[0][0] *= vec->x;
     (*mtx)[0][1] *= vec->x;
     (*mtx)[0][2] *= vec->x;
@@ -96,21 +115,26 @@ void func_8019415C(Mat4f *mtx, struct GdVec3f *vec) {
     (*mtx)[2][2] *= vec->z;
 }
 
-/* 2429F0 -> 242AB4 */
-void func_80194220(Mat4f *mtx, struct GdVec3f *vec) {
+/**
+ * Rotates the matrix 'mtx' about the vector given.
+ */
+void gd_rot_mat_about_vec(Mat4f *mtx, struct GdVec3f *vec) {
     if (vec->x != 0.0f) {
-        absrot_mat4(mtx, 0, vec->x);
+        gd_absrot_mat4(mtx, GD_X_AXIS, vec->x);
     }
     if (vec->y != 0.0f) {
-        absrot_mat4(mtx, 1, vec->y);
+        gd_absrot_mat4(mtx, GD_Y_AXIS, vec->y);
     }
     if (vec->z != 0.0f) {
-        absrot_mat4(mtx, 2, vec->z);
+        gd_absrot_mat4(mtx, GD_Z_AXIS, vec->z);
     }
 }
 
-/* 242AB4 -> 242B28 */
-void func_801942E4(Mat4f *mtx, struct GdVec3f *vec) {
+/**
+ * Adds each component of a vector to the
+ * translation column of a mat4f matrix.
+ */
+void gd_add_vec3f_to_mat4f_offset(Mat4f *mtx, struct GdVec3f *vec) {
     UNUSED Mat4f temp;
     f32 z, y, x;
 
@@ -123,56 +147,72 @@ void func_801942E4(Mat4f *mtx, struct GdVec3f *vec) {
     (*mtx)[3][2] += z;
 }
 
-/* 242B28 -> 242EF8 */
-void func_80194358(Mat4f *mtx, struct GdVec3f *vec, f32 a2) {
-    f32 sp34;
-    f32 sp30; // distance between unit vec.x and unit vec.y
-    f32 sp2C; // cos(a2)
-    f32 sp28; // sin(a2)
-    f32 sp24 = RAD_PER_DEG;
-    struct GdVec3f unit; // 18
+/**
+ * Creates a lookat matrix, but specifically from the perspective of the origin.
+ * Rolls is only ever 0 in practice, and this is really only ever used once.
+ *
+ * Matrix has form-  | -(cz+sxy)/h sh  (cx-syz)/h 0 |
+ *                   |  (sz-cxy)/h ch -(sx+cyz)/h 0 |
+ *                   |     -x      -y     -z      0 |
+ *                   |      0       0      0      1 |
+ */
+void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll) {
+    f32 invertedHMag;
+    f32 hMag;
+    f32 c;
+    f32 s;
+    f32 radPerDeg = RAD_PER_DEG;
+    struct GdVec3f unit;
 
     unit.x = vec->x;
     unit.y = vec->y;
     unit.z = vec->z;
-    into_unit_vec3f(&unit);
-    sp30 = gd_sqrt_f(SQ(unit.x) + SQ(unit.z));
-    a2 *= sp24; // convert a2 from degrees to radians?
-    sp28 = gd_sin_d(a2);
-    sp2C = gd_cos_d(a2);
 
-    set_identity_mat4(mtx);
-    if (sp30 != 0.0f) {
-        sp34 = 1.0f / sp30;
-        (*mtx)[0][0] = ((-unit.z * sp2C) - (sp28 * unit.y * unit.x)) * sp34;
-        (*mtx)[1][0] = ((unit.z * sp28) - (sp2C * unit.y * unit.x)) * sp34;
+    gd_normalize_vec3f(&unit);
+    hMag = gd_sqrt_f(SQ(unit.x) + SQ(unit.z));
+
+    roll *= radPerDeg; // convert roll from degrees to radians
+    s = gd_sin_d(roll);
+    c = gd_cos_d(roll);
+
+    gd_set_identity_mat4(mtx);
+    if (hMag != 0.0f) {
+        invertedHMag = 1.0f / hMag;
+        (*mtx)[0][0] = ((-unit.z * c) - (s * unit.y * unit.x)) * invertedHMag;
+        (*mtx)[1][0] = ((unit.z * s) - (c * unit.y * unit.x)) * invertedHMag;
         (*mtx)[2][0] = -unit.x;
         (*mtx)[3][0] = 0.0f;
-        (*mtx)[0][1] = sp28 * sp30;
-        (*mtx)[1][1] = sp2C * sp30;
+
+        (*mtx)[0][1] = s * hMag;
+        (*mtx)[1][1] = c * hMag;
         (*mtx)[2][1] = -unit.y;
         (*mtx)[3][1] = 0.0f;
-        (*mtx)[0][2] = ((sp2C * unit.x) - (sp28 * unit.y * unit.z)) * sp34;
-        (*mtx)[1][2] = ((-sp28 * unit.x) - (sp2C * unit.y * unit.z)) * sp34;
+
+        (*mtx)[0][2] = ((c * unit.x) - (s * unit.y * unit.z)) * invertedHMag;
+        (*mtx)[1][2] = ((-s * unit.x) - (c * unit.y * unit.z)) * invertedHMag;
         (*mtx)[2][2] = -unit.z;
         (*mtx)[3][2] = 0.0f;
+
         (*mtx)[0][3] = 0.0f;
         (*mtx)[1][3] = 0.0f;
         (*mtx)[2][3] = 0.0f;
         (*mtx)[3][3] = 1.0f;
-    } else { // L80194600
+    } else {
         (*mtx)[0][0] = 0.0f;
         (*mtx)[1][0] = 1.0f;
         (*mtx)[2][0] = 0.0f;
         (*mtx)[3][0] = 0.0f;
+
         (*mtx)[0][1] = 0.0f;
         (*mtx)[1][1] = 0.0f;
         (*mtx)[2][1] = 1.0f;
         (*mtx)[3][1] = 0.0f;
+
         (*mtx)[0][2] = 1.0f;
         (*mtx)[1][2] = 0.0f;
         (*mtx)[2][2] = 0.0f;
         (*mtx)[3][2] = 0.0f;
+
         (*mtx)[0][3] = 0.0f;
         (*mtx)[1][3] = 0.0f;
         (*mtx)[2][3] = 0.0f;
@@ -180,8 +220,10 @@ void func_80194358(Mat4f *mtx, struct GdVec3f *vec, f32 a2) {
     }
 }
 
-/* 242EF8 -> 242F40 */
-f32 func_80194728(f32 a, f32 b) {
+/**
+ * Clamps a float within a set range about zero.
+ */
+f32 gd_clamp_f32(f32 a, f32 b) {
     if (b < a) {
         a = b;
     } else if (a < -b) {
@@ -191,8 +233,10 @@ f32 func_80194728(f32 a, f32 b) {
     return a;
 }
 
-/* 242F40 -> 243050; orig name: func_80194770 */
-void limit_vec3f(struct GdVec3f *vec, f32 limit) {
+/**
+ * Clamps a vector within a set range about zero.
+ */
+void gd_clamp_vec3f(struct GdVec3f *vec, f32 limit) {
     if (vec->x > limit) {
         vec->x = limit;
     } else if (vec->x < -limit) {
@@ -212,50 +256,56 @@ void limit_vec3f(struct GdVec3f *vec, f32 limit) {
     }
 }
 
-/* 243050 -> 24315C */
-void func_80194880(f32 a0, f32 *a1, f32 *a2) {
-    f32 sp34;
-    f32 sp30;
-    f32 sp2C;
+/**
+ * Rotates a 2D vector by some angle in degrees.
+ */
+void gd_rot_2d_vec(f32 deg, f32 *x, f32 *y) {
+    f32 xP;
+    f32 yP;
+    f32 rad;
 
-    sp2C = a0 / DEG_PER_RAD; // degree to radians
-    sp34 = (*a1 * gd_cos_d(sp2C)) - (*a2 * gd_sin_d(sp2C));
-    sp30 = (*a1 * gd_sin_d(sp2C)) + (*a2 * gd_cos_d(sp2C));
-    *a1 = sp34;
-    *a2 = sp30;
+    rad = deg / DEG_PER_RAD;
+    xP = (*x * gd_cos_d(rad)) - (*y * gd_sin_d(rad));
+    yP = (*x * gd_sin_d(rad)) + (*y * gd_cos_d(rad));
+    *x = xP;
+    *y = yP;
 }
 
-/* 24315C -> 243224 */
-void Unknown8019498C(Mat4f *a0, s32 row, f32 a2) {
-    Mat4f sp28;
+/**
+ * Rotates a matrix about one of its rows.
+ */
+void UNUSED gd_rot_mat_about_row(Mat4f *mat, s32 row, f32 ang) {
+    Mat4f rot;
     struct GdVec3f vec;
 
-    vec.x = (*a0)[row][0];
-    vec.y = (*a0)[row][1];
-    vec.z = (*a0)[row][2];
+    vec.x = (*mat)[row][0];
+    vec.y = (*mat)[row][1];
+    vec.z = (*mat)[row][2];
 
-    func_801961F4(&sp28, &vec, a2 / 2.0); //? 2.0f
-    multiply_mat4(a0, &sp28, a0);
+    gd_create_rot_mat_angular(&rot, &vec, ang / 2.0);
+    gd_mult_mat4f(mat, &rot, mat);
 }
 
-// TODO: enumerate second argument (0-2)?
-/* 243224 -> 243368; orig name: func_80194A54 */
-void absrot_mat4(Mat4f *mtx, s32 axisnum, f32 a2) {
-    Mat4f sp30;
-    struct GdVec3f rot; // 24
+/**
+ * Rotates a mat4f matrix about a given axis
+ * by a set angle in degrees.
+ */
+void gd_absrot_mat4(Mat4f *mtx, s32 axisnum, f32 ang) {
+    Mat4f rMat;
+    struct GdVec3f rot;
 
     switch (axisnum) {
-        case 0:
+        case GD_X_AXIS:
             rot.x = 1.0f;
             rot.y = 0.0f;
             rot.z = 0.0f;
             break;
-        case 1:
+        case GD_Y_AXIS:
             rot.x = 0.0f;
             rot.y = 1.0f;
             rot.z = 0.0f;
             break;
-        case 2:
+        case GD_Z_AXIS:
             rot.x = 0.0f;
             rot.y = 0.0f;
             rot.z = 1.0f;
@@ -264,23 +314,26 @@ void absrot_mat4(Mat4f *mtx, s32 axisnum, f32 a2) {
             fatal_printf("absrot_matrix4(): Bad axis num");
     }
 
-    func_801961F4(&sp30, &rot, a2 / 2.0); //? 2.0f
-    multiply_mat4(mtx, &sp30, mtx);
+    gd_create_rot_mat_angular(&rMat, &rot, ang / 2.0); //? 2.0f
+    gd_mult_mat4f(mtx, &rMat, mtx);
 }
 
-/* 243368 -> 2433C4 */
-f32 magnitude_vec3f(struct GdVec3f *vec) {
+
+f32 gd_vec3f_magnitude(struct GdVec3f *vec) {
     return gd_sqrt_f(SQ(vec->x) + SQ(vec->y) + SQ(vec->z));
 }
 
-/* 2433C4 -> 2434E4; orig name: func_80194BF4 */
-s32 into_unit_vec3f(struct GdVec3f *vec) {
+/**
+ * Normalizes a vec3f to have a length of 1.
+ */
+s32 gd_normalize_vec3f(struct GdVec3f *vec) {
     f32 mag;
     if ((mag = SQ(vec->x) + SQ(vec->y) + SQ(vec->z)) == 0.0f) {
         return FALSE;
     }
 
     mag = gd_sqrt_f(mag);
+    // gd_sqrt_f rounds near 0 numbers to 0, so verify again.
     if (mag == 0.0f) {
         vec->x = 0.0f;
         vec->y = 0.0f;
@@ -295,8 +348,10 @@ s32 into_unit_vec3f(struct GdVec3f *vec) {
     return TRUE;
 }
 
-/* 2434E4 -> 243588; orig name: func_80194D14 */
-void cross_product_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst) {
+/**
+ * Stores the cross product of 'a' x 'b' in 'dst'.
+ */
+void gd_cross_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst) {
     struct GdVec3f result;
 
     result.x = (a->y * b->z) - (a->z * b->y);
@@ -308,13 +363,17 @@ void cross_product_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *d
     dst->z = result.z;
 }
 
-/* 243588 -> 2435CC; orig name: func_80194DB8 */
-f32 dot_product_vec3f(struct GdVec3f *a, struct GdVec3f *b) {
+/**
+ * Returns the dot product of 'a' and 'b'.
+ */
+f32 gd_dot_vec3f(struct GdVec3f *a, struct GdVec3f *b) {
     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
-/* 2435CC -> 24364C */
-void Unknown80194DFC(Mat4f *src, Mat4f *dst) {
+/**
+ * Inverts each element of src into dst.
+ */
+void UNUSED gd_invert_elements_mat4f(Mat4f *src, Mat4f *dst) {
     s32 i;
     s32 j;
 
@@ -325,17 +384,17 @@ void Unknown80194DFC(Mat4f *src, Mat4f *dst) {
     }
 }
 
-/* self */ void func_80194F90(Mat4f *, Mat4f *);
-/* self */ f32 func_80195578(Mat4f *);
-
-/* 24364C -> 243760; orig name: func_80194E7C */
-void inverse_mat4(Mat4f *src, Mat4f *dst) {
+/**
+ * Inverts a matrix from src and stores it into dst.
+ * Reaches a fatal_print if the determinant is 0.
+ */
+void gd_inverse_mat4f(Mat4f *src, Mat4f *dst) {
     s32 i;
     s32 j;
     f32 determinant;
 
-    func_80194F90(src, dst);
-    determinant = func_80195578(dst);
+    gd_adjunct_mat4f(src, dst);
+    determinant = gd_mat4f_det(dst);
 
     if (ABS(determinant) < 1e-5) //? 1e-5f
     {
@@ -349,19 +408,11 @@ void inverse_mat4(Mat4f *src, Mat4f *dst) {
     }
 }
 
-/* self */ f32 func_80195844(f32, f32, f32, f32, f32, f32, f32, f32, f32);
-
-struct Row4 {
-    f32 c0, c1, c2, c3;
-};
-struct InvMat4 {
-    struct Row4 r0, r1, r2, r3;
-};
-
-/* 243760 -> 243D48 */
-// TODO: adjunct mat4?
-void func_80194F90(Mat4f *src, Mat4f *adj) {
-    struct InvMat4 inv; // 30
+/**
+ * Takes a matrix from src and converts it into its adjunct in dst.
+ */
+void gd_adjunct_mat4f(Mat4f *src, Mat4f *dst) {
+    struct InvMat4 inv;
 
     inv.r3.c3 = (*src)[0][0];
     inv.r2.c3 = (*src)[0][1];
@@ -380,60 +431,46 @@ void func_80194F90(Mat4f *src, Mat4f *adj) {
     inv.r1.c0 = (*src)[3][2];
     inv.r0.c0 = (*src)[3][3];
 
-    (*adj)[0][0] = func_80195844(inv.r2.c2, inv.r2.c1, inv.r2.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
+    (*dst)[0][0] = gd_3x3_det(inv.r2.c2, inv.r2.c1, inv.r2.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
                                  inv.r0.c2, inv.r0.c1, inv.r0.c0);
-
-    (*adj)[1][0] = -func_80195844(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
+    (*dst)[1][0] = -gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
                                   inv.r0.c2, inv.r0.c1, inv.r0.c0);
-    // 80195170
-    (*adj)[2][0] = func_80195844(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
+    (*dst)[2][0] = gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
                                  inv.r0.c2, inv.r0.c1, inv.r0.c0);
-    // 801951B8
-    (*adj)[3][0] = -func_80195844(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
+    (*dst)[3][0] = -gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
                                   inv.r1.c2, inv.r1.c1, inv.r1.c0);
-    // 80195200
-    (*adj)[0][1] = -func_80195844(inv.r2.c3, inv.r2.c1, inv.r2.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
+    (*dst)[0][1] = -gd_3x3_det(inv.r2.c3, inv.r2.c1, inv.r2.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
                                   inv.r0.c3, inv.r0.c1, inv.r0.c0);
-    // 80195248
-    (*adj)[1][1] = func_80195844(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
+    (*dst)[1][1] = gd_3x3_det(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
                                  inv.r0.c3, inv.r0.c1, inv.r0.c0);
-    // 80195290
-    (*adj)[2][1] = -func_80195844(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
+    (*dst)[2][1] = -gd_3x3_det(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
                                   inv.r0.c3, inv.r0.c1, inv.r0.c0);
-    // 801952D8
-    (*adj)[3][1] = func_80195844(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
+    (*dst)[3][1] = gd_3x3_det(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
                                  inv.r1.c3, inv.r1.c1, inv.r1.c0);
-    // 80195320
-    (*adj)[0][2] = func_80195844(inv.r2.c3, inv.r2.c2, inv.r2.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
+    (*dst)[0][2] = gd_3x3_det(inv.r2.c3, inv.r2.c2, inv.r2.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
                                  inv.r0.c3, inv.r0.c2, inv.r0.c0);
-    // 80195368
-    (*adj)[1][2] = -func_80195844(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
+    (*dst)[1][2] = -gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
                                   inv.r0.c3, inv.r0.c2, inv.r0.c0);
-    // 801953B0
-    (*adj)[2][2] = func_80195844(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
+    (*dst)[2][2] = gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
                                  inv.r0.c3, inv.r0.c2, inv.r0.c0);
-    // 801953F8
-    (*adj)[3][2] = -func_80195844(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
+    (*dst)[3][2] = -gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
                                   inv.r1.c3, inv.r1.c2, inv.r1.c0);
-    // 80195440
-    (*adj)[0][3] = -func_80195844(inv.r2.c3, inv.r2.c2, inv.r2.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
+    (*dst)[0][3] = -gd_3x3_det(inv.r2.c3, inv.r2.c2, inv.r2.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
                                   inv.r0.c3, inv.r0.c2, inv.r0.c1);
-    // 80195488
-    (*adj)[1][3] = func_80195844(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
+    (*dst)[1][3] = gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
                                  inv.r0.c3, inv.r0.c2, inv.r0.c1);
-    // 801954D0
-    (*adj)[2][3] = -func_80195844(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
+    (*dst)[2][3] = -gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
                                   inv.r0.c3, inv.r0.c2, inv.r0.c1);
-    // 80195518
-    (*adj)[3][3] = func_80195844(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
+    (*dst)[3][3] = gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
                                  inv.r1.c3, inv.r1.c2, inv.r1.c1);
 }
 
-/* 243D48 -> 244014 */
-// TODO: determinant mat4
-f32 func_80195578(Mat4f *mtx) {
+/**
+ * Returns the determinant of a mat4f matrix.
+ */
+f32 gd_mat4f_det(Mat4f *mtx) {
     f32 det;
-    struct InvMat4 inv; // 54 -> 94
+    struct InvMat4 inv;
 
     inv.r3.c3 = (*mtx)[0][0];
     inv.r2.c3 = (*mtx)[0][1];
@@ -453,45 +490,56 @@ f32 func_80195578(Mat4f *mtx) {
     inv.r0.c0 = (*mtx)[3][3];
 
     det = (inv.r3.c3
-               * func_80195844(inv.r2.c2, inv.r2.c1, inv.r2.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
-                               inv.r0.c2, inv.r0.c1, inv.r0.c0)
+                * gd_3x3_det(inv.r2.c2, inv.r2.c1, inv.r2.c0,
+                             inv.r1.c2, inv.r1.c1, inv.r1.c0,
+                             inv.r0.c2, inv.r0.c1, inv.r0.c0)
            - inv.r2.c3
-                 * func_80195844(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
-                                 inv.r0.c2, inv.r0.c1, inv.r0.c0))
+                * gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0,
+                             inv.r1.c2, inv.r1.c1, inv.r1.c0,
+                             inv.r0.c2, inv.r0.c1, inv.r0.c0))
           + inv.r1.c3
-                * func_80195844(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
-                                inv.r0.c2, inv.r0.c1, inv.r0.c0)
+                * gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0,
+                             inv.r2.c2, inv.r2.c1, inv.r2.c0,
+                             inv.r0.c2, inv.r0.c1, inv.r0.c0)
           - inv.r0.c3
-                * func_80195844(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
-                                inv.r1.c2, inv.r1.c1, inv.r1.c0);
+                * gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0,
+                             inv.r2.c2, inv.r2.c1, inv.r2.c0,
+                             inv.r1.c2, inv.r1.c1, inv.r1.c0);
 
     return det;
 }
 
-/* self */ f32 func_8019590C(f32, f32, f32, f32);
-
-/* 244014 -> 2440DC */
-// TODO: determinant_3x3
-f32 func_80195844(f32 r0c0, f32 r0c1, f32 r0c2, f32 r1c0, f32 r1c1, f32 r1c2, f32 r2c0, f32 r2c1,
-                  f32 r2c2) {
+/**
+ * Takes the individual values of a 3 by 3 matrix and
+ * returns the determinant.
+ */
+f32 gd_3x3_det(f32 r0c0, f32 r0c1, f32 r0c2,
+               f32 r1c0, f32 r1c1, f32 r1c2, 
+               f32 r2c0, f32 r2c1, f32 r2c2) {
     f32 det;
 
-    det = r0c0 * func_8019590C(r1c1, r1c2, r2c1, r2c2) - r1c0 * func_8019590C(r0c1, r0c2, r2c1, r2c2)
-          + r2c0 * func_8019590C(r0c1, r0c2, r1c1, r1c2);
+    det = r0c0 * gd_2x2_det(r1c1, r1c2, r2c1, r2c2) - r1c0 * gd_2x2_det(r0c1, r0c2, r2c1, r2c2)
+          + r2c0 * gd_2x2_det(r0c1, r0c2, r1c1, r1c2);
 
     return det;
 }
 
-/* 2440DC -> 244120 */
-// TODO: determinant_2x2
-f32 func_8019590C(f32 a, f32 b, f32 c, f32 d) {
+/**
+ * Takes the individual values of a 2 by 2 matrix and
+ * returns the determinant.
+ */
+f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d) {
     f32 det = a * d - b * c;
 
     return det;
 }
 
-/* 244120 -> 2441B0 */
-void Unknown80195950(Mat4f *mtx, struct GdVec3f *vec, f32 x, f32 y, f32 z) {
+/**
+ * Creates a vector negative to what was passed in. Also sets the first row of a mat4f
+ * to 1 0 0 0. Perhaps meant to be used at the end of gd_create_quat_rot_mat? Not
+ * sure of the purpose of the vector portion, though.
+ */
+void UNUSED gd_create_neg_vec_zero_first_mat_row(Mat4f *mtx, struct GdVec3f *vec, f32 x, f32 y, f32 z) {
     s32 i;
 
     vec->x = -x;
@@ -505,72 +553,79 @@ void Unknown80195950(Mat4f *mtx, struct GdVec3f *vec, f32 x, f32 y, f32 z) {
     }
 }
 
-/* 2441B0 -> 2442D4 */
-void Unknown801959E0(f32 *a0, struct GdVec3f *vec, f32 a2, s32 a3, s32 sp38) {
-    s32 sp24;
-    s32 sp20;
-    UNUSED f32 sp1C;
-    UNUSED f32 sp18;
-    UNUSED struct GdVec3f sp0C;
-    struct GdVec3f sp00;
+/**
+ * This function quite literally does nothing.
+ * Seems to have been meant to create a vector from a quaternion?
+ */
+void UNUSED gd_broken_quat_to_vec3f(f32 quat[4], struct GdVec3f *vec, f32 zHalf, s32 i, s32 run) {
+    s32 j;
+    s32 k;
+    UNUSED f32 jVal;
+    UNUSED f32 kVal;
+    UNUSED struct GdVec3f uVec;
+    struct GdVec3f tVec;
 
-    sp00.x = vec->x;
-    sp00.y = vec->y;
-    sp00.z = vec->z;
+    tVec.x = vec->x;
+    tVec.y = vec->y;
+    tVec.z = vec->z;
 
-    if (sp38 < 0) {
+    if (run < 0) {
         goto end;
     }
-    // L80195A24
-    sp24 = a3 + 1;
-    if (sp24 >= 4) {
-        sp24 = 1;
-    }
-    // L80195A48
-    if ((sp20 = sp24 + 1) >= 4) {
-        sp20 = 1;
-    }
-    // L80195A68
-    sp1C = a0[sp24];
-    sp18 = a0[sp20];
-    sp0C.x = a0[0];
-    sp0C.y = a0[a3];
-    sp0C.z = a2 + a2;
 
-end: // L80195AD0
-    vec->x = sp00.x;
-    vec->y = sp00.y;
-    vec->z = sp00.z;
+    if ((j = i + 1) >= 4) {
+        j = 1;
+    }
+
+    if ((k = j + 1) >= 4) {
+        k = 1;
+    }
+
+    jVal = quat[j];
+    kVal = quat[k];
+    uVec.x = quat[0];
+    uVec.y = quat[i];
+    uVec.z = zHalf + zHalf;
+
+end:
+    vec->x = tVec.x;
+    vec->y = tVec.y;
+    vec->z = tVec.z;
 }
 
-/* 2442D4 -> 244448 */
-void Unknown80195B04(f32 *a0, UNUSED s32 a1, f32 a2, f32 a3, s32 sp28, s32 sp2C) {
-    s32 sp14;
-    s32 sp10;
-    f32 sp0C;
+/**
+ * This function is a pitch rotation of a quaternion, with the sign allowing both regular
+ * and inverse multiplication.
+ */
+void UNUSED gd_quat_rotation(f32 quat[4], UNUSED s32 unused, f32 c, f32 s, s32 i, s32 sign) {
+    s32 j;
+    s32 k;
+    f32 quatVal;
     UNUSED u32 pad[2];
 
-    if ((sp14 = sp28 + 1) >= 4) {
-        sp14 = 1;
+    if ((j = i + 1) >= 4) {
+        j = 1;
     }
-    if ((sp10 = sp14 + 1) >= 4) {
-        sp10 = 1;
+    if ((k = j + 1) >= 4) {
+        k = 1;
     }
 
-    sp0C = a0[sp28];
-    a0[sp28] = ((f32) sp2C) * a3 * a0[0] + sp0C * a2;
-    a0[0] = a0[0] * a2 - ((f32) sp2C) * a3 * sp0C;
+    quatVal = quat[i];
+    quat[i] = sign * s * quat[0] + quatVal * c;
+    quat[0] = quat[0] * c - sign * s * quatVal;
 
-    sp0C = a0[sp14];
-    a0[sp14] = a0[sp10] * a3 + sp0C * a2;
-    a0[sp10] = a0[sp10] * a2 - a3 * sp0C;
+    quatVal = quat[j];
+    quat[j] = quat[k] * s + quatVal * c;
+    quat[k] = quat[k] * c - s * quatVal;
 }
 
-/* 244448 -> 244568 */
-void func_80195C78(Mat4f *mtx) {
-    s32 i;       // 14
-    s32 j;       // 10
-    f32 temp[3]; // 04
+/**
+ * Shifts a matrix up by one row, putting the top row on bottom.
+ */
+void gd_shift_mat_up(Mat4f *mtx) {
+    s32 i;
+    s32 j;
+    f32 temp[3];
 
     for (i = 0; i < 3; i++) {
         temp[i] = (*mtx)[0][i + 1];
@@ -591,81 +646,114 @@ void func_80195C78(Mat4f *mtx) {
     }
 }
 
-/* 244568 -> 2447A4 */
-void Unknown80195D98(f32 *a0, UNUSED s32 a1, Mat4f *mtx) {
-    f32 sp3C;
-    f32 sp38;
-    f32 temp[4]; // 28
-    s32 i;       // 24
-    s32 sp20;    // row?
-    s32 sp1C;
+/**
+ * Creates a rotation matrix from a quaternion.
+ *
+ * Has form-
+ * | 1        -               -               -        |
+ * | 0 w^2+i^2-j^2-k^2     2ij+2wk         2ik+2wj     |
+ * | 0     2ij-2wk     w^2+j^2-i^2-k^2     2jk+2wi     |
+ * | 0     2ik+2wj         2jk-2wi     w^2+k^2-i^2-j^2 |
+ * 
+ * Potentially broken if 'mtx' is not an identity matrix/zero'ed.
+ */
+void UNUSED gd_create_quat_rot_mat(f32 quat[4], UNUSED s32 unused, Mat4f *mtx) {
+    f32 twoIJ;
+    f32 two0K;
+    f32 sqQuat[4];
+    s32 i;
+    s32 j;
+    s32 k;
 
     for (i = 0; i < 4; i++) {
-        temp[i] = SQ(a0[i]);
+        sqQuat[i] = SQ(quat[i]);
     }
+
     for (i = 1; i < 4; i++) {
-        if ((sp20 = i + 1) >= 4) {
-            sp20 = 1;
-        }
-        if ((sp1C = sp20 + 1) >= 4) {
-            sp1C = 1;
+        if ((j = i + 1) >= 4) {
+            j = 1;
         }
 
-        sp3C = 2.0 * a0[i] * a0[sp20]; //? 2.0f
-        sp38 = 2.0 * a0[sp1C] * a0[0]; //? 2.0f
+        if ((k = j + 1) >= 4) {
+            k = 1;
+        }
 
-        (*mtx)[sp20][i] = sp3C - sp38;
-        (*mtx)[i][sp20] = sp3C + sp38;
-        (*mtx)[i][i] = temp[i] + temp[0] - temp[sp20] - temp[sp1C];
+        twoIJ = 2.0 * quat[i] * quat[j];
+        two0K = 2.0 * quat[k] * quat[0];
+
+        (*mtx)[j][i] = twoIJ - two0K;
+        (*mtx)[i][j] = twoIJ + two0K;
+        (*mtx)[i][i] = sqQuat[i] + sqQuat[0] - sqQuat[j] - sqQuat[k];
         (*mtx)[i][0] = 0.0f;
     }
+
+    //! The first row only ever has the first value set to 1, but the
+    //! latter portions remain what they were originally. Perhaps this was meant
+    //! to call gd_create_neg_vec_zero_first_mat_row?
     (*mtx)[0][0] = 1.0f;
-    func_80195C78(mtx);
+    gd_shift_mat_up(mtx);
 }
 
-/* 2447A4 -> 2449C4 */
-void func_80195FD4(Mat4f *mtx, struct GdVec3f *vec, f32 a, f32 b) {
-    f32 spC;
-    struct GdVec3f rev; // 0
+/**
+ * Creates a rotation matrix to multiply the primary matrix by.
+ * s/c are sin(angle)/cos(angle). That angular rotation is about vector
+ * 'vec'.
+ * 
+ * Matrix has form-
+ *
+ * | (1-c)z^2+c (1-c)zy-sx (1-c)xz-sy 0 | 
+ * | (1-c)zy-sx (1-c)y^2+c (1-c)xy-sz 0 |
+ * | (1-c)xz-sy (1-c)xy-sz (1-c)x^2+c 0 |
+ * |      0          0          0     1 |
+ */
+void gd_create_rot_matrix(Mat4f *mtx, struct GdVec3f *vec, f32 s, f32 c) {
+    f32 oneMinusCos;
+    struct GdVec3f rev;
 
     rev.z = vec->x;
     rev.y = vec->y;
     rev.x = vec->z;
 
-    spC = 1.0 - b;
+    oneMinusCos = 1.0 - c;
 
-    (*mtx)[0][0] = spC * rev.z * rev.z + b;
-    (*mtx)[0][1] = spC * rev.z * rev.y + a * rev.x;
-    (*mtx)[0][2] = spC * rev.z * rev.x - a * rev.y;
+    (*mtx)[0][0] = oneMinusCos * rev.z * rev.z + c;
+    (*mtx)[0][1] = oneMinusCos * rev.z * rev.y + s * rev.x;
+    (*mtx)[0][2] = oneMinusCos * rev.z * rev.x - s * rev.y;
     (*mtx)[0][3] = 0.0f;
-    (*mtx)[1][0] = spC * rev.z * rev.y - a * rev.x;
-    (*mtx)[1][1] = spC * rev.y * rev.y + b;
-    (*mtx)[1][2] = spC * rev.y * rev.x + a * rev.z;
+
+    (*mtx)[1][0] = oneMinusCos * rev.z * rev.y - s * rev.x;
+    (*mtx)[1][1] = oneMinusCos * rev.y * rev.y + c;
+    (*mtx)[1][2] = oneMinusCos * rev.y * rev.x + s * rev.z;
     (*mtx)[1][3] = 0.0f;
-    (*mtx)[2][0] = spC * rev.z * rev.x + a * rev.y;
-    (*mtx)[2][1] = spC * rev.y * rev.x - a * rev.z;
-    (*mtx)[2][2] = spC * rev.x * rev.x + b;
+
+    (*mtx)[2][0] = oneMinusCos * rev.z * rev.x + s * rev.y;
+    (*mtx)[2][1] = oneMinusCos * rev.y * rev.x - s * rev.z;
+    (*mtx)[2][2] = oneMinusCos * rev.x * rev.x + c;
     (*mtx)[2][3] = 0.0f;
+
     (*mtx)[3][0] = 0.0f;
     (*mtx)[3][1] = 0.0f;
     (*mtx)[3][2] = 0.0f;
     (*mtx)[3][3] = 1.0f;
 }
 
-/* 2449C4 -> 244A50 */
-void func_801961F4(Mat4f *mtx, struct GdVec3f *vec, f32 ang) {
-    f32 ycmp; // 1c
-    f32 xcmp; // 18
+/**
+ * Creates a rotation matrix about vector 'vec' with ang in degrees.
+ */
+void gd_create_rot_mat_angular(Mat4f *mtx, struct GdVec3f *vec, f32 ang) {
+    f32 s;
+    f32 c;
 
-    // probably is "(angle * pi / 180) / 2"
-    ycmp = gd_sin_d(ang / (DEG_PER_RAD / 2.0));
-    xcmp = gd_cos_d(ang / (DEG_PER_RAD / 2.0));
+    s = gd_sin_d(ang / (DEG_PER_RAD / 2.0));
+    c = gd_cos_d(ang / (DEG_PER_RAD / 2.0));
 
-    func_80195FD4(mtx, vec, ycmp, xcmp);
+    gd_create_rot_matrix(mtx, vec, s, c);
 }
 
-/* 244A50 -> 244B30 */
-void set_identity_mat4(Mat4f *mtx) {
+/**
+ * Sets a mat4f matrix to an identity matrix.
+ */
+void gd_set_identity_mat4(Mat4f *mtx) {
     (*mtx)[0][0] = 1.0f;
     (*mtx)[0][1] = 0.0f;
     (*mtx)[0][2] = 0.0f;
@@ -684,8 +772,10 @@ void set_identity_mat4(Mat4f *mtx) {
     (*mtx)[3][3] = 1.0f;
 }
 
-/* 244B30 -> 244C00 */
-void cpy_mat4(const Mat4f *src, Mat4f *dst) {
+/**
+ * Copies a mat4f from src to dst.
+ */
+void gd_copy_mat4f(const Mat4f *src, Mat4f *dst) {
     (*dst)[0][0] = (*src)[0][0];
     (*dst)[0][1] = (*src)[0][1];
     (*dst)[0][2] = (*src)[0][2];
@@ -704,33 +794,38 @@ void cpy_mat4(const Mat4f *src, Mat4f *dst) {
     (*dst)[3][3] = (*src)[3][3];
 }
 
-/* 244C00 -> 244D10 */
-void func_80196430(struct GdVec3f *vec, const Mat4f *mtx) {
-    struct GdVec3f dot;
+/**
+ * Transforms a vec3f, rotating with the main 3x3 portion of the mat4f
+ * and translating with the 4th column.
+ */
+void gd_rotate_and_translate_vec3f(struct GdVec3f *vec, const Mat4f *mtx) {
+    struct GdVec3f out;
 
-    dot.x = (*mtx)[0][0] * vec->x + (*mtx)[1][0] * vec->y + (*mtx)[2][0] * vec->z;
-    dot.y = (*mtx)[0][1] * vec->x + (*mtx)[1][1] * vec->y + (*mtx)[2][1] * vec->z;
-    dot.z = (*mtx)[0][2] * vec->x + (*mtx)[1][2] * vec->y + (*mtx)[2][2] * vec->z;
-    dot.x += (*mtx)[3][0];
-    dot.y += (*mtx)[3][1];
-    dot.z += (*mtx)[3][2];
+    out.x = (*mtx)[0][0] * vec->x + (*mtx)[1][0] * vec->y + (*mtx)[2][0] * vec->z;
+    out.y = (*mtx)[0][1] * vec->x + (*mtx)[1][1] * vec->y + (*mtx)[2][1] * vec->z;
+    out.z = (*mtx)[0][2] * vec->x + (*mtx)[1][2] * vec->y + (*mtx)[2][2] * vec->z;
+    out.x += (*mtx)[3][0];
+    out.y += (*mtx)[3][1];
+    out.z += (*mtx)[3][2];
 
-    vec->x = dot.x;
-    vec->y = dot.y;
-    vec->z = dot.z;
+    vec->x = out.x;
+    vec->y = out.y;
+    vec->z = out.z;
 }
 
-/* 244D10 -> 244DE4 */
-void func_80196540(struct GdVec3f *vec, const Mat4f *mtx) {
-    struct GdVec3f dot;
+/**
+ * Multiples a vec3f by the main 3x3 portion of a mat4f matrix.
+ */
+void gd_mat4f_mult_vec3f(struct GdVec3f *vec, const Mat4f *mtx) {
+    struct GdVec3f out;
 
-    dot.x = (*mtx)[0][0] * vec->x + (*mtx)[1][0] * vec->y + (*mtx)[2][0] * vec->z;
-    dot.y = (*mtx)[0][1] * vec->x + (*mtx)[1][1] * vec->y + (*mtx)[2][1] * vec->z;
-    dot.z = (*mtx)[0][2] * vec->x + (*mtx)[1][2] * vec->y + (*mtx)[2][2] * vec->z;
+    out.x = (*mtx)[0][0] * vec->x + (*mtx)[1][0] * vec->y + (*mtx)[2][0] * vec->z;
+    out.y = (*mtx)[0][1] * vec->x + (*mtx)[1][1] * vec->y + (*mtx)[2][1] * vec->z;
+    out.z = (*mtx)[0][2] * vec->x + (*mtx)[1][2] * vec->y + (*mtx)[2][2] * vec->z;
 
-    vec->x = dot.x;
-    vec->y = dot.y;
-    vec->z = dot.z;
+    vec->x = out.x;
+    vec->y = out.y;
+    vec->z = out.z;
 }
 
 #define MAT4_DOT_PROD(A, B, R, row, col)                                                               \
@@ -761,26 +856,36 @@ void func_80196540(struct GdVec3f *vec, const Mat4f *mtx) {
         MAT4_DOT_PROD((A), (B), (R), 3, 3);                                                            \
     }
 
-/* 244DE4 -> 24575C; orig name: func_80196614 */
-void multiply_mat4(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
-    Mat4f res; // 18
+/**
+ * Multiplies two Mat4f matrices and puts it in dst.
+ */
+void gd_mult_mat4f(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
+    Mat4f res;
 
     MAT4_MULTIPLY((*mA), (*mB), res);
-    cpy_mat4(&res, dst);
+    gd_copy_mat4f(&res, dst);
 }
 
 #undef MAT4_MULTIPLY
 #undef MAT4_DOT_PROD
 
-/* 24575C -> 245778 */
-void gd_print_vec(UNUSED const char *prefix, UNUSED const struct GdVec3f *vec) {
+/**
+ * Prints a vec3f vector.
+ *
+ * Printed the prefix at some point, as shown by how the function is used.
+ */
+void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec) {
     UNUSED u8 pad[8];
 
     printf("%f,%f,%f\n", vec->x, vec->y, vec->z);
     printf("\n");
 }
 
-/* 245778 -> 245794 */
+/**
+ * Prints a plane's boundaries.
+ *
+ * Printed a prefix at some point, as shone by how the function is used.
+ */
 void gd_print_plane(UNUSED const char *prefix, UNUSED const struct GdPlaneF *p) {
     UNUSED u8 pad[8];
 
@@ -790,10 +895,15 @@ void gd_print_plane(UNUSED const char *prefix, UNUSED const struct GdPlaneF *p) 
     printf("\n");
 }
 
-/* 245794 -> 245838 */
+/**
+ * Prints a Mat4f.
+ *
+ * Although the prefix input is unused, the one usage of this function
+ * does have a "Matrix:" prefix, so it was definitely used at one point.
+ */
 void gd_print_mtx(UNUSED const char *prefix, const Mat4f *mtx) {
-    s32 i; // 1c
-    s32 j; // 18
+    s32 i;
+    s32 j;
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
@@ -803,9 +913,11 @@ void gd_print_mtx(UNUSED const char *prefix, const Mat4f *mtx) {
     }
 }
 
-/* 245838 -> 2458C0 */
-void Unknown80197068(const char *prefix, const f32 *f) {
-    s32 i; // 1c
+/**
+ * Prints a quaternion along with a prefix.
+ */
+void UNUSED gd_print_quat(const char *prefix, const f32 f[4]) {
+    s32 i;
 
     gd_printf(prefix);
     for (i = 0; i < 4; i++) {
@@ -814,36 +926,40 @@ void Unknown80197068(const char *prefix, const f32 *f) {
     gd_printf("\n");
 }
 
-/* 2458C0 -> 245A48 */
-void Unknown801970F0(Mat4f *dst, f32 x, f32 y, f32 z, s32 copy) {
-    f32 sp74 = 100.0f;
-    Mat4f sp34;
-    f32 sp30;
-    f32 sp2C;
-    f32 mag; // 28
-    f32 sp24;
-    struct GdVec3f sp18;
+/**
+ * Rotates a matrix or creates a rotation matrix about a vector made from an offset
+ * of 100 and the passed in x, y, and z values.
+ */
+void UNUSED gd_rot_mat_offset(Mat4f *dst, f32 x, f32 y, f32 z, s32 copy) {
+    f32 adj = 100.0f;
+    Mat4f rot;
+    f32 c;
+    f32 s;
+    f32 opp;
+    f32 mag;
+    struct GdVec3f vec;
 
-    mag = gd_sqrt_f(SQ(x) + SQ(y) + SQ(z));
+    opp = gd_sqrt_f(SQ(x) + SQ(y) + SQ(z));
 
-    if (mag == 0.0f) {
+    if (opp == 0.0f) {
         if (copy) {
-            set_identity_mat4(dst);
+            gd_set_identity_mat4(dst);
         }
         return;
     }
 
-    sp24 = gd_sqrt_f(SQ(sp74) + SQ(mag));
-    sp30 = sp74 / sp24;
-    sp2C = mag / sp24;
-    sp18.x = -y / mag;
-    sp18.y = -x / mag;
-    sp18.z = -z / mag;
+    mag = gd_sqrt_f(SQ(adj) + SQ(opp));
+    c = adj / mag;
+    s = opp / mag;
 
-    func_80195FD4(&sp34, &sp18, sp2C, sp30);
+    vec.x = -y / opp;
+    vec.y = -x / opp;
+    vec.z = -z / opp;
+
+    gd_create_rot_matrix(&rot, &vec, s, c);
     if (!copy) {
-        multiply_mat4(dst, &sp34, dst);
+        gd_mult_mat4f(dst, &rot, dst);
     } else {
-        cpy_mat4(&sp34, dst);
+        gd_copy_mat4f(&rot, dst);
     }
 }

@@ -1,7 +1,5 @@
 #include "libultra_internal.h"
 
-extern OSThread *D_803348A0;
-extern OSThread *D_80334898;
 void func_802F71F0() {
     register u32 s0 = __osDisableInt();
     D_803348A0->state = OS_STATE_RUNNABLE;

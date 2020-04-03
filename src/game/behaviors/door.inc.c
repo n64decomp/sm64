@@ -129,11 +129,11 @@ void bhv_star_door_loop_2(void) {
     } else
         sp4 = 1;
     if (sp4 == 1) {
-        o->header.gfx.node.flags |= 1;
+        o->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
         D_8035FEE4++;
     }
     if (sp4 == 0) {
-        o->header.gfx.node.flags &= ~1;
+        o->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
     }
     o->oDoorUnk88 = sp4;
 }

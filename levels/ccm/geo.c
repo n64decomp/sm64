@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/ccm/header.h"
 
 #include "levels/ccm/ropeway_lift/geo.inc.c"

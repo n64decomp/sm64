@@ -5,7 +5,6 @@
 
 #include "game/shadow.h"
 #include "game/object_helpers.h"
-#include "game/object_helpers2.h"
 #include "game/behavior_actions.h"
 #include "game/segment2.h"
 #include "game/mario_misc.h"

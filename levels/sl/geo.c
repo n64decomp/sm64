@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/sl/header.h"
 
 #include "levels/sl/unused_cracked_ice/geo.inc.c"

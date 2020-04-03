@@ -32,14 +32,14 @@
 #define OBJ_FLAG_MOVE_XZ_USING_FVEL               (1 <<  1) // 0x00000002
 #define OBJ_FLAG_MOVE_Y_WITH_TERMINAL_VEL         (1 <<  2) // 0x00000004
 #define OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW         (1 <<  3) // 0x00000008
-#define OBJ_FLAG_0010                             (1 <<  4) // 0x00000010
+#define OBJ_FLAG_SET_FACE_ANGLE_TO_MOVE_ANGLE     (1 <<  4) // 0x00000010
 #define OBJ_FLAG_0020                             (1 <<  5) // 0x00000020
 #define OBJ_FLAG_COMPUTE_DIST_TO_MARIO            (1 <<  6) // 0x00000040
 #define OBJ_FLAG_ACTIVE_FROM_AFAR                 (1 <<  7) // 0x00000080
 #define OBJ_FLAG_0100                             (1 <<  8) // 0x00000100
 #define OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT     (1 <<  9) // 0x00000200
 #define OBJ_FLAG_HOLDABLE                         (1 << 10) // 0x00000400
-#define OBJ_FLAG_0800                             (1 << 11) // 0x00000800
+#define OBJ_FLAG_SET_THROW_MATRIX_FROM_TRANSFORM  (1 << 11) // 0x00000800
 #define OBJ_FLAG_1000                             (1 << 12) // 0x00001000
 #define OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO           (1 << 13) // 0x00002000
 #define OBJ_FLAG_PERSISTENT_RESPAWN               (1 << 14) // 0x00004000
@@ -106,26 +106,26 @@
     OBJ_MOVE_UNDERWATER_ON_GROUND)
 
 /* oActiveParticleFlags */
-#define ACTIVE_PARTICLE_0                    (1 <<  0) // 0x00000001
+#define ACTIVE_PARTICLE_DUST                 (1 <<  0) // 0x00000001
 #define ACTIVE_PARTICLE_UNUSED_1             (1 <<  1) // 0x00000002
 #define ACTIVE_PARTICLE_UNUSED_2             (1 <<  2) // 0x00000004
-#define ACTIVE_PARTICLE_3                    (1 <<  3) // 0x00000008
-#define ACTIVE_PARTICLE_4                    (1 <<  4) // 0x00000010
-#define ACTIVE_PARTICLE_5                    (1 <<  5) // 0x00000020
-#define ACTIVE_PARTICLE_6                    (1 <<  6) // 0x00000040
+#define ACTIVE_PARTICLE_SPARKLES             (1 <<  3) // 0x00000008
+#define ACTIVE_PARTICLE_H_STAR               (1 <<  4) // 0x00000010
+#define ACTIVE_PARTICLE_BUBBLE               (1 <<  5) // 0x00000020
+#define ACTIVE_PARTICLE_WATER_SPLASH         (1 <<  6) // 0x00000040
 #define ACTIVE_PARTICLE_IDLE_WATER_WAVE      (1 <<  7) // 0x00000080
 #define ACTIVE_PARTICLE_SHALLOW_WATER_WAVE   (1 <<  8) // 0x00000100
-#define ACTIVE_PARTICLE_9                    (1 <<  9) // 0x00000200
+#define ACTIVE_PARTICLE_PLUNGE_BUBBLE        (1 <<  9) // 0x00000200
 #define ACTIVE_PARTICLE_WAVE_TRAIL           (1 << 10) // 0x00000400
-#define ACTIVE_PARTICLE_11                   (1 << 11) // 0x00000800
+#define ACTIVE_PARTICLE_FIRE                 (1 << 11) // 0x00000800
 #define ACTIVE_PARTICLE_SHALLOW_WATER_SPLASH (1 << 12) // 0x00001000
-#define ACTIVE_PARTICLE_13                   (1 << 13) // 0x00002000
-#define ACTIVE_PARTICLE_14                   (1 << 14) // 0x00004000
-#define ACTIVE_PARTICLE_15                   (1 << 15) // 0x00008000
-#define ACTIVE_PARTICLE_16                   (1 << 16) // 0x00010000
-#define ACTIVE_PARTICLE_17                   (1 << 17) // 0x00020000
-#define ACTIVE_PARTICLE_18                   (1 << 18) // 0x00040000
-#define ACTIVE_PARTICLE_19                   (1 << 19) // 0x00080000
+#define ACTIVE_PARTICLE_LEAF                 (1 << 13) // 0x00002000
+#define ACTIVE_PARTICLE_DIRT                 (1 << 14) // 0x00004000
+#define ACTIVE_PARTICLE_MIST_CIRCLE          (1 << 15) // 0x00008000
+#define ACTIVE_PARTICLE_SNOW                 (1 << 16) // 0x00010000
+#define ACTIVE_PARTICLE_BREATH               (1 << 17) // 0x00020000
+#define ACTIVE_PARTICLE_V_STAR               (1 << 18) // 0x00040000
+#define ACTIVE_PARTICLE_TRIANGLE             (1 << 19) // 0x00080000
 
 /* oAction */
 #define OBJ_ACT_LAVA_DEATH 100

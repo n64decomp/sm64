@@ -1,6 +1,5 @@
 #include "new_func.h"
 
-extern OSThread *D_80334898;
 void func_802F4A20() {
     __OSTranxInfo *sp1c;
     volatile u32 sp18;
@@ -11,8 +10,8 @@ void func_802F4A20() {
     //  addiu $t7, $t6, 0x14
     //  sw    $t7, 0x1c($sp)
     sp1c = &__osDiskHandle->transferInfo;
-    //  lui   $t8, %hi(D_A4600010) # $t8, 0xa460
-    //  lw    $t9, %lo(D_A4600010)($t8)
+    //  lui   $t8, %hi(PI_STATUS_REG) # $t8, 0xa460
+    //  lw    $t9, %lo(PI_STATUS_REG)($t8)
     //  sw    $t9, 0x18($sp)
     // sp18 = HW_REG(PI_STATUS_REG, u32);
     // while(sp18 & 0x2) sp18 = HW_REG(PI_STATUS_REG, u32);
@@ -22,8 +21,8 @@ void func_802F4A20() {
     //  beqz  $t1, .L802F4A70
     //   nop
     // L802F4A54:
-    //  lui   $t2, %hi(D_A4600010) # $t2, 0xa460
-    //  lw    $t3, %lo(D_A4600010)($t2)
+    //  lui   $t2, %hi(PI_STATUS_REG) # $t2, 0xa460
+    //  lw    $t3, %lo(PI_STATUS_REG)($t2)
     //  sw    $t3, 0x18($sp)
     //  lw    $t4, 0x18($sp)
     //  andi  $t5, $t4, 2
@@ -35,11 +34,11 @@ void func_802F4A20() {
     //  lui   $at, 0x1000
     //  lui   $t9, %hi(D_A5000510) # $t9, 0xa500
     //  lw    $t7, 0x14($t6)
-    //  lui   $t0, %hi(D_A4600010) # $t0, 0xa460
+    //  lui   $t0, %hi(PI_STATUS_REG) # $t0, 0xa460
     //  or    $t8, $t7, $at
     //  sw    $t8, %lo(D_A5000510)($t9)
     HW_REG(ASIC_BM_CTL, u32) = BUFFER_MANAGER_RESET | sp1c->bmCtlShadow; //should be unk10??
-    //  lw    $t1, %lo(D_A4600010)($t0)
+    //  lw    $t1, %lo(PI_STATUS_REG)($t0)
     //  sw    $t1, 0x18($sp)
     //  lw    $t2, 0x18($sp)
     //  andi  $t3, $t2, 2
@@ -47,8 +46,8 @@ void func_802F4A20() {
     //   nop
     WAIT_ON_IOBUSY(sp18);
     // L802F4AA4:
-    //  lui   $t4, %hi(D_A4600010) # $t4, 0xa460
-    //  lw    $t5, %lo(D_A4600010)($t4)
+    //  lui   $t4, %hi(PI_STATUS_REG) # $t4, 0xa460
+    //  lw    $t5, %lo(PI_STATUS_REG)($t4)
     //  sw    $t5, 0x18($sp)
     //  lw    $t6, 0x18($sp)
     //  andi  $t7, $t6, 2
@@ -64,8 +63,8 @@ void func_802F4A20() {
     HW_REG(ASIC_BM_CTL, u32) = sp1c->bmCtlShadow;
     func_802F4B08();
     //  li    $t1, 2
-    //  lui   $t2, %hi(D_A4600010) # $t2, 0xa460
-    //  sw    $t1, %lo(D_A4600010)($t2)
+    //  lui   $t2, %hi(PI_STATUS_REG) # $t2, 0xa460
+    //  sw    $t1, %lo(PI_STATUS_REG)($t2)
     HW_REG(PI_STATUS_REG, u32) = PI_STATUS_CLEAR_INTR;
     //  lui   $t3, %hi(D_8030208C) # $t3, 0x8030
     //  lw    $t3, %lo(D_8030208C)($t3)

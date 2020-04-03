@@ -74,7 +74,7 @@ def main():
         clean_assets(local_asset_file)
         sys.exit(0)
 
-    all_langs = ["jp", "us", "eu"]
+    all_langs = ["jp", "us", "eu", "sh"]
     if not langs or not all(a in all_langs for a in langs):
         langs_str = " ".join("[" + lang + "]" for lang in all_langs)
         print("Usage: " + sys.argv[0] + " " + langs_str)

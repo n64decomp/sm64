@@ -19,7 +19,7 @@
 #include "area.h"
 #include "engine/geo_layout.h"
 #include "ingame_menu.h"
-#include "game.h"
+#include "game_init.h"
 #include "obj_behaviors.h"
 #include "interaction.h"
 #include "object_list_processor.h"
@@ -27,13 +27,10 @@
 #include "dialog_ids.h"
 
 #include "object_helpers.h"
-#include "object_helpers2.h"
 
 s8 D_8032F0A0[] = { 0xF8, 0x08, 0xFC, 0x04 };
 s16 D_8032F0A4[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 static s8 sLevelsWithRooms[] = { LEVEL_BBH, LEVEL_CASTLE, LEVEL_HMC, -1 };
-
-s32 sGrabReleaseState;
 
 // These can be static:
 extern void create_transformation_from_matrices(Mat4, Mat4, Mat4);
@@ -290,8 +287,8 @@ void obj_set_held_state(struct Object *obj, const BehaviorScript *heldBehavior) 
             obj->oHeldState = HELD_DROPPED;
         }
     } else {
-        obj->behScript = segmented_to_virtual(heldBehavior);
-        obj->stackIndex = 0;
+        obj->curBhvCommand = segmented_to_virtual(heldBehavior);
+        obj->bhvStackIndex = 0;
     }
 }
 
@@ -490,7 +487,7 @@ struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model,
 
 struct Object *spawn_obj_with_transform_flags(struct Object *sp20, s32 model, const BehaviorScript *sp28) {
     struct Object *sp1C = spawn_object(sp20, model, sp28);
-    sp1C->oFlags |= OBJ_FLAG_0020 | OBJ_FLAG_0800;
+    sp1C->oFlags |= OBJ_FLAG_0020 | OBJ_FLAG_SET_THROW_MATRIX_FROM_TRANSFORM;
     return sp1C;
 }
 
@@ -499,7 +496,7 @@ struct Object *spawn_water_droplet(struct Object *parent, struct WaterDropletPar
     struct Object *newObj = spawn_object(parent, params->model, params->behavior);
 
     if (params->flags & WATER_DROPLET_FLAG_RAND_ANGLE) {
-        newObj->oMoveAngleYaw = RandomU16();
+        newObj->oMoveAngleYaw = random_u16();
     }
 
     if (params->flags & WATER_DROPLET_FLAG_RAND_ANGLE_INCR_PLUS_8000) {
@@ -524,10 +521,10 @@ struct Object *spawn_water_droplet(struct Object *parent, struct WaterDropletPar
         obj_translate_xyz_random(newObj, params->moveRange);
     }
 
-    newObj->oForwardVel = RandomFloat() * params->randForwardVelScale + params->randForwardVelOffset;
-    newObj->oVelY = RandomFloat() * params->randYVelScale + params->randYVelOffset;
+    newObj->oForwardVel = random_float() * params->randForwardVelScale + params->randForwardVelOffset;
+    newObj->oVelY = random_float() * params->randYVelScale + params->randYVelOffset;
 
-    randomScale = RandomFloat() * params->randSizeScale + params->randSizeOffset;
+    randomScale = random_float() * params->randSizeScale + params->randSizeOffset;
     obj_scale(newObj, randomScale);
 
     return newObj;
@@ -1103,7 +1100,7 @@ static void cur_obj_move_after_thrown_or_dropped(f32 forwardVel, f32 velY) {
     o->oVelY = velY;
 
     if (o->oForwardVel != 0) {
-        cur_obj_move_y(/*gravity*/ -4.0f, /*bounce*/ -0.1f, /*buoyancy*/ 2.0f);
+        cur_obj_move_y(/*gravity*/ -4.0f, /*bounciness*/ -0.1f, /*buoyancy*/ 2.0f);
     }
 }
 
@@ -1296,7 +1293,7 @@ static void cur_obj_move_update_underwater_flags(void) {
     }
 }
 
-static void cur_obj_move_update_ground_air_flags(UNUSED f32 gravity, f32 bounce) {
+static void cur_obj_move_update_ground_air_flags(UNUSED f32 gravity, f32 bounciness) {
     o->oMoveFlags &= ~OBJ_MOVE_13;
 
     if (o->oPosY < o->oFloorHeight) {
@@ -1313,7 +1310,7 @@ static void cur_obj_move_update_ground_air_flags(UNUSED f32 gravity, f32 bounce)
         o->oPosY = o->oFloorHeight;
 
         if (o->oVelY < 0.0f) {
-            o->oVelY *= bounce;
+            o->oVelY *= bounciness;
         }
 
         if (o->oVelY > 5.0f) {
@@ -1349,7 +1346,7 @@ static f32 cur_obj_move_y_and_get_water_level(f32 gravity, f32 buoyancy) {
     return waterLevel;
 }
 
-void cur_obj_move_y(f32 gravity, f32 bounce, f32 buoyancy) {
+void cur_obj_move_y(f32 gravity, f32 bounciness, f32 buoyancy) {
     f32 waterLevel;
 
     o->oMoveFlags &= ~OBJ_MOVE_LEFT_GROUND;
@@ -1367,7 +1364,7 @@ void cur_obj_move_y(f32 gravity, f32 bounce, f32 buoyancy) {
             //! We only handle floor collision if the object does not enter
             //  water. This allows e.g. coins to clip through floors if they
             //  enter water on the same frame.
-            cur_obj_move_update_ground_air_flags(gravity, bounce);
+            cur_obj_move_update_ground_air_flags(gravity, bounciness);
         } else {
             o->oMoveFlags |= OBJ_MOVE_ENTERED_WATER;
             o->oMoveFlags &= ~OBJ_MOVE_MASK_ON_GROUND;
@@ -1807,7 +1804,7 @@ void cur_obj_update_floor_and_walls(void) {
 
 void cur_obj_move_standard(s16 steepSlopeAngleDegrees) {
     f32 gravity = o->oGravity;
-    f32 bounce = o->oBounce;
+    f32 bounciness = o->oBounciness;
     f32 buoyancy = o->oBuoyancy;
     f32 dragStrength = o->oDragStrength;
     f32 steepSlopeNormalY;
@@ -1833,7 +1830,7 @@ void cur_obj_move_standard(s16 steepSlopeAngleDegrees) {
         cur_obj_apply_drag_xz(dragStrength);
 
         cur_obj_move_xz(steepSlopeNormalY, careAboutEdgesAndSteepSlopes);
-        cur_obj_move_y(gravity, bounce, buoyancy);
+        cur_obj_move_y(gravity, bounciness, buoyancy);
 
         if (o->oForwardVel < 0) {
             negativeSpeed = TRUE;
@@ -1974,7 +1971,7 @@ void obj_build_transform_relative_to_parent(struct Object *obj) {
 
 void obj_create_transform_from_self(struct Object *a0) {
     a0->oFlags &= ~OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT;
-    a0->oFlags |= OBJ_FLAG_0800;
+    a0->oFlags |= OBJ_FLAG_SET_THROW_MATRIX_FROM_TRANSFORM;
 
     a0->transform[3][0] = a0->oPosX;
     a0->transform[3][1] = a0->oPosY;
@@ -2060,23 +2057,23 @@ void chain_segment_init(struct ChainSegment *segment) {
 }
 
 f32 random_f32_around_zero(f32 diameter) {
-    return RandomFloat() * diameter - diameter / 2;
+    return random_float() * diameter - diameter / 2;
 }
 
 void obj_scale_random(struct Object *obj, f32 rangeLength, f32 minScale) {
-    f32 scale = RandomFloat() * rangeLength + minScale;
+    f32 scale = random_float() * rangeLength + minScale;
     obj_scale_xyz(obj, scale, scale, scale);
 }
 
 void obj_translate_xyz_random(struct Object *obj, f32 rangeLength) {
-    obj->oPosX += RandomFloat() * rangeLength - rangeLength * 0.5f;
-    obj->oPosY += RandomFloat() * rangeLength - rangeLength * 0.5f;
-    obj->oPosZ += RandomFloat() * rangeLength - rangeLength * 0.5f;
+    obj->oPosX += random_float() * rangeLength - rangeLength * 0.5f;
+    obj->oPosY += random_float() * rangeLength - rangeLength * 0.5f;
+    obj->oPosZ += random_float() * rangeLength - rangeLength * 0.5f;
 }
 
 void obj_translate_xz_random(struct Object *obj, f32 rangeLength) {
-    obj->oPosX += RandomFloat() * rangeLength - rangeLength * 0.5f;
-    obj->oPosZ += RandomFloat() * rangeLength - rangeLength * 0.5f;
+    obj->oPosX += random_float() * rangeLength - rangeLength * 0.5f;
+    obj->oPosZ += random_float() * rangeLength - rangeLength * 0.5f;
 }
 
 static void obj_build_vel_from_transform(struct Object *a0) {
@@ -2097,75 +2094,10 @@ void cur_obj_set_pos_via_transform(void) {
     o->oPosZ += o->oVelZ;
 }
 
-#if defined(VERSION_EU)
-//this is a test to see if object is possibly built wrong
-//it matches
-struct Object_test
-{
-    /*0x000*/ struct ObjectNode header;
-    /*0x068*/ struct Object *parentObj;
-    /*0x06C*/ struct Object *prevObj;
-    /*0x070*/ u32 collidedObjInteractTypes;
-    /*0x074*/ s16 activeFlags;
-    /*0x076*/ s16 numCollidedObjs;
-    /*0x078*/ struct Object *collidedObjs[4];
-    /*0x088*/
-    union
-    {
-        struct  {
-            u8 pad[0xF*4];
-            s32 MoveAnglePitch;
-            s32 MoveAngleYaw;
-            s32 MoveAngleRoll;
-            u8 pad2[0x4B*4-0xF*4-3*4];
-            struct {
-                u32 WallAngle;
-            } special;
-        } moving;
-        // Object fields. See object_fields.h.
-        u32 asU32[0x50];
-        s32 asS32[0x50];
-        s16 asS16[0x50][2];
-        f32 asF32[0x50];
-        s16 *asS16P[0x50];
-        s32 *asS32P[0x50];
-        struct Animation **asAnims[0x50];
-        struct Waypoint *asWaypoint[0x50];
-        struct ChainSegment *asChainSegment[0x50];
-        struct Object *asObject[0x50];
-        struct Surface *asSurface[0x50];
-        void *asVoidPtr[0x50];
-        const void *asConstVoidPtr[0x50];
-    } rawData;
-    /*0x1C8*/ u32 unused1;
-    /*0x1CC*/ const BehaviorScript *behScript;
-    /*0x1D0*/ u32 stackIndex;
-    /*0x1D4*/ uintptr_t stack[8];
-    /*0x1F4*/ s16 unk1F4;
-    /*0x1F6*/ s16 respawnInfoType;
-    /*0x1F8*/ f32 hitboxRadius;
-    /*0x1FC*/ f32 hitboxHeight;
-    /*0x200*/ f32 hurtboxRadius;
-    /*0x204*/ f32 hurtboxHeight;
-    /*0x208*/ f32 hitboxDownOffset;
-    /*0x20C*/ const BehaviorScript *behavior;
-    /*0x210*/ u32 unused2;
-    /*0x214*/ struct Object *platform;
-    /*0x218*/ void *collisionData;
-    /*0x21C*/ Mat4 transform;
-    /*0x25C*/ void *respawnInfo;
-};
-
-s16 cur_obj_reflect_move_angle_off_wall(void) {
-    s16 angle = ((struct Object_test*)o)->rawData.moving.special.WallAngle - (s16) ((struct Object_test*)o)->rawData.moving.MoveAngleYaw + (s16) ((struct Object_test*)o)->rawData.moving.special.WallAngle  +0x8000;
-    return angle;
-}
-#else
 s16 cur_obj_reflect_move_angle_off_wall(void) {
     s16 angle = o->oWallAngle - ((s16) o->oMoveAngleYaw - (s16) o->oWallAngle) + 0x8000;
     return angle;
 }
-#endif
 
 void cur_obj_spawn_particles(struct SpawnParticlesInfo *info) {
     struct Object *particle;
@@ -2185,18 +2117,18 @@ void cur_obj_spawn_particles(struct SpawnParticlesInfo *info) {
     }
 
     for (i = 0; i < numParticles; i++) {
-        scale = RandomFloat() * (info->sizeRange * 0.1f) + info->sizeBase * 0.1f;
+        scale = random_float() * (info->sizeRange * 0.1f) + info->sizeBase * 0.1f;
 
         particle = spawn_object(o, info->model, bhvWhitePuffExplosion);
 
         particle->oBehParams2ndByte = info->behParam;
-        particle->oMoveAngleYaw = RandomU16();
+        particle->oMoveAngleYaw = random_u16();
         particle->oGravity = info->gravity;
         particle->oDragStrength = info->dragStrength;
 
         particle->oPosY += info->offsetY;
-        particle->oForwardVel = RandomFloat() * info->forwardVelRange + info->forwardVelBase;
-        particle->oVelY = RandomFloat() * info->velYRange + info->velYBase;
+        particle->oForwardVel = random_float() * info->forwardVelRange + info->forwardVelBase;
+        particle->oVelY = random_float() * info->velYRange + info->velYBase;
 
         obj_scale_xyz(particle, scale, scale, scale);
     }
@@ -2277,7 +2209,7 @@ void spawn_mist_particles(void) {
     spawn_mist_particles_variable(0, 0, 46.0f);
 }
 
-void spawn_mist_particles_with_sound(s32 sp18) {
+void spawn_mist_particles_with_sound(u32 sp18) {
     spawn_mist_particles_variable(0, 0, 46.0f);
     create_sound_spawner(sp18);
 }
@@ -2922,37 +2854,16 @@ s32 cur_obj_check_grabbed_mario(void) {
     return FALSE;
 }
 
-#if defined(VERSION_EU) // Fake match
 s32 player_performed_grab_escape_action(void) {
-    s32 result = FALSE;
-    s32 grabEscape = TRUE;
-    // using register here causes less differences with non-EU versions
-    register f32 stickMag = gPlayer1Controller->stickMag;
-    if (stickMag < 30.0f) {
-        sGrabReleaseState = 0;
-    }
-
-    if (sGrabReleaseState == 0 && stickMag > 40.0f) {
-        sGrabReleaseState = grabEscape;
-        result = TRUE;
-    }
-
-    if (gPlayer1Controller->buttonPressed & A_BUTTON) {
-        result = TRUE;
-    }
-
-    return result;
-}
-#else
-s32 player_performed_grab_escape_action(void) {
+    static s32 grabReleaseState;
     s32 result = FALSE;
 
     if (gPlayer1Controller->stickMag < 30.0f) {
-        sGrabReleaseState = 0;
+        grabReleaseState = 0;
     }
 
-    if (sGrabReleaseState == 0 && gPlayer1Controller->stickMag > 40.0f) {
-        sGrabReleaseState = 1;
+    if (grabReleaseState == 0 && gPlayer1Controller->stickMag > 40.0f) {
+        grabReleaseState = 1;
         result = TRUE;
     }
 
@@ -2962,7 +2873,6 @@ s32 player_performed_grab_escape_action(void) {
 
     return result;
 }
-#endif
 
 void cur_obj_unused_play_footstep_sound(s32 animFrame1, s32 animFrame2, s32 sound) {
     if (cur_obj_check_anim_frame(animFrame1) || cur_obj_check_anim_frame(animFrame2)) {

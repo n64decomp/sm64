@@ -51,7 +51,7 @@ void bhv_ttc_treadmill_update(void) {
                 // Then stop and select new target speed and time until switch
                 if (approach_f32_ptr(&o->oTTCTreadmillSpeed, 0.0f, 10.0f)) {
                     o->oTTCTreadmillTimeUntilSwitch = random_mod_offset(10, 20, 7);
-                    o->oTTCTreadmillTargetSpeed = RandomSign() * 50.0f;
+                    o->oTTCTreadmillTargetSpeed = random_sign() * 50.0f;
                     o->oTimer = 0;
                 }
             } else if (o->oTimer > 5) {

@@ -49,6 +49,9 @@ void bhv_water_level_diamond_loop(void) {
                             cur_obj_play_sound_1(SOUND_ENV_WATER_DRAIN); // same as above
                     }
                     o->oAngleVelYaw = 0x800;
+#ifdef VERSION_SH
+                    reset_rumble_timers_2(2);
+#endif
                 }
                 break;
             case WATER_LEVEL_DIAMOND_ACT_IDLE_SPINNING:

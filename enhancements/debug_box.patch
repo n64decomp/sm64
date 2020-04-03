@@ -2,15 +2,16 @@ diff --git a/src/game/area.c b/src/game/area.c
 index 240605d8..88c1a314 100644
 --- a/src/game/area.c
 +++ b/src/game/area.c
-@@ -19,6 +19,7 @@
+@@ -19,7 +19,8 @@
  #include "level_update.h"
  #include "engine/geo_layout.h"
  #include "save_file.h"
+ #include "level_table.h"
 +#include "debug_box.h"
  
  struct SpawnInfo gPlayerSpawnInfos[1];
  struct GraphNode *D_8033A160[0x100];
-@@ -352,6 +353,8 @@ void render_game(void) {
+@@ -353,6 +354,8 @@ void render_game(void) {
      if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
          geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
  
@@ -28,7 +29,7 @@ index 00000000..0ee87ec7
 +#include <ultra64.h>
 +
 +#include "sm64.h"
-+#include "game/game.h"
++#include "game/game_init.h"
 +#include "game/geo_misc.h"
 +#include "engine/math_util.h"
 +

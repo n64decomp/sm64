@@ -137,6 +137,6 @@ void bhv_haunted_chair_loop(void) {
                 haunted_chair_act_1();
                 break;
         }
-        func_802F8D78(30.0f, 30.0f);
+        cur_obj_spin_all_dimensions(30.0f, 30.0f);
     }
 }

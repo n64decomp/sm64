@@ -187,7 +187,7 @@ void bully_spawn_coin(void) {
     coin->oForwardVel = 10.0f;
     coin->oVelY = 100.0f;
     coin->oPosY = o->oPosY + 310.0f;
-    coin->oMoveAngleYaw = (f32)(o->oBullyMarioCollisionAngle + 0x8000) + RandomFloat() * 1024.0f;
+    coin->oMoveAngleYaw = (f32)(o->oBullyMarioCollisionAngle + 0x8000) + random_float() * 1024.0f;
 }
 
 void bully_act_level_death(void) {
@@ -277,7 +277,7 @@ void bhv_big_bully_with_minions_init(void) {
     big_bully_spawn_minion(3840, 307, -6041, 0);
     big_bully_spawn_minion(3226, 307, -5426, 0);
 
-    o->header.gfx.node.flags |= 0x10; /* bit 4 */
+    o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
 
     cur_obj_become_intangible();
 
@@ -355,7 +355,7 @@ void bhv_big_bully_with_minions_loop(void) {
                 spawn_mist_particles();
             }
 
-            o->header.gfx.node.flags &= ~0x10; /* bit 4 */
+            o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
             cur_obj_become_tangible();
             break;
 

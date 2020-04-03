@@ -6,8 +6,8 @@ void bhv_end_birds_2_loop(void) {
     f32 sp34;
     s16 sp32, sp30;
 
-    sp38 = RandomFloat();
-    gCurrentObject->oForwardVel = (RandomFloat() * 10.f) + 25.f;
+    sp38 = random_float();
+    gCurrentObject->oForwardVel = (random_float() * 10.f) + 25.f;
 
     switch (gCurrentObject->oAction) {
         case 0:

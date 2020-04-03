@@ -201,9 +201,9 @@ void small_penguin_act_0(void) {
     sp1C = 0;
     cur_obj_init_animation_with_sound(3);
     if (o->oTimer == 0) {
-        o->oSmallPenguinUnk110 = (s32)(RandomFloat() * 0x400);
-        o->oSmallPenguinUnk108 = RandomFloat() * 100.0f;
-        o->oSmallPenguinUnk104 = RandomFloat();
+        o->oSmallPenguinUnk110 = (s32)(random_float() * 0x400);
+        o->oSmallPenguinUnk108 = random_float() * 100.0f;
+        o->oSmallPenguinUnk104 = random_float();
         o->oForwardVel = 0.0f;
         if (cur_obj_dist_to_nearest_object_with_behavior(bhvTuxiesMother) < 1000.0f)
             sp1C = 1;

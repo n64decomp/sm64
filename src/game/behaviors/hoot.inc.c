@@ -6,7 +6,7 @@ void bhv_hoot_init(void) {
     o->oHomeX = o->oPosX + 800.0f;
     o->oHomeY = o->oPosY - 150.0f;
     o->oHomeZ = o->oPosZ + 300.0f;
-    o->header.gfx.node.flags |= 0x10; /* bit 4 */
+    o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
 
     cur_obj_become_intangible();
 }
@@ -225,7 +225,7 @@ void hoot_turn_to_home(void) {
 }
 
 void hoot_awake_loop(void) {
-    if (o->oInteractStatus == INTERACT_HOOT) {
+    if (o->oInteractStatus == INT_STATUS_HOOT_GRABBED_BY_MARIO) {
         hoot_action_loop();
         cur_obj_init_animation(1);
     } else {
@@ -246,7 +246,7 @@ void bhv_hoot_loop(void) {
     switch (o->oHootAvailability) {
         case HOOT_AVAIL_ASLEEP_IN_TREE:
             if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 50)) {
-                o->header.gfx.node.flags &= ~0x10; /* bit 4 */
+                o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
                 o->oHootAvailability = HOOT_AVAIL_WANTS_TO_TALK;
             }
             break;

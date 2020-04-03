@@ -65,12 +65,12 @@ void idle_ukiki_taunt(void) {
 
     if (o->oSubAction == UKIKI_SUB_ACT_TAUNT_NONE) {
         // Subaction is between 1 and 4.
-        o->oSubAction = (s32)(RandomFloat() * 4.0f + 1.0f);
+        o->oSubAction = (s32)(random_float() * 4.0f + 1.0f);
 
         // Counter keeps track of the iterations done, while ToBeDone
         // is the count of iterations to be done (between 2 and 5).
         o->oUkikiTauntCounter = 0;
-        o->oUkikiTauntsToBeDone = (s16)(RandomFloat() * 4.0f + 2.0f);
+        o->oUkikiTauntsToBeDone = (s16)(random_float() * 4.0f + 2.0f);
     }
 
     // Switch goes from 1-4.
@@ -221,7 +221,7 @@ void ukiki_act_turn_to_mario(void) {
 
     // Initialize the action with a random fVel from 2-5.
     if (o->oTimer == 0) {
-        o->oForwardVel = RandomFloat() * 3.0f + 2.0f;
+        o->oForwardVel = random_float() * 3.0f + 2.0f;
     }
 
     cur_obj_init_animation_with_sound(UKIKI_ANIM_TURN);
@@ -254,7 +254,7 @@ void ukiki_act_run(void) {
     }
 
     if (o->oTimer == 0) {
-        o->oUkikiChaseFleeRange = RandomFloat() * 100.0f + 350.0f;
+        o->oUkikiChaseFleeRange = random_float() * 100.0f + 350.0f;
     }
 
     cur_obj_init_animation_with_sound(UKIKI_ANIM_RUN);
@@ -298,7 +298,7 @@ void ukiki_act_jump(void) {
 
     if (o->oSubAction == 0) {
         if (o->oTimer == 0) {
-            cur_obj_set_y_vel_and_animation(RandomFloat() * 10.0f + 45.0f, UKIKI_ANIM_JUMP);
+            cur_obj_set_y_vel_and_animation(random_float() * 10.0f + 45.0f, UKIKI_ANIM_JUMP);
         } else if (o->oMoveFlags & OBJ_MOVE_MASK_NOT_AIR) {
             o->oSubAction++;
             o->oVelY = 0.0f;

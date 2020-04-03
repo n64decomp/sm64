@@ -63,8 +63,8 @@ void water_bomb_cannon_act_1(void) {
                 } else {
                     cur_obj_play_sound_2(SOUND_OBJ_CANNON4);
                     o->oWaterCannonUnkF4 = 70;
-                    o->oWaterCannonUnkFC = 0x1000 + 0x400 * (RandomU16() & 0x3);
-                    o->oWaterCannonUnk100 = -0x2000 + o->oMoveAngleYaw + 0x1000 * (RandomU16() % 5);
+                    o->oWaterCannonUnkFC = 0x1000 + 0x400 * (random_u16() & 0x3);
+                    o->oWaterCannonUnk100 = -0x2000 + o->oMoveAngleYaw + 0x1000 * (random_u16() % 5);
                     o->oWaterCannonUnkF8 = 60;
                 }
             }

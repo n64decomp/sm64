@@ -222,7 +222,7 @@ static void wiggler_act_walk(void) {
     // Update text if necessary
     if (o->oWigglerTextStatus < WIGGLER_TEXT_STATUS_COMPLETED_DIALOG) {
         if (o->oWigglerTextStatus == WIGGLER_TEXT_STATUS_AWAIT_DIALOG) {
-            func_8031FFB4(0, 60, 40);
+            func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
             o->oWigglerTextStatus = WIGGLER_TEXT_STATUS_SHOWING_DIALOG;
         }
 
@@ -257,7 +257,7 @@ static void wiggler_act_walk(void) {
                 } else if (o->oWigglerTimeUntilRandomTurn != 0) {
                     o->oWigglerTimeUntilRandomTurn -= 1;
                 } else {
-                    o->oWigglerTargetYaw = o->oMoveAngleYaw + 0x4000 * (s16) RandomSign();
+                    o->oWigglerTargetYaw = o->oMoveAngleYaw + 0x4000 * (s16) random_sign();
                     o->oWigglerTimeUntilRandomTurn = random_linear_offset(30, 50);
                 }
             }
@@ -412,7 +412,7 @@ void bhv_wiggler_update(void) {
             // Walking animation and sound
             cur_obj_init_animation_with_accel_and_sound(0, o->oWigglerWalkAnimSpeed);
             if (o->oWigglerWalkAnimSpeed != 0.0f) {
-                func_802F9378(0, 13,
+                cur_obj_play_sound_at_anim_range(0, 13,
                               o->oHealth >= 4 ? SOUND_OBJ_WIGGLER_LOW_PITCH : SOUND_OBJ_WIGGLER_HIGH_PITCH);
             } else {
                 cur_obj_reverse_animation();

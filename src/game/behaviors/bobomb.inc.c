@@ -44,9 +44,9 @@ void bobomb_act_explode(void) {
 
 void bobomb_check_interactions(void) {
     obj_set_hitbox(o, &sBobombHitbox);
-    if ((o->oInteractStatus & INT_STATUS_INTERACTED) != 0) /* bit 15 */
+    if ((o->oInteractStatus & INT_STATUS_INTERACTED) != 0)
     {
-        if ((o->oInteractStatus & INTERACT_GRABBABLE) != 0) /* bit 1 */
+        if ((o->oInteractStatus & INT_STATUS_MARIO_UNK1) != 0)
         {
             o->oMoveAngleYaw = gMarioObject->header.gfx.angle[1];
             o->oForwardVel = 25.0;
@@ -54,7 +54,7 @@ void bobomb_check_interactions(void) {
             o->oAction = BOBOMB_ACT_LAUNCHED;
         }
 
-        if ((o->oInteractStatus & INTERACT_TEXT) != 0) /* bit 23 */
+        if ((o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB) != 0)
             o->oAction = BOBOMB_ACT_EXPLODE;
 
         o->oInteractStatus = 0;
@@ -174,7 +174,7 @@ void bobomb_free_loop(void) {
 }
 
 void bobomb_held_loop(void) {
-    o->header.gfx.node.flags |= 0x10; /* bit 4 */
+    o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
     cur_obj_init_animation(1);
     cur_obj_set_pos_relative(gMarioObject, 0, 60.0f, 100.0);
 
@@ -183,8 +183,7 @@ void bobomb_held_loop(void) {
         //! Although the Bob-omb's action is set to explode when the fuse timer expires,
         //  bobomb_act_explode() will not execute until the bob-omb's held state changes.
         //  This allows the Bob-omb to be regrabbed indefinitely.
-
-        gMarioObject->oInteractStatus |= INTERACT_DAMAGE; /* bit 3 */
+        gMarioObject->oInteractStatus |= INT_STATUS_MARIO_DROP_OBJECT;
         o->oAction = BOBOMB_ACT_EXPLODE;
     }
 }
@@ -192,7 +191,7 @@ void bobomb_held_loop(void) {
 void bobomb_dropped_loop(void) {
     cur_obj_get_dropped();
 
-    o->header.gfx.node.flags &= ~0x10; /* bit 4 = 0 */
+    o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
     cur_obj_init_animation(0);
 
     o->oHeldState = 0;
@@ -202,7 +201,7 @@ void bobomb_dropped_loop(void) {
 void bobomb_thrown_loop(void) {
     cur_obj_enable_rendering_2();
 
-    o->header.gfx.node.flags &= ~0x10; /* bit 4 = 0 */
+    o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
     o->oHeldState = 0;
     o->oFlags &= ~0x8; /* bit 3 */
     o->oForwardVel = 25.0;
@@ -214,7 +213,7 @@ void bobomb_thrown_loop(void) {
 
 void curr_obj_random_blink(s32 *blinkTimer) {
     if (*blinkTimer == 0) {
-        if ((s16)(RandomFloat() * 100.0f) == 0) {
+        if ((s16)(random_float() * 100.0f) == 0) {
             o->oAnimState = 1;
             *blinkTimer = 1;
         }
@@ -272,9 +271,9 @@ void bhv_bobomb_loop(void) {
 }
 
 void bhv_bobomb_fuse_smoke_init(void) {
-    o->oPosX += (s32)(RandomFloat() * 80.0f) - 40;
-    o->oPosY += (s32)(RandomFloat() * 80.0f) + 60;
-    o->oPosZ += (s32)(RandomFloat() * 80.0f) - 40;
+    o->oPosX += (s32)(random_float() * 80.0f) - 40;
+    o->oPosY += (s32)(random_float() * 80.0f) + 60;
+    o->oPosZ += (s32)(random_float() * 80.0f) - 40;
     cur_obj_scale(1.2f);
 }
 

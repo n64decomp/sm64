@@ -62,11 +62,11 @@ void reset_net(struct ObjNet *net) {
 
     gGdSkinNet = net;
     D_801BAAF4 = 0;
-    set_identity_mat4(&net->mat168);
-    set_identity_mat4(&net->matE8);
-    func_80194220(&net->matE8, &net->unk68); // set rot mtx to initial rotation?
-    func_801942E4(&net->matE8, &net->unk14); // set to initial position?
-    cpy_mat4(&net->matE8, &net->mat128);
+    gd_set_identity_mat4(&net->mat168);
+    gd_set_identity_mat4(&net->matE8);
+    gd_rot_mat_about_vec(&net->matE8, &net->unk68); // set rot mtx to initial rotation?
+    gd_add_vec3f_to_mat4f_offset(&net->matE8, &net->unk14); // set to initial position?
+    gd_copy_mat4f(&net->matE8, &net->mat128);
 
     if ((grp = net->unk1C8) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191604, grp);
@@ -111,7 +111,7 @@ struct ObjNet *make_net(UNUSED s32 a0, struct ObjShape *shapedata, struct ObjGro
     struct ObjNet *net; // 24
 
     net = (struct ObjNet *) make_object(OBJ_TYPE_NETS);
-    set_identity_mat4(&net->mat128);
+    gd_set_identity_mat4(&net->mat128);
     net->unk20.x = net->unk20.y = net->unk20.z = 0.0f;
     net->unk38 = ++sNetCount;
     net->unk1AC.x = net->unk1AC.y = net->unk1AC.z = 1.0f;
@@ -212,7 +212,7 @@ void Unknown80192AD0(struct ObjNet *net) {
     net->unk14.x = net->unk1F4.x;
     net->unk14.y = net->unk1F4.y;
     net->unk14.z = net->unk1F4.z;
-    func_80196430(&net->unk14, &sp18->mat128);
+    gd_rotate_and_translate_vec3f(&net->unk14, &sp18->mat128);
 
     net->unk14.x += net->unk1F0->unk14.x;
     net->unk14.y += net->unk1F0->unk14.y;
@@ -220,7 +220,7 @@ void Unknown80192AD0(struct ObjNet *net) {
     net->unk200.x = 0.0f;
     net->unk200.y = 10.0f;
     net->unk200.z = -4.0f;
-    func_80196430(&net->unk200, &sp18->mat128);
+    gd_rotate_and_translate_vec3f(&net->unk200, &sp18->mat128);
 
     apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191824, sp60);
     func_80191E88(sp60);
@@ -233,7 +233,7 @@ void move_bonesnet(struct ObjNet *net) {
     UNUSED u32 pad18[3];
 
     add_to_stacktrace("move_bonesnet");
-    set_identity_mat4(&D_801B9DC8);
+    gd_set_identity_mat4(&D_801B9DC8);
     if ((sp24 = net->unk1C8) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801913C0, sp24);
     }
@@ -251,14 +251,14 @@ void func_80192CCC(struct ObjNet *net) {
     if (gGdCtrl.unk2C != NULL) {
         func_8017E2B8();
     }
-    set_identity_mat4(&D_801B9DC8);
+    gd_set_identity_mat4(&D_801B9DC8);
 
     if (gGdCtrl.unk30 != NULL) {
         sp24.x = net->mat128[0][0];
         sp24.y = net->mat128[0][1];
         sp24.z = net->mat128[0][2];
-        func_801961F4(&sp38, &sp24, 4.0f);
-        multiply_mat4(&sp38, &D_801B9DC8, &D_801B9DC8);
+        gd_create_rot_mat_angular(&sp38, &sp24, 4.0f);
+        gd_mult_mat4f(&sp38, &D_801B9DC8, &D_801B9DC8);
         net->unkA4.x = net->unkA4.y = net->unkA4.z = 0.0f;
     }
 
@@ -266,8 +266,8 @@ void func_80192CCC(struct ObjNet *net) {
         sp24.x = net->mat128[0][0];
         sp24.y = net->mat128[0][1];
         sp24.z = net->mat128[0][2];
-        func_801961F4(&sp38, &sp24, -4.0f);
-        multiply_mat4(&sp38, &D_801B9DC8, &D_801B9DC8);
+        gd_create_rot_mat_angular(&sp38, &sp24, -4.0f);
+        gd_mult_mat4f(&sp38, &D_801B9DC8, &D_801B9DC8);
         net->unkA4.x = net->unkA4.y = net->unkA4.z = 0.0f;
     }
 
@@ -289,7 +289,7 @@ void func_80192CCC(struct ObjNet *net) {
     }
 
     func_801926A4(net);
-    multiply_mat4(&net->mat128, &D_801B9DC8, &net->mat128);
+    gd_mult_mat4f(&net->mat128, &D_801B9DC8, &net->mat128);
     if (group != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801913C0, group);
         apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) Unknown8018FA68, group);

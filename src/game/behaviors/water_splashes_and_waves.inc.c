@@ -62,10 +62,10 @@ void bhv_water_droplet_loop(void) {
     
     if (o->oTimer == 0) {
         if (cur_obj_has_model(MODEL_FISH))
-            o->header.gfx.node.flags &= ~4;
+            o->header.gfx.node.flags &= ~GRAPH_RENDER_BILLBOARD;
         else
-            o->header.gfx.node.flags |= 4;
-        o->oFaceAngleYaw = RandomU16();
+            o->header.gfx.node.flags |= GRAPH_RENDER_BILLBOARD;
+        o->oFaceAngleYaw = random_u16();
     }
     // Apply gravity
     o->oVelY -= 4.0f;
@@ -93,7 +93,7 @@ void bhv_idle_water_wave_loop(void) {
 }
 
 void bhv_water_droplet_splash_init(void) {
-    cur_obj_scale(RandomFloat() + 1.5);
+    cur_obj_scale(random_float() + 1.5);
 }
 
 void bhv_bubble_splash_init(void) {
@@ -105,7 +105,7 @@ void bhv_bubble_splash_init(void) {
 void bhv_shallow_water_splash_init(void) {
     struct Object *fishObj;
     // Have a 1 in 256 chance to spawn the fish particle easter egg.
-    if ((RandomU16() & 0xFF) <= 0) // Strange
+    if ((random_u16() & 0xFF) <= 0) // Strange
     {
         fishObj = spawn_water_droplet(o, &sWaterDropletFishParams);
         obj_init_animation_with_sound(fishObj, blue_fish_seg3_anims_0301C2B0, 0);

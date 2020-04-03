@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/castle_courtyard/header.h"
 
 #include "levels/castle_courtyard/areas/1/spire/geo.inc.c"

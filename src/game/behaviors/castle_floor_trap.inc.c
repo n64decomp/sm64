@@ -2,7 +2,7 @@
 
 void bhv_floor_trap_in_castle_loop(void) {
     if (gMarioObject->platform == o)
-        o->parentObj->oInteractStatus |= INTERACT_TRAP_TURN;
+        o->parentObj->oInteractStatus |= INT_STATUS_TRAP_TURN;
     o->oFaceAngleRoll = o->parentObj->oFaceAngleRoll;
 }
 
@@ -19,7 +19,7 @@ void bhv_castle_floor_trap_open_detect(void) {
         o->oAction = 4; // rotates trapdoor so it looks always open
     else {
         o->oAngleVelRoll = 0x400;
-        if (o->oInteractStatus & INTERACT_TRAP_TURN)
+        if (o->oInteractStatus & INT_STATUS_TRAP_TURN)
             o->oAction = 1; // detects interact then opens the trapdoor
     }
 }
@@ -45,7 +45,7 @@ void bhv_castle_floor_trap_close(void) {
     if (o->oFaceAngleRoll > 0) {
         o->oFaceAngleRoll = 0;
         o->oAction = 0; // after closing, reloads open detection
-        o->oInteractStatus &= ~(INTERACT_TRAP_TURN);
+        o->oInteractStatus &= ~INT_STATUS_TRAP_TURN;
     }
 }
 

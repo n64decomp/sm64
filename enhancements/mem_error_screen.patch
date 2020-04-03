@@ -1,8 +1,8 @@
 diff --git a/Makefile b/Makefile
-index 26c76d3d..bfc8bb18 100644
+index 88c8dbbe..f60df04f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -341,6 +341,7 @@ $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
+@@ -382,6 +382,7 @@ $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
  $(BUILD_DIR)/src/menu/file_select.o: $(BUILD_DIR)/include/text_strings.h
  $(BUILD_DIR)/src/menu/star_select.o: $(BUILD_DIR)/include/text_strings.h
  $(BUILD_DIR)/src/game/ingame_menu.o: $(BUILD_DIR)/include/text_strings.h
@@ -11,7 +11,7 @@ index 26c76d3d..bfc8bb18 100644
  ################################################################
  # TEXTURE GENERATION                                           #
 diff --git a/include/segments.h b/include/segments.h
-index ccc989aa..e54c3eab 100644
+index c98040a8..eeecb4f6 100644
 --- a/include/segments.h
 +++ b/include/segments.h
 @@ -1,6 +1,9 @@
@@ -25,7 +25,7 @@ index ccc989aa..e54c3eab 100644
   * Memory addresses for segments. Ideally, this header file would not be
   * needed, and the addresses would be defined in sm64.ld and linker-inserted
 diff --git a/include/text_strings.h.in b/include/text_strings.h.in
-index 2fda11d7..8ba0a1c9 100644
+index 4e36eb96..7aadf0cb 100644
 --- a/include/text_strings.h.in
 +++ b/include/text_strings.h.in
 @@ -25,6 +25,11 @@
@@ -58,10 +58,10 @@ index 015eeb6b..cc010ca1 100644
 +    JUMP(/*target*/ level_script_entry_error_screen),
 +};
 diff --git a/levels/intro/geo.c b/levels/intro/geo.c
-index 7fbee0c5..e7effd85 100644
+index 8ac70024..72766f3f 100644
 --- a/levels/intro/geo.c
 +++ b/levels/intro/geo.c
-@@ -13,6 +13,24 @@
+@@ -15,6 +15,24 @@
  
  #include "levels/intro/header.h"
  
@@ -100,7 +100,7 @@ index e0f6292d..8f77fb26 100644
 +
  #endif
 diff --git a/levels/intro/script.c b/levels/intro/script.c
-index 3ffd7859..b8c3ae41 100644
+index 4975dbb2..5ee6c688 100644
 --- a/levels/intro/script.c
 +++ b/levels/intro/script.c
 @@ -18,6 +18,21 @@
@@ -137,18 +137,18 @@ index 89bfb4ed..0ea607c5 100644
  
  #endif /* _LEVEL_SCRIPT_H */
 diff --git a/src/game/main.c b/src/game/main.c
-index f677f6f9..a164beb1 100644
+index a3afffee..8b05fcf1 100644
 --- a/src/game/main.c
 +++ b/src/game/main.c
 @@ -12,6 +12,7 @@
- #include "buffers/buffers.h"
  #include "segments.h"
  #include "main.h"
+ #include "thread6.h"
 +#include "mem_error_screen.h"
  
  // Message IDs
  #define MESG_SP_COMPLETE 100
-@@ -125,6 +126,10 @@ void AllocPool(void) {
+@@ -125,6 +126,10 @@ void alloc_pool(void) {
      void *start = (void *) SEG_POOL_START;
      void *end = (void *) SEG_POOL_END;
  
@@ -159,7 +159,7 @@ index f677f6f9..a164beb1 100644
      main_pool_init(start, end);
      gEffectsMemoryPool = mem_pool_init(0x4000, MEMORY_POOL_LEFT);
  }
-@@ -314,7 +319,10 @@ void thread3_main(UNUSED void *arg) {
+@@ -330,7 +335,10 @@ void thread3_main(UNUSED void *arg) {
      create_thread(&gSoundThread, 4, thread4_sound, NULL, gThread4Stack + 0x2000, 20);
      osStartThread(&gSoundThread);
  
@@ -173,10 +173,10 @@ index f677f6f9..a164beb1 100644
      while (1) {
 diff --git a/src/game/mem_error_screen.c b/src/game/mem_error_screen.c
 new file mode 100644
-index 00000000..20eeef8f
+index 00000000..81efaf91
 --- /dev/null
 +++ b/src/game/mem_error_screen.c
-@@ -0,0 +1,105 @@
+@@ -0,0 +1,104 @@
 +/* clang-format off */
 +/*
 + * mem_error_screen.inc.c
@@ -189,9 +189,8 @@ index 00000000..20eeef8f
 +#include <types.h>
 +#include "segments.h"
 +#include "text_strings.h"
-+#include "game.h"
++#include "game_init.h"
 +#include "main.h"
-+#include "display.h"
 +#include "print.h"
 +#include "ingame_menu.h"
 +#include "segment2.h"
@@ -282,6 +281,7 @@ index 00000000..20eeef8f
 +        display_and_vsync();
 +    }
 +}
+\ No newline at end of file
 diff --git a/src/game/mem_error_screen.h b/src/game/mem_error_screen.h
 new file mode 100644
 index 00000000..9fbff34c

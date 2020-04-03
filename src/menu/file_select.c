@@ -2,7 +2,7 @@
 
 #include "sm64.h"
 #include "audio/external.h"
-#include "game/game.h"
+#include "game/game_init.h"
 #include "game/ingame_menu.h"
 #include "game/object_helpers.h"
 #include "game/area.h"

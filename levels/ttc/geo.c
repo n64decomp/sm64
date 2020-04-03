@@ -9,6 +9,8 @@
 #include "game/screen_transition.h"
 #include "game/paintings.h"
 
+#include "make_const_nonconst.h"
+
 #include "levels/ttc/header.h"
 
 #include "levels/ttc/rotating_cube/geo.inc.c"

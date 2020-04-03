@@ -1,7 +1,7 @@
 #include <ultra64.h>
 
 #include "sm64.h"
-#include "display.h"
+#include "game_init.h"
 #include "memory.h"
 #include "ingame_menu.h"
 #include "envfx_snow.h"
@@ -64,7 +64,7 @@ s32 particle_is_laterally_close(s32 index, s32 x, s32 z, s32 distance) {
  * Used to position flower particles
  */
 s32 random_flower_offset() {
-    s32 result = RandomFloat() * 2000.0f - 1000.0f;
+    s32 result = random_float() * 2000.0f - 1000.0f;
     if (result < 0) {
         result -= 1000;
     } else {
@@ -95,7 +95,7 @@ void envfx_update_flower(Vec3s centerPos) {
             (gEnvFxBuffer + i)->yPos = find_floor_height_and_data((gEnvFxBuffer + i)->xPos, 10000.0f,
                                                                   (gEnvFxBuffer + i)->zPos, &floorGeo);
             (gEnvFxBuffer + i)->isAlive = 1;
-            (gEnvFxBuffer + i)->animFrame = RandomFloat() * 5.0f;
+            (gEnvFxBuffer + i)->animFrame = random_float() * 5.0f;
         } else if ((timer & 0x03) == 0) {
             (gEnvFxBuffer + i)->animFrame += 1;
             if ((gEnvFxBuffer + i)->animFrame > 5) {
@@ -123,8 +123,8 @@ void envfx_set_lava_bubble_position(s32 index, Vec3s centerPos) {
     centerY = centerPos[1];
     centerZ = centerPos[2];
 
-    (gEnvFxBuffer + index)->xPos = RandomFloat() * 6000.0f - 3000.0f + centerX;
-    (gEnvFxBuffer + index)->zPos = RandomFloat() * 6000.0f - 3000.0f + centerZ;
+    (gEnvFxBuffer + index)->xPos = random_float() * 6000.0f - 3000.0f + centerX;
+    (gEnvFxBuffer + index)->zPos = random_float() * 6000.0f - 3000.0f + centerZ;
 
     if ((gEnvFxBuffer + index)->xPos > 8000) {
         (gEnvFxBuffer + index)->xPos = 16000 - (gEnvFxBuffer + index)->xPos;
@@ -181,7 +181,7 @@ void envfx_update_lava(Vec3s centerPos) {
         }
     }
 
-    if ((chance = (s32)(RandomFloat() * 16.0f)) == 8) {
+    if ((chance = (s32)(random_float() * 16.0f)) == 8) {
         play_sound(SOUND_GENERAL_QUIET_BUBBLE2, gDefaultSoundArgs);
     }
 }
@@ -236,8 +236,8 @@ void envfx_update_whirlpool(void) {
     for (i = 0; i < sBubbleParticleMaxCount; i++) {
         (gEnvFxBuffer + i)->isAlive = envfx_is_whirlpool_bubble_alive(i);
         if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->angleAndDist[1] = RandomFloat() * 1000.0f;
-            (gEnvFxBuffer + i)->angleAndDist[0] = RandomFloat() * 65536.0f;
+            (gEnvFxBuffer + i)->angleAndDist[1] = random_float() * 1000.0f;
+            (gEnvFxBuffer + i)->angleAndDist[0] = random_float() * 65536.0f;
             (gEnvFxBuffer + i)->xPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_X]
                 + sins((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
@@ -245,7 +245,7 @@ void envfx_update_whirlpool(void) {
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z]
                 + coss((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
             (gEnvFxBuffer + i)->bubbleY =
-                gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (RandomFloat() * 100.0f - 50.0f);
+                gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (random_float() * 100.0f - 50.0f);
             (gEnvFxBuffer + i)->yPos = (i + gEnvFxBuffer)->bubbleY;
             (gEnvFxBuffer + i)->unusedBubbleVar = 0;
             (gEnvFxBuffer + i)->isAlive = 1;
@@ -297,8 +297,8 @@ void envfx_update_jetstream(void) {
     for (i = 0; i < sBubbleParticleMaxCount; i++) {
         (gEnvFxBuffer + i)->isAlive = envfx_is_jestream_bubble_alive(i);
         if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->angleAndDist[1] = RandomFloat() * 300.0f;
-            (gEnvFxBuffer + i)->angleAndDist[0] = RandomU16();
+            (gEnvFxBuffer + i)->angleAndDist[1] = random_float() * 300.0f;
+            (gEnvFxBuffer + i)->angleAndDist[0] = random_u16();
             (gEnvFxBuffer + i)->xPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_X]
                 + sins((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
@@ -306,7 +306,7 @@ void envfx_update_jetstream(void) {
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z]
                 + coss((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
             (gEnvFxBuffer + i)->yPos =
-                gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (RandomFloat() * 400.0f - 200.0f);
+                gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (random_float() * 400.0f - 200.0f);
         } else {
             (gEnvFxBuffer + i)->angleAndDist[1] += 10;
             (gEnvFxBuffer + i)->xPos += sins((gEnvFxBuffer + i)->angleAndDist[0]) * 10.0f;
@@ -361,7 +361,7 @@ s32 envfx_init_bubble(s32 mode) {
         }
 
         for (i = 0; i < sBubbleParticleCount; i++) {
-            (gEnvFxBuffer + i)->animFrame = RandomFloat() * 7.0f;
+            (gEnvFxBuffer + i)->animFrame = random_float() * 7.0f;
         }
 
         if (0) {

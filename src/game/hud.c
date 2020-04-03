@@ -1,8 +1,7 @@
 #include <ultra64.h>
 
 #include "sm64.h"
-#include "display.h"
-#include "game.h"
+#include "game_init.h"
 #include "level_update.h"
 #include "camera.h"
 #include "print.h"
@@ -26,7 +25,7 @@ struct PowerMeterHUD {
     f32 unused;
 };
 
-struct UnusedStruct803314F0 {
+struct UnusedHUDStruct {
     u32 unused1;
     u16 unused2;
     u16 unused3;
@@ -52,7 +51,7 @@ static struct PowerMeterHUD sPowerMeterHUD = {
 // when the power meter is hidden.
 s32 sPowerMeterVisibleTimer = 0;
 
-static struct UnusedStruct803314F0 unused803314F0 = { 0x00000000, 0x000A, 0x0000 };
+static struct UnusedHUDStruct sUnusedHUDValues = { 0x00, 0x0A, 0x00 };
 
 static struct CameraHUD sCameraHUD = { CAM_STATUS_NONE };
 
@@ -209,7 +208,7 @@ void handle_power_meter_actions(s16 numHealthWedges) {
     // Update to match health value
     sPowerMeterStoredHealth = numHealthWedges;
 
-    // If mario is swimming, keep showing power meter
+    // If Mario is swimming, keep power meter visible
     if (gPlayerCameraState->action & ACT_FLAG_SWIMMING) {
         if (sPowerMeterHUD.animation == POWER_METER_HIDDEN
             || sPowerMeterHUD.animation == POWER_METER_EMPHASIZED) {
@@ -431,16 +430,16 @@ void render_hud(void) {
     } else {
 #ifdef VERSION_EU
         // basically create_dl_ortho_matrix but guOrtho screen width is different
+
         mtx = alloc_display_list(sizeof(*mtx));
         if (mtx == NULL) {
             return;
         }
         create_dl_identity_matrix();
-        guOrtho(mtx, -16.0f, 336.0f, 0, 240.0f, -10.0f, 10.0f, 1.0f);
-        gMoveWd(gDisplayListHead++, 0xE, 0, 0xFFFF);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), 
+        guOrtho(mtx, -16.0f, SCREEN_WIDTH + 16, 0, SCREEN_HEIGHT, -10.0f, 10.0f, 1.0f);
+        gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx),
                 G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
-
 #else
         create_dl_ortho_matrix();
 #endif

@@ -7,7 +7,7 @@
 
 struct MacroPreset
 {
-    /*0x00*/ const BehaviorScript *beh;
+    /*0x00*/ const BehaviorScript *behavior;
     /*0x04*/ s16 model;
     /*0x06*/ s16 param;
 };
