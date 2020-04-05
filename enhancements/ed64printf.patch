@@ -1,0 +1,1354 @@
+diff --git a/Makefile b/Makefile
+index 2c7ca6c..d4fe75f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -21,11 +21,17 @@ NON_MATCHING ?= 0
+ TARGET_N64 ?= 1
+ # Compiler to use (ido or gcc)
+ COMPILER ?= ido
++# Whether to do ED64 Stuff or not
++ED64DBG ?= YES
+ 
+ ifeq ($(COMPILER),gcc)
+   NON_MATCHING := 1
+ endif
+ 
++ifeq ($(ED64DBG),YES)
++  ED64_CFLAGS := -DED64DBG
++endif
++
+ # Release
+ 
+ ifeq ($(VERSION),jp)
+@@ -150,7 +156,11 @@ ACTOR_DIR := actors
+ LEVEL_DIRS := $(patsubst levels/%,%,$(dir $(wildcard levels/*/header.h)))
+ 
+ # Directories containing source files
++ifeq ($(ED64DBG),YES)
++  SRC_DIRS := src src/engine src/game src/ed64 src/audio src/menu src/buffers actors levels bin data assets
++else
+ SRC_DIRS := src src/engine src/game src/audio src/menu src/buffers actors levels bin data assets
++endif
+ ASM_DIRS := asm lib
+ BIN_DIRS := bin bin/$(VERSION)
+ 
+@@ -279,10 +289,16 @@ endif
+ 
+ INCLUDE_CFLAGS := -I include -I $(BUILD_DIR) -I $(BUILD_DIR)/include -I src -I .
+ 
++ifeq ($(ED64DBG),YES)
+ # Check code syntax with host compiler
++CC_CHECK := gcc -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) $(INCLUDE_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(VERSION_CFLAGS) $(GRUCODE_CFLAGS) $(ED64_CFLAGS)
++
++COMMON_CFLAGS = $(OPT_FLAGS) $(TARGET_CFLAGS) $(INCLUDE_CFLAGS) $(VERSION_CFLAGS) $(MIPSISET) $(GRUCODE_CFLAGS) $(ED64_CFLAGS)
++else 
+ CC_CHECK := gcc -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) $(INCLUDE_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(VERSION_CFLAGS) $(GRUCODE_CFLAGS)
+ 
+ COMMON_CFLAGS = $(OPT_FLAGS) $(TARGET_CFLAGS) $(INCLUDE_CFLAGS) $(VERSION_CFLAGS) $(MIPSISET) $(GRUCODE_CFLAGS)
++endif
+ 
+ ASFLAGS := -march=vr4300 -mabi=32 -I include -I $(BUILD_DIR) $(VERSION_ASFLAGS) $(GRUCODE_ASFLAGS)
+ CFLAGS = -Wab,-r4300_mul -non_shared -G 0 -Xcpluscomm -Xfullwarn -signed $(COMMON_CFLAGS) $(MIPSBIT)
+@@ -590,8 +606,14 @@ $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
+ $(BUILD_DIR)/%.o: %.s
+ 	$(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@ $<
+ 
++ifeq ($(ED64DBG),YES)
++$(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT)
++	$(CPP) $(VERSION_CFLAGS) $(ED64_CFLAGS) -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
++else
++
+ $(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT)
+ 	$(CPP) $(VERSION_CFLAGS) -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
++endif 
+ 
+ $(BUILD_DIR)/libultra.a: $(ULTRA_O_FILES)
+ 	$(AR) rcs -o $@ $(ULTRA_O_FILES)
+diff --git a/include/PR/os_time.h b/include/PR/os_time.h
+index 328e601..c5774e9 100644
+--- a/include/PR/os_time.h
++++ b/include/PR/os_time.h
+@@ -24,4 +24,9 @@ OSTime osGetTime(void);
+ void osSetTime(OSTime time);
+ u32 osSetTimer(OSTimer *, OSTime, u64, OSMesgQueue *, OSMesg);
+ 
++#define	OS_CLOCK_RATE		62500000LL
++#define	OS_CPU_COUNTER		(OS_CLOCK_RATE*3/4)
++
++#define OS_CYCLES_TO_USEC(c)	(((u64)(c)*(1000000LL/15625LL))/(OS_CPU_COUNTER/15625LL))
++
+ #endif
+diff --git a/sm64.ld b/sm64.ld
+index 8506985..624062a 100755
+--- a/sm64.ld
++++ b/sm64.ld
+@@ -89,6 +89,11 @@ SECTIONS
+    {
+       BUILD_DIR/asm/entry.o(.text);
+       BUILD_DIR/src/game/crash_screen.o(.text);
++#ifdef ED64DBG
++	  BUILD_DIR/src/ed64/ed64io_everdrive.o(.text);
++	  BUILD_DIR/src/ed64/ed64io_sys.o(.text);
++	  BUILD_DIR/src/ed64/ed64io_usb.o(.text);
++#endif
+       BUILD_DIR/src/game/main.o(.text);
+       BUILD_DIR/src/game/game_init.o(.text);
+       BUILD_DIR/src/game/sound_init.o(.text);
+@@ -377,6 +382,11 @@ SECTIONS
+ 
+       /* data */
+       BUILD_DIR/src/game/crash_screen.o(.data*);
++#ifdef ED64DBG
++	  BUILD_DIR/src/ed64/ed64io_everdrive.o(.data*);
++	  BUILD_DIR/src/ed64/ed64io_sys.o(.data*);
++	  BUILD_DIR/src/ed64/ed64io_usb.o(.data*);
++#endif
+       BUILD_DIR/src/game/main.o(.data*);
+       BUILD_DIR/src/game/game_init.o(.data*);
+       BUILD_DIR/src/game/sound_init.o(.data*);
+@@ -476,6 +486,11 @@ SECTIONS
+ 
+       /* rodata */
+       BUILD_DIR/src/game/crash_screen.o(.rodata*);
++#ifdef ED64DBG
++	  BUILD_DIR/src/ed64/ed64io_everdrive.o(.rodata*);
++	  BUILD_DIR/src/ed64/ed64io_sys.o(.rodata*);
++	  BUILD_DIR/src/ed64/ed64io_usb.o(.rodata*);
++#endif
+       BUILD_DIR/src/game/main.o(.rodata*);
+       BUILD_DIR/src/game/game_init.o(.rodata*);
+       BUILD_DIR/src/game/sound_init.o(.rodata*);
+@@ -571,6 +586,11 @@ SECTIONS
+    BEGIN_NOLOAD(main)
+    {
+       BUILD_DIR/src/game/crash_screen.o(.bss*);
++#ifdef ED64DBG
++	  BUILD_DIR/src/ed64/ed64io_everdrive.o(.bss*);
++	  BUILD_DIR/src/ed64/ed64io_sys.o(.bss*);
++	  BUILD_DIR/src/ed64/ed64io_usb.o(.bss*);
++#endif
+       BUILD_DIR/src/game/main.o(.bss*);
+       BUILD_DIR/src/game/game_init.o(.bss*);
+       BUILD_DIR/src/game/sound_init.o(.bss*);
+diff --git a/src/ed64/ed64io_errors.h b/src/ed64/ed64io_errors.h
+new file mode 100644
+index 0000000..1ce6d90
+--- /dev/null
++++ b/src/ed64/ed64io_errors.h
+@@ -0,0 +1,70 @@
++/* 
++ * File:   errors.h
++ * Author: KRIK
++ *
++ * Created on 14 Май 2011 г., 7:17
++ */
++
++#ifndef _ERRORS_H
++#define	_ERRORS_H
++
++
++#define EVD_ERROR_FIFO_TIMEOUT 90; 
++#define EVD_ERROR_MMC_TIMEOUT 91;
++
++#define BOOT_UPD_ERR_WRONG_SIZE 95
++#define BOOT_UPD_ERR_HDR 96
++#define BOOT_UPD_ERR_CMP 97
++#define BOOT_UPD_ERR_CIC_DTCT 98
++
++#define FAT_ERR_NOT_EXIST 100
++#define FAT_ERR_EXIST 101
++#define FAT_ERR_NAME 102
++#define FAT_ERR_OUT_OF_FILE 103
++#define FAT_ERR_BAD_BASE_CLUSTER 104;
++#define FAT_ERR_NO_FRE_SPACE 105
++#define FAT_ERR_NOT_FILE 106
++#define FAT_ERR_FILE_MODE 107
++#define FAT_ERR_ROT_OVERFLOW 108
++#define FAT_ERR_OUT_OF_TABLE 109
++#define FAT_ERR_INIT 110
++#define FAT_LFN_BUFF_OVERFLOW 111
++#define FAT_DISK_NOT_READY 112
++#define FAT_ERR_SIZE 113
++#define FAT_ERR_RESIZE 114
++
++#define ERR_FILE8_TOO_BIG 140
++#define ERR_FILE16_TOO_BIG 141
++#define ERR_WRON_OS_SIZE 142
++#define ERR_OS_VERIFY 143
++#define ERR_OS_VERIFY2 144
++#define ERR_EMU_NOT_FOUND 145
++#define ERR_SAVE_FORMAT 146
++#define ERR_EEPROM 147
++#define ERR_NO_FAV_SPACE 150
++
++
++
++#define DISK_ERR_INIT 50
++
++#define DISK_ERR_RD1 62
++#define DISK_ERR_RD2 63
++
++#define DISK_ERR_WR1 64
++#define DISK_ERR_WR2 65
++#define DISK_ERR_WR3 66
++#define DISK_ERR_WRX 67
++#define DISK_WR_SB_TOUT 68
++#define DISK_ERR_WR_CRC 69
++
++#define DISK_RD_FE_TOUT 70
++#define DISK_ERR_CLOSE_RW1 71
++#define DISK_ERR_CLOSE_RW2 72
++
++#define SD_CMD_TIMEOUT 75
++#define SD_CMD_CRC_ERROR 76
++
++#define SD_INIT_ERROR 80
++
++#endif	/* _ERRORS_H */
++
+diff --git a/src/ed64/ed64io_everdrive.c b/src/ed64/ed64io_everdrive.c
+new file mode 100644
+index 0000000..ba85fa6
+--- /dev/null
++++ b/src/ed64/ed64io_everdrive.c
+@@ -0,0 +1,557 @@
++
++#include "ed64io_everdrive.h"
++
++#include <stdio.h>
++#include <ultra64.h>
++#include <PR/ultratypes.h>
++#include "ed64io_errors.h"
++#include "ed64io_sys.h"
++
++#define CMD0 0x40   // software reset
++#define CMD1 0x41   // brings card out of idle state
++#define CMD2 0x42   // not used in SPI mode
++#define CMD3 0x43   // not used in SPI mode
++#define CMD4 0x44   // not used in SPI mode
++#define CMD5 0x45   // Reserved
++#define CMD6 0x46   // Reserved
++#define CMD7 0x47   // not used in SPI mode
++#define CMD8 0x48   // Reserved
++#define CMD9 0x49   // ask card to send card speficic data (CSD)
++#define CMD10 0x4A  // ask card to send card identification (CID)
++#define CMD11 0x4B  // not used in SPI mode
++#define CMD12 0x4C  // stop transmission on multiple block read
++#define CMD13 0x4D  // ask the card to send it's status register
++#define CMD14 0x4E  // Reserved
++#define CMD15 0x4F  // not used in SPI mode
++#define CMD16 0x50  // sets the block length used by the memory card
++#define CMD17 0x51  // read single block
++#define CMD18 0x52  // read multiple block
++#define CMD19 0x53  // Reserved
++#define CMD20 0x54  // not used in SPI mode
++#define CMD21 0x55  // Reserved
++#define CMD22 0x56  // Reserved
++#define CMD23 0x57  // Reserved
++#define CMD24 0x58  // writes a single block
++#define CMD25 0x59  // writes multiple blocks
++#define CMD26 0x5A  // not used in SPI mode
++#define CMD27 0x5B  // change the bits in CSD
++#define CMD28 0x5C  // sets the write protection bit
++#define CMD29 0x5D  // clears the write protection bit
++#define CMD30 0x5E  // checks the write protection bit
++#define CMD31 0x5F  // Reserved
++#define CMD32 0x60  // Sets the address of the first sector of the erase group
++#define CMD33 0x61  // Sets the address of the last sector of the erase group
++#define CMD34 0x62  // removes a sector from the selected group
++#define CMD35 0x63  // Sets the address of the first group
++#define CMD36 0x64  // Sets the address of the last erase group
++#define CMD37 0x65  // removes a group from the selected section
++#define CMD38 0x66  // erase all selected groups
++#define CMD39 0x67  // not used in SPI mode
++#define CMD40 0x68  // not used in SPI mode
++#define CMD41 0x69  // Reserved
++#define CMD42 0x6A  // locks a block
++// CMD43 ... CMD57 are Reserved
++#define CMD58 0x7A  // reads the OCR register
++#define CMD59 0x7B  // turns CRC off
++// CMD60 ... CMD63 are not used in SPI mode
++
++#define ED_STATE_DMA_BUSY 0
++#define ED_STATE_DMA_TOUT 1
++#define ED_STATE_TXE 2
++#define ED_STATE_RXF 3
++#define ED_STATE_SPI 4
++
++#define SPI_CFG_SPD0 0
++#define SPI_CFG_SPD1 1
++#define SPI_CFG_SS 2
++#define SPI_CFG_RD 3
++#define SPI_CFG_DAT 4
++#define SPI_CFG_1BIT 5
++
++#define SAV_EEP_ON 0
++#define SAV_SRM_ON 1
++#define SAV_EEP_SIZE 2
++#define SAV_SRM_SIZE 3
++
++void evd_setSpiSpeed(u8 speed);
++u8 evd_mmcCmd(u8 cmd, u32 arg);
++
++u8 sd_mode;
++volatile u8 spi_cfg;
++volatile u8 evd_cfg;
++u8 sd_type;
++volatile u32* regs_ptr = (u32*)0xA8040000;
++
++/*
++result[2] <= ad[15:8] == {ad[6], ad[1], ad[0], ad[7], ad[5], ad[4], ad[3],
++ad[2]} ^ 8'h37 ^ prv[7:0]; prv[7:0] <= ad[15:8];
++ */
++void (*dma_busy_callback)();
++
++void evd_setDmaAddr(u32 addr) {}
++
++void evd_init() {
++  volatile u8 val;
++  sd_mode = 0;
++  dma_busy_callback = 0;
++
++  sleep(1);
++  val = regs_ptr[0];
++
++  spi_cfg = (0 << SPI_CFG_SPD0) | (1 << SPI_CFG_SPD1) | (1 << SPI_CFG_SS);
++  evd_cfg = (1 << ED_CFG_SDRAM_ON);
++
++  val = regs_ptr[0];
++  regs_ptr[REG_KEY] = 0x1234;  // unlock everdrive
++  // now you have access to everdrive hardware and cart momy is not read only
++  // anymore
++
++  val = regs_ptr[0];
++  regs_ptr[REG_CFG] = evd_cfg;
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++
++  evd_fifoRxf();
++  if (!evd_fifoRxf()) {
++    val = regs_ptr[0];
++    regs_ptr[REG_DMA_LEN] = 7;  // clean 16k
++    val = regs_ptr[0];
++    regs_ptr[REG_DMA_RAM_ADDR] = (ROM_LEN - 0x200000) / 2048;
++    val = regs_ptr[0];
++    regs_ptr[REG_DMA_CFG] = DCFG_FIFO_TO_RAM;
++    while (evd_isDmaBusy())
++      ;
++  }
++}
++
++void evd_lockRegs() {
++  volatile u8 val;
++  val = regs_ptr[0];
++  regs_ptr[REG_KEY] = 0;
++}
++
++// some data availalbe on usb buffer
++u8 evd_fifoRxf() {
++  u16 val;
++  // regs_ptr[REG_STATE]++;
++  val = regs_ptr[REG_STATUS];
++  return (val >> ED_STATE_RXF) & 1;
++}
++
++// usb ready to transfer
++u8 evd_fifoTxe() {
++  u16 val;
++  // regs_ptr[REG_STATE]++;
++  val = regs_ptr[REG_STATUS];
++  return (val >> ED_STATE_TXE) & 1;
++}
++
++// everdrive dma controller state
++u8 evd_isDmaBusy() {
++  u16 val;
++  // volatile u32 i;
++  sleep(1);
++  if (dma_busy_callback != 0)
++    dma_busy_callback();
++  // regs_ptr[REG_STATE]++;
++  val = regs_ptr[REG_STATUS];
++  return (val >> ED_STATE_DMA_BUSY) & 1;
++}
++
++u8 evd_isDmaBusyNoWait() {
++  u16 val;
++  val = regs_ptr[REG_STATUS];
++  return (val >> ED_STATE_DMA_BUSY) & 1;
++}
++
++u8 evd_isDmaTimeout() {
++  u16 val;
++  // regs_ptr[REG_STATE]++;
++  val = regs_ptr[REG_STATUS];
++
++  return (val >> ED_STATE_DMA_TOUT) & 1;
++}
++
++// everdrive transfers data from/to rom memory, and not directly to n64 ram
++// transfer from PC to cart memory
++// dst address in cart address space. must me aligned to 2048. len in blocks.
++// block = 512bytes
++u8 evd_fifoRdToCart(u32 cart_addr, u16 blocks) {
++  volatile u8 val;
++  cart_addr /= 2048;
++
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_LEN] = (blocks - 1);
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_RAM_ADDR] = cart_addr;
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_CFG] = DCFG_FIFO_TO_RAM;
++
++  while (evd_isDmaBusy())
++    ;
++  if (evd_isDmaTimeout())
++    return EVD_ERROR_FIFO_TIMEOUT;
++
++  return 0;
++}
++
++// transfer from cart memory to PC
++// src address in cart address space. must me aligned to 2048. len in blocks.
++// block = 512bytes
++u8 evd_fifoWrFromCart(u32 cart_addr, u16 blocks) {
++  volatile u8 val;
++  cart_addr /= 2048;
++
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_LEN] = (blocks - 1);
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_RAM_ADDR] = cart_addr;
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_CFG] = DCFG_RAM_TO_FIFO;
++
++  while (evd_isDmaBusy())
++    ;
++  if (evd_isDmaTimeout())
++    return EVD_ERROR_FIFO_TIMEOUT;
++
++  return 0;
++}
++
++u8 evd_fifoRd(void* buff, u16 blocks) {
++  volatile u8 val;
++  u32 len = blocks == 0 ? 65536 * 512 : blocks * 512;
++  u32 ram_buff_addr =
++      DMA_BUFF_ADDR / 2048;  //(ROM_LEN - len - 65536 * 4) / 2048;
++
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_LEN] = (blocks - 1);
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_RAM_ADDR] = ram_buff_addr;
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_CFG] = DCFG_FIFO_TO_RAM;
++
++  while (evd_isDmaBusy())
++    ;
++  dma_read_s(buff, (0xb0000000 + ram_buff_addr * 2048), len);
++  if (evd_isDmaTimeout())
++    return EVD_ERROR_FIFO_TIMEOUT;
++
++  return 0;
++}
++
++u8 evd_fifoWr(void* buff, u16 blocks) {
++  volatile u8 val;
++  u32 len = blocks == 0 ? 65536 * 512 : blocks * 512;
++  u32 ram_buff_addr =
++      DMA_BUFF_ADDR / 2048;  //(ROM_LEN - len - 65536 * 4) / 2048;
++
++  dma_write_s(buff, (0xb0000000 + ram_buff_addr * 1024 * 2), len);
++
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_LEN] = (blocks - 1);
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_RAM_ADDR] = ram_buff_addr;
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_CFG] = DCFG_RAM_TO_FIFO;
++
++  while (evd_isDmaBusy())
++    ;
++  if (evd_isDmaTimeout())
++    return EVD_ERROR_FIFO_TIMEOUT;
++
++  return 0;
++}
++
++#define EVERDRIVE_CART_BLOCK_WRITE_SIZE 0x4000 /* cart write block size */
++
++static int evd_fifoWrNonblockMsgId = 0;
++void evd_fifoWrNonblockStateInit(evd_fifoWrNonblockState* state) {
++  state->state = 0;
++  state->done = FALSE;
++  state->id = evd_fifoWrNonblockMsgId++;
++  state->error = 0;
++}
++
++// start DMA to cart memory
++// use non blocking OS_MESG_NOBLOCK check for DMA-to-cart end
++// use non blocking evd_isDmaBusyNoWait check for DMA-to-fifo end
++void evd_fifoWrNonblock(void* buff,
++                        u16 blocks,
++                        evd_fifoWrNonblockState* state) {
++  volatile u8 val;
++  u32 len = blocks == 0 ? 65536 * 512 : blocks * 512;
++  u32 ram_buff_addr =
++      DMA_BUFF_ADDR / 2048;  //(ROM_LEN - len - 65536 * 4) / 2048;
++
++  void* buf_ptr = buff;
++  unsigned long pi_address = (0xb0000000 + ram_buff_addr * 1024 * 2);
++  u32 rom_addr = pi_address;
++  u32 size = len;
++  int msgRet;
++
++  // assert (size <= EVERDRIVE_CART_BLOCK_WRITE_SIZE);
++
++  switch (state->state) {
++    case 0:
++      // write back CPU cache to RAM for consistency during DMA
++      osWritebackDCache(buff, len);
++      // Create message queue to track DMA-to-cart completion
++      osCreateMesgQueue(&state->dmaMesgQ, &state->dmaMesgBuf, 1);
++      // DMA write to cart memory space
++      osPiStartDma(&state->dmaIoMesgBuf, OS_MESG_PRI_NORMAL, OS_WRITE, rom_addr,
++                   buf_ptr, size, &state->dmaMesgQ);
++      state->state++;
++    case 1:
++      // non-blocking check of DMA-to-cart message queue
++      msgRet = osRecvMesg(&state->dmaMesgQ, NULL, OS_MESG_NOBLOCK);
++      if (msgRet == -1) {
++        // message queue is empty, DMA not finished
++        return;
++      }
++      state->state++;
++    case 2:
++      if (evd_fifoTxe())
++        return;
++
++      // wait for cart-to-fifo dma
++      val = regs_ptr[0];
++      regs_ptr[REG_DMA_LEN] = (blocks - 1);
++      val = regs_ptr[0];
++      regs_ptr[REG_DMA_RAM_ADDR] = ram_buff_addr;
++      val = regs_ptr[0];
++      regs_ptr[REG_DMA_CFG] = DCFG_RAM_TO_FIFO;
++
++      state->state++;
++      return;  // always wait a little for DMA
++    case 3:
++      // wait for DMA write to host
++      if (evd_isDmaBusyNoWait()) {
++        return;
++      }
++      if (evd_isDmaTimeout()) {
++        // if DMA timed out, end in failure
++        // return EVD_ERROR_FIFO_TIMEOUT;
++        state->done = TRUE;
++        state->error = 1;
++        return;
++      }
++  }
++  state->done = TRUE;
++  return;
++}
++
++u8 evd_isSpiBusy() {
++  volatile u16 val;
++  regs_ptr[REG_STATUS];
++  val = regs_ptr[REG_STATUS];
++  return (val >> ED_STATE_SPI) & 1;
++}
++
++u8 evd_SPI(u8 dat) {
++  volatile u8 val;
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI] = dat;
++  while (evd_isSpiBusy())
++    ;
++  // osInvalICache((u32*) & regs_ptr[REG_SPI], 1);
++  val = regs_ptr[REG_SPI];
++  return val;
++}
++
++void evd_spiSSOn() {
++  volatile u8 val;
++  if (sd_mode)
++    return;
++  spi_cfg &= ~(1 << SPI_CFG_SS);
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++void evd_spiSSOff() {
++  volatile u8 val;
++  spi_cfg |= (1 << SPI_CFG_SS);
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++void evd_enableSDMode() {
++  sd_mode = 1;
++}
++
++void evd_enableSPIMode() {
++  sd_mode = 0;
++}
++
++u8 evd_isSDMode() {
++  return sd_mode;
++}
++
++void evd_SDcmdWriteMode(u8 bit1_mode) {
++  volatile u8 val;
++  if (!sd_mode)
++    return;
++  spi_cfg &= ~((1 << SPI_CFG_RD) | (1 << SPI_CFG_DAT));
++  if (bit1_mode) {
++    spi_cfg |= (1 << SPI_CFG_1BIT);
++  } else {
++    spi_cfg &= ~(1 << SPI_CFG_1BIT);
++  }
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++void evd_SDcmdReadMode(u8 bit1_mode) {
++  volatile u8 val;
++  if (!sd_mode)
++    return;
++  spi_cfg |= (1 << SPI_CFG_RD);
++  spi_cfg &= ~(1 << SPI_CFG_DAT);
++  if (bit1_mode) {
++    spi_cfg |= (1 << SPI_CFG_1BIT);
++  } else {
++    spi_cfg &= ~(1 << SPI_CFG_1BIT);
++  }
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++void evd_SDdatWriteMode(u8 bit4_mode) {
++  volatile u8 val;
++  if (!sd_mode)
++    return;
++  spi_cfg &= ~(1 << SPI_CFG_RD);
++  spi_cfg |= (1 << SPI_CFG_DAT);
++  if (bit4_mode) {
++    spi_cfg |= (1 << SPI_CFG_1BIT);
++  } else {
++    spi_cfg &= ~(1 << SPI_CFG_1BIT);
++  }
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++void evd_SDdatReadMode(u8 bit4_mode) {
++  volatile u8 val;
++  if (!sd_mode)
++    return;
++  spi_cfg |= (1 << SPI_CFG_RD) | (1 << SPI_CFG_DAT);
++  if (bit4_mode) {
++    spi_cfg |= (1 << SPI_CFG_1BIT);
++  } else {
++    spi_cfg &= ~(1 << SPI_CFG_1BIT);
++  }
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++void evd_setSpiSpeed(u8 speed) {
++  volatile u8 val;
++  spi_cfg &= ~3;  //((1 << SPI_CFG_SPD0) | (1 << SPI_CFG_SPD1));
++  spi_cfg |= speed & 3;
++  val = regs_ptr[0];
++  regs_ptr[REG_SPI_CFG] = spi_cfg;
++}
++
++u8 evd_mmcReadToCart(u32 cart_addr, u32 len) {
++  volatile u8 val;
++  cart_addr /= 2048;
++
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_LEN] = (len - 1);
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_RAM_ADDR] = cart_addr;
++  val = regs_ptr[0];
++  regs_ptr[REG_DMA_CFG] = DCFG_SD_TO_RAM;
++
++  while (evd_isDmaBusy())
++    ;
++  if (evd_isDmaTimeout())
++    return EVD_ERROR_MMC_TIMEOUT;
++
++  return 0;
++}
++
++void evd_setCfgBit(u8 option, u8 state) {
++  volatile u8 val;
++
++  if (state)
++    evd_cfg |= (1 << option);
++  else
++    evd_cfg &= ~(1 << option);
++
++  val = regs_ptr[0];
++  regs_ptr[REG_CFG] = evd_cfg;
++  val = regs_ptr[0];
++}
++
++u16 evd_readReg(u8 reg) {
++  volatile u32 tmp;
++
++  tmp = regs_ptr[0];
++
++  return regs_ptr[reg];
++}
++
++void evd_setSaveType(u8 type) {
++  // u8 eeprom_on, sram_on, eeprom_size, sram_size;
++  // eeprom_on = 0;
++  // sram_on = 0;
++  // eeprom_size = 0;
++  // sram_size = 0;
++
++  // switch (type) {
++  //     case SAVE_TYPE_EEP16k:
++  //         eeprom_on = 1;
++  //         eeprom_size = 1;
++  //         break;
++  //     case SAVE_TYPE_EEP4k:
++  //         eeprom_on = 1;
++  //         break;
++  //     case SAVE_TYPE_SRAM:
++  //         sram_on = 1;
++  //         break;
++  //     case SAVE_TYPE_SRAM128:
++  //         sram_on = 1;
++  //         sram_size = 1;
++  //         break;
++  //     case SAVE_TYPE_FLASH:
++  //         sram_on = 0;
++  //         sram_size = 1;
++  //         break;
++  //     default:
++  //         sram_on = 0;
++  //         sram_size = 0;
++  //         break;
++  // }
++
++  // volatile u8 val;
++  // val = regs_ptr[0];
++  // regs_ptr[REG_SAV_CFG] = (eeprom_on << SAV_EEP_ON | sram_on << SAV_SRM_ON |
++  // eeprom_size << SAV_EEP_SIZE | sram_size << SAV_SRM_SIZE);
++}
++
++void evd_writeReg(u8 reg, u16 val) {
++  volatile u8 tmp;
++  tmp = regs_ptr[0];
++  regs_ptr[reg] = val;
++}
++
++void evd_mmcSetDmaSwap(u8 state) {
++  evd_setCfgBit(ED_CFG_SWAP, state);
++}
++
++void evd_writeMsg(u8 dat) {
++  evd_writeReg(REG_MSG, dat);
++}
++
++u8 evd_readMsg() {
++  return evd_readReg(REG_MSG);
++}
++
++u16 evd_getFirmVersion() {
++  return evd_readReg(REG_VER);
++}
++
++void evd_setDmaCallback(void (*callback)()) {
++  dma_busy_callback = callback;
++}
+diff --git a/src/ed64/ed64io_everdrive.h b/src/ed64/ed64io_everdrive.h
+new file mode 100644
+index 0000000..db30be2
+--- /dev/null
++++ b/src/ed64/ed64io_everdrive.h
+@@ -0,0 +1,122 @@
++/*
++ * File:   everdrive.h
++ * Author: KRIK
++ *
++ * Created on 22 Апрель 2011 г., 20:46
++ */
++
++#ifndef _EVERDRIVE_H
++#define _EVERDRIVE_H
++ 
++// #include "ed64io_types.h"
++#include <PR/ultratypes.h>
++#include <ultra64.h>
++
++#define OS_VER "1.29"
++
++#define ROM_LEN 0x4000000
++#define ROM_ADDR 0xb0000000
++#define ROM_END_ADDR (0xb0000000 + 0x4000000)
++
++#define SAVE_TYPE_OFF 0
++#define SAVE_TYPE_SRAM 1
++#define SAVE_TYPE_SRAM128 2
++#define SAVE_TYPE_EEP4k 3
++#define SAVE_TYPE_EEP16k 4
++#define SAVE_TYPE_FLASH 5
++
++#define DMA_BUFF_ADDR (ROM_LEN - 0x100000)
++
++#define REG_CFG 0
++#define REG_STATUS 1
++#define REG_DMA_LEN 2
++#define REG_DMA_RAM_ADDR 3
++#define REG_MSG 4
++#define REG_DMA_CFG 5
++#define REG_SPI 6
++#define REG_SPI_CFG 7
++#define REG_KEY 8
++#define REG_SAV_CFG 9
++#define REG_SEC 10
++#define REG_VER 11
++
++#define REG_CFG_CNT 16
++#define REG_CFG_DAT 17
++#define REG_MAX_MSG 18
++#define REG_CRC 19
++
++#define DCFG_SD_TO_RAM 1
++#define DCFG_RAM_TO_SD 2
++#define DCFG_FIFO_TO_RAM 3
++#define DCFG_RAM_TO_FIFO 4
++
++#define ED_CFG_SDRAM_ON 0
++#define ED_CFG_SWAP 1
++#define ED_CFG_WR_MOD 2
++#define ED_CFG_WR_ADDR_MASK 3
++
++void evd_setCfgBit(u8 option, u8 state);
++
++void evd_init();
++u8 evd_fifoRxf();
++u8 evd_fifoTxe();
++u8 evd_isDmaBusy();
++u8 evd_isDmaTimeout();
++u8 evd_fifoRd(void* buff, u16 blocks);
++u8 evd_fifoWr(void* buff, u16 blocks);
++
++typedef struct evd_fifoWrNonblockState {
++  int state;
++  int done;
++  int id;
++  int error;
++
++  OSIoMesg dmaIoMesgBuf;
++  OSMesg dmaMesgBuf;
++  OSMesgQueue dmaMesgQ;
++} evd_fifoWrNonblockState;
++void evd_fifoWrNonblockStateInit(evd_fifoWrNonblockState* state);
++void evd_fifoWrNonblock(void* buff, u16 blocks, evd_fifoWrNonblockState* state);
++u8 evd_fifoRdToCart(u32 cart_addr, u16 blocks);
++u8 evd_fifoWrFromCart(u32 cart_addr, u16 blocks);
++
++u8 evd_SPI(u8 dat);
++void evd_mmcSetDmaSwap(u8 state);
++u8 evd_mmcReadToCart(u32 cart_addr, u32 len);
++
++void evd_lockRegs();
++u16 evd_readReg(u8 reg);
++void evd_writeReg(u8 reg, u16 val);
++void evd_setSaveType(u8 type);
++
++u8 romLoadSettingsFromSD();
++u8 romSaveInfoToLog();
++void evd_writeMsg(u8 dat);
++u8 evd_readMsg();
++u16 evd_getFirmVersion();
++
++void evd_spiSSOn();
++void evd_spiSSOff();
++u8 evd_isSpiBusy();
++void evd_setSpiSpeed(u8 speed);
++
++void evd_SDcmdWriteMode(u8 bit1_mode);
++void evd_SDcmdReadMode(u8 bit1_mode);
++void evd_SDdatWriteMode(u8 bit4_mode);
++void evd_SDdatReadMode(u8 bit4_mode);
++void evd_enableSDMode();
++void evd_enableSPIMode();
++u8 evd_isSDMode();
++void evd_setDmaCallback(void (*callback)());
++
++/*
++u8 evd_mmcWriteNextBlock(void *dat);
++u8 evd_mmcOpenWrite(u32 addr);
++u8 evd_mmcWriteBlock(void *dat, u32 addr);
++u8 evd_mmcInit();
++u8 evd_mmcReadBlock(void *dat, u32 addr);
++u8 evd_mmcOpenRead(u32 addr);
++u8 evd_mmcReadNextBlock(void *dat);
++void evd_mmcCloseRW();
++ */
++#endif /* _EVERDRIVE_H */
+diff --git a/src/ed64/ed64io_sys.c b/src/ed64/ed64io_sys.c
+new file mode 100644
+index 0000000..09c2f1c
+--- /dev/null
++++ b/src/ed64/ed64io_sys.c
+@@ -0,0 +1,174 @@
++
++
++#include "ed64io_sys.h"
++#include <ultra64.h>
++#include <PR/ultratypes.h>
++
++#include "ed64io_errors.h"
++#include "ed64io_everdrive.h"
++#include "ed64io_usb.h"
++
++// this is lazy as hell but since strcpy is not a thing in sm64 i backported it from Nintendo's NUSTD library.
++
++char *strcpy(char *str1, const char *str2)
++{
++    char *p;
++    p = str1;
++    while(*str2) *p++ = *str2++;
++    *p = '\0';
++    return  str1;
++}
++
++
++u16 strcon(u8* str1, u8* str2, u8* dst, u16 max_len) {
++  u16 len = 0;
++  max_len -= 1;
++
++  while (*str1 != 0 && len < max_len) {
++    *dst++ = *str1++;
++    len++;
++  }
++
++  while (*str2 != 0 && len < max_len) {
++    *dst++ = *str2++;
++    len++;
++  }
++  *dst++ = 0;
++  return len;
++}
++
++#define NU_PI_CART_BLOCK_READ_SIZE 0x4000 /* cart read block size */
++
++void evdPiReadRom(u32 rom_addr, void* buf_ptr, u32 size) {
++  OSIoMesg dmaIoMesgBuf;
++  OSMesgQueue dmaMesgQ;
++  OSMesg dmaMesgBuf;
++  u32 readSize;
++
++  /* Disable the CPU cache. */
++  osInvalDCache((void*)buf_ptr, (s32)size);
++
++  /* Create message queue. */
++  osCreateMesgQueue(&dmaMesgQ, &dmaMesgBuf, 1);
++
++  while (size) {
++    if (size > NU_PI_CART_BLOCK_READ_SIZE) {
++    } else {
++      readSize = size;
++    }
++
++    /* DMA read */
++    osPiStartDma(&dmaIoMesgBuf, OS_MESG_PRI_NORMAL, OS_READ, rom_addr, buf_ptr,
++                 readSize, &dmaMesgQ);
++
++    /* Wait for end. */
++    (void)osRecvMesg(&dmaMesgQ, NULL, OS_MESG_BLOCK);
++
++    rom_addr += readSize;
++    buf_ptr = (void*)((u8*)buf_ptr + readSize);
++    size -= readSize;
++  }
++}
++
++void evdPiWriteRom(u32 rom_addr, void* buf_ptr, u32 size) {
++  OSIoMesg dmaIoMesgBuf;
++  OSMesgQueue dmaMesgQ;
++  OSMesg dmaMesgBuf;
++  u32 writeSize;
++
++  /* Create message queue. */
++  osCreateMesgQueue(&dmaMesgQ, &dmaMesgBuf, 1);
++
++  while (size) {
++    if (size > NU_PI_CART_BLOCK_READ_SIZE) {
++    } else {
++      writeSize = size;
++    }
++
++    /* DMA write */
++    osPiStartDma(&dmaIoMesgBuf, OS_MESG_PRI_NORMAL, OS_WRITE, rom_addr, buf_ptr,
++                 writeSize, &dmaMesgQ);
++
++    /* Wait for end. */
++    (void)osRecvMesg(&dmaMesgQ, NULL, OS_MESG_BLOCK);
++
++    rom_addr += writeSize;
++    buf_ptr = (void*)((u8*)buf_ptr + writeSize);
++    size -= writeSize;
++  }
++}
++
++void dma_read_s(void* ram_address,
++                unsigned long pi_address,
++                unsigned long len) {
++  u32 buff[256];
++  u32* bptr;
++  u32* rptr = (u32*)ram_address;
++  u16 i;
++
++  // u16 blen = 512;
++  // if (len < 512)blen = len;
++  //*(volatile u32*) 0x1FC007FC = 0x08;
++
++  // IO_WRITE(PI_STATUS_REG, 3);
++  while (len) {
++    evdPiReadRom(pi_address, buff, 512);
++   // while ((IO_READ(PI_STATUS_REG) & 3) != 0)
++      ;
++    // while ((*((volatile u32*) PI_STATUS_REG) & 0x02) != 1);
++    osInvalDCache(buff, 512);
++    bptr = buff;
++    for (i = 0; i < 512 && i < len; i += 4)
++      *rptr++ = *bptr++;
++    len = len < 512 ? 0 : len - 512;
++    pi_address += 512;
++  }
++}
++
++void dma_write_s(void* ram_address,
++                 unsigned long pi_address,
++                 unsigned long len) {
++  // data_cache_writeback(ram_address, len);
++  osWritebackDCache(ram_address, len);
++
++  // dma_write(ram_address, pi_address, len);
++  evdPiWriteRom(pi_address, ram_address, len);
++}
++
++// blocking sleep
++void sleep(u32 ms) {
++  u32 current_ms = OS_CYCLES_TO_USEC(osGetTime()) / 1000.0;
++
++  while ((OS_CYCLES_TO_USEC(osGetTime()) / 1000.0) - current_ms < ms)
++    ;
++}
++
++void dma_read_sram(void* dest, u32 offset, u32 size) {
++  /*
++      PI_DMAWait();
++
++      IO_WRITE(PI_STATUS_REG, 0x03);
++      IO_WRITE(PI_DRAM_ADDR_REG, K1_TO_PHYS(dest));
++      IO_WRITE(PI_CART_ADDR_REG, (0xA8000000 + offset));
++      data_cache_invalidate_all();
++      IO_WRITE(PI_WR_LEN_REG, (size - 1));
++   * 0xA8000000
++   * 0xb0000000
++   *  0x4000000
++   * */
++  dma_read_s(dest, 0xA8000000 + offset, size);
++  // data_cache_invalidate(dest,size);
++}
++
++void dma_write_sram(void* src, u32 offset, u32 size) {
++  /*
++      PI_DMAWait();
++
++      IO_WRITE(PI_STATUS_REG, 0x02);
++      IO_WRITE(PI_DRAM_ADDR_REG, K1_TO_PHYS(src));
++      IO_WRITE(PI_CART_ADDR_REG, (0xA8000000 + offset));
++      data_cache_invalidate_all();
++      IO_WRITE(PI_RD_LEN_REG, (size - 1));*/
++
++  dma_write_s(src, 0xA8000000 + offset, size);
++}
+diff --git a/src/ed64/ed64io_sys.h b/src/ed64/ed64io_sys.h
+new file mode 100644
+index 0000000..3f7cfc6
+--- /dev/null
++++ b/src/ed64/ed64io_sys.h
+@@ -0,0 +1,25 @@
++/*
++ * File:   tools.h
++ * Author: KRIK
++ *
++ * Created on 16 Апрель 2011 г., 2:30
++ */
++
++#ifndef _TOOLS_H
++#define _TOOLS_H
++
++#include <PR/ultratypes.h>
++
++void dma_read_s(void* ram_address, unsigned long pi_address, unsigned long len);
++void dma_write_s(void* ram_address,
++                 unsigned long pi_address,
++                 unsigned long len);
++void dma_write_s(void* ram_address,
++                 unsigned long pi_address,
++                 unsigned long len);
++void sleep(u32 ms);
++char *strcpy(char *str1, const char *str2);
++void dma_write_sram(void* src, u32 offset, u32 size);
++void dma_read_sram(void* dest, u32 offset, u32 size);
++
++#endif /* _TOOLS_H */
+diff --git a/src/ed64/ed64io_usb.c b/src/ed64/ed64io_usb.c
+new file mode 100644
+index 0000000..e3a28c7
+--- /dev/null
++++ b/src/ed64/ed64io_usb.c
+@@ -0,0 +1,151 @@
++#include <stdarg.h>
++#include <stdio.h>
++#include <string.h>
++#include <ultra64.h>
++#include <PR/ultratypes.h>
++
++#include "ed64io_everdrive.h"
++#include "ed64io_sys.h"
++#include "ed64io_usb.h"
++
++#define USB_BUFFER_SIZE 128
++#define USB_BUFFER_SIZE_BYTES 1024
++#define USB_LOGGER_BUFFER_SIZE_BYTES 512
++
++#ifndef MIN
++#define MIN(a, b) (((a) < (b)) ? (a) : (b))
++#endif
++
++u64 usb_buff[USB_BUFFER_SIZE];
++u8* usb_buff8;  // = (u8 *) usb_buff;
++
++extern u8 system_cic;
++
++char* cmdStart = "CMD";
++char* overflowMsg = "LOGOVERFLOW!!!\n";
++
++evd_fifoWrNonblockState fifoWriteState;
++char usbLoggerData[USB_LOGGER_BUFFER_SIZE_BYTES];
++int usbLoggerOffset = 0;
++int usbLoggerFlushing = FALSE;
++int usbLoggerOverflow = FALSE;
++int usbLoggerCountDone = 0;
++
++extern void _Printf(void (*)(void*), int, const char*, va_list);
++
++int usbLoggerBufferRemaining() {
++  return USB_LOGGER_BUFFER_SIZE_BYTES - usbLoggerOffset;
++}
++
++int usbLoggerLog(const char* str) {
++  char* emptySpaceStart = usbLoggerData;
++  int lengthToWrite;
++  if (usbLoggerOverflow) {
++    return -1;
++  }
++  lengthToWrite = strlen(str);
++
++  if (usbLoggerOffset + lengthToWrite >= USB_LOGGER_BUFFER_SIZE_BYTES) {
++    memcpy(usbLoggerData +
++               (USB_LOGGER_BUFFER_SIZE_BYTES - 1 - (strlen(overflowMsg) + 1)),
++           overflowMsg, (strlen(overflowMsg) + 1));
++    usbLoggerOverflow = TRUE;
++    return -1;
++  }
++
++  emptySpaceStart += usbLoggerOffset;
++  strcpy(emptySpaceStart, str);
++  usbLoggerOffset += lengthToWrite;
++
++  return lengthToWrite;
++}
++
++void usbLoggerGetState(UsbLoggerState* res) {
++  res->fifoWriteState = fifoWriteState.state;
++  res->msgID = fifoWriteState.id;
++  res->usbLoggerOffset = usbLoggerOffset;
++  res->usbLoggerFlushing = usbLoggerFlushing;
++  res->usbLoggerOverflow = usbLoggerOverflow;
++  res->msgQSize = fifoWriteState.dmaMesgQ.validCount;
++  res->countDone = usbLoggerCountDone;
++  res->writeError = fifoWriteState.error;
++}
++
++int usbLoggerFlush() {
++  if (!usbLoggerFlushing) {
++    if (!usbLoggerOffset) {
++      // nothing to write
++      return -1;
++    }
++    memcpy(usb_buff, usbLoggerData,
++           MIN(USB_LOGGER_BUFFER_SIZE_BYTES, usbLoggerOffset + 1));
++    usbLoggerOffset = 0;
++    usbLoggerOverflow = FALSE;
++
++    evd_fifoWrNonblockStateInit(&fifoWriteState);
++    usbLoggerFlushing = TRUE;
++  }
++  if (usbLoggerFlushing) {
++    if (fifoWriteState.error != 0) {
++      return -2;
++    }
++  }
++
++  // step IO state machine
++  evd_fifoWrNonblock(usb_buff, 1, &fifoWriteState);
++  if (!fifoWriteState.done) {
++    return fifoWriteState.state;
++  }
++
++  usbLoggerFlushing = FALSE;
++  usbLoggerCountDone++;
++  return 0;
++}
++
++static void* _PrintfImplUSBAsync(void* str,
++                                 register const char* buf,
++                                 register int n) {
++  char tocopy[USB_LOGGER_BUFFER_SIZE_BYTES];
++
++  memcpy(tocopy, buf, MIN(USB_LOGGER_BUFFER_SIZE_BYTES, n));
++  if (n < USB_LOGGER_BUFFER_SIZE_BYTES) {
++    tocopy[n] = '\0';
++  }
++
++  usbLoggerLog(tocopy);
++  return ((void*)1);
++}
++
++static void* _PrintfImplUSBSync(void* str,
++                                register const char* buf,
++                                register int n) {
++  u64 usbMsgBuff[USB_BUFFER_SIZE];
++  char* usbBuffCharPtr = (char*)usbMsgBuff;
++
++  memcpy(usbBuffCharPtr, buf, MIN(USB_BUFFER_SIZE, n));
++  if (n < USB_BUFFER_SIZE) {
++    usbBuffCharPtr[n] = '\0';
++  }
++
++  while (evd_fifoWr(usbMsgBuff, 1)) {
++    // retry on timeout
++  }
++
++  return ((void*)1);
++}
++
++void ed64Printf(const char* fmt, ...) {
++  va_list ap;
++
++  va_start(ap, fmt);
++  _Printf((void (*)(void*))_PrintfImplUSBAsync, 0, fmt, ap);
++  va_end(ap);
++}
++
++void ed64PrintfSync(const char* fmt, ...) {
++  va_list ap;
++
++  va_start(ap, fmt);
++  _Printf((void (*)(void*))_PrintfImplUSBSync, 0, fmt, ap);
++  va_end(ap);
++}
+diff --git a/src/ed64/ed64io_usb.h b/src/ed64/ed64io_usb.h
+new file mode 100644
+index 0000000..4a0e73c
+--- /dev/null
++++ b/src/ed64/ed64io_usb.h
+@@ -0,0 +1,33 @@
++/*
++ * File:   fifo.h
++ * Author: KRIK
++ *
++ * Created on 22 Апрель 2011 г., 20:46
++ */
++
++#ifndef _FIFO_H
++#define _FIFO_H
++
++int usbLoggerLog(const char* str);
++int usbLoggerFlush();
++
++typedef struct UsbLoggerState {
++  int fifoWriteState;
++  int msgID;
++  int usbLoggerOffset;
++  int usbLoggerFlushing;
++  int usbLoggerOverflow;
++  int msgQSize;
++  int countDone;
++  int writeError;
++} UsbLoggerState;
++
++void usbLoggerGetState(UsbLoggerState* res);
++
++int usbLoggerBufferRemaining();
++
++void ed64Printf(const char* fmt, ...);
++
++void ed64PrintfSync(const char* fmt, ...);
++
++#endif /* _FIFO_H */
+diff --git a/src/game/game_init.c b/src/game/game_init.c
+index d5e5eb3..43afb28 100644
+--- a/src/game/game_init.c
++++ b/src/game/game_init.c
+@@ -19,6 +19,9 @@
+ #include "main_entry.h"
+ #include "thread6.h"
+ #include <prevent_bss_reordering.h>
++#ifdef ED64DBG
++#include "../ed64/ed64io_usb.h"
++#endif
+ 
+ // FIXME: I'm not sure all of these variables belong in this file, but I don't
+ // know of a good way to split them
+@@ -624,6 +627,9 @@ void thread5_game_loop(UNUSED void *arg) {
+         read_controller_inputs();
+         addr = level_script_execute(addr);
+         display_and_vsync();
++		#ifdef ED64DBG
++		ed64Printf("test"); // this is included as a test of the ED64 printing. By default this will print TEST to the console for as long as the game continues.
++		#endif
+ 
+         // when debug info is enabled, print the "BUF %d" information.
+         if (gShowDebugText) {
+diff --git a/src/game/main.c b/src/game/main.c
+index 2d6bf1d..db3b27b 100644
+--- a/src/game/main.c
++++ b/src/game/main.c
+@@ -12,6 +12,9 @@
+ #include "segments.h"
+ #include "main.h"
+ #include "thread6.h"
++#ifdef ED64DBG
++#include "../ed64/ed64io_everdrive.h"
++#endif
+ 
+ // Message IDs
+ #define MESG_SP_COMPLETE 100
+@@ -466,6 +469,9 @@ void main_func(void) {
+     UNUSED u8 pad[64]; // needed to pad the stack
+ 
+     osInitialize();
++	#ifdef ED64DBG
++	evd_init();
++	#endif
+     stub_main_1();
+     create_thread(&gIdleThread, 1, thread1_idle, NULL, gIdleThreadStack + 0x800, 100);
+     osStartThread(&gIdleThread);
