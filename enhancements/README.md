@@ -26,6 +26,15 @@ This allows you to draw 3D boxes for debugging purposes.
 Call the `debug_box` function whenever you want to draw one. `debug_box` by default takes two arguments: a center and bounds vec3f. This will draw a box starting from the point (center - bounds) to (center + bounds).
 Use `debug_box_rot` to draw a box rotated in the xz-plane. If you want to draw a box by specifying min and max points, use `debug_box_pos` instead.
 
+## EverDrive 64 3.0 Printing = `ed64printf.patch`
+
+This allows you to print messages to a console on your PC, similar to how original N64 dev hardware functioned. This only works with
+EverDrive 64 3.0 hardware. This patch takes care of initalizing the Everdrive hardware, linking the EverDrive code, and 
+flushing the USB cache for you. There are two types of Printf calls, `ed64Printf` and `ed64PrintfSync`. `ed64PrintfSync` has guaranteed delivery, but will temporarily stop the thread for as long as it takes to deliver the message. Useful for crash messages.
+The EverDrive 64 FTDI chip has a buffer of 128 bytes, so you can only send 128 characters per frame. The flush call is in the 
+main game loop in /game/game_init.c. For compatibility reasons, ed64 printing can be disabled on build by compiling with ED64DBG=NO.
+The PC relies on an external program by `jsdf` called `ed64log`. This program has only been tested to work on MacOS and Linux.
+
 ## FPS Counter - `fps.patch`
 
 This patch provides an in-game FPS counter to measure the frame rate.
