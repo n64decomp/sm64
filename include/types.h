@@ -7,6 +7,9 @@
 #include <ultra64.h>
 #include "macros.h"
 
+//typedef int bool;
+#define true 1
+#define false 0 
 
 // Certain functions are marked as having return values, but do not
 // actually return a value. This causes undefined behavior, which we'd rather
