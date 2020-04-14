@@ -54,14 +54,11 @@ extern s32 execute_mario_action(struct Object *o);
 extern void init_mario(void);
 extern void init_mario_from_save_file(void);
 
+/* clang-format off */
 // ADDITIONAL ACTIONS
-#define ACT_WALL_KICK_SLIDE 0x0000088F // (0x08F | ACT_FLAG_AIR)
+#define ACT_WALL_KICK_SLIDE             0x0000088F // (0x08F | ACT_FLAG_AIR)
 
-#define ACT_WATER_GROUND_POUND                                                                         \
-    0x300024FC // (0x0FC | ACT_FLAG_MOVING | ACT_FLAG_SWIMMING | ACT_FLAG_SWIMMING_OR_FLYING |
-               // ACT_FLAG_WATER_OR_TEXT)
-#define ACT_QUICK_DIVE                                                                                 \
-    0x300024FD // (0x0FD | ACT_FLAG_MOVING | ACT_FLAG_SWIMMING | ACT_FLAG_SWIMMING_OR_FLYING |
-               // ACT_FLAG_WATER_OR_TEXT)
+#define ACT_WATER_GROUND_POUND          0x300024FC // (0x0FC | ACT_FLAG_MOVING | ACT_FLAG_SWIMMING | ACT_FLAG_SWIMMING_OR_FLYING | ACT_FLAG_WATER_OR_TEXT)
+#define ACT_QUICK_DIVE                  0x300024FD // (0x0FD | ACT_FLAG_MOVING | ACT_FLAG_SWIMMING | ACT_FLAG_SWIMMING_OR_FLYING | ACT_FLAG_WATER_OR_TEXT)
 
 #endif /* _MARIO_H */
