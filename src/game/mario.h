@@ -36,7 +36,8 @@ extern s32 mario_facing_downhill(struct MarioState *m, s32 turnYaw);
 extern u32 mario_floor_is_slippery(struct MarioState *m);
 extern s32 mario_floor_is_slope(struct MarioState *m);
 extern s32 mario_floor_is_steep(struct MarioState *m);
-extern f32 find_floor_height_relative_polar(struct MarioState *m, s16 angleFromMario, f32 distFromMario);
+extern f32 find_floor_height_relative_polar(struct MarioState *m, s16 angleFromMario,
+                                            f32 distFromMario);
 extern s16 find_floor_slope(struct MarioState *m, s16 yawOffset);
 extern void update_mario_sound_and_camera(struct MarioState *m);
 extern void set_steep_jump_action(struct MarioState *m);
@@ -52,5 +53,15 @@ extern s32 set_water_plunge_action(struct MarioState *m);
 extern s32 execute_mario_action(struct Object *o);
 extern void init_mario(void);
 extern void init_mario_from_save_file(void);
+
+// ADDITIONAL ACTIONS
+#define ACT_WALL_KICK_SLIDE 0x0000088F // (0x08F | ACT_FLAG_AIR)
+
+#define ACT_WATER_GROUND_POUND                                                                         \
+    0x300024FC // (0x0FC | ACT_FLAG_MOVING | ACT_FLAG_SWIMMING | ACT_FLAG_SWIMMING_OR_FLYING |
+               // ACT_FLAG_WATER_OR_TEXT)
+#define ACT_QUICK_DIVE                                                                                 \
+    0x300024FD // (0x0FD | ACT_FLAG_MOVING | ACT_FLAG_SWIMMING | ACT_FLAG_SWIMMING_OR_FLYING |
+               // ACT_FLAG_WATER_OR_TEXT)
 
 #endif /* _MARIO_H */
