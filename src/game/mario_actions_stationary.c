@@ -650,6 +650,10 @@ s32 act_butt_slide_stop(struct MarioState *m) {
         return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
+    if (m->prevAction == ACT_GROUND_POUND_LAND && m->input & INPUT_NONZERO_ANALOG) {
+        m->faceAngle[1] = m->intendedYaw;
+    } 
+
     if (m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED | INPUT_OFF_FLOOR | INPUT_ABOVE_SLIDE)) {
         return check_common_action_exits(m);
     }
@@ -908,6 +912,10 @@ s32 act_freefall_land_stop(struct MarioState *m) {
 }
 
 s32 act_triple_jump_land_stop(struct MarioState *m) {
+    if ((m->input & INPUT_A_PRESSED) && m->actionArg == 1) {
+        return set_mario_action(m, ACT_GROUND_POUND_JUMP, 0);
+    }
+
     if (check_common_landing_cancels(m, ACT_JUMP)) {
         return 1;
     }
@@ -947,9 +955,9 @@ s32 act_long_jump_land_stop(struct MarioState *m) {
     }
 
     landing_step(m,
-                  !m->marioObj->oMarioLongJumpIsSlow ? MARIO_ANIM_CROUCH_FROM_FAST_LONGJUMP
-                                                     : MARIO_ANIM_CROUCH_FROM_SLOW_LONGJUMP,
-                  ACT_CROUCHING);
+                 !m->marioObj->oMarioLongJumpIsSlow ? MARIO_ANIM_CROUCH_FROM_FAST_LONGJUMP
+                                                    : MARIO_ANIM_CROUCH_FROM_SLOW_LONGJUMP,
+                 ACT_CROUCHING);
     return 0;
 }
 
@@ -1045,6 +1053,10 @@ s32 act_twirl_land(struct MarioState *m) {
 
 s32 act_ground_pound_land(struct MarioState *m) {
     m->actionState = 1;
+    if (m->input & INPUT_A_PRESSED) {
+        return set_mario_action(m, ACT_GROUND_POUND_JUMP, 0);
+    }
+
     if (m->input & INPUT_UNKNOWN_10) {
         return drop_and_set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }

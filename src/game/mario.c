@@ -790,6 +790,11 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             m->forwardVel *= 0.8f;
             break;
 
+        case ACT_GROUND_POUND_JUMP:
+            set_mario_y_vel_based_on_fspeed(m, 65.0f, 0.0f);
+            m->forwardVel *= 0.8f;
+            break;
+
         case ACT_BACKFLIP:
             m->marioObj->header.gfx.unk38.animID = -1;
             m->forwardVel = -16.0f;
@@ -861,6 +866,11 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
                 fowardVel = 48.0f;
             }
             mario_set_forward_vel(m, fowardVel);
+            break;
+        
+        case ACT_GROUND_POUND_DIVE:
+            mario_set_forward_vel(m, 60.0f);
+            m->vel[1] = 15.0f;
             break;
 
         case ACT_LONG_JUMP:
@@ -1039,7 +1049,7 @@ s32 set_jump_from_landing(struct MarioState *m) {
                     break;
 
                 case ACT_FREEFALL_LAND:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    set_mario_action(m, ACT_JUMP, 0);
                     break;
 
                 case ACT_SIDE_FLIP_LAND_STOP:

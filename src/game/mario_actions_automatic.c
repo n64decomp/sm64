@@ -563,6 +563,10 @@ s32 act_ledge_grab(struct MarioState *m) {
         return set_mario_action(m, ACT_LEDGE_CLIMB_FAST, 0);
     }
 
+    if ((m->input & INPUT_B_PRESSED) && hasSpaceForMario) {
+        return set_mario_action(m, ACT_LEDGE_CLIMB_FAST, 1);
+    }
+
     if (m->input & INPUT_UNKNOWN_10) {
         if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_UNK1) {
             m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
@@ -647,7 +651,12 @@ s32 act_ledge_climb_fast(struct MarioState *m) {
     play_sound_if_no_flag(m, SOUND_MARIO_UH2, MARIO_MARIO_SOUND_PLAYED);
 
     update_ledge_climb(m, MARIO_ANIM_FAST_LEDGE_GRAB, ACT_IDLE);
-
+    if (is_anim_past_frame(m, 6) && m->actionArg) {
+        m->pos[0] += 14.0f * sins(m->faceAngle[1]);
+        m->pos[2] += 14.0f * coss(m->faceAngle[1]);
+        vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
+        return set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+    }
     if (m->marioObj->header.gfx.unk38.animFrame == 8) {
         play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
     }
