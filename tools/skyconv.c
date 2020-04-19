@@ -69,7 +69,7 @@ static const TableDimension TABLE_DIMENSIONS[ImageType_MAX] = {
 TextureTile *tiles;
 ImageType type = InvalidType;
 OperationMode mode = InvalidMode;
-char *programName;
+const char programName[] = "skyconv";
 char *input, *output;
 char *writeDir;
 char skyboxName[256];
