@@ -140,4 +140,4 @@ discuss what you would like to change.
 
 Run clang-format on your code to ensure it meets the project's coding standards.
 
-Official Discord: https://discord.gg/27JtCWs
+Official Discord: https://discord.gg/DuYH3Fh
