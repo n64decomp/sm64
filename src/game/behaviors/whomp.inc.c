@@ -151,16 +151,16 @@ void king_whomp_on_ground(void) {
             }
             o->oSubAction++;
         }
-        o->oWhompUnkF8 = 0;
+        o->oWhompShakeVal = 0;
     } else {
-        if (o->oWhompUnkF8 < 10) {
-            if (o->oWhompUnkF8 % 2)
+        if (o->oWhompShakeVal < 10) {
+            if (o->oWhompShakeVal % 2)
                 o->oPosY += 8.0f;
             else
                 o->oPosY -= 8.0f;
         } else
             o->oSubAction = 10;
-        o->oWhompUnkF8++;
+        o->oWhompShakeVal++;
     }
 }
 

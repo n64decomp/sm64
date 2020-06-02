@@ -358,7 +358,7 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     displacementX = nextPos[0] - intendedPos[0];
     displacementZ = nextPos[2] - intendedPos[2];
 
-    // Only ledge grab if the wall displaced mario in the opposite direction of
+    // Only ledge grab if the wall displaced Mario in the opposite direction of
     // his velocity.
     if (displacementX * m->vel[0] + displacementZ * m->vel[2] > 0.0f) {
         return 0;
@@ -437,7 +437,7 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
         }
 
         //! When ceilHeight - floorHeight <= 160, the step result says that
-        // mario landed, but his movement is cancelled and his referenced floor
+        // Mario landed, but his movement is cancelled and his referenced floor
         // isn't updated (pedro spots)
         m->pos[1] = floorHeight;
         return AIR_STEP_LANDED;

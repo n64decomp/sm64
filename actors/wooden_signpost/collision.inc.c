@@ -1,7 +1,7 @@
 // Wooden Signpost
 
 // 0x0302DD80 - 0x0302DE04
-const s16 wooden_signpost_seg3_collision_0302DD80[] = {
+const Collision wooden_signpost_seg3_collision_0302DD80[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(-44, -9, -12),

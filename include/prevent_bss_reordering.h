@@ -1,5 +1,5 @@
-#ifndef _PREVENT_BSS_REORDERING_H
-#define _PREVENT_BSS_REORDERING_H
+#ifndef PREVENT_BSS_REORDERING_H
+#define PREVENT_BSS_REORDERING_H
 
 /**
  * To determine variable order for .bss, the compiler sorts variables by their
@@ -80,4 +80,4 @@ struct Dummy61 { int x; };
 struct Dummy62 { int x; };
 typedef int Dummy63;
 
-#endif
+#endif // PREVENT_BSS_REORDERING_H

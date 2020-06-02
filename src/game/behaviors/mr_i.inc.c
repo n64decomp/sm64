@@ -17,7 +17,7 @@ void mr_i_piranha_particle_act_0(void) {
     cur_obj_update_floor_and_walls();
     if (0x8000 & o->oInteractStatus)
         o->oAction = 1;
-    else if ((o->oTimer >= 101) || (0x200 & o->oMoveFlags) || (8 & (s16) o->activeFlags)) {
+    else if ((o->oTimer >= 101) || (0x200 & o->oMoveFlags) || o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM) {
         obj_mark_for_deletion(o);
         spawn_mist_particles();
     }
@@ -48,7 +48,7 @@ void spawn_mr_i_particle(void) {
 
 void bhv_mr_i_body_loop(void) {
     obj_copy_pos_and_angle(o, o->parentObj);
-    if (!(8 & o->activeFlags)) {
+    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         obj_copy_scale(o, o->parentObj);
         obj_set_parent_relative_pos(o, 0, 0, o->header.gfx.scale[1] * 100.0f);
         obj_build_transform_from_pos_and_angle(o, 44, 15);
@@ -63,7 +63,7 @@ void bhv_mr_i_body_loop(void) {
         if (o->oAnimState == 15)
             o->parentObj->oMrIUnk110 = 0;
     }
-    if (!o->parentObj->activeFlags)
+    if (o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED)
         obj_mark_for_deletion(o);
 }
 
@@ -122,7 +122,7 @@ void mr_i_act_3(void) {
         obj_mark_for_deletion(o);
 }
 
-void mr_i_act_2() {
+void mr_i_act_2(void) {
     s16 sp1E;
     s16 sp1C;
     sp1E = o->oMoveAngleYaw;
@@ -248,7 +248,7 @@ void bhv_mr_i_loop(void) {
     obj_set_hitbox(o, &sMrIHitbox);
     cur_obj_call_action_function(sMrIActions);
     if (o->oAction != 3)
-        if (o->oDistanceToMario > 3000.0f || o->activeFlags & 8)
+        if (o->oDistanceToMario > 3000.0f || o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)
             o->oAction = 0;
     o->oInteractStatus = 0;
 }

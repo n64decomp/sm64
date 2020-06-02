@@ -15,4 +15,4 @@
 #define TEXT_JPHUD_ERASE_FILE _("ファイルけす")
 #define TEXT_JPHUD_SOUND_SELECT _("サウンドセレクト")
 
-#endif
+#endif // TEXT_MENU_STRINGS_H

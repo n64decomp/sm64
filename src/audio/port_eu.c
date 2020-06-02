@@ -40,7 +40,7 @@ struct SPTask *create_next_audio_frame_task(void) {
     s32 index;
     OSTask_t *task;
     s32 flags;
-    u16 *currAiBuffer;
+    s16 *currAiBuffer;
     s32 oldDmaCount;
     OSMesg sp30;
     OSMesg sp2C;

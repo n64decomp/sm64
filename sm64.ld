@@ -82,9 +82,11 @@ SECTIONS
 
    /* lib/src/__osDevMgrMain.c and lib/src/osCreateViManager.c contain infinite
     * loops compiled without -g, which cause the return statements and the .o
-    * files themselves to be aligned to 32-byte boundaries. But in the binary,
-    * they are actually aligned only to 16 bytes! We force this to happen using
-    * a SUBALIGN directive. */
+    * files themselves to be aligned to 32-byte boundaries. But the linker
+    * Nintendo used did not respect .o file alignment, and aligned the files
+    * only to 16 bytes, in some cases misaligning them. We force the same to
+    * happen using the SUBALIGN directive. This is harmless; the alignment is
+    * just an optimization. */
    BEGIN_SEG(main, SEG_MAIN) SUBALIGN(16)
    {
       BUILD_DIR/asm/entry.o(.text);
@@ -150,6 +152,7 @@ SECTIONS
       BUILD_DIR/src/audio/seqplayer.o(.text);
       BUILD_DIR/src/audio/external.o(.text);
       BUILD_DIR/src/audio/port_eu.o(.text);
+
 #if defined(VERSION_EU) || defined(VERSION_SH)
       BUILD_DIR/libultra.a:string.o(.text);
       BUILD_DIR/libultra.a:_Printf.o(.text);
@@ -258,9 +261,7 @@ SECTIONS
       BUILD_DIR/libultra.a:func_802F7140.o(.text)
       BUILD_DIR/libultra.a:func_802F71A0.o(.text)
       BUILD_DIR/libultra.a:func_802F71F0.o(.text)
-
       BUILD_DIR/lib/rsp.o(.text);
-
 #else
       BUILD_DIR/src/game*.o(.text);
       BUILD_DIR/src/audio*.o(.text);
@@ -310,9 +311,7 @@ SECTIONS
       BUILD_DIR/libultra.a:guTranslateF.o(.text);
       BUILD_DIR/libultra.a:guRotateF.o(.text);
       BUILD_DIR/libultra.a:guScaleF.o(.text);
-#ifndef VERSION_EU
       BUILD_DIR/libultra.a:osAiSetFrequency.o(.text);
-#endif
       BUILD_DIR/libultra.a:alBnkfNew.o(.text);
       BUILD_DIR/libultra.a:osWritebackDCache.o(.text);
       BUILD_DIR/libultra.a:osAiGetLength.o(.text);
@@ -418,7 +417,7 @@ SECTIONS
       BUILD_DIR/src/game/obj_behaviors.o(.data*);
       BUILD_DIR/src/game/obj_behaviors_2.o(.data*);
 #ifndef VERSION_EU
-      /* wildcard doesn't work on EU due to files being moved to engine/ */
+      /* wildcard doesn't match on EU due to files being moved to engine/ */
       BUILD_DIR/src/game*.o(.data*);
 #endif
       BUILD_DIR/src/audio/external.o(.data*);
@@ -427,7 +426,6 @@ SECTIONS
       BUILD_DIR/src/audio*.o(.data*);
 
 #ifdef VERSION_EU
-
       BUILD_DIR/libultra.a:_Printf.o(.data*);
       BUILD_DIR/libultra.a:osInitialize.o(.data*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.data*);
@@ -435,21 +433,15 @@ SECTIONS
       BUILD_DIR/libultra.a:osCreatePiManager.o(.data*);
       BUILD_DIR/libultra.a:osContInit.o(.data*);
       BUILD_DIR/libultra.a:osAiSetNextBuffer.o(.data*);
-
       BUILD_DIR/libultra.a:_Litob.o(.data*);
-
       BUILD_DIR/libultra.a:__osExceptionPreamble.o(.data*);
-
       BUILD_DIR/libultra.a:osTimer.o(.data*);
       BUILD_DIR/libultra.a:__osViInit.o(.data*);
-      BUILD_DIR/libultra.a:__osDequeueThread.o(.data*);  // ffff...
-
+      BUILD_DIR/libultra.a:__osDequeueThread.o(.data*);
       BUILD_DIR/libultra.a:__osPiCreateAccessQueue.o(.data*);
       BUILD_DIR/libultra.a:__osSiCreateAccessQueue.o(.data*);
       BUILD_DIR/libultra.a:osViData.o(.data*);
-
 #else
-
       BUILD_DIR/libultra.a:osViTable.o(.data*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.data*);
       BUILD_DIR/libultra.a:osCreatePiManager.o(.data*);
@@ -470,9 +462,7 @@ SECTIONS
       BUILD_DIR/libultra.a:__osSyncPutChars.o(.data*);
       BUILD_DIR/libultra.a:guRotateF.o(.data*);
       BUILD_DIR/libultra.a:*.o(.data*);
-
 #endif
-
 
       /* rodata */
       BUILD_DIR/src/game/crash_screen.o(.rodata*);
@@ -534,6 +524,7 @@ SECTIONS
 
 #ifdef VERSION_EU
       BUILD_DIR/libultra.a:_Printf.o(.rodata*);
+#endif
 
       BUILD_DIR/libultra.a:guPerspectiveF.o(.rodata*);
       BUILD_DIR/libultra.a:llconv.o(.rodata*);
@@ -541,25 +532,20 @@ SECTIONS
       BUILD_DIR/libultra.a:sinf.o(.rodata*);
       BUILD_DIR/libultra.a:guRotateF.o(.rodata*);
 
+#ifdef VERSION_EU
       BUILD_DIR/libultra.a:_Litob.o(.rodata*);
       BUILD_DIR/libultra.a:_Ldtob.o(.rodata*);
-      
       BUILD_DIR/libultra.a:__osExceptionPreamble.o(.rodata*);
       BUILD_DIR/libultra.a:__osDevMgrMain.o(.rodata*);
-      
       BUILD_DIR/libultra.a:NaN.o(.rodata*);
 #else
-      BUILD_DIR/libultra.a:guPerspectiveF.o(.rodata*);
-      BUILD_DIR/libultra.a:llconv.o(.rodata*);
-      BUILD_DIR/libultra.a:cosf.o(.rodata*);
-      BUILD_DIR/libultra.a:sinf.o(.rodata*);
-      BUILD_DIR/libultra.a:guRotateF.o(.rodata*);
       BUILD_DIR/libultra.a:_Printf.o(.rodata*);
       BUILD_DIR/libultra.a:__osExceptionPreamble.o(.rodata*);
       BUILD_DIR/libultra.a:NaN.o(.rodata*);
       BUILD_DIR/libultra.a:_Litob.o(.rodata*);
       BUILD_DIR/libultra.a:_Ldtob.o(.rodata*);
 #endif
+
       BUILD_DIR/libultra.a:osSetIntMask.o(.rodata*);
       BUILD_DIR/libultra.a:guLookAtRef.o(.rodata*); /* Fast3DEX2 only */
 #ifndef VERSION_EU
@@ -611,33 +597,26 @@ SECTIONS
 #endif
       BUILD_DIR/src/audio/external.o(.bss*);
       BUILD_DIR/src/audio/port_eu.o(.bss*);
-   
+
 #ifdef VERSION_EU
       BUILD_DIR/libultra.a:osInitialize.o(.bss*);
-
       BUILD_DIR/libultra.a:osSetEventMesg.o(.bss*);
       BUILD_DIR/libultra.a:osSpTaskLoadGo.o(.bss*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.bss*);
-      
       BUILD_DIR/libultra.a:osCreatePiManager.o(.bss*);
       BUILD_DIR/libultra.a:osContStartReadData.o(.bss*);
       BUILD_DIR/libultra.a:osContInit.o(.bss*);
-
       BUILD_DIR/libultra.a:guRotateF.o(.bss*);
-
       BUILD_DIR/libultra.a:unk_stack_data.o(.bss*);
       BUILD_DIR/libultra.a:osTimer.o(.bss*);
       BUILD_DIR/libultra.a:__osPiCreateAccessQueue.o(.bss*);
       BUILD_DIR/libultra.a:__osSiCreateAccessQueue.o(.bss*);
       BUILD_DIR/libultra.a:osEepromWrite.o(.bss*);
-      
       BUILD_DIR/libultra.a:kdebugserver.o(.bss*);
       BUILD_DIR/libultra.a:osLeoDiskInit.o(.bss*)
-
       BUILD_DIR/libultra.a:_Printf.o(.bss*);
       BUILD_DIR/libultra.a:osAiSetNextBuffer.o(.bss*);
       BUILD_DIR/libultra.a:EU_D_802f4330.o(.bss*);
-
 #else
       BUILD_DIR/libultra.a:osSetEventMesg.o(.bss*);
       BUILD_DIR/libultra.a:osSpTaskLoadGo.o(.bss*);
@@ -724,7 +703,7 @@ SECTIONS
    }
    END_NOLOAD(engine)
 
-   // ASSERT((. <= SEG_FRAMEBUFFERS), "Error: engine segment extended into framebuffers.")
+   ASSERT((. <= SEG_FRAMEBUFFERS), "Error: engine segment extended into framebuffers.")
 
    . = SEG_FRAMEBUFFERS;
    BEGIN_NOLOAD(framebuffers)
@@ -876,30 +855,22 @@ SECTIONS
    {
       BUILD_DIR/src/buffers/buffers.o(.bss*);
       BUILD_DIR/src/audio/globals_start.o(.bss*);
-
       BUILD_DIR/src/audio/synthesis.o(.bss*);
       BUILD_DIR/src/audio/heap.o(.bss*);
       BUILD_DIR/src/audio/load.o(.bss*);
       BUILD_DIR/src/audio/data.o(.bss*);
-      BUILD_DIR/src/audio/globals_end.o(.bss*);
+      BUILD_DIR/src/audio*.o(.bss*);
+
 #ifdef VERSION_EU
-      . += 0x4f0;
-#endif
-      
-#ifndef VERSION_EU
+      . = ALIGN(0x200);
+#else
       . = ALIGN(0x1000);
 #endif
       BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
-
-      BUILD_DIR/src/audio*.o(.bss*);
    }
    END_NOLOAD(buffers)
 
-   /* While EU is being worked on, don't warn for a too large buffers segment.
-    * This is a broken thing to do, so please enforce this again when it's fixed! */
-#ifndef VERSION_EU
-   ASSERT((. <= SEG_MAIN), "Error: buffers segment extended into main.")
-#endif
+   ASSERT((. <= SEG_MAIN), "Error: buffers segment extended into main")
 
    /* 0x268020 0x268020-0 [0] */
    BEGIN_SEG(intro, 0x14000000)
@@ -1002,14 +973,7 @@ SECTIONS
       BUILD_DIR/assets/mario_anim_data.o(.data);
       BUILD_DIR/assets/mario_anim_data.o(.rodata);
       BUILD_DIR/assets/demo_data.o(.data);
-      gSoundDataADSR = .;
-      BUILD_DIR/sound/sound_data.ctl.o(.data);
-      gSoundDataRaw = .;
-      BUILD_DIR/sound/sound_data.tbl.o(.data);
-      gMusicData = .;
-      BUILD_DIR/sound/sequences.bin.o(.data);
-      gBankSetsData = .;
-      BUILD_DIR/sound/bank_sets.o(.data);
+      BUILD_DIR/sound/sound_data.o(.data);
    }
    END_SEG(assets)
 

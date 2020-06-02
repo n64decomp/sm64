@@ -192,7 +192,7 @@ void king_bobomb_act_8(void) {
         stop_background_music(SEQUENCE_ARGS(4, SEQ_EVENT_BOSS));
 }
 
-void king_bobomb_act_4() { // bobomb been thrown
+void king_bobomb_act_4(void) { // bobomb been thrown
     if (o->oPosY - o->oHomeY > -100.0f) { // not thrown off hill
         if (o->oMoveFlags & 1) {
             o->oHealth--;
@@ -220,7 +220,7 @@ void king_bobomb_act_4() { // bobomb been thrown
     }
 }
 
-void king_bobomb_act_5() { // bobomb returns home
+void king_bobomb_act_5(void) { // bobomb returns home
     switch (o->oSubAction) {
         case 0:
             if (o->oTimer == 0)

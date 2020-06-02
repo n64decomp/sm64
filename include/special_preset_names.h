@@ -1,5 +1,5 @@
-#ifndef _SPECIAL_PRESET_NAMES_H
-#define _SPECIAL_PRESET_NAMES_H
+#ifndef SPECIAL_PRESET_NAMES_H
+#define SPECIAL_PRESET_NAMES_H
 
 enum SpecialPresets {
     special_null_start,
@@ -43,7 +43,7 @@ enum SpecialPresets {
     special_rotating_counter_clockwise,
     special_wf_tumbling_bridge,
     special_large_bomp,
-    
+
     special_level_geo_03 = 0x65,
     special_level_geo_04,
     special_level_geo_05,
@@ -86,9 +86,8 @@ enum SpecialPresets {
     special_1star_door,
     special_3star_door,
     special_key_door,
-    
+
     special_null_end = 0xFF
 };
 
-#endif // _SPECIAL_PRESET_NAMES_H
-
+#endif // SPECIAL_PRESET_NAMES_H

@@ -160,7 +160,7 @@ void bowser_initialize_action(void) {
         o->oAction = 0;
 }
 
-void bowser_act_text_wait() // not much
+void bowser_act_text_wait(void) // not much
 {
     o->oForwardVel = 0.0f;
     cur_obj_init_animation_with_sound(12);
@@ -295,13 +295,13 @@ void bowser_reset_fallen_off_stage(void) {
 }
 #endif
 
-void bowser_act_unused_slow_walk() // unused?
+void bowser_act_unused_slow_walk(void) // unused?
 {
     if (cur_obj_init_animation_and_check_if_near_end(12))
         o->oAction = 0;
 }
 
-void bowser_act_default() // only lasts one frame
+void bowser_act_default(void) // only lasts one frame
 {
     o->oBowserEyesShut = 0;
     cur_obj_init_animation_with_sound(12);
@@ -326,7 +326,7 @@ void bowser_act_breath_fire(void) {
         o->oAction = 0;
 }
 
-void bowser_act_walk_to_mario() // turn towards Mario
+void bowser_act_walk_to_mario(void) // turn towards Mario
 {
     UNUSED s32 facing; // is Bowser facing Mario?
     s16 turnSpeed;
@@ -892,7 +892,7 @@ void bowser_act_dead(void) {
                 if (BITS)
                     o->oSubAction = 10;
                 else {
-                    o->activeFlags |= 0x80;
+                    o->activeFlags |= ACTIVE_FLAG_DITHERED_ALPHA;
                     o->oSubAction++;
                 }
             }
@@ -1258,13 +1258,13 @@ Gfx *geo_switch_bowser_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *mtx) {
     return NULL;
 }
 
-Gfx *geo_bits_bowser_coloring(s32 a0, struct GraphNode *node, UNUSED s32 a2) {
+Gfx *geo_bits_bowser_coloring(s32 run, struct GraphNode *node, UNUSED s32 a2) {
     Gfx *sp2C = NULL;
     Gfx *sp28;
     struct Object *sp24;
     struct GraphNodeGenerated *sp20;
 
-    if (a0 == 1) {
+    if (run == 1) {
         sp24 = (struct Object *) gCurGraphNodeObject;
         sp20 = (struct GraphNodeGenerated *) node;
         if (gCurGraphNodeHeldObject != 0)
@@ -1379,8 +1379,8 @@ void bowser_flame_despawn(void) {
         spawn_object(o, MODEL_YELLOW_COIN, bhvTemporaryYellowCoin);
 }
 
-s32 bowser_flame_should_despawn(s32 a0) {
-    if (a0 < o->oTimer)
+s32 bowser_flame_should_despawn(s32 maxTime) {
+    if (maxTime < o->oTimer)
         return 1;
     if (o->oFloorType == 1)
         return 1;

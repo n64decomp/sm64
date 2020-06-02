@@ -1,8 +1,16 @@
 diff --git a/src/game/game_init.c b/src/game/game_init.c
-index 0852a141..004941d8 100644
+index a4302124..5ffbf3ed 100644
 --- a/src/game/game_init.c
 +++ b/src/game/game_init.c
-@@ -332,6 +332,45 @@ void display_and_vsync(void) {
+@@ -11,6 +11,7 @@
+ #include "game_init.h"
+ #include "main.h"
+ #include "memory.h"
++#include "object_list_processor.h"
+ #include "profiler.h"
+ #include "save_file.h"
+ #include "seq_ids.h"
+@@ -335,6 +336,45 @@ void display_and_vsync(void) {
      gGlobalTimer++;
  }
  
@@ -48,7 +56,7 @@ index 0852a141..004941d8 100644
  // this function records distinct inputs over a 255-frame interval to RAM locations and was likely
  // used to record the demo sequences seen in the final game. This function is unused.
  static void record_demo(void) {
-@@ -365,6 +404,118 @@ static void record_demo(void) {
+@@ -368,6 +408,118 @@ static void record_demo(void) {
      gRecordedDemoInput.timer++;
  }
  
@@ -167,7 +175,7 @@ index 0852a141..004941d8 100644
  // take the updated controller struct and calculate
  // the new x, y, and distance floats.
  void adjust_analog_stick(struct Controller *controller) {
-@@ -605,6 +756,7 @@ void thread5_game_loop(UNUSED void *arg) {
+@@ -623,6 +775,7 @@ void thread5_game_loop(UNUSED void *arg) {
          audio_game_loop_tick();
          config_gfx_pool();
          read_controller_inputs();

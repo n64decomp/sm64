@@ -58,7 +58,7 @@ void bhv_spawned_star_loop(void) {
         if (o->oTimer == 0) {
             cutscene_object(CUTSCENE_STAR_SPAWN, o);
             set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
-            o->activeFlags |= 0x20;
+            o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
             o->oAngleVelYaw = 0x800;
             if (o->oBehParams2ndByte == 0)
                 set_home_to_mario();
@@ -98,7 +98,7 @@ void bhv_spawned_star_loop(void) {
     } else if (o->oAction == 2) {
         if (gCamera->cutscene == 0 && gRecentCutscene == 0) {
             clear_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
-            o->activeFlags &= ~0x20;
+            o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
             o->oAction++;
         }
     } else {

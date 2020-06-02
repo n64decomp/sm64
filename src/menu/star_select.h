@@ -1,6 +1,11 @@
 #ifndef STAR_SELECT_H
 #define STAR_SELECT_H
 
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
+
+#include "types.h"
+
 enum StarSelectorTypes
 {
     STAR_SELECTOR_NOT_SELECTED,
@@ -9,11 +14,11 @@ enum StarSelectorTypes
 };
 
 #ifdef AVOID_UB
-extern Gfx *geo_act_selector_strings(s16 callContext, struct GraphNode *node, void *context);
+Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node, UNUSED void *context);
 #else
-extern Gfx *geo_act_selector_strings(s16 callContext, struct GraphNode *node);
+Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node);
 #endif
-extern s32 lvl_init_act_selector_values_and_stars(s32 arg, s32 unused);
-extern s32 lvl_update_obj_and_load_act_button_actions(s32 arg, s32 unused);
+s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused);
+s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused);
 
-#endif /* STAR_SELECT_H */
+#endif // STAR_SELECT_H

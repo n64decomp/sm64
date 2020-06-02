@@ -25,4 +25,4 @@
 
 #define CMD_HHHHHH(a, b, c, d, e, f) CMD_HH(a, b), CMD_HH(c, d), CMD_HH(e, f)
 
-#endif
+#endif // COMMAND_MACROS_BASE_H

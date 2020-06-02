@@ -1,6 +1,6 @@
 // rotating_octagonal_plat.inc.c
 
-void *D_80331A44[] = {
+void const *D_80331A44[] = {
     bits_seg7_collision_0701AA84,
     rr_seg7_collision_07029508,
 };

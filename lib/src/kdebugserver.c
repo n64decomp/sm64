@@ -68,14 +68,16 @@ void send(u8 *buff, s32 len) {
         send_packet(&buff[end], rem);
     }
 }
-void process_command_memory() {
+
+void process_command_memory(void) {
     u32 sp1c;
     u32 sp18;
     sp1c = string_to_u32(&D_80365E40[1]);
     sp18 = string_to_u32(&D_80365E40[5]);
     send((u8 *) (uintptr_t) sp1c, sp18);
 }
-void process_command_register() {
+
+void process_command_register(void) {
     send((u8 *) &gInterruptedThread.context, sizeof(__OSThreadContext));
 }
 

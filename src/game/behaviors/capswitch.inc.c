@@ -42,7 +42,7 @@ void cap_switch_act_2(void) {
     }
 }
 
-void cap_switch_act_3() {
+void cap_switch_act_3(void) {
 } // dead function
 
 void (*sCapSwitchActions[])(void) = { cap_switch_act_0, cap_switch_act_1,

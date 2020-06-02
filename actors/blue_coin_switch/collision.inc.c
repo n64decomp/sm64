@@ -1,7 +1,7 @@
 // Blue Coin Switch
 
 // 0x08000E98 - 0x08000F10
-const s16 blue_coin_switch_seg8_collision_08000E98[] = {
+const Collision blue_coin_switch_seg8_collision_08000E98[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(26, 0, 26),

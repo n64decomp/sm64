@@ -629,4 +629,4 @@ struct ObjUnk200000 {
     /* 0x34 */ struct ObjFace *unk34;   //not sure; guessing for Unknown801781DC
 }; /* sizeof = 0x38*/
 
-#endif /* GD_TYPES_H */
+#endif // GD_TYPES_H

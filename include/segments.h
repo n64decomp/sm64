@@ -1,5 +1,5 @@
-#ifndef _SEGMENTS_H
-#define _SEGMENTS_H
+#ifndef SEGMENTS_H
+#define SEGMENTS_H
 
 /*
  * Memory addresses for segments. Ideally, this header file would not be
@@ -53,4 +53,4 @@
 #define SEG_GODDARD      SEG_POOL_START + 0x113000
 #endif
 
-#endif // _SEGMENTS_H
+#endif // SEGMENTS_H

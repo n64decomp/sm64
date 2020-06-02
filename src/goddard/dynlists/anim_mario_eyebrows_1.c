@@ -1,4 +1,5 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
+
 #include "animdata.h"
 #include "../gd_types.h"
 

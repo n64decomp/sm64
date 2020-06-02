@@ -225,8 +225,8 @@ extern const Gfx tree_seg3_dl_03032170[];
 extern const Gfx tree_seg3_dl_03033258[];
 
 // warp_collision
-extern const s16 door_seg3_collision_0301CE78[];
-extern const s16 lll_hexagonal_mesh_seg3_collision_0301CECC[];
+extern const Collision door_seg3_collision_0301CE78[];
+extern const Collision lll_hexagonal_mesh_seg3_collision_0301CECC[];
 
 // warp_pipe
 extern const GeoLayout warp_pipe_geo[];
@@ -235,7 +235,7 @@ extern const Gfx warp_pipe_seg3_dl_03008F98[];
 extern const Gfx warp_pipe_seg3_dl_03009968[];
 extern const Gfx warp_pipe_seg3_dl_03009A20[];
 extern const Gfx warp_pipe_seg3_dl_03009A50[];
-extern const s16 warp_pipe_seg3_collision_03009AC8[];
+extern const Collision warp_pipe_seg3_collision_03009AC8[];
 
 // white_particle
 extern const GeoLayout white_particle_geo[];
@@ -248,6 +248,6 @@ extern const Gfx wooden_signpost_seg3_dl_0302DA48[];
 extern const Gfx wooden_signpost_seg3_dl_0302DC40[];
 extern const Gfx wooden_signpost_seg3_dl_0302DCD0[];
 extern const Gfx wooden_signpost_seg3_dl_0302DD08[];
-extern const s16 wooden_signpost_seg3_collision_0302DD80[];
+extern const Collision wooden_signpost_seg3_collision_0302DD80[];
 
 #endif

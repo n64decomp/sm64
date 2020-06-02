@@ -1,5 +1,5 @@
-#ifndef GD_COMMON_MACROS_H
-#define GD_COMMON_MACROS_H
+#ifndef GD_MACROS_H
+#define GD_MACROS_H
 
 /**
  * @file gd_macros.h
@@ -14,4 +14,4 @@
 #define SQ(val) ((val) * (val))
 #define ALIGN(VAL_, ALIGNMENT_) (((VAL_) + ((ALIGNMENT_) - 1)) & ~((ALIGNMENT_) - 1))
 
-#endif /* GD_COMMON_MACROS_H */
+#endif // GD_MACROS_H

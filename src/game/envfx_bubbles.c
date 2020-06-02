@@ -3,18 +3,17 @@
 #include "sm64.h"
 #include "game_init.h"
 #include "memory.h"
-#include "ingame_menu.h"
 #include "envfx_snow.h"
 #include "envfx_bubbles.h"
 #include "engine/surface_collision.h"
 #include "engine/math_util.h"
 #include "engine/behavior_script.h"
 #include "audio/external.h"
-#include "obj_behaviors.h"
+#include "textures.h"
 
 /**
  * This file implements environment effects that are not snow:
- * Flowers (unused), lava bubbles and jetsream/whirlpool bubbles.
+ * Flowers (unused), lava bubbles and jet stream/whirlpool bubbles.
  * Refer to 'envfx_snow.c' for more info about environment effects.
  * Note that the term 'bubbles' is used as a collective name for
  * effects in this file even though flowers aren't bubbles. For the
@@ -36,13 +35,6 @@ Vtx_t gBubbleTempVtx[3] = {
     { { 0, 0, 0 }, 0, { -498, 964 }, { 0xFF, 0xFF, 0xFF, 0xFF } },
 };
 
-extern void *flower_bubbles_textures_ptr_0B002008;
-extern void *lava_bubble_ptr_0B006020;
-extern void *bubble_ptr_0B006848;
-extern void *tiny_bubble_dl_0B006AB0;
-extern void *tiny_bubble_dl_0B006D38;
-extern void *tiny_bubble_dl_0B006D68;
-
 /**
  * Check whether the particle with the given index is
  * laterally within distance of point (x, z). Used to
@@ -63,7 +55,7 @@ s32 particle_is_laterally_close(s32 index, s32 x, s32 z, s32 distance) {
  * Generate a uniform random number in range [-2000, -1000[ or [1000, 2000[
  * Used to position flower particles
  */
-s32 random_flower_offset() {
+s32 random_flower_offset(void) {
     s32 result = random_float() * 2000.0f - 1000.0f;
     if (result < 0) {
         result -= 1000;
@@ -272,7 +264,7 @@ void envfx_update_whirlpool(void) {
 }
 
 /**
- * Check whether a jetstream bubble should respawn. Happens if it is laterally
+ * Check whether a jet stream bubble should respawn. Happens if it is laterally
  * 1000 units away from the source or 1500 units above it.
  */
 s32 envfx_is_jestream_bubble_alive(s32 index) {
@@ -288,7 +280,7 @@ s32 envfx_is_jestream_bubble_alive(s32 index) {
 }
 
 /**
- * Update the positions of jestream bubble particles.
+ * Update the positions of jet stream bubble particles.
  * They move up and outwards.
  */
 void envfx_update_jetstream(void) {
@@ -411,7 +403,7 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
 
 /**
  * Append 15 vertices to 'gfx', which is enough for 5 bubbles starting at
- * 'index'. The 3 input vertices represent the roated triangle around (0,0,0)
+ * 'index'. The 3 input vertices represent the rotated triangle around (0,0,0)
  * that will be translated to bubble positions to draw the bubble image
  *
  * TODO: (Scrub C)
@@ -550,7 +542,7 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
 
 /**
  * Set the maximum particle count from the gEnvFxBubbleConfig variable,
- * which is set by the whirlpool or jetstream behavior.
+ * which is set by the whirlpool or jet stream behavior.
  */
 void envfx_set_max_bubble_particles(s32 mode) {
     switch (mode) {

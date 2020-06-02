@@ -1,7 +1,9 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
+
 #include "dynlist_macros.h"
 #include "dynlists.h"
 #include "../dynlist_proc.h"
+
 // maybe move types into the dynlists.h file?
 struct DynList dynlist_unused[62] = {
     StartList(),

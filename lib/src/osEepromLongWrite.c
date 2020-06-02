@@ -2,7 +2,7 @@
 
 extern u64 osClockRate;
 extern u8 D_80365D20;
-extern u8 _osCont_numControllers;
+extern u8 _osContNumControllers;
 extern OSTimer D_80365D28;
 extern OSMesgQueue _osContMesgQueue;
 extern OSMesg _osContMesgBuff[4];

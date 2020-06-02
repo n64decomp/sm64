@@ -8,4 +8,4 @@
 #define const
 #endif
 
-#endif
+#endif // MAKE_CONST_NONCONST_H

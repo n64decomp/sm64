@@ -1,5 +1,5 @@
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef MAIN_H
+#define MAIN_H
 
 struct RumbleData {
     u8 unk00;
@@ -57,11 +57,6 @@ extern struct StructSH8031D9B0 gCurrRumbleSettings;
 extern struct VblankHandler *gVblankHandler1;
 extern struct VblankHandler *gVblankHandler2;
 extern struct SPTask *gActiveSPTask;
-extern struct SPTask *D_8032C62C;
-extern struct SPTask *D_8032C630;
-extern OSMesg D_8032C634;
-extern OSMesg D_8032C638;
-extern s8 D_8032C63C;
 extern u32 sNumVblanks;
 extern s8 gResetTimer;
 extern s8 D_8032C648;
@@ -70,9 +65,8 @@ extern s8 D_8032C650;
 extern s8 gShowProfiler;
 extern s8 gShowDebugText;
 
-extern void set_vblank_handler(s32 a, struct VblankHandler *b, OSMesgQueue *queue, OSMesg *msg);
-extern void dispatch_audio_sptask(struct SPTask *spTask);
-extern void send_display_list(struct SPTask *a);
-extern void main(void);
+void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *queue, OSMesg *msg);
+void dispatch_audio_sptask(struct SPTask *spTask);
+void send_display_list(struct SPTask *spTask);
 
-#endif
+#endif // MAIN_H

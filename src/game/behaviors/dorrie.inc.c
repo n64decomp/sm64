@@ -115,7 +115,7 @@ void bhv_dorrie_update(void) {
     UNUSED s32 unused2;
     f32 maxOffsetY;
 
-    if (!(o->activeFlags & 0x0008)) {
+    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         o->oDorrieForwardDistToMario = o->oDistanceToMario * coss(o->oAngleToMario - o->oMoveAngleYaw);
 
         obj_perform_position_op(0);

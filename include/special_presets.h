@@ -1,5 +1,5 @@
-#ifndef _SPECIAL_PRESETS_H
-#define _SPECIAL_PRESETS_H
+#ifndef SPECIAL_PRESETS_H
+#define SPECIAL_PRESETS_H
 
 #include "special_preset_names.h"
 #include "behavior_data.h"
@@ -17,13 +17,13 @@ struct SpecialPreset
     /*00*/ u8  preset_id;
     /*01*/ u8  type;      // Determines whether object is 8, 10, 12 or 14 bytes long.
     /*02*/ u8  defParam;  // Default parameter, only used when type is SPTYPE_DEF_PARAM_AND_YROT
-    /*03*/ u8  model;     
+    /*03*/ u8  model;
     /*04*/ const BehaviorScript *behavior;
 };
 
 // Some Models ID's are missing their names because they are probably unused
 
-static struct SpecialPreset SpecialObjectPresets[] = 
+static struct SpecialPreset SpecialObjectPresets[] =
 {
     {0x00, SPTYPE_YROT_NO_PARAMS    , 0x00, MODEL_NONE, NULL},
     {0x01, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_YELLOW_COIN, bhvYellowCoin},
@@ -110,4 +110,4 @@ static struct SpecialPreset SpecialObjectPresets[] =
     {0xFF, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_NONE, NULL}
 };
 
-#endif // _SPECIAL_PRESETS_H
+#endif // SPECIAL_PRESETS_H

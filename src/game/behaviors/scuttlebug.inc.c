@@ -12,12 +12,12 @@ struct ObjectHitbox sScuttlebugHitbox = {
     /* hurtboxHeight: */ 60,
 };
 
-s32 update_angle_from_move_flags(s32 *a0) {
-    if (o->oMoveFlags & 0x200) {
-        *a0 = o->oWallAngle;
+s32 update_angle_from_move_flags(s32 *angle) {
+    if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
+        *angle = o->oWallAngle;
         return 1;
-    } else if (o->oMoveFlags & 0x400) {
-        *a0 = o->oMoveAngleYaw + 0x8000;
+    } else if (o->oMoveFlags & OBJ_MOVE_HIT_EDGE) {
+        *angle = o->oMoveAngleYaw + 0x8000;
         return -1;
     }
     return 0;
@@ -110,7 +110,7 @@ void bhv_scuttlebug_loop(void) {
     if (o->parentObj != o) {
         if (obj_is_hidden(o))
             obj_mark_for_deletion(o);
-        if (o->activeFlags == 0)
+        if (o->activeFlags == ACTIVE_FLAG_DEACTIVATED)
             o->parentObj->oScuttlebugSpawnerUnk88 = 1;
     }
     cur_obj_move_standard(-50);

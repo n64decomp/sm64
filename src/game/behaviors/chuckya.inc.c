@@ -22,7 +22,7 @@ void common_anchor_mario_behavior(f32 sp28, f32 sp2C, s32 sp30) {
             break;
     }
     o->oMoveAngleYaw = o->parentObj->oMoveAngleYaw;
-    if (!o->parentObj->activeFlags)
+    if (o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED)
         obj_mark_for_deletion(o);
 }
 

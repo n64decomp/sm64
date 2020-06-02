@@ -6,13 +6,13 @@ void bhv_white_puff_smoke_init(void) {
 }
 
 void bhv_bullet_bill_init(void) {
-    o->oBulletBillUnkF8 = o->oMoveAngleYaw;
+    o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
 }
 
 void bullet_bill_act_0(void) {
     cur_obj_become_tangible();
     o->oForwardVel = 0.0f;
-    o->oMoveAngleYaw = o->oBulletBillUnkF8;
+    o->oMoveAngleYaw = o->oBulletBillInitialMoveYaw;
     o->oFaceAnglePitch = 0;
     o->oFaceAngleRoll = 0;
     o->oMoveFlags = 0;

@@ -1,7 +1,7 @@
 #ifndef GD_MEMORY_H
 #define GD_MEMORY_H
 
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 /// A structure that holds information about memory allocation on goddard's heap.
 struct GMemBlock {
@@ -32,4 +32,4 @@ extern struct GMemBlock *gd_add_mem_to_heap(u32 size, void *addr, u8 permanence)
 extern void init_mem_block_lists(void);
 extern void mem_stats(void);
 
-#endif /* GD_MEMORY_H */
+#endif // GD_MEMORY_H

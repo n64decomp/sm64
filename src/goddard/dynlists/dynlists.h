@@ -1,5 +1,5 @@
-#ifndef _DYN_LISTS_H_
-#define _DYN_LISTS_H_
+#ifndef GD_DYNLISTS_H
+#define GD_DYNLISTS_H
 
 #include "../gd_types.h"
 
@@ -13,4 +13,4 @@ extern struct DynList dynlist_mario_eyebrow_left[16];
 extern struct DynList dynlist_mario_mustache[16];
 extern struct DynList dynlist_mario_master[1026];
 
-#endif /* _DYN_LISTS_H */
+#endif // GD_DYNLISTS_H

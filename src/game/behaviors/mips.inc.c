@@ -27,7 +27,7 @@ void bhv_mips_init(void) {
 #endif
     } else {
         // No MIPS stars are available, hide MIPS.
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
     o->oInteractionSubtype = INT_SUBTYPE_HOLDABLE_NPC;

@@ -7,7 +7,7 @@
 /**
  * Collision model for hexagon and triangle, respectively.
  */
-static void *sTTCCogCollisionModels[] = {
+static Collision const *sTTCCogCollisionModels[] = {
     ttc_seg7_collision_07015584,
     ttc_seg7_collision_07015650,
 };

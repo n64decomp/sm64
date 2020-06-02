@@ -18,6 +18,14 @@ typedef struct _ia
    uint8_t alpha;
 } ia;
 
+// CI palette
+typedef struct
+{
+   uint16_t data[256];
+   int max; // max number of entries
+   int used; // number of entries used
+} palette_t;
+
 //---------------------------------------------------------
 // N64 RGBA/IA/I/CI -> intermediate RGBA/IA
 //---------------------------------------------------------
@@ -30,10 +38,6 @@ ia *raw2ia(const uint8_t *raw, int width, int height, int depth);
 
 // N64 raw I4/I8 -> intermediate IA
 ia *raw2i(const uint8_t *raw, int width, int height, int depth);
-
-// N64 raw CI + palette -> intermediate RGBA
-rgba *rawci2rgba(const uint8_t *rawci, const uint8_t *palette, int width, int height, int depth);
-
 
 //---------------------------------------------------------
 // intermediate RGBA/IA -> N64 RGBA/IA/I/CI
@@ -49,9 +53,16 @@ int ia2raw(uint8_t *raw, const ia *img, int width, int height, int depth);
 // intermediate IA -> N64 raw I4/I8
 int i2raw(uint8_t *raw, const ia *img, int width, int height, int depth);
 
-// intermediate RGBA -> N64 raw CI + palette
-// TODO
-// int rgba2rawci(uint8_t *raw, uint8_t *out_palette, int *pal_len, const rgba *img, int width, int height, int depth);
+
+//---------------------------------------------------------
+// N64 CI <-> N64 RGBA16/IA16
+//---------------------------------------------------------
+
+// N64 CI raw data and palette to raw data (either RGBA16 or IA16)
+uint8_t *ci2raw(const uint8_t *rawci, const uint8_t *palette, int width, int height, int ci_depth);
+
+// convert from raw (RGBA16 or IA16) format to CI + palette
+int raw2ci(uint8_t *rawci, palette_t *pal, const uint8_t *raw, int raw_len, int ci_depth);
 
 
 //---------------------------------------------------------

@@ -1,35 +1,27 @@
 #include <ultra64.h>
 
-#include "sm64.h"
-#include "memory.h"
-#include "types.h"
+#include "actors/common1.h"
+#include "area.h"
 #include "audio/external.h"
-#include "seq_ids.h"
-#include "dialog_ids.h"
-#include "game_init.h"
-#include "save_file.h"
-#include "level_update.h"
 #include "camera.h"
-#include "text_strings.h"
+#include "course_table.h"
+#include "dialog_ids.h"
+#include "engine/math_util.h"
+#include "eu_translation.h"
+#include "game_init.h"
+#include "gfx_dimensions.h"
+#include "ingame_menu.h"
+#include "level_update.h"
+#include "levels/castle_grounds/header.h"
+#include "memory.h"
+#include "print.h"
+#include "save_file.h"
 #include "segment2.h"
 #include "segment7.h"
-#include "eu_translation.h"
-#include "ingame_menu.h"
-#include "print.h"
-#include "engine/math_util.h"
-#include "course_table.h"
-
-extern Gfx *gDisplayListHead;
-extern s16 gCurrCourseNum;
-extern s16 gCurrSaveFileNum;
-
-extern Gfx coin_seg3_dl_03007940[];
-extern Gfx coin_seg3_dl_03007968[];
-extern Gfx coin_seg3_dl_03007990[];
-extern Gfx coin_seg3_dl_030079B8[];
-
-extern u8 main_menu_seg7_table_0700ABD0[];
-extern Gfx castle_grounds_seg7_dl_0700EA58[];
+#include "seq_ids.h"
+#include "sm64.h"
+#include "text_strings.h"
+#include "types.h"
 
 u16 gDialogColorFadeTimer;
 s8 gLastDialogLineNum;
@@ -109,7 +101,7 @@ s16 gDialogScrollOffsetY = 0;
 s8 gDialogBoxType = DIALOG_TYPE_ROTATE;
 s16 gDialogID = -1;
 s16 gLastDialogPageStrPos = 0;
-s16 gDialogTextPos = 0; // EU: D_802FD64C
+s16 gDialogTextPos = 0;
 #ifdef VERSION_EU
 s32 gInGameLanguage = 0;
 #endif
@@ -127,11 +119,15 @@ void create_dl_identity_matrix(void) {
         return;
     }
 
+#ifndef GBI_FLOATS
     matrix->m[0][0] = 0x00010000;    matrix->m[1][0] = 0x00000000;    matrix->m[2][0] = 0x00000000;    matrix->m[3][0] = 0x00000000;
     matrix->m[0][1] = 0x00000000;    matrix->m[1][1] = 0x00010000;    matrix->m[2][1] = 0x00000000;    matrix->m[3][1] = 0x00000000;
     matrix->m[0][2] = 0x00000001;    matrix->m[1][2] = 0x00000000;    matrix->m[2][2] = 0x00000000;    matrix->m[3][2] = 0x00000000;
     matrix->m[0][3] = 0x00000000;    matrix->m[1][3] = 0x00000001;    matrix->m[2][3] = 0x00000000;    matrix->m[3][3] = 0x00000000;
-    
+#else
+    guMtxIdent(matrix);
+#endif
+
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
 }
@@ -334,9 +330,9 @@ enum MultiStringIDs { STRING_THE, STRING_YOU };
  * 1: 'you'
  */
 #ifdef VERSION_US
-void render_multi_text_string(s8 multiTextID) // US: 802D76C8
+void render_multi_text_string(s8 multiTextID)
 #elif defined(VERSION_EU)
-void render_multi_text_string(s16 *xPos, s16 *yPos, s8 multiTextID) // EU: 802AD650
+void render_multi_text_string(s16 *xPos, s16 *yPos, s8 multiTextID)
 #endif
 {
     s8 i;
@@ -396,7 +392,7 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
             case DIALOG_CHAR_LOWER_A_UMLAUT:
                 render_lowercase_diacritic(&xCoord, &yCoord, ASCII_TO_DIALOG('a'), str[strPos] & 0xF);
                 break;
-            case DIALOG_CHAR_UPPER_A_UMLAUT: // @bug grave and circumflux (0x64-0x65) are absent here
+            case DIALOG_CHAR_UPPER_A_UMLAUT: // @bug grave and circumflex (0x64-0x65) are absent here
                 render_uppercase_diacritic(&xCoord, &yCoord, ASCII_TO_DIALOG('A'), str[strPos] & 0xF);
                 break;
             case DIALOG_CHAR_LOWER_E_GRAVE:
@@ -688,7 +684,7 @@ void print_credits_string(s16 x, s16 y, const u8 *str) {
     gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0,
                 G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
     gDPTileSync(gDisplayListHead++);
-    gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 2, 0, G_TX_RENDERTILE, 0, 
+    gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 2, 0, G_TX_RENDERTILE, 0,
                 G_TX_CLAMP, 3, G_TX_NOLOD, G_TX_CLAMP, 3, G_TX_NOLOD);
     gDPSetTileSize(gDisplayListHead++, G_TX_RENDERTILE, 0, 0, (8 - 1) << G_TEXTURE_IMAGE_FRAC, (8 - 1) << G_TEXTURE_IMAGE_FRAC);
 
@@ -1001,12 +997,12 @@ void change_and_flash_dialog_text_color_lines(s8 colorMode, s8 lineNum) {
 
 #ifdef VERSION_EU
 void render_generic_dialog_char_at_pos(struct DialogEntry *dialog, s16 x, s16 y, u8 c) {
-    s16 width;  // sp26
-    s16 height; // sp24
+    s16 width;
+    s16 height;
     s16 tmpX;
     s16 tmpY;
-    s16 xCoord; // sp1E
-    s16 yCoord; // sp1C
+    s16 xCoord;
+    s16 yCoord;
     void **fontLUT;
     void *packedTexture;
     void *unpackedTexture;
@@ -1793,13 +1789,27 @@ void render_dialog_entries(void) {
 
     render_dialog_box_type(dialog, dialog->linesPerBox);
 
-    gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, ensure_nonnegative(dialog->leftOffset),
+    gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE,
+                  // Horizontal scissoring isn't really required and can potentially mess up widescreen enhancements.
+#ifdef WIDESCREEN
+                  0,
+#else
+                  ensure_nonnegative(dialog->leftOffset),
+#endif
                   ensure_nonnegative(DIAG_VAL2 - dialog->width),
 #ifdef VERSION_EU
+#ifdef WIDESCREEN
+                  SCREEN_WIDTH,
+#else
                   ensure_nonnegative(dialog->leftOffset + DIAG_VAL3 / gDialogBoxScale),
+#endif
                   ensure_nonnegative((240 - dialog->width) + ((dialog->linesPerBox * 80) / DIAG_VAL4) / gDialogBoxScale));
 #else
+#ifdef WIDESCREEN
+                  SCREEN_WIDTH,
+#else
                   ensure_nonnegative(DIAG_VAL3 + dialog->leftOffset),
+#endif
                   ensure_nonnegative(240 + ((dialog->linesPerBox * 80) / DIAG_VAL4) - dialog->width));
 #endif
 #if defined(VERSION_JP) || defined(VERSION_SH)
@@ -1975,10 +1985,6 @@ void do_cutscene_handler(void) {
     gCutsceneMsgTimer++;
 }
 
-#ifndef VERSION_JP
-extern Gfx castle_grounds_seg7_us_dl_0700F2E8[];
-#endif
-
 #if defined(VERSION_JP) || defined(VERSION_SH)
 #define PEACH_MESSAGE_TIMER 170
 #else
@@ -2108,8 +2114,17 @@ void change_dialog_camera_angle(void) {
 }
 
 void shade_screen(void) {
-    create_dl_translation_matrix(MENU_MTX_PUSH, 0, 240.0f, 0);
+    create_dl_translation_matrix(MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, 0);
+
+    // This is a bit weird. It reuses the dialog text box (width 130, height -80),
+    // so scale to at least fit the screen.
+#ifndef WIDESCREEN
     create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+#else
+    create_dl_scale_matrix(MENU_MTX_NOPUSH,
+                           GFX_DIMENSIONS_ASPECT_RATIO * SCREEN_HEIGHT / 130.0f, 3.0f, 1.0f);
+#endif
+
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 110);
     gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -2145,12 +2160,12 @@ void render_pause_red_coins(void) {
     s8 x;
 
     for (x = 0; x < gRedCoinsCollected; x++) {
-        print_animated_red_coin(290 - x * 20, 16);
+        print_animated_red_coin(GFX_DIMENSIONS_FROM_RIGHT_EDGE(30) - x * 20, 16);
     }
 }
 
 #ifdef VERSION_EU
-u8 gTextCourseArr[][7] = { // D_802FDA10
+u8 gTextCourseArr[][7] = {
     { TEXT_COURSE },
     { TEXT_COURSE_FR },
     { TEXT_COURSE_DE }
@@ -2437,7 +2452,8 @@ void print_hud_pause_colorful_str(void) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
 #ifdef VERSION_EU
-    print_hud_lut_string(HUD_LUT_GLOBAL, get_str_x_pos_from_center_scale(160, textPause, 12.0f), 81, textPause);
+    print_hud_lut_string(HUD_LUT_GLOBAL, get_str_x_pos_from_center_scale(
+                         SCREEN_WIDTH / 2, textPause, 12.0f), 81, textPause);
 #else
     print_hud_lut_string(HUD_LUT_GLOBAL, 123, 81, textPause);
 #endif
@@ -3045,10 +3061,9 @@ s16 render_menus_and_dialogs() {
 
         gDialogColorFadeTimer = (s16) gDialogColorFadeTimer + 0x1000;
     } else if (gDialogID != -1) {
-        // Peach message "Dear Mario" new game dialog
+        // The Peach "Dear Mario" message needs to be repositioned separately
         if (gDialogID == 20) {
-            print_peach_letter_message(); // the peach message needs to be
-                                          // repositioned seperately
+            print_peach_letter_message();
             return mode;
         }
 

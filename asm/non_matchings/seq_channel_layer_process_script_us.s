@@ -1,33 +1,33 @@
 .late_rodata
 glabel jtbl_80337C90
-    .word L_U_8031C2DC
-    .word L_U_8031C298
-    .word L_U_8031C6A0
-    .word L_U_8031C6A0
-    .word L_U_8031C328
-    .word L_U_8031C23C
-    .word L_U_8031C6A0
-    .word L_U_8031C6A0
-    .word L_U_8031C200
+    .word L8031C2DC
+    .word L8031C298
+    .word L8031C6A0
+    .word L8031C6A0
+    .word L8031C328
+    .word L8031C23C
+    .word L8031C6A0
+    .word L8031C6A0
+    .word L8031C200
 
 glabel jtbl_80337CB4
-    .word L_U_8031C36C
-    .word L_U_8031C3BC
-    .word L_U_8031C454
-    .word L_U_8031C3E8
-    .word L_U_8031C3E8
-    .word L_U_8031C4A4
-    .word L_U_8031C5C8
-    .word L_U_8031C698
-    .word L_U_8031C3BC
-    .word L_U_8031C36C
+    .word L8031C36C
+    .word L8031C3BC
+    .word L8031C454
+    .word L8031C3E8
+    .word L8031C3E8
+    .word L8031C4A4
+    .word L8031C5C8
+    .word L8031C698
+    .word L8031C3BC
+    .word L8031C36C
 
 glabel jtbl_80337CDC
-    .word L_U_8031CBE0
-    .word L_U_8031CBEC
-    .word L_U_8031CBE0
-    .word L_U_8031CBEC
-    .word L_U_8031CBE0
+    .word L8031CBE0
+    .word L8031CBEC
+    .word L8031CBE0
+    .word L8031CBEC
+    .word L8031CBE0
 
 .text
 glabel seq_channel_layer_process_script
@@ -117,7 +117,7 @@ glabel seq_channel_layer_process_script
 /* 0D71F4 8031C1F4 8C398E84 */  lw    $t9, %lo(jtbl_80337CB4)($at)
 /* 0D71F8 8031C1F8 03200008 */  jr    $t9
 /* 0D71FC 8031C1FC 00000000 */   nop
-glabel L_U_8031C200
+glabel L8031C200
 /* 0D7200 8031C200 26020054 */  addiu $v0, $s0, 0x54
 /* 0D7204 8031C204 90430018 */  lbu   $v1, 0x18($v0)
 /* 0D7208 8031C208 14600005 */  bnez  $v1, .L8031C220
@@ -134,7 +134,7 @@ glabel L_U_8031C200
 /* 0D7230 8031C230 8F2E0004 */  lw    $t6, 4($t9)
 /* 0D7234 8031C234 1000FFD7 */  b     .L8031C194
 /* 0D7238 8031C238 AC4E0000 */   sw    $t6, ($v0)
-glabel L_U_8031C23C
+glabel L8031C23C
 /* 0D723C 8031C23C 26020054 */  addiu $v0, $s0, 0x54
 /* 0D7240 8031C240 8C430000 */  lw    $v1, ($v0)
 /* 0D7244 8031C244 90640000 */  lbu   $a0, ($v1)
@@ -158,7 +158,7 @@ glabel L_U_8031C23C
 /* 0D728C 8031C28C 01CFC821 */  addu  $t9, $t6, $t7
 /* 0D7290 8031C290 1000FFC0 */  b     .L8031C194
 /* 0D7294 8031C294 AC590000 */   sw    $t9, ($v0)
-glabel L_U_8031C298
+glabel L8031C298
 /* 0D7298 8031C298 26020054 */  addiu $v0, $s0, 0x54
 /* 0D729C 8031C29C 8C430000 */  lw    $v1, ($v0)
 /* 0D72A0 8031C2A0 904E0018 */  lbu   $t6, 0x18($v0)
@@ -176,7 +176,7 @@ glabel L_U_8031C298
 /* 0D72D0 8031C2D0 0059C021 */  addu  $t8, $v0, $t9
 /* 0D72D4 8031C2D4 1000FFAF */  b     .L8031C194
 /* 0D72D8 8031C2D8 AF0E0000 */   sw    $t6, ($t8)
-glabel L_U_8031C2DC
+glabel L8031C2DC
 /* 0D72DC 8031C2DC 26020054 */  addiu $v0, $s0, 0x54
 /* 0D72E0 8031C2E0 904F0018 */  lbu   $t7, 0x18($v0)
 /* 0D72E4 8031C2E4 004F2021 */  addu  $a0, $v0, $t7
@@ -197,7 +197,7 @@ glabel L_U_8031C2DC
 /* 0D731C 8031C31C 246FFFFF */  addiu $t7, $v1, -1
 /* 0D7320 8031C320 1000FF9C */  b     .L8031C194
 /* 0D7324 8031C324 A04F0018 */   sb    $t7, 0x18($v0)
-glabel L_U_8031C328
+glabel L8031C328
 /* 0D7328 8031C328 26020054 */  addiu $v0, $s0, 0x54
 /* 0D732C 8031C32C 8C430000 */  lw    $v1, ($v0)
 /* 0D7330 8031C330 90640000 */  lbu   $a0, ($v1)
@@ -215,7 +215,7 @@ glabel L_U_8031C328
 /* 0D7360 8031C360 032EC021 */  addu  $t8, $t9, $t6
 /* 0D7364 8031C364 1000FF8B */  b     .L8031C194
 /* 0D7368 8031C368 AC580000 */   sw    $t8, ($v0)
-glabel L_U_8031C36C
+glabel L8031C36C
 /* 0D736C 8031C36C 26020054 */  addiu $v0, $s0, 0x54
 /* 0D7370 8031C370 8C430000 */  lw    $v1, ($v0)
 /* 0D7374 8031C374 240100C1 */  li    $at, 193
@@ -237,7 +237,7 @@ glabel L_U_8031C36C
 /* 0D73B0 8031C3B0 46005402 */  mul.s $f16, $f10, $f0
 /* 0D73B4 8031C3B4 1000FF77 */  b     .L8031C194
 /* 0D73B8 8031C3B8 E6100028 */   swc1  $f16, 0x28($s0)
-glabel L_U_8031C3BC
+glabel L8031C3BC
 /* 0D73BC 8031C3BC 26020054 */  addiu $v0, $s0, 0x54
 /* 0D73C0 8031C3C0 8C430000 */  lw    $v1, ($v0)
 /* 0D73C4 8031C3C4 240100C9 */  li    $at, 201
@@ -250,7 +250,7 @@ glabel L_U_8031C3BC
 .L8031C3E0:
 /* 0D73E0 8031C3E0 1000FF6C */  b     .L8031C194
 /* 0D73E4 8031C3E4 A604001E */   sh    $a0, 0x1e($s0)
-glabel L_U_8031C3E8
+glabel L8031C3E8
 /* 0D73E8 8031C3E8 240100C4 */  li    $at, 196
 /* 0D73EC 8031C3EC 14A10003 */  bne   $a1, $at, .L8031C3FC
 /* 0D73F0 8031C3F0 02002025 */   move  $a0, $s0
@@ -280,7 +280,7 @@ glabel L_U_8031C3E8
 /* 0D7448 8031C448 8FAC005C */  lw    $t4, 0x5c($sp)
 /* 0D744C 8031C44C 1000FF51 */  b     .L8031C194
 /* 0D7450 8031C450 8FAD0058 */   lw    $t5, 0x58($sp)
-glabel L_U_8031C454
+glabel L8031C454
 /* 0D7454 8031C454 26020054 */  addiu $v0, $s0, 0x54
 /* 0D7458 8031C458 8C430000 */  lw    $v1, ($v0)
 /* 0D745C 8031C45C 90640000 */  lbu   $a0, ($v1)
@@ -302,7 +302,7 @@ glabel L_U_8031C454
 /* 0D7498 8031C498 308AFFFF */  andi  $t2, $a0, 0xffff
 /* 0D749C 8031C49C 1000FF3D */  b     .L8031C194
 /* 0D74A0 8031C4A0 A6050038 */   sh    $a1, 0x38($s0)
-glabel L_U_8031C4A4
+glabel L8031C4A4
 /* 0D74A4 8031C4A4 26020054 */  addiu $v0, $s0, 0x54
 /* 0D74A8 8031C4A8 8C430000 */  lw    $v1, ($v0)
 /* 0D74AC 8031C4AC 246F0001 */  addiu $t7, $v1, 1
@@ -383,7 +383,7 @@ glabel L_U_8031C4A4
 /* 0D75BC 8031C5BC AC2F2E50 */  sw    $t7, %lo(gAudioErrorFlags)($at)
 /* 0D75C0 8031C5C0 1000FEF4 */  b     .L8031C194
 /* 0D75C4 8031C5C4 ACA00000 */   sw    $zero, ($a1)
-glabel L_U_8031C5C8
+glabel L8031C5C8
 /* 0D75C8 8031C5C8 26020054 */  addiu $v0, $s0, 0x54
 /* 0D75CC 8031C5CC 8C430000 */  lw    $v1, ($v0)
 /* 0D75D0 8031C5D0 24790001 */  addiu $t9, $v1, 1
@@ -439,10 +439,10 @@ glabel L_U_8031C5C8
 /* 0D768C 8031C68C 308AFFFF */  andi  $t2, $a0, 0xffff
 /* 0D7690 8031C690 1000FEC0 */  b     .L8031C194
 /* 0D7694 8031C694 A604001C */   sh    $a0, 0x1c($s0)
-glabel L_U_8031C698
+glabel L8031C698
 /* 0D7698 8031C698 1000FEBE */  b     .L8031C194
 /* 0D769C 8031C69C A2000004 */   sb    $zero, 4($s0)
-glabel L_U_8031C6A0
+glabel L8031C6A0
 .L8031C6A0:
 /* 0D76A0 8031C6A0 30A200F0 */  andi  $v0, $a1, 0xf0
 /* 0D76A4 8031C6A4 240100D0 */  li    $at, 208
@@ -816,11 +816,11 @@ glabel L_U_8031C6A0
 /* 0D7BD4 8031CBD4 8C398EAC */  lw    $t9, %lo(jtbl_80337CDC)($at)
 /* 0D7BD8 8031CBD8 03200008 */  jr    $t9
 /* 0D7BDC 8031CBDC 00000000 */   nop
-glabel L_U_8031CBE0
+glabel L8031CBE0
 /* 0D7BE0 8031CBE0 E7A20024 */  swc1  $f2, 0x24($sp)
 /* 0D7BE4 8031CBE4 10000005 */  b     .L8031CBFC
 /* 0D7BE8 8031CBE8 46006006 */   mov.s $f0, $f12
-glabel L_U_8031CBEC
+glabel L8031CBEC
 /* 0D7BEC 8031CBEC 46001006 */  mov.s $f0, $f2
 /* 0D7BF0 8031CBF0 10000002 */  b     .L8031CBFC
 /* 0D7BF4 8031CBF4 E7AC0024 */   swc1  $f12, 0x24($sp)

@@ -1,7 +1,7 @@
 // Penguin
 
 // 0x05008B88 - 0x05008C00
-const s16 penguin_seg5_collision_05008B88[] = {
+const Collision penguin_seg5_collision_05008B88[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(12, 66, -12),

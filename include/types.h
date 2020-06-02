@@ -1,5 +1,5 @@
-#ifndef _TYPES_H_
-#define _TYPES_H_
+#ifndef TYPES_H
+#define TYPES_H
 
 // This file contains various data types used in Super Mario 64 that don't yet
 // have an appropriate header.
@@ -340,10 +340,10 @@ struct MarioState
     /*0xB4*/ u8 squishTimer;
     /*0xB5*/ u8 fadeWarpOpacity;
     /*0xB6*/ u16 capTimer;
-    /*0xB8*/ s16 unkB8;
+    /*0xB8*/ s16 prevNumStarsForDialog;
     /*0xBC*/ f32 peakHeight;
     /*0xC0*/ f32 quicksandDepth;
     /*0xC4*/ f32 unkC4;
 };
 
-#endif
+#endif // TYPES_H

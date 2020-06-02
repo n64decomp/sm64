@@ -499,7 +499,7 @@ u32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
 
 /**
  * Add to the bitset of obtained stars in the specified course.
- * If course is -1, add ot the bitset of obtained castle secret stars.
+ * If course is -1, add to the bitset of obtained castle secret stars.
  */
 void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
     if (courseIndex == -1) {
@@ -631,7 +631,7 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
         warpNode->destNode = gWarpCheckpoint.warpNode;
         isWarpCheckpointActive = TRUE;
     } else {
-        // Disable the warp checkpoint just incase the other 2 conditions failed?
+        // Disable the warp checkpoint just in case the other 2 conditions failed?
         gWarpCheckpoint.courseNum = COURSE_NONE;
     }
 

@@ -12,7 +12,7 @@ struct WaterDropletParams sWaterSplashDropletParams = {
 };
 
 // Water droplets from Mario jumping in shallow water.
-struct WaterDropletParams sShallowWaterSplashDropletParams = {
+struct WaterDropletParams gShallowWaterSplashDropletParams = {
     /* Flags */ WATER_DROPLET_FLAG_RAND_ANGLE | WATER_DROPLET_FLAG_SET_Y_TO_WATER_LEVEL,
     /* Model */ MODEL_WHITE_PARTICLE_SMALL,
     /* Behavior */ bhvWaterDroplet,
@@ -34,10 +34,10 @@ struct WaterDropletParams sWaterDropletFishParams = {
 };
 
 // Water droplets from Mario running in shallow water.
-struct WaterDropletParams sShallowWaterWaveDropletParams = {
+struct WaterDropletParams gShallowWaterWaveDropletParams = {
     /* Flags */ WATER_DROPLET_FLAG_RAND_ANGLE_INCR_PLUS_8000 | WATER_DROPLET_FLAG_RAND_ANGLE | WATER_DROPLET_FLAG_SET_Y_TO_WATER_LEVEL,
-    /* Model */ MODEL_WHITE_PARTICLE_SMALL, 
-    /* Behavior */ bhvWaterDroplet, 
+    /* Model */ MODEL_WHITE_PARTICLE_SMALL,
+    /* Behavior */ bhvWaterDroplet,
     /* Move angle range */ 0x6000,
     /* Unused (flag-specific) */ 0,
     /* Random fvel offset, scale */ 2.0f, 8.0f,
@@ -50,7 +50,7 @@ void bhv_water_splash_spawn_droplets(void) {
     s32 i;
     if (o->oTimer == 0)
         o->oPosY = find_water_level(o->oPosX, o->oPosZ);
-    
+
     if (o->oPosY > -10000.0f) // Make sure it is not at the default water level
         for (i = 0; i < 3; i++)
             spawn_water_droplet(o, &sWaterSplashDropletParams);
@@ -59,7 +59,7 @@ void bhv_water_splash_spawn_droplets(void) {
 void bhv_water_droplet_loop(void) {
     UNUSED u32 unusedVar;
     f32 waterLevel = find_water_level(o->oPosX, o->oPosZ);
-    
+
     if (o->oTimer == 0) {
         if (cur_obj_has_model(MODEL_FISH))
             o->header.gfx.node.flags &= ~GRAPH_RENDER_BILLBOARD;
@@ -88,7 +88,7 @@ void bhv_idle_water_wave_loop(void) {
     o->oPosY = gMarioStates->waterLevel + 5;
     if (!(gMarioObject->oMarioParticleFlags & ACTIVE_PARTICLE_IDLE_WATER_WAVE)) {
         gMarioObject->oActiveParticleFlags &= (u16)~ACTIVE_PARTICLE_IDLE_WATER_WAVE;
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }
 
@@ -119,10 +119,10 @@ void bhv_wave_trail_shrink(void) {
         if (gGlobalTimer & 1)
             obj_mark_for_deletion(o);
     o->oPosY = waterLevel + 5.0f;
-    
+
     if (o->oTimer == 0)
         o->oWaveTrailSize = o->header.gfx.scale[0];
-    
+
     if (o->oAnimState > 3) {
         o->oWaveTrailSize = o->oWaveTrailSize - 0.1; // Shrink the wave
         if (o->oWaveTrailSize < 0.0f)

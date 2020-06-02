@@ -23,7 +23,7 @@ void boulder_act_1(void) {
         o->oForwardVel = 70.0f;
 
     if (o->oPosY < -1000.0f)
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 }
 
 void bhv_big_boulder_loop(void) {

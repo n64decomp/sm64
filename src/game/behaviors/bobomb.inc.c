@@ -37,7 +37,7 @@ void bobomb_act_explode(void) {
 
         bobomb_spawn_coin();
         create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }
 
@@ -128,7 +128,7 @@ void generic_bobomb_free_loop(void) {
             break;
 
         case BOBOMB_ACT_DEATH_PLANE_DEATH:
-            o->activeFlags = 0;
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
             create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
             break;
     }
@@ -155,7 +155,7 @@ void stationary_bobomb_free_loop(void) {
             break;
 
         case BOBOMB_ACT_DEATH_PLANE_DEATH:
-            o->activeFlags = 0;
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
             create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
             break;
     }
@@ -346,7 +346,7 @@ void bobomb_buddy_cannon_dialog(s16 dialogFirstText, s16 dialogSecondText) {
         case BOBOMB_BUDDY_CANNON_STOP_TALKING:
             set_mario_npc_dialog(0);
 
-            o->activeFlags &= ~0x20; /* bit 5 */
+            o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
             o->oBobombBuddyHasTalkedToMario = BOBOMB_BUDDY_HAS_TALKED;
             o->oInteractStatus = 0;
             o->oAction = BOBOMB_BUDDY_ACT_IDLE;
@@ -357,7 +357,7 @@ void bobomb_buddy_cannon_dialog(s16 dialogFirstText, s16 dialogSecondText) {
 
 void bobomb_buddy_act_talk(void) {
     if (set_mario_npc_dialog(1) == 2) {
-        o->activeFlags |= 0x20; /* bit 5 */
+        o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
 
         switch (o->oBobombBuddyRole) {
             case BOBOMB_BUDDY_ROLE_ADVICE:
@@ -365,7 +365,7 @@ void bobomb_buddy_act_talk(void) {
                     != BOBOMB_BUDDY_BP_STYPE_GENERIC) {
                     set_mario_npc_dialog(0);
 
-                    o->activeFlags &= ~0x20; /* bit 5 */
+                    o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
                     o->oBobombBuddyHasTalkedToMario = BOBOMB_BUDDY_HAS_TALKED;
                     o->oInteractStatus = 0;
                     o->oAction = BOBOMB_BUDDY_ACT_IDLE;

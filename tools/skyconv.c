@@ -212,6 +212,11 @@ static void assign_tile_positions() {
     }
 }
 
+// Provide a replacement for realpath on Windows
+#ifdef _WIN32
+#define realpath(path, resolved_path) _fullpath(resolved_path, path, PATH_MAX)
+#endif
+
 /* write pngs to disc */
 void write_tiles() {
     const ImageProps props = IMAGE_PROPERTIES[type][true];
@@ -479,6 +484,7 @@ static void usage() {
 
 // Modified from n64split
 static int parse_arguments(int argc, char *argv[]) {
+    programName = argv[0];
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--combine") == 0) {
             if (++i >= argc || mode != InvalidMode) {

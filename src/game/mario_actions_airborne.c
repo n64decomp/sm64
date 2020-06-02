@@ -1,17 +1,18 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
 #include "area.h"
-#include "level_update.h"
+#include "audio/data.h"
+#include "audio/external.h"
+#include "camera.h"
+#include "engine/graph_node.h"
 #include "engine/math_util.h"
+#include "game_init.h"
 #include "interaction.h"
+#include "level_update.h"
 #include "mario.h"
 #include "mario_step.h"
-#include "game_init.h"
-#include "camera.h"
 #include "save_file.h"
-#include "audio/external.h"
-#include "engine/graph_node.h"
 #include "thread6.h"
 
 void play_flip_sounds(struct MarioState *m, s16 frame1, s16 frame2, s16 frame3) {
@@ -455,8 +456,8 @@ s32 act_jump(struct MarioState *m) {
 }
 
 s32 act_double_jump(struct MarioState *m) {
-    s32 animation = (m->vel[1] >= 0.0f) 
-        ? MARIO_ANIM_DOUBLE_JUMP_RISE 
+    s32 animation = (m->vel[1] >= 0.0f)
+        ? MARIO_ANIM_DOUBLE_JUMP_RISE
         : MARIO_ANIM_DOUBLE_JUMP_FALL;
 
     if (check_kick_or_dive_in_air(m)) {

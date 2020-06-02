@@ -42,7 +42,7 @@ static struct Object *link_objects_with_behavior(const BehaviorScript *behavior)
 
     obj = (struct Object *) listHead->next;
     while (obj != (struct Object *) listHead) {
-        if (obj->behavior == behaviorAddr && obj->activeFlags != ACTIVE_FLAGS_DEACTIVATED) {
+        if (obj->behavior == behaviorAddr && obj->activeFlags != ACTIVE_FLAG_DEACTIVATED) {
             obj->parentObj = lastObject;
             lastObject = obj;
         }
@@ -126,7 +126,7 @@ void monty_mole_spawn_dirt_particles(s8 offsetY, s8 velYBase) {
         /* sizeBase:        */ 10.0f,
         /* sizeRange:       */ 7.0f,
     };
-    
+
     sMontyMoleRiseFromGroundParticles.offsetY = offsetY;
     sMontyMoleRiseFromGroundParticles.velYBase = velYBase;
     cur_obj_spawn_particles(&sMontyMoleRiseFromGroundParticles);

@@ -5,22 +5,14 @@
 
 .balign 16
 glabel rspF3DBootStart
-    .ifndef VERSION_EU
-    .incbin "lib/PR/boot/F3D_boot.bin"
-    .else
-    .incbin "lib/PR/boot/F3D_boot_eu.bin"
-    .half 0
-    .endif
+    .incbin "rsp/rspboot.bin"
+.balign 16
 glabel rspF3DBootEnd
 
 .balign 16
 .ifndef F3DEX_GBI_SHARED
 glabel rspF3DStart /* Use regular Fast3D bins (default) */
-    .ifndef F3D_OLD
-    .incbin "lib/PR/f3d/new/F3D.bin" /* OS 2.0H (J2 and IQ) */
-    .else
-    .incbin "lib/PR/f3d/old/F3D.bin" /* OS 2.0D (US and JP) */
-    .endif
+    .incbin "rsp/fast3d.bin"
 glabel rspF3DEnd
 
 .else /* Use one of the Fast3DEX series grucodes. */
@@ -39,7 +31,7 @@ glabel rspF3DEnd
 
 .balign 16
 glabel rspAspMainStart
-    .incbin "lib/PR/audio/aspMain.bin"
+    .incbin "rsp/audio.bin"
 glabel rspAspMainEnd
 
 /*
@@ -135,15 +127,7 @@ glabel rspS2DEXEnd
 .balign 16
 .ifndef F3DEX_GBI_SHARED /* Use regular Fast3D data (default) */
 glabel rspF3DDataStart
-    .ifndef F3D_OLD /* OS 2.0H (J2 and IQ) */
-    .ifdef VERSION_EU
-    .incbin "lib/PR/f3d/new/F3D_data_EU.bin"
-    .else
-    .incbin "lib/PR/f3d/new/F3D_data.bin"
-    .endif
-    .else /* OS 2.0D (US and JP) */
-    .incbin "lib/PR/f3d/old/F3D_data.bin"
-    .endif
+    .incbin "rsp/fast3d_data.bin"
 glabel rspF3DDataEnd
 
 .else /* Using one of the Fast3DEX series grucodes */
@@ -162,7 +146,7 @@ glabel rspF3DDataEnd
 
 .balign 16
 glabel rspAspMainDataStart
-    .incbin "lib/PR/audio/aspMain_data.bin"
+    .incbin "rsp/audio_data.bin"
 glabel rspAspMainDataEnd
 
 /* LESS COMMON MICROCODES */

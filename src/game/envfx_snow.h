@@ -1,7 +1,7 @@
 #ifndef ENVFX_SNOW_H
 #define ENVFX_SNOW_H
 
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 #include "types.h"
 
 #define ENVFX_MODE_NONE     0  // no effects
@@ -18,7 +18,6 @@
 
 struct EnvFxParticle {
     s8 isAlive;
-    //s8 filler01;
     s16 animFrame; // lava bubbles and flowers have frame animations
     s32 xPos;
     s32 yPos;
@@ -31,14 +30,10 @@ struct EnvFxParticle {
 
 extern s8 gEnvFxMode;
 extern UNUSED s32 D_80330644;
-extern struct SnowFlakeVertex gSnowFlakeVertex1;
-extern struct SnowFlakeVertex gSnowFlakeVertex2;
-extern struct SnowFlakeVertex gSnowFlakeVertex3;
 
 extern struct EnvFxParticle *gEnvFxBuffer;
 extern Vec3i gSnowCylinderLastPos;
 extern s16 gSnowParticleCount;
-extern s16 gSnowParticleMaxCount;
 
 Gfx *envfx_update_particles(s32 snowMode, Vec3s marioPos, Vec3s camTo, Vec3s camFrom);
 void orbit_from_positions(Vec3s from, Vec3s to, s16 *radius, s16 *pitch, s16 *yaw);

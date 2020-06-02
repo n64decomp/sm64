@@ -110,7 +110,7 @@ extern const GeoLayout wooden_post_geo[];
 extern const Gfx poundable_pole_seg6_dl_060022F0[];
 extern const Gfx poundable_pole_seg6_dl_06002358[];
 extern const Gfx poundable_pole_seg6_dl_06002410[];
-extern const s16 poundable_pole_collision_06002490[];
+extern const Collision poundable_pole_collision_06002490[];
 
 // whomp
 extern const GeoLayout whomp_geo[];
@@ -131,6 +131,6 @@ extern const Gfx whomp_seg6_dl_0601FEA8[];
 extern const Gfx whomp_seg6_dl_0601FFA0[];
 extern const Gfx whomp_seg6_dl_06020038[];
 extern const struct Animation *const whomp_seg6_anims_06020A04[];
-extern const s16 whomp_seg6_collision_06020A0C[];
+extern const Collision whomp_seg6_collision_06020A0C[];
 
 #endif

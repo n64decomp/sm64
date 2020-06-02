@@ -1,4 +1,4 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
 #include "mario.h"
@@ -259,7 +259,7 @@ s32 update_sliding(struct MarioState *m, f32 stopSpeed) {
 
     oldSpeed = sqrtf(m->slideVelX * m->slideVelX + m->slideVelZ * m->slideVelZ);
 
-    //! This is attempting to use trig derivatives to rotate mario's speed.
+    //! This is attempting to use trig derivatives to rotate Mario's speed.
     // It is slightly off/asymmetric since it uses the new X speed, but the old
     // Z speed.
     m->slideVelX += m->slideVelZ * (m->intendedMag / 32.0f) * sideward * 0.05f;
@@ -1572,7 +1572,7 @@ s32 act_dive_slide(struct MarioState *m) {
     play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
 
     //! If the dive slide ends on the same frame that we pick up on object,
-    // mario will not be in the dive slide action for the call to
+    // Mario will not be in the dive slide action for the call to
     // mario_check_object_grab, and so will end up in the regular picking action,
     // rather than the picking up after dive action.
 
@@ -1761,8 +1761,8 @@ u32 common_landing_action(struct MarioState *m, s16 animation, u32 airAction) {
 
 s32 common_landing_cancels(struct MarioState *m, struct LandingAction *landingAction,
                            s32 (*setAPressAction)(struct MarioState *, u32, u32)) {
-    //! Everything here, incuding floor steepness, is checked before checking
-    // if mario is actually on the floor. This leads to e.g. remote sliding.
+    //! Everything here, including floor steepness, is checked before checking
+    // if Mario is actually on the floor. This leads to e.g. remote sliding.
 
     if (m->floor->normal.y < 0.2923717f) {
         return mario_push_off_steep_floor(m, landingAction->verySteepAction, 0);

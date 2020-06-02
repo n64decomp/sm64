@@ -391,7 +391,7 @@ typedef short ENVMIX_STATE[40];
  * First call:
  * aSetBuffer(cmd++, 0, 0, output, count)
  *
- * The count refers to the size of the output.
+ * The count refers to the size of each input. Hence 2 * count bytes will be written out.
  * A left sample will be placed before the right sample.
  *
  * Note: count will be rounded up to the nearest multiple of 16 bytes.
@@ -472,7 +472,7 @@ typedef short ENVMIX_STATE[40];
  * For 1 octave up or downsampling to (roughly) half number of samples, use pitch 0xffff.
  * For 1 octave down or upsampling to double as many samples, use pitch 0x4000.
  *
- * Note: count represents the number of output samples and is rounded up to
+ * Note: count represents the number of output sample bytes and is rounded up to
  * the nearest multiple of 16 bytes.
  *
  * The state consists of the four following source samples when the algorithm stopped as
@@ -484,7 +484,7 @@ typedef short ENVMIX_STATE[40];
  * the four next source samples and then moving the source position zero or more
  * samples forward. The first output sample (when A_INIT is given) is always 0.
  *
- * When "count" samples have been written, the following four source samples
+ * When "count" bytes have been written, the following four source samples
  * are written to the state in DRAM as well as a fractional position.
  */
 #define aResample(pkt, f, p, s)                                         \

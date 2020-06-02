@@ -429,4 +429,4 @@
 #define GEO_CULLING_RADIUS(cullingRadius) \
     CMD_BBH(0x20, 0x00, cullingRadius)
 
-#endif
+#endif // GEO_COMMANDS_H

@@ -1,5 +1,8 @@
-#ifndef _LEVEL_GEO_H
-#define _LEVEL_GEO_H
+#ifndef LEVEL_GEO_H
+#define LEVEL_GEO_H
+
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
 
 struct Struct802761D0
 {
@@ -8,7 +11,7 @@ struct Struct802761D0
     u8 filler4[0x18-0x4];
 };
 
-extern Gfx *geo_envfx_main(s32 a, struct GraphNode *b, f32 c[4][4]);
-extern Gfx *geo_skybox_main(s32 a, struct GraphNode *b, UNUSED Mat4 *c);
+Gfx *geo_envfx_main(s32 callContext, struct GraphNode *node, Mat4 mtxf);
+Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx);
 
-#endif /* _LEVEL_GEO_H */
+#endif // LEVEL_GEO_H

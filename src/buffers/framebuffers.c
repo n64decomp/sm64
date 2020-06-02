@@ -1,6 +1,6 @@
 #include <ultra64.h>
 
-#include "sm64.h"
+#include "config.h"
 
 // 0x70800 bytes
 #ifdef AVOID_UB

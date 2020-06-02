@@ -7,14 +7,11 @@
 #include "external.h"
 #include "playback.h"
 #include "synthesis.h"
-#include "game/mario.h"
 #include "game/level_update.h"
-#include "game/area.h"
 #include "game/object_list_processor.h"
 #include "game/camera.h"
 #include "seq_ids.h"
 #include "dialog_ids.h"
-#include "level_table.h"
 
 #ifdef VERSION_EU
 #define EU_FLOAT(x) x ## f
@@ -490,7 +487,7 @@ u8 sUnused8033323C = 0; // never read, set to 0
 
 // bss
 #ifndef VERSION_EU
-u16 *gCurrAiBuffer;
+s16 *gCurrAiBuffer;
 #endif
 struct Sound sSoundRequests[0x100];
 // Curiously, this has size 3, despite SEQUENCE_PLAYERS == 4 on EU
@@ -1019,7 +1016,7 @@ void func_8031E16C(u8 bankIndex) {
 
             val = (gSoundBanks[bankIndex][soundIndex].soundBits & SOUNDARGS_MASK_PRIORITY)
                   >> SOUNDARGS_SHIFT_PRIORITY;
-            if (gSoundBanks[bankIndex][soundIndex].soundBits & SOUND_PL_BITFLAG_UNK4) {
+            if (gSoundBanks[bankIndex][soundIndex].soundBits & SOUND_NO_PRIORITY_LOSS) {
                 gSoundBanks[bankIndex][soundIndex].priority = 0x4c * (0xff - val);
             } else if (*gSoundBanks[bankIndex][soundIndex].z > 0.0f) {
                 gSoundBanks[bankIndex][soundIndex].priority =
@@ -1163,7 +1160,7 @@ f32 get_sound_dynamics(u8 bankIndex, u8 item, f32 arg2) {
     s32 div = bankIndex < 3 ? 2 : 3;
 #endif
 
-    if (!(gSoundBanks[bankIndex][item].soundBits & SOUND_PL_BITFLAG_UNK1)) {
+    if (!(gSoundBanks[bankIndex][item].soundBits & SOUND_NO_VOLUME_LOSS)) {
 #ifdef VERSION_JP
         f0 = D_80332028[gCurrLevelNum];
         if (f0 < gSoundBanks[bankIndex][item].distance) {
@@ -1186,7 +1183,7 @@ f32 get_sound_dynamics(u8 bankIndex, u8 item, f32 arg2) {
         }
 #endif
 
-        if (gSoundBanks[bankIndex][item].soundBits & SOUND_PL_BITFLAG_UNK2) {
+        if (gSoundBanks[bankIndex][item].soundBits & SOUND_VIBRATO) {
 #ifdef VERSION_JP
             if (intensity != 0.0)
 #else
@@ -1206,9 +1203,9 @@ f32 get_sound_dynamics(u8 bankIndex, u8 item, f32 arg2) {
 f32 get_sound_freq_scale(u8 bankIndex, u8 item) {
     f32 f2;
 
-    if (!(gSoundBanks[bankIndex][item].soundBits & SOUND_PL_BITFLAG_UNK8)) {
+    if (!(gSoundBanks[bankIndex][item].soundBits & SOUND_NO_FREQUENCY_LOSS)) {
         f2 = gSoundBanks[bankIndex][item].distance / AUDIO_MAX_DISTANCE;
-        if (gSoundBanks[bankIndex][item].soundBits & SOUND_PL_BITFLAG_UNK2) {
+        if (gSoundBanks[bankIndex][item].soundBits & SOUND_VIBRATO) {
             f2 += (f32)(gAudioRandom & 0xff) / US_FLOAT(64.0);
         }
     } else {
@@ -1308,7 +1305,7 @@ void update_game_sound(void) {
 
                     switch (bankIndex) {
                         case 1:
-                            if (!(gSoundBanks[bankIndex][index].soundBits & SOUND_PL_BITFLAG_UNK8)) {
+                            if (!(gSoundBanks[bankIndex][index].soundBits & SOUND_NO_FREQUENCY_LOSS)) {
                                 if (D_80363808[bankIndex] > 8) {
 #ifdef VERSION_EU
                                     func_802ad728(0x02020000 | ((channelIndex & 0xff) << 8),
@@ -1465,7 +1462,7 @@ void update_game_sound(void) {
                     // computes function arguments in the wrong order).
                     switch (bankIndex) {
                         case 1:
-                            if (!(gSoundBanks[bankIndex][index].soundBits & SOUND_PL_BITFLAG_UNK8)) {
+                            if (!(gSoundBanks[bankIndex][index].soundBits & SOUND_NO_FREQUENCY_LOSS)) {
                                 if (D_80363808[bankIndex] > 8) {
 #ifdef VERSION_EU
                                     func_802ad728(0x02020000 | ((channelIndex & 0xff) << 8),

@@ -1,7 +1,7 @@
 // Purple Switch
 
 // 0x0800C7A8 - 0x0800C820
-const s16 purple_switch_seg8_collision_0800C7A8[] = {
+const Collision purple_switch_seg8_collision_0800C7A8[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(61, 36, -60),

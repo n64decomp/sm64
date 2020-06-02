@@ -13,7 +13,7 @@ void bhv_lll_drawbridge_spawner_loop(void) {
     drawbridge2->oPosX += coss(o->oMoveAngleYaw) * -640.0f;
     drawbridge2->oPosZ += sins(o->oMoveAngleYaw) * -640.0f;
 
-    o->activeFlags = 0;
+    o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 }
 
 void bhv_lll_drawbridge_loop(void) {

@@ -1,17 +1,17 @@
-#include <ultra64.h>
-#include <macros.h>
+#include <PR/ultratypes.h>
 #include <stdio.h>
 
-#include "gd_types.h"
+#include "debug_utils.h"
+#include "dynlist_proc.h"
 #include "gd_macros.h"
 #include "gd_main.h"
-#include "objects.h"
-#include "dynlist_proc.h"
-#include "old_menu.h"
-#include "debug_utils.h"
 #include "gd_math.h"
-#include "shape_helper.h"
+#include "gd_types.h"
+#include "macros.h"
+#include "objects.h"
+#include "old_menu.h"
 #include "renderer.h"
+#include "shape_helper.h"
 #include "draw_objects.h"
 
 /**
@@ -478,10 +478,10 @@ void draw_face(struct ObjFace *face) {
         //!      as the struct requests fields passed the end of an ObjVertex.
         //!      The bad code is statically unreachable, so...
         if (hasTextCoords) {
-            set_Vtx_tc_buf(((struct BetaVtx *) vtx)->s, ((struct BetaVtx *) vtx)->t);
+            set_vtx_tc_buf(((struct BetaVtx *) vtx)->s, ((struct BetaVtx *) vtx)->t);
         }
 
-        gbiVtx = make_Vtx_if_new(x, y, z, vtx->alpha);
+        gbiVtx = make_vtx_if_new(x, y, z, vtx->alpha);
 
         if (gbiVtx != NULL) {
             vtx->gbiVerts = make_vtx_link(vtx->gbiVerts, gbiVtx);

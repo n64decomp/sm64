@@ -1,7 +1,8 @@
 #ifndef GD_DYNLIST_PROCESSOR_H
 #define GD_DYNLIST_PROCESSOR_H
 
-#include <ultra64.h>
+#include <PR/ultratypes.h>
+
 #include "gd_types.h"
 
 // types
@@ -56,43 +57,43 @@ enum DObjTypes {
 };
 
 // functions
-extern void push_dynobj_stash(void);
-extern void pop_dynobj_stash(void);
-extern void reset_dynlist(void);
-extern struct GdObj *proc_dynlist(struct DynList *dylist);
-extern void d_copystr_to_idbuf(char *);
-extern struct GdObj *d_makeobj(enum DObjTypes type, DynId id);
-extern void d_set_shapeptrptr(struct ObjShape **);
-extern struct GdObj *d_use_obj(DynId);
-extern void set_cur_dynobj();        //set_cur_dynobj(struct GdObj *);
-extern void d_start_group(DynId);
-extern void d_end_group(DynId);
-extern void dynid_is_int(s32);
-extern void d_set_init_pos(f32, f32, f32);
-extern void d_get_init_pos(struct GdVec3f*);
-extern void d_get_init_rot(struct GdVec3f*);
-extern void d_set_rel_pos(f32, f32, f32);
-extern void d_get_rel_pos(struct GdVec3f*);
-extern struct ObjGroup* d_get_att_objgroup(void);
-extern void d_get_scale(struct GdVec3f*);
-extern void d_set_world_pos(f32, f32, f32);
-extern void d_get_world_pos(struct GdVec3f *);
-extern void d_set_scale(f32, f32, f32);
-extern void d_add_valptr(DynId, u32, s32, size_t);
-extern void d_add_valproc(union ObjVarVal * (*)(union ObjVarVal *, union ObjVarVal));
-extern void d_set_flags(s32);
-extern void d_set_parm_f(enum DParmF, f32);
-extern void d_set_parm_ptr(enum DParmPtr, void *);
-extern void d_set_obj_draw_flag(enum ObjDrawingFlags);
-extern void d_set_type(s32);
-extern void d_set_colour_num(s32);
-extern void d_set_diffuse(f32, f32, f32);
-extern struct GdPlaneF* d_get_plane(void);
-extern void d_get_matrix(Mat4f*);
-extern Mat4f* d_get_rot_mtx_ptr(void);
-extern void d_set_idn_mtx(Mat4f*);
-extern Mat4f* d_get_matrix_ptr(void);
-extern Mat4f* d_get_idn_mtx_ptr(void);
-extern f32 d_calc_world_dist_btwn(struct GdObj *, struct GdObj *);
+void push_dynobj_stash(void);
+void pop_dynobj_stash(void);
+void reset_dynlist(void);
+struct GdObj *proc_dynlist(struct DynList *dylist);
+void d_copystr_to_idbuf(char *str);
+struct GdObj *d_makeobj(enum DObjTypes type, DynId id);
+void d_set_shapeptrptr(struct ObjShape **shpPtrptr);
+struct GdObj *d_use_obj(DynId id);
+void set_cur_dynobj(struct GdObj *obj);
+void d_start_group(DynId id);
+void d_end_group(DynId id);
+void dynid_is_int(s32 isIntBool);
+void d_set_init_pos(f32 x, f32 y, f32 z);
+void d_get_init_pos(struct GdVec3f *dst);
+void d_get_init_rot(struct GdVec3f *dst);
+void d_set_rel_pos(f32 x, f32 y, f32 z);
+void d_get_rel_pos(struct GdVec3f *dst);
+struct ObjGroup *d_get_att_objgroup(void);
+void d_get_scale(struct GdVec3f *dst);
+void d_set_world_pos(f32 x, f32 y, f32 z);
+void d_get_world_pos(struct GdVec3f *dst);
+void d_set_scale(f32 x, f32 y, f32 z);
+void d_add_valptr(DynId objId, u32 vflags, s32 type, size_t offset);
+void d_add_valproc(union ObjVarVal * (*)(union ObjVarVal *, union ObjVarVal));
+void d_set_flags(s32 flags);
+void d_set_parm_f(enum DParmF param, f32 val);
+void d_set_parm_ptr(enum DParmPtr param, void *ptr);
+void d_set_obj_draw_flag(enum ObjDrawingFlags flag);
+void d_set_type(s32 type);
+void d_set_colour_num(s32 colornum);
+void d_set_diffuse(f32 r, f32 g, f32 b);
+struct GdPlaneF* d_get_plane(void);
+void d_get_matrix(Mat4f *dst);
+Mat4f *d_get_rot_mtx_ptr(void);
+void d_set_idn_mtx(Mat4f *src);
+Mat4f *d_get_matrix_ptr(void);
+Mat4f *d_get_idn_mtx_ptr(void);
+f32 d_calc_world_dist_btwn(struct GdObj *obj1, struct GdObj *obj2);
 
-#endif /* GD_DYNLIST_PROCESSOR_H */
+#endif // GD_DYNLIST_PROCESSOR_H

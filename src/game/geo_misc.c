@@ -1,4 +1,4 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
 #include "geo_misc.h"
@@ -6,9 +6,13 @@
 #include "area.h"
 #include "engine/math_util.h"
 #include "level_update.h"
-#include "mario_actions_cutscene.h"
+#include "levels/castle_inside/header.h"
+#include "levels/ending/header.h"
+#include "levels/rr/header.h"
 #include "mario.h"
+#include "mario_actions_cutscene.h"
 #include "memory.h"
+#include "object_list_processor.h"
 #include "rendering_graph_node.h"
 #include "save_file.h"
 #include "segment2.h"
@@ -24,15 +28,7 @@
  */
 
 #define NUM_FLYING_CARPET_VERTICES 21
-extern s16 flying_carpet_static_vertex_data[NUM_FLYING_CARPET_VERTICES];
-
-extern Gfx dl_castle_lobby_wing_cap_light[];
-
-extern Gfx dl_flying_carpet_begin[];
-extern Gfx dl_flying_carpet_model_half[];
-extern Gfx dl_flying_carpet_end[];
-
-extern Gfx dl_cake_end_screen[];
+extern const s16 flying_carpet_static_vertex_data[NUM_FLYING_CARPET_VERTICES];
 
 static s16 sCurAreaTimer = 1;
 static s16 sPrevAreaTimer = 0;
@@ -46,7 +42,11 @@ s8 gFlyingCarpetState;
  *
  * Texture coordinates are s10.5 fixed-point, which means you should left-shift the actual coordinates by 5.
  */
+#ifndef GBI_FLOATS
 void make_vertex(Vtx *vtx, s32 n, s16 x, s16 y, s16 z, s16 tx, s16 ty, u8 r, u8 g, u8 b, u8 a) {
+#else
+void make_vertex(Vtx *vtx, s32 n, f32 x, f32 y, f32 z, s16 tx, s16 ty, u8 r, u8 g, u8 b, u8 a) {
+#endif
     vtx[n].v.ob[0] = x;
     vtx[n].v.ob[1] = y;
     vtx[n].v.ob[2] = z;
@@ -189,13 +189,6 @@ Gfx *geo_exec_flying_carpet_create(s32 callContext, struct GraphNode *node, UNUS
 
     return displayList;
 }
-
-#ifdef VERSION_EU
-// TODO: Symbolize these
-extern Gfx dl_cake_end_screen_eu_070296F8[];
-extern Gfx dl_cake_end_screen_eu_07029768[];
-extern Gfx dl_cake_end_screen_eu_070297D8[];
-#endif
 
 /**
  * Create a display list for the end screen with Peach's delicious cake.

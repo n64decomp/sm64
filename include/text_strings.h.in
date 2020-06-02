@@ -470,6 +470,6 @@
 #define TEXT_MENU_SA_DE _("   VERSTECKTES AQUARIUM")
 #define TEXT_MENU_NONE_DE _("")
 #define TEXT_MENU_STARS_DE _("   GEHEIME STERNE")
-#endif
+#endif // VERSION_EU
 
-#endif
+#endif // TEXT_STRINGS_H

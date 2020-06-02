@@ -134,7 +134,7 @@ void (*sTuxiesMotherActions[])(void) = { tuxies_mother_act_0, tuxies_mother_act_
                                          tuxies_mother_act_2 };
 
 void bhv_tuxies_mother_loop(void) {
-    o->activeFlags |= 0x400;
+    o->activeFlags |= ACTIVE_FLAG_UNK10;
     cur_obj_update_floor_and_walls();
     cur_obj_call_action_function(sTuxiesMotherActions);
     cur_obj_move_standard(-78);

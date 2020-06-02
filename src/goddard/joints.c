@@ -1,23 +1,23 @@
-#include <ultra64.h>
-#include <macros.h>
+#include <PR/ultratypes.h>
+
 
 #ifdef VERSION_EU
 #include "prevent_bss_reordering.h"
 #endif
-
-#include "gd_types.h"
-#include "gd_macros.h"
-#include "joints.h"
-#include "gd_main.h"
-#include "sfx.h"
-#include "draw_objects.h"
-#include "objects.h"
-#include "skin_movement.h"
-#include "dynlist_proc.h"
 #include "debug_utils.h"
-#include "skin.h"
+#include "draw_objects.h"
+#include "dynlist_proc.h"
+#include "gd_macros.h"
+#include "gd_main.h"
 #include "gd_math.h"
+#include "gd_types.h"
+#include "joints.h"
+#include "macros.h"
+#include "objects.h"
 #include "renderer.h"
+#include "sfx.h"
+#include "skin.h"
+#include "skin_movement.h"
 
 // data
 static s32 D_801A82D0 = 0;
@@ -120,7 +120,7 @@ void Proc8018E520(struct ObjJoint *self) {
 }
 
 /* 23D3B8 -> 23D62C */
-void Proc8018EBE8(struct ObjJoint *self) {
+void func_8018EBE8(struct ObjJoint *self) {
     Mat4f *sp5C;
     struct GdVec3f sp50;
     struct GdVec3f sp44;
@@ -138,7 +138,7 @@ void Proc8018EBE8(struct ObjJoint *self) {
         }
     }
 
-    set_cur_dynobj(self);
+    set_cur_dynobj((struct GdObj *)self);
     sp5C = d_get_rot_mtx_ptr();
     sp44.x = (*sp5C)[3][0];
     sp44.y = (*sp5C)[3][1];
@@ -168,7 +168,7 @@ void Proc8018EBE8(struct ObjJoint *self) {
 }
 
 /* 23D62C -> 23D748; not called */
-void Unknown8018EE5C(struct ObjJoint *j1, struct ObjJoint *j2, struct ObjJoint *j3) {
+void func_8018EE5C(struct ObjJoint *j1, struct ObjJoint *j2, struct ObjJoint *j3) {
     struct GdVec3f vec;
     struct ObjJoint *curj;
 
@@ -301,7 +301,7 @@ void func_8018F328(struct ObjBone *b) {
 }
 
 /* 23DC9C -> 23DCF0 */
-void Unknown8018F4CC(struct ObjJoint *j) {
+void func_8018F4CC(struct ObjJoint *j) {
     if (j->unk1BC & 0x1000) {
         j->unkB4.x = D_801BA968.x;
         j->unkB4.y = D_801BA968.y;
@@ -370,7 +370,7 @@ void func_8018F520(struct ObjBone *b) {
     D_801BA968.z = b->mat70[2][2];
     D_801BA964 = &b->mat70;
 
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown8018F4CC, b->unk10C);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_8018F4CC, b->unk10C);
 }
 
 /* 23E06C -> 23E238 */
@@ -400,11 +400,11 @@ void func_8018F89C(struct ObjBone *b) {
     D_801BA968.z = -b->mat70[2][2];
     D_801BA964 = &b->mat70;
 
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown8018F4CC, b->unk10C);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_8018F4CC, b->unk10C);
 }
 
 /* 23E238 -> 23E298 */
-void Unknown8018FA68(struct ObjBone *b) {
+void func_8018FA68(struct ObjBone *b) {
     if (b->unk104 & (0x8 | 0x2)) {
         func_8018F89C(b);
     } else {
@@ -505,11 +505,11 @@ struct ObjBone *make_bone(s32 a0, struct ObjJoint *j1, struct ObjJoint *j2, UNUS
 }
 
 /* 23E6E4 -> 23E6F8; not called */
-void Unknown8018FF14(UNUSED u32 a0) {
+void func_8018FF14(UNUSED u32 a0) {
 }
 
 /* 23E6F8 -> 23E758; not called */
-void Unknown8018FF28(struct ObjJoint *a0, struct ObjJoint *a1) {
+void func_8018FF28(struct ObjJoint *a0, struct ObjJoint *a1) {
     if (a1->unk1BC & 0x1) {
         a0->unk84.x -= a1->unk84.x;
         a0->unk84.y -= a1->unk84.y;
@@ -518,7 +518,7 @@ void Unknown8018FF28(struct ObjJoint *a0, struct ObjJoint *a1) {
 }
 
 /* 23E758 -> 23E7B8; not called */
-void Unknown8018FF88(s32 size) {
+void func_8018FF88(s32 size) {
     s32 i;
 
     for (i = 0; i < size - 1; i++) {
@@ -763,7 +763,7 @@ void func_801909B4(void) {
 }
 
 /* 23F1F0 -> 23F324; not called */
-void Unknown80190A20(void) {
+void func_80190A20(void) {
     struct ObjJoint *j; // sp3c
     UNUSED u32 pad38;
     struct GdVec3f vec; // sp2C
@@ -851,7 +851,7 @@ void func_80190B54(struct ObjJoint *a0, struct ObjJoint *a1, struct GdVec3f *a2)
 }
 
 /* 23F638 -> 23F70C; not called */
-void Unknown80190E68(struct GdObj *obj, f32 x, f32 y, f32 z) {
+void func_80190E68(struct GdObj *obj, f32 x, f32 y, f32 z) {
     struct ObjJoint *sp44;
     struct GdObj *sp40;
     struct GdVec3f vec; // sp34
@@ -914,7 +914,7 @@ f32 func_80190F3C(struct ObjJoint *a0, f32 a1, f32 a2, f32 a3) {
 }
 
 /* 23F978 -> 23F9F0 */
-void Unknown801911A8(struct ObjJoint *j) {
+void func_801911A8(struct ObjJoint *j) {
     j->unkCC.x = j->unkC0.x; // storing "shape offset"?
     j->unkCC.y = j->unkC0.y;
     j->unkCC.z = j->unkC0.z;
@@ -923,7 +923,7 @@ void Unknown801911A8(struct ObjJoint *j) {
 }
 
 /* 23F9F0 -> 23FB90 */
-void Unknown80191220(struct ObjJoint *j) {
+void func_80191220(struct ObjJoint *j) {
     j->unk48.x = j->unk54.x; // storing "attached offset"?
     j->unk48.y = j->unk54.y;
     j->unk48.z = j->unk54.z;
@@ -944,13 +944,13 @@ void Unknown80191220(struct ObjJoint *j) {
 }
 
 /* 23FB90 -> 23FBC0 */
-void Unknown801913C0(struct ObjJoint *j) {
+void func_801913C0(struct ObjJoint *j) {
     UNUSED u32 pad[4];
     func_80181894(j);
 }
 
 /* 23FBC0 -> 23FCC8 */
-void Unknown801913F0(struct ObjJoint *j) {
+void func_801913F0(struct ObjJoint *j) {
     j->unk78.x = j->unk14.x;
     j->unk78.y = j->unk14.y;
     j->unk78.z = j->unk14.z;
@@ -967,11 +967,11 @@ void Unknown801913F0(struct ObjJoint *j) {
 }
 
 /* 23FCC8 -> 23FCDC */
-void Unknown801914F8(UNUSED struct ObjJoint *j) {
+void func_801914F8(UNUSED struct ObjJoint *j) {
 }
 
 /* 23FCDC -> 23FDD4; not called */
-void Unknown8019150C(Mat4f *a0, struct GdVec3f *a1) {
+void func_8019150C(Mat4f *a0, struct GdVec3f *a1) {
     struct GdVec3f sp1C;
 
     sp1C.x = (*a0)[3][0] / 10.0; //? 10.0f
@@ -1014,7 +1014,7 @@ void func_80191604(struct ObjJoint *j) {
 }
 
 /* 23FFF4 -> 2400C4 */
-void Unknown80191824(struct ObjJoint *j) {
+void func_80191824(struct ObjJoint *j) {
     UNUSED struct ObjNet *sp14;
     UNUSED u32 pad00[4];
 
@@ -1031,7 +1031,7 @@ void Unknown80191824(struct ObjJoint *j) {
 }
 
 /* 2400C4 -> 2401EC; not called */
-void Unknown801918F4(struct ObjJoint *j) {
+void func_801918F4(struct ObjJoint *j) {
     f32 sp4;
 
     j->unk78.x = j->unk3C.x;
@@ -1058,7 +1058,7 @@ void Unknown801918F4(struct ObjJoint *j) {
 }
 
 /* 2401EC -> 2403C8; not called */
-void Unknown80191A1C(struct ObjBone *a0) {
+void func_80191A1C(struct ObjBone *a0) {
     f32 sp3C;
     f32 sp38 = 0.0f;
     struct GdObj *argjoint;
@@ -1094,7 +1094,7 @@ void Unknown80191A1C(struct ObjBone *a0) {
 }
 
 /* 2403C8 -> 240530 */
-void Unknown80191BF8(struct ObjJoint *j) {
+void func_80191BF8(struct ObjJoint *j) {
     f32 sp1C;
     f32 sp18 = -2.0f;
 
@@ -1112,7 +1112,7 @@ void Unknown80191BF8(struct ObjJoint *j) {
 }
 
 /* 240530 -> 240624 */
-void Unknown80191D60(struct ObjJoint *j) {
+void func_80191D60(struct ObjJoint *j) {
     j->unk78.x += j->unk3C.x - j->unk14.x;
     j->unk78.y += j->unk3C.y - j->unk14.y;
     j->unk78.z += j->unk3C.z - j->unk14.z;
@@ -1127,7 +1127,7 @@ void Unknown80191D60(struct ObjJoint *j) {
 }
 
 /* 240624 -> 240658 */
-void Unknown80191E54(struct ObjJoint *j) {
+void func_80191E54(struct ObjJoint *j) {
     j->unk3C.x = j->unk14.x;
     j->unk3C.y = j->unk14.y;
     j->unk3C.z = j->unk14.z;
@@ -1135,9 +1135,9 @@ void Unknown80191E54(struct ObjJoint *j) {
 
 /* 240658 -> 2406B8 */
 void func_80191E88(struct ObjGroup *grp) {
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191BF8, grp);
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191D60, grp);
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191E54, grp);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191BF8, grp);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191D60, grp);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191E54, grp);
 }
 
 /* 2406B8 -> 2406E0; orig name: func_80191EE8 */

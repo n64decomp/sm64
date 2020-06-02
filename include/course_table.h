@@ -1,5 +1,5 @@
-#ifndef _COURSE_TABLE_H
-#define _COURSE_TABLE_H
+#ifndef COURSE_TABLE_H
+#define COURSE_TABLE_H
 
 // Start of the 3 cap courses in a row.
 #define COURSE_CAP_COURSES COURSE_COTMC
@@ -15,8 +15,8 @@
 enum CourseNum
 {
     #include "levels/course_defines.h"
-    COURSE_END, // To mark end + 1 for marking max and count. 
-                // Todo: clean this up. This is still bad. Which 
+    COURSE_END, // To mark end + 1 for marking max and count.
+                // TODO: clean this up. This is still bad. Which
                 // one is clearer? Need to get rid of one of these.
     COURSE_MAX = COURSE_END - 1,
     COURSE_COUNT = COURSE_MAX,
@@ -29,4 +29,4 @@ enum CourseNum
 
 #define COURSE_IS_MAIN_COURSE(cmd) (cmd >= COURSE_MIN && cmd <= COURSE_STAGES_MAX)
 
-#endif // _COURSE_TABLE_H
+#endif // COURSE_TABLE_H

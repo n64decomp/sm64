@@ -57,7 +57,7 @@ static void _bnkfPatchBank(ALInstrument *inst, ALBankFile *f, u8 *table) {
 
 // Force adding another jr $ra.  Has to be called or it doesn't get put in the
 // right place.
-static void unused() {
+static void unused(void) {
 }
 
 void alBnkfNew(ALBankFile *f, u8 *table) {

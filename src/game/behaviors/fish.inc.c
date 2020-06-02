@@ -13,7 +13,7 @@ void fish_act_spawn(void) {
     s32 schoolQuantity;
     s16 model;
     f32 minDistToMario;
-    struct Animation **fishAnimation;
+    const struct Animation * const*fishAnimation;
     struct Object *fishObject;
     switch (o->oBehParams2ndByte) {
         

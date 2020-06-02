@@ -13,15 +13,15 @@ void tox_box_shake_screen(void) {
         cur_obj_shake_screen(SHAKE_POS_SMALL);
 }
 
-void tox_box_move(f32 a0, f32 a1, s16 a2, s16 a3) // 0x18 0x1c 0x22 0x26
+void tox_box_move(f32 forwardVel, f32 a1, s16 deltaPitch, s16 deltaRoll)
 {
     o->oPosY = 99.41124 * sins((f32)(o->oTimer + 1) / 8 * 0x8000) + o->oHomeY + 3.0f;
-    o->oForwardVel = a0;
+    o->oForwardVel = forwardVel;
     o->oUnkC0 = a1;
-    o->oFaceAnglePitch += a2;
+    o->oFaceAnglePitch += deltaPitch;
     if ((s16) o->oFaceAnglePitch < 0)
-        a3 = -a3;
-    o->oFaceAngleRoll += a3;
+        deltaRoll = -deltaRoll;
+    o->oFaceAngleRoll += deltaRoll;
     cur_obj_set_pos_via_transform();
     if (o->oTimer == 7) {
         o->oAction = cur_obj_progress_direction_table();

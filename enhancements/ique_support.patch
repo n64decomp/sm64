@@ -108,16 +108,16 @@ index d550b846..bbaf2bcc 100644
      __osSiRelAccess();
      return status;
 diff --git a/lib/src/osEepromRead.c b/lib/src/osEepromRead.c
-index 905eff74..23f34dd5 100644
+index ea784b2c..116dae2d 100644
 --- a/lib/src/osEepromRead.c
 +++ b/lib/src/osEepromRead.c
 @@ -1,4 +1,5 @@
  #include "libultra_internal.h"
 +#include <PR/console_type.h>
  
- extern u32 D_80365E00[15];
- extern u32 D_80365E3C;
-@@ -44,33 +45,44 @@ s32 osEepromRead(OSMesgQueue *mq, u8 address, u8 *buffer) {
+ extern u8 _osLastSentSiCmd;
+ 
+@@ -42,33 +43,44 @@ s32 osEepromRead(OSMesgQueue *mq, u8 address, u8 *buffer) {
          return -1;
      }
      __osSiGetAccess();
@@ -140,7 +140,7 @@ index 905eff74..23f34dd5 100644
 -    }
 -    D_80365E3C = 0;
 -    sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
--    D_80365D20 = 4;
+-    _osLastSentSiCmd = 4;
 -    osRecvMesg(mq, NULL, OS_MESG_BLOCK);
 -    for (sp30 = 0; sp30 < 4; sp30++) {
 -        sp2c++;
@@ -163,7 +163,7 @@ index 905eff74..23f34dd5 100644
          }
 +        D_80365E3C = 0;
 +        sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
-+        D_80365D20 = 4;
++        _osLastSentSiCmd = 4;
 +        osRecvMesg(mq, NULL, OS_MESG_BLOCK);
 +        for (sp30 = 0; sp30 < 4; sp30++) {
 +            sp2c++;
@@ -188,7 +188,7 @@ index 905eff74..23f34dd5 100644
      __osSiRelAccess();
      return sp34;
 diff --git a/lib/src/osEepromWrite.c b/lib/src/osEepromWrite.c
-index 71d0b7d6..c855cc20 100644
+index 1a86477b..52a23e5e 100644
 --- a/lib/src/osEepromWrite.c
 +++ b/lib/src/osEepromWrite.c
 @@ -1,5 +1,6 @@
@@ -196,9 +196,9 @@ index 71d0b7d6..c855cc20 100644
  #include "osContInternal.h"
 +#include <PR/console_type.h>
  
- u32 D_80365E00[0x3c >> 2];
- u32 D_80365E3C;
-@@ -46,36 +47,47 @@ s32 osEepromWrite(OSMesgQueue *mq, u8 address, u8 *buffer) {
+ #ifndef AVOID_UB
+ ALIGNED8 u32 D_80365E00[15];
+@@ -52,36 +53,47 @@ s32 osEepromWrite(OSMesgQueue *mq, u8 address, u8 *buffer) {
      }
  
      __osSiGetAccess();
@@ -237,11 +237,11 @@ index 71d0b7d6..c855cc20 100644
  
 -    D_80365E3C = 0;
 -    sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
--    D_80365D20 = 5;
+-    _osLastSentSiCmd = 5;
 -    osRecvMesg(mq, NULL, OS_MESG_BLOCK);
 +        D_80365E3C = 0;
 +        sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
-+        D_80365D20 = 5;
++        _osLastSentSiCmd = 5;
 +        osRecvMesg(mq, NULL, OS_MESG_BLOCK);
  
 -    for (sp30 = 0; sp30 < 4; sp30++) {
@@ -269,7 +269,7 @@ index 71d0b7d6..c855cc20 100644
      return sp34;
  }
 diff --git a/lib/src/osInitialize.c b/lib/src/osInitialize.c
-index 0b9f7128..660d1991 100644
+index 3cbca8ea..20723b2f 100644
 --- a/lib/src/osInitialize.c
 +++ b/lib/src/osInitialize.c
 @@ -1,6 +1,7 @@
@@ -289,19 +289,19 @@ index 0b9f7128..660d1991 100644
      __osSetSR(__osGetSR() | 0x20000000);
      __osSetFpcCsr(0x01000800);
 diff --git a/sm64.ld b/sm64.ld
-index 59a5a2a6..c8976649 100755
+index 3275819f..6f97698f 100755
 --- a/sm64.ld
 +++ b/sm64.ld
-@@ -256,6 +256,8 @@ SECTIONS
+@@ -261,6 +261,8 @@ SECTIONS
        BUILD_DIR/libultra.a:func_802F7140.o(.text)
        BUILD_DIR/libultra.a:func_802F71A0.o(.text)
        BUILD_DIR/libultra.a:func_802F71F0.o(.text)
 +      BUILD_DIR/libultra.a:consoleType.o(.text)
 +      BUILD_DIR/libultra.a:skGetId.o(.text)
- 
        BUILD_DIR/lib/rsp.o(.text);
- 
-@@ -369,6 +371,8 @@ SECTIONS
+ #else
+       BUILD_DIR/src/game*.o(.text);
+@@ -371,6 +373,8 @@ SECTIONS
        BUILD_DIR/libultra.a:__osGetCause.o(.text);
        BUILD_DIR/libultra.a:__osAtomicDec.o(.text);
        BUILD_DIR/libultra.a:guLookAtRef.o(.text); /* Fast3DEX2 only */
