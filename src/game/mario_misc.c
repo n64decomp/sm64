@@ -23,6 +23,11 @@
 #include "interaction.h"
 #include "object_list_processor.h"
 #include "dialog_ids.h"
+#include "engine/surface_collision.h"
+#include "mario.h"
+#include "engine/math_util.h"
+
+#define CLAMP(x, min, max) (MIN((MAX(x, min)), max))
 
 #define TOAD_STAR_1_REQUIREMENT 12
 #define TOAD_STAR_2_REQUIREMENT 25
@@ -62,7 +67,7 @@ static s8 gMarioBlinkAnimation[7] = { 1, 2, 1, 0, 1, 2, 1 };
  * There are 3 scale animations in groups of 6 frames.
  * The first animation starts at frame index 3 and goes down, the others start at frame index 5.
  * The values get divided by 10 before assigning, so e.g. 12 gives a scale factor 1.2.
- * All combined, this means e.g. the first animation scales Mario's fist by {2.4, 1.6, 1.2, 1.0} on 
+ * All combined, this means e.g. the first animation scales Mario's fist by {2.4, 1.6, 1.2, 1.0} on
  * succesive frames.
  */
 static s8 gMarioAttackScaleAnimation[3 * 6] = {
@@ -71,6 +76,7 @@ static s8 gMarioAttackScaleAnimation[3 * 6] = {
 
 struct MarioBodyState gBodyStates[2]; // 2nd is never accessed in practice, most likely Luigi related
 struct GraphNodeObject gMirrorMario;  // copy of Mario's geo node for drawing mirror Mario
+struct GraphNodeObject gMarioShadow;  // copy of Mario's geo node for drawing mirror Mario
 
 // This whole file is weirdly organized. It has to be the same file due
 // to rodata boundries and function aligns, which means the programmer
@@ -253,7 +259,7 @@ void bhv_unlock_door_star_loop(void) {
             gCurrentObject->oMoveAngleYaw +=
                 gCurrentObject->oUnlockDoorStarYawVel; // Apply yaw velocity
             obj_scale(gCurrentObject, gCurrentObject->oUnlockDoorStarTimer / 50.0f
-                                             + 0.5f); // Scale the star to be bigger
+                                          + 0.5f); // Scale the star to be bigger
             if (++gCurrentObject->oUnlockDoorStarTimer == 30) {
                 gCurrentObject->oUnlockDoorStarTimer = 0;
                 gCurrentObject->oUnlockDoorStarState++; // Sets state to UNLOCK_DOOR_STAR_WAITING
@@ -265,7 +271,7 @@ void bhv_unlock_door_star_loop(void) {
             if (++gCurrentObject->oUnlockDoorStarTimer == 30) {
                 play_sound(SOUND_MENU_STAR_SOUND,
                            gCurrentObject->header.gfx.cameraToObject); // Play final sound
-                cur_obj_hide();                                            // Hide the object
+                cur_obj_hide();                                        // Hide the object
                 gCurrentObject->oUnlockDoorStarTimer = 0;
                 gCurrentObject
                     ->oUnlockDoorStarState++; // Sets state to UNLOCK_DOOR_STAR_SPAWNING_PARTICLES
@@ -344,11 +350,13 @@ Gfx *geo_mirror_mario_set_alpha(s32 callContext, struct GraphNode *node, UNUSED 
  */
 Gfx *geo_switch_mario_stand_run(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) {
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
-    struct MarioBodyState *bodyState = &gBodyStates[switchCase->numCases];
+    struct MarioBodyState *bodyState = &gBodyStates[0];
 
     if (callContext == GEO_CONTEXT_RENDER) {
         // assign result. 0 if moving, 1 if stationary.
-        switchCase->selectedCase = ((bodyState->action & ACT_FLAG_STATIONARY) == FALSE);
+        switchCase->selectedCase = (gCurGraphNodeObject == &gMarioShadow)
+                                       ? 2
+                                       : ((bodyState->action & ACT_FLAG_STATIONARY) == FALSE);
     }
     return NULL;
 }
@@ -625,6 +633,55 @@ Gfx *geo_render_mirror_mario(s32 callContext, struct GraphNode *node, UNUSED Mat
                 ((s16 *) &gMirrorMario)[1] &= ~1;
             }
             break;
+    }
+    return NULL;
+}
+
+Gfx *geo_render_mario_shadow(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 *c) {
+    f32 size;
+    struct Surface* floor = gMarioStates->floor;
+    struct Object *mario = gMarioStates->marioObj;
+    if (!floor) return NULL;
+
+    switch (callContext) {
+        case GEO_CONTEXT_CREATE:
+            // init_graph_node_object(NULL, &gMarioShadow, NULL, gVec3fZero, gVec3sZero, gVec3fOne);
+            break;
+        case GEO_CONTEXT_AREA_LOAD:
+            // geo_add_child(mario->header.gfx.node.parent, &gMarioShadow.node);
+            break;
+        case GEO_CONTEXT_AREA_UNLOAD:
+            // geo_remove_child(&gMarioShadow.node);
+            break;
+        case GEO_CONTEXT_RENDER: {
+            //init variables
+            f32 steepness = sqrtf(floor->normal.x * floor->normal.x + floor->normal.z * floor->normal.z);
+            f32 angle = atan2f(floor->normal.y, steepness) * 180.0f / M_PI; 
+            s16 temp;
+            // copying node shit
+            gMarioShadow.sharedChild = mario->header.gfx.sharedChild;
+            gMarioShadow.unk18 = mario->header.gfx.unk18;
+            gMarioShadow.unk38 = *(struct GraphNodeObject_sub *) &mario->header.gfx.unk38.animID;
+            //copy position and scale to multiply
+            vec3f_copy(gMarioShadow.pos, mario->header.gfx.pos);
+            vec3f_copy(gMarioShadow.scale, mario->header.gfx.scale);
+            //POS
+            gMarioShadow.pos[1] = gMarioStates->floorHeight + 2.25f;
+            //ANGLE
+            temp = DEGREES(ABS(angle));
+            temp = CLAMP(DEGREES(angle) + gMarioStates->floorAngle - gMarioStates->faceAngle[1], -temp, temp); 
+            gMarioShadow.angle[0] = temp;
+            gMarioShadow.angle[1] = mario->header.gfx.angle[1];
+            gMarioShadow.angle[2] = 0x8000 + (temp / 2);
+            //SCALE MATH
+            size = MAX(1.0f + ((gMarioShadow.pos[1] - mario->header.gfx.pos[1]) / 1024), 0.5f);
+            //SCALE SET
+            gMarioShadow.scale[0] *= -size;
+            gMarioShadow.scale[1]  =  0.001f;
+            gMarioShadow.scale[2] *=  size;
+            gMarioShadow.node.flags ^= (-(mario->header.gfx.node.flags & 1) ^ gMarioShadow.node.flags) & 1;
+            break;
+        }
     }
     return NULL;
 }

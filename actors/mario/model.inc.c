@@ -36,6 +36,12 @@ static const Lights1 mario_brown2_lights_group = gdSPDefLights1(
     0x73, 0x06, 0x00, 0x28, 0x28, 0x28
 );
 
+static const Lights1 mario_shadow_group = gdSPDefLights1(
+    0x02, 0x02, 0x02,
+    0x02, 0x02, 0x02, 0x28, 0x28, 0x28
+);
+
+
 // 0x04000090
 ALIGNED8 static const u8 mario_texture_metal[] = {
 #include "actors/mario/mario_metal.rgba16.inc.c"
@@ -4155,6 +4161,15 @@ const Gfx mario_low_poly_butt[] = {
     gsSPEndDisplayList(),
 };
 
+const Gfx mario_shadow_butt[] = {
+    gsDPPipeSync(),
+    gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
+    gsSPLight(&mario_shadow_group.l, 1),
+    gsSPLight(&mario_shadow_group.a, 2),
+    gsSPDisplayList(mario_low_poly_butt_dl),
+    gsSPEndDisplayList(),
+};
+
 // 0x04016AE8 - 0x04016B60
 const Gfx mario_metal_low_poly_butt[] = {
     gsDPPipeSync(),
@@ -4350,6 +4365,14 @@ const Gfx mario_low_poly_right_hand_closed[] = {
     gsSPEndDisplayList(),
 };
 
+const Gfx mario_shadow_right_hand_closed[] = {
+    gsDPPipeSync(),
+    gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
+    gsSPLight(&mario_shadow_group.l, 5),
+    gsSPDisplayList(mario_low_poly_right_hand_closed_dl),
+    gsSPEndDisplayList(),
+};
+
 // 0x040171E0 - 0x04017210
 const Gfx mario_metal_low_poly_right_hand_closed[] = {
     gsSPDisplayList(mario_low_poly_right_hand_closed_dl),
@@ -4399,6 +4422,15 @@ const Gfx mario_low_poly_left_thigh[] = {
     gsSPDisplayList(mario_low_poly_left_thigh_dl),
     gsSPEndDisplayList(),
 };
+
+const Gfx mario_shadow_left_thigh[] = {
+    gsDPPipeSync(),
+    gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
+    gsSPLight(&mario_shadow_group.l, 5),
+    gsSPDisplayList(mario_low_poly_left_thigh_dl),
+    gsSPEndDisplayList(),
+};
+
 
 // 0x04017390 - 0x04017408
 const Gfx mario_metal_low_poly_left_thigh[] = {
@@ -4591,6 +4623,13 @@ const Gfx mario_low_poly_right_foot[] = {
     gsSPEndDisplayList(),
 };
 
+const Gfx mario_shadow_right_foot[] = {
+    gsSPLight(&mario_shadow_group.l, 5),
+    gsSPDisplayList(mario_low_poly_right_foot_dl),
+    gsSPEndDisplayList(),
+};
+
+
 // 0x04017B18 - 0x04017B58
 const Gfx mario_metal_low_poly_right_foot[] = {
     gsSPDisplayList(mario_low_poly_right_foot_dl),
@@ -4690,6 +4729,16 @@ const Gfx mario_low_poly_torso_dl[] = {
     gsSPEndDisplayList(),
 };
 
+const Gfx mario_shadow_torso_dl[] = {
+    gsSPDisplayList(mario_low_poly_pants_overalls_shared_dl),
+    gsDPPipeSync(),
+    gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
+    gsSPLight(&mario_shadow_group.l, 5),
+    gsSPDisplayList(mario_low_poly_tshirt_shared_dl),
+    gsSPEndDisplayList(),
+};
+
+
 // 0x04017EA0 - 0x04017F20
 const Gfx mario_low_poly_torso[] = {
     gsDPPipeSync(),
@@ -4709,6 +4758,14 @@ const Gfx mario_low_poly_torso[] = {
     gsSPDisplayList(mario_low_poly_torso_dl),
     gsSPEndDisplayList(),
 };
+
+const Gfx mario_shadow_torso[] = {
+    gsDPPipeSync(),
+    gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
+    gsSPDisplayList(mario_shadow_torso_dl),
+    gsSPEndDisplayList(),
+};
+
 
 // 0x04017F20 - 0x04017F40
 const Gfx mario_metal_low_poly_torso[] = {
@@ -5763,6 +5820,16 @@ const Gfx mario_right_hand_open[] = {
     gsSPDisplayList(mario_right_hand_open_dl),
     gsSPEndDisplayList(),
 };
+
+const Gfx mario_shadow_right_hand_open[] = {
+    gsDPPipeSync(),
+    gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
+    gsSPLight(&mario_shadow_group.l, 5),
+    gsSPDisplayList(mario_right_hand_open_dl),
+    gsSPEndDisplayList(),
+    gsSPEndDisplayList(),
+};
+
 
 // 0x0401A448 - 0x0401A478
 const Gfx mario_metal_right_hand_open[] = {

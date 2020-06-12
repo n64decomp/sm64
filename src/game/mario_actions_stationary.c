@@ -650,7 +650,7 @@ s32 act_butt_slide_stop(struct MarioState *m) {
         return set_mario_action(m, ACT_SHOCKWAVE_BOUNCE, 0);
     }
 
-    if (m->prevAction == ACT_GROUND_POUND_LAND && m->input & INPUT_NONZERO_ANALOG) {
+    if ((options & 4) && m->prevAction == ACT_GROUND_POUND_LAND && m->input & INPUT_NONZERO_ANALOG) {
         m->faceAngle[1] = m->intendedYaw;
     } 
 
@@ -1053,7 +1053,7 @@ s32 act_twirl_land(struct MarioState *m) {
 
 s32 act_ground_pound_land(struct MarioState *m) {
     m->actionState = 1;
-    if (m->input & INPUT_A_PRESSED) {
+    if ((m->input & INPUT_A_PRESSED) && (options & 4)) {
         return set_mario_action(m, ACT_GROUND_POUND_JUMP, 0);
     }
 

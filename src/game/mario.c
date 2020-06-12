@@ -32,7 +32,8 @@
 #include "level_table.h"
 #include "thread6.h"
 
-u32 unused80339F10;
+u32 unused80339F10 = false;
+u8 options = 31;
 s8 filler80339F1C[20];
 
 /**************************************************
@@ -1252,13 +1253,14 @@ void debug_print_speed_action_normal(struct MarioState *m) {
         steepness = sqrtf(
             ((m->floor->normal.x * m->floor->normal.x) + (m->floor->normal.z * m->floor->normal.z)));
         floor_nY = m->floor->normal.y;
+/*
+        print_text_fmt_int(210, 104, "ANG %d", m->floorHeight);
 
         print_text_fmt_int(210, 88, "ANG %d", (atan2s(floor_nY, steepness) * 180.0f) / 32768.0f);
 
-        print_text_fmt_int(210, 72, "SPD %d", m->forwardVel);
+        print_text_fmt_int(32, 56, "TILT %d", m->faceAngle[1]);
 
-        // STA short for "status," the official action name via SMS map.
-        print_text_fmt_int(210, 56, "STA %x", (m->action & ACT_ID_MASK));
+        print_text_fmt_int(210, 56, "STP %d", atan2s(m->floor->normal.z, m->floor->normal.x));//*/
     }
 }
 
@@ -1910,4 +1912,5 @@ void init_mario_from_save_file(void) {
 
     gHudDisplay.coins = 0;
     gHudDisplay.wedges = 8;
+    //init_graph_node_object(NULL, &gMarioShadow, NULL, gVec3fZero, gVec3sZero, gVec3fOne);
 }

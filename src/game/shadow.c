@@ -598,6 +598,7 @@ Gfx *create_shadow_player(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 soli
     struct Shadow shadow;
     s8 ret;
     s32 i;
+    //return NULL;
 
     // Update global variables about whether Mario is on a flying carpet.
     if (gCurrLevelNum == LEVEL_RR && sSurfaceTypeBelowShadow != SURFACE_DEATH_PLANE) {

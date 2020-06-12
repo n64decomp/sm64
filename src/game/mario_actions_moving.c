@@ -1455,7 +1455,12 @@ s32 common_slide_action_with_jump(struct MarioState *m, u32 stopAction, u32 jump
 }
 
 s32 act_butt_slide(struct MarioState *m) {
-    s32 cancel = common_slide_action_with_jump(m, ACT_BUTT_SLIDE_STOP, ACT_JUMP, ACT_BUTT_SLIDE_AIR,
+    s32 cancel;
+    if (m->input & INPUT_A_PRESSED && m->input & INPUT_Z_DOWN) {
+        m->forwardVel = sqrtf(m->slideVelX * m->slideVelX + m->slideVelZ * m->slideVelZ);
+        return set_jumping_action(m, ACT_LONG_JUMP, 0);
+    }
+    cancel = common_slide_action_with_jump(m, ACT_BUTT_SLIDE_STOP, ACT_JUMP, ACT_BUTT_SLIDE_AIR,
                                                MARIO_ANIM_SLIDE);
     tilt_body_butt_slide(m);
     return cancel;

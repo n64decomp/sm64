@@ -4,6 +4,8 @@
 #include "types.h"
 
 extern u32 gAudioRandom;
+extern u32 unused80339F10;
+extern u8 options;
 
 extern struct Object *gMarioObject;
 extern struct Object *gLuigiObject;

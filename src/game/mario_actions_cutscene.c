@@ -25,6 +25,7 @@
 #include "level_table.h"
 #include "dialog_ids.h"
 #include "thread6.h"
+#include "mario_misc.h"
 
 // TODO: put this elsewhere
 enum SaveOption { SAVE_OPT_SAVE_AND_CONTINUE = 1, SAVE_OPT_SAVE_AND_QUIT, SAVE_OPT_CONTINUE_DONT_SAVE };
@@ -961,6 +962,8 @@ s32 act_warp_door_spawn(struct MarioState *m) {
             m->usedObj->oInteractStatus = 0x00080000;
         }
     } else if (m->usedObj->oAction == 0) {
+        //if (!unused80339F10) geo_add_child(gMarioState->marioObj->header.gfx.node.parent, &gMarioShadow.node);    
+        //unused80339F10 = true;
         if (gShouldNotPlayCastleMusic == TRUE && gCurrLevelNum == LEVEL_CASTLE) {
             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, DIALOG_021);
         } else {

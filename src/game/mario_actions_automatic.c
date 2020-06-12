@@ -560,11 +560,7 @@ s32 act_ledge_grab(struct MarioState *m) {
     }
 
     if ((m->input & INPUT_A_PRESSED) && hasSpaceForMario) {
-        return set_mario_action(m, ACT_LEDGE_CLIMB_FAST, 0);
-    }
-
-    if ((m->input & INPUT_B_PRESSED) && hasSpaceForMario) {
-        return set_mario_action(m, ACT_LEDGE_CLIMB_FAST, 1);
+        return set_mario_action(m, ACT_LEDGE_CLIMB_FAST, options & 8);
     }
 
     if (m->input & INPUT_UNKNOWN_10) {
@@ -646,6 +642,9 @@ s32 act_ledge_climb_down(struct MarioState *m) {
 s32 act_ledge_climb_fast(struct MarioState *m) {
     if (m->input & INPUT_OFF_FLOOR) {
         return let_go_of_ledge(m);
+    }
+    if (m->actionArg && !(m->input & INPUT_A_DOWN)) {
+        m->actionArg = 0;
     }
 
     play_sound_if_no_flag(m, SOUND_MARIO_UH2, MARIO_MARIO_SOUND_PLAYED);

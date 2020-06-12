@@ -4,6 +4,7 @@
 #include "types.h"
 
 extern struct GraphNodeObject gMirrorMario;
+extern struct GraphNodeObject gMarioShadow;
 extern struct MarioBodyState gBodyStates[2];
 
 extern Gfx *geo_draw_mario_head_goddard(s32 a, struct GraphNode *b, Mat4 *c);
@@ -23,6 +24,7 @@ extern Gfx *geo_switch_mario_cap_on_off(s32 run, struct GraphNode *node, UNUSED 
 extern Gfx *geo_mario_rotate_wing_cap_wings(s32 a, struct GraphNode *b, UNUSED Mat4 *c);
 extern Gfx *geo_switch_mario_hand_grab_pos(s32 callContext, struct GraphNode *b, Mat4 *c);
 extern Gfx *geo_render_mirror_mario(s32 a, struct GraphNode *b, UNUSED Mat4 *c);
+extern Gfx *geo_render_mario_shadow(s32 a, struct GraphNode *b, UNUSED Mat4 *c);
 extern Gfx *geo_mirror_mario_backface_culling(s32 a, struct GraphNode *b, UNUSED Mat4 *c);
 
 #endif /* _MARIO_MISC_H */
