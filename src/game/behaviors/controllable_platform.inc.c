@@ -46,8 +46,8 @@ void bhv_controllable_platform_sub_loop(void) {
     o->oVelX = o->parentObj->oVelX;
     o->oVelZ = o->parentObj->oVelZ;
 
-    if (o->parentObj->activeFlags == 0)
-        o->activeFlags = 0;
+    if (o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED)
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 }
 
 void bhv_controllable_platform_init(void) {

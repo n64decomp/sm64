@@ -557,7 +557,7 @@ void mtxf_mul_vec3s(Mat4 mtx, Vec3s b) {
  * Convert float matrix 'src' to fixed point matrix 'dest'.
  * The float matrix may not contain entries larger than 65536 or the console
  * crashes. The fixed point matrix has entries with a 16-bit integer part, so
- * the floating point numbers are multipled by 2^16 before being cast to a s32
+ * the floating point numbers are multiplied by 2^16 before being cast to a s32
  * integer. If this doesn't fit, the N64 and iQue consoles will throw an
  * exception. On Wii and Wii U Virtual Console the value will simply be clamped
  * and no crashes occur.
@@ -758,7 +758,7 @@ f32 atan2f(f32 y, f32 x) {
  * value t in [0, 1] and gSplineState. Given the current control point P, these
  * weights are for P[0], P[1], P[2] and P[3] to obtain an interpolated point.
  * The weights naturally sum to 1, and they are also always in range [0, 1] so
- * the inteprolated point will never overshoot. The curve is guaranteed to go
+ * the interpolated point will never overshoot. The curve is guaranteed to go
  * through the first and last point, but not through intermediate points.
  *
  * gSplineState ensures that the curve is clamped: the first two points
@@ -820,7 +820,7 @@ void spline_get_weights(Vec4f result, f32 t, UNUSED s32 c) {
 
 /**
  * Initialize a spline animation.
- * 'keyframes' should be an array of (s, x, y, z) vectors
+ * 'keyFrames' should be an array of (s, x, y, z) vectors
  *  s: the speed of the keyframe in 1000/frames, e.g. s=100 means the keyframe lasts 10 frames
  *  (x, y, z): point in 3D space on the curve
  * The array should end with three entries with s=0 (infinite keyframe duration).

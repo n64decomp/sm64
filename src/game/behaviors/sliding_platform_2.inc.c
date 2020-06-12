@@ -1,6 +1,6 @@
 // sliding_platform_2.inc.c
 
-void *D_80331A24[] = {
+void const *D_80331A24[] = {
     bits_seg7_collision_0701A9A0,
     bits_seg7_collision_0701AA0C,
     bitfs_seg7_collision_07015714,

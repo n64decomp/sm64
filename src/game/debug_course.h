@@ -1,6 +1,6 @@
-#ifndef _DEBUG_COURSE_H
-#define _DEBUG_COURSE_H
+#ifndef DEBUG_COURSE_H
+#define DEBUG_COURSE_H
 
 void nop_change_course(void);
 
-#endif
+#endif // DEBUG_COURSE_H

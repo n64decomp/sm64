@@ -19,6 +19,6 @@ void bhv_object_bubble_loop(void) {
             bubbleSplash->oPosZ = o->oPosZ;
         }
 
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }

@@ -1,5 +1,7 @@
-#ifndef _BEHAVIOR_SCRIPT_H_
-#define _BEHAVIOR_SCRIPT_H_
+#ifndef BEHAVIOR_SCRIPT_H
+#define BEHAVIOR_SCRIPT_H
+
+#include <PR/ultratypes.h>
 
 #define BHV_PROC_CONTINUE 0
 #define BHV_PROC_BREAK    1
@@ -21,9 +23,8 @@ u16 random_u16(void);
 float random_float(void);
 s32 random_sign(void);
 
-void obj_update_gfx_pos_and_angle(struct Object *);
 void stub_behavior_script_2(void);
 
 void cur_obj_update(void);
 
-#endif /* _BEHAVIOR_SCRIPT_H_ */
+#endif // BEHAVIOR_SCRIPT_H

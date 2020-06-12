@@ -53,14 +53,14 @@ extern "C" {
 typedef struct {
 	u16     type;                   /* Controller Type */
 	u8      status;                 /* Controller status */
-	u8	errno;
+	u8	errnum;
 }OSContStatus;
 
 typedef struct {
 	u16     button;
 	s8      stick_x;		/* -80 <= stick_x <= 80 */
 	s8      stick_y;		/* -80 <= stick_y <= 80 */
-	u8	errno;
+	u8	errnum;
 } OSContPad;
 
 typedef struct {
@@ -68,7 +68,7 @@ typedef struct {
 	u8      databuffer[32];         /* address of the data buffer */
         u8      addressCrc;             /* CRC code for address */
 	u8      dataCrc;                /* CRC code for data */
-	u8	errno;
+	u8	errnum;
 } OSContRamIo;
 
 

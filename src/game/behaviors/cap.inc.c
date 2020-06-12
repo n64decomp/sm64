@@ -15,7 +15,7 @@ static struct ObjectHitbox sCapHitbox = {
 s32 cap_set_hitbox(void) {
     obj_set_hitbox(o, &sCapHitbox);
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         o->oInteractStatus = 0;
         return 1;
     }
@@ -35,7 +35,7 @@ void cap_check_quicksand(void) {
 
     switch (sObjFloor->type) {
         case SURFACE_DEATH_PLANE:
-            o->activeFlags = 0;
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
             break;
 
         case SURFACE_SHALLOW_QUICKSAND:
@@ -85,14 +85,14 @@ void cap_sink_quicksand(void) {
         case 12:
             o->oGraphYOffset += -1.0f;
             if (o->oTimer >= 21)
-                o->activeFlags = 0;
+                o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 
             break;
 
         case 13:
             o->oGraphYOffset += -6.0f;
             if (o->oTimer >= 21)
-                o->activeFlags = 0;
+                o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 
             o->oFaceAnglePitch = 0x2000;
             break;
@@ -254,7 +254,7 @@ void bhv_normal_cap_loop(void) {
     if ((s32) o->oForwardVel != 0)
         save_file_set_cap_pos(o->oPosX, o->oPosY, o->oPosZ);
 
-    if (o->activeFlags == 0)
+    if (o->activeFlags == ACTIVE_FLAG_DEACTIVATED)
         normal_cap_set_save_flags();
 
     if (cap_set_hitbox() == 1)

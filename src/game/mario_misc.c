@@ -1,24 +1,26 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
 #include "area.h"
 #include "audio/external.h"
-#include "camera.h"
-#include "mario_misc.h"
 #include "behavior_actions.h"
 #include "behavior_data.h"
+#include "camera.h"
+#include "dialog_ids.h"
 #include "engine/behavior_script.h"
-#include "game_init.h"
 #include "engine/graph_node.h"
-#include "envfx_snow.h"
-#include "level_update.h"
 #include "engine/math_util.h"
+#include "envfx_snow.h"
+#include "game_init.h"
+#include "goddard/renderer.h"
+#include "interaction.h"
+#include "level_update.h"
+#include "mario_misc.h"
 #include "memory.h"
 #include "object_helpers.h"
-#include "goddard/renderer.h"
+#include "object_list_processor.h"
 #include "rendering_graph_node.h"
 #include "save_file.h"
-#include "sound_init.h"
 #include "skybox.h"
 #include "interaction.h"
 #include "object_list_processor.h"
@@ -28,6 +30,7 @@
 #include "engine/math_util.h"
 
 #define CLAMP(x, min, max) (MIN((MAX(x, min)), max))
+#include "sound_init.h"
 
 #define TOAD_STAR_1_REQUIREMENT 12
 #define TOAD_STAR_2_REQUIREMENT 25
@@ -68,7 +71,7 @@ static s8 gMarioBlinkAnimation[7] = { 1, 2, 1, 0, 1, 2, 1 };
  * The first animation starts at frame index 3 and goes down, the others start at frame index 5.
  * The values get divided by 10 before assigning, so e.g. 12 gives a scale factor 1.2.
  * All combined, this means e.g. the first animation scales Mario's fist by {2.4, 1.6, 1.2, 1.0} on
- * succesive frames.
+ * successive frames.
  */
 static s8 gMarioAttackScaleAnimation[3 * 6] = {
     10, 12, 16, 24, 10, 10, 10, 14, 20, 30, 10, 10, 10, 16, 20, 26, 26, 20,
@@ -79,9 +82,9 @@ struct GraphNodeObject gMirrorMario;  // copy of Mario's geo node for drawing mi
 struct GraphNodeObject gMarioShadow;  // copy of Mario's geo node for drawing mirror Mario
 
 // This whole file is weirdly organized. It has to be the same file due
-// to rodata boundries and function aligns, which means the programmer
-// treated this like a "misc" file for vaguely mario related things
-// (message NPC related things, the mario head geo, and mario geo
+// to rodata boundaries and function aligns, which means the programmer
+// treated this like a "misc" file for vaguely Mario related things
+// (message NPC related things, the Mario head geo, and Mario geo
 // functions)
 
 /**
@@ -303,8 +306,7 @@ void bhv_unlock_door_star_loop(void) {
 }
 
 /**
- * Generate a display list that sets the correct blend mode and color for
- * mirror Mario.
+ * Generate a display list that sets the correct blend mode and color for mirror Mario.
  */
 static Gfx *make_gfx_mario_alpha(struct GraphNodeGenerated *node, s16 alpha) {
     Gfx *gfx;

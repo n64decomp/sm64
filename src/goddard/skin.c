@@ -1,15 +1,16 @@
-#include <ultra64.h>
-#include <macros.h>
-#include "gd_types.h"
-#include "skin.h"
-#include "gd_main.h"
-#include "objects.h"
-#include "skin_movement.h"
-#include "particles.h"
+#include <PR/ultratypes.h>
+
 #include "debug_utils.h"
-#include "joints.h"
+#include "gd_main.h"
 #include "gd_math.h"
+#include "gd_types.h"
+#include "joints.h"
+#include "macros.h"
+#include "objects.h"
+#include "particles.h"
 #include "renderer.h"
+#include "skin.h"
+#include "skin_movement.h"
 
 // bss
 struct ObjNet *gGdSkinNet; // @ 801BAAF0
@@ -70,14 +71,14 @@ void reset_net(struct ObjNet *net) {
 
     if ((grp = net->unk1C8) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191604, grp);
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191220, grp);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191220, grp);
         apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) func_8018FB58, grp);
-        apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) Unknown8018FA68, grp);
+        apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) func_8018FA68, grp);
     }
 }
 
 /* 240A64 -> 240ACC */
-void Unknown80192294(struct ObjNet *net) {
+void func_80192294(struct ObjNet *net) {
     UNUSED s32 sp1C = 0;
 
     if (net->unk1E8 == NULL) {
@@ -88,7 +89,7 @@ void Unknown80192294(struct ObjNet *net) {
 }
 
 /* 240ACC -> 240B84 */
-void Unknown801922FC(struct ObjNet *net) {
+void func_801922FC(struct ObjNet *net) {
     struct ObjGroup *group; // 24
     UNUSED u32 pad18[2];
 
@@ -100,7 +101,7 @@ void Unknown801922FC(struct ObjNet *net) {
             func_80181760(net->unk1A8->vtxGroup);
         }
         if ((group = net->unk1C8) != NULL) {
-            apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80181B88, group);
+            apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80181B88, group);
         }
     }
 }
@@ -197,7 +198,7 @@ void func_801926A4(struct ObjNet *net) {
 }
 
 /* 2412A0 -> 24142C; not called */
-void Unknown80192AD0(struct ObjNet *net) {
+void func_80192AD0(struct ObjNet *net) {
     UNUSED u32 pad64;
     struct ObjGroup *sp60;
     UNUSED u32 pad20[0x10];
@@ -222,7 +223,7 @@ void Unknown80192AD0(struct ObjNet *net) {
     net->unk200.z = -4.0f;
     gd_rotate_and_translate_vec3f(&net->unk200, &sp18->mat128);
 
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191824, sp60);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191824, sp60);
     func_80191E88(sp60);
     apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) func_8018F328, net->unk20C);
 }
@@ -235,7 +236,7 @@ void move_bonesnet(struct ObjNet *net) {
     add_to_stacktrace("move_bonesnet");
     gd_set_identity_mat4(&D_801B9DC8);
     if ((sp24 = net->unk1C8) != NULL) {
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801913C0, sp24);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801913C0, sp24);
     }
     imout();
 }
@@ -282,17 +283,17 @@ void func_80192CCC(struct ObjNet *net) {
 
     func_80192528(net);
     if ((group = net->unk1C8) != NULL) {
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown80191220, group);
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801913F0, group);
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801914F8, group);
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801911A8, group);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191220, group);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801913F0, group);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801914F8, group);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801911A8, group);
     }
 
     func_801926A4(net);
     gd_mult_mat4f(&net->mat128, &D_801B9DC8, &net->mat128);
     if (group != NULL) {
-        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) Unknown801913C0, group);
-        apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) Unknown8018FA68, group);
+        apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801913C0, group);
+        apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) func_8018FA68, group);
     }
 }
 
@@ -303,7 +304,9 @@ void convert_gd_verts_to_Vn(struct ObjGroup *grp) {
     u8 nx, ny, nz; // 24, 25, 26
     UNUSED u32 pad20;
     register struct VtxLink *vtxlink; // a1
+#ifndef GBI_FLOATS
     register s16 *vnPos;              // a2
+#endif
     register s16 x;                   // a3
     register s16 y;                   // t0
     register s16 z;                   // t1
@@ -323,11 +326,18 @@ void convert_gd_verts_to_Vn(struct ObjGroup *grp) {
         nz = (u8)(vtx->normal.z * 255.0f);
 
         for (vtxlink = vtx->gbiVerts; vtxlink != NULL; vtxlink = vtxlink->prev) {
+#ifndef GBI_FLOATS
             vnPos = vtxlink->data->n.ob;
             vn = vtxlink->data;
             *vnPos++ = x;
             *vnPos++ = y;
             *vnPos++ = z;
+#else
+            vn = vtxlink->data;
+            vn->n.ob[0] = x;
+            vn->n.ob[1] = y;
+            vn->n.ob[2] = z;
+#endif
             vn->n.n[0] = nx;
             vn->n.n[1] = ny;
             vn->n.n[2] = nz;
@@ -339,7 +349,9 @@ void convert_gd_verts_to_Vn(struct ObjGroup *grp) {
 void convert_gd_verts_to_Vtx(struct ObjGroup *grp) {
     UNUSED u32 pad24[6];
     register struct VtxLink *vtxlink; // a1
+#ifndef GBI_FLOATS
     register s16 *vtxcoords;          // a2
+#endif
     register s16 x;                   // a3
     register s16 y;                   // t0
     register s16 z;                   // t1
@@ -355,10 +367,16 @@ void convert_gd_verts_to_Vtx(struct ObjGroup *grp) {
         z = (s16) vtx->pos.z;
 
         for (vtxlink = vtx->gbiVerts; vtxlink != NULL; vtxlink = vtxlink->prev) {
+#ifndef GBI_FLOATS
             vtxcoords = vtxlink->data->v.ob;
             vtxcoords[0] = x;
             vtxcoords[1] = y;
             vtxcoords[2] = z;
+#else
+            vtxlink->data->v.ob[0] = x;
+            vtxlink->data->v.ob[1] = y;
+            vtxlink->data->v.ob[2] = z;
+#endif
         }
     }
 }
@@ -401,7 +419,7 @@ void func_801934D0(struct ObjNet *net) {
     }
 }
 
-/* 241D6C -> 241E94; orig name: Unknown8019359C */
+/* 241D6C -> 241E94; orig name: func_8019359C */
 void move_net(struct ObjNet *net) {
     gGdSkinNet = net;
 
@@ -438,14 +456,14 @@ void move_net(struct ObjNet *net) {
 void move_nets(struct ObjGroup *group) {
     add_to_stacktrace("move_nets");
     restart_timer("move_nets");
-    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) Unknown80192294, group);
+    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) func_80192294, group);
     apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) move_net, group);
     split_timer("move_nets");
     imout();
 }
 
 /* 241F0C -> 242018 */
-void Unknown8019373C(struct ObjNet *net) {
+void func_8019373C(struct ObjNet *net) {
     register struct Links *link; // s0
     struct ObjVertex *vtx;       // 20
 
@@ -468,12 +486,12 @@ void Unknown8019373C(struct ObjNet *net) {
 /* 242018 -> 24208C */
 void func_80193848(struct ObjGroup *group) {
     apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) reset_net, group);
-    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) Unknown80192294, group);
-    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) Unknown801922FC, group);
-    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) Unknown8019373C, group);
+    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) func_80192294, group);
+    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) func_801922FC, group);
+    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) func_8019373C, group);
 }
 
-/* 24208C -> 2422E0; not called; orig name: Unknown801938BC */
+/* 24208C -> 2422E0; not called; orig name: func_801938BC */
 void gd_print_net(struct ObjNet *net) {
     gd_printf("Flags:%x\n", net->unk34);
     gd_print_vec("World:", &net->unk14);

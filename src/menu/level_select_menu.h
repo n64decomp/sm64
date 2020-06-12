@@ -1,8 +1,10 @@
-#ifndef _LEVEL_SELECT_MENU_H
-#define _LEVEL_SELECT_MENU_H
+#ifndef LEVEL_SELECT_MENU_H
+#define LEVEL_SELECT_MENU_H
 
-#include "types.h"
+#include <PR/ultratypes.h>
 
-extern s32 lvl_intro_update(s16 arg1, s32 arg2);
+#include "macros.h"
 
-#endif /* _LEVEL_SELECT_MENU_H */
+s32 lvl_intro_update(s16 arg1, UNUSED s32 arg2);
+
+#endif // LEVEL_SELECT_MENU_H

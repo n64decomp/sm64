@@ -1,33 +1,35 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
-#include "obj_behaviors.h"
-#include "rendering_graph_node.h"
-#include "memory.h"
-#include "engine/behavior_script.h"
-#include "engine/surface_collision.h"
-#include "engine/math_util.h"
-#include "object_helpers.h"
-#include "behavior_data.h"
-#include "mario.h"
-#include "game_init.h"
-#include "camera.h"
-#include "mario_actions_cutscene.h"
-#include "object_list_processor.h"
-#include "save_file.h"
 #include "area.h"
-#include "mario_misc.h"
-#include "level_update.h"
 #include "audio/external.h"
 #include "behavior_actions.h"
-#include "spawn_object.h"
-#include "spawn_sound.h"
+#include "behavior_data.h"
+#include "camera.h"
+#include "course_table.h"
+#include "dialog_ids.h"
+#include "engine/behavior_script.h"
+#include "engine/math_util.h"
+#include "engine/surface_collision.h"
 #include "envfx_bubbles.h"
+#include "game_init.h"
 #include "ingame_menu.h"
 #include "interaction.h"
 #include "level_table.h"
-#include "dialog_ids.h"
-#include "course_table.h"
+#include "level_update.h"
+#include "levels/bob/header.h"
+#include "levels/ttm/header.h"
+#include "mario.h"
+#include "mario_actions_cutscene.h"
+#include "mario_misc.h"
+#include "memory.h"
+#include "obj_behaviors.h"
+#include "object_helpers.h"
+#include "object_list_processor.h"
+#include "rendering_graph_node.h"
+#include "save_file.h"
+#include "spawn_object.h"
+#include "spawn_sound.h"
 
 /**
  * @file obj_behaviors.c
@@ -638,7 +640,7 @@ s32 obj_flicker_and_disappear(struct Object *obj, s16 lifeSpan) {
             obj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
         }
     } else {
-        obj->activeFlags = 0;
+        obj->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         return TRUE;
     }
 
@@ -730,7 +732,7 @@ s32 obj_lava_death(void) {
     struct Object *deathSmoke;
 
     if (o->oTimer >= 31) {
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         return TRUE;
     } else {
         // Sinking effect
@@ -770,8 +772,7 @@ s8 sDebugSequenceTracker = 0;
 s8 sDebugTimer = 0;
 
 /**
- * Unused presumably debug function that tracks for a sequence of inputs,
- * perhaps for the Konami code sequence of inputs.
+ * Unused presumably debug function that tracks for a sequence of inputs.
  */
 s32 UNUSED debug_sequence_tracker(s16 debugInputSequence[]) {
     // If end of sequence reached, return true.

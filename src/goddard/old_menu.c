@@ -1,12 +1,12 @@
-#include <ultra64.h>
-#include <macros.h>
+#include <PR/ultratypes.h>
 #include <stdio.h>
 
-#include "gd_types.h"
-#include "old_menu.h"
-#include "objects.h"
-#include "dynlist_proc.h"
 #include "debug_utils.h"
+#include "dynlist_proc.h"
+#include "gd_types.h"
+#include "macros.h"
+#include "objects.h"
+#include "old_menu.h"
 #include "renderer.h"
 
 /**
@@ -62,7 +62,7 @@ void Unknown8018B7A8(void *a0) {
 void Proc8018B83C(void *a0) {
     struct ObjGroup *argGroup = a0;
     apply_to_obj_types_in_group(OBJ_TYPE_GADGETS, (applyproc_t) func_8018BCB8, argGroup);
-    apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) Proc801A43DC, gGdViewsGroup);
+    apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) func_801A43DC, gGdViewsGroup);
 }
 
 /* 23A068 -> 23A0D0; orig name: Unknown8018B898 */
@@ -85,11 +85,11 @@ void *Unknown8018B900(struct ObjGroup *grp) {
     apply_to_obj_types_in_group(OBJ_TYPE_GROUPS, (applyproc_t) cat_grp_name_to_buf, grp);
     defaultSettingMenu = func_801A43F0(sMenuStrBuf, &Proc8018B83C);
     controlerMenu = func_801A43F0(
-        "Control Type %t %F| U-64 Analogue Joystick %x1 | Keyboard %x2 | Mouse %x3", &Proc801A4410);
+        "Control Type %t %F| U-64 Analogue Joystick %x1 | Keyboard %x2 | Mouse %x3", &func_801A4410);
     mainMenu =
         func_801A43F0("Dynamics %t |\t\t\tReset Positions %f |\t\t\tSet Defaults %m |\t\t\tSet "
                       "Controller %m |\t\t\tRe-Calibrate Controller %f |\t\t\tQuit %f",
-                      &func_8017E2B8, defaultSettingMenu, controlerMenu, &Proc801A4424, &gd_exit);
+                      &func_8017E2B8, defaultSettingMenu, controlerMenu, &func_801A4424, &gd_exit);
 
     return mainMenu;
 }

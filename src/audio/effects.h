@@ -1,6 +1,8 @@
 #ifndef AUDIO_EFFECTS_H
 #define AUDIO_EFFECTS_H
 
+#include <PR/ultratypes.h>
+
 #include "internal.h"
 #include "platform_info.h"
 
@@ -41,4 +43,4 @@ f32 adsr_update(struct AdsrState *adsr);
 s32 adsr_update(struct AdsrState *adsr);
 #endif
 
-#endif /* AUDIO_EFFECTS_H */
+#endif // AUDIO_EFFECTS_H

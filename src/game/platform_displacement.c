@@ -1,14 +1,13 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
-#include "sm64.h"
-#include "platform_displacement.h"
 #include "engine/math_util.h"
-#include "object_helpers.h"
-#include "mario.h"
-#include "engine/behavior_script.h"
-#include "level_update.h"
 #include "engine/surface_collision.h"
+#include "level_update.h"
+#include "object_fields.h"
+#include "object_helpers.h"
 #include "object_list_processor.h"
+#include "platform_displacement.h"
+#include "types.h"
 
 u16 D_8032FEC0 = 0;
 
@@ -17,7 +16,7 @@ u32 unused_8032FEC4[4] = { 0 };
 struct Object *gMarioPlatform = NULL;
 
 /**
- * Determine if mario is standing on a platform object, meaning that he is
+ * Determine if Mario is standing on a platform object, meaning that he is
  * within 4 units of the floor. Set his referenced platform object accordingly.
  */
 void update_mario_platform(void) {
@@ -33,7 +32,7 @@ void update_mario_platform(void) {
         return;
     }
 
-    //! If mario moves onto a rotating platform in a PU, the find_floor call
+    //! If Mario moves onto a rotating platform in a PU, the find_floor call
     //  will detect the platform and he will end up receiving a large amount
     //  of displacement since he is considered to be far from the platform's
     //  axis of rotation.
@@ -68,7 +67,7 @@ void update_mario_platform(void) {
 }
 
 /**
- * Get mario's position and store it in x, y, and z.
+ * Get Mario's position and store it in x, y, and z.
  */
 void get_mario_pos(f32 *x, f32 *y, f32 *z) {
     *x = gMarioStates[0].pos[0];
@@ -77,7 +76,7 @@ void get_mario_pos(f32 *x, f32 *y, f32 *z) {
 }
 
 /**
- * Set mario's position.
+ * Set Mario's position.
  */
 void set_mario_pos(f32 x, f32 y, f32 z) {
     gMarioStates[0].pos[0] = x;
@@ -86,7 +85,7 @@ void set_mario_pos(f32 x, f32 y, f32 z) {
 }
 
 /**
- * Apply one frame of platform rotation to mario or an object using the given
+ * Apply one frame of platform rotation to Mario or an object using the given
  * platform. If isMario is 0, use gCurrentObject.
  */
 void apply_platform_displacement(u32 isMario, struct Object *platform) {
@@ -167,7 +166,7 @@ void apply_platform_displacement(u32 isMario, struct Object *platform) {
 }
 
 /**
- * If mario's platform is not null, apply platform displacement.
+ * If Mario's platform is not null, apply platform displacement.
  */
 void apply_mario_platform_displacement(void) {
     struct Object *platform;
@@ -180,7 +179,7 @@ void apply_mario_platform_displacement(void) {
 
 #ifndef VERSION_JP
 /**
- * Set mario's platform to NULL.
+ * Set Mario's platform to NULL.
  */
 void clear_mario_platform(void) {
     gMarioPlatform = NULL;

@@ -1,7 +1,11 @@
-#ifndef _AREA_H
-#define _AREA_H
+#ifndef AREA_H
+#define AREA_H
+
+#include <PR/ultratypes.h>
 
 #include "types.h"
+#include "camera.h"
+#include "engine/graph_node.h"
 
 struct WarpNode
 {
@@ -61,7 +65,7 @@ struct Area
     /*0x00*/ s8 index;
     /*0x01*/ s8 flags; // Only has 1 flag: 0x01 = Is this the active area?
     /*0x02*/ u16 terrainType; // default terrain of the level (set from level script cmd 0x31)
-    /*0x04*/ struct GraphNode *unk04; // geometry layout data
+    /*0x04*/ struct GraphNodeRoot *unk04; // geometry layout data
     /*0x08*/ s16 *terrainData; // collision data (set from level script cmd 0x2E)
     /*0x0C*/ s8 *surfaceRooms; // (set from level script cmd 0x2F)
     /*0x10*/ s16 *macroObjects; // Macro Objects Ptr (set from level script cmd 0x39)
@@ -114,6 +118,7 @@ struct WarpTransition
     /*0x04*/ struct WarpTransitionData data;
 };
 
+extern struct GraphNode **gLoadedGraphNodes;
 extern struct SpawnInfo gPlayerSpawnInfos[];
 extern struct GraphNode *D_8033A160[];
 extern struct Area gAreaData[];
@@ -150,5 +155,4 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue);
 void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 blue, s16 delay);
 void render_game(void);
 
-
-#endif
+#endif // AREA_H

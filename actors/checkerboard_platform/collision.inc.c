@@ -1,7 +1,7 @@
 // Checkerboard Platform
 
 // 0x0800D710 - 0x0800D794
-const s16 checkerboard_platform_seg8_collision_0800D710[] = {
+const Collision checkerboard_platform_seg8_collision_0800D710[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(256, -25, -153),

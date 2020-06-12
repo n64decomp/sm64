@@ -1,5 +1,5 @@
-#ifndef _BEHAVIOR_DATA_H
-#define _BEHAVIOR_DATA_H
+#ifndef BEHAVIOR_DATA_H
+#define BEHAVIOR_DATA_H
 
 #include "types.h"
 
@@ -302,20 +302,20 @@ extern const BehaviorScript bhvYellowBall[];
 extern const BehaviorScript bhvMario[];
 extern const BehaviorScript bhvToadMessage[];
 extern const BehaviorScript bhvUnlockDoorStar[];
-extern const BehaviorScript bhvWarps60[];
-extern const BehaviorScript bhvWarps64[];
-extern const BehaviorScript bhvWarps68[];
-extern const BehaviorScript bhvWarps6C[];
+extern const BehaviorScript bhvInstantActiveWarp[];
+extern const BehaviorScript bhvAirborneWarp[];
+extern const BehaviorScript bhvHardAirKnockBackWarp[];
+extern const BehaviorScript bhvSpinAirborneCircleWarp[];
 extern const BehaviorScript bhvDeathWarp[];
-extern const BehaviorScript bhvWarps74[];
-extern const BehaviorScript bhvWarps78[];
-extern const BehaviorScript bhvWarps7C[];
+extern const BehaviorScript bhvSpinAirborneWarp[];
+extern const BehaviorScript bhvFlyingWarp[];
+extern const BehaviorScript bhvPaintingStarCollectWarp[];
 extern const BehaviorScript bhvPaintingDeathWarp[];
-extern const BehaviorScript bhvWarps84[];
-extern const BehaviorScript bhvWarps88[];
-extern const BehaviorScript bhvWarps8C[];
-extern const BehaviorScript bhvWarps90[];
-extern const BehaviorScript bhvWarps94[];
+extern const BehaviorScript bhvAirborneDeathWarp[];
+extern const BehaviorScript bhvAirborneStarCollectWarp[];
+extern const BehaviorScript bhvLaunchStarCollectWarp[];
+extern const BehaviorScript bhvLaunchDeathWarp[];
+extern const BehaviorScript bhvSwimmingWarp[];
 extern const BehaviorScript bhvRandomAnimatedTexture[];
 extern const BehaviorScript bhvYellowBackgroundInMenu[];
 extern const BehaviorScript bhvMenuButton[];
@@ -543,4 +543,4 @@ extern const BehaviorScript bhvEndBirds2[];
 extern const BehaviorScript bhvIntroScene[];
 extern const BehaviorScript bhvUnusedFakeStar[];
 
-#endif /* _BEHAVIOR_DATA_H */
+#endif // BEHAVIOR_DATA_H

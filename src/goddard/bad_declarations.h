@@ -1,5 +1,5 @@
-#ifndef BAD_DECLARATIONS_H
-#define BAD_DECLARATIONS_H
+#ifndef GD_BAD_DECLARATIONS_H
+#define GD_BAD_DECLARATIONS_H
 
 #include "gd_types.h"
 
@@ -37,4 +37,4 @@ extern struct ObjLabel *make_label();
 
 #endif /* !AVOID_UB */
 
-#endif /* BAD_DECLARATIONS_H */
+#endif // GD_BAD_DECLARATIONS_H

@@ -1,17 +1,19 @@
 #ifndef GD_OLD_MENU_H
 #define GD_OLD_MENU_H
 
-#include <ultra64.h>
-#include "gd_types.h"
+#include <PR/ultratypes.h>
 
-extern void get_objvalue(union ObjVarVal *, enum ValPtrType, void *, size_t);
-extern struct ObjGadget *make_gadget(s32, s32);
-extern void reset_gadget(struct ObjGadget *);
-extern void reset_gadgets_in_grp(struct ObjGroup *);
+#include "gd_types.h"
+#include "macros.h"
+
+void get_objvalue(union ObjVarVal *dst, enum ValPtrType type, void *base, size_t offset);
+struct ObjGadget *make_gadget(UNUSED s32 a0, s32 a1);
+void reset_gadget(struct ObjGadget *gdgt);
+void reset_gadgets_in_grp(struct ObjGroup *grp);
 
 // see bad_declarations.h
 #ifndef GD_USE_BAD_DECLARATIONS
-extern struct ObjLabel *make_label(struct ObjValPtrs *, char *, s32, f32, f32, f32);
+struct ObjLabel *make_label(struct ObjValPtrs *ptr, char *str, s32 a2, f32 x, f32 y, f32 z);
 #endif
 
-#endif /* GD_OLD_MENU_H */
+#endif // GD_OLD_MENU_H

@@ -1,115 +1,68 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
-#include "behavior_actions.h"
-#include "engine/behavior_script.h"
-#include "camera.h"
-#include "game_init.h"
-#include "engine/math_util.h"
-#include "object_helpers.h"
-#include "mario_actions_cutscene.h"
-#include "behavior_data.h"
-#include "mario.h"
-#include "engine/surface_collision.h"
-#include "obj_behaviors_2.h"
+#include "actors/common0.h"
+#include "actors/group11.h"
+#include "actors/group17.h"
 #include "audio/external.h"
-#include "seq_ids.h"
+#include "behavior_actions.h"
+#include "behavior_data.h"
+#include "camera.h"
 #include "dialog_ids.h"
+#include "engine/behavior_script.h"
+#include "engine/math_util.h"
+#include "engine/surface_collision.h"
+#include "engine/surface_load.h"
+#include "game_init.h"
+#include "geo_misc.h"
+#include "interaction.h"
+#include "level_table.h"
 #include "level_update.h"
+#include "levels/bitdw/header.h"
+#include "levels/bitfs/header.h"
+#include "levels/bits/header.h"
+#include "levels/bob/header.h"
+#include "levels/ccm/header.h"
+#include "levels/hmc/header.h"
+#include "levels/jrb/header.h"
+#include "levels/lll/header.h"
+#include "levels/rr/header.h"
+#include "levels/ssl/header.h"
+#include "levels/thi/header.h"
+#include "levels/ttc/header.h"
+#include "levels/vcutm/header.h"
+#include "mario.h"
+#include "mario_actions_cutscene.h"
 #include "memory.h"
+#include "obj_behaviors.h"
+#include "obj_behaviors_2.h"
+#include "object_constants.h"
+#include "object_helpers.h"
+#include "object_list_processor.h"
 #include "platform_displacement.h"
 #include "rendering_graph_node.h"
-#include "engine/surface_load.h"
-#include "obj_behaviors.h"
-#include "object_constants.h"
-#include "interaction.h"
-#include "object_list_processor.h"
-#include "spawn_sound.h"
-#include "geo_misc.h"
 #include "save_file.h"
-#include "level_table.h"
-
-extern struct Animation *wiggler_seg5_anims_0500C874[];
-extern struct Animation *spiny_egg_seg5_anims_050157E4[];
-extern struct ObjectNode *gObjectLists;
-extern u8 jrb_seg7_trajectory_unagi_1[];
-extern u8 jrb_seg7_trajectory_unagi_2[];
-extern u8 dorrie_seg6_collision_0600FBB8[];
-extern u8 dorrie_seg6_collision_0600F644[];
-extern u8 ssl_seg7_collision_070284B0[];
-extern u8 ssl_seg7_collision_07028274[];
-extern u8 ssl_seg7_collision_07028370[];
-extern u8 ssl_seg7_collision_070282F8[];
-extern u8 ccm_seg7_trajectory_penguin_race[];
-extern u8 bob_seg7_trajectory_koopa[];
-extern u8 thi_seg7_trajectory_koopa[];
-extern u8 rr_seg7_collision_07029038[];
-extern u8 ccm_seg7_collision_070163F8[];
-extern u8 checkerboard_platform_seg8_collision_0800D710[];
-extern u8 bitfs_seg7_collision_070157E0[];
-extern u8 rr_seg7_trajectory_0702EC3C[];
-extern u8 rr_seg7_trajectory_0702ECC0[];
-extern u8 ccm_seg7_trajectory_0701669C[];
-extern u8 bitfs_seg7_trajectory_070159AC[];
-extern u8 hmc_seg7_trajectory_0702B86C[];
-extern u8 lll_seg7_trajectory_0702856C[];
-extern u8 lll_seg7_trajectory_07028660[];
-extern u8 rr_seg7_trajectory_0702ED9C[];
-extern u8 rr_seg7_trajectory_0702EEE0[];
-extern u8 bitdw_seg7_collision_0700F70C[];
-extern u8 bits_seg7_collision_0701ADD8[];
-extern u8 bits_seg7_collision_0701AE5C[];
-extern u8 bob_seg7_collision_bridge[];
-extern u8 bitfs_seg7_collision_07015928[];
-extern u8 rr_seg7_collision_07029750[];
-extern u8 rr_seg7_collision_07029858[];
-extern u8 vcutm_seg7_collision_0700AC44[];
-extern u8 bits_seg7_collision_0701ACAC[];
-extern u8 bits_seg7_collision_0701AC28[];
-extern u8 bitdw_seg7_collision_0700F7F0[];
-extern u8 bitdw_seg7_collision_0700F898[];
-extern u8 ttc_seg7_collision_07014F70[];
-extern u8 ttc_seg7_collision_07015008[];
-extern u8 ttc_seg7_collision_070152B4[];
-extern u8 ttc_seg7_collision_070153E0[];
-extern u8 ttc_seg7_collision_07015584[];
-extern u8 ttc_seg7_collision_07015650[];
-extern u8 ttc_seg7_collision_07015754[];
-extern u8 ttc_seg7_collision_070157D8[];
-extern u8 bits_seg7_collision_0701A9A0[];
-extern u8 bits_seg7_collision_0701AA0C[];
-extern u8 bitfs_seg7_collision_07015714[];
-extern u8 bitfs_seg7_collision_07015768[];
-extern u8 rr_seg7_collision_070295F8[];
-extern u8 rr_seg7_collision_0702967C[];
-extern u8 bitdw_seg7_collision_0700F688[];
-extern u8 bits_seg7_collision_0701AA84[];
-extern u8 rr_seg7_collision_07029508[];
-extern u8 bits_seg7_collision_0701B734[];
-extern u8 bits_seg7_collision_0701B59C[];
-extern u8 bits_seg7_collision_0701B404[];
-extern u8 bits_seg7_collision_0701B26C[];
-extern u8 bits_seg7_collision_0701B0D4[];
-extern u8 bitdw_seg7_collision_0700FD9C[];
-extern u8 bitdw_seg7_collision_0700FC7C[];
-extern u8 bitdw_seg7_collision_0700FB5C[];
-extern u8 bitdw_seg7_collision_0700FA3C[];
-extern u8 bitdw_seg7_collision_0700F91C[];
-extern u8 rr_seg7_collision_0702A6B4[];
-extern u8 rr_seg7_collision_0702A32C[];
-extern u8 rr_seg7_collision_07029FA4[];
-extern u8 rr_seg7_collision_07029C1C[];
-extern u8 rr_seg7_collision_07029924[];
-extern u8 bits_seg7_collision_0701AD54[];
-extern u8 bitfs_seg7_collision_070157E0[];
-extern u8 bitfs_seg7_collision_07015124[];
-extern struct Animation *spiny_seg5_anims_05016EAC[];
+#include "seq_ids.h"
+#include "spawn_sound.h"
 
 #define POS_OP_SAVE_POSITION 0
 #define POS_OP_COMPUTE_VELOCITY 1
 #define POS_OP_RESTORE_POSITION 2
 
 #define o gCurrentObject
+
+/* BSS (declared to force order) */
+extern s32 sNumActiveFirePiranhaPlants;
+extern s32 sNumKilledFirePiranhaPlants;
+extern f32 sObjSavedPosX;
+extern f32 sObjSavedPosY;
+extern f32 sObjSavedPosZ;
+extern struct Object *sMontyMoleHoleList;
+extern s32 sMontyMoleKillStreak;
+extern f32 sMontyMoleLastKilledPosX;
+extern f32 sMontyMoleLastKilledPosY;
+extern f32 sMontyMoleLastKilledPosZ;
+extern struct Object *sMasterTreadmill;
 
 /**
  * The treadmill that plays sounds and controls the others on random setting.
@@ -121,7 +74,6 @@ f32 sObjSavedPosX;
 f32 sObjSavedPosY;
 f32 sObjSavedPosZ;
 
-void shelled_koopa_attack_handler(s32 attackType);
 void wiggler_jumped_on_attack_handler(void);
 void huge_goomba_weakly_attacked(void);
 
@@ -139,9 +91,9 @@ static s16 obj_get_pitch_from_vel(void) {
 
 /**
  * Show dialog proposing a race.
- * If the player accepts the race, then leave time stop enabled and mario in the
+ * If the player accepts the race, then leave time stop enabled and Mario in the
  * text action so that the racing object can wait before starting the race.
- * If the player declines the race, then disable time stop and allow mario to
+ * If the player declines the race, then disable time stop and allow Mario to
  * move again.
  */
 static s32 obj_update_race_proposition_dialog(s16 dialogID) {
@@ -911,13 +863,13 @@ static s32 obj_move_for_one_second(s32 endAction) {
  * oDistanceToMario the same.
  *
  * The point of this function is to avoid having to write extra code to get
- * the object to return to home. When mario is far away and the object is far
- * from home, it could theoretically re-use the "approach mario" logic to approach
+ * the object to return to home. When Mario is far away and the object is far
+ * from home, it could theoretically re-use the "approach Mario" logic to approach
  * its home instead.
  * However, most objects that use this function handle the far-from-home case
  * separately anyway.
  * This function causes seemingly erroneous behavior in some objects that try to
- * attack mario (e.g. fly guy shooting fire or lunging), especially when combined
+ * attack Mario (e.g. fly guy shooting fire or lunging), especially when combined
  * with partial updates.
  */
 static void treat_far_home_as_mario(f32 threshold) {

@@ -1,5 +1,8 @@
-#ifndef _MATH_UTIL_H_
-#define _MATH_UTIL_H_
+#ifndef MATH_UTIL_H
+#define MATH_UTIL_H
+
+#include <PR/ultratypes.h>
+
 #include "types.h"
 
 /*
@@ -43,29 +46,29 @@ void *vec3f_to_vec3s(Vec3s dest, Vec3f a);
 void *find_vector_perpendicular_to_plane(Vec3f dest, Vec3f a, Vec3f b, Vec3f c);
 void *vec3f_cross(Vec3f dest, Vec3f a, Vec3f b);
 void *vec3f_normalize(Vec3f dest);
-void mtxf_copy(f32 dest[4][4], f32 src[4][4]);
-void mtxf_identity(f32 mtx[4][4]);
-void mtxf_translate(f32 a[4][4], Vec3f b);
-void mtxf_lookat(f32 mtx[4][4], Vec3f b, Vec3f c, s16 d);
-void mtxf_rotate_zxy_and_translate(f32 mtx[4][4], Vec3f b, Vec3s c);
-void mtxf_rotate_xyz_and_translate(f32 mtx[4][4], Vec3f b, Vec3s c);
-void mtxf_billboard(f32 mtx1[4][4], f32 mtx2[4][4], Vec3f c, s16 d);
-void mtxf_align_terrain_normal(f32 mtx[4][4], Vec3f b, Vec3f c, s16 d);
-void mtxf_align_terrain_triangle(f32 mtx[4][4], Vec3f b, s16 c, f32 d);
-void mtxf_mul(f32 dest[4][4], f32 a[4][4], f32 b[4][4]);
-void mtxf_scale_vec3f(f32 a[4][4], f32 b[4][4], Vec3f c);
-void mtxf_mul_vec3s(f32 a[4][4], Vec3s b);
-void mtxf_to_mtx(Mtx *a, f32 b[4][4]);
-void mtxf_rotate_xy(Mtx *a, s16 b);
-void get_pos_from_transform_mtx(Vec3f a, f32 b[4][4], f32 c[4][4]);
+void mtxf_copy(Mat4 dest, Mat4 src);
+void mtxf_identity(Mat4 mtx);
+void mtxf_translate(Mat4 dest, Vec3f b);
+void mtxf_lookat(Mat4 mtx, Vec3f from, Vec3f to, s16 roll);
+void mtxf_rotate_zxy_and_translate(Mat4 dest, Vec3f translate, Vec3s rotate);
+void mtxf_rotate_xyz_and_translate(Mat4 dest, Vec3f b, Vec3s c);
+void mtxf_billboard(Mat4 dest, Mat4 mtx, Vec3f position, s16 angle);
+void mtxf_align_terrain_normal(Mat4 dest, Vec3f upDir, Vec3f pos, s16 yaw);
+void mtxf_align_terrain_triangle(Mat4 mtx, Vec3f pos, s16 yaw, f32 radius);
+void mtxf_mul(Mat4 dest, Mat4 a, Mat4 b);
+void mtxf_scale_vec3f(Mat4 dest, Mat4 mtx, Vec3f s);
+void mtxf_mul_vec3s(Mat4 mtx, Vec3s b);
+void mtxf_to_mtx(Mtx *dest, Mat4 src);
+void mtxf_rotate_xy(Mtx *mtx, s16 angle);
+void get_pos_from_transform_mtx(Vec3f dest, Mat4 objMtx, Mat4 camMtx);
 void vec3f_get_dist_and_angle(Vec3f from, Vec3f to, f32 *dist, s16 *pitch, s16 *yaw);
 void vec3f_set_dist_and_angle(Vec3f from, Vec3f to, f32  dist, s16  pitch, s16  yaw);
 s32 approach_s32(s32 current, s32 target, s32 inc, s32 dec);
 f32 approach_f32(f32 current, f32 target, f32 inc, f32 dec);
-s16 atan2s(f32 a, f32 b);
+s16 atan2s(f32 y, f32 x);
 f32 atan2f(f32 a, f32 b);
-void spline_get_weights(Vec4f a, f32 b, UNUSED s32 c);
-void anim_spline_init(Vec4s *a);
-s32 anim_spline_poll(Vec3f a);
+void spline_get_weights(Vec4f result, f32 t, UNUSED s32 c);
+void anim_spline_init(Vec4s *keyFrames);
+s32 anim_spline_poll(Vec3f result);
 
-#endif
+#endif // MATH_UTIL_H

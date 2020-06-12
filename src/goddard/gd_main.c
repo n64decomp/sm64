@@ -1,9 +1,10 @@
-#include <ultra64.h>
-#include <macros.h>
+#include <PR/ultratypes.h>
+
+#include "debug_utils.h"
 #include "gd_main.h"
 #include "gd_memory.h"
+#include "macros.h"
 #include "objects.h"
-#include "debug_utils.h"
 #include "renderer.h"
 
 /* This file was spilt out of debug_memory.asm based on rodata.

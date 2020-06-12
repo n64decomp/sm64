@@ -18,7 +18,7 @@
  * object-based particle effects, are rendered more efficiently by manually
  * generating display lists instead of drawing each particle separately.
  * This file implements snow effects, while in 'envfx_bubbles.c' the
- * implementation for flowers (unused), lava bubbles and jetstream bubbles
+ * implementation for flowers (unused), lava bubbles and jet stream bubbles
  * can be found.
  * The main entry point for envfx is at the bottom of this file, which is
  * called from geo_envfx_main in level_geo.c
@@ -144,7 +144,7 @@ void envfx_cleanup_snow(void *snowParticleArray) {
 
 /**
  * Given two points, return the vector from one to the other represented
- * as euler angles and a length
+ * as Euler angles and a length
  */
 void orbit_from_positions(Vec3s from, Vec3s to, s16 *radius, s16 *pitch, s16 *yaw) {
     f32 dx = to[0] - from[0];
@@ -267,7 +267,7 @@ void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCy
  *  to the point (x: 3380, z: -520). Considering there is an unused blizzard
  *  snow mode, this could have been used to check whether Mario is in a
  *  'blizzard area'. In Cool Cool Mountain and Snowman's Land the area lies
- *  near the starting point and doesn't seem meaningfull. Notably, the point is
+ *  near the starting point and doesn't seem meaningful. Notably, the point is
  *  close to the entrance of SL, so maybe there were plans for an extra hint to
  *  find it. The radius of 3000 units is quite large for that though, covering
  *  more than half of the mirror room.
@@ -337,7 +337,7 @@ void rotate_triangle_vertices(Vec3s vertex1, Vec3s vertex2, Vec3s vertex3, s16 p
 
 /**
  * Append 15 vertices to 'gfx', which is enough for 5 snowflakes starting at
- * 'index' in the buffer. The 3 input vertices represent the roated triangle
+ * 'index' in the buffer. The 3 input vertices represent the rotated triangle
  * around (0,0,0) that will be translated to snowflake positions to draw the
  * snowflake image.
  *

@@ -1,7 +1,7 @@
 // Breakable Box
 
 // 0x08012D70 - 0x08012DF4
-const s16 breakable_box_seg8_collision_08012D70[] = {
+const Collision breakable_box_seg8_collision_08012D70[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(-100, 0, -100),

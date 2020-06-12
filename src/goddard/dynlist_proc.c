@@ -1,21 +1,21 @@
-#include <ultra64.h>
-#include <macros.h>
+#include <PR/ultratypes.h>
 #include <stdio.h>
-#include "gd_types.h"
-#include "bad_declarations.h"
 
-#include "gd_main.h"
-#include "draw_objects.h"
-#include "objects.h"
-#include "particles.h"
-#include "dynlist_proc.h"
-#include "old_menu.h"
+#include "bad_declarations.h"
 #include "debug_utils.h"
-#include "joints.h"
-#include "skin.h"
+#include "draw_objects.h"
+#include "dynlist_proc.h"
+#include "gd_main.h"
 #include "gd_math.h"
-#include "shape_helper.h"
+#include "gd_types.h"
+#include "joints.h"
+#include "macros.h"
+#include "objects.h"
+#include "old_menu.h"
+#include "particles.h"
 #include "renderer.h"
+#include "shape_helper.h"
+#include "skin.h"
 
 /**
  * @file dynlist_proc.c

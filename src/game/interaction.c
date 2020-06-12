@@ -1,25 +1,27 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
-#include "sm64.h"
-#include "interaction.h"
-#include "camera.h"
-#include "level_update.h"
-#include "engine/math_util.h"
-#include "memory.h"
 #include "area.h"
-#include "save_file.h"
+#include "actors/common1.h"
+#include "audio/external.h"
+#include "behavior_actions.h"
+#include "behavior_data.h"
+#include "camera.h"
+#include "course_table.h"
+#include "dialog_ids.h"
+#include "engine/math_util.h"
 #include "engine/surface_collision.h"
-#include "sound_init.h"
 #include "game_init.h"
+#include "interaction.h"
+#include "level_update.h"
 #include "mario.h"
+#include "mario_step.h"
+#include "memory.h"
 #include "obj_behaviors.h"
 #include "object_helpers.h"
-#include "behavior_actions.h"
-#include "audio/external.h"
-#include "behavior_data.h"
-#include "dialog_ids.h"
+#include "save_file.h"
 #include "seq_ids.h"
-#include "course_table.h"
+#include "sm64.h"
+#include "sound_init.h"
 #include "thread6.h"
 
 #define INT_GROUND_POUND_OR_TWIRL (1 << 0) // 0x01
@@ -44,7 +46,6 @@
 
 u8 sDelayInvincTimer;
 s16 sInvulnerable;
-extern u8 warp_pipe_seg3_collision_03009AC8[];
 u32 interact_coin(struct MarioState *, u32, struct Object *);
 u32 interact_water_ring(struct MarioState *, u32, struct Object *);
 u32 interact_star_or_key(struct MarioState *, u32, struct Object *);
@@ -149,7 +150,7 @@ u32 get_mario_cap_flag(struct Object *capObject) {
     return 0;
 }
 /**
- * Returns true if the passed in object has a moving angle yaw 
+ * Returns true if the passed in object has a moving angle yaw
  * in the angular range given towards Mario.
  */
 u32 object_facing_mario(struct MarioState *m, struct Object *o, s16 angleRange) {
@@ -637,7 +638,7 @@ void push_mario_out_of_object(struct MarioState *m, struct Object *o, f32 paddin
 
         find_floor(newMarioX, m->pos[1], newMarioZ, &floor);
         if (floor != NULL) {
-            //! Doesn't update mario's referenced floor (allows oob death when
+            //! Doesn't update Mario's referenced floor (allows oob death when
             // an object pushes you into a steep slope while in a ground action)
             m->pos[0] = newMarioX;
             m->pos[2] = newMarioZ;
@@ -1463,7 +1464,7 @@ u32 interact_koopa_shell(struct MarioState *m, UNUSED u32 interactType, struct O
             play_shell_music();
             mario_drop_held_object(m);
 
-            //! Puts mario in ground action even when in air, making it easy to
+            //! Puts Mario in ground action even when in air, making it easy to
             // escape air actions into crouch slide (shell cancel)
             return set_mario_action(m, ACT_RIDING_SHELL_GROUND, 0);
         }
@@ -1792,7 +1793,7 @@ void mario_process_interactions(struct MarioState *m) {
         m->invincTimer -= 1;
     }
 
-    //! If the kick/punch flags are set and an object collision changes mario's
+    //! If the kick/punch flags are set and an object collision changes Mario's
     // action, he will get the kick/punch wall speed anyway.
     check_kick_or_punch_wall(m);
     m->flags &= ~MARIO_PUNCHING & ~MARIO_KICKING & ~MARIO_TRIPPING;

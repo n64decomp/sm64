@@ -1,4 +1,4 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "prevent_bss_reordering.h"
 
@@ -491,8 +491,7 @@ static s16 *read_vertex_data(s16 **data) {
 }
 
 /**
- * Loads in special environmental regions, such as water,
- * poison gas, and JRB fog.
+ * Loads in special environmental regions, such as water, poison gas, and JRB fog.
  */
 static void load_environmental_regions(s16 **data) {
     s32 numRegions;
@@ -533,6 +532,57 @@ void alloc_surface_pools(void) {
     reset_red_coins_collected();
 }
 
+#ifdef NO_SEGMENTED_MEMORY
+/**
+ * Get the size of the terrain data, to get the correct size when copying later.
+ */
+u32 get_area_terrain_size(s16 *data) {
+    s16 *startPos = data;
+    s32 end = FALSE;
+    s16 terrainLoadType;
+    s32 numVertices;
+    s32 numRegions;
+    s32 numSurfaces;
+    s16 hasForce;
+
+    while (!end) {
+        terrainLoadType = *data++;
+
+        switch (terrainLoadType) {
+            case TERRAIN_LOAD_VERTICES:
+                numVertices = *data++;
+                data += 3 * numVertices;
+                break;
+
+            case TERRAIN_LOAD_OBJECTS:
+                data += get_special_objects_size(data);
+                break;
+
+            case TERRAIN_LOAD_ENVIRONMENT:
+                numRegions = *data++;
+                data += 6 * numRegions;
+                break;
+
+            case TERRAIN_LOAD_CONTINUE:
+                continue;
+
+            case TERRAIN_LOAD_END:
+                end = TRUE;
+                break;
+
+            default:
+                numSurfaces = *data++;
+                hasForce = surface_has_force(terrainLoadType);
+                data += (3 + hasForce) * numSurfaces;
+                break;
+        }
+    }
+
+    return data - startPos;
+}
+#endif
+
+
 /**
  * Process the level file, loading in vertices, surfaces, some objects, and environmental
  * boxes (water, gas, JRB fog).
@@ -550,7 +600,7 @@ void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects
 
     clear_static_surfaces();
 
-    // A while loop interating through each section of the level data. Sections of data
+    // A while loop iterating through each section of the level data. Sections of data
     // are prefixed by a terrain "type." This type is reused for surfaces as the surface
     // type.
     while (TRUE) {
@@ -607,7 +657,7 @@ static void unused_80383604(void) {
 }
 
 /**
- * Applies an object's tranformation to the object's vertices.
+ * Applies an object's transformation to the object's vertices.
  */
 void transform_object_vertices(s16 **data, s16 *vertexData) {
     register s16 *vertices;
@@ -647,8 +697,7 @@ void transform_object_vertices(s16 **data, s16 *vertexData) {
 }
 
 /**
- * Load in the surfaces for the gCurrentObject. This includes setting the flags,
- * exertion, and room.
+ * Load in the surfaces for the gCurrentObject. This includes setting the flags, exertion, and room.
  */
 void load_object_surfaces(s16 **data, s16 *vertexData) {
     s32 surfaceType;

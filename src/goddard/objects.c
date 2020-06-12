@@ -1,24 +1,24 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <macros.h>
 
-#include "gd_types.h"
-#include "gd_macros.h"
-
-#include "gd_main.h"
-#include "sfx.h"
-#include "draw_objects.h"
 #include "objects.h"
-#include "particles.h"
-#include "dynlist_proc.h"
-#include "old_menu.h"
+
 #include "debug_utils.h"
-#include "joints.h"
-#include "skin.h"
+#include "draw_objects.h"
+#include "dynlist_proc.h"
+#include "gd_macros.h"
+#include "gd_main.h"
 #include "gd_math.h"
-#include "shape_helper.h"
+#include "gd_types.h"
+#include "joints.h"
+#include "macros.h"
+#include "old_menu.h"
+#include "particles.h"
 #include "renderer.h"
+#include "sfx.h"
+#include "shape_helper.h"
+#include "skin.h"
 
 // structs
 struct Unk801B9E68 {
@@ -328,7 +328,7 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
     return newObj;
 }
 
-/* @ 22AEA0 for 0xD0; orig name: Unknown8017C6D0 */
+/* @ 22AEA0 for 0xD0; orig name: func_8017C6D0 */
 struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGroup *a2) {
     struct ObjZone *newZone = (struct ObjZone *) make_object(OBJ_TYPE_ZONES);
 
@@ -349,7 +349,7 @@ struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGr
 }
 
 /* @ 22AF70 for 0x60 */
-struct ObjUnk200000 *Unknown8017C7A0(struct ObjVertex *a0, struct ObjFace *a1) {
+struct ObjUnk200000 *func_8017C7A0(struct ObjVertex *a0, struct ObjFace *a1) {
     struct ObjUnk200000 *sp1C = (struct ObjUnk200000 *) make_object(OBJ_TYPE_UNK200000);
 
     sp1C->unk30 = a0;
@@ -968,7 +968,7 @@ void show_details(enum ObjTypeFlag type) {
     }
 }
 /* @ 22C9B8 for 0x24 */
-s32 Unknown8017E1E8(void) {
+s32 func_8017E1E8(void) {
     s32 sp4 = 0;
     return sp4;
 }
@@ -999,7 +999,7 @@ void func_8017E2B8(void) {
 }
 
 /* @ 22CAC0 for 0xF0 */
-struct GdObj *UnknownRecursive8017E2F0(struct GdObj *obj, enum ObjTypeFlag type) {
+struct GdObj *func_8017E2F0(struct GdObj *obj, enum ObjTypeFlag type) {
     UNUSED u32 sp2C;
     enum ObjTypeFlag curObjType;
     struct Links *curGroupLink;
@@ -1010,7 +1010,7 @@ struct GdObj *UnknownRecursive8017E2F0(struct GdObj *obj, enum ObjTypeFlag type)
         case OBJ_TYPE_GROUPS:
             curGroupLink = ((struct ObjGroup *) obj)->link1C;
             while (curGroupLink != NULL) {
-                UnknownRecursive8017E2F0(curGroupLink->obj, type);
+                func_8017E2F0(curGroupLink->obj, type);
                 curGroupLink = curGroupLink->next;
             }
             break;
@@ -1190,7 +1190,7 @@ void func_8017E9EC(struct ObjNet *a0) {
 }
 
 /* @ 22D264 for 0x90 */
-s32 Unknown8017EA94(struct GdVec3f *vec, Mat4f matrix) {
+s32 func_8017EA94(struct GdVec3f *vec, Mat4f matrix) {
     if (vec->x >= matrix[2][2] && vec->x <= matrix[3][1] && vec->z >= matrix[3][0]
         && vec->z <= matrix[3][3]) {
         return 1;
@@ -1200,7 +1200,7 @@ s32 Unknown8017EA94(struct GdVec3f *vec, Mat4f matrix) {
 }
 
 /* @ 22D2F4 for 0x1DC */
-s32 Unknown8017EB24(struct GdObj *a0, struct GdObj *a1) {
+s32 func_8017EB24(struct GdObj *a0, struct GdObj *a1) {
     struct GdVec3f sp44;
     struct GdVec3f sp38;
     struct GdPlaneF *sp34;
@@ -1240,7 +1240,7 @@ s32 Unknown8017EB24(struct GdObj *a0, struct GdObj *a1) {
 }
 
 /* @ 22D4D0 for 0xCC */
-s32 Unknown8017ED00(struct GdObj *a0, struct GdPlaneF *a1) {
+s32 func_8017ED00(struct GdObj *a0, struct GdPlaneF *a1) {
     struct GdVec3f sp1C;
 
     set_cur_dynobj(a0);
@@ -1260,7 +1260,7 @@ s32 Unknown8017ED00(struct GdObj *a0, struct GdPlaneF *a1) {
 }
 
 /* @ 22D59C for 0x90 */
-s32 Unknown8017EDCC(struct GdVec3f *a0, struct GdPlaneF *a1) {
+s32 func_8017EDCC(struct GdVec3f *a0, struct GdPlaneF *a1) {
     if (a0->x >= a1->p0.x) {
         if (a0->x <= a1->p1.x) {
             if (a0->z >= a1->p0.z) {
@@ -1274,7 +1274,7 @@ s32 Unknown8017EDCC(struct GdVec3f *a0, struct GdPlaneF *a1) {
     return 0;
 }
 
-/* @ 22D62C for 0x1F8; orig name: Unknown8017EE5C */
+/* @ 22D62C for 0x1F8; orig name: func_8017EE5C */
 s32 gd_plane_point_within(struct GdPlaneF *a0, struct GdPlaneF *a1) {
     if (a0->p0.x >= a1->p0.x) {
         if (a0->p0.x <= a1->p1.x) {
@@ -1373,7 +1373,7 @@ s32 func_8017F054(struct GdObj *a0, struct GdObj *a1) {
 }
 
 /* @ 22D9E0 for 0x1BC */
-s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
+s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
     struct Links *sp6C;
     struct ObjGroup *sp68;
     UNUSED u32 sp64;
@@ -1417,7 +1417,7 @@ s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
     if (sp68 != NULL) {
         sp6C = sp68->link1C;
         while (sp6C != NULL) {
-            count += UnknownRecursive8017F210(sp6C->obj, a0);
+            count += func_8017F210(sp6C->obj, a0);
             sp6C = sp6C->next;
         }
     }
@@ -1425,7 +1425,7 @@ s32 UnknownRecursive8017F210(struct GdObj *a0, struct GdObj *a1) {
 }
 
 /* @ 22DB9C for 0x38; a0 might be ObjUnk200000* */
-void Unknown8017F3CC(struct Unk8017F3CC *a0) {
+void func_8017F3CC(struct Unk8017F3CC *a0) {
     gd_rotate_and_translate_vec3f(&a0->unk20, D_801B9E48);
 }
 
@@ -1460,7 +1460,7 @@ void func_8017F424(struct GdTriangleF *a0, struct GdTriangleF *a1, f32 a2) {
     d_set_idn_mtx(&sp40);
 }
 
-/* @ 22DD94 for 0x1060; orig name: Unknown8017F5C4 */
+/* @ 22DD94 for 0x1060; orig name: func_8017F5C4 */
 void move_animator(struct ObjAnimator *animObj) {
     struct AnimDataInfo *animData; // array?
     Mat4f *mtxArr;
@@ -1695,7 +1695,7 @@ void move_animator(struct ObjAnimator *animObj) {
     }
 }
 
-/* @ 22EDF4 for 0x300; orig name: Unknown80180624 */
+/* @ 22EDF4 for 0x300; orig name: func_80180624 */
 void drag_picked_object(struct GdObj *inputObj) {
     UNUSED u32 spE4;
     UNUSED u32 spE0;
@@ -1772,7 +1772,7 @@ void find_and_drag_picked_object(struct ObjGroup *group) {
     apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) drag_picked_object, group);
 }
 
-/* @ 22F180 for 0x624; orig name: Unknown801809B0 */
+/* @ 22F180 for 0x624; orig name: func_801809B0 */
 void move_camera(struct ObjCamera *cam) {
     struct GdObj *spEC;
     struct GdVec3f spE0;
@@ -1898,7 +1898,7 @@ void move_cameras_in_grp(struct ObjGroup *group) {
 }
 
 /* @ 22F7DC for 0x36C*/
-void Unknown8018100C(struct ObjLight *light) {
+void func_8018100C(struct ObjLight *light) {
     Mat4f mtx;
     UNUSED u32 pad1C[3];
 
@@ -1959,7 +1959,7 @@ void Unknown8018100C(struct ObjLight *light) {
 
 /* @ 22FB48 for 0x38; orig name: func_80181378 */
 void move_lights_in_grp(struct ObjGroup *group) {
-    apply_to_obj_types_in_group(OBJ_TYPE_LIGHTS, (applyproc_t) Unknown8018100C, group);
+    apply_to_obj_types_in_group(OBJ_TYPE_LIGHTS, (applyproc_t) func_8018100C, group);
 }
 
 /* @ 22FB80 for 0xAC; orig name: func_801813B0 */

@@ -69,4 +69,4 @@
 #define MOV_TEX_ROT_END() \
     0, 0
 
-#endif
+#endif // MOVING_TEXTURE_MACROS_H

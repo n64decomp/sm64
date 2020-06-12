@@ -1,6 +1,8 @@
 #ifndef AUDIO_HEAP_H
 #define AUDIO_HEAP_H
 
+#include <PR/ultratypes.h>
+
 #include "internal.h"
 
 #define SOUND_LOAD_STATUS_NOT_LOADED     0
@@ -69,4 +71,4 @@ void audio_reset_session(void);
 void audio_reset_session(struct AudioSessionSettings *preset);
 #endif
 
-#endif /* AUDIO_HEAP_H */
+#endif // AUDIO_HEAP_H

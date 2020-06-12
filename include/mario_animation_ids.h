@@ -1,5 +1,5 @@
-#ifndef _MARIO_ANIMATION_IDS_H
-#define _MARIO_ANIMATION_IDS_H
+#ifndef MARIO_ANIMATION_IDS_H
+#define MARIO_ANIMATION_IDS_H
 
 /* Mario Animation IDs */
 
@@ -208,7 +208,7 @@ enum MarioAnimID
     /* 0xC8 */ MARIO_ANIM_WAKE_FROM_SLEEP,
     /* 0xC9 */ MARIO_ANIM_WAKE_FROM_LYING,
     /* 0xCA */ MARIO_ANIM_START_TIPTOE,
-    /* 0xCB */ MARIO_ANIM_SLIDEJUMP, // pole jump and wall kick 
+    /* 0xCB */ MARIO_ANIM_SLIDEJUMP, // pole jump and wall kick
     /* 0xCC */ MARIO_ANIM_START_WALLKICK,
     /* 0xCD */ MARIO_ANIM_STAR_DANCE,
     /* 0xCE */ MARIO_ANIM_RETURN_FROM_STAR_DANCE,
@@ -216,4 +216,4 @@ enum MarioAnimID
     /* 0xD0 */ MARIO_ANIM_TRIPLE_JUMP_FLY
 };
 
-#endif /* _MARIO_ANIMATION_IDS_H */
+#endif // MARIO_ANIMATION_IDS_H

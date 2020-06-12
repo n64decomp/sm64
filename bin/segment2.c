@@ -2499,6 +2499,7 @@ static const Lights1 segment2_lights_unused = gdSPDefLights1(
 
 // 0x02014470 - 0x020144B0
 static const Mtx matrix_identity = {
+#ifndef GBI_FLOATS
     {{0x00010000, 0x00000000,
       0x00000001, 0x00000000},
      {0x00000000, 0x00010000,
@@ -2507,19 +2508,32 @@ static const Mtx matrix_identity = {
       0x00000000, 0x00000000},
      {0x00000000, 0x00000000,
       0x00000000, 0x00000000}}
+#else
+    {{1.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 1.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 1.0f}}
+#endif
 };
 
 
 // 0x020144B0 - 0x020144F0
 static const Mtx matrix_fullscreen = {
+#ifndef GBI_FLOATS
     {{0x00000000, 0x00000000,
       0x00000000, 0x00000000},
      {0x00000000, 0xffff0000,
       0xffffffff, 0xffff0001},
-     {0x01990000, 0x00000000,
-      0x00000222, 0x00000000},
+     {((65536 * 2 / SCREEN_WIDTH) << 16) | 0, 0x00000000,
+      (0 << 16) | (65536 * 2 / SCREEN_HEIGHT), 0x00000000},
      {0x00000000, 0x00000000,
       0x00000000, 0x00000000}}
+#else
+    {{2.0f / SCREEN_WIDTH, 0.0f, 0.0f, 0.0f},
+    {0.0f, 2.0f / SCREEN_HEIGHT, 0.0f, 0.0f},
+    {0.0f, 0.0f, -1.0f, 0.0f},
+    {-1.0f, -1.0f, -1.0f, 1.0f}}
+#endif
 };
 
 

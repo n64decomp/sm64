@@ -61,7 +61,7 @@ void bhv_small_water_wave_loop(void) {
     o->header.gfx.scale[1] = sins(o->oWaterObjUnkF8) * 0.2 + 1.0;
     o->oWaterObjUnkF8 += o->oWaterObjUnk100;
     if (o->oPosY > sp1C) {
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         o->oPosY += 5.0f;
         if (gFreeObjectList.next != NULL)
             spawn_object(o, MODEL_SMALL_WATER_SPLASH, bhvObjectWaterSplash);

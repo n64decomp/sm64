@@ -19,7 +19,7 @@ void bhv_breakable_box_small_init(void) {
     cur_obj_scale(0.4f);
     obj_set_hitbox(o, &sBreakableBoxSmallHitbox);
     o->oAnimState = 1;
-    o->activeFlags |= 0x200;
+    o->activeFlags |= ACTIVE_FLAG_UNK9;
 }
 
 void small_breakable_box_spawn_dust(void) {
@@ -46,7 +46,7 @@ void small_breakable_box_act_move(void) {
         spawn_triangle_break_particles(20, 138, 0.7f, 3);
         obj_spawn_yellow_coins(o, 3);
         create_sound_spawner(SOUND_GENERAL_BREAK_BOX);
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
     obj_check_floor_death(sp1E, sObjFloor);
@@ -66,7 +66,7 @@ void breakable_box_small_released_loop(void) {
     // Despawn, and create a corkbox respawner
     if (o->oBreakableBoxSmallFramesSinceReleased > 900) {
         create_respawner(MODEL_BREAKABLE_BOX_SMALL, bhvBreakableBoxSmall, 3000);
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }
 
@@ -81,7 +81,7 @@ void breakable_box_small_idle_loop(void) {
             break;
 
         case 101:
-            o->activeFlags = 0;
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
             create_respawner(MODEL_BREAKABLE_BOX_SMALL, bhvBreakableBoxSmall, 3000);
             break;
     }
@@ -111,7 +111,7 @@ void breakable_box_small_get_thrown(void) {
     o->oVelY = 20.0f;
     o->oBreakableBoxSmallReleased = 1;
     o->oBreakableBoxSmallFramesSinceReleased = 0;
-    o->activeFlags &= ~0x200;
+    o->activeFlags &= ~ACTIVE_FLAG_UNK9;
 }
 
 void bhv_breakable_box_small_loop(void) {

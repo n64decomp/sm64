@@ -96,7 +96,7 @@ void water_ring_act_collected(void) {
     f32 avgScale = (f32) o->oTimer * 0.2 + o->oWaterRingAvgScale;
 
     if (o->oTimer >= 21)
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 
     o->oOpacity -= 10;
     if (o->oOpacity < 0)
@@ -116,7 +116,7 @@ void water_ring_act_not_collected(void) {
     if (o->oTimer >= 226) {
         o->oOpacity -= 2;
         if (o->oOpacity < 3)
-            o->activeFlags = 0;
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
     water_ring_check_collection(avgScale, ringManager);
@@ -207,7 +207,7 @@ void manta_water_ring_act_not_collected(void) {
     if (o->oTimer >= 151) {
         o->oOpacity -= 2;
         if (o->oOpacity < 3)
-            o->activeFlags = 0;
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
     water_ring_check_collection(avgScale, ringManager);

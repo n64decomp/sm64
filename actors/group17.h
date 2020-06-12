@@ -32,8 +32,8 @@ extern const Gfx dorrie_seg6_dl_0600DE38[];
 extern const Gfx dorrie_seg6_dl_0600DF60[];
 extern const Gfx dorrie_seg6_dl_0600DFA8[];
 extern const struct Animation *const dorrie_seg6_anims_0600F638[];
-extern const s16 dorrie_seg6_collision_0600F644[];
-extern const s16 dorrie_seg6_collision_0600FBB8[];
+extern const Collision dorrie_seg6_collision_0600F644[];
+extern const Collision dorrie_seg6_collision_0600FBB8[];
 
 // mr_i_eyeball
 extern const GeoLayout mr_i_geo[];

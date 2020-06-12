@@ -1,7 +1,7 @@
 // bouncing_fireball.c.inc
 
 void bhv_bouncing_fireball_flame_loop(void) {
-    o->activeFlags |= 0x400;
+    o->activeFlags |= ACTIVE_FLAG_UNK10;
     cur_obj_update_floor_and_walls();
     switch (o->oAction) {
         case 0:

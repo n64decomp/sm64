@@ -7,7 +7,7 @@
 /**
  * The collision models for cube and triangular prism, respectively.
  */
-static void *sTTCRotatingSolidCollisionModels[] = {
+static void const *sTTCRotatingSolidCollisionModels[] = {
     ttc_seg7_collision_07014F70,
     ttc_seg7_collision_07015008,
 };

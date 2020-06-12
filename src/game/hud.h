@@ -1,7 +1,8 @@
 #ifndef HUD_H
 #define HUD_H
 
-#include "types.h"
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
 
 enum PowerMeterAnimation {
     POWER_METER_HIDDEN,
@@ -20,14 +21,8 @@ enum CameraHUDLut {
     GLYPH_CAM_ARROW_DOWN
 };
 
-// Segment 3
-extern u8 *power_meter_health_segments_lut[];
-extern Gfx* dl_power_meter_base;
-extern Gfx* dl_power_meter_health_segments_begin;
-extern Gfx* dl_power_meter_health_segments_end;
-
 // Functions
-extern void set_hud_camera_status(s16 status);
-extern void render_hud(void);
+void set_hud_camera_status(s16 status);
+void render_hud(void);
 
-#endif /* HUD_H */
+#endif // HUD_H

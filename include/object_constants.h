@@ -1,10 +1,11 @@
-#ifndef _OBJECT_CONSTANTS_H
-#define _OBJECT_CONSTANTS_H
+#ifndef OBJECT_CONSTANTS_H
+#define OBJECT_CONSTANTS_H
 
 // This file contains macros that provide descriptive names for
 // field-specific and object-specific constants, e.g. actions.
 
 /* activeFlags */
+#define ACTIVE_FLAG_DEACTIVATED            0         // 0x0000
 #define ACTIVE_FLAG_ACTIVE                 (1 <<  0) // 0x0001
 #define ACTIVE_FLAG_FAR_AWAY               (1 <<  1) // 0x0002
 #define ACTIVE_FLAG_UNK2                   (1 <<  2) // 0x0004
@@ -12,12 +13,11 @@
 #define ACTIVE_FLAG_UNIMPORTANT            (1 <<  4) // 0x0010
 #define ACTIVE_FLAG_INITIATED_TIME_STOP    (1 <<  5) // 0x0020
 #define ACTIVE_FLAG_MOVE_THROUGH_GRATE     (1 <<  6) // 0x0040
-#define ACTIVE_FLAG_UNK7                   (1 <<  7) // 0x0080
+#define ACTIVE_FLAG_DITHERED_ALPHA         (1 <<  7) // 0x0080
 #define ACTIVE_FLAG_UNK8                   (1 <<  8) // 0x0100
 #define ACTIVE_FLAG_UNK9                   (1 <<  9) // 0x0200
 #define ACTIVE_FLAG_UNK10                  (1 << 10) // 0x0400
 
-#define ACTIVE_FLAGS_DEACTIVATED 0
 
 /* respawnInfoType */
 #define RESPAWN_INFO_TYPE_NULL 0
@@ -211,7 +211,7 @@
     #define BLUE_FISH_ACT_TURN 1
     #define BLUE_FISH_ACT_ASCEND 2
     #define BLUE_FISH_ACT_TURN_BACK 3
-    
+
     /* oAction: bhv_blue_fish_spawn_loop */
     #define BLUE_FISH_ACT_SPAWN 0
     #define BLUE_FISH_ACT_ROOM 1
@@ -757,11 +757,11 @@
     /* Walking sounds */
     #define PENGUIN_WALK_BABY 0
     #define PENGUIN_WALK_BIG  1
-    
+
     /* Animations */
     #define PENGUIN_ANIM_WALK 0
     #define PENGUIN_ANIM_IDLE 3
-    
+
 /* Racing penguin */
     /* oAction */
     #define RACING_PENGUIN_ACT_WAIT_FOR_MARIO 0
@@ -770,14 +770,14 @@
     #define RACING_PENGUIN_ACT_RACE 3
     #define RACING_PENGUIN_ACT_FINISH_RACE 4
     #define RACING_PENGUIN_ACT_SHOW_FINAL_TEXT 5
-    
+
 /* SL walking penguin */
     /* oAction */
     #define SL_WALKING_PENGUIN_ACT_MOVING_FORWARDS 0
     #define SL_WALKING_PENGUIN_ACT_TURNING_BACK 1
     #define SL_WALKING_PENGUIN_ACT_RETURNING 2
     #define SL_WALKING_PENGUIN_ACT_TURNING_FORWARDS 3
-    
+
 /* Snowman wind */
     /* oSubAction */
     #define SL_SNOWMAN_WIND_ACT_IDLE 0
@@ -971,4 +971,4 @@
     #define BOWSER_PUZZLE_ACT_WAIT_FOR_COMPLETE 1
     #define BOWSER_PUZZLE_ACT_DONE 2
 
-#endif
+#endif // OBJECT_CONSTANTS_H

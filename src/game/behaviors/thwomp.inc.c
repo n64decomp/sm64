@@ -2,8 +2,8 @@
 
 void grindel_thwomp_act_4(void) {
     if (o->oTimer == 0)
-        o->oThwompUnkF4 = random_float() * 10.0f + 20.0f;
-    if (o->oTimer > o->oThwompUnkF4)
+        o->oThwompRandomTimer = random_float() * 10.0f + 20.0f;
+    if (o->oTimer > o->oThwompRandomTimer)
         o->oAction = 0;
 }
 
@@ -29,8 +29,8 @@ void grindel_thwomp_act_3(void) {
 
 void grindel_thwomp_act_1(void) {
     if (o->oTimer == 0)
-        o->oThwompUnkF4 = random_float() * 30.0f + 10.0f;
-    if (o->oTimer > o->oThwompUnkF4)
+        o->oThwompRandomTimer = random_float() * 30.0f + 10.0f;
+    if (o->oTimer > o->oThwompRandomTimer)
         o->oAction = 2;
 }
 

@@ -17,7 +17,7 @@ void bhv_explosion_loop(void) {
         } else
             spawn_object(o, MODEL_SMOKE, bhvBobombBullyDeathSmoke);
 
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
     o->oOpacity -= 14;

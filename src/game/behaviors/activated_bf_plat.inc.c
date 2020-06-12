@@ -16,7 +16,7 @@
  * move off of it. To do this, they changed it to a bhvPlatformOnTrack, but
  * forgot to remove its entry in this table.
  */
-static void *sActivatedBackAndForthPlatformCollisionModels[] = {
+static void const *sActivatedBackAndForthPlatformCollisionModels[] = {
     /* ACTIVATED_BF_PLAT_TYPE_BITS_ARROW_PLAT */ bits_seg7_collision_0701AD54,
     /* ACTIVATED_BF_PLAT_TYPE_BITFS_MESH_PLAT */ bitfs_seg7_collision_070157E0,
     /* ACTIVATED_BF_PLAT_TYPE_BITFS_ELEVATOR  */ bitfs_seg7_collision_07015124

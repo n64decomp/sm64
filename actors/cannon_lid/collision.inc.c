@@ -1,7 +1,7 @@
 // Cannon Lid
 
 // 0x08004950 - 0x08004980
-const s16 cannon_lid_seg8_collision_08004950[] = {
+const Collision cannon_lid_seg8_collision_08004950[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x4),
     COL_VERTEX(112, 0, -111),

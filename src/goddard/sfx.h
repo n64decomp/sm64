@@ -1,7 +1,7 @@
-#ifndef GD_MARIO_HEAD_SFX_H
-#define GD_MARIO_HEAD_SFX_H
+#ifndef GD_SFX_H
+#define GD_SFX_H
 
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 // Sfx for Mario Head Screen
 enum GdSfx {
@@ -17,9 +17,9 @@ enum GdSfx {
 };
 
 // functions
-extern void gd_reset_sfx(void);
-extern u32 gd_new_sfx_to_play(void);
-extern void gd_sfx_played(void);
-extern void gd_play_sfx(u32);
+void gd_reset_sfx(void);
+u32 gd_new_sfx_to_play(void);
+void gd_sfx_played(void);
+void gd_play_sfx(enum GdSfx sfx);
 
-#endif /* GD_MARIO_HEAD_SFX_H */
+#endif // GD_SFX_H

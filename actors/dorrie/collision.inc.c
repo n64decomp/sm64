@@ -1,7 +1,7 @@
 // Dorrie
 
 // 0x0600F644 - 0x0600FBB8
-const s16 dorrie_seg6_collision_0600F644[] = {
+const Collision dorrie_seg6_collision_0600F644[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x4E),
     COL_VERTEX(-104, 657, 512),
@@ -243,7 +243,7 @@ const s16 dorrie_seg6_collision_0600F644[] = {
 };
 
 // 0x0600FBB8 - 0x060100CE
-const s16 dorrie_seg6_collision_0600FBB8[] = {
+const Collision dorrie_seg6_collision_0600FBB8[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x49),
     COL_VERTEX(-301, -141, -152),

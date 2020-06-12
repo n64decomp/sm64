@@ -1,21 +1,20 @@
-#include <ultra64.h>
-#include <macros.h>
+#include <PR/ultratypes.h>
 
-#include "gd_types.h"
-#include "shape_helper.h"
-#include "gd_main.h"
+#include "debug_utils.h"
 #include "draw_objects.h"
+#include "dynlist_proc.h"
+#include "dynlists/dynlist_macros.h"
+#include "dynlists/dynlists.h"
+#include "gd_main.h"
+#include "gd_math.h"
+#include "gd_types.h"
+#include "joints.h"
+#include "macros.h"
 #include "objects.h"
 #include "particles.h"
-#include "dynlist_proc.h"
-#include "debug_utils.h"
-#include "joints.h"
-#include "skin.h"
-#include "gd_math.h"
 #include "renderer.h"
-
-#include "dynlists/dynlists.h"
-#include "dynlists/dynlist_macros.h"
+#include "shape_helper.h"
+#include "skin.h"
 
 #ifndef VERSION_EU
 #include <prevent_bss_reordering.h>
@@ -886,7 +885,7 @@ struct ObjMaterial *find_or_add_new_mtl(struct ObjGroup *group, UNUSED s32 a1, f
     }
 
     newMtl = make_material(0, NULL, 1);
-    set_cur_dynobj(newMtl);
+    set_cur_dynobj((struct GdObj *)newMtl);
     d_set_diffuse(r, g, b);
     addto_group(group, (struct GdObj *) newMtl);
 
@@ -1418,7 +1417,7 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     sp34 = d_use_obj("N112l");
     sp30->unk1F8 = make_group(1, sp34);
 
-    sp30->fn2C = &Proc8018EBE8;
+    sp30->fn2C = &func_8018EBE8;
     sp30->unk1D0 = sp28;
     sp30->header.drawFlags &= ~OBJ_IS_GRABBALE;
 
@@ -1426,7 +1425,7 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     sp34 = d_use_obj("N96l");
     sp30->unk1F8 = make_group(1, sp34);
 
-    sp30->fn2C = &Proc8018EBE8;
+    sp30->fn2C = &func_8018EBE8;
     sp30->unk1D0 = sp28;
     sp30->header.drawFlags &= ~OBJ_IS_GRABBALE;
 

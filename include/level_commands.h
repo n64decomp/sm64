@@ -34,6 +34,19 @@
 #define REGULAR_FACE 0x0002
 #define DIZZY_FACE 0x0003
 
+#ifdef NO_SEGMENTED_MEMORY
+#define EXECUTE(seg, script, scriptEnd, entry) \
+    CMD_BBH(0x00, 0x10, 0x0000), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL), \
+    CMD_PTR(entry)
+
+#define EXIT_AND_EXECUTE(seg, script, scriptEnd, entry) \
+    CMD_BBH(0x01, 0x10, 0x0000), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL), \
+    CMD_PTR(entry)
+#else
 #define EXECUTE(seg, script, scriptEnd, entry) \
     CMD_BBH(0x00, 0x10, seg), \
     CMD_PTR(script), \
@@ -45,6 +58,7 @@
     CMD_PTR(script), \
     CMD_PTR(scriptEnd), \
     CMD_PTR(entry)
+#endif
 
 #define EXIT() \
     CMD_BBH(0x02, 0x04, 0x0000)
@@ -117,6 +131,23 @@
 #define POP_POOL() \
     CMD_BBH(0x15, 0x04, 0x0000)
 
+#ifdef NO_SEGMENTED_MEMORY
+#define FIXED_LOAD(loadAddr, romStart, romEnd) \
+    CMD_BBH(0x16, 0x10, 0x0000), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL)
+
+#define LOAD_RAW(seg, romStart, romEnd) \
+    CMD_BBH(0x17, 0x0C, 0x0000), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL)
+
+#define LOAD_MIO0(seg, romStart, romEnd) \
+    CMD_BBH(0x18, 0x0C, 0x0000), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL)
+#else
 #define FIXED_LOAD(loadAddr, romStart, romEnd) \
     CMD_BBH(0x16, 0x10, 0x0000), \
     CMD_PTR(loadAddr), \
@@ -132,14 +163,22 @@
     CMD_BBH(0x18, 0x0C, seg), \
     CMD_PTR(romStart), \
     CMD_PTR(romEnd)
+#endif
 
 #define LOAD_MARIO_HEAD(sethead) \
     CMD_BBH(0x19, 0x04, sethead)
 
+#ifdef NO_SEGMENTED_MEMORY
+#define LOAD_MIO0_TEXTURE(seg, romStart, romEnd) \
+    CMD_BBH(0x1A, 0x0C, 0x0000), \
+    CMD_PTR(NULL), \
+    CMD_PTR(NULL)
+#else
 #define LOAD_MIO0_TEXTURE(seg, romStart, romEnd) \
     CMD_BBH(0x1A, 0x0C, seg), \
     CMD_PTR(romStart), \
     CMD_PTR(romEnd)
+#endif
 
 #define INIT_LEVEL() \
     CMD_BBH(0x1B, 0x04, 0x0000)
@@ -275,4 +314,4 @@
 #define GET_OR_SET(op, var) \
     CMD_BBBB(0x3C, 0x04, op, var)
 
-#endif
+#endif // LEVEL_COMMANDS_H

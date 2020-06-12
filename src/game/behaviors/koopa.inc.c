@@ -53,7 +53,7 @@ static u8 sKoopaShelledAttackHandlers[] = {
 struct KoopaTheQuickProperties {
     s16 initText;
     s16 winText;
-    void *path;
+    void const *path;
     Vec3s starPos;
 };
 

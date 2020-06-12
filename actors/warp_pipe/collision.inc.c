@@ -1,7 +1,7 @@
 // Warp Pipe
 
 // 0x03009AC8 - 0x03009CD8
-const s16 warp_pipe_seg3_collision_03009AC8[] = {
+const Collision warp_pipe_seg3_collision_03009AC8[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x24),
     COL_VERTEX(-101, 0, 102),

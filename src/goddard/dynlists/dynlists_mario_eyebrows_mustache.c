@@ -1,4 +1,5 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
+
 #include "dynlist_macros.h"
 #include "dynlists.h"
 #include "../dynlist_proc.h"

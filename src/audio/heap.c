@@ -1,5 +1,4 @@
 #include <ultra64.h>
-#include <macros.h>
 
 #include "heap.h"
 #include "data.h"
@@ -303,7 +302,7 @@ void temporary_pools_init(struct PoolSplit *a) {
 }
 
 #ifndef VERSION_EU
-static void unused_803163D4() {
+static void unused_803163D4(void) {
 }
 #endif
 

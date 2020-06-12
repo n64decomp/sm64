@@ -1,10 +1,11 @@
-#include <ultra64.h>
-#include <macros.h>
-#include "gd_types.h"
+#include <PR/ultratypes.h>
+
+#include "debug_utils.h"
 #include "gd_macros.h"
 #include "gd_main.h"
 #include "gd_math.h"
-#include "debug_utils.h"
+#include "gd_types.h"
+#include "macros.h"
 #include "renderer.h"
 
 /**

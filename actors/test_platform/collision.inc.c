@@ -1,7 +1,7 @@
 // Test Platform (small tiny platform 1/4th the size of a box. Probably used in early modeling tests?)
 
 // 0x080262F8 - 0x0802637C
-const s16 unknown_seg8_collision_080262F8[] = {
+const Collision unknown_seg8_collision_080262F8[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(200, 0, -200),

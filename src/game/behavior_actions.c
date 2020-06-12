@@ -1,40 +1,46 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
-#include "sm64.h"
 #include "types.h"
+#include "actors/common1.h"
+#include "actors/group12.h"
+#include "actors/group13.h"
+#include "area.h"
+#include "audio/external.h"
 #include "behavior_actions.h"
-#include "game_init.h"
-#include "main.h"
-#include "mario.h"
-#include "engine/behavior_script.h"
-#include "engine/math_util.h"
-#include "object_helpers.h"
 #include "behavior_data.h"
-#include "obj_behaviors.h"
+#include "camera.h"
+#include "debug.h"
+#include "dialog_ids.h"
+#include "engine/behavior_script.h"
+#include "engine/graph_node.h"
+#include "engine/math_util.h"
 #include "engine/surface_collision.h"
 #include "engine/surface_load.h"
+#include "game_init.h"
+#include "ingame_menu.h"
+#include "interaction.h"
+#include "level_table.h"
 #include "level_update.h"
-#include "audio/external.h"
-#include "seq_ids.h"
-#include "dialog_ids.h"
-#include "save_file.h"
-#include "area.h"
-#include "engine/graph_node.h"
-#include "camera.h"
-#include "spawn_object.h"
+#include "levels/bob/header.h"
+#include "levels/castle_inside/header.h"
+#include "levels/hmc/header.h"
+#include "main.h"
+#include "mario.h"
 #include "mario_actions_cutscene.h"
-#include "object_list_processor.h"
-#include "spawn_sound.h"
-#include "debug.h"
-#include "object_constants.h"
 #include "mario_step.h"
+#include "obj_behaviors.h"
 #include "obj_behaviors_2.h"
+#include "object_constants.h"
+#include "object_helpers.h"
+#include "object_list_processor.h"
 #include "paintings.h"
 #include "platform_displacement.h"
-#include "interaction.h"
-#include "ingame_menu.h"
 #include "rendering_graph_node.h"
-#include "level_table.h"
+#include "save_file.h"
+#include "seq_ids.h"
+#include "sm64.h"
+#include "spawn_object.h"
+#include "spawn_sound.h"
 #include "thread6.h"
 
 #define o gCurrentObject
@@ -79,30 +85,11 @@ struct Struct8032F754 {
     f32 unk2;
 };
 
-struct Struct8032FCE8 {
-    s16 unk0;
-    s16 unk1;
-    void *unk2;
+struct OpenableGrill {
+    s16 halfWidth;
+    s16 modelID;
+    const Collision *collision;
 };
-
-extern void bhv_pole_base_loop();
-extern s16 gDebugInfo[][8];
-extern s8 gDoorAdjacentRooms[][2];
-extern u8 inside_castle_seg7_collision_ddd_warp_2[];
-extern u8 inside_castle_seg7_collision_ddd_warp[];
-extern s32 gDialogResponse;
-extern s32 gObjCutsceneDone;
-extern u8 gRecentCutscene;
-extern s8 *D_8032F96C[];
-extern s16 bowser_seg6_unkmoveshorts_060576FC[];
-extern struct Animation *blue_fish_seg3_anims_0301C2B0[];
-extern struct Animation *cyan_fish_seg6_anims_0600E264[];
-extern struct Animation *blue_fish_seg3_anims_0301C2B0[];
-
-void common_anchor_mario_behavior(f32, f32, s32);
-
-s32 mario_moving_fast_enough_to_make_piranha_plant_bite(void);
-void obj_set_secondary_camera_focus(void);
 
 s32 D_8032F0C0[] = { SAVE_FLAG_HAVE_WING_CAP, SAVE_FLAG_HAVE_METAL_CAP, SAVE_FLAG_HAVE_VANISH_CAP };
 
@@ -133,14 +120,14 @@ s16 D_8032F0CC[] = { 6047, 5664, 5292, 4934, 4587, 4254, 3933, 3624, 3329, 3046,
 struct SpawnParticlesInfo D_8032F270 = { 2, 20, MODEL_MIST, 0, 40, 5, 30, 20, 252, 30, 330.0f, 10.0f };
 
 // generate_wind_puffs/dust (something like that)
-void spawn_mist_particles_variable(s32 sp18, s32 sp1C, f32 sp20) {
-    D_8032F270.sizeBase = sp20;
-    D_8032F270.sizeRange = sp20 / 20.0;
-    D_8032F270.offsetY = sp1C;
-    if (sp18 == 0) {
+void spawn_mist_particles_variable(s32 count, s32 offsetY, f32 size) {
+    D_8032F270.sizeBase = size;
+    D_8032F270.sizeRange = size / 20.0;
+    D_8032F270.offsetY = offsetY;
+    if (count == 0) {
         D_8032F270.count = 20;
-    } else if (sp18 > 20) {
-        D_8032F270.count = sp18;
+    } else if (count > 20) {
+        D_8032F270.count = count;
     } else {
         D_8032F270.count = 4;
     }

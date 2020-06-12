@@ -1,13 +1,8 @@
-#include <ultra64.h>
-#include "sm64.h"
+#include <PR/ultratypes.h>
 
-#include "game/level_update.h"
-#include "math_util.h"
-#include "game/memory.h"
+#include "types.h"
+
 #include "graph_node.h"
-#include "game/rendering_graph_node.h"
-#include "game/area.h"
-#include "geo_layout.h"
 
 #if IS_64_BIT
 static s16 next_s16_in_geo_script(s16 **src) {

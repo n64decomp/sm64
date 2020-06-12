@@ -14,8 +14,8 @@ extern const Gfx capswitch_seg5_dl_05003350[];
 extern const Gfx capswitch_seg5_dl_05003370[];
 extern const Gfx capswitch_seg5_dl_05003390[];
 extern const Gfx capswitch_seg5_dl_050033B0[];
-extern const s16 capswitch_collision_050033D0[];
-extern const s16 capswitch_collision_05003448[];
+extern const Collision capswitch_collision_050033D0[];
+extern const Collision capswitch_collision_05003448[];
 
 // springboard
 extern const GeoLayout springboard_top_geo[];
@@ -24,6 +24,6 @@ extern const GeoLayout springboard_bottom_geo[];
 extern const Gfx springboard_checkerboard_seg5_dl_050016B8[];
 extern const Gfx springboard_spring_seg5_dl_05001800[];
 extern const Gfx springboard_checkerboard_seg5_dl_05001900[];
-extern const s16 springboard_collision_05001A28[];
+extern const Collision springboard_collision_05001A28[];
 
 #endif

@@ -1,14 +1,15 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
-#include "sm64.h"
-#include "main.h"
-#include "print.h"
-#include "engine/math_util.h"
 #include "area.h"
-#include "shadow.h"
-#include "memory.h"
+#include "engine/math_util.h"
 #include "game_init.h"
+#include "gfx_dimensions.h"
+#include "main.h"
+#include "memory.h"
+#include "print.h"
 #include "rendering_graph_node.h"
+#include "shadow.h"
+#include "sm64.h"
 
 /**
  * This file contains the code that processes the scene graph for rendering.
@@ -505,13 +506,18 @@ static void geo_process_background(struct GraphNodeBackground *node) {
     if (list != 0) {
         geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(list), node->fnNode.node.flags >> 8);
     } else if (gCurGraphNodeMasterList != NULL) {
+#ifndef F3DEX_GBI_2E
         Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 7);
+#else
+        Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 8);
+#endif
         Gfx *gfx = gfxStart;
 
         gDPPipeSync(gfx++);
         gDPSetCycleType(gfx++, G_CYC_FILL);
         gDPSetFillColor(gfx++, node->background);
-        gDPFillRectangle(gfx++, 0, BORDER_HEIGHT, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1 - BORDER_HEIGHT);
+        gDPFillRectangle(gfx++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), BORDER_HEIGHT,
+        GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - BORDER_HEIGHT - 1);
         gDPPipeSync(gfx++);
         gDPSetCycleType(gfx++, G_CYC_1CYCLE);
         gSPEndDisplayList(gfx++);
@@ -700,7 +706,7 @@ static void geo_process_shadow(struct GraphNodeShadow *node) {
 
 /**
  * Check whether an object is in view to determine whether it should be drawn.
- * This is known as frustrum culling.
+ * This is known as frustum culling.
  * It checks whether the object is far away, very close / behind the camera,
  * or horizontally out of view. It does not check whether it is vertically
  * out of view. It assumes a sphere of 300 units around the object's position
@@ -715,7 +721,7 @@ static void geo_process_shadow(struct GraphNodeShadow *node) {
  * static camera instead of a moving camera through a static world, which in
  * this case simplifies calculations. Note that the perspective matrix is not
  * on the matrix stack, so there are still calculations with the fov to compute
- * the slope of the lines of the frustrum.
+ * the slope of the lines of the frustum.
  *
  *        z-
  *
@@ -750,6 +756,12 @@ static int obj_is_in_view(struct GraphNodeObject *node, Mat4 matrix) {
     // -matrix[3][2] is the depth, which gets multiplied by tan(halfFov) to get
     // the amount of units between the center of the screen and the horizontal edge
     // given the distance from the object to the camera.
+
+#ifdef WIDESCREEN
+    // This multiplication should really be performed on 4:3 as well,
+    // but the issue will be more apparent on widescreen.
+    hScreenEdge *= GFX_DIMENSIONS_ASPECT_RATIO;
+#endif
 
     if (geo != NULL && geo->type == GRAPH_NODE_TYPE_CULLING_RADIUS) {
         cullingRadius =

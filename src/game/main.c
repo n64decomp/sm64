@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "sm64.h"
-#include "prevent_bss_reordering.h"
 #include "audio/external.h"
 #include "game_init.h"
 #include "memory.h"
@@ -246,7 +245,7 @@ void handle_vblank(void) {
     receive_new_tasks();
 
     // First try to kick off an audio task. If the gfx task is currently
-    // running, we need to asychronously interrupt it -- handle_sp_complete
+    // running, we need to asynchronously interrupt it -- handle_sp_complete
     // will pick up on what we're doing and start the audio task for us.
     // If there is already an audio task running, there is nothing to do.
     // If there is no audio task available, try a gfx task instead.

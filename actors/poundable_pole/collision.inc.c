@@ -1,7 +1,7 @@
 // Poundable Pole
 
 // 0x06002490 - 0x06002580
-const s16 poundable_pole_collision_06002490[] = {
+const Collision poundable_pole_collision_06002490[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x10),
     COL_VERTEX(-39, -19, -96),

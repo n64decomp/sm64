@@ -1,7 +1,7 @@
 // Springboard
 
 // 0x05001A28 - 0x05001B48
-const s16 springboard_collision_05001A28[] = {
+const Collision springboard_collision_05001A28[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0xC),
     COL_VERTEX(205, 0, 0),

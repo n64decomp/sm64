@@ -1,5 +1,5 @@
-#ifndef _DYN_LIST_MACROS_H_
-#define _DYN_LIST_MACROS_H_
+#ifndef GD_DYNLIST_MACROS_H
+#define GD_DYNLIST_MACROS_H
 
 /* DynListCmd Macros */
 /* Necessary start command for the dynlist. List will not process otherwise. */
@@ -215,7 +215,7 @@
 #define CopyStrToIdBuf(w1) \
     { 43, {(void *)(w1)}, {0}, {0.0, 0.0, 0.0} }
 
-/* Set f32 paramter PARAM to VALUE. TODO: Ennumerate parameters */
+/* Set f32 paramter PARAM to VALUE. TODO: Enumerate parameters */
 /* Supported Objs: shapes, vertices, gadgets */
 #define SetParamF(w2, x) \
     { 44, {0}, {(void *)(w2)}, {(x), 0.0, 0.0} }
@@ -263,4 +263,4 @@
 #define MakeNetFromShapeDblPtr(w1) \
     { 55, {(void *)(w1)}, {0}, {0.0, 0.0, 0.0} }
 
-#endif /* _DYN_LIST_MACROS_H_ */
+#endif // GD_DYNLIST_MACROS_H

@@ -1,5 +1,5 @@
-#ifndef DIALOG_IDS
-#define DIALOG_IDS
+#ifndef DIALOG_IDS_H
+#define DIALOG_IDS_H
 
 enum DialogId {
     DIALOG_000,
@@ -175,4 +175,4 @@ enum DialogId {
     DIALOG_COUNT
 };
 
-#endif
+#endif // DIALOG_IDS_H

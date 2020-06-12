@@ -87,7 +87,7 @@ void bhv_bowling_ball_roll_loop(void) {
             spawn_mist_particles_variable(0, 0, 92.0f);
         }
 
-        o->activeFlags = 0;
+        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
     if ((collisionFlags & OBJ_COL_FLAG_GROUNDED) && (o->oVelY > 5.0f))

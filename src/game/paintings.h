@@ -1,11 +1,11 @@
 #ifndef PAINTINGS_H
 #define PAINTINGS_H
 
-#include "types.h"
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
 
-/**
- * @file paintings.h
- */
+#include "macros.h"
+#include "types.h"
 
 /// Use to properly set a GraphNodeGenerated's parameter to point to the right painting
 #define PAINTING_ID(id, grp) id | (grp << 8)
@@ -40,11 +40,11 @@ struct Painting
     /// Either PAINTING_IMAGE or PAINTING_ENV_MAP
     s8 textureType;
 
-    /// The floor mario was on last frame
+    /// The floor Mario was on last frame
     s8 lastFloor;
-    /// The floor mario is currently on
+    /// The floor Mario is currently on
     s8 currFloor;
-    /// The floor mario just entered
+    /// The floor Mario just entered
     s8 floorEntered;
 
     /// The painting's state, see top of paintings.c
@@ -105,43 +105,17 @@ struct Painting
     /// The painting's transparency. Determines what layer the painting is in.
     u8 alpha;
 
-    /// True if mario was under the painting's y coordinate last frame
+    /// True if Mario was under the painting's y coordinate last frame
     s8 marioWasUnder;
-    /// True if mario is currently under the painting's y coordinate
+    /// True if Mario is currently under the painting's y coordinate
     s8 marioIsUnder;
-    /// True if mario just went under the painting's y coordinate on this frame
+    /// True if Mario just went under the painting's y coordinate on this frame
     s8 marioWentUnder;
 
     /// Uniformly scales the painting to a multiple of PAINTING_SIZE.
     /// By default a painting is 614.0 x 614.0
     f32 size;
 };
-
-extern struct Painting cotmc_painting;
-
-extern struct Painting bob_painting;
-extern struct Painting ccm_painting;
-extern struct Painting wf_painting;
-extern struct Painting jrb_painting;
-extern struct Painting lll_painting;
-extern struct Painting ssl_painting;
-extern struct Painting hmc_painting;
-extern struct Painting ddd_painting;
-extern struct Painting wdw_painting;
-extern struct Painting thi_tiny_painting;
-extern struct Painting ttm_painting;
-extern struct Painting ttc_painting;
-extern struct Painting sl_painting;
-extern struct Painting thi_huge_painting;
-
-extern struct Painting ttm_slide_painting;
-
-extern u16 gAreaUpdateCounter;
-extern f32 gPaintingMarioYEntry;
-
-// defined in file
-extern s16 gPaintingMarioFloorType;
-extern f32 gPaintingMarioXPos, gPaintingMarioYPos, gPaintingMarioZPos;
 
 /**
  * Contains the position and normal of a vertex in the painting's generated mesh.
@@ -151,12 +125,17 @@ struct PaintingMeshVertex {
     /*0x06*/ s8 norm[3];
 };
 
+extern s16 gPaintingMarioFloorType;
+extern f32 gPaintingMarioXPos;
+extern f32 gPaintingMarioYPos;
+extern f32 gPaintingMarioZPos;
+
 extern struct PaintingMeshVertex *gPaintingMesh;
 extern Vec3f *gPaintingTriNorms;
 extern struct Painting *gRipplingPainting;
 extern s8 gDddPaintingStatus;
 
-extern Gfx *geo_painting_draw(s32 run, struct GraphNode *node, void *context);
-extern Gfx *geo_painting_update(s32 run, struct GraphNode *node, f32 c[4][4]);
+Gfx *geo_painting_draw(s32 callContext, struct GraphNode *node, UNUSED void *context);
+Gfx *geo_painting_update(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 c);
 
-#endif /* PAINTINGS_H */
+#endif // PAINTINGS_H

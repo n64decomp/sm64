@@ -1,56 +1,45 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
+#include "area.h"
+#include "behavior_actions.h"
 #include "behavior_data.h"
-#include "engine/behavior_script.h"
 #include "camera.h"
 #include "debug.h"
+#include "dialog_ids.h"
+#include "engine/behavior_script.h"
+#include "engine/geo_layout.h"
+#include "engine/math_util.h"
+#include "engine/surface_collision.h"
+#include "game_init.h"
 #include "helper_macros.h"
+#include "ingame_menu.h"
+#include "interaction.h"
+#include "level_table.h"
+#include "level_update.h"
 #include "mario.h"
 #include "mario_actions_cutscene.h"
-#include "engine/math_util.h"
 #include "memory.h"
-#include "level_update.h"
+#include "obj_behaviors.h"
+#include "object_helpers.h"
 #include "object_list_processor.h"
 #include "rendering_graph_node.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
-#include "engine/surface_collision.h"
-#include "area.h"
-#include "engine/geo_layout.h"
-#include "ingame_menu.h"
-#include "game_init.h"
-#include "obj_behaviors.h"
-#include "interaction.h"
-#include "object_list_processor.h"
-#include "level_table.h"
-#include "dialog_ids.h"
-
-#include "object_helpers.h"
 
 s8 D_8032F0A0[] = { 0xF8, 0x08, 0xFC, 0x04 };
 s16 D_8032F0A4[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 static s8 sLevelsWithRooms[] = { LEVEL_BBH, LEVEL_CASTLE, LEVEL_HMC, -1 };
 
-// These can be static:
-extern void create_transformation_from_matrices(Mat4, Mat4, Mat4);
-extern void obj_set_gfx_pos_from_pos(struct Object *);
-extern void obj_translate_local(struct Object *, s16, s16);
-extern void obj_copy_pos(struct Object *, struct Object *);
-extern void obj_copy_angle(struct Object *, struct Object *);
-extern struct Object *cur_obj_find_nearest_object_with_behavior(const BehaviorScript *, f32 *);
-extern void cur_obj_move_y(f32, f32, f32);
 static s32 clear_move_flag(u32 *, s32);
-extern void spawn_mist_particles_variable(s32, s32, f32);
-extern void spawn_triangle_break_particles(s32, s32, f32, s32);
 
 #define o gCurrentObject
 
-Gfx *geo_update_projectile_pos_from_parent(s32 run, UNUSED struct GraphNode *node, f32 mtx[4][4]) {
+Gfx *geo_update_projectile_pos_from_parent(s32 callContext, UNUSED struct GraphNode *node, Mat4 mtx) {
     Mat4 sp20;
     struct Object *sp1C;
 
-    if (run == TRUE) {
+    if (callContext == GEO_CONTEXT_RENDER) {
         sp1C = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
         if (sp1C->prevObj) {
             create_transformation_from_matrices(sp20, mtx, gCurGraphNodeCamera->matrixPtr);
@@ -61,93 +50,98 @@ Gfx *geo_update_projectile_pos_from_parent(s32 run, UNUSED struct GraphNode *nod
     return NULL;
 }
 
-Gfx *geo_update_layer_transparency(s32 run, struct GraphNode *node, UNUSED void *context) {
-    Gfx *sp3C, *sp38;
-    struct Object *sp34;
-    struct GraphNodeGenerated *sp30;
+Gfx *geo_update_layer_transparency(s32 callContext, struct GraphNode *node, UNUSED void *context) {
+    Gfx *dlStart, *dlHead;
+    struct Object *objectGraphNode;
+    struct GraphNodeGenerated *currentGraphNode;
     UNUSED struct GraphNodeGenerated *sp2C;
-    s32 sp28;
+    s32 objectOpacity;
 
-    sp3C = NULL;
+    dlStart = NULL;
 
-    if (run == TRUE) {
-        sp34 = (struct Object *) gCurGraphNodeObject; // TODO: change this to object pointer?
-        sp30 = (struct GraphNodeGenerated *) node;
+    if (callContext == GEO_CONTEXT_RENDER) {
+        objectGraphNode = (struct Object *) gCurGraphNodeObject; // TODO: change this to object pointer?
+        currentGraphNode = (struct GraphNodeGenerated *) node;
         sp2C = (struct GraphNodeGenerated *) node;
 
         if (gCurGraphNodeHeldObject) {
-            sp34 = gCurGraphNodeHeldObject->objNode;
+            objectGraphNode = gCurGraphNodeHeldObject->objNode;
         }
 
-        sp28 = sp34->oOpacity;
-        sp3C = alloc_display_list(sizeof(Gfx) * 3);
+        objectOpacity = objectGraphNode->oOpacity;
+        dlStart = alloc_display_list(sizeof(Gfx) * 3);
 
-        sp38 = sp3C;
+        dlHead = dlStart;
 
-        if (sp28 == 0xFF) {
-            if (sp30->parameter == 20) {
-                sp30->fnNode.node.flags = 0x600 | (sp30->fnNode.node.flags & 0xFF);
+        if (objectOpacity == 0xFF) {
+            if (currentGraphNode->parameter == 20) {
+                currentGraphNode->fnNode.node.flags =
+                0x600 | (currentGraphNode->fnNode.node.flags & 0xFF);
             } else {
-                sp30->fnNode.node.flags = 0x100 | (sp30->fnNode.node.flags & 0xFF);
+                currentGraphNode->fnNode.node.flags =
+                0x100 | (currentGraphNode->fnNode.node.flags & 0xFF);
             }
 
-            sp34->oAnimState = 0;
+            objectGraphNode->oAnimState = 0;
         } else {
-            if (sp30->parameter == 20) {
-                sp30->fnNode.node.flags = 0x600 | (sp30->fnNode.node.flags & 0xFF);
+            if (currentGraphNode->parameter == 20) {
+                currentGraphNode->fnNode.node.flags =
+                0x600 | (currentGraphNode->fnNode.node.flags & 0xFF);
             } else {
-                sp30->fnNode.node.flags = 0x500 | (sp30->fnNode.node.flags & 0xFF);
+                currentGraphNode->fnNode.node.flags =
+                0x500 | (currentGraphNode->fnNode.node.flags & 0xFF);
             }
 
-            sp34->oAnimState = 1;
+            objectGraphNode->oAnimState = 1;
 
 #ifdef VERSION_JP
-            if (sp30->parameter == 10) {
+            if (currentGraphNode->parameter == 10) {
                 if (gDebugInfo[DEBUG_PAGE_ENEMYINFO][3]) {
-                    gDPSetAlphaCompare(sp38++, G_AC_DITHER);
+                    gDPSetAlphaCompare(dlHead++, G_AC_DITHER);
                 }
             } else {
-                if (sp34->activeFlags & ACTIVE_FLAG_UNK7) {
-                    gDPSetAlphaCompare(sp38++, G_AC_DITHER);
+                if (objectGraphNode->activeFlags & ACTIVE_FLAG_DITHERED_ALPHA) {
+                    gDPSetAlphaCompare(dlHead++, G_AC_DITHER);
                 }
             }
 #else // gDebugInfo accesses were removed in all non-JP versions.
-            if (sp28 == 0 && segmented_to_virtual(bhvBowser) == sp34->behavior) {
-                sp34->oAnimState = 2;
+            if (objectOpacity == 0 && segmented_to_virtual(bhvBowser) == objectGraphNode->behavior) {
+                objectGraphNode->oAnimState = 2;
             }
             // the debug info check was removed in US. so we need to
             // perform the only necessary check instead of the debuginfo
             // one.
-            if (sp30->parameter != 10) {
-                if (sp34->activeFlags & ACTIVE_FLAG_UNK7) {
-                    gDPSetAlphaCompare(sp38++, G_AC_DITHER);
+            if (currentGraphNode->parameter != 10) {
+                if (objectGraphNode->activeFlags & ACTIVE_FLAG_DITHERED_ALPHA) {
+                    gDPSetAlphaCompare(dlHead++, G_AC_DITHER);
                 }
             }
 #endif
         }
 
-        gDPSetEnvColor(sp38++, 255, 255, 255, sp28);
-        gSPEndDisplayList(sp38);
+        gDPSetEnvColor(dlHead++, 255, 255, 255, objectOpacity);
+        gSPEndDisplayList(dlHead);
     }
 
-    return sp3C;
+    return dlStart;
 }
 
 /**
- * @bug Every geo function declares the 3 parameters of run, node, and the matrix array.
- * This one (see also geo_switch_area) doesn't. When executed, the node function
- * executor passes the 3rd argument to a function that doesn't declare it. This is
- * undefined behavior, but harmless in practice due to the o32 calling convention.
+ * @bug Every geo function declares the 3 parameters of callContext, node, and
+ * the matrix array. This one (see also geo_switch_area) doesn't. When executed,
+ * the node function executor passes the 3rd argument to a function that doesn't
+ * declare it. This is undefined behavior, but harmless in practice due to the
+ * o32 calling convention.
  */
 #ifdef AVOID_UB
-Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node, UNUSED void *context) {
+Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node, UNUSED void *context) {
 #else
-Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node) {
+Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node) {
 #endif
     struct Object *obj;
     struct GraphNodeSwitchCase *switchCase;
 
-    if (run == TRUE) {
+    if (callContext == GEO_CONTEXT_RENDER) {
         obj = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
 
         // move to a local var because GraphNodes are passed in all geo functions.
@@ -173,9 +167,9 @@ Gfx *geo_switch_anim_state(s32 run, struct GraphNode *node) {
 
 //! @bug Same issue as geo_switch_anim_state.
 #ifdef AVOID_UB
-Gfx *geo_switch_area(s32 run, struct GraphNode *node, UNUSED void *context) {
+Gfx *geo_switch_area(s32 callContext, struct GraphNode *node, UNUSED void *context) {
 #else
-Gfx *geo_switch_area(s32 run, struct GraphNode *node) {
+Gfx *geo_switch_area(s32 callContext, struct GraphNode *node) {
 #endif
     s16 sp26;
     struct Surface *sp20;
@@ -183,7 +177,7 @@ Gfx *geo_switch_area(s32 run, struct GraphNode *node) {
         (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
 
-    if (run == TRUE) {
+    if (callContext == GEO_CONTEXT_RENDER) {
         if (gMarioObject == NULL) {
             switchCase->selectedCase = 0;
         } else {
@@ -474,9 +468,8 @@ struct Object *spawn_object_abs_with_rot(struct Object *parent, s16 uselessArg, 
  * The rz argument is never used, and the z offset is used for z-rotation instead. This is most likely
  * a copy-paste typo by one of the programmers.
  */
-struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model,
-                                         const BehaviorScript *behavior, s16 xOff,
-                                         s16 yOff, s16 zOff, s16 rx, s16 ry, UNUSED s16 rz) {
+struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model, const BehaviorScript *behavior,
+                                         s16 xOff, s16 yOff, s16 zOff, s16 rx, s16 ry, UNUSED s16 rz) {
     struct Object *newObj = spawn_object_at_origin(parent, 0, model, behavior);
     newObj->oFlags |= OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT;
     obj_set_parent_relative_pos(newObj, xOff, yOff, zOff);
@@ -586,9 +579,8 @@ static void obj_build_relative_transform(struct Object *obj) {
     obj_translate_local(obj, O_POS_INDEX, O_PARENT_RELATIVE_POS_INDEX);
 }
 
-struct Object *spawn_object_relative(s16 behaviorParam, s16 relativePosX, s16 relativePosY,
-                                     s16 relativePosZ, struct Object *parent, s32 model,
-                                     const BehaviorScript *behavior) {
+struct Object *spawn_object_relative(s16 behaviorParam, s16 relativePosX, s16 relativePosY, s16 relativePosZ,
+                                     struct Object *parent, s32 model, const BehaviorScript *behavior) {
     struct Object *obj = spawn_object_at_origin(parent, 0, model, behavior);
 
     obj_copy_pos_and_angle(obj, parent);
@@ -748,9 +740,9 @@ void cur_obj_init_animation_with_accel_and_sound(s32 animIndex, f32 accel) {
     o->oSoundStateID = animIndex;
 }
 
-void obj_init_animation_with_sound(struct Object *obj, struct Animation **animations, s32 animIndex) {
-    struct Animation **anims = animations;
-    obj->oAnimations = animations;
+void obj_init_animation_with_sound(struct Object *obj, const struct Animation * const* animations, s32 animIndex) {
+    struct Animation **anims = (struct Animation **)animations;
+    obj->oAnimations = (struct Animation **)animations;
     geo_obj_init_animation(&obj->header.gfx, &anims[animIndex]);
     obj->oSoundStateID = animIndex;
 }
@@ -866,7 +858,7 @@ struct Object *cur_obj_find_nearest_object_with_behavior(const BehaviorScript *b
 
     while (obj != (struct Object *) listHead) {
         if (obj->behavior == behaviorAddr) {
-            if (obj->activeFlags != ACTIVE_FLAGS_DEACTIVATED && obj != o) {
+            if (obj->activeFlags != ACTIVE_FLAG_DEACTIVATED && obj != o) {
                 f32 objDist = dist_between_objects(o, obj);
                 if (objDist < minDist) {
                     closestObj = obj;
@@ -934,10 +926,9 @@ struct Object *cur_obj_find_nearby_held_actor(const BehaviorScript *behavior, f3
 
     while ((struct Object *) listHead != obj) {
         if (obj->behavior == behaviorAddr) {
-            if (obj->activeFlags != ACTIVE_FLAGS_DEACTIVATED) {
-                // This includes the dropped and thrown states. By combining
-                // instant release, this allows us to activate mama penguin
-                // remotely
+            if (obj->activeFlags != ACTIVE_FLAG_DEACTIVATED) {
+                // This includes the dropped and thrown states. By combining instant
+                // release, this allows us to activate mama penguin remotely
                 if (obj->oHeldState != HELD_FREE) {
                     if (dist_between_objects(o, obj) < maxDist) {
                         foundObj = obj;
@@ -984,7 +975,7 @@ BAD_RETURN(s16) cur_obj_reverse_animation(void) {
 BAD_RETURN(s32) cur_obj_extend_animation_if_at_end(void) {
     s32 sp4 = o->header.gfx.unk38.animFrame;
     s32 sp0 = o->header.gfx.unk38.curAnim->unk08 - 2;
-    
+
     if (sp4 == sp0) o->header.gfx.unk38.animFrame--;
 }
 
@@ -1107,7 +1098,7 @@ static void cur_obj_move_after_thrown_or_dropped(f32 forwardVel, f32 velY) {
 void cur_obj_get_thrown_or_placed(f32 forwardVel, f32 velY, s32 thrownAction) {
     if (o->behavior == segmented_to_virtual(bhvBowser)) {
         // Interestingly, when bowser is thrown, he is offset slightly to
-        // mario's right
+        // Mario's right
         cur_obj_set_pos_relative_to_parent(-41.684f, 85.859f, 321.577f);
     } else {
     }
@@ -1157,7 +1148,7 @@ void obj_mark_for_deletion(struct Object *obj) {
     //  setting it to 0 could potentially enable unexpected behavior. After an
     //  object is marked for deletion, it still updates on that frame (I think),
     //  so this is worth looking into.
-    obj->activeFlags = ACTIVE_FLAGS_DEACTIVATED;
+    obj->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 }
 
 void cur_obj_disable(void) {
@@ -1664,7 +1655,7 @@ f32 cur_obj_abs_y_dist_to_home(void) {
     return dist;
 }
 
-s32 cur_obj_advance_looping_anim() {
+s32 cur_obj_advance_looping_anim(void) {
     s32 spC = o->header.gfx.unk38.animFrame;
     s32 sp8 = o->header.gfx.unk38.curAnim->unk08;
     s32 sp4;
@@ -1896,14 +1887,14 @@ s16 cur_obj_angle_to_home(void) {
     return angle;
 }
 
-void obj_set_gfx_pos_at_obj_pos(struct Object *a0, struct Object *a1) {
-    a0->header.gfx.pos[0] = a1->oPosX;
-    a0->header.gfx.pos[1] = a1->oPosY + a1->oGraphYOffset;
-    a0->header.gfx.pos[2] = a1->oPosZ;
+void obj_set_gfx_pos_at_obj_pos(struct Object *obj1, struct Object *obj2) {
+    obj1->header.gfx.pos[0] = obj2->oPosX;
+    obj1->header.gfx.pos[1] = obj2->oPosY + obj2->oGraphYOffset;
+    obj1->header.gfx.pos[2] = obj2->oPosZ;
 
-    a0->header.gfx.angle[0] = a1->oMoveAnglePitch & 0xFFFF;
-    a0->header.gfx.angle[1] = a1->oMoveAngleYaw & 0xFFFF;
-    a0->header.gfx.angle[2] = a1->oMoveAngleRoll & 0xFFFF;
+    obj1->header.gfx.angle[0] = obj2->oMoveAnglePitch & 0xFFFF;
+    obj1->header.gfx.angle[1] = obj2->oMoveAngleYaw & 0xFFFF;
+    obj1->header.gfx.angle[2] = obj2->oMoveAngleRoll & 0xFFFF;
 }
 
 /**
@@ -1969,13 +1960,13 @@ void obj_build_transform_relative_to_parent(struct Object *obj) {
     cur_obj_scale(1.0f);
 }
 
-void obj_create_transform_from_self(struct Object *a0) {
-    a0->oFlags &= ~OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT;
-    a0->oFlags |= OBJ_FLAG_SET_THROW_MATRIX_FROM_TRANSFORM;
+void obj_create_transform_from_self(struct Object *obj) {
+    obj->oFlags &= ~OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT;
+    obj->oFlags |= OBJ_FLAG_SET_THROW_MATRIX_FROM_TRANSFORM;
 
-    a0->transform[3][0] = a0->oPosX;
-    a0->transform[3][1] = a0->oPosY;
-    a0->transform[3][2] = a0->oPosZ;
+    obj->transform[3][0] = obj->oPosX;
+    obj->transform[3][1] = obj->oPosY;
+    obj->transform[3][2] = obj->oPosZ;
 }
 
 void cur_obj_rotate_move_angle_using_vel(void) {
@@ -2220,7 +2211,7 @@ void cur_obj_push_mario_away(f32 radius) {
     f32 marioDist = sqrtf(sqr(marioRelX) + sqr(marioRelZ));
 
     if (marioDist < radius) {
-        //! If this function pushes mario out of bounds, it will trigger mario's
+        //! If this function pushes Mario out of bounds, it will trigger Mario's
         //  oob failsafe
         gMarioStates[0].pos[0] += (radius - marioDist) / radius * marioRelX;
         gMarioStates[0].pos[2] += (radius - marioDist) / radius * marioRelZ;
@@ -2353,7 +2344,6 @@ static struct Object *spawn_star_with_no_lvl_exit(s32 sp20, s32 sp24) {
 }
 
 // old unused initializer for 2d star spawn behavior.
-// speculation: was 2d spawn handler from spaceworld 1995.
 // uses behavior parameters not used in the current sparkle code.
 void spawn_base_star_with_no_lvl_exit(void) {
     spawn_star_with_no_lvl_exit(0, 0);
@@ -2511,8 +2501,8 @@ s32 cur_obj_hide_if_mario_far_away_y(f32 distY) {
     }
 }
 
-Gfx *geo_offset_klepto_held_object(s32 run, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
-    if (run == TRUE) {
+Gfx *geo_offset_klepto_held_object(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
         ((struct GraphNodeTranslationRotation *) node->next)->translation[0] = 300;
         ((struct GraphNodeTranslationRotation *) node->next)->translation[1] = 300;
         ((struct GraphNodeTranslationRotation *) node->next)->translation[2] = 0;
@@ -2521,8 +2511,8 @@ Gfx *geo_offset_klepto_held_object(s32 run, struct GraphNode *node, UNUSED f32 m
     return NULL;
 }
 
-s32 geo_offset_klepto_debug(s32 a0, struct GraphNode *a1, UNUSED s32 sp8) {
-    if (a0 == 1) {
+s32 geo_offset_klepto_debug(s32 callContext, struct GraphNode *a1, UNUSED s32 sp8) {
+    if (callContext == GEO_CONTEXT_RENDER) {
         ((struct GraphNode_802A45E4 *) a1->next)->unk18 = gDebugInfo[4][0];
         ((struct GraphNode_802A45E4 *) a1->next)->unk1A = gDebugInfo[4][1];
         ((struct GraphNode_802A45E4 *) a1->next)->unk1C = gDebugInfo[4][2];
@@ -2550,12 +2540,12 @@ void disable_time_stop(void) {
     gTimeStopState &= ~TIME_STOP_ENABLED;
 }
 
-void set_time_stop_flags(s32 flag) {
-    gTimeStopState |= flag;
+void set_time_stop_flags(s32 flags) {
+    gTimeStopState |= flags;
 }
 
-void clear_time_stop_flags(s32 flag) {
-    gTimeStopState = gTimeStopState & (flag ^ 0xFFFFFFFF);
+void clear_time_stop_flags(s32 flags) {
+    gTimeStopState = gTimeStopState & (flags ^ 0xFFFFFFFF);
 }
 
 s32 cur_obj_can_mario_activate_textbox(f32 radius, f32 height, UNUSED s32 unused) {
@@ -2597,8 +2587,8 @@ s32 cur_obj_update_dialog(s32 actionArg, s32 dialogFlags, s32 dialogID, UNUSED s
     switch (o->oDialogState) {
 #ifdef VERSION_JP
         case DIALOG_UNK1_ENABLE_TIME_STOP:
-            //! We enable time stop even if mario is not ready to speak. This
-            //  allows us to move during time stop as long as mario never enters
+            //! We enable time stop even if Mario is not ready to speak. This
+            //  allows us to move during time stop as long as Mario never enters
             //  an action that can be interrupted with text.
             if (gMarioState->health >= 0x100) {
                 gTimeStopState |= TIME_STOP_ENABLED;
@@ -2609,7 +2599,7 @@ s32 cur_obj_update_dialog(s32 actionArg, s32 dialogFlags, s32 dialogID, UNUSED s
 #else
         case DIALOG_UNK1_ENABLE_TIME_STOP:
             // Patched :(
-            // Wait for mario to be ready to speak, and then enable time stop
+            // Wait for Mario to be ready to speak, and then enable time stop
             if (mario_ready_to_speak() || gMarioState->action == ACT_READING_NPC_DIALOG) {
                 gTimeStopState |= TIME_STOP_ENABLED;
                 o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
@@ -2617,7 +2607,7 @@ s32 cur_obj_update_dialog(s32 actionArg, s32 dialogFlags, s32 dialogID, UNUSED s
             } else {
                 break;
             }
-            // Fall through so that mario's action is interrupted immediately
+            // Fall through so that Mario's action is interrupted immediately
             // after time is stopped
 #endif
 
@@ -2674,8 +2664,8 @@ s32 cur_obj_update_dialog_with_cutscene(s32 actionArg, s32 dialogFlags, s32 cuts
     switch (o->oDialogState) {
 #ifdef VERSION_JP
         case DIALOG_UNK2_ENABLE_TIME_STOP:
-            //! We enable time stop even if mario is not ready to speak. This
-            //  allows us to move during time stop as long as mario never enters
+            //! We enable time stop even if Mario is not ready to speak. This
+            //  allows us to move during time stop as long as Mario never enters
             //  an action that can be interrupted with text.
             if (gMarioState->health >= 0x0100) {
                 gTimeStopState |= TIME_STOP_ENABLED;
@@ -2686,7 +2676,7 @@ s32 cur_obj_update_dialog_with_cutscene(s32 actionArg, s32 dialogFlags, s32 cuts
             break;
 #else
         case DIALOG_UNK2_ENABLE_TIME_STOP:
-            // Wait for mario to be ready to speak, and then enable time stop
+            // Wait for Mario to be ready to speak, and then enable time stop
             if (mario_ready_to_speak() || gMarioState->action == ACT_READING_NPC_DIALOG) {
                 gTimeStopState |= TIME_STOP_ENABLED;
                 o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
@@ -2695,7 +2685,7 @@ s32 cur_obj_update_dialog_with_cutscene(s32 actionArg, s32 dialogFlags, s32 cuts
             } else {
                 break;
             }
-            // Fall through so that mario's action is interrupted immediately
+            // Fall through so that Mario's action is interrupted immediately
             // after time is stopped
 #endif
 

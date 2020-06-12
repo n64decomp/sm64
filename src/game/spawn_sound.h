@@ -1,7 +1,7 @@
-#ifndef _SPAWN_SOUND_H
-#define _SPAWN_SOUND_H
+#ifndef SPAWN_SOUND_H
+#define SPAWN_SOUND_H
 
-#include "types.h"
+#include <PR/ultratypes.h>
 
 struct SoundState
 {
@@ -16,9 +16,9 @@ struct SoundState
     s32 soundMagic;
 };
 
-extern void cur_obj_play_sound_1(s32);
-extern void cur_obj_play_sound_2(s32);
-extern void create_sound_spawner(s32);
-extern void exec_anim_sound_state(struct SoundState *soundStates);
+void cur_obj_play_sound_1(s32 soundMagic);
+void cur_obj_play_sound_2(s32 soundMagic);
+void create_sound_spawner(s32 soundMagic);
+void exec_anim_sound_state(struct SoundState *soundStates);
 
-#endif
+#endif // SPAWN_SOUND_H

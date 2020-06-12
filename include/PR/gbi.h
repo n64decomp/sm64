@@ -87,6 +87,13 @@
  *
  */
 
+#ifdef F3DEX_GBI_2E
+# ifndef F3DEX_GBI_2
+#  define F3DEX_GBI_2
+# endif
+# define GBI_FLOATS
+#endif
+
 #ifdef    F3DEX_GBI_2
 # ifndef  F3DEX_GBI
 #  define F3DEX_GBI
@@ -1103,7 +1110,11 @@
  * Vertex (set up for use with colors)
  */
 typedef struct {
+#ifndef GBI_FLOATS
 	short		ob[3];	/* x, y, z */
+#else
+	float		ob[3];	/* x, y, z */
+#endif
 	unsigned short	flag;
 	short		tc[2];	/* texture coord */
 	unsigned char	cn[4];	/* color & alpha */
@@ -1113,7 +1124,11 @@ typedef struct {
  * Vertex (set up for use with normals)
  */
 typedef struct {
+#ifndef GBI_FLOATS
 	short		ob[3];	/* x, y, z */
+#else
+	float		ob[3];	/* x, y, z */
+#endif
 	unsigned short	flag;
 	short		tc[2];	/* texture coord */
 	signed char	n[3];	/* normal */
@@ -1162,6 +1177,7 @@ typedef struct {
 	unsigned char	v[3];
 } Tri;
 
+#ifndef GBI_FLOATS
 /*
  * 4x4 matrix, fixed point s15.16 format.
  * First 8 words are integer portion of the 4x4 matrix
@@ -1173,6 +1189,11 @@ typedef union {
     Mtx_t		m;
     long long int	force_structure_alignment;
 } Mtx;
+#else
+typedef struct {
+    float m[4][4];
+} Mtx;
+#endif
 
 /*
  * Viewport
@@ -4396,6 +4417,26 @@ typedef union {
 }}
 
 /* Fraction never used in fill */
+#ifdef F3DEX_GBI_2E
+#define	gDPFillRectangle(pkt, ulx, uly, lrx, lry)			\
+{									\
+	Gfx *_g0 = (Gfx *)(pkt), *_g1 = (Gfx *)(pkt);			\
+	_g0->words.w0 = _SHIFTL(G_FILLRECT, 24, 8) | 			\
+		       _SHIFTL((lrx), 2, 22);				\
+	_g0->words.w1 = _SHIFTL((lry), 2, 22);				\
+        _g1->words.w0 = _SHIFTL((ulx), 2, 22);				\
+	_g1->words.w1 = _SHIFTL((uly), 2, 22);				\
+}
+#define	gsDPFillRectangle(ulx, uly, lrx, lry)				\
+{{									\
+	(_SHIFTL(G_FILLRECT, 24, 8) | _SHIFTL((lrx), 2, 22)),		\
+	_SHIFTL((lry), 2, 22),						\
+}},									\
+{{									\
+	_SHIFTL((ulx), 2, 22),						\
+	_SHIFTL((uly), 2, 22),						\
+}}
+#else
 #define	gDPFillRectangle(pkt, ulx, uly, lrx, lry)			\
 {									\
 	Gfx *_g = (Gfx *)(pkt);						\
@@ -4404,15 +4445,16 @@ typedef union {
 			_SHIFTL((lrx), 14, 10) | _SHIFTL((lry), 2, 10));\
 	_g->words.w1 = (_SHIFTL((ulx), 14, 10) | _SHIFTL((uly), 2, 10));\
 }
-
 #define	gsDPFillRectangle(ulx, uly, lrx, lry)				\
 {{									\
 	(_SHIFTL(G_FILLRECT, 24, 8) | _SHIFTL((lrx), 14, 10) | 		\
 	 _SHIFTL((lry), 2, 10)),					\
 	(_SHIFTL((ulx), 14, 10) | _SHIFTL((uly), 2, 10))		\
 }}
+#endif
 
 /* like gDPFillRectangle but accepts negative arguments */
+#ifndef F3DEX_GBI_2E
 #define	gDPScisFillRectangle(pkt, ulx, uly, lrx, lry)			\
 {									\
 	Gfx *_g = (Gfx *)(pkt);						\
@@ -4423,6 +4465,7 @@ typedef union {
 	_g->words.w1 = (_SHIFTL(MAX((ulx),0), 14, 10) | 		\
 			_SHIFTL(MAX((uly),0), 2, 10));			\
 }
+#endif
 
 #define	gDPSetConvert(pkt, k0, k1, k2, k3, k4, k5)			\
 {									\
@@ -4619,6 +4662,46 @@ typedef union {
 		    _SHIFTL(yl, 0, 12));				\
     gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)));	\
     gImmp1(pkt, G_RDPHALF_CONT, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); \
+}
+#elif defined(F3DEX_GBI_2E)
+# define gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy)\
+{									\
+    Gfx *_g0 = (Gfx *)(pkt), *_g1 = (Gfx *)(pkt), *_g2 = (Gfx *)(pkt);	\
+									\
+    _g0->words.w0 = _SHIFTL(G_TEXRECT, 24, 8) | 			\
+		       _SHIFTL((xh), 0, 24);				\
+    _g0->words.w1 = _SHIFTL((yh), 0, 24);				\
+    _g1->words.w0 = (_SHIFTL(tile, 24, 3) | _SHIFTL((xl), 0, 24));	\
+    _g1->words.w1 = _SHIFTL((yl), 0, 24);				\
+    _g2->words.w0 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16));		\
+    _g2->words.w1 = (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16));	\
+}
+
+# define gsSPTextureRectangle(xl, yl, xh, yh, tile, s, t, dsdx, dtdy)	\
+{{									\
+    (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL((xh), 0, 24)),			\
+    _SHIFTL((yh), 0, 24),						\
+}},									\
+{{									\
+    (_SHIFTL((tile), 24, 3) | _SHIFTL((xl), 0, 24)),			\
+    _SHIFTL((yl), 0, 24),						\
+}},									\
+{{									\
+    _SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16),				\
+    _SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16)			\
+}}
+
+# define gSPTextureRectangleFlip(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+{									\
+    Gfx *_g0 = (Gfx *)(pkt), *_g1 = (Gfx *)(pkt), *_g2 = (Gfx *)(pkt);	\
+									\
+    _g0->words.w0 = _SHIFTL(G_TEXRECTFLIP, 24, 8) | 			\
+		       _SHIFTL((xh), 0, 24);				\
+    _g0->words.w1 = _SHIFTL((yh), 0, 24);				\
+    _g1->words.w0 = (_SHIFTL(tile, 24, 3) | _SHIFTL((xl), 0, 24));	\
+    _g1->words.w1 = _SHIFTL((yl), 0, 24);				\
+    _g2->words.w0 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16));		\
+    _g2->words.w1 = (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16));	\
 }
 #else
 # define gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy)\

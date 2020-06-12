@@ -1,7 +1,7 @@
 // animated_floor_switch.inc.c
 
 struct Struct80331A54 {
-    void *unk00;
+    const void *unk00;
     s16 unk04;
 };
 

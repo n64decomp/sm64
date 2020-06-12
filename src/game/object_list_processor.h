@@ -1,9 +1,11 @@
-#ifndef _OBJECT_LIST_PROCESSOR_H
-#define _OBJECT_LIST_PROCESSOR_H
+#ifndef OBJECT_LIST_PROCESSOR_H
+#define OBJECT_LIST_PROCESSOR_H
 
-struct Object;
-struct SpawnInfo;
+#include <PR/ultratypes.h>
 
+#include "area.h"
+#include "macros.h"
+#include "types.h"
 
 /**
  * Flags for gTimeStopState. These control which objects are processed each frame
@@ -29,7 +31,7 @@ struct SpawnInfo;
  */
 enum ObjectList
 {
-    OBJ_LIST_PLAYER,      //  (0) mario
+    OBJ_LIST_PLAYER,      //  (0) Mario
     OBJ_LIST_UNUSED_1,    //  (1) (unused)
     OBJ_LIST_DESTRUCTIVE, //  (2) things that can be used to destroy other objects, like
                           //      bob-ombs and corkboxes
@@ -46,7 +48,7 @@ enum ObjectList
     OBJ_LIST_SURFACE,     //  (9) surface objects. objects that specifically have surface
                           //      collision and not object collision. (thwomp, whomp, etc)
     OBJ_LIST_POLELIKE,    // (10) polelike objects. objects that attract or otherwise
-                          //      "cling" mario similar to a pole action. (hoot,
+                          //      "cling" Mario similar to a pole action. (hoot,
                           //      whirlpool, trees/poles, etc)
     OBJ_LIST_SPAWNER,     // (11) spawners
     OBJ_LIST_UNIMPORTANT, // (12) unimportant objects. objects that will not load
@@ -116,10 +118,10 @@ extern s16 gMarioOnMerryGoRound;
 
 void bhv_mario_update(void);
 void set_object_respawn_info_bits(struct Object *obj, u8 bits);
-void unload_objects_from_area(s32 unused, s32 areaIndex);
-void spawn_objects_from_info(s32 unused, struct SpawnInfo *spawnInfo);
+void unload_objects_from_area(UNUSED s32 unused, s32 areaIndex);
+void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo);
 void clear_objects(void);
-void update_objects(s32 unused);
+void update_objects(UNUSED s32 unused);
 
 
-#endif /* _OBJECT_LIST_PROCESSOR_H */
+#endif // OBJECT_LIST_PROCESSOR_H

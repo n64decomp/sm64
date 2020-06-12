@@ -1,6 +1,8 @@
 #ifndef AUDIO_LOAD_H
 #define AUDIO_LOAD_H
 
+#include <PR/ultratypes.h>
+
 #include "internal.h"
 
 #define AUDIO_FRAME_DMA_QUEUE_SIZE 0x40
@@ -54,4 +56,4 @@ void patch_audio_bank(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32
 void preload_sequence(u32 seqId, u8 preloadMask);
 void load_sequence(u32 player, u32 seqId, s32 loadAsync);
 
-#endif /* AUDIO_LOAD_H */
+#endif // AUDIO_LOAD_H

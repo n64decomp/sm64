@@ -1,18 +1,16 @@
-#include <ultra64.h>
+#include <PR/ultratypes.h>
 
 #include "sm64.h"
 
 #define INCLUDED_FROM_MEMORY_C
 
+#include "buffers/buffers.h"
 #include "decompress.h"
 #include "game_init.h"
 #include "main.h"
-#include "segments.h"
 #include "memory.h"
-
-extern u8 _engineSegmentRomStart[];
-extern u8 _engineSegmentRomEnd[];
-extern u8 gDecompressionHeap[];
+#include "segment_symbols.h"
+#include "segments.h"
 
 // round up to the next multiple
 #define ALIGN4(val) (((val) + 0x3) & ~0x3)
@@ -75,6 +73,7 @@ void *get_segment_base_addr(s32 segment) {
     return (void *) (sSegmentTable[segment] | 0x80000000);
 }
 
+#ifndef NO_SEGMENTED_MEMORY
 void *segmented_to_virtual(const void *addr) {
     size_t segment = (uintptr_t) addr >> 24;
     size_t offset = (uintptr_t) addr & 0x00FFFFFF;
@@ -94,6 +93,18 @@ void move_segment_table_to_dmem(void) {
     for (i = 0; i < 16; i++)
         gSPSegment(gDisplayListHead++, i, sSegmentTable[i]);
 }
+#else
+void *segmented_to_virtual(const void *addr) {
+    return (void *) addr;
+}
+
+void *virtual_to_segmented(u32 segment, const void *addr) {
+    return (void *) addr;
+}
+
+void move_segment_table_to_dmem(void) {
+}
+#endif
 
 /**
  * Initialize the main memory pool. This pool is conceptually a pair of stacks
@@ -262,6 +273,7 @@ static void *dynamic_dma_read(u8 *srcStart, u8 *srcEnd, u32 side) {
     return dest;
 }
 
+#ifndef NO_SEGMENTED_MEMORY
 /**
  * Load data from ROM into a newly allocated block, and set the segment base
  * address to this block.
@@ -276,9 +288,8 @@ void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side) {
 }
 
 /*
- * Allocate a block of memory starting at destAddr and ending at the righthand
- * end of the memory pool. Then copy srcStart through srcEnd from ROM to this
- * block.
+ * Allocate a block of memory starting at destAddr and ending at the end of
+ * the memory pool. Then copy srcStart through srcEnd from ROM to this block.
  * If this block is not large enough to hold the ROM data, or that portion
  * of the pool is already allocated, return NULL.
  */
@@ -356,6 +367,7 @@ void load_engine_code_segment(void) {
     osInvalICache(startAddr, totalSize);
     osInvalDCache(startAddr, totalSize);
 }
+#endif
 
 /**
  * Allocate an allocation-only pool from the main pool. This pool doesn't
@@ -545,7 +557,7 @@ s32 load_patchable_table(struct MarioAnimation *a, u32 index) {
     u32 size;
 
     if (index < sp20->count) {
-        do { 
+        do {
             addr = sp20->srcAddr + sp20->anim[index].offset;
             size = sp20->anim[index].size;
         } while (0);

@@ -1,5 +1,5 @@
-#ifndef _SM64_H_
-#define _SM64_H_
+#ifndef SM64_H
+#define SM64_H
 
 // Global header for Super Mario 64
 
@@ -430,4 +430,4 @@
 
 #define C_BUTTONS     (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS   )
 
-#endif
+#endif // SM64_H

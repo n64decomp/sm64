@@ -22,7 +22,7 @@ extern const Gfx penguin_seg5_dl_050072C8[];
 extern const Gfx penguin_seg5_dl_05007358[];
 extern const Gfx penguin_seg5_dl_05007540[];
 extern const struct Animation *const penguin_seg5_anims_05008B74[];
-extern const s16 penguin_seg5_collision_05008B88[];
+extern const Collision penguin_seg5_collision_05008B88[];
 
 // snowman
 extern const GeoLayout mr_blizzard_hidden_geo[];

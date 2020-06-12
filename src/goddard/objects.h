@@ -1,8 +1,10 @@
 #ifndef GD_OBJECTS_H
 #define GD_OBJECTS_H
 
-#include <ultra64.h>
+#include <PR/ultratypes.h>
+
 #include "gd_types.h"
+#include "macros.h"
 
 // types
 // Type to erase for func arg to `apply_to_obj_types_in_group`. Maybe one day this
@@ -46,61 +48,61 @@ extern struct GdObj* gGdObjectList;
 extern struct ObjGroup* gGdViewsGroup;
 
 // functions
-extern void func_8017BCB0(void);
-extern void func_8017BD20(void*);
-extern void func_8017BE60(struct GdPlaneF*);
-extern void func_8017BED0(struct ObjGroup *, struct GdObj *);
-extern const char* get_obj_name_str(enum ObjTypeFlag);
-extern struct GdObj * make_object(enum ObjTypeFlag);
-extern struct ObjZone * make_zone(struct ObjGroup *, struct GdPlaneF *, struct ObjGroup *);
-extern struct ObjUnk200000 * Unknown8017C7A0(struct ObjVertex *, struct ObjFace *);
-extern struct Links * make_link_to_obj(struct Links*, struct GdObj*);
-extern struct VtxLink * make_vtx_link(struct VtxLink *, Vtx *);
-extern struct ObjValPtrs* make_valptrs(struct GdObj *, s32, enum ValPtrType, size_t);
-extern void reset_plane(struct ObjPlane*);
-extern struct ObjPlane* make_plane(s32, struct ObjFace*);
-extern struct ObjCamera* make_camera(s32, struct GdObj*);
-extern struct ObjMaterial* make_material(UNUSED s32, char*, s32);
-extern struct ObjLight* make_light(s32, char*, s32);
-extern struct ObjView* make_view(const char *, s32, s32, s32, s32, s32, s32, struct ObjGroup*);
-extern struct ObjAnimator* make_animator(void);
-extern struct ObjWeight* make_weight(UNUSED s32, s32, struct ObjVertex*, f32);
-extern struct ObjGroup* make_group_of_type(enum ObjTypeFlag, struct GdObj*, struct GdObj*);
-extern void sprint_obj_id(char*, struct GdObj*);
-extern struct ObjGroup* make_group(s32 count, ...);
-extern void addto_group(struct ObjGroup*, struct GdObj*);
-extern void addto_groupfirst(struct ObjGroup*, struct GdObj*);
-extern s32 group_contains_obj(struct ObjGroup*, struct GdObj*);
-extern void show_details(enum ObjTypeFlag);
-extern s32 Unknown8017E1E8(void);
-extern s32 func_8017E20C(void);
-extern void gd_loadtexture(struct GdObj*);
-extern void func_8017E2B8(void);
-extern struct GdObj* UnknownRecursive8017E2F0(struct GdObj*, enum ObjTypeFlag);
-extern s32 apply_to_obj_types_in_group(s32, applyproc_t, struct ObjGroup *);
-extern void func_8017E584(struct ObjNet*, struct GdVec3f*, struct GdVec3f*);
-extern void func_8017E838(struct ObjNet*, struct GdVec3f*, struct GdVec3f*);
-extern void func_8017E9EC(struct ObjNet*);
-extern s32 Unknown8017EA94(struct GdVec3f*, Mat4f);
-extern s32 Unknown8017EB24(struct GdObj*, struct GdObj*);
-extern s32 Unknown8017ED00(struct GdObj*, struct GdPlaneF*);
-extern s32 Unknown8017EDCC(struct GdVec3f*, struct GdPlaneF*);
-extern s32 gd_plane_point_within(struct GdPlaneF*, struct GdPlaneF*);
-extern s32 func_8017F054(struct GdObj*, struct GdObj*);
-extern s32 UnknownRecursive8017F210(struct GdObj*, struct GdObj*);
-extern void func_8017F404(f32, struct GdObj*, struct GdObj*);
-extern void func_8017F424(struct GdTriangleF*, struct GdTriangleF*, f32);
-extern void move_animator(struct ObjAnimator*);
-extern void drag_picked_object(struct GdObj*);
-extern void move_animators(struct ObjGroup *);
-extern void find_and_drag_picked_object(struct ObjGroup *);
-extern void move_camera(struct ObjCamera*);
-extern void move_cameras_in_grp(struct ObjGroup*);
-extern void Unknown8018100C(struct ObjLight*);
-extern void move_lights_in_grp(struct ObjGroup*);
-extern void move_lights_in_grp(struct ObjGroup*);
-extern void proc_view_movement(struct ObjView *);
-extern void reset_nets_and_gadgets(struct ObjGroup *);
-extern void null_obj_lists(void);
+void func_8017BCB0(void);
+void func_8017BD20(void *a0);
+void func_8017BE60(struct GdPlaneF *a0);
+void func_8017BED0(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1);
+const char *get_obj_name_str(enum ObjTypeFlag objFlag);
+struct GdObj *make_object(enum ObjTypeFlag objFlag);
+struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGroup *a2);
+struct ObjUnk200000 *func_8017C7A0(struct ObjVertex *a0, struct ObjFace *a1);
+struct Links *make_link_to_obj(struct Links *head, struct GdObj *a1);
+struct VtxLink *make_vtx_link(struct VtxLink *prevLink, Vtx *data);
+struct ObjValPtrs *make_valptrs(struct GdObj *obj, s32 flags, enum ValPtrType type, size_t offset);
+void reset_plane(struct ObjPlane *plane);
+struct ObjPlane *make_plane(s32 inZone, struct ObjFace *a1);
+struct ObjCamera *make_camera(s32 a0, struct GdObj *a1);
+struct ObjMaterial *make_material(UNUSED s32 a0, char *name, s32 id);
+struct ObjLight *make_light(s32 flags, char *name, s32 id);
+struct ObjView *make_view(const char *name, s32 flags, s32 a2, s32 ulx, s32 uly, s32 lrx, s32 lry,
+                          struct ObjGroup *parts);
+struct ObjAnimator *make_animator(void);
+struct ObjWeight *make_weight(UNUSED s32 a0, s32 id, struct ObjVertex *vtx, f32 weight);
+struct ObjGroup *make_group_of_type(enum ObjTypeFlag, struct GdObj*, struct GdObj*);
+void sprint_obj_id(char*, struct GdObj*);
+struct ObjGroup* make_group(s32 count, ...);
+void addto_group(struct ObjGroup *group, struct GdObj *obj);
+void addto_groupfirst(struct ObjGroup *group, struct GdObj *obj);
+s32 group_contains_obj(struct ObjGroup *group, struct GdObj *obj);
+void show_details(enum ObjTypeFlag type);
+s32 func_8017E1E8(void);
+s32 func_8017E20C(void);
+void gd_loadtexture(struct GdObj *obj);
+void func_8017E2B8(void);
+struct GdObj *func_8017E2F0(struct GdObj *obj, enum ObjTypeFlag type);
+s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *group);
+void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2);
+void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2);
+void func_8017E9EC(struct ObjNet *a0);
+s32 func_8017EA94(struct GdVec3f *vec, Mat4f matrix);
+s32 func_8017EB24(struct GdObj *a0, struct GdObj *a1);
+s32 func_8017ED00(struct GdObj *a0, struct GdPlaneF *a1);
+s32 func_8017EDCC(struct GdVec3f *a0, struct GdPlaneF *a1);
+s32 gd_plane_point_within(struct GdPlaneF *a0, struct GdPlaneF *a1);
+s32 func_8017F054(struct GdObj *a0, struct GdObj *a1);
+s32 func_8017F210(struct GdObj *a0, struct GdObj *a1);
+void func_8017F404(UNUSED f32 a0, UNUSED struct GdObj *a1, UNUSED struct GdObj *a2);
+void func_8017F424(struct GdTriangleF *a0, struct GdTriangleF *a1, f32 a2);
+void move_animator(struct ObjAnimator *animObj);
+void drag_picked_object(struct GdObj *inputObj);
+void move_animators(struct ObjGroup *group);
+void find_and_drag_picked_object(struct ObjGroup *group);
+void move_camera(struct ObjCamera *cam);
+void move_cameras_in_grp(struct ObjGroup *group);
+void func_8018100C(struct ObjLight *light);
+void move_lights_in_grp(struct ObjGroup *group);
+void proc_view_movement(struct ObjView *view);
+void reset_nets_and_gadgets(struct ObjGroup *group);
+void null_obj_lists(void);
 
-#endif /* GD_OBJECTS_H */
+#endif // GD_OBJECTS_H

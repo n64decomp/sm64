@@ -1,7 +1,20 @@
-#ifndef _GAME_INIT_H_
-#define _GAME_INIT_H_
+#ifndef GAME_INIT_H
+#define GAME_INIT_H
 
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
+#include <PR/os_cont.h>
+#include <PR/os_message.h>
+
+#include "types.h"
 #include "memory.h"
+
+#define GFX_POOL_SIZE 6400
+
+struct GfxPool {
+    Gfx buffer[GFX_POOL_SIZE];
+    struct SPTask spTask;
+};
 
 struct DemoInput
 {
@@ -38,11 +51,6 @@ extern struct DemoInput *gCurrDemoInput;
 extern u16 gDemoInputListID;
 extern struct DemoInput gRecordedDemoInput;
 
-extern void init_controllers(void);
-extern void setup_game_memory(void);
-extern void thread5_game_loop(void *);
-extern u16 func_802495B0(u32);
-
 // this area is the demo input + the header. when the demo is loaded in, there is a header the size
 // of a single word next to the input list. this word is the current ID count.
 extern struct MarioAnimation D_80339D10;
@@ -51,29 +59,18 @@ extern struct MarioAnimation gDemo;
 extern u8 gMarioAnims[];
 extern u8 gDemoInputs[];
 
-#define GFX_POOL_SIZE 6400
-
-struct GfxPool {
-    Gfx buffer[GFX_POOL_SIZE];
-    struct SPTask spTask;
-};
-
 extern u16 frameBufferIndex;
 extern u32 gGlobalTimer;
 
-// extern ? my_rdp_init(?);
-// extern ? my_rsp_init(?);
-// extern ? clear_z_buffer(?);
-// extern ? display_frame_buffer(?);
-extern void clear_frame_buffer(s32);
-extern void clear_viewport(Vp *, s32);
-// extern ? draw_screen_borders(?);
+void setup_game_memory(void);
+void thread5_game_loop(UNUSED void *arg);
+void clear_frame_buffer(s32 color);
+void clear_viewport(Vp *viewport, s32 color);
 void make_viewport_clip_rect(Vp *viewport);
-extern void init_render_image(void);
-extern void end_master_display_list(void);
-extern void draw_reset_bars(void);
-extern void rendering_init(void);
-extern void config_gfx_pool(void);
-extern void display_and_vsync(void);
+void init_render_image(void);
+void end_master_display_list(void);
+void rendering_init(void);
+void config_gfx_pool(void);
+void display_and_vsync(void);
 
-#endif
+#endif // GAME_INIT_H

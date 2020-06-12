@@ -1,7 +1,10 @@
 #ifndef AUDIO_DATA_H
 #define AUDIO_DATA_H
 
+#include <PR/ultratypes.h>
+
 #include "internal.h"
+#include "types.h"
 
 #define AUDIO_LOCK_UNINITIALIZED 0
 #define AUDIO_LOCK_NOT_LOADING 0x76557364
@@ -87,7 +90,7 @@ extern f32 D_EU_802298D0;
 extern s32 gRefreshRate;
 #endif
 
-extern u16 *gAiBuffers[NUMAIBUFFERS];
+extern s16 *gAiBuffers[NUMAIBUFFERS];
 extern s16 gAiBufferLengths[NUMAIBUFFERS];
 #ifdef VERSION_EU
 #define AIBUFFER_LEN (0xa0 * 17)
@@ -112,4 +115,4 @@ extern u32 gAudioRandom;
 #endif
 
 
-#endif /* AUDIO_DATA_H */
+#endif // AUDIO_DATA_H
