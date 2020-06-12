@@ -33,7 +33,7 @@
 #include "thread6.h"
 
 u32 unused80339F10 = false;
-u8 options = 31;
+u8 options = 0;
 s8 filler80339F1C[20];
 
 /**************************************************

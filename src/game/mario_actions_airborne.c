@@ -521,7 +521,7 @@ s32 act_backflip(struct MarioState *m) {
         wallDYaw = atan2s(m->wall->normal.z, m->wall->normal.x) - angle;
         wallDJoy = atan2s(m->wall->normal.z, m->wall->normal.x) - m->intendedYaw;
 
-        if ((wallDJoy < -0x6000 || wallDJoy > 0x6000) && (wallDYaw < -0x6000 || wallDYaw > 0x6000)) {
+        if ((options & 2) && (wallDJoy < -0x6000 || wallDJoy > 0x6000) && (wallDYaw < -0x6000 || wallDYaw > 0x6000)) {
             if (m->forwardVel >= 0)
                 m->faceAngle[1] += 0x8000;
             play_sound(SOUND_ACTION_BONK, m->marioObj->header.gfx.cameraToObject);
@@ -705,10 +705,11 @@ s32 act_riding_shell_air(struct MarioState *m) {
 s32 act_twirling(struct MarioState *m) {
     s16 startTwirlYaw = m->twirlYaw;
     s16 yawVelTarget;
+    u8 zDown = (options & 1) && (m->input & INPUT_Z_DOWN);
 
-    if (m->input & INPUT_Z_DOWN) {
+    if (zDown) {
         yawVelTarget = 0x2800;
-        m->pos[1] -= 30.0f;
+        m->pos[1] -= 35.0f;
     } else if (m->input & INPUT_A_DOWN) {
         yawVelTarget = 0x2000;
         m->pos[1] += 5.0f;
@@ -728,7 +729,7 @@ s32 act_twirling(struct MarioState *m) {
         play_sound(SOUND_ACTION_TWIRL, m->marioObj->header.gfx.cameraToObject);
     }
 
-    if (!(m->input & INPUT_Z_DOWN))
+    if (!zDown)
         update_lava_boost_or_twirling(m);
     else {
         m->particleFlags |= PARTICLE_DUST;
@@ -736,7 +737,7 @@ s32 act_twirling(struct MarioState *m) {
     }
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
-            if (m->input & INPUT_Z_DOWN) {
+            if (zDown) {
                 m->particleFlags |= PARTICLE_HORIZONTAL_STAR | PARTICLE_MIST_CIRCLE;
                 return set_mario_action(m, ACT_TRIPLE_JUMP_LAND, 0);
             }
