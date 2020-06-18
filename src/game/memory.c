@@ -1,4 +1,7 @@
 #include <PR/ultratypes.h>
+#ifndef TARGET_N64
+#include <string.h>
+#endif
 
 #include "sm64.h"
 
@@ -98,7 +101,7 @@ void *segmented_to_virtual(const void *addr) {
     return (void *) addr;
 }
 
-void *virtual_to_segmented(u32 segment, const void *addr) {
+void *virtual_to_segmented(UNUSED u32 segment, const void *addr) {
     return (void *) addr;
 }
 
@@ -242,8 +245,8 @@ u32 main_pool_pop_state(void) {
  * function blocks until completion.
  */
 static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
+#ifdef TARGET_N64
     u32 size = ALIGN16(srcEnd - srcStart);
-
     osInvalDCache(dest, size);
     while (size != 0) {
         u32 copySize = (size >= 0x1000) ? 0x1000 : size;
@@ -256,6 +259,9 @@ static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
         srcStart += copySize;
         size -= copySize;
     }
+#else
+    memcpy(dest, srcStart, srcEnd - srcStart);
+#endif
 }
 
 /**

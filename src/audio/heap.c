@@ -648,12 +648,14 @@ s32 audio_shut_down_and_reset_step(void) {
 /**
  * Waits until a specified number of audio frames have been created
  */
-void wait_for_audio_frames(s32 frames) {
+void wait_for_audio_frames(UNUSED s32 frames) {
     gAudioFrameCount = 0;
+#ifdef TARGET_N64
     // Sound thread will update gAudioFrameCount
     while (gAudioFrameCount < frames) {
         // spin
     }
+#endif
 }
 #endif
 

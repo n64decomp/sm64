@@ -23,7 +23,7 @@ ALIGNED8 u8 gGfxSPTaskYieldBuffer[OS_YIELD_DATA_SIZE];
 // 0x200 bytes
 ALIGNED8 struct SaveBuffer gSaveBuffer;
 // 0x190a0 bytes
-struct GfxPool gGfxPools[2];
+struct GfxPool gGfxPools[GFX_NUM_POOLS];
 
 
 // Yield buffer for audio, 0x400 bytes. Stubbed out post-JP since the audio
@@ -37,8 +37,3 @@ ALIGNED8 u8 gAudioSPTaskYieldBuffer[OS_YIELD_AUDIO_SIZE];
 #if !defined(F3DEX_GBI_SHARED) && !defined(VERSION_EU)
 ALIGNED8 u8 gUnusedThread2Stack[0x1400];
 #endif
-
-
-
-
-
