@@ -18,16 +18,18 @@ def fail(msg):
     sys.exit(1)
 
 
+MISSING_PREREQUISITES = (
+    "Missing prerequisite python module {}. "
+    "Run `python3 -m pip install --user colorama ansiwrap attrs watchdog python-Levenshtein` to install prerequisites (python-Levenshtein only needed for --algorithm=levenshtein)."
+)
+
 try:
     import attr
     from colorama import Fore, Style, Back
     import ansiwrap
     import watchdog
 except ModuleNotFoundError as e:
-    fail(
-        f"Missing prerequisite python module {e.name}. "
-        "Run `python3 -m pip install --user colorama ansiwrap attrs watchdog` to install prerequisites."
-    )
+    fail(MISSING_PREREQUISITES.format(e.name))
 
 # Prefer to use diff_settings.py from the current working directory
 sys.path.insert(0, ".")
@@ -121,6 +123,22 @@ parser.add_argument(
     default=50,
     help="Sets the width of the left and right view column.",
 )
+parser.add_argument(
+    "--algorithm",
+    dest="algorithm",
+    default="difflib",
+    choices=["levenshtein", "difflib"],
+    help="Diff algorithm to use.",
+)
+
+parser.add_argument(
+    "--max-size",
+    "--max-lines",
+    dest="max_lines",
+    type=int,
+    default=1024,
+    help="The maximum length of the diff, in lines. Not recommended when -f is used.",
+)
 
 # Project-specific flags, e.g. different versions/make arguments.
 if hasattr(diff_settings, "add_custom_arguments"):
@@ -138,8 +156,8 @@ mapfile = config.get("mapfile", None)
 makeflags = config.get("makeflags", [])
 source_directories = config.get("source_directories", None)
 
-MAX_FUNCTION_SIZE_LINES = 1024
-MAX_FUNCTION_SIZE_BYTES = 1024 * 4
+MAX_FUNCTION_SIZE_LINES = args.max_lines
+MAX_FUNCTION_SIZE_BYTES = MAX_FUNCTION_SIZE_LINES * 4
 
 COLOR_ROTATION = [
     Fore.MAGENTA,
@@ -160,6 +178,12 @@ DEBOUNCE_DELAY = 0.1
 FS_WATCH_EXTENSIONS = [".c", ".h"]
 
 # ==== LOGIC ====
+
+if args.algorithm == "levenshtein":
+    try:
+        import Levenshtein
+    except ModuleNotFoundError as e:
+        fail(MISSING_PREREQUISITES.format(e.name))
 
 binutils_prefix = None
 
@@ -292,7 +316,7 @@ def dump_objfile():
         run_make(objfile)
 
     if not os.path.isfile(objfile):
-        fail("Not able to find .o file for function.")
+        fail(f"Not able to find .o file for function: {objfile} is not a file.")
 
     refobjfile = "expected/" + objfile
     if not os.path.isfile(refobjfile):
@@ -344,28 +368,27 @@ def ansi_ljust(s, width):
 
 re_int = re.compile(r"[0-9]+")
 re_comments = re.compile(r"<.*?>")
-re_regs = re.compile(r"\b(a[0-3]|t[0-9]|s[0-7]|at|v[01]|f[12]?[0-9]|f3[01]|fp)\b")
-re_sprel = re.compile(r",([1-9][0-9]*|0x[1-9a-f][0-9a-f]*)\(sp\)")
+re_regs = re.compile(r"\$?\b(a[0-3]|t[0-9]|s[0-8]|at|v[01]|f[12]?[0-9]|f3[01]|fp)\b")
+re_sprel = re.compile(r",([0-9]+|0x[0-9a-f]+)\(sp\)")
 re_large_imm = re.compile(r"-?[1-9][0-9]{2,}|-?0x[0-9a-f]{3,}")
+re_imm = re.compile(r"(\b|-)([0-9]+|0x[0-9a-fA-F]+)\b(?!\(sp)|%(lo|hi)\([^)]*\)")
 forbidden = set(string.ascii_letters + "_")
-branch_likely_instructions = set(
-    [
-        "beql",
-        "bnel",
-        "beqzl",
-        "bnezl",
-        "bgezl",
-        "bgtzl",
-        "blezl",
-        "bltzl",
-        "bc1tl",
-        "bc1fl",
-    ]
+branch_likely_instructions = {
+    "beql",
+    "bnel",
+    "beqzl",
+    "bnezl",
+    "bgezl",
+    "bgtzl",
+    "blezl",
+    "bltzl",
+    "bc1tl",
+    "bc1fl",
+}
+branch_instructions = branch_likely_instructions.union(
+    {"b", "beq", "bne", "beqz", "bnez", "bgez", "bgtz", "blez", "bltz", "bc1t", "bc1f"}
 )
-branch_instructions = set(
-    ["b", "beq", "bne", "beqz", "bnez", "bgez", "bgtz", "blez", "bltz", "bc1t", "bc1f"]
-    + list(branch_likely_instructions)
-)
+jump_instructions = branch_instructions.union({"jal", "j"})
 
 
 def hexify_int(row, pat):
@@ -420,6 +443,7 @@ def process_reloc(row, prev):
 def process(lines):
     mnemonics = []
     diff_rows = []
+    rows_with_imms = []
     skip_next = False
     originals = []
     line_nums = []
@@ -434,8 +458,9 @@ def process(lines):
             continue
 
         if "R_MIPS_" in row:
-            if diff_rows[-1] != "<delay-slot>":
-                diff_rows[-1] = process_reloc(row, diff_rows[-1])
+            # N.B. Don't transform the diff rows, they already ignore immediates
+            # if diff_rows[-1] != '<delay-slot>':
+            # diff_rows[-1] = process_reloc(row, rows_with_imms[-1])
             originals[-1] = process_reloc(row, originals[-1])
             continue
 
@@ -446,7 +471,7 @@ def process(lines):
         line_num = tabs[0].strip()
         row_parts = row.split("\t", 1)
         mnemonic = row_parts[0].strip()
-        if mnemonic not in branch_instructions:
+        if mnemonic not in jump_instructions:
             row = re.sub(re_int, lambda s: hexify_int(row, s), row)
         original = row
         if skip_next:
@@ -457,11 +482,16 @@ def process(lines):
             skip_next = True
         row = re.sub(re_regs, "<reg>", row)
         row = re.sub(re_sprel, ",addr(sp)", row)
-        if args.ignore_large_imms:
-            row = re.sub(re_large_imm, "<imm>", row)
+        row_with_imm = row
+        if mnemonic in jump_instructions:
+            row = row.strip()
+            row, _ = split_off_branch(row)
+            row += "<imm>"
+        else:
+            row = re.sub(re_imm, "<imm>", row)
 
-        # Replace tabs with spaces
         mnemonics.append(mnemonic)
+        rows_with_imms.append(row_with_imm)
         diff_rows.append(row)
         originals.append(original)
         line_nums.append(line_num)
@@ -504,10 +534,83 @@ class SymbolColorer:
         return f"{color}{t}{Fore.RESET}"
 
 
-def normalize_large_imms(row):
+def maybe_normalize_large_imms(row):
     if args.ignore_large_imms:
         row = re.sub(re_large_imm, "<imm>", row)
     return row
+
+
+def normalize_imms(row):
+    return re.sub(re_imm, "<imm>", row)
+
+
+def normalize_stack(row):
+    return re.sub(re_sprel, ",addr(sp)", row)
+
+
+def split_off_branch(line):
+    parts = line.split(",")
+    if len(parts) < 2:
+        parts = line.split(None, 1)
+    off = len(line) - len(parts[-1])
+    return line[:off], line[off:]
+
+
+def color_imms(out1, out2):
+    g1 = []
+    g2 = []
+    re.sub(re_imm, lambda s: g1.append(s.group()), out1)
+    re.sub(re_imm, lambda s: g2.append(s.group()), out2)
+    if len(g1) == len(g2):
+        diffs = [x != y for (x, y) in zip(g1, g2)]
+        it = iter(diffs)
+
+        def maybe_color(s):
+            return f"{Fore.LIGHTBLUE_EX}{s}{Style.RESET_ALL}" if next(it) else s
+
+        out1 = re.sub(re_imm, lambda s: maybe_color(s.group()), out1)
+        it = iter(diffs)
+        out2 = re.sub(re_imm, lambda s: maybe_color(s.group()), out2)
+    return out1, out2
+
+
+def color_branch_imms(br1, br2):
+    if br1 != br2:
+        br1 = f"{Fore.LIGHTBLUE_EX}{br1}{Style.RESET_ALL}"
+        br2 = f"{Fore.LIGHTBLUE_EX}{br2}{Style.RESET_ALL}"
+    return br1, br2
+
+
+def diff_sequences_difflib(seq1, seq2):
+    differ = difflib.SequenceMatcher(a=seq1, b=seq2, autojunk=False)
+    return differ.get_opcodes()
+
+
+def diff_sequences(seq1, seq2):
+    if (
+        args.algorithm != "levenshtein"
+        or len(seq1) * len(seq2) > 4 * 10 ** 8
+        or len(seq1) + len(seq2) >= 0x110000
+    ):
+        return diff_sequences_difflib(seq1, seq2)
+
+    # The Levenshtein library assumes that we compare strings, not lists. Convert.
+    # (Per the check above we know we have fewer than 0x110000 unique elements, so chr() works.)
+    remapping = {}
+
+    def remap(seq):
+        seq = seq[:]
+        for i in range(len(seq)):
+            val = remapping.get(seq[i])
+            if val is None:
+                val = chr(len(remapping))
+                remapping[seq[i]] = val
+            seq[i] = val
+        return "".join(seq)
+
+    seq1 = remap(seq1)
+    seq2 = remap(seq2)
+    return Levenshtein.opcodes(seq1, seq2)
 
 
 def do_diff(basedump, mydump):
@@ -545,10 +648,7 @@ def do_diff(basedump, mydump):
                     btset.add(bt + ":")
                     sc.color_symbol(bt + ":")
 
-    differ: difflib.SequenceMatcher = difflib.SequenceMatcher(
-        a=mnemonics1, b=mnemonics2, autojunk=False
-    )
-    for (tag, i1, i2, j1, j2) in differ.get_opcodes():
+    for (tag, i1, i2, j1, j2) in diff_sequences(mnemonics1, mnemonics2):
         lines1 = asm_lines1[i1:i2]
         lines2 = asm_lines2[j1:j2]
 
@@ -572,65 +672,113 @@ def do_diff(basedump, mydump):
                 original2 = ""
                 line_num2 = ""
 
-            line_color = Fore.RESET
+            has1 = has2 = True
+            line_color1 = line_color2 = sym_color = Fore.RESET
             line_prefix = " "
             if line1 == line2:
-                if normalize_large_imms(original1) == normalize_large_imms(original2):
-                    out1 = f"{original1}"
-                    out2 = f"{original2}"
+                if not line1:
+                    has1 = has2 = False
+                if maybe_normalize_large_imms(original1) == maybe_normalize_large_imms(
+                    original2
+                ):
+                    out1 = original1
+                    out2 = original2
                 elif line1 == "<delay-slot>":
                     out1 = f"{Style.DIM}{original1}"
                     out2 = f"{Style.DIM}{original2}"
                 else:
-                    line_color = Fore.YELLOW
-                    line_prefix = "r"
-                    out1 = f"{Fore.YELLOW}{original1}{Style.RESET_ALL}"
-                    out2 = f"{Fore.YELLOW}{original2}{Style.RESET_ALL}"
-                    out1 = re.sub(re_regs, lambda s: sc1.color_symbol(s.group()), out1)
-                    out2 = re.sub(re_regs, lambda s: sc2.color_symbol(s.group()), out2)
-                    out1 = re.sub(re_sprel, lambda s: sc3.color_symbol(s.group()), out1)
-                    out2 = re.sub(re_sprel, lambda s: sc4.color_symbol(s.group()), out2)
+                    mnemonic = original1.split()[0]
+                    out1, out2 = original1, original2
+                    branch1 = branch2 = ""
+                    if mnemonic in jump_instructions:
+                        out1, branch1 = split_off_branch(original1)
+                        out2, branch2 = split_off_branch(original2)
+                    branchless1 = out1
+                    branchless2 = out2
+                    out1, out2 = color_imms(out1, out2)
+                    branch1, branch2 = color_branch_imms(branch1, branch2)
+                    out1 += branch1
+                    out2 += branch2
+                    if normalize_imms(branchless1) == normalize_imms(branchless2):
+                        # only imms differences
+                        sym_color = Fore.LIGHTBLUE_EX
+                        line_prefix = "i"
+                    else:
+                        out1 = re.sub(
+                            re_sprel,
+                            lambda s: "," + sc3.color_symbol(s.group()[1:]),
+                            out1,
+                        )
+                        out2 = re.sub(
+                            re_sprel,
+                            lambda s: "," + sc4.color_symbol(s.group()[1:]),
+                            out2,
+                        )
+                        if normalize_stack(branchless1) == normalize_stack(branchless2):
+                            # only stack differences (luckily stack and imm
+                            # differences can't be combined in MIPS, so we
+                            # don't have to think about that case)
+                            sym_color = Fore.YELLOW
+                            line_prefix = "s"
+                        else:
+                            # regs differences and maybe imms as well
+                            out1 = re.sub(
+                                re_regs, lambda s: sc1.color_symbol(s.group()), out1
+                            )
+                            out2 = re.sub(
+                                re_regs, lambda s: sc2.color_symbol(s.group()), out2
+                            )
+                            line_color1 = line_color2 = sym_color = Fore.YELLOW
+                            line_prefix = "r"
             elif tag in ["replace", "equal"]:
                 line_prefix = "|"
-                line_color = Fore.BLUE
-                out1 = f"{Fore.BLUE}{original1}{Style.RESET_ALL}"
-                out2 = f"{Fore.BLUE}{original2}{Style.RESET_ALL}"
+                line_color1 = Fore.LIGHTBLUE_EX
+                line_color2 = Fore.LIGHTBLUE_EX
+                sym_color = Fore.LIGHTBLUE_EX
+                out1 = original1
+                out2 = original2
             elif tag == "delete":
                 line_prefix = "<"
-                line_color = Fore.RED
-                out1 = f"{Fore.RED}{original1}{Style.RESET_ALL}"
+                line_color1 = line_color2 = sym_color = Fore.RED
+                has2 = False
+                out1 = original1
                 out2 = ""
             elif tag == "insert":
                 line_prefix = ">"
-                line_color = Fore.GREEN
+                line_color1 = line_color2 = sym_color = Fore.GREEN
+                has1 = False
                 out1 = ""
-                out2 = f"{Fore.GREEN}{original2}{Style.RESET_ALL}"
+                out2 = original2
 
             in_arrow1 = "  "
             in_arrow2 = "  "
             out_arrow1 = ""
             out_arrow2 = ""
-            line_num1 = line_num1 if out1 else ""
-            line_num2 = line_num2 if out2 else ""
+            line_num1 = line_num1 if has1 else ""
+            line_num2 = line_num2 if has2 else ""
 
-            if args.show_branches and out1:
+            if sym_color == line_color2:
+                line_color2 = ""
+
+            if args.show_branches and has1:
                 if line_num1 in bts1:
-                    in_arrow1 = sc5.color_symbol(line_num1, "~>")
+                    in_arrow1 = sc5.color_symbol(line_num1, "~>") + line_color1
                 if branch_targets1[i1 + k] is not None:
                     out_arrow1 = " " + sc5.color_symbol(
                         branch_targets1[i1 + k] + ":", "~>"
                     )
-            if args.show_branches and out2:
+            if args.show_branches and has2:
                 if line_num2 in bts2:
-                    in_arrow2 = sc6.color_symbol(line_num2, "~>")
+                    in_arrow2 = sc6.color_symbol(line_num2, "~>") + line_color2
                 if branch_targets2[j1 + k] is not None:
                     out_arrow2 = " " + sc6.color_symbol(
                         branch_targets2[j1 + k] + ":", "~>"
                     )
 
-            out1 = f"{line_color}{line_num1} {in_arrow1} {out1}{Style.RESET_ALL}{out_arrow1}"
-            out2 = f"{line_color}{line_prefix} {line_num2} {in_arrow2} {out2}{Style.RESET_ALL}{out_arrow2}"
-            output.append(format_single_line_diff(out1, out2, args.column_width))
+            out1 = f"{line_color1}{line_num1} {in_arrow1} {out1}{Style.RESET_ALL}{out_arrow1}"
+            out2 = f"{line_color2}{line_num2} {in_arrow2} {out2}{Style.RESET_ALL}{out_arrow2}"
+            mid = f"{sym_color}{line_prefix} "
+            output.append(format_single_line_diff(out1, mid + out2, args.column_width))
 
     return output[args.skip_lines :]
 
@@ -677,7 +825,7 @@ def debounced_fs_watch(targets, outq, debounce_delay):
                 observer.schedule(event_handler, target, recursive=True)
             else:
                 file_targets.append(target)
-                target = os.path.dirname(target)
+                target = os.path.dirname(target) or "."
                 if target not in observed:
                     observed.add(target)
                     observer.schedule(event_handler, target)
@@ -800,7 +948,7 @@ def main():
 
     if args.write_asm is not None:
         mydump = run_objdump(mycmd)
-        with open(args.write_asm) as f:
+        with open(args.write_asm, "w") as f:
             f.write(mydump)
         print(f"Wrote assembly to {args.write_asm}.")
         sys.exit(0)
@@ -850,7 +998,9 @@ def main():
                     ret = run_make(make_target, capture_output=True)
                     if ret.returncode != 0:
                         display.update(
-                            ret.stderr.decode() or ret.stdout.decode(), error=True
+                            ret.stderr.decode("utf-8-sig", "replace")
+                            or ret.stdout.decode("utf-8-sig", "replace"),
+                            error=True,
                         )
                         continue
                 mydump = run_objdump(mycmd)

@@ -9,10 +9,14 @@ ifeq (, $(shell which armips 2> /dev/null))
 CXX_PROGRAMS += armips
 endif
 
+ifeq ($(OS),Windows_NT)
+ARMIPS_FLAGS := -municode
+endif
+
 default: all
 
 armips: armips.cpp
-	$(CXX) $(CXXFLAGS) -fno-exceptions -fno-rtti -pipe $^ -o $@ -lpthread
+	$(CXX) $(CXXFLAGS) -fno-exceptions -fno-rtti -pipe $^ -o $@ -lpthread $(ARMIPS_FLAGS)
 
 n64graphics_SOURCES := n64graphics.c utils.c
 n64graphics_CFLAGS  := -DN64GRAPHICS_STANDALONE
@@ -33,8 +37,8 @@ aifc_decode_SOURCES := aifc_decode.c
 aiff_extract_codebook_SOURCES := aiff_extract_codebook.c
 
 tabledesign_SOURCES := sdk-tools/tabledesign/codebook.c sdk-tools/tabledesign/estimate.c sdk-tools/tabledesign/print.c sdk-tools/tabledesign/tabledesign.c
-tabledesign_CFLAGS := -Wno-uninitialized 
-tabledesign_LDFLAGS := -laudiofile
+tabledesign_CFLAGS := -Iaudiofile -Wno-uninitialized
+tabledesign_LDFLAGS := -Laudiofile -laudiofile -lstdc++ -lm
 
 vadpcm_enc_SOURCES := sdk-tools/adpcm/vadpcm_enc.c sdk-tools/adpcm/vpredictor.c sdk-tools/adpcm/quant.c sdk-tools/adpcm/util.c sdk-tools/adpcm/vencode.c
 vadpcm_enc_CFLAGS := -Wno-unused-result -Wno-uninitialized -Wno-sign-compare -Wno-absolute-value
@@ -43,10 +47,16 @@ extract_data_for_mio_SOURCES := extract_data_for_mio.c
 
 skyconv_SOURCES := skyconv.c n64graphics.c utils.c
 
-all: $(PROGRAMS) $(CXX_PROGRAMS)
+LIBAUDIOFILE := audiofile/libaudiofile.a
+
+$(LIBAUDIOFILE):
+	@$(MAKE) -C audiofile
+
+all: $(LIBAUDIOFILE) $(PROGRAMS) $(CXX_PROGRAMS)
 
 clean:
 	$(RM) $(PROGRAMS) $(CXX_PROGRAMS)
+	$(MAKE) -C audiofile clean
 
 define COMPILE
 $(1): $($1_SOURCES)

@@ -10859,3964 +10859,6 @@ void CommandSequence::writeSymData(SymbolData& symData) const
 	}
 }
 
-// file: Core/ELF/ElfFile.cpp
-#include <vector>
-#include <algorithm>
-
-#ifndef _WIN32
-#include <strings.h>
-#define _stricmp strcasecmp
-#endif
-
-static bool stringEqualInsensitive(const std::string& a, const std::string& b)
-{
-	if (a.size() != b.size())
-		return false;
-	return _stricmp(a.c_str(),b.c_str()) == 0;
-}
-
-bool compareSection(ElfSection* a, ElfSection* b)
-{
-	return a->getOffset() < b->getOffset();
-}
-
-ElfSection::ElfSection(Elf32_Shdr header): header(header)
-{
-	owner = nullptr;
-}
-
-void ElfSection::setOwner(ElfSegment* segment)
-{
-	header.sh_offset -= segment->getOffset();
-	owner = segment;
-}
-
-void ElfSection::writeHeader(ByteArray& data, int pos, Endianness endianness)
-{
-	data.replaceDoubleWord(pos + 0x00, header.sh_name, endianness);
-	data.replaceDoubleWord(pos + 0x04, header.sh_type, endianness);
-	data.replaceDoubleWord(pos + 0x08, header.sh_flags, endianness);
-	data.replaceDoubleWord(pos + 0x0C, header.sh_addr, endianness);
-	data.replaceDoubleWord(pos + 0x10, header.sh_offset, endianness);
-	data.replaceDoubleWord(pos + 0x14, header.sh_size, endianness);
-	data.replaceDoubleWord(pos + 0x18, header.sh_link, endianness);
-	data.replaceDoubleWord(pos + 0x1C, header.sh_info, endianness);
-	data.replaceDoubleWord(pos + 0x20, header.sh_addralign, endianness);
-	data.replaceDoubleWord(pos + 0x24, header.sh_entsize, endianness);
-}
-
-// only called for segmentless sections
-void ElfSection::writeData(ByteArray& output)
-{
-	if (header.sh_type == SHT_NULL) return;
-
-	// nobits sections still get a provisional file address
-	if (header.sh_type == SHT_NOBITS)
-	{
-		header.sh_offset = (Elf32_Off) output.size();
-	}
-
-	if (header.sh_addralign != (unsigned) -1)
-		output.alignSize(header.sh_addralign);
-	header.sh_offset = (Elf32_Off) output.size();
-	output.append(data);
-}
-
-void ElfSection::setOffsetBase(int base)
-{
-	header.sh_offset += base;
-}
-
-ElfSegment::ElfSegment(Elf32_Phdr header, ByteArray& segmentData): header(header)
-{
-	data = segmentData;
-	paddrSection = nullptr;
-}
-
-bool ElfSegment::isSectionPartOf(ElfSection* section)
-{
-	int sectionStart = section->getOffset();
-	int sectionSize = section->getType() == SHT_NOBITS ? 0 : section->getSize();
-	int sectionEnd = sectionStart+sectionSize;
-
-	int segmentStart = header.p_offset;
-	int segmentEnd = segmentStart+header.p_filesz;
-
-	// exclusive > in case the size is 0
-	if (sectionStart < (int)header.p_offset || sectionStart > segmentEnd) return false;
-
-	// does an empty section belong to this or the next segment? hm...
-	if (sectionStart == segmentEnd) return sectionSize == 0;
-
-	// the start is inside the section and the size is not 0, so the end should be in here too
-	if (sectionEnd > segmentEnd)
-	{
-		Logger::printError(Logger::Error,L"Section partially contained in segment");
-		return false;
-	}
-
-	return true;
-}
-
-void ElfSegment::addSection(ElfSection* section)
-{
-	if (header.p_paddr != 0)
-	{
-		if (section->getOffset() == header.p_paddr)
-		{
-			paddrSection = section;
-		}
-	}
-
-	section->setOwner(this);
-	sections.push_back(section);
-}
-
-void ElfSegment::writeData(ByteArray& output)
-{
-	if (sections.size() == 0)
-	{
-		output.alignSize(header.p_align);
-		if (header.p_offset == header.p_paddr)
-			header.p_paddr = (Elf32_Addr) output.size();
-
-		header.p_offset = (Elf32_Off) output.size();
-		return;
-	}
-
-	// align segment to alignment of first section
-	int align = std::max<int>(sections[0]->getAlignment(),16);
-	output.alignSize(align);
-
-	header.p_offset = (Elf32_Off) output.size();
-	for (int i = 0; i < (int)sections.size(); i++)
-	{
-		sections[i]->setOffsetBase(header.p_offset);
-	}
-
-	if (paddrSection)
-	{
-		header.p_paddr = paddrSection->getOffset();
-	}
-
-	output.append(data);
-}
-
-void ElfSegment::writeHeader(ByteArray& data, int pos, Endianness endianness)
-{
-	data.replaceDoubleWord(pos + 0x00, header.p_type, endianness);
-	data.replaceDoubleWord(pos + 0x04, header.p_offset, endianness);
-	data.replaceDoubleWord(pos + 0x08, header.p_vaddr, endianness);
-	data.replaceDoubleWord(pos + 0x0C, header.p_paddr, endianness);
-	data.replaceDoubleWord(pos + 0x10, header.p_filesz, endianness);
-	data.replaceDoubleWord(pos + 0x14, header.p_memsz, endianness);
-	data.replaceDoubleWord(pos + 0x18, header.p_flags, endianness);
-	data.replaceDoubleWord(pos + 0x1C, header.p_align, endianness);
-}
-
-void ElfSegment::splitSections()
-{
-
-}
-
-int ElfSegment::findSection(const std::string& name)
-{
-	for (size_t i = 0; i < sections.size(); i++)
-	{
-		if (stringEqualInsensitive(name,sections[i]->getName()))
-			return i;
-	}
-
-	return -1;
-}
-
-void ElfSegment::writeToData(size_t offset, void* src, size_t size)
-{
-	for (size_t i = 0; i < size; i++)
-	{
-		data[offset+i] = ((byte*)src)[i];
-	}
-}
-
-void ElfSegment::sortSections()
-{
-	std::sort(sections.begin(),sections.end(),compareSection);
-}
-
-void ElfFile::loadSectionNames()
-{
-	if (fileHeader.e_shstrndx == SHN_UNDEF) return;
-
-	// check if the string table is actually a string table
-	// sometimes it gives the wrong section id
-	size_t strTablePos = sections[fileHeader.e_shstrndx]->getOffset();
-	size_t strTableSize = sections[fileHeader.e_shstrndx]->getSize();
-	for (size_t i = 0; i < strTableSize; i++)
-	{
-		if (fileData[strTablePos+i] != 0 && fileData[strTablePos+i] < 0x20)
-			return;
-		if (fileData[strTablePos+i] > 0x7F)
-			return;
-	}
-
-	for (size_t i = 0; i < sections.size(); i++)
-	{
-		ElfSection* section = sections[i];
-		if (section->getType() == SHT_NULL) continue;
-
-		int strTablePos = sections[fileHeader.e_shstrndx]->getOffset();
-		int offset = strTablePos+section->getNameOffset();
-
-		char* name = (char*) fileData.data(offset);
-		std::string strName = name;
-		section->setName(strName);
-	}
-}
-
-void ElfFile::determinePartOrder()
-{
-	size_t segmentTable = fileHeader.e_phoff;
-	size_t sectionTable = fileHeader.e_shoff;
-
-	// segments
-	size_t firstSegmentStart = fileData.size(), lastSegmentEnd = 0;
-	for (size_t i = 0; i < fileHeader.e_phnum; i++)
-	{
-		size_t pos = fileHeader.e_phoff+i*fileHeader.e_phentsize;
-
-		Elf32_Phdr segmentHeader;
-		loadProgramHeader(segmentHeader, fileData, pos);
-		size_t end = segmentHeader.p_offset + segmentHeader.p_filesz;
-
-		if (segmentHeader.p_offset < firstSegmentStart) firstSegmentStart = segmentHeader.p_offset;
-		if (lastSegmentEnd < end) lastSegmentEnd = end;
-	}
-
-	// segmentless sections
-	size_t firstSectionStart = fileData.size(), lastSectionEnd = 0;
-	for (size_t i = 0; i < segmentlessSections.size(); i++)
-	{
-		if (segmentlessSections[i]->getType() == SHT_NULL) continue;
-
-		size_t start = segmentlessSections[i]->getOffset();
-		size_t end = start+segmentlessSections[i]->getSize();
-
-		if (start == 0 && end == 0)
-			continue;
-		if (start < firstSectionStart) firstSectionStart = start;
-		if (lastSectionEnd < end) lastSectionEnd = end;
-	}
-
-	struct PartsSort {
-		size_t offset;
-		ElfPart type;
-		bool operator<(const PartsSort& other) const { return offset < other.offset; };
-	};
-
-	PartsSort temp[4] = {
-		{ segmentTable,				ELFPART_SEGMENTTABLE },
-		{ sectionTable,				ELFPART_SECTIONTABLE },
-		{ firstSegmentStart,		ELFPART_SEGMENTS },
-		{ firstSectionStart,		ELFPART_SEGMENTLESSSECTIONS },
-	};
-
-	std::sort(&temp[0],&temp[4]);
-
-	for (size_t i = 0; i < 4; i++)
-	{
-		partsOrder[i] = temp[i].type;
-	}
-}
-
-int ElfFile::findSegmentlessSection(const std::string& name)
-{
-	for (size_t i = 0; i < segmentlessSections.size(); i++)
-	{
-		if (stringEqualInsensitive(name,segmentlessSections[i]->getName()))
-			return i;
-	}
-
-	return -1;
-}
-
-void ElfFile::loadElfHeader()
-{
-	memcpy(fileHeader.e_ident, &fileData[0], sizeof(fileHeader.e_ident));
-	Endianness endianness = getEndianness();
-	fileHeader.e_type = fileData.getWord(0x10, endianness);
-	fileHeader.e_machine = fileData.getWord(0x12, endianness);
-	fileHeader.e_version = fileData.getDoubleWord(0x14, endianness);
-	fileHeader.e_entry = fileData.getDoubleWord(0x18, endianness);
-	fileHeader.e_phoff = fileData.getDoubleWord(0x1C, endianness);
-	fileHeader.e_shoff = fileData.getDoubleWord(0x20, endianness);
-	fileHeader.e_flags = fileData.getDoubleWord(0x24, endianness);
-	fileHeader.e_ehsize = fileData.getWord(0x28, endianness);
-	fileHeader.e_phentsize = fileData.getWord(0x2A, endianness);
-	fileHeader.e_phnum = fileData.getWord(0x2C, endianness);
-	fileHeader.e_shentsize = fileData.getWord(0x2E, endianness);
-	fileHeader.e_shnum = fileData.getWord(0x30, endianness);
-	fileHeader.e_shstrndx = fileData.getWord(0x32, endianness);
-}
-
-void ElfFile::writeHeader(ByteArray& data, int pos, Endianness endianness)
-{
-	memcpy(&fileData[0], fileHeader.e_ident, sizeof(fileHeader.e_ident));
-	data.replaceWord(pos + 0x10, fileHeader.e_type, endianness);
-	data.replaceWord(pos + 0x12, fileHeader.e_machine, endianness);
-	data.replaceDoubleWord(pos + 0x14, fileHeader.e_version, endianness);
-	data.replaceDoubleWord(pos + 0x18, fileHeader.e_entry, endianness);
-	data.replaceDoubleWord(pos + 0x1C, fileHeader.e_phoff, endianness);
-	data.replaceDoubleWord(pos + 0x20, fileHeader.e_shoff, endianness);
-	data.replaceDoubleWord(pos + 0x24, fileHeader.e_flags, endianness);
-	data.replaceWord(pos + 0x28, fileHeader.e_ehsize, endianness);
-	data.replaceWord(pos + 0x2A, fileHeader.e_phentsize, endianness);
-	data.replaceWord(pos + 0x2C, fileHeader.e_phnum, endianness);
-	data.replaceWord(pos + 0x2E, fileHeader.e_shentsize, endianness);
-	data.replaceWord(pos + 0x30, fileHeader.e_shnum, endianness);
-	data.replaceWord(pos + 0x32, fileHeader.e_shstrndx, endianness);
-}
-
-void ElfFile::loadProgramHeader(Elf32_Phdr& header, ByteArray& data, int pos)
-{
-	Endianness endianness = getEndianness();
-	header.p_type   = data.getDoubleWord(pos + 0x00, endianness);
-	header.p_offset = data.getDoubleWord(pos + 0x04, endianness);
-	header.p_vaddr  = data.getDoubleWord(pos + 0x08, endianness);
-	header.p_paddr  = data.getDoubleWord(pos + 0x0C, endianness);
-	header.p_filesz = data.getDoubleWord(pos + 0x10, endianness);
-	header.p_memsz  = data.getDoubleWord(pos + 0x14, endianness);
-	header.p_flags  = data.getDoubleWord(pos + 0x18, endianness);
-	header.p_align  = data.getDoubleWord(pos + 0x1C, endianness);
-}
-
-void ElfFile::loadSectionHeader(Elf32_Shdr& header, ByteArray& data, int pos)
-{
-	Endianness endianness = getEndianness();
-	header.sh_name      = data.getDoubleWord(pos + 0x00, endianness);
-	header.sh_type      = data.getDoubleWord(pos + 0x04, endianness);
-	header.sh_flags     = data.getDoubleWord(pos + 0x08, endianness);
-	header.sh_addr      = data.getDoubleWord(pos + 0x0C, endianness);
-	header.sh_offset    = data.getDoubleWord(pos + 0x10, endianness);
-	header.sh_size      = data.getDoubleWord(pos + 0x14, endianness);
-	header.sh_link      = data.getDoubleWord(pos + 0x18, endianness);
-	header.sh_info      = data.getDoubleWord(pos + 0x1C, endianness);
-	header.sh_addralign = data.getDoubleWord(pos + 0x20, endianness);
-	header.sh_entsize   = data.getDoubleWord(pos + 0x24, endianness);
-}
-
-bool ElfFile::load(const std::wstring& fileName, bool sort)
-{
-	ByteArray data = ByteArray::fromFile(fileName);
-	if (data.size() == 0)
-		return false;
-	return load(data,sort);
-}
-
-bool ElfFile::load(ByteArray& data, bool sort)
-{
-	fileData = data;
-
-	loadElfHeader();
-	symTab = nullptr;
-	strTab = nullptr;
-
-	// load segments
-	for (size_t i = 0; i < fileHeader.e_phnum; i++)
-	{
-		int pos = fileHeader.e_phoff+i*fileHeader.e_phentsize;
-
-		Elf32_Phdr sectionHeader;
-		loadProgramHeader(sectionHeader, fileData, pos);
-
-		ByteArray segmentData = fileData.mid(sectionHeader.p_offset,sectionHeader.p_filesz);
-		ElfSegment* segment = new ElfSegment(sectionHeader,segmentData);
-		segments.push_back(segment);
-	}
-
-	// load sections and assign them to segments
-	for (int i = 0; i < fileHeader.e_shnum; i++)
-	{
-		int pos = fileHeader.e_shoff+i*fileHeader.e_shentsize;
-
-		Elf32_Shdr sectionHeader;
-		loadSectionHeader(sectionHeader, fileData, pos);
-
-		ElfSection* section = new ElfSection(sectionHeader);
-		sections.push_back(section);
-
-		// check if the section belongs to a segment
-		ElfSegment* owner = nullptr;
-		for (int k = 0; k < (int)segments.size(); k++)
-		{
-			if (segments[k]->isSectionPartOf(section))
-			{
-				owner = segments[k];
-				break;
-			}
-		}
-
-		if (owner != nullptr)
-		{
-			owner->addSection(section);
-		} else {
-			if (section->getType() != SHT_NOBITS && section->getType() != SHT_NULL)
-			{
-				ByteArray data = fileData.mid(section->getOffset(),section->getSize());
-				section->setData(data);
-			}
-
-			switch (section->getType())
-			{
-			case SHT_SYMTAB:
-				symTab = section;
-				break;
-			case SHT_STRTAB:
-				if (!strTab || i != fileHeader.e_shstrndx)
-				{
-					strTab = section;
-				}
-				break;
-			}
-
-			segmentlessSections.push_back(section);
-		}
-	}
-
-	determinePartOrder();
-	loadSectionNames();
-
-	if (sort)
-	{
-		std::sort(segmentlessSections.begin(),segmentlessSections.end(),compareSection);
-
-		for (int i = 0; i < (int)segments.size(); i++)
-		{
-			segments[i]->sortSections();
-		}
-	}
-
-	return true;
-}
-
-void ElfFile::save(const std::wstring&fileName)
-{
-	fileData.clear();
-
-	// reserve space for header and table data
-	fileData.reserveBytes(sizeof(Elf32_Ehdr));
-
-	for (size_t i = 0; i < 4; i++)
-	{
-		switch (partsOrder[i])
-		{
-		case ELFPART_SEGMENTTABLE:
-			fileData.alignSize(4);
-			fileHeader.e_phoff = (Elf32_Off) fileData.size();
-			fileData.reserveBytes(segments.size()*fileHeader.e_phentsize);
-			break;
-		case ELFPART_SECTIONTABLE:
-			fileData.alignSize(4);
-			fileHeader.e_shoff = (Elf32_Off) fileData.size();
-			fileData.reserveBytes(sections.size()*fileHeader.e_shentsize);
-			break;
-		case ELFPART_SEGMENTS:
-			for (size_t i = 0; i < segments.size(); i++)
-			{
-				segments[i]->writeData(fileData);
-			}
-			break;
-		case ELFPART_SEGMENTLESSSECTIONS:
-			for (size_t i = 0; i < segmentlessSections.size(); i++)
-			{
-				segmentlessSections[i]->writeData(fileData);
-			}
-			break;
-		}
-	}
-
-	// copy data to the tables
-	Endianness endianness = getEndianness();
-	writeHeader(fileData, 0, endianness);
-	for (size_t i = 0; i < segments.size(); i++)
-	{
-		int pos = fileHeader.e_phoff+i*fileHeader.e_phentsize;
-		segments[i]->writeHeader(fileData, pos, endianness);
-	}
-
-	for (size_t i = 0; i < sections.size(); i++)
-	{
-		int pos = fileHeader.e_shoff+i*fileHeader.e_shentsize;
-		sections[i]->writeHeader(fileData, pos, endianness);
-	}
-
-	fileData.toFile(fileName);
-}
-
-int ElfFile::getSymbolCount()
-{
-	if (symTab == nullptr)
-		return 0;
-
-	return symTab->getSize()/sizeof(Elf32_Sym);
-}
-
-bool ElfFile::getSymbol(Elf32_Sym& symbol, size_t index)
-{
-	if (symTab == nullptr)
-		return false;
-
-	ByteArray &data = symTab->getData();
-	int pos = index*sizeof(Elf32_Sym);
-	Endianness endianness = getEndianness();
-	symbol.st_name  = data.getDoubleWord(pos + 0x00, endianness);
-	symbol.st_value = data.getDoubleWord(pos + 0x04, endianness);
-	symbol.st_size  = data.getDoubleWord(pos + 0x08, endianness);
-	symbol.st_info  = data[pos + 0x0C];
-	symbol.st_other = data[pos + 0x0D];
-	symbol.st_shndx = data.getWord(pos + 0x0E, endianness);
-
-	return true;
-}
-
-const char* ElfFile::getStrTableString(size_t pos)
-{
-	if (strTab == nullptr)
-		return nullptr;
-
-	return (const char*) &strTab->getData()[pos];
-}
-
-// file: Core/ELF/ElfRelocator.cpp
-
-struct ArFileHeader
-{
-	char fileName[16];
-	char modifactionTime[12];
-	char ownerId[6];
-	char groupId[6];
-	char fileMode[8];
-	char fileSize[10];
-	char magic[2];
-};
-
-struct ArFileEntry
-{
-	std::wstring name;
-	ByteArray data;
-};
-
-std::vector<ArFileEntry> loadArArchive(const std::wstring& inputName)
-{
-	ByteArray input = ByteArray::fromFile(inputName);
-	std::vector<ArFileEntry> result;
-
-	if (input.size() < 8 || memcmp(input.data(),"!<arch>\n",8) != 0)
-	{
-		if (input.size() < 4 || memcmp(input.data(),"\x7F""ELF",4) != 0)
-			return result;
-
-		ArFileEntry entry;
-		entry.name = getFileNameFromPath(inputName);
-		entry.data = input;
-		result.push_back(entry);
-		return result;
-	}
-
-	size_t pos = 8;
-	while (pos < input.size())
-	{
-		ArFileHeader* header = (ArFileHeader*) input.data(pos);
-		pos += sizeof(ArFileHeader);
-
-		// get file size
-		int size = 0;
-		for (int i = 0; i < 10; i++)
-		{
-			if (header->fileSize[i] == ' ')
-				break;
-
-			size = size*10;
-			size += (header->fileSize[i]-'0');
-		}
-
-		// only ELF files are actually interesting
-		if (memcmp(input.data(pos),"\x7F""ELF",4) == 0)
-		{
-			// get file name
-			char fileName[17];
-			fileName[16] = 0;
-			for (int i = 0; i < 16; i++)
-			{
-				if (header->fileName[i] == ' ')
-				{
-					// remove trailing slashes of file names
-					if (i > 0 && fileName[i-1] == '/')
-						i--;
-					fileName[i] = 0;
-					break;;
-				}
-
-				fileName[i] = header->fileName[i];
-			}
-
-			ArFileEntry entry;
-			entry.name = convertUtf8ToWString(fileName);
-			entry.data = input.mid(pos,size);
-			result.push_back(entry);
-		}
-
-		pos += size;
-		if (pos % 2)
-			pos++;
-	}
-
-	return result;
-}
-
-bool ElfRelocator::init(const std::wstring& inputName)
-{
-	relocator = Arch->getElfRelocator();
-	if (relocator == nullptr)
-	{
-		Logger::printError(Logger::Error,L"Object importing not supported for this architecture");
-		return false;
-	}
-
-	auto inputFiles = loadArArchive(inputName);
-	if (inputFiles.size() == 0)
-	{
-		Logger::printError(Logger::Error,L"Could not load library");
-		return false;
-	}
-
-	for (ArFileEntry& entry: inputFiles)
-	{
-		ElfRelocatorFile file;
-
-		ElfFile* elf = new ElfFile();
-		if (elf->load(entry.data,false) == false)
-		{
-			Logger::printError(Logger::Error,L"Could not load object file %s",entry.name);
-			return false;
-		}
-
-		if (elf->getType() != ET_REL)
-		{
-			Logger::printError(Logger::Error,L"Unexpected ELF type %d in object file %s",elf->getType(),entry.name);
-			return false;
-		}
-
-		if (elf->getMachine() != relocator->expectedMachine())
-		{
-			Logger::printError(Logger::Error,L"Unexpected ELF machine %d in object file %s",elf->getMachine(),entry.name);
-			return false;
-		}
-
-		if (elf->getEndianness() != Arch->getEndianness())
-		{
-			Logger::printError(Logger::Error,L"Incorrect endianness in object file %s",entry.name);
-			return false;
-		}
-
-		if (elf->getSegmentCount() != 0)
-		{
-			Logger::printError(Logger::Error,L"Unexpected segment count %d in object file %s",elf->getSegmentCount(),entry.name);
-			return false;
-		}
-
-
-		// load all relevant sections of this file
-		for (size_t s = 0; s < elf->getSegmentlessSectionCount(); s++)
-		{
-			ElfSection* sec = elf->getSegmentlessSection(s);
-			if (!(sec->getFlags() & SHF_ALLOC))
-				continue;
-
-			if (sec->getType() == SHT_PROGBITS || sec->getType() == SHT_NOBITS || sec->getType() == SHT_INIT_ARRAY)
-			{
-				ElfRelocatorSection sectionEntry;
-				sectionEntry.section = sec;
-				sectionEntry.index = s;
-				sectionEntry.relSection = nullptr;
-				sectionEntry.label = nullptr;
-
-				// search relocation section
-				for (size_t k = 0; k < elf->getSegmentlessSectionCount(); k++)
-				{
-					ElfSection* relSection = elf->getSegmentlessSection(k);
-					if (relSection->getType() != SHT_REL)
-						continue;
-					if (relSection->getInfo() != s)
-						continue;
-
-					// got it
-					sectionEntry.relSection = relSection;
-					break;
-				}
-
-				// keep track of constructor sections
-				if (sec->getName() == ".ctors" || sec->getName() == ".init_array")
-				{
-					ElfRelocatorCtor ctor;
-					ctor.symbolName = Global.symbolTable.getUniqueLabelName();
-					ctor.size = sec->getSize();
-
-					sectionEntry.label = Global.symbolTable.getLabel(ctor.symbolName,-1,-1);
-					sectionEntry.label->setDefined(true);
-
-					ctors.push_back(ctor);
-				}
-
-				file.sections.push_back(sectionEntry);
-			}
-		}
-
-		// init exportable symbols
-		for (int i = 0; i < elf->getSymbolCount(); i++)
-		{
-			Elf32_Sym symbol;
-			elf->getSymbol(symbol, i);
-
-			if (ELF32_ST_BIND(symbol.st_info) == STB_GLOBAL && symbol.st_shndx != 0)
-			{
-				ElfRelocatorSymbol symEntry;
-				symEntry.type = ELF32_ST_TYPE(symbol.st_info);
-				symEntry.name = convertUtf8ToWString(elf->getStrTableString(symbol.st_name));
-				symEntry.relativeAddress = symbol.st_value;
-				symEntry.section = symbol.st_shndx;
-				symEntry.size = symbol.st_size;
-				symEntry.label = nullptr;
-
-				file.symbols.push_back(symEntry);
-			}
-		}
-
-		file.elf = elf;
-		file.name = entry.name;
-		files.push_back(file);
-	}
-
-	return true;
-}
-
-bool ElfRelocator::exportSymbols()
-{
-	bool error = false;
-
-	for (ElfRelocatorFile& file: files)
-	{
-		for (ElfRelocatorSymbol& sym: file.symbols)
-		{
-			if (sym.label != nullptr)
-				continue;
-
-			std::wstring lowered = sym.name;
-			std::transform(lowered.begin(), lowered.end(), lowered.begin(), ::towlower);
-
-			sym.label = Global.symbolTable.getLabel(lowered,-1,-1);
-			if (sym.label == nullptr)
-			{
-				Logger::printError(Logger::Error,L"Invalid label name \"%s\"",sym.name);
-				error = true;
-				continue;
-			}
-
-			if (sym.label->isDefined())
-			{
-				Logger::printError(Logger::Error,L"Label \"%s\" already defined",sym.name);
-				error = true;
-				continue;
-			}
-
-			RelocationData data;
-			data.symbolAddress = sym.relativeAddress;
-			relocator->setSymbolAddress(data,sym.relativeAddress,sym.type);
-
-			sym.relativeAddress = data.symbolAddress;
-			sym.label->setInfo(data.targetSymbolInfo);
-			sym.label->setIsData(sym.type == STT_OBJECT);
-			sym.label->setUpdateInfo(false);
-
-			sym.label->setValue(0);
-			sym.label->setDefined(true);
-			sym.label->setOriginalName(sym.name);
-		}
-	}
-
-	return !error;
-}
-
-std::unique_ptr<CAssemblerCommand> ElfRelocator::generateCtor(const std::wstring& ctorName)
-{
-	std::unique_ptr<CAssemblerCommand> content = relocator->generateCtorStub(ctors);
-
-	auto func = ::make_unique<CDirectiveFunction>(ctorName,ctorName);
-	func->setContent(std::move(content));
-	return func;
-}
-
-void ElfRelocator::loadRelocation(Elf32_Rel& rel, ByteArray& data, int offset, Endianness endianness)
-{
-	rel.r_offset = data.getDoubleWord(offset + 0x00, endianness);
-	rel.r_info   = data.getDoubleWord(offset + 0x04, endianness);
-}
-
-bool ElfRelocator::relocateFile(ElfRelocatorFile& file, int64_t& relocationAddress)
-{
-	ElfFile* elf = file.elf;
-	int64_t start = relocationAddress;
-
-	// calculate address for each section
-	std::map<int64_t,int64_t> relocationOffsets;
-	for (ElfRelocatorSection& entry: file.sections)
-	{
-		ElfSection* section = entry.section;
-		size_t index = entry.index;
-		int size = section->getSize();
-
-		while (relocationAddress % section->getAlignment())
-			relocationAddress++;
-
-		if (entry.label != nullptr)
-			entry.label->setValue(relocationAddress);
-
-		relocationOffsets[index] = relocationAddress;
-		relocationAddress += size;
-	}
-
-	size_t dataStart = outputData.size();
-	outputData.reserveBytes((size_t)(relocationAddress-start));
-
-	// load sections
-	bool error = false;
-	for (ElfRelocatorSection& entry: file.sections)
-	{
-		ElfSection* section = entry.section;
-		size_t index = entry.index;
-
-		if (section->getType() == SHT_NOBITS)
-		{
-			// reserveBytes initialized the data to 0 already
-			continue;
-		}
-
-		ByteArray sectionData = section->getData();
-
-		// relocate if necessary
-		ElfSection* relSection = entry.relSection;
-		if (relSection != nullptr)
-		{
-			std::vector<RelocationAction> relocationActions;
-			for (unsigned int relOffset = 0; relOffset < relSection->getSize(); relOffset += sizeof(Elf32_Rel))
-			{
-				Elf32_Rel rel;
-				loadRelocation(rel, relSection->getData(), relOffset, elf->getEndianness());
-				int pos = rel.r_offset;
-
-				if (relocator->isDummyRelocationType(rel.getType()))
-					continue;
-
-				int symNum = rel.getSymbolNum();
-				if (symNum <= 0)
-				{
-					Logger::queueError(Logger::Warning,L"Invalid symbol num %06X",symNum);
-					error = true;
-					continue;
-				}
-
-				Elf32_Sym sym;
-				elf->getSymbol(sym, symNum);
-				int symSection = sym.st_shndx;
-
-				RelocationData relData;
-				relData.opcode = sectionData.getDoubleWord(pos, elf->getEndianness());
-				relData.opcodeOffset = pos+relocationOffsets[index];
-				relocator->setSymbolAddress(relData,sym.st_value,sym.st_info & 0xF);
-
-				// externs?
-				if (sym.st_shndx == 0)
-				{
-					if (sym.st_name == 0)
-					{
-						Logger::queueError(Logger::Error, L"Symbol without a name");
-						error = true;
-						continue;
-					}
-
-					std::wstring symName = toWLowercase(elf->getStrTableString(sym.st_name));
-
-					std::shared_ptr<Label> label = Global.symbolTable.getLabel(symName,-1,-1);
-					if (label == nullptr)
-					{
-						Logger::queueError(Logger::Error,L"Invalid external symbol %s",symName);
-						error = true;
-						continue;
-					}
-					if (label->isDefined() == false)
-					{
-						Logger::queueError(Logger::Error,L"Undefined external symbol %s in file %s",symName,file.name);
-						error = true;
-						continue;
-					}
-
-					relData.relocationBase = (unsigned int) label->getValue();
-					relData.targetSymbolType = label->isData() ? STT_OBJECT : STT_FUNC;
-					relData.targetSymbolInfo = label->getInfo();
-				} else {
-					relData.relocationBase = relocationOffsets[symSection]+relData.symbolAddress;
-				}
-
-				std::vector<std::wstring> errors;
-				if (!relocator->relocateOpcode(rel.getType(),relData, relocationActions, errors))
-				{
-					for (const std::wstring& error : errors)
-					{
-						Logger::queueError(Logger::Error, error);
-					}
-					error = true;
-					continue;
-				}
-			}
-
-			// finish any dangling relocations
-			std::vector<std::wstring> errors;
-			if (!relocator->finish(relocationActions, errors))
-			{
-				for (const std::wstring& error : errors)
-				{
-					Logger::queueError(Logger::Error, error);
-				}
-				error = true;
-			}
-
-			// now actually write the relocated values
-			for (const RelocationAction& action : relocationActions)
-			{
-				sectionData.replaceDoubleWord(action.offset-relocationOffsets[index], action.newValue, elf->getEndianness());
-			}
-		}
-
-		size_t arrayStart = (size_t) (dataStart+relocationOffsets[index]-start);
-		memcpy(outputData.data(arrayStart),sectionData.data(),sectionData.size());
-	}
-
-	// now update symbols
-	for (ElfRelocatorSymbol& sym: file.symbols)
-	{
-		int64_t oldAddress = sym.relocatedAddress;
-
-		switch (sym.section)
-		{
-		case SHN_ABS:		// address does not change
-			sym.relocatedAddress = sym.relativeAddress;
-			break;
-		case SHN_COMMON:	// needs to be allocated. relativeAddress gives alignment constraint
-			{
-				int64_t start = relocationAddress;
-
-				while (relocationAddress % sym.relativeAddress)
-					relocationAddress++;
-
-				sym.relocatedAddress = relocationAddress;
-				relocationAddress += sym.size;
-				outputData.reserveBytes((size_t)(relocationAddress-start));
-			}
-			break;
-		default:			// normal relocated symbol
-			sym.relocatedAddress = sym.relativeAddress+relocationOffsets[sym.section];
-			break;
-		}
-
-		if (sym.label != nullptr)
-			sym.label->setValue(sym.relocatedAddress);
-
-		if (oldAddress != sym.relocatedAddress)
-			dataChanged = true;
-	}
-
-	return !error;
-}
-
-bool ElfRelocator::relocate(int64_t& memoryAddress)
-{
-	int oldCrc = getCrc32(outputData.data(),outputData.size());
-	outputData.clear();
-	dataChanged = false;
-
-	bool error = false;
-	int64_t start = memoryAddress;
-
-	for (ElfRelocatorFile& file: files)
-	{
-		if (relocateFile(file,memoryAddress) == false)
-			error = true;
-	}
-
-	int newCrc = getCrc32(outputData.data(),outputData.size());
-	if (oldCrc != newCrc)
-		dataChanged = true;
-
-	memoryAddress -= start;
-	return !error;
-}
-
-void ElfRelocator::writeSymbols(SymbolData& symData) const
-{
-	for (const ElfRelocatorFile& file: files)
-	{
-		for (const ElfRelocatorSymbol& sym: file.symbols)
-		{
-			symData.addLabel(sym.relocatedAddress,sym.name);
-
-			switch (sym.type)
-			{
-			case STT_OBJECT:
-				symData.addData(sym.relocatedAddress,sym.size,SymbolData::Data8);
-				break;
-			case STT_FUNC:
-				symData.startFunction(sym.relocatedAddress);
-				symData.endFunction(sym.relocatedAddress+sym.size);
-				break;
-			}
-		}
-	}
-}
-
-// file: Core/Assembler.cpp
-#include <thread>
-
-void AddFileName(const std::wstring& FileName)
-{
-	Global.FileInfo.FileNum = (int) Global.FileInfo.FileList.size();
-	Global.FileInfo.FileList.push_back(FileName);
-	Global.FileInfo.LineNumber = 0;
-}
-
-bool encodeAssembly(std::unique_ptr<CAssemblerCommand> content, SymbolData& symData, TempData& tempData)
-{
-	bool Revalidate;
-
-#ifdef ARMIPS_ARM
-	Arm.Pass2();
-#endif
-	Mips.Pass2();
-
-	int validationPasses = 0;
-	do	// loop until everything is constant
-	{
-		Global.validationPasses = validationPasses;
-		Logger::clearQueue();
-		Revalidate = false;
-
-		if (validationPasses >= 100)
-		{
-			Logger::queueError(Logger::Error,L"Stuck in infinite validation loop");
-			break;
-		}
-
-		g_fileManager->reset();
-
-#ifdef _DEBUG
-		if (!Logger::isSilent())
-			printf("Validate %d...\n",validationPasses);
-#endif
-
-		if (Global.memoryMode)
-			g_fileManager->openFile(Global.memoryFile,true);
-
-		Revalidate = content->Validate();
-
-#ifdef ARMIPS_ARM
-		Arm.Revalidate();
-#endif
-		Mips.Revalidate();
-
-		if (Global.memoryMode)
-			g_fileManager->closeFile();
-
-		validationPasses++;
-	} while (Revalidate == true);
-
-	Logger::printQueue();
-	if (Logger::hasError() == true)
-	{
-		return false;
-	}
-
-#ifdef _DEBUG
-	if (!Logger::isSilent())
-		printf("Encode...\n");
-#endif
-
-	// and finally encode
-	if (Global.memoryMode)
-		g_fileManager->openFile(Global.memoryFile,false);
-
-	auto writeTempData = [&]()
-	{
-		tempData.start();
-		if (tempData.isOpen())
-			content->writeTempData(tempData);
-		tempData.end();
-	};
-
-	auto writeSymData = [&]()
-	{
-		content->writeSymData(symData);
-		symData.write();
-	};
-
-	// writeTempData, writeSymData and encode all access the same
-	// memory but never change, so they can run in parallel
-	if (Global.multiThreading)
-	{
-		std::thread tempThread(writeTempData);
-		std::thread symThread(writeSymData);
-
-		content->Encode();
-
-		tempThread.join();
-		symThread.join();
-	} else {
-		writeTempData();
-		writeSymData();
-		content->Encode();
-	}
-
-	if (g_fileManager->hasOpenFile())
-	{
-		if (!Global.memoryMode)
-			Logger::printError(Logger::Warning,L"File not closed");
-		g_fileManager->closeFile();
-	}
-
-	return true;
-}
-
-bool runArmips(ArmipsArguments& settings)
-{
-	// initialize and reset global data
-	Global.Section = 0;
-	Global.nocash = false;
-	Global.FileInfo.FileCount = 0;
-	Global.FileInfo.TotalLineCount = 0;
-	Global.relativeInclude = false;
-	Global.validationPasses = 0;
-	Global.multiThreading = true;
-	Arch = &InvalidArchitecture;
-
-	Tokenizer::clearEquValues();
-	Logger::clear();
-	Global.Table.clear();
-	Global.symbolTable.clear();
-
-	Global.FileInfo.FileList.clear();
-	Global.FileInfo.FileCount = 0;
-	Global.FileInfo.TotalLineCount = 0;
-	Global.FileInfo.LineNumber = 0;
-	Global.FileInfo.FileNum = 0;
-
-#ifdef ARMIPS_ARM
-	Arm.clear();
-#endif
-
-	// process settings
-	Parser parser;
-	SymbolData symData;
-	TempData tempData;
-
-	Logger::setSilent(settings.silent);
-	Logger::setErrorOnWarning(settings.errorOnWarning);
-
-	if (!settings.symFileName.empty())
-		symData.setNocashSymFileName(settings.symFileName, settings.symFileVersion);
-
-	if (!settings.tempFileName.empty())
-		tempData.setFileName(settings.tempFileName);
-
-	Token token;
-	for (size_t i = 0; i < settings.equList.size(); i++)
-	{
-		parser.addEquation(token, settings.equList[i].name, settings.equList[i].value);
-	}
-
-	Global.symbolTable.addLabels(settings.labels);
-	for (const LabelDefinition& label : settings.labels)
-	{
-		symData.addLabel(label.value, label.originalName);
-	}
-
-	if (Logger::hasError())
-		return false;
-
-	// run assembler
-	TextFile input;
-	switch (settings.mode)
-	{
-	case ArmipsMode::FILE:
-		Global.memoryMode = false;
-		if (input.open(settings.inputFileName,TextFile::Read) == false)
-		{
-			Logger::printError(Logger::Error,L"Could not open file");
-			return false;
-		}
-		break;
-	case ArmipsMode::MEMORY:
-		Global.memoryMode = true;
-		Global.memoryFile = settings.memoryFile;
-		input.openMemory(settings.content);
-		break;
-	}
-
-	std::unique_ptr<CAssemblerCommand> content = parser.parseFile(input);
-	Logger::printQueue();
-
-	bool result = !Logger::hasError();
-	if (result == true && content != nullptr)
-		result = encodeAssembly(std::move(content), symData, tempData);
-
-	if (g_fileManager->hasOpenFile())
-	{
-		if (!Global.memoryMode)
-			Logger::printError(Logger::Warning,L"File not closed");
-		g_fileManager->closeFile();
-	}
-
-	// return errors
-	if (settings.errorsResult != nullptr)
-	{
-		StringList errors = Logger::getErrors();
-		for (size_t i = 0; i < errors.size(); i++)
-			settings.errorsResult->push_back(errors[i]);
-	}
-
-	return result;
-}
-
-// file: Core/Common.cpp
-#include <sys/stat.h>
-
-FileManager fileManager;
-FileManager* g_fileManager = &fileManager;
-
-tGlobal Global;
-CArchitecture* Arch;
-
-std::wstring getFolderNameFromPath(const std::wstring& src)
-{
-#ifdef _WIN32
-	size_t s = src.find_last_of(L"\\/");
-#else
-	size_t s = src.rfind(L"/");
-#endif
-	if (s == std::wstring::npos)
-	{
-		return L".";
-	}
-
-	return src.substr(0,s);
-}
-
-std::wstring getFullPathName(const std::wstring& path)
-{
-	if (Global.relativeInclude == true)
-	{
-		if (isAbsolutePath(path))
-		{
-			return path;
-		} else {
-			std::wstring source = Global.FileInfo.FileList[Global.FileInfo.FileNum];
-			return getFolderNameFromPath(source) + L"/" + path;
-		}
-	} else {
-		return path;
-	}
-}
-
-bool checkLabelDefined(const std::wstring& labelName, int section)
-{
-	std::shared_ptr<Label> label = Global.symbolTable.getLabel(labelName,Global.FileInfo.FileNum,section);
-	return label->isDefined();
-}
-
-bool checkValidLabelName(const std::wstring& labelName)
-{
-	return Global.symbolTable.isValidSymbolName(labelName);
-}
-
-bool isPowerOfTwo(int64_t n)
-{
-	if (n == 0) return false;
-	return !(n & (n - 1));
-}
-
-// file: Core/Expression.cpp
-
-enum class ExpressionValueCombination
-{
-	II = (int(ExpressionValueType::Integer) << 2) | (int(ExpressionValueType::Integer) << 0),
-	IF = (int(ExpressionValueType::Integer) << 2) | (int(ExpressionValueType::Float)   << 0),
-	FI = (int(ExpressionValueType::Float)   << 2) | (int(ExpressionValueType::Integer) << 0),
-	FF = (int(ExpressionValueType::Float)   << 2) | (int(ExpressionValueType::Float)   << 0),
-	IS = (int(ExpressionValueType::Integer) << 2) | (int(ExpressionValueType::String)  << 0),
-	FS = (int(ExpressionValueType::Float)   << 2) | (int(ExpressionValueType::String)  << 0),
-	SI = (int(ExpressionValueType::String)  << 2) | (int(ExpressionValueType::Integer) << 0),
-	SF = (int(ExpressionValueType::String)  << 2) | (int(ExpressionValueType::Float)   << 0),
-	SS = (int(ExpressionValueType::String)  << 2) | (int(ExpressionValueType::String)  << 0),
-};
-
-ExpressionValueCombination getValueCombination(ExpressionValueType a, ExpressionValueType b)
-{
-	return (ExpressionValueCombination) ((int(a) << 2) | (int(b) << 0));
-}
-
-ExpressionValue ExpressionValue::operator+(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = intValue + other.intValue;
-		break;
-	case ExpressionValueCombination::FI:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue + other.intValue;
-		break;
-	case ExpressionValueCombination::IF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = intValue + other.floatValue;
-		break;
-	case ExpressionValueCombination::FF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue + other.floatValue;
-		break;
-	case ExpressionValueCombination::IS:
-		result.type = ExpressionValueType::String;
-		result.strValue = to_wstring(intValue) + other.strValue;
-		break;
-	case ExpressionValueCombination::FS:
-		result.type = ExpressionValueType::String;
-		result.strValue = to_wstring(floatValue) + other.strValue;
-		break;
-	case ExpressionValueCombination::SI:
-		result.type = ExpressionValueType::String;
-		result.strValue = strValue + to_wstring(other.intValue);
-		break;
-	case ExpressionValueCombination::SF:
-		result.type = ExpressionValueType::String;
-		result.strValue = strValue + to_wstring(other.floatValue);
-		break;
-	case ExpressionValueCombination::SS:
-		result.type = ExpressionValueType::String;
-		result.strValue = strValue + other.strValue;
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator-(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = intValue - other.intValue;
-		break;
-	case ExpressionValueCombination::FI:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue - other.intValue;
-		break;
-	case ExpressionValueCombination::IF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = intValue - other.floatValue;
-		break;
-	case ExpressionValueCombination::FF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue - other.floatValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator*(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = intValue * other.intValue;
-		break;
-	case ExpressionValueCombination::FI:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue * other.intValue;
-		break;
-	case ExpressionValueCombination::IF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = intValue * other.floatValue;
-		break;
-	case ExpressionValueCombination::FF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue * other.floatValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator/(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		if (intValue == INT64_MIN && other.intValue == -1){
-			result.intValue = INT64_MIN;
-			Logger::queueError(Logger::Warning,L"Division overflow in expression");
-			return result;
-		}
-		if (other.intValue == 0)
-		{
-			result.intValue = ~0;
-			Logger::queueError(Logger::Warning,L"Integer division by zero in expression");
-			return result;
-		}
-		result.intValue = intValue / other.intValue;
-		break;
-	case ExpressionValueCombination::FI:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue / other.intValue;
-		break;
-	case ExpressionValueCombination::IF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = intValue / other.floatValue;
-		break;
-	case ExpressionValueCombination::FF:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = floatValue / other.floatValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator%(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		if (intValue == INT64_MIN && other.intValue == -1){
-			result.intValue = 0;
-			Logger::queueError(Logger::Warning,L"Division overflow in expression");
-			return result;
-		}
-		if (other.intValue == 0)
-		{
-			result.intValue = intValue;
-			Logger::queueError(Logger::Warning,L"Integer division by zero in expression");
-			return result;
-		}
-		result.intValue = intValue % other.intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator!() const
-{
-	ExpressionValue result;
-	result.type = ExpressionValueType::Integer;
-
-	if (isFloat())
-		result.intValue = !floatValue;
-	else
-		result.intValue = !intValue;
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator~() const
-{
-	ExpressionValue result;
-
-	if (isInt())
-	{
-		result.type = ExpressionValueType::Integer;
-		result.intValue = ~intValue;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator<<(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = ((uint64_t) intValue) << other.intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator>>(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = ((uint64_t) intValue) >> other.intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-bool ExpressionValue::operator<(const ExpressionValue& other) const
-{
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		return intValue < other.intValue;
-	case ExpressionValueCombination::FI:
-		return floatValue < other.intValue;
-	case ExpressionValueCombination::IF:
-		return intValue < other.floatValue;
-	case ExpressionValueCombination::FF:
-		return floatValue < other.floatValue;
-	case ExpressionValueCombination::SS:
-		return strValue < other.strValue;
-	default:
-		break;
-	}
-
-	return false;
-}
-
-bool ExpressionValue::operator<=(const ExpressionValue& other) const
-{
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		return intValue <= other.intValue;
-	case ExpressionValueCombination::FI:
-		return floatValue <= other.intValue;
-	case ExpressionValueCombination::IF:
-		return intValue <= other.floatValue;
-	case ExpressionValueCombination::FF:
-		return floatValue <= other.floatValue;
-	case ExpressionValueCombination::SS:
-		return strValue <= other.strValue;
-	default:
-		break;
-	}
-
-	return false;
-}
-
-bool ExpressionValue::operator>(const ExpressionValue& other) const
-{
-	return other < *this;
-}
-
-bool ExpressionValue::operator>=(const ExpressionValue& other) const
-{
-	return other <= *this;
-}
-
-bool ExpressionValue::operator==(const ExpressionValue& other) const
-{
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		return intValue == other.intValue;
-	case ExpressionValueCombination::FI:
-		return floatValue == other.intValue;
-	case ExpressionValueCombination::IF:
-		return intValue == other.floatValue;
-	case ExpressionValueCombination::FF:
-		return floatValue == other.floatValue;
-	case ExpressionValueCombination::IS:
-		return to_wstring(intValue) == other.strValue;
-	case ExpressionValueCombination::FS:
-		return to_wstring(floatValue) == other.strValue;
-	case ExpressionValueCombination::SI:
-		return strValue == to_wstring(other.intValue);
-	case ExpressionValueCombination::SF:
-		return strValue == to_wstring(other.floatValue);
-	case ExpressionValueCombination::SS:
-		return strValue == other.strValue;
-	}
-
-	return false;
-}
-
-bool ExpressionValue::operator!=(const ExpressionValue& other) const
-{
-	return !(*this == other);
-}
-
-ExpressionValue ExpressionValue::operator&(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = intValue & other.intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator|(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = intValue | other.intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator^(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = intValue ^ other.intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator&&(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	result.type = ExpressionValueType::Integer;
-
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.intValue = intValue && other.intValue;
-		break;
-	case ExpressionValueCombination::FI:
-		result.floatValue = floatValue && other.intValue;
-		break;
-	case ExpressionValueCombination::IF:
-		result.floatValue = intValue && other.floatValue;
-		break;
-	case ExpressionValueCombination::FF:
-		result.floatValue = floatValue && other.floatValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue ExpressionValue::operator||(const ExpressionValue& other) const
-{
-	ExpressionValue result;
-	result.type = ExpressionValueType::Integer;
-
-	switch (getValueCombination(type,other.type))
-	{
-	case ExpressionValueCombination::II:
-		result.intValue = intValue || other.intValue;
-		break;
-	case ExpressionValueCombination::FI:
-		result.floatValue = floatValue || other.intValue;
-		break;
-	case ExpressionValueCombination::IF:
-		result.floatValue = intValue || other.floatValue;
-		break;
-	case ExpressionValueCombination::FF:
-		result.floatValue = floatValue || other.floatValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionInternal::ExpressionInternal()
-{
-	children = nullptr;
-	childrenCount = 0;
-}
-
-ExpressionInternal::~ExpressionInternal()
-{
-	deallocate();
-}
-
-ExpressionInternal::ExpressionInternal(int64_t value)
-	: ExpressionInternal()
-{
-	type = OperatorType::Integer;
-	intValue = value;
-}
-
-ExpressionInternal::ExpressionInternal(double value)
-	: ExpressionInternal()
-{
-	type = OperatorType::Float;
-	floatValue = value;
-}
-
-ExpressionInternal::ExpressionInternal(const std::wstring& value, OperatorType type)
-	: ExpressionInternal()
-{
-	this->type = type;
-	strValue = value;
-
-	switch (type)
-	{
-	case OperatorType::Identifier:
-		fileNum = Global.FileInfo.FileNum;
-		section = Global.Section;
-		break;
-	case OperatorType::String:
-		break;
-	default:
-		break;
-	}
-}
-
-ExpressionInternal::ExpressionInternal(OperatorType op, ExpressionInternal* a,
-	ExpressionInternal* b, ExpressionInternal* c)
-	: ExpressionInternal()
-{
-	type = op;
-	allocate(3);
-
-	children[0] = a;
-	children[1] = b;
-	children[2] = c;
-}
-
-ExpressionInternal::ExpressionInternal(const std::wstring& name, const std::vector<ExpressionInternal*>& parameters)
-	: ExpressionInternal()
-{
-	type = OperatorType::FunctionCall;
-	allocate(parameters.size());
-
-	strValue = name;
-	for (size_t i = 0; i < parameters.size(); i++)
-	{
-		children[i] = parameters[i];
-	}
-}
-
-void ExpressionInternal::allocate(size_t count)
-{
-	deallocate();
-
-	children = new ExpressionInternal*[count];
-	childrenCount = count;
-}
-
-void ExpressionInternal::deallocate()
-{
-	for (size_t i = 0; i < childrenCount; i++)
-	{
-		delete children[i];
-	}
-
-	delete[] children;
-	children = nullptr;
-	childrenCount = 0;
-}
-
-void ExpressionInternal::replaceMemoryPos(const std::wstring& identifierName)
-{
-	for (size_t i = 0; i < childrenCount; i++)
-	{
-		if (children[i] != nullptr)
-		{
-			children[i]->replaceMemoryPos(identifierName);
-		}
-	}
-
-	if (type == OperatorType::MemoryPos)
-	{
-		type = OperatorType::Identifier;
-		strValue = identifierName;
-		fileNum = Global.FileInfo.FileNum;
-		section = Global.Section;
-	}
-}
-
-bool ExpressionInternal::checkParameterCount(size_t minParams, size_t maxParams)
-{
-	if (minParams > childrenCount)
-	{
-		Logger::queueError(Logger::Error,L"Not enough parameters for \"%s\" (min %d)",strValue,minParams);
-		return false;
-	}
-
-	if (maxParams < childrenCount)
-	{
-		Logger::queueError(Logger::Error,L"Too many parameters for \"%s\" (min %d)",strValue,maxParams);
-		return false;
-	}
-
-	return true;
-}
-
-ExpressionValue ExpressionInternal::executeExpressionFunctionCall(const ExpressionFunctionEntry& entry)
-{
-	// check parameters
-	if (!checkParameterCount(entry.minParams, entry.maxParams))
-		return {};
-
-	// evaluate parameters
-	std::vector<ExpressionValue> params;
-	params.reserve(childrenCount);
-
-	for (size_t i = 0; i < childrenCount; i++)
-	{
-		ExpressionValue result = children[i]->evaluate();
-		if (!result.isValid())
-		{
-			Logger::queueError(Logger::Error,L"%s: Invalid parameter %d", strValue, i+1);
-			return result;
-		}
-
-		params.push_back(result);
-	}
-
-	// execute
-	return entry.function(strValue, params);
-}
-
-ExpressionValue ExpressionInternal::executeExpressionLabelFunctionCall(const ExpressionLabelFunctionEntry& entry)
-{
-	// check parameters
-	if (!checkParameterCount(entry.minParams, entry.maxParams))
-		return {};
-
-	// evaluate parameters
-	std::vector<std::shared_ptr<Label>> params;
-	params.reserve(childrenCount);
-
-	for (size_t i = 0; i < childrenCount; i++)
-	{
-		ExpressionInternal *exp = children[i];
-		if (!exp || !exp->isIdentifier())
-		{
-			Logger::queueError(Logger::Error,L"%s: Invalid parameter %d, expecting identifier", strValue, i+1);
-			return {};
-		}
-
-		const std::wstring& name = exp->getStringValue();
-		std::shared_ptr<Label> label = Global.symbolTable.getLabel(name,exp->getFileNum(),exp->getSection());
-		params.push_back(label);
-	}
-
-	// execute
-	return entry.function(strValue, params);
-}
-
-ExpressionValue ExpressionInternal::executeFunctionCall()
-{
-	// try expression functions
-	auto expFuncIt = expressionFunctions.find(strValue);
-	if (expFuncIt != expressionFunctions.end())
-		return executeExpressionFunctionCall(expFuncIt->second);
-
-	// try expression label functions
-	auto expLabelFuncIt = expressionLabelFunctions.find(strValue);
-	if (expLabelFuncIt != expressionLabelFunctions.end())
-		return executeExpressionLabelFunctionCall(expLabelFuncIt->second);
-
-	// try architecture specific expression functions
-	auto& archExpressionFunctions = Arch->getExpressionFunctions();
-	expFuncIt = archExpressionFunctions.find(strValue);
-	if (expFuncIt != archExpressionFunctions.end())
-		return executeExpressionFunctionCall(expFuncIt->second);
-
-	// error
-	Logger::queueError(Logger::Error, L"Unknown function \"%s\"", strValue);
-	return {};
-}
-
-bool isExpressionFunctionSafe(const std::wstring& name, bool inUnknownOrFalseBlock)
-{
-	// expression functions may be unsafe, others are safe
-	ExpFuncSafety safety = ExpFuncSafety::Unsafe;
-	bool found = false;
-
-	auto it = expressionFunctions.find(name);
-	if (it != expressionFunctions.end())
-	{
-		safety = it->second.safety;
-		found = true;
-	}
-
-	if (!found)
-	{
-		auto labelIt = expressionLabelFunctions.find(name);
-		if (labelIt != expressionLabelFunctions.end())
-		{
-			safety = labelIt->second.safety;
-			found = true;
-		}
-	}
-
-	if (!found)
-	{
-		auto& archExpressionFunctions = Arch->getExpressionFunctions();
-		it = archExpressionFunctions.find(name);
-		if (it != archExpressionFunctions.end())
-		{
-			safety = it->second.safety;
-			found = true;
-		}
-	}
-
-	if (inUnknownOrFalseBlock && safety == ExpFuncSafety::ConditionalUnsafe)
-		return false;
-
-	return safety != ExpFuncSafety::Unsafe;
-}
-
-bool ExpressionInternal::simplify(bool inUnknownOrFalseBlock)
-{
-	// check if this expression can actually be simplified
-	// without causing side effects
-	switch (type)
-	{
-	case OperatorType::Identifier:
-	case OperatorType::MemoryPos:
-	case OperatorType::ToString:
-		return false;
-	case OperatorType::FunctionCall:
-		if (isExpressionFunctionSafe(strValue, inUnknownOrFalseBlock) == false)
-			return false;
-		break;
-	default:
-		break;
-	}
-
-	// check if the same applies to all children
-	bool canSimplify = true;
-	for (size_t i = 0; i < childrenCount; i++)
-	{
-		if (children[i] != nullptr && children[i]->simplify(inUnknownOrFalseBlock) == false)
-			canSimplify = false;
-	}
-
-	// if so, this expression can be evaluated into a constant
-	if (canSimplify)
-	{
-		ExpressionValue value = evaluate();
-
-		switch (value.type)
-		{
-		case ExpressionValueType::Integer:
-			type = OperatorType::Integer;
-			intValue = value.intValue;
-			break;
-		case ExpressionValueType::Float:
-			type = OperatorType::Float;
-			floatValue = value.floatValue;
-			break;
-		case ExpressionValueType::String:
-			type = OperatorType::String;
-			strValue = value.strValue;
-			break;
-		default:
-			type = OperatorType::Invalid;
-			break;
-		}
-
-		deallocate();
-	}
-
-	return canSimplify;
-}
-
-ExpressionValue ExpressionInternal::evaluate()
-{
-	ExpressionValue val;
-
-	std::shared_ptr<Label> label;
-	switch (type)
-	{
-	case OperatorType::Integer:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = intValue;
-		return val;
-	case OperatorType::Float:
-		val.type = ExpressionValueType::Float;
-		val.floatValue = floatValue;
-		return val;
-	case OperatorType::Identifier:
-		label = Global.symbolTable.getLabel(strValue,fileNum,section);
-		if (label == nullptr)
-		{
-			Logger::queueError(Logger::Error,L"Invalid label name \"%s\"",strValue);
-			return val;
-		}
-
-		if (!label->isDefined())
-		{
-			Logger::queueError(Logger::Error,L"Undefined label \"%s\"",label->getName());
-			return val;
-		}
-
-		val.type = ExpressionValueType::Integer;
-		val.intValue = label->getValue();
-		return val;
-	case OperatorType::String:
-		val.type = ExpressionValueType::String;
-		val.strValue = strValue;
-		return val;
-	case OperatorType::MemoryPos:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = g_fileManager->getVirtualAddress();
-		return val;
-	case OperatorType::ToString:
-		val.type = ExpressionValueType::String;
-		val.strValue = children[0]->toString();
-		return val;
-	case OperatorType::Add:
-		return children[0]->evaluate() + children[1]->evaluate();
-	case OperatorType::Sub:
-		return children[0]->evaluate() - children[1]->evaluate();
-	case OperatorType::Mult:
-		return children[0]->evaluate() * children[1]->evaluate();
-	case OperatorType::Div:
-		return children[0]->evaluate() / children[1]->evaluate();
-	case OperatorType::Mod:
-		return children[0]->evaluate() % children[1]->evaluate();
-	case OperatorType::Neg:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = 0;
-		return val - children[0]->evaluate();
-	case OperatorType::LogNot:
-		return !children[0]->evaluate();
-	case OperatorType::BitNot:
-		return ~children[0]->evaluate();
-	case OperatorType::LeftShift:
-		return children[0]->evaluate() << children[1]->evaluate();
-	case OperatorType::RightShift:
-		return children[0]->evaluate() >> children[1]->evaluate();
-	case OperatorType::Less:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = children[0]->evaluate() < children[1]->evaluate();
-		return val;
-	case OperatorType::Greater:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = children[0]->evaluate() > children[1]->evaluate();
-		return val;
-	case OperatorType::LessEqual:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = children[0]->evaluate() <= children[1]->evaluate();
-		return val;
-	case OperatorType::GreaterEqual:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = children[0]->evaluate() >= children[1]->evaluate();
-		return val;
-	case OperatorType::Equal:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = children[0]->evaluate() == children[1]->evaluate();
-		return val;
-	case OperatorType::NotEqual:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = children[0]->evaluate() != children[1]->evaluate();
-		return val;
-	case OperatorType::BitAnd:
-		return children[0]->evaluate() & children[1]->evaluate();
-	case OperatorType::BitOr:
-		return children[0]->evaluate() | children[1]->evaluate();
-	case OperatorType::LogAnd:
-		return children[0]->evaluate() && children[1]->evaluate();
-	case OperatorType::LogOr:
-		return children[0]->evaluate() || children[1]->evaluate();
-	case OperatorType::Xor:
-		return children[0]->evaluate() ^ children[1]->evaluate();
-	case OperatorType::TertiaryIf:
-		val.type = ExpressionValueType::Integer;
-		val.intValue = 0;
-		if (children[0]->evaluate() == val)
-			return children[2]->evaluate();
-		else
-			return children[1]->evaluate();
-	case OperatorType::FunctionCall:
-		return executeFunctionCall();
-	default:
-		return val;
-	}
-}
-
-static std::wstring escapeString(const std::wstring& text)
-{
-	std::wstring result = text;
-	replaceAll(result,LR"(\)",LR"(\\)");
-	replaceAll(result,LR"(")",LR"(\")");
-
-	return formatString(LR"("%s")",text);
-}
-
-std::wstring ExpressionInternal::formatFunctionCall()
-{
-	std::wstring text = strValue + L"(";
-
-	for (size_t i = 0; i < childrenCount; i++)
-	{
-		if (i != 0)
-			text += L",";
-		text += children[i]->toString();
-	}
-
-	return text + L")";
-}
-
-std::wstring ExpressionInternal::toString()
-{
-	switch (type)
-	{
-	case OperatorType::Integer:
-		return formatString(L"%d",intValue);
-	case OperatorType::Float:
-		return formatString(L"%g",floatValue);
-	case OperatorType::Identifier:
-		return strValue;
-	case OperatorType::String:
-		return escapeString(strValue);
-	case OperatorType::MemoryPos:
-		return L".";
-	case OperatorType::Add:
-		return formatString(L"(%s + %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Sub:
-		return formatString(L"(%s - %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Mult:
-		return formatString(L"(%s * %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Div:
-		return formatString(L"(%s / %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Mod:
-		return formatString(L"(%s %% %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Neg:
-		return formatString(L"(-%s)",children[0]->toString());
-	case OperatorType::LogNot:
-		return formatString(L"(!%s)",children[0]->toString());
-	case OperatorType::BitNot:
-		return formatString(L"(~%s)",children[0]->toString());
-	case OperatorType::LeftShift:
-		return formatString(L"(%s << %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::RightShift:
-		return formatString(L"(%s >> %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Less:
-		return formatString(L"(%s < %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Greater:
-		return formatString(L"(%s > %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::LessEqual:
-		return formatString(L"(%s <= %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::GreaterEqual:
-		return formatString(L"(%s >= %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Equal:
-		return formatString(L"(%s == %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::NotEqual:
-		return formatString(L"(%s != %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::BitAnd:
-		return formatString(L"(%s & %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::BitOr:
-		return formatString(L"(%s | %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::LogAnd:
-		return formatString(L"(%s && %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::LogOr:
-		return formatString(L"(%s || %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::Xor:
-		return formatString(L"(%s ^ %s)",children[0]->toString(),children[1]->toString());
-	case OperatorType::TertiaryIf:
-		return formatString(L"(%s ? %s : %s)",children[0]->toString(),children[1]->toString(),children[2]->toString());
-	case OperatorType::ToString:
-		return formatString(L"(%c%s)",L'\U000000B0',children[0]->toString());
-	case OperatorType::FunctionCall:
-		return formatFunctionCall();
-	default:
-		return L"";
-	}
-}
-
-Expression::Expression()
-{
-	expression = nullptr;
-	constExpression = true;
-}
-
-void Expression::setExpression(ExpressionInternal* exp, bool inUnknownOrFalseBlock)
-{
-	expression = std::shared_ptr<ExpressionInternal>(exp);
-	if (exp != nullptr)
-		constExpression = expression->simplify(inUnknownOrFalseBlock);
-	else
-		constExpression = true;
-}
-
-ExpressionValue Expression::evaluate()
-{
-	if (expression == nullptr)
-	{
-		ExpressionValue invalid;
-		return invalid;
-	}
-
-	return expression->evaluate();
-}
-
-void Expression::replaceMemoryPos(const std::wstring& identifierName)
-{
-	if (expression != nullptr)
-		expression->replaceMemoryPos(identifierName);
-}
-
-Expression createConstExpression(int64_t value)
-{
-	Expression exp;
-	ExpressionInternal* num = new ExpressionInternal(value);
-	exp.setExpression(num,false);
-	return exp;
-}
-
-// file: Core/ExpressionFunctions.cpp
-#if ARMIPS_REGEXP
-#include <regex>
-#endif
-
-bool getExpFuncParameter(const std::vector<ExpressionValue>& parameters, size_t index, int64_t& dest,
-	const std::wstring& funcName, bool optional)
-{
-	if (optional && index >= parameters.size())
-		return true;
-
-	if (index >= parameters.size() || parameters[index].isInt() == false)
-	{
-		Logger::queueError(Logger::Error,L"Invalid parameter %d for %s: expecting integer",index+1,funcName);
-		return false;
-	}
-
-	dest = parameters[index].intValue;
-	return true;
-}
-
-bool getExpFuncParameter(const std::vector<ExpressionValue>& parameters, size_t index, const std::wstring*& dest,
-	const std::wstring& funcName, bool optional)
-{
-	if (optional && index >= parameters.size())
-		return true;
-
-	if (index >= parameters.size() || parameters[index].isString() == false)
-	{
-		Logger::queueError(Logger::Error,L"Invalid parameter %d for %s: expecting string",index+1,funcName);
-		return false;
-	}
-
-	dest = &parameters[index].strValue;
-	return true;
-}
-
-#define GET_PARAM(params,index,dest) \
-	if (getExpFuncParameter(params,index,dest,funcName,false) == false) \
-		return ExpressionValue();
-#define GET_OPTIONAL_PARAM(params,index,dest,defaultValue) \
-	dest = defaultValue; \
-	if (getExpFuncParameter(params,index,dest,funcName,true) == false) \
-		return ExpressionValue();
-
-
-ExpressionValue expFuncVersion(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	int64_t value = ARMIPS_VERSION_MAJOR*1000 + ARMIPS_VERSION_MINOR*10 + ARMIPS_VERSION_REVISION;
-	return ExpressionValue(value);
-}
-
-ExpressionValue expFuncEndianness(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-	result.type = ExpressionValueType::String;
-
-	switch (g_fileManager->getEndianness())
-	{
-	case Endianness::Little:
-		return ExpressionValue(L"little");
-	case Endianness::Big:
-		return ExpressionValue(L"big");
-	}
-
-	return ExpressionValue();
-}
-
-ExpressionValue expFuncOutputName(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	std::shared_ptr<AssemblerFile> file = g_fileManager->getOpenFile();
-	if (file == nullptr)
-	{
-		Logger::queueError(Logger::Error,L"outputName: no file opened");
-		return ExpressionValue();
-	}
-
-	std::wstring value = file->getFileName();
-	return ExpressionValue(value);
-}
-
-ExpressionValue expFuncFileExists(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* fileName;
-	GET_PARAM(parameters,0,fileName);
-
-	std::wstring fullName = getFullPathName(*fileName);
-	return ExpressionValue(fileExists(fullName) ? INT64_C(1) : INT64_C(0));
-}
-
-ExpressionValue expFuncFileSize(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* fileName;
-	GET_PARAM(parameters,0,fileName);
-
-	std::wstring fullName = getFullPathName(*fileName);
-	return ExpressionValue((int64_t) fileSize(fullName));
-}
-
-ExpressionValue expFuncToString(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-
-	switch (parameters[0].type)
-	{
-	case ExpressionValueType::String:
-		result.strValue = parameters[0].strValue;
-		break;
-	case ExpressionValueType::Integer:
-		result.strValue = formatString(L"%d",parameters[0].intValue);
-		break;
-	case ExpressionValueType::Float:
-		result.strValue = formatString(L"%#.17g",parameters[0].floatValue);
-		break;
-	default:
-		return result;
-	}
-
-	result.type = ExpressionValueType::String;
-	return result;
-}
-
-ExpressionValue expFuncToHex(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	int64_t value, digits;
-	GET_PARAM(parameters,0,value);
-	GET_OPTIONAL_PARAM(parameters,1,digits,8);
-
-	return ExpressionValue(formatString(L"%0*X",digits,value));
-}
-
-ExpressionValue expFuncInt(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-
-	switch (parameters[0].type)
-	{
-	case ExpressionValueType::Integer:
-		result.intValue = parameters[0].intValue;
-		break;
-	case ExpressionValueType::Float:
-		result.intValue = (int64_t) parameters[0].floatValue;
-		break;
-	default:
-		return result;
-	}
-
-	result.type = ExpressionValueType::Integer;
-	return result;
-}
-
-ExpressionValue expFuncRound(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-
-	switch (parameters[0].type)
-	{
-	case ExpressionValueType::Integer:
-		result.intValue = parameters[0].intValue;
-		break;
-	case ExpressionValueType::Float:
-		result.intValue = llround(parameters[0].floatValue);
-		break;
-	default:
-		return result;
-	}
-
-	result.type = ExpressionValueType::Integer;
-	return result;
-}
-
-ExpressionValue expFuncFloat(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-
-	switch (parameters[0].type)
-	{
-	case ExpressionValueType::Integer:
-		result.floatValue = (double) parameters[0].intValue;
-		break;
-	case ExpressionValueType::Float:
-		result.floatValue = parameters[0].floatValue;
-		break;
-	default:
-		return result;
-	}
-
-	result.type = ExpressionValueType::Float;
-	return result;
-}
-
-ExpressionValue expFuncFrac(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-	double intPart;
-
-	switch (parameters[0].type)
-	{
-	case ExpressionValueType::Float:
-		result.floatValue = modf(parameters[0].floatValue,&intPart);
-		break;
-	default:
-		return result;
-	}
-
-	result.type = ExpressionValueType::Float;
-	return result;
-}
-
-ExpressionValue expFuncMin(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-	double floatMin, floatCur;
-	int64_t intMin, intCur;
-
-	floatCur = floatMin = std::numeric_limits<double>::max();
-	intCur = intMin = std::numeric_limits<int64_t>::max();
-	bool isInt = true;
-
-	for (size_t i = 0; i < parameters.size(); i++)
-	{
-		switch (parameters[i].type)
-		{
-		case ExpressionValueType::Integer:
-			intCur = parameters[i].intValue;
-			floatCur = (double)parameters[i].intValue;
-			break;
-		case ExpressionValueType::Float:
-			floatCur = parameters[i].floatValue;
-			isInt = false;
-			break;
-		default:
-			return result;
-		}
-
-		if (intCur < intMin)
-			intMin = intCur;
-		if (floatCur < floatMin)
-			floatMin = floatCur;
-	}
-
-	if (isInt)
-	{
-		result.intValue = intMin;
-		result.type = ExpressionValueType::Integer;
-	}
-	else
-	{
-		result.floatValue = floatMin;
-		result.type = ExpressionValueType::Float;
-	}
-
-	return result;
-}
-
-ExpressionValue expFuncMax(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-	double floatMax, floatCur;
-	int64_t intMax, intCur;
-
-	floatCur = floatMax = std::numeric_limits<double>::min();
-	intCur = intMax = std::numeric_limits<int64_t>::min();
-	bool isInt = true;
-
-	for (size_t i = 0; i < parameters.size(); i++)
-	{
-		switch (parameters[i].type)
-		{
-		case ExpressionValueType::Integer:
-			intCur = parameters[i].intValue;
-			floatCur = (double)parameters[i].intValue;
-			break;
-		case ExpressionValueType::Float:
-			floatCur = parameters[i].floatValue;
-			isInt = false;
-			break;
-		default:
-			return result;
-		}
-
-		if (intCur > intMax)
-			intMax = intCur;
-		if (floatCur > floatMax)
-			floatMax = floatCur;
-	}
-
-	if (isInt)
-	{
-		result.intValue = intMax;
-		result.type = ExpressionValueType::Integer;
-	}
-	else
-	{
-		result.floatValue = floatMax;
-		result.type = ExpressionValueType::Float;
-	}
-
-	return result;
-}
-
-ExpressionValue expFuncAbs(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	ExpressionValue result;
-
-	switch (parameters[0].type)
-	{
-	case ExpressionValueType::Float:
-		result.type = ExpressionValueType::Float;
-		result.floatValue = fabs(parameters[0].floatValue);
-		break;
-	case ExpressionValueType::Integer:
-		result.type = ExpressionValueType::Integer;
-		result.intValue = parameters[0].intValue >= 0 ?
-			parameters[0].intValue : -parameters[0].intValue;
-		break;
-	default:
-		break;
-	}
-
-	return result;
-}
-
-ExpressionValue expFuncStrlen(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* source;
-	GET_PARAM(parameters,0,source);
-
-	return ExpressionValue((int64_t)source->size());
-}
-
-ExpressionValue expFuncSubstr(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	int64_t start, count;
-	const std::wstring* source;
-
-	GET_PARAM(parameters,0,source);
-	GET_PARAM(parameters,1,start);
-	GET_PARAM(parameters,2,count);
-
-	return ExpressionValue(source->substr((size_t)start,(size_t)count));
-}
-
-#if ARMIPS_REGEXP
-ExpressionValue expFuncRegExMatch(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* source;
-	const std::wstring* regexString;
-
-	GET_PARAM(parameters,0,source);
-	GET_PARAM(parameters,1,regexString);
-
-#if ARMIPS_EXCEPTIONS
-	try
-	{
-#endif
-		std::wregex regex(*regexString);
-		bool found = std::regex_match(*source,regex);
-		return ExpressionValue(found ? INT64_C(1) : INT64_C(0));
-#if ARMIPS_EXCEPTIONS
-	} catch (std::regex_error&)
-	{
-		Logger::queueError(Logger::Error,L"Invalid regular expression");
-		return ExpressionValue();
-	}
-#endif
-}
-
-ExpressionValue expFuncRegExSearch(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* source;
-	const std::wstring* regexString;
-
-	GET_PARAM(parameters,0,source);
-	GET_PARAM(parameters,1,regexString);
-
-#if ARMIPS_EXCEPTIONS
-	try
-	{
-#endif
-		std::wregex regex(*regexString);
-		bool found = std::regex_search(*source,regex);
-		return ExpressionValue(found ? INT64_C(1) : INT64_C(0));
-#if ARMIPS_EXCEPTIONS
-	} catch (std::regex_error&)
-	{
-		Logger::queueError(Logger::Error,L"Invalid regular expression");
-		return ExpressionValue();
-	}
-#endif
-}
-
-ExpressionValue expFuncRegExExtract(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* source;
-	const std::wstring* regexString;
-	int64_t matchIndex;
-
-	GET_PARAM(parameters,0,source);
-	GET_PARAM(parameters,1,regexString);
-	GET_OPTIONAL_PARAM(parameters,2,matchIndex,0);
-
-#if ARMIPS_EXCEPTIONS
-	try
-	{
-#endif
-		std::wregex regex(*regexString);
-		std::wsmatch result;
-		bool found = std::regex_search(*source,result,regex);
-		if (found == false || (size_t)matchIndex >= result.size())
-		{
-			Logger::queueError(Logger::Error,L"Capture group index %d does not exist",matchIndex);
-			return ExpressionValue();
-		}
-
-		return ExpressionValue(result[(size_t)matchIndex].str());
-#if ARMIPS_EXCEPTIONS
-	} catch (std::regex_error&)
-	{
-		Logger::queueError(Logger::Error,L"Invalid regular expression");
-		return ExpressionValue();
-	}
-#endif
-}
-#endif
-
-ExpressionValue expFuncFind(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	int64_t start;
-	const std::wstring* source;
-	const std::wstring* value;
-
-	GET_PARAM(parameters,0,source);
-	GET_PARAM(parameters,1,value);
-	GET_OPTIONAL_PARAM(parameters,2,start,0);
-
-	size_t pos = source->find(*value,(size_t)start);
-	return ExpressionValue(pos == std::wstring::npos ? INT64_C(-1) : (int64_t) pos);
-}
-
-ExpressionValue expFuncRFind(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	int64_t start;
-	const std::wstring* source;
-	const std::wstring* value;
-
-	GET_PARAM(parameters,0,source);
-	GET_PARAM(parameters,1,value);
-	GET_OPTIONAL_PARAM(parameters,2,start,std::wstring::npos);
-
-	size_t pos = source->rfind(*value,(size_t)start);
-	return ExpressionValue(pos == std::wstring::npos ? INT64_C(-1) : (int64_t) pos);
-}
-
-
-template<typename T>
-ExpressionValue expFuncRead(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* fileName;
-	int64_t pos;
-
-	GET_PARAM(parameters,0,fileName);
-	GET_OPTIONAL_PARAM(parameters,1,pos,0);
-
-	std::wstring fullName = getFullPathName(*fileName);
-
-	BinaryFile file;
-	if (file.open(fullName,BinaryFile::Read) == false)
-	{
-		Logger::queueError(Logger::Error,L"Could not open %s",*fileName);
-		return ExpressionValue();
-	}
-
-	file.setPos(pos);
-
-	T buffer;
-	if (file.read(&buffer, sizeof(T)) != sizeof(T))
-	{
-		Logger::queueError(Logger::Error, L"Failed to read %d byte(s) from offset 0x%08X of %s", sizeof(T), pos, *fileName);
-		return ExpressionValue();
-	}
-
-	return ExpressionValue((int64_t) buffer);
-}
-
-ExpressionValue expFuncReadAscii(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
-{
-	const std::wstring* fileName;
-	int64_t start;
-	int64_t length;
-
-	GET_PARAM(parameters,0,fileName);
-	GET_OPTIONAL_PARAM(parameters,1,start,0);
-	GET_OPTIONAL_PARAM(parameters,2,length,0);
-
-	std::wstring fullName = getFullPathName(*fileName);
-
-	int64_t totalSize = fileSize(fullName);
-	if (length == 0 || start+length > totalSize)
-		length = totalSize-start;
-
-	BinaryFile file;
-	if (file.open(fullName,BinaryFile::Read) == false)
-	{
-		Logger::queueError(Logger::Error,L"Could not open %s",fileName);
-		return ExpressionValue();
-	}
-
-	file.setPos((long)start);
-
-	unsigned char* buffer = new unsigned char[length];
-	file.read(buffer,(size_t)length);
-
-	std::wstring result;
-	for (size_t i = 0; i < (size_t) length; i++)
-	{
-		if (buffer[i] < 0x20 || buffer[i] > 0x7F)
-		{
-			Logger::printError(Logger::Warning,L"%s: Non-ASCII character",funcName);
-			return ExpressionValue();
-		}
-
-		result += (wchar_t) buffer[i];
-	}
-
-	delete[] buffer;
-
-	return ExpressionValue(result);
-}
-
-ExpressionValue expLabelFuncDefined(const std::wstring &funcName, const std::vector<std::shared_ptr<Label>> &parameters)
-{
-	if (parameters.empty() || !parameters.front())
-	{
-		Logger::queueError(Logger::Error,L"%s: Invalid parameters", funcName);
-		return ExpressionValue();
-	}
-
-	return ExpressionValue(parameters.front()->isDefined() ? INT64_C(1) : INT64_C(0));
-}
-
-ExpressionValue expLabelFuncOrg(const std::wstring& funcName, const std::vector<std::shared_ptr<Label>>& parameters)
-{
-	// return physical address of label parameter
-	if (parameters.size())
-	{
-		Label* label = parameters.front().get();
-		if (!label)
-			return ExpressionValue();
-
-		return ExpressionValue(parameters.front()->getValue());
-	}
-
-	if(!g_fileManager->hasOpenFile())
-	{
-		Logger::queueError(Logger::Error,L"%s: no file opened", funcName);
-		return ExpressionValue();
-	}
-	return ExpressionValue(g_fileManager->getVirtualAddress());
-}
-
-ExpressionValue expLabelFuncOrga(const std::wstring& funcName, const std::vector<std::shared_ptr<Label>>& parameters)
-{
-	// return physical address of label parameter
-	if (parameters.size())
-	{
-		Label* label = parameters.front().get();
-		if (!label)
-			return ExpressionValue();
-
-		if (!label->hasPhysicalValue())
-		{
-			Logger::queueError(Logger::Error,L"%s: parameter %s has no physical address", funcName, label->getName() );
-			return ExpressionValue();
-		}
-
-		return ExpressionValue(parameters.front()->getPhysicalValue());
-	}
-
-	// return current physical address otherwise
-	if(!g_fileManager->hasOpenFile())
-	{
-		Logger::queueError(Logger::Error,L"%s: no file opened", funcName);
-		return ExpressionValue();
-	}
-	return ExpressionValue(g_fileManager->getPhysicalAddress());
-}
-
-ExpressionValue expLabelFuncHeaderSize(const std::wstring& funcName, const std::vector<std::shared_ptr<Label>>& parameters)
-{
-	// return difference between physical and virtual address of label parameter
-	if (parameters.size())
-	{
-		Label* label = parameters.front().get();
-		if (!label)
-			return ExpressionValue();
-
-		if (!label->hasPhysicalValue())
-		{
-			Logger::queueError(Logger::Error,L"%s: parameter %s has no physical address", funcName, label->getName() );
-			return ExpressionValue();
-		}
-
-		return ExpressionValue(label->getValue() - label->getPhysicalValue());
-	}
-
-	if(!g_fileManager->hasOpenFile())
-	{
-		Logger::queueError(Logger::Error,L"headersize: no file opened");
-		return ExpressionValue();
-	}
-	return ExpressionValue(g_fileManager->getHeaderSize());
-}
-
-const ExpressionFunctionMap expressionFunctions = {
-	{ L"version",		{ &expFuncVersion,			0,	0,	ExpFuncSafety::Safe } },
-	{ L"endianness",	{ &expFuncEndianness,		0,	0,	ExpFuncSafety::Unsafe } },
-	{ L"outputname",	{ &expFuncOutputName,		0,	0,	ExpFuncSafety::Unsafe } },
-	{ L"fileexists",	{ &expFuncFileExists,		1,	1,	ExpFuncSafety::Safe } },
-	{ L"filesize",		{ &expFuncFileSize,			1,	1,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"tostring",		{ &expFuncToString,			1,	1,	ExpFuncSafety::Safe } },
-	{ L"tohex",			{ &expFuncToHex,			1,	2,	ExpFuncSafety::Safe } },
-
-	{ L"int",			{ &expFuncInt,				1,	1,	ExpFuncSafety::Safe } },
-	{ L"float",			{ &expFuncFloat,			1,	1,	ExpFuncSafety::Safe } },
-	{ L"frac",			{ &expFuncFrac,				1,	1,	ExpFuncSafety::Safe } },
-	{ L"abs",			{ &expFuncAbs,				1,	1,	ExpFuncSafety::Safe } },
-	{ L"round",			{ &expFuncRound,			1,	1,	ExpFuncSafety::Safe } },
-	{ L"min",			{ &expFuncMin,				1,	std::numeric_limits<size_t>::max(),	ExpFuncSafety::Safe } },
-	{ L"max",			{ &expFuncMax,				1,	std::numeric_limits<size_t>::max(),	ExpFuncSafety::Safe } },
-
-	{ L"strlen",		{ &expFuncStrlen,			1,	1,	ExpFuncSafety::Safe } },
-	{ L"substr",		{ &expFuncSubstr,			3,	3,	ExpFuncSafety::Safe } },
-#if ARMIPS_REGEXP
-	{ L"regex_match",	{ &expFuncRegExMatch,		2,	2,	ExpFuncSafety::Safe } },
-	{ L"regex_search",	{ &expFuncRegExSearch,		2,	2,	ExpFuncSafety::Safe } },
-	{ L"regex_extract",	{ &expFuncRegExExtract,		2,	3,	ExpFuncSafety::Safe } },
-#endif
-	{ L"find",			{ &expFuncFind,				2,	3,	ExpFuncSafety::Safe } },
-	{ L"rfind",			{ &expFuncRFind,			2,	3,	ExpFuncSafety::Safe } },
-
-	{ L"readbyte",		{ &expFuncRead<uint8_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"readu8",		{ &expFuncRead<uint8_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"readu16",		{ &expFuncRead<uint16_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"readu32",		{ &expFuncRead<uint32_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"readu64",		{ &expFuncRead<uint64_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"reads8",		{ &expFuncRead<int8_t>,		1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"reads16",		{ &expFuncRead<int16_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"reads32",		{ &expFuncRead<int32_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"reads64",		{ &expFuncRead<int64_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
-	{ L"readascii",		{ &expFuncReadAscii,		1,	3,	ExpFuncSafety::ConditionalUnsafe } },
-};
-
-extern const ExpressionLabelFunctionMap expressionLabelFunctions =
-{
-	{ L"defined",    { &expLabelFuncDefined,      1, 1, ExpFuncSafety::Unsafe } },
-	{ L"org",        { &expLabelFuncOrg,          0, 1, ExpFuncSafety::Unsafe } },
-	{ L"orga",       { &expLabelFuncOrga,         0, 1, ExpFuncSafety::Unsafe } },
-	{ L"headersize", { &expLabelFuncHeaderSize,   0, 1, ExpFuncSafety::Unsafe } },
-};
-
-// file: Core/FileManager.cpp
-
-inline uint64_t swapEndianness64(uint64_t value)
-{
-	return ((value & 0xFF) << 56) | ((value & 0xFF00) << 40) | ((value & 0xFF0000) << 24) | ((value & 0xFF000000) << 8) |
-	((value & 0xFF00000000) >> 8) | ((value & 0xFF0000000000) >> 24) |
-	((value & 0xFF000000000000) >> 40) | ((value & 0xFF00000000000000) >> 56);
-}
-
-inline uint32_t swapEndianness32(uint32_t value)
-{
-	return ((value & 0xFF) << 24) | ((value & 0xFF00) << 8) | ((value & 0xFF0000) >> 8) | ((value & 0xFF000000) >> 24);
-}
-
-inline uint16_t swapEndianness16(uint16_t value)
-{
-	return ((value & 0xFF) << 8) | ((value & 0xFF00) >> 8);
-}
-
-
-GenericAssemblerFile::GenericAssemblerFile(const std::wstring& fileName, int64_t headerSize, bool overwrite)
-{
-	this->fileName = fileName;
-	this->headerSize = headerSize;
-	this->originalHeaderSize = headerSize;
-	this->seekPhysical(0);
-	mode = overwrite == true ? Create : Open;
-}
-
-GenericAssemblerFile::GenericAssemblerFile(const std::wstring& fileName, const std::wstring& originalFileName, int64_t headerSize)
-{
-	this->fileName = fileName;
-	this->originalName = originalFileName;
-	this->headerSize = headerSize;
-	this->originalHeaderSize = headerSize;
-	this->seekPhysical(0);
-	mode = Copy;
-}
-
-bool GenericAssemblerFile::open(bool onlyCheck)
-{
-	headerSize = originalHeaderSize;
-	virtualAddress = headerSize;
-
-	if (onlyCheck == false)
-	{
-		// actually open the file
-		bool success;
-		switch (mode)
-		{
-		case Open:
-			success = handle.open(fileName,BinaryFile::ReadWrite);
-			if (success == false)
-			{
-				Logger::printError(Logger::FatalError,L"Could not open file %s",fileName);
-				return false;
-			}
-			return true;
-
-		case Create:
-			success = handle.open(fileName,BinaryFile::Write);
-			if (success == false)
-			{
-				Logger::printError(Logger::FatalError,L"Could not create file %s",fileName);
-				return false;
-			}
-			return true;
-
-		case Copy:
-			success = copyFile(originalName,fileName);
-			if (success == false)
-			{
-				Logger::printError(Logger::FatalError,L"Could not copy file %s",originalName);
-				return false;
-			}
-
-			success = handle.open(fileName,BinaryFile::ReadWrite);
-			if (success == false)
-			{
-				Logger::printError(Logger::FatalError,L"Could not create file %s",fileName);
-				return false;
-			}
-			return true;
-
-		default:
-			return false;
-		}
-	}
-
-	// else only check if it can be done, don't actually do it permanently
-	bool success, exists;
-	BinaryFile temp;
-	switch (mode)
-	{
-	case Open:
-		success = temp.open(fileName,BinaryFile::ReadWrite);
-		if (success == false)
-		{
-			Logger::queueError(Logger::FatalError,L"Could not open file %s",fileName);
-			return false;
-		}
-		temp.close();
-		return true;
-
-	case Create:
-		// if it exists, check if you can open it with read/write access
-		// otherwise open it with write access and remove it afterwards
-		exists = fileExists(fileName);
-		success = temp.open(fileName,exists ? BinaryFile::ReadWrite : BinaryFile::Write);
-		if (success == false)
-		{
-			Logger::queueError(Logger::FatalError,L"Could not create file %s",fileName);
-			return false;
-		}
-		temp.close();
-
-		if (exists == false)
-			deleteFile(fileName);
-
-		return true;
-
-	case Copy:
-		// check original file
-		success = temp.open(originalName,BinaryFile::ReadWrite);
-		if (success == false)
-		{
-			Logger::queueError(Logger::FatalError,L"Could not open file %s",originalName);
-			return false;
-		}
-		temp.close();
-
-		// check new file, same as create
-		exists = fileExists(fileName);
-		success = temp.open(fileName,exists ? BinaryFile::ReadWrite : BinaryFile::Write);
-		if (success == false)
-		{
-			Logger::queueError(Logger::FatalError,L"Could not create file %s",fileName);
-			return false;
-		}
-		temp.close();
-
-		if (exists == false)
-			deleteFile(fileName);
-
-		return true;
-
-	default:
-		return false;
-	};
-
-	return false;
-}
-
-bool GenericAssemblerFile::write(void* data, size_t length)
-{
-	if (isOpen() == false)
-		return false;
-
-	size_t len = handle.write(data,length);
-	virtualAddress += len;
-	return len == length;
-}
-
-bool GenericAssemblerFile::seekVirtual(int64_t virtualAddress)
-{
-	if (virtualAddress - headerSize < 0)
-	{
-		Logger::queueError(Logger::Error,L"Seeking to virtual address with negative physical address");
-		return false;
-	}
-	if (virtualAddress < 0)
-		Logger::queueError(Logger::Warning,L"Seeking to negative virtual address");
-
-	this->virtualAddress = virtualAddress;
-	int64_t physicalAddress = virtualAddress-headerSize;
-
-	if (isOpen())
-		handle.setPos((long)physicalAddress);
-
-	return true;
-}
-
-bool GenericAssemblerFile::seekPhysical(int64_t physicalAddress)
-{
-	if (physicalAddress < 0)
-	{
-		Logger::queueError(Logger::Error,L"Seeking to negative physical address");
-		return false;
-	}
-	if (physicalAddress + headerSize < 0)
-		Logger::queueError(Logger::Warning,L"Seeking to physical address with negative virtual address");
-
-	virtualAddress = physicalAddress+headerSize;
-
-	if (isOpen())
-		handle.setPos((long)physicalAddress);
-
-	return true;
-}
-
-
-
-FileManager::FileManager()
-{
-	// detect own endianness
-	volatile union
-	{
-		uint32_t i;
-		uint8_t c[4];
-	} u;
-	u.c[3] = 0xAA;
-	u.c[2] = 0xBB;
-	u.c[1] = 0xCC;
-	u.c[0] = 0xDD;
-
-	if (u.i == 0xDDCCBBAA)
-		ownEndianness = Endianness::Big;
-	else if (u.i == 0xAABBCCDD)
-		ownEndianness = Endianness::Little;
-	else
-		Logger::printError(Logger::Error,L"Running on unknown endianness");
-
-	reset();
-}
-
-FileManager::~FileManager()
-{
-
-}
-
-void FileManager::reset()
-{
-	activeFile = nullptr;
-	setEndianness(Endianness::Little);
-}
-
-bool FileManager::checkActiveFile()
-{
-	if (activeFile == nullptr)
-	{
-		Logger::queueError(Logger::Error,L"No file opened");
-		return false;
-	}
-	return true;
-}
-
-bool FileManager::openFile(std::shared_ptr<AssemblerFile> file, bool onlyCheck)
-{
-	if (activeFile != nullptr)
-	{
-		Logger::queueError(Logger::Warning,L"File not closed before opening a new one");
-		activeFile->close();
-	}
-
-	activeFile = file;
-	return activeFile->open(onlyCheck);
-}
-
-void FileManager::addFile(std::shared_ptr<AssemblerFile> file)
-{
-	files.push_back(file);
-}
-
-void FileManager::closeFile()
-{
-	if (activeFile == nullptr)
-	{
-		Logger::queueError(Logger::Warning,L"No file opened");
-		return;
-	}
-
-	activeFile->close();
-	activeFile = nullptr;
-}
-
-bool FileManager::write(void* data, size_t length)
-{
-	if (checkActiveFile() == false)
-		return false;
-
-	if (activeFile->isOpen() == false)
-	{
-		Logger::queueError(Logger::Error,L"No file opened");
-		return false;
-	}
-
-	return activeFile->write(data,length);
-}
-
-bool FileManager::writeU8(uint8_t data)
-{
-	return write(&data,1);
-}
-
-bool FileManager::writeU16(uint16_t data)
-{
-	if (endianness != ownEndianness)
-		data = swapEndianness16(data);
-
-	return write(&data,2);
-}
-
-bool FileManager::writeU32(uint32_t data)
-{
-	if (endianness != ownEndianness)
-		data = swapEndianness32(data);
-
-	return write(&data,4);
-}
-
-bool FileManager::writeU64(uint64_t data)
-{
-	if (endianness != ownEndianness)
-		data = swapEndianness64(data);
-
-	return write(&data,8);
-}
-
-int64_t FileManager::getVirtualAddress()
-{
-	if (activeFile == nullptr)
-		return -1;
-	return activeFile->getVirtualAddress();
-}
-
-int64_t FileManager::getPhysicalAddress()
-{
-	if (activeFile == nullptr)
-		return -1;
-	return activeFile->getPhysicalAddress();
-}
-
-int64_t FileManager::getHeaderSize()
-{
-	if (activeFile == nullptr)
-		return -1;
-	return activeFile->getHeaderSize();
-}
-
-bool FileManager::seekVirtual(int64_t virtualAddress)
-{
-	if (checkActiveFile() == false)
-		return false;
-
-	bool result = activeFile->seekVirtual(virtualAddress);
-	if (result && Global.memoryMode)
-	{
-		int sec = Global.symbolTable.findSection(virtualAddress);
-		if (sec != -1)
-			Global.Section = sec;
-	}
-
-	return result;
-}
-
-bool FileManager::seekPhysical(int64_t virtualAddress)
-{
-	if (checkActiveFile() == false)
-		return false;
-	return activeFile->seekPhysical(virtualAddress);
-}
-
-bool FileManager::advanceMemory(size_t bytes)
-{
-	if (checkActiveFile() == false)
-		return false;
-
-	int64_t pos = activeFile->getVirtualAddress();
-	return activeFile->seekVirtual(pos+bytes);
-}
-
-// file: Core/Misc.cpp
-#include <iostream>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-std::vector<Logger::QueueEntry> Logger::queue;
-std::vector<std::wstring> Logger::errors;
-bool Logger::error = false;
-bool Logger::fatalError = false;
-bool Logger::errorOnWarning = false;
-bool Logger::silent = false;
-int Logger::suppressLevel = 0;
-
-std::wstring Logger::formatError(ErrorType type, const wchar_t* text)
-{
-	std::wstring position;
-
-	if (Global.memoryMode == false && Global.FileInfo.FileList.size() > 0)
-	{
-		std::wstring& fileName = Global.FileInfo.FileList[Global.FileInfo.FileNum];
-		position = formatString(L"%s(%d) ",fileName,Global.FileInfo.LineNumber);
-	}
-
-	switch (type)
-	{
-	case Warning:
-		return formatString(L"%swarning: %s",position,text);
-	case Error:
-		return formatString(L"%serror: %s",position,text);
-	case FatalError:
-		return formatString(L"%sfatal error: %s",position,text);
-	case Notice:
-		return formatString(L"%snotice: %s",position,text);
-	}
-
-	return L"";
-}
-
-void Logger::setFlags(ErrorType type)
-{
-	switch (type)
-	{
-	case Warning:
-		if (errorOnWarning)
-			error = true;
-		break;
-	case Error:
-		error = true;
-		break;
-	case FatalError:
-		error = true;
-		fatalError = true;
-		break;
-	case Notice:
-		break;
-	}
-}
-
-void Logger::clear()
-{
-	queue.clear();
-	errors.clear();
-	error = false;
-	fatalError = false;
-	errorOnWarning = false;
-	silent = false;
-}
-
-void Logger::printLine(const std::wstring& text)
-{
-	if (suppressLevel)
-		return;
-
-	std::wcout << text << std::endl;
-
-#if defined(_MSC_VER) && defined(_DEBUG)
-	OutputDebugStringW(text.c_str());
-	OutputDebugStringW(L"\n");
-#endif
-}
-
-void Logger::printLine(const std::string& text)
-{
-	if (suppressLevel)
-		return;
-
-	std::cout << text << std::endl;
-
-#if defined(_MSC_VER) && defined(_DEBUG)
-	OutputDebugStringA(text.c_str());
-	OutputDebugStringA("\n");
-#endif
-}
-
-void Logger::print(const std::wstring& text)
-{
-	if (suppressLevel)
-		return;
-
-	std::wcout << text;
-
-#if defined(_MSC_VER) && defined(_DEBUG)
-	OutputDebugStringW(text.c_str());
-#endif
-}
-
-void Logger::printError(ErrorType type, const std::wstring& text)
-{
-	if (suppressLevel)
-		return;
-
-	std::wstring errorText = formatError(type,text.c_str());
-	errors.push_back(errorText);
-
-	if (!silent)
-		printLine(errorText);
-
-	setFlags(type);
-}
-
-void Logger::printError(ErrorType type, const wchar_t* text)
-{
-	if (suppressLevel)
-		return;
-
-	std::wstring errorText = formatError(type,text);
-	errors.push_back(errorText);
-
-	if (!silent)
-		printLine(errorText);
-
-	setFlags(type);
-}
-
-void Logger::queueError(ErrorType type, const std::wstring& text)
-{
-	if (suppressLevel)
-		return;
-
-	QueueEntry entry;
-	entry.type = type;
-	entry.text = formatError(type,text.c_str());
-	queue.push_back(entry);
-}
-
-void Logger::queueError(ErrorType type, const wchar_t* text)
-{
-	if (suppressLevel)
-		return;
-
-	QueueEntry entry;
-	entry.type = type;
-	entry.text = formatError(type,text);
-	queue.push_back(entry);
-}
-
-void Logger::printQueue()
-{
-	for (size_t i = 0; i < queue.size(); i++)
-	{
-		errors.push_back(queue[i].text);
-
-		if (!silent)
-			printLine(queue[i].text);
-
-		setFlags(queue[i].type);
-	}
-}
-
-void TempData::start()
-{
-	if (file.getFileName().empty() == false)
-	{
-		if (file.open(TextFile::Write) == false)
-		{
-			Logger::printError(Logger::Error,L"Could not open temp file %s.",file.getFileName());
-			return;
-		}
-
-		size_t fileCount = Global.FileInfo.FileList.size();
-		size_t lineCount = Global.FileInfo.TotalLineCount;
-		size_t labelCount = Global.symbolTable.getLabelCount();
-		size_t equCount = Global.symbolTable.getEquationCount();
-
-		file.writeFormat(L"; %d %S included\n",fileCount,fileCount == 1 ? "file" : "files");
-		file.writeFormat(L"; %d %S\n",lineCount,lineCount == 1 ? "line" : "lines");
-		file.writeFormat(L"; %d %S\n",labelCount,labelCount == 1 ? "label" : "labels");
-		file.writeFormat(L"; %d %S\n\n",equCount,equCount == 1 ? "equation" : "equations");
-		for (size_t i = 0; i < fileCount; i++)
-		{
-			file.writeFormat(L"; %S\n",Global.FileInfo.FileList[i]);
-		}
-		file.writeLine("");
-	}
-}
-
-void TempData::end()
-{
-	if (file.isOpen())
-		file.close();
-}
-
-void TempData::writeLine(int64_t memoryAddress, const std::wstring& text)
-{
-	if (file.isOpen())
-	{
-		wchar_t hexbuf[10] = {0};
-		swprintf(hexbuf, 10, L"%08X ", (int32_t) memoryAddress);
-		std::wstring str = hexbuf + text;
-		while (str.size() < 70)
-			str += ' ';
-
-		str += formatString(L"; %S line %d",
-			Global.FileInfo.FileList[Global.FileInfo.FileNum],Global.FileInfo.LineNumber);
-
-		file.writeLine(str);
-	}
-}
-
-// file: Core/SymbolData.cpp
-#include <algorithm>
-
-SymbolData::SymbolData()
-{
-	clear();
-}
-
-void SymbolData::clear()
-{
-	enabled = true;
-	nocashSymFileName.clear();
-	modules.clear();
-	files.clear();
-	currentModule = 0;
-	currentFunction = -1;
-
-	SymDataModule defaultModule;
-	defaultModule.file = nullptr;
-	modules.push_back(defaultModule);
-}
-
-struct NocashSymEntry
-{
-	int64_t address;
-	std::wstring text;
-
-	bool operator<(const NocashSymEntry& other) const
-	{
-		if (address != other.address)
-			return address < other.address;
-		return text < other.text;
-	}
-};
-
-void SymbolData::writeNocashSym()
-{
-	if (nocashSymFileName.empty())
-		return;
-
-	std::vector<NocashSymEntry> entries;
-	for (size_t k = 0; k < modules.size(); k++)
-	{
-		SymDataModule& module = modules[k];
-		for (size_t i = 0; i < module.symbols.size(); i++)
-		{
-			SymDataSymbol& sym = module.symbols[i];
-
-			size_t size = 0;
-			for (size_t f = 0; f < module.functions.size(); f++)
-			{
-				if (module.functions[f].address == sym.address)
-				{
-					size = module.functions[f].size;
-					break;
-				}
-			}
-
-			NocashSymEntry entry;
-			entry.address = sym.address;
-
-			if (size != 0 && nocashSymVersion >= 2)
-				entry.text = formatString(L"%s,%08X",sym.name,size);
-			else
-				entry.text = sym.name;
-
-			if (nocashSymVersion == 1)
-				std::transform(entry.text.begin(), entry.text.end(), entry.text.begin(), ::towlower);
-
-			entries.push_back(entry);
-		}
-
-		for (const SymDataData& data: module.data)
-		{
-			NocashSymEntry entry;
-			entry.address = data.address;
-
-			switch (data.type)
-			{
-			case Data8:
-				entry.text = formatString(L".byt:%04X",data.size);
-				break;
-			case Data16:
-				entry.text = formatString(L".wrd:%04X",data.size);
-				break;
-			case Data32:
-				entry.text = formatString(L".dbl:%04X",data.size);
-				break;
-			case Data64:
-				entry.text = formatString(L".dbl:%04X",data.size);
-				break;
-			case DataAscii:
-				entry.text = formatString(L".asc:%04X",data.size);
-				break;
-			}
-
-			entries.push_back(entry);
-		}
-	}
-
-	std::sort(entries.begin(),entries.end());
-
-	TextFile file;
-	if (file.open(nocashSymFileName,TextFile::Write,TextFile::ASCII) == false)
-	{
-		Logger::printError(Logger::Error,L"Could not open sym file %s.",file.getFileName());
-		return;
-	}
-	file.writeLine(L"00000000 0");
-
-	for (size_t i = 0; i < entries.size(); i++)
-	{
-		file.writeFormat(L"%08X %s\n",entries[i].address,entries[i].text);
-	}
-
-	file.write("\x1A");
-	file.close();
-}
-
-void SymbolData::write()
-{
-	writeNocashSym();
-}
-
-void SymbolData::addLabel(int64_t memoryAddress, const std::wstring& name)
-{
-	if (!enabled)
-		return;
-
-	SymDataSymbol sym;
-	sym.address = memoryAddress;
-	sym.name = name;
-
-	for (SymDataSymbol& symbol: modules[currentModule].symbols)
-	{
-		if (symbol.address == sym.address && symbol.name == sym.name)
-			return;
-	}
-
-	modules[currentModule].symbols.push_back(sym);
-}
-
-void SymbolData::addData(int64_t address, size_t size, DataType type)
-{
-	if (!enabled)
-		return;
-
-	SymDataData data;
-	data.address = address;
-	data.size = size;
-	data.type = type;
-	modules[currentModule].data.insert(data);
-}
-
-size_t SymbolData::addFileName(const std::wstring& fileName)
-{
-	for (size_t i = 0; i < files.size(); i++)
-	{
-		if (files[i] == fileName)
-			return i;
-	}
-
-	files.push_back(fileName);
-	return files.size()-1;
-}
-
-void SymbolData::startModule(AssemblerFile* file)
-{
-	for (size_t i = 0; i < modules.size(); i++)
-	{
-		if (modules[i].file == file)
-		{
-			currentModule = i;
-			return;
-		}
-	}
-
-	SymDataModule module;
-	module.file = file;
-	modules.push_back(module);
-	currentModule = modules.size()-1;
-}
-
-void SymbolData::endModule(AssemblerFile* file)
-{
-	if (modules[currentModule].file != file)
-		return;
-
-	if (currentModule == 0)
-	{
-		Logger::printError(Logger::Error,L"No module opened");
-		return;
-	}
-
-	if (currentFunction != -1)
-	{
-		Logger::printError(Logger::Error,L"Module closed before function end");
-		currentFunction = -1;
-	}
-
-	currentModule = 0;
-}
-
-void SymbolData::startFunction(int64_t address)
-{
-	if (currentFunction != -1)
-	{
-		endFunction(address);
-	}
-
-	currentFunction = modules[currentModule].functions.size();
-
-	SymDataFunction func;
-	func.address = address;
-	func.size = 0;
-	modules[currentModule].functions.push_back(func);
-}
-
-void SymbolData::endFunction(int64_t address)
-{
-	if (currentFunction == -1)
-	{
-		Logger::printError(Logger::Error,L"Not inside a function");
-		return;
-	}
-
-	SymDataFunction& func = modules[currentModule].functions[currentFunction];
-	func.size = (size_t) (address-func.address);
-	currentFunction = -1;
-}
-
-// file: Core/SymbolTable.cpp
-
-const wchar_t validSymbolCharacters[] = L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.";
-
-bool operator<(SymbolKey const& lhs, SymbolKey const& rhs)
-{
-	if (lhs.file != rhs.file)
-		return lhs.file < rhs.file;
-	if (lhs.section != rhs.section)
-		return lhs.section < rhs.section;
-	return lhs.name.compare(rhs.name) < 0;
-}
-
-SymbolTable::SymbolTable()
-{
-	uniqueCount = 0;
-}
-
-SymbolTable::~SymbolTable()
-{
-	clear();
-}
-
-void SymbolTable::clear()
-{
-	symbols.clear();
-	labels.clear();
-	equationsCount = 0;
-	uniqueCount = 0;
-}
-
-void SymbolTable::setFileSectionValues(const std::wstring& symbol, int& file, int& section)
-{
-	if (symbol[0] == '@')
-	{
-		if (symbol[1] != '@')
-		{
-			// static label, @. the section doesn't matter
-			section = -1;
-		} else {
-			// local label, @@. the file doesn't matter
-			file = -1;
-		}
-	} else {
-		// global label. neither file nor section matters
-		file = section = -1;
-	}
-}
-
-std::shared_ptr<Label> SymbolTable::getLabel(const std::wstring& symbol, int file, int section)
-{
-	if (isValidSymbolName(symbol) == false)
-		return nullptr;
-
-	int actualSection = section;
-	setFileSectionValues(symbol,file,section);
-	SymbolKey key = { symbol, file, section };
-
-	// find label, create new one if it doesn't exist
-	auto it = symbols.find(key);
-	if (it == symbols.end())
-	{
-		SymbolInfo value = { LabelSymbol, labels.size() };
-		symbols[key] = value;
-
-		std::shared_ptr<Label> result = std::make_shared<Label>(symbol);
-		if (section == actualSection)
-			result->setSection(section);			// local, set section of parent
-		else
-			result->setSection(actualSection+1);	// global, set section of children
-		labels.push_back(result);
-		return result;
-	}
-
-	// make sure not to match symbols that aren't labels
-	if (it->second.type != LabelSymbol)
-		return nullptr;
-
-	return labels[it->second.index];
-}
-
-bool SymbolTable::symbolExists(const std::wstring& symbol, int file, int section)
-{
-	if (isValidSymbolName(symbol) == false)
-		return false;
-
-	setFileSectionValues(symbol,file,section);
-
-	SymbolKey key = { symbol, file, section };
-	auto it = symbols.find(key);
-	return it != symbols.end();
-}
-
-bool SymbolTable::isValidSymbolName(const std::wstring& symbol)
-{
-	size_t size = symbol.size();
-	size_t start = 0;
-
-	// don't match empty names
-	if (size == 0 || symbol.compare(L"@") == 0 || symbol.compare(L"@@") == 0)
-		return false;
-
-	if (symbol[0] == '@')
-	{
-		start++;
-		if (size > 1 && symbol[1] == '@')
-			start++;
-	}
-
-	if (symbol[start] >= '0' && symbol[start] <= '9')
-		return false;
-
-	for (size_t i = start; i < size; i++)
-	{
-		if (wcschr(validSymbolCharacters,symbol[i]) == nullptr)
-			return false;
-	}
-
-	return true;
-}
-
-bool SymbolTable::isValidSymbolCharacter(wchar_t character, bool first)
-{
-	if ((character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z')) return true;
-	if (!first && (character >= '0' && character <= '9')) return true;
-	if (character == '_' || character == '.') return true;
-	if (character == '@') return true;
-	return false;
-}
-
-bool SymbolTable::addEquation(const std::wstring& name, int file, int section, size_t referenceIndex)
-{
-	if (isValidSymbolName(name) == false)
-		return false;
-
-	if (symbolExists(name,file,section))
-		return false;
-
-	setFileSectionValues(name,file,section);
-
-	SymbolKey key = { name, file, section };
-	SymbolInfo value = { EquationSymbol, referenceIndex };
-	symbols[key] = value;
-
-	equationsCount++;
-	return true;
-}
-
-bool SymbolTable::findEquation(const std::wstring& name, int file, int section, size_t& dest)
-{
-	setFileSectionValues(name,file,section);
-
-	SymbolKey key = { name, file, section };
-	auto it = symbols.find(key);
-	if (it == symbols.end() || it->second.type != EquationSymbol)
-		return false;
-
-	dest = it->second.index;
-	return true;
-}
-
-// TODO: better
-std::wstring SymbolTable::getUniqueLabelName(bool local)
-{
-	std::wstring name = formatString(L"__armips_label_%08x__",uniqueCount++);
-	if (local)
-		name = L"@@" + name;
-
-	generatedLabels.insert(name);
-	return name;
-}
-
-void SymbolTable::addLabels(const std::vector<LabelDefinition>& labels)
-{
-	for (const LabelDefinition& def: labels)
-	{
-		if (!isValidSymbolName(def.name))
-			continue;
-
-		std::shared_ptr<Label> label = getLabel(def.name,Global.FileInfo.FileNum,Global.Section);
-		if (label == nullptr)
-			continue;
-
-		label->setOriginalName(def.originalName);
-
-		if (isLocalSymbol(def.name) == false)
-			Global.Section++;
-
-		label->setDefined(true);
-		label->setValue(def.value);
-	}
-}
-
-int SymbolTable::findSection(int64_t address)
-{
-	int64_t smallestBefore = -1;
-	int64_t smallestDiff = 0x7FFFFFFF;
-
-	for (auto& lab: labels)
-	{
-		int diff = address-lab->getValue();
-		if (diff >= 0 && diff < smallestDiff)
-		{
-			smallestDiff = diff;
-			smallestBefore = lab->getSection();
-		}
-	}
-
-	return smallestBefore;
-}
-
 // file: Parser/DirectivesParser.cpp
 
 #include <initializer_list>
@@ -19855,6 +15897,3964 @@ int runFromCommandLine(const StringList& arguments, ArmipsArguments settings)
 	}
 
 	return 0;
+}
+
+// file: Core/ELF/ElfFile.cpp
+#include <vector>
+#include <algorithm>
+
+#ifndef _WIN32
+#include <strings.h>
+#define _stricmp strcasecmp
+#endif
+
+static bool stringEqualInsensitive(const std::string& a, const std::string& b)
+{
+	if (a.size() != b.size())
+		return false;
+	return _stricmp(a.c_str(),b.c_str()) == 0;
+}
+
+bool compareSection(ElfSection* a, ElfSection* b)
+{
+	return a->getOffset() < b->getOffset();
+}
+
+ElfSection::ElfSection(Elf32_Shdr header): header(header)
+{
+	owner = nullptr;
+}
+
+void ElfSection::setOwner(ElfSegment* segment)
+{
+	header.sh_offset -= segment->getOffset();
+	owner = segment;
+}
+
+void ElfSection::writeHeader(ByteArray& data, int pos, Endianness endianness)
+{
+	data.replaceDoubleWord(pos + 0x00, header.sh_name, endianness);
+	data.replaceDoubleWord(pos + 0x04, header.sh_type, endianness);
+	data.replaceDoubleWord(pos + 0x08, header.sh_flags, endianness);
+	data.replaceDoubleWord(pos + 0x0C, header.sh_addr, endianness);
+	data.replaceDoubleWord(pos + 0x10, header.sh_offset, endianness);
+	data.replaceDoubleWord(pos + 0x14, header.sh_size, endianness);
+	data.replaceDoubleWord(pos + 0x18, header.sh_link, endianness);
+	data.replaceDoubleWord(pos + 0x1C, header.sh_info, endianness);
+	data.replaceDoubleWord(pos + 0x20, header.sh_addralign, endianness);
+	data.replaceDoubleWord(pos + 0x24, header.sh_entsize, endianness);
+}
+
+// only called for segmentless sections
+void ElfSection::writeData(ByteArray& output)
+{
+	if (header.sh_type == SHT_NULL) return;
+
+	// nobits sections still get a provisional file address
+	if (header.sh_type == SHT_NOBITS)
+	{
+		header.sh_offset = (Elf32_Off) output.size();
+	}
+
+	if (header.sh_addralign != (unsigned) -1)
+		output.alignSize(header.sh_addralign);
+	header.sh_offset = (Elf32_Off) output.size();
+	output.append(data);
+}
+
+void ElfSection::setOffsetBase(int base)
+{
+	header.sh_offset += base;
+}
+
+ElfSegment::ElfSegment(Elf32_Phdr header, ByteArray& segmentData): header(header)
+{
+	data = segmentData;
+	paddrSection = nullptr;
+}
+
+bool ElfSegment::isSectionPartOf(ElfSection* section)
+{
+	int sectionStart = section->getOffset();
+	int sectionSize = section->getType() == SHT_NOBITS ? 0 : section->getSize();
+	int sectionEnd = sectionStart+sectionSize;
+
+	int segmentStart = header.p_offset;
+	int segmentEnd = segmentStart+header.p_filesz;
+
+	// exclusive > in case the size is 0
+	if (sectionStart < (int)header.p_offset || sectionStart > segmentEnd) return false;
+
+	// does an empty section belong to this or the next segment? hm...
+	if (sectionStart == segmentEnd) return sectionSize == 0;
+
+	// the start is inside the section and the size is not 0, so the end should be in here too
+	if (sectionEnd > segmentEnd)
+	{
+		Logger::printError(Logger::Error,L"Section partially contained in segment");
+		return false;
+	}
+
+	return true;
+}
+
+void ElfSegment::addSection(ElfSection* section)
+{
+	if (header.p_paddr != 0)
+	{
+		if (section->getOffset() == header.p_paddr)
+		{
+			paddrSection = section;
+		}
+	}
+
+	section->setOwner(this);
+	sections.push_back(section);
+}
+
+void ElfSegment::writeData(ByteArray& output)
+{
+	if (sections.size() == 0)
+	{
+		output.alignSize(header.p_align);
+		if (header.p_offset == header.p_paddr)
+			header.p_paddr = (Elf32_Addr) output.size();
+
+		header.p_offset = (Elf32_Off) output.size();
+		return;
+	}
+
+	// align segment to alignment of first section
+	int align = std::max<int>(sections[0]->getAlignment(),16);
+	output.alignSize(align);
+
+	header.p_offset = (Elf32_Off) output.size();
+	for (int i = 0; i < (int)sections.size(); i++)
+	{
+		sections[i]->setOffsetBase(header.p_offset);
+	}
+
+	if (paddrSection)
+	{
+		header.p_paddr = paddrSection->getOffset();
+	}
+
+	output.append(data);
+}
+
+void ElfSegment::writeHeader(ByteArray& data, int pos, Endianness endianness)
+{
+	data.replaceDoubleWord(pos + 0x00, header.p_type, endianness);
+	data.replaceDoubleWord(pos + 0x04, header.p_offset, endianness);
+	data.replaceDoubleWord(pos + 0x08, header.p_vaddr, endianness);
+	data.replaceDoubleWord(pos + 0x0C, header.p_paddr, endianness);
+	data.replaceDoubleWord(pos + 0x10, header.p_filesz, endianness);
+	data.replaceDoubleWord(pos + 0x14, header.p_memsz, endianness);
+	data.replaceDoubleWord(pos + 0x18, header.p_flags, endianness);
+	data.replaceDoubleWord(pos + 0x1C, header.p_align, endianness);
+}
+
+void ElfSegment::splitSections()
+{
+
+}
+
+int ElfSegment::findSection(const std::string& name)
+{
+	for (size_t i = 0; i < sections.size(); i++)
+	{
+		if (stringEqualInsensitive(name,sections[i]->getName()))
+			return i;
+	}
+
+	return -1;
+}
+
+void ElfSegment::writeToData(size_t offset, void* src, size_t size)
+{
+	for (size_t i = 0; i < size; i++)
+	{
+		data[offset+i] = ((byte*)src)[i];
+	}
+}
+
+void ElfSegment::sortSections()
+{
+	std::sort(sections.begin(),sections.end(),compareSection);
+}
+
+void ElfFile::loadSectionNames()
+{
+	if (fileHeader.e_shstrndx == SHN_UNDEF) return;
+
+	// check if the string table is actually a string table
+	// sometimes it gives the wrong section id
+	size_t strTablePos = sections[fileHeader.e_shstrndx]->getOffset();
+	size_t strTableSize = sections[fileHeader.e_shstrndx]->getSize();
+	for (size_t i = 0; i < strTableSize; i++)
+	{
+		if (fileData[strTablePos+i] != 0 && fileData[strTablePos+i] < 0x20)
+			return;
+		if (fileData[strTablePos+i] > 0x7F)
+			return;
+	}
+
+	for (size_t i = 0; i < sections.size(); i++)
+	{
+		ElfSection* section = sections[i];
+		if (section->getType() == SHT_NULL) continue;
+
+		int strTablePos = sections[fileHeader.e_shstrndx]->getOffset();
+		int offset = strTablePos+section->getNameOffset();
+
+		char* name = (char*) fileData.data(offset);
+		std::string strName = name;
+		section->setName(strName);
+	}
+}
+
+void ElfFile::determinePartOrder()
+{
+	size_t segmentTable = fileHeader.e_phoff;
+	size_t sectionTable = fileHeader.e_shoff;
+
+	// segments
+	size_t firstSegmentStart = fileData.size(), lastSegmentEnd = 0;
+	for (size_t i = 0; i < fileHeader.e_phnum; i++)
+	{
+		size_t pos = fileHeader.e_phoff+i*fileHeader.e_phentsize;
+
+		Elf32_Phdr segmentHeader;
+		loadProgramHeader(segmentHeader, fileData, pos);
+		size_t end = segmentHeader.p_offset + segmentHeader.p_filesz;
+
+		if (segmentHeader.p_offset < firstSegmentStart) firstSegmentStart = segmentHeader.p_offset;
+		if (lastSegmentEnd < end) lastSegmentEnd = end;
+	}
+
+	// segmentless sections
+	size_t firstSectionStart = fileData.size(), lastSectionEnd = 0;
+	for (size_t i = 0; i < segmentlessSections.size(); i++)
+	{
+		if (segmentlessSections[i]->getType() == SHT_NULL) continue;
+
+		size_t start = segmentlessSections[i]->getOffset();
+		size_t end = start+segmentlessSections[i]->getSize();
+
+		if (start == 0 && end == 0)
+			continue;
+		if (start < firstSectionStart) firstSectionStart = start;
+		if (lastSectionEnd < end) lastSectionEnd = end;
+	}
+
+	struct PartsSort {
+		size_t offset;
+		ElfPart type;
+		bool operator<(const PartsSort& other) const { return offset < other.offset; };
+	};
+
+	PartsSort temp[4] = {
+		{ segmentTable,				ELFPART_SEGMENTTABLE },
+		{ sectionTable,				ELFPART_SECTIONTABLE },
+		{ firstSegmentStart,		ELFPART_SEGMENTS },
+		{ firstSectionStart,		ELFPART_SEGMENTLESSSECTIONS },
+	};
+
+	std::sort(&temp[0],&temp[4]);
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		partsOrder[i] = temp[i].type;
+	}
+}
+
+int ElfFile::findSegmentlessSection(const std::string& name)
+{
+	for (size_t i = 0; i < segmentlessSections.size(); i++)
+	{
+		if (stringEqualInsensitive(name,segmentlessSections[i]->getName()))
+			return i;
+	}
+
+	return -1;
+}
+
+void ElfFile::loadElfHeader()
+{
+	memcpy(fileHeader.e_ident, &fileData[0], sizeof(fileHeader.e_ident));
+	Endianness endianness = getEndianness();
+	fileHeader.e_type = fileData.getWord(0x10, endianness);
+	fileHeader.e_machine = fileData.getWord(0x12, endianness);
+	fileHeader.e_version = fileData.getDoubleWord(0x14, endianness);
+	fileHeader.e_entry = fileData.getDoubleWord(0x18, endianness);
+	fileHeader.e_phoff = fileData.getDoubleWord(0x1C, endianness);
+	fileHeader.e_shoff = fileData.getDoubleWord(0x20, endianness);
+	fileHeader.e_flags = fileData.getDoubleWord(0x24, endianness);
+	fileHeader.e_ehsize = fileData.getWord(0x28, endianness);
+	fileHeader.e_phentsize = fileData.getWord(0x2A, endianness);
+	fileHeader.e_phnum = fileData.getWord(0x2C, endianness);
+	fileHeader.e_shentsize = fileData.getWord(0x2E, endianness);
+	fileHeader.e_shnum = fileData.getWord(0x30, endianness);
+	fileHeader.e_shstrndx = fileData.getWord(0x32, endianness);
+}
+
+void ElfFile::writeHeader(ByteArray& data, int pos, Endianness endianness)
+{
+	memcpy(&fileData[0], fileHeader.e_ident, sizeof(fileHeader.e_ident));
+	data.replaceWord(pos + 0x10, fileHeader.e_type, endianness);
+	data.replaceWord(pos + 0x12, fileHeader.e_machine, endianness);
+	data.replaceDoubleWord(pos + 0x14, fileHeader.e_version, endianness);
+	data.replaceDoubleWord(pos + 0x18, fileHeader.e_entry, endianness);
+	data.replaceDoubleWord(pos + 0x1C, fileHeader.e_phoff, endianness);
+	data.replaceDoubleWord(pos + 0x20, fileHeader.e_shoff, endianness);
+	data.replaceDoubleWord(pos + 0x24, fileHeader.e_flags, endianness);
+	data.replaceWord(pos + 0x28, fileHeader.e_ehsize, endianness);
+	data.replaceWord(pos + 0x2A, fileHeader.e_phentsize, endianness);
+	data.replaceWord(pos + 0x2C, fileHeader.e_phnum, endianness);
+	data.replaceWord(pos + 0x2E, fileHeader.e_shentsize, endianness);
+	data.replaceWord(pos + 0x30, fileHeader.e_shnum, endianness);
+	data.replaceWord(pos + 0x32, fileHeader.e_shstrndx, endianness);
+}
+
+void ElfFile::loadProgramHeader(Elf32_Phdr& header, ByteArray& data, int pos)
+{
+	Endianness endianness = getEndianness();
+	header.p_type   = data.getDoubleWord(pos + 0x00, endianness);
+	header.p_offset = data.getDoubleWord(pos + 0x04, endianness);
+	header.p_vaddr  = data.getDoubleWord(pos + 0x08, endianness);
+	header.p_paddr  = data.getDoubleWord(pos + 0x0C, endianness);
+	header.p_filesz = data.getDoubleWord(pos + 0x10, endianness);
+	header.p_memsz  = data.getDoubleWord(pos + 0x14, endianness);
+	header.p_flags  = data.getDoubleWord(pos + 0x18, endianness);
+	header.p_align  = data.getDoubleWord(pos + 0x1C, endianness);
+}
+
+void ElfFile::loadSectionHeader(Elf32_Shdr& header, ByteArray& data, int pos)
+{
+	Endianness endianness = getEndianness();
+	header.sh_name      = data.getDoubleWord(pos + 0x00, endianness);
+	header.sh_type      = data.getDoubleWord(pos + 0x04, endianness);
+	header.sh_flags     = data.getDoubleWord(pos + 0x08, endianness);
+	header.sh_addr      = data.getDoubleWord(pos + 0x0C, endianness);
+	header.sh_offset    = data.getDoubleWord(pos + 0x10, endianness);
+	header.sh_size      = data.getDoubleWord(pos + 0x14, endianness);
+	header.sh_link      = data.getDoubleWord(pos + 0x18, endianness);
+	header.sh_info      = data.getDoubleWord(pos + 0x1C, endianness);
+	header.sh_addralign = data.getDoubleWord(pos + 0x20, endianness);
+	header.sh_entsize   = data.getDoubleWord(pos + 0x24, endianness);
+}
+
+bool ElfFile::load(const std::wstring& fileName, bool sort)
+{
+	ByteArray data = ByteArray::fromFile(fileName);
+	if (data.size() == 0)
+		return false;
+	return load(data,sort);
+}
+
+bool ElfFile::load(ByteArray& data, bool sort)
+{
+	fileData = data;
+
+	loadElfHeader();
+	symTab = nullptr;
+	strTab = nullptr;
+
+	// load segments
+	for (size_t i = 0; i < fileHeader.e_phnum; i++)
+	{
+		int pos = fileHeader.e_phoff+i*fileHeader.e_phentsize;
+
+		Elf32_Phdr sectionHeader;
+		loadProgramHeader(sectionHeader, fileData, pos);
+
+		ByteArray segmentData = fileData.mid(sectionHeader.p_offset,sectionHeader.p_filesz);
+		ElfSegment* segment = new ElfSegment(sectionHeader,segmentData);
+		segments.push_back(segment);
+	}
+
+	// load sections and assign them to segments
+	for (int i = 0; i < fileHeader.e_shnum; i++)
+	{
+		int pos = fileHeader.e_shoff+i*fileHeader.e_shentsize;
+
+		Elf32_Shdr sectionHeader;
+		loadSectionHeader(sectionHeader, fileData, pos);
+
+		ElfSection* section = new ElfSection(sectionHeader);
+		sections.push_back(section);
+
+		// check if the section belongs to a segment
+		ElfSegment* owner = nullptr;
+		for (int k = 0; k < (int)segments.size(); k++)
+		{
+			if (segments[k]->isSectionPartOf(section))
+			{
+				owner = segments[k];
+				break;
+			}
+		}
+
+		if (owner != nullptr)
+		{
+			owner->addSection(section);
+		} else {
+			if (section->getType() != SHT_NOBITS && section->getType() != SHT_NULL)
+			{
+				ByteArray data = fileData.mid(section->getOffset(),section->getSize());
+				section->setData(data);
+			}
+
+			switch (section->getType())
+			{
+			case SHT_SYMTAB:
+				symTab = section;
+				break;
+			case SHT_STRTAB:
+				if (!strTab || i != fileHeader.e_shstrndx)
+				{
+					strTab = section;
+				}
+				break;
+			}
+
+			segmentlessSections.push_back(section);
+		}
+	}
+
+	determinePartOrder();
+	loadSectionNames();
+
+	if (sort)
+	{
+		std::sort(segmentlessSections.begin(),segmentlessSections.end(),compareSection);
+
+		for (int i = 0; i < (int)segments.size(); i++)
+		{
+			segments[i]->sortSections();
+		}
+	}
+
+	return true;
+}
+
+void ElfFile::save(const std::wstring&fileName)
+{
+	fileData.clear();
+
+	// reserve space for header and table data
+	fileData.reserveBytes(sizeof(Elf32_Ehdr));
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		switch (partsOrder[i])
+		{
+		case ELFPART_SEGMENTTABLE:
+			fileData.alignSize(4);
+			fileHeader.e_phoff = (Elf32_Off) fileData.size();
+			fileData.reserveBytes(segments.size()*fileHeader.e_phentsize);
+			break;
+		case ELFPART_SECTIONTABLE:
+			fileData.alignSize(4);
+			fileHeader.e_shoff = (Elf32_Off) fileData.size();
+			fileData.reserveBytes(sections.size()*fileHeader.e_shentsize);
+			break;
+		case ELFPART_SEGMENTS:
+			for (size_t i = 0; i < segments.size(); i++)
+			{
+				segments[i]->writeData(fileData);
+			}
+			break;
+		case ELFPART_SEGMENTLESSSECTIONS:
+			for (size_t i = 0; i < segmentlessSections.size(); i++)
+			{
+				segmentlessSections[i]->writeData(fileData);
+			}
+			break;
+		}
+	}
+
+	// copy data to the tables
+	Endianness endianness = getEndianness();
+	writeHeader(fileData, 0, endianness);
+	for (size_t i = 0; i < segments.size(); i++)
+	{
+		int pos = fileHeader.e_phoff+i*fileHeader.e_phentsize;
+		segments[i]->writeHeader(fileData, pos, endianness);
+	}
+
+	for (size_t i = 0; i < sections.size(); i++)
+	{
+		int pos = fileHeader.e_shoff+i*fileHeader.e_shentsize;
+		sections[i]->writeHeader(fileData, pos, endianness);
+	}
+
+	fileData.toFile(fileName);
+}
+
+int ElfFile::getSymbolCount()
+{
+	if (symTab == nullptr)
+		return 0;
+
+	return symTab->getSize()/sizeof(Elf32_Sym);
+}
+
+bool ElfFile::getSymbol(Elf32_Sym& symbol, size_t index)
+{
+	if (symTab == nullptr)
+		return false;
+
+	ByteArray &data = symTab->getData();
+	int pos = index*sizeof(Elf32_Sym);
+	Endianness endianness = getEndianness();
+	symbol.st_name  = data.getDoubleWord(pos + 0x00, endianness);
+	symbol.st_value = data.getDoubleWord(pos + 0x04, endianness);
+	symbol.st_size  = data.getDoubleWord(pos + 0x08, endianness);
+	symbol.st_info  = data[pos + 0x0C];
+	symbol.st_other = data[pos + 0x0D];
+	symbol.st_shndx = data.getWord(pos + 0x0E, endianness);
+
+	return true;
+}
+
+const char* ElfFile::getStrTableString(size_t pos)
+{
+	if (strTab == nullptr)
+		return nullptr;
+
+	return (const char*) &strTab->getData()[pos];
+}
+
+// file: Core/ELF/ElfRelocator.cpp
+
+struct ArFileHeader
+{
+	char fileName[16];
+	char modifactionTime[12];
+	char ownerId[6];
+	char groupId[6];
+	char fileMode[8];
+	char fileSize[10];
+	char magic[2];
+};
+
+struct ArFileEntry
+{
+	std::wstring name;
+	ByteArray data;
+};
+
+std::vector<ArFileEntry> loadArArchive(const std::wstring& inputName)
+{
+	ByteArray input = ByteArray::fromFile(inputName);
+	std::vector<ArFileEntry> result;
+
+	if (input.size() < 8 || memcmp(input.data(),"!<arch>\n",8) != 0)
+	{
+		if (input.size() < 4 || memcmp(input.data(),"\x7F""ELF",4) != 0)
+			return result;
+
+		ArFileEntry entry;
+		entry.name = getFileNameFromPath(inputName);
+		entry.data = input;
+		result.push_back(entry);
+		return result;
+	}
+
+	size_t pos = 8;
+	while (pos < input.size())
+	{
+		ArFileHeader* header = (ArFileHeader*) input.data(pos);
+		pos += sizeof(ArFileHeader);
+
+		// get file size
+		int size = 0;
+		for (int i = 0; i < 10; i++)
+		{
+			if (header->fileSize[i] == ' ')
+				break;
+
+			size = size*10;
+			size += (header->fileSize[i]-'0');
+		}
+
+		// only ELF files are actually interesting
+		if (memcmp(input.data(pos),"\x7F""ELF",4) == 0)
+		{
+			// get file name
+			char fileName[17];
+			fileName[16] = 0;
+			for (int i = 0; i < 16; i++)
+			{
+				if (header->fileName[i] == ' ')
+				{
+					// remove trailing slashes of file names
+					if (i > 0 && fileName[i-1] == '/')
+						i--;
+					fileName[i] = 0;
+					break;;
+				}
+
+				fileName[i] = header->fileName[i];
+			}
+
+			ArFileEntry entry;
+			entry.name = convertUtf8ToWString(fileName);
+			entry.data = input.mid(pos,size);
+			result.push_back(entry);
+		}
+
+		pos += size;
+		if (pos % 2)
+			pos++;
+	}
+
+	return result;
+}
+
+bool ElfRelocator::init(const std::wstring& inputName)
+{
+	relocator = Arch->getElfRelocator();
+	if (relocator == nullptr)
+	{
+		Logger::printError(Logger::Error,L"Object importing not supported for this architecture");
+		return false;
+	}
+
+	auto inputFiles = loadArArchive(inputName);
+	if (inputFiles.size() == 0)
+	{
+		Logger::printError(Logger::Error,L"Could not load library");
+		return false;
+	}
+
+	for (ArFileEntry& entry: inputFiles)
+	{
+		ElfRelocatorFile file;
+
+		ElfFile* elf = new ElfFile();
+		if (elf->load(entry.data,false) == false)
+		{
+			Logger::printError(Logger::Error,L"Could not load object file %s",entry.name);
+			return false;
+		}
+
+		if (elf->getType() != ET_REL)
+		{
+			Logger::printError(Logger::Error,L"Unexpected ELF type %d in object file %s",elf->getType(),entry.name);
+			return false;
+		}
+
+		if (elf->getMachine() != relocator->expectedMachine())
+		{
+			Logger::printError(Logger::Error,L"Unexpected ELF machine %d in object file %s",elf->getMachine(),entry.name);
+			return false;
+		}
+
+		if (elf->getEndianness() != Arch->getEndianness())
+		{
+			Logger::printError(Logger::Error,L"Incorrect endianness in object file %s",entry.name);
+			return false;
+		}
+
+		if (elf->getSegmentCount() != 0)
+		{
+			Logger::printError(Logger::Error,L"Unexpected segment count %d in object file %s",elf->getSegmentCount(),entry.name);
+			return false;
+		}
+
+
+		// load all relevant sections of this file
+		for (size_t s = 0; s < elf->getSegmentlessSectionCount(); s++)
+		{
+			ElfSection* sec = elf->getSegmentlessSection(s);
+			if (!(sec->getFlags() & SHF_ALLOC))
+				continue;
+
+			if (sec->getType() == SHT_PROGBITS || sec->getType() == SHT_NOBITS || sec->getType() == SHT_INIT_ARRAY)
+			{
+				ElfRelocatorSection sectionEntry;
+				sectionEntry.section = sec;
+				sectionEntry.index = s;
+				sectionEntry.relSection = nullptr;
+				sectionEntry.label = nullptr;
+
+				// search relocation section
+				for (size_t k = 0; k < elf->getSegmentlessSectionCount(); k++)
+				{
+					ElfSection* relSection = elf->getSegmentlessSection(k);
+					if (relSection->getType() != SHT_REL)
+						continue;
+					if (relSection->getInfo() != s)
+						continue;
+
+					// got it
+					sectionEntry.relSection = relSection;
+					break;
+				}
+
+				// keep track of constructor sections
+				if (sec->getName() == ".ctors" || sec->getName() == ".init_array")
+				{
+					ElfRelocatorCtor ctor;
+					ctor.symbolName = Global.symbolTable.getUniqueLabelName();
+					ctor.size = sec->getSize();
+
+					sectionEntry.label = Global.symbolTable.getLabel(ctor.symbolName,-1,-1);
+					sectionEntry.label->setDefined(true);
+
+					ctors.push_back(ctor);
+				}
+
+				file.sections.push_back(sectionEntry);
+			}
+		}
+
+		// init exportable symbols
+		for (int i = 0; i < elf->getSymbolCount(); i++)
+		{
+			Elf32_Sym symbol;
+			elf->getSymbol(symbol, i);
+
+			if (ELF32_ST_BIND(symbol.st_info) == STB_GLOBAL && symbol.st_shndx != 0)
+			{
+				ElfRelocatorSymbol symEntry;
+				symEntry.type = ELF32_ST_TYPE(symbol.st_info);
+				symEntry.name = convertUtf8ToWString(elf->getStrTableString(symbol.st_name));
+				symEntry.relativeAddress = symbol.st_value;
+				symEntry.section = symbol.st_shndx;
+				symEntry.size = symbol.st_size;
+				symEntry.label = nullptr;
+
+				file.symbols.push_back(symEntry);
+			}
+		}
+
+		file.elf = elf;
+		file.name = entry.name;
+		files.push_back(file);
+	}
+
+	return true;
+}
+
+bool ElfRelocator::exportSymbols()
+{
+	bool error = false;
+
+	for (ElfRelocatorFile& file: files)
+	{
+		for (ElfRelocatorSymbol& sym: file.symbols)
+		{
+			if (sym.label != nullptr)
+				continue;
+
+			std::wstring lowered = sym.name;
+			std::transform(lowered.begin(), lowered.end(), lowered.begin(), ::towlower);
+
+			sym.label = Global.symbolTable.getLabel(lowered,-1,-1);
+			if (sym.label == nullptr)
+			{
+				Logger::printError(Logger::Error,L"Invalid label name \"%s\"",sym.name);
+				error = true;
+				continue;
+			}
+
+			if (sym.label->isDefined())
+			{
+				Logger::printError(Logger::Error,L"Label \"%s\" already defined",sym.name);
+				error = true;
+				continue;
+			}
+
+			RelocationData data;
+			data.symbolAddress = sym.relativeAddress;
+			relocator->setSymbolAddress(data,sym.relativeAddress,sym.type);
+
+			sym.relativeAddress = data.symbolAddress;
+			sym.label->setInfo(data.targetSymbolInfo);
+			sym.label->setIsData(sym.type == STT_OBJECT);
+			sym.label->setUpdateInfo(false);
+
+			sym.label->setValue(0);
+			sym.label->setDefined(true);
+			sym.label->setOriginalName(sym.name);
+		}
+	}
+
+	return !error;
+}
+
+std::unique_ptr<CAssemblerCommand> ElfRelocator::generateCtor(const std::wstring& ctorName)
+{
+	std::unique_ptr<CAssemblerCommand> content = relocator->generateCtorStub(ctors);
+
+	auto func = ::make_unique<CDirectiveFunction>(ctorName,ctorName);
+	func->setContent(std::move(content));
+	return func;
+}
+
+void ElfRelocator::loadRelocation(Elf32_Rel& rel, ByteArray& data, int offset, Endianness endianness)
+{
+	rel.r_offset = data.getDoubleWord(offset + 0x00, endianness);
+	rel.r_info   = data.getDoubleWord(offset + 0x04, endianness);
+}
+
+bool ElfRelocator::relocateFile(ElfRelocatorFile& file, int64_t& relocationAddress)
+{
+	ElfFile* elf = file.elf;
+	int64_t start = relocationAddress;
+
+	// calculate address for each section
+	std::map<int64_t,int64_t> relocationOffsets;
+	for (ElfRelocatorSection& entry: file.sections)
+	{
+		ElfSection* section = entry.section;
+		size_t index = entry.index;
+		int size = section->getSize();
+
+		while (relocationAddress % section->getAlignment())
+			relocationAddress++;
+
+		if (entry.label != nullptr)
+			entry.label->setValue(relocationAddress);
+
+		relocationOffsets[index] = relocationAddress;
+		relocationAddress += size;
+	}
+
+	size_t dataStart = outputData.size();
+	outputData.reserveBytes((size_t)(relocationAddress-start));
+
+	// load sections
+	bool error = false;
+	for (ElfRelocatorSection& entry: file.sections)
+	{
+		ElfSection* section = entry.section;
+		size_t index = entry.index;
+
+		if (section->getType() == SHT_NOBITS)
+		{
+			// reserveBytes initialized the data to 0 already
+			continue;
+		}
+
+		ByteArray sectionData = section->getData();
+
+		// relocate if necessary
+		ElfSection* relSection = entry.relSection;
+		if (relSection != nullptr)
+		{
+			std::vector<RelocationAction> relocationActions;
+			for (unsigned int relOffset = 0; relOffset < relSection->getSize(); relOffset += sizeof(Elf32_Rel))
+			{
+				Elf32_Rel rel;
+				loadRelocation(rel, relSection->getData(), relOffset, elf->getEndianness());
+				int pos = rel.r_offset;
+
+				if (relocator->isDummyRelocationType(rel.getType()))
+					continue;
+
+				int symNum = rel.getSymbolNum();
+				if (symNum <= 0)
+				{
+					Logger::queueError(Logger::Warning,L"Invalid symbol num %06X",symNum);
+					error = true;
+					continue;
+				}
+
+				Elf32_Sym sym;
+				elf->getSymbol(sym, symNum);
+				int symSection = sym.st_shndx;
+
+				RelocationData relData;
+				relData.opcode = sectionData.getDoubleWord(pos, elf->getEndianness());
+				relData.opcodeOffset = pos+relocationOffsets[index];
+				relocator->setSymbolAddress(relData,sym.st_value,sym.st_info & 0xF);
+
+				// externs?
+				if (sym.st_shndx == 0)
+				{
+					if (sym.st_name == 0)
+					{
+						Logger::queueError(Logger::Error, L"Symbol without a name");
+						error = true;
+						continue;
+					}
+
+					std::wstring symName = toWLowercase(elf->getStrTableString(sym.st_name));
+
+					std::shared_ptr<Label> label = Global.symbolTable.getLabel(symName,-1,-1);
+					if (label == nullptr)
+					{
+						Logger::queueError(Logger::Error,L"Invalid external symbol %s",symName);
+						error = true;
+						continue;
+					}
+					if (label->isDefined() == false)
+					{
+						Logger::queueError(Logger::Error,L"Undefined external symbol %s in file %s",symName,file.name);
+						error = true;
+						continue;
+					}
+
+					relData.relocationBase = (unsigned int) label->getValue();
+					relData.targetSymbolType = label->isData() ? STT_OBJECT : STT_FUNC;
+					relData.targetSymbolInfo = label->getInfo();
+				} else {
+					relData.relocationBase = relocationOffsets[symSection]+relData.symbolAddress;
+				}
+
+				std::vector<std::wstring> errors;
+				if (!relocator->relocateOpcode(rel.getType(),relData, relocationActions, errors))
+				{
+					for (const std::wstring& error : errors)
+					{
+						Logger::queueError(Logger::Error, error);
+					}
+					error = true;
+					continue;
+				}
+			}
+
+			// finish any dangling relocations
+			std::vector<std::wstring> errors;
+			if (!relocator->finish(relocationActions, errors))
+			{
+				for (const std::wstring& error : errors)
+				{
+					Logger::queueError(Logger::Error, error);
+				}
+				error = true;
+			}
+
+			// now actually write the relocated values
+			for (const RelocationAction& action : relocationActions)
+			{
+				sectionData.replaceDoubleWord(action.offset-relocationOffsets[index], action.newValue, elf->getEndianness());
+			}
+		}
+
+		size_t arrayStart = (size_t) (dataStart+relocationOffsets[index]-start);
+		memcpy(outputData.data(arrayStart),sectionData.data(),sectionData.size());
+	}
+
+	// now update symbols
+	for (ElfRelocatorSymbol& sym: file.symbols)
+	{
+		int64_t oldAddress = sym.relocatedAddress;
+
+		switch (sym.section)
+		{
+		case SHN_ABS:		// address does not change
+			sym.relocatedAddress = sym.relativeAddress;
+			break;
+		case SHN_COMMON:	// needs to be allocated. relativeAddress gives alignment constraint
+			{
+				int64_t start = relocationAddress;
+
+				while (relocationAddress % sym.relativeAddress)
+					relocationAddress++;
+
+				sym.relocatedAddress = relocationAddress;
+				relocationAddress += sym.size;
+				outputData.reserveBytes((size_t)(relocationAddress-start));
+			}
+			break;
+		default:			// normal relocated symbol
+			sym.relocatedAddress = sym.relativeAddress+relocationOffsets[sym.section];
+			break;
+		}
+
+		if (sym.label != nullptr)
+			sym.label->setValue(sym.relocatedAddress);
+
+		if (oldAddress != sym.relocatedAddress)
+			dataChanged = true;
+	}
+
+	return !error;
+}
+
+bool ElfRelocator::relocate(int64_t& memoryAddress)
+{
+	int oldCrc = getCrc32(outputData.data(),outputData.size());
+	outputData.clear();
+	dataChanged = false;
+
+	bool error = false;
+	int64_t start = memoryAddress;
+
+	for (ElfRelocatorFile& file: files)
+	{
+		if (relocateFile(file,memoryAddress) == false)
+			error = true;
+	}
+
+	int newCrc = getCrc32(outputData.data(),outputData.size());
+	if (oldCrc != newCrc)
+		dataChanged = true;
+
+	memoryAddress -= start;
+	return !error;
+}
+
+void ElfRelocator::writeSymbols(SymbolData& symData) const
+{
+	for (const ElfRelocatorFile& file: files)
+	{
+		for (const ElfRelocatorSymbol& sym: file.symbols)
+		{
+			symData.addLabel(sym.relocatedAddress,sym.name);
+
+			switch (sym.type)
+			{
+			case STT_OBJECT:
+				symData.addData(sym.relocatedAddress,sym.size,SymbolData::Data8);
+				break;
+			case STT_FUNC:
+				symData.startFunction(sym.relocatedAddress);
+				symData.endFunction(sym.relocatedAddress+sym.size);
+				break;
+			}
+		}
+	}
+}
+
+// file: Core/Assembler.cpp
+#include <thread>
+
+void AddFileName(const std::wstring& FileName)
+{
+	Global.FileInfo.FileNum = (int) Global.FileInfo.FileList.size();
+	Global.FileInfo.FileList.push_back(FileName);
+	Global.FileInfo.LineNumber = 0;
+}
+
+bool encodeAssembly(std::unique_ptr<CAssemblerCommand> content, SymbolData& symData, TempData& tempData)
+{
+	bool Revalidate;
+
+#ifdef ARMIPS_ARM
+	Arm.Pass2();
+#endif
+	Mips.Pass2();
+
+	int validationPasses = 0;
+	do	// loop until everything is constant
+	{
+		Global.validationPasses = validationPasses;
+		Logger::clearQueue();
+		Revalidate = false;
+
+		if (validationPasses >= 100)
+		{
+			Logger::queueError(Logger::Error,L"Stuck in infinite validation loop");
+			break;
+		}
+
+		g_fileManager->reset();
+
+#ifdef _DEBUG
+		if (!Logger::isSilent())
+			printf("Validate %d...\n",validationPasses);
+#endif
+
+		if (Global.memoryMode)
+			g_fileManager->openFile(Global.memoryFile,true);
+
+		Revalidate = content->Validate();
+
+#ifdef ARMIPS_ARM
+		Arm.Revalidate();
+#endif
+		Mips.Revalidate();
+
+		if (Global.memoryMode)
+			g_fileManager->closeFile();
+
+		validationPasses++;
+	} while (Revalidate == true);
+
+	Logger::printQueue();
+	if (Logger::hasError() == true)
+	{
+		return false;
+	}
+
+#ifdef _DEBUG
+	if (!Logger::isSilent())
+		printf("Encode...\n");
+#endif
+
+	// and finally encode
+	if (Global.memoryMode)
+		g_fileManager->openFile(Global.memoryFile,false);
+
+	auto writeTempData = [&]()
+	{
+		tempData.start();
+		if (tempData.isOpen())
+			content->writeTempData(tempData);
+		tempData.end();
+	};
+
+	auto writeSymData = [&]()
+	{
+		content->writeSymData(symData);
+		symData.write();
+	};
+
+	// writeTempData, writeSymData and encode all access the same
+	// memory but never change, so they can run in parallel
+	if (Global.multiThreading)
+	{
+		std::thread tempThread(writeTempData);
+		std::thread symThread(writeSymData);
+
+		content->Encode();
+
+		tempThread.join();
+		symThread.join();
+	} else {
+		writeTempData();
+		writeSymData();
+		content->Encode();
+	}
+
+	if (g_fileManager->hasOpenFile())
+	{
+		if (!Global.memoryMode)
+			Logger::printError(Logger::Warning,L"File not closed");
+		g_fileManager->closeFile();
+	}
+
+	return true;
+}
+
+bool runArmips(ArmipsArguments& settings)
+{
+	// initialize and reset global data
+	Global.Section = 0;
+	Global.nocash = false;
+	Global.FileInfo.FileCount = 0;
+	Global.FileInfo.TotalLineCount = 0;
+	Global.relativeInclude = false;
+	Global.validationPasses = 0;
+	Global.multiThreading = true;
+	Arch = &InvalidArchitecture;
+
+	Tokenizer::clearEquValues();
+	Logger::clear();
+	Global.Table.clear();
+	Global.symbolTable.clear();
+
+	Global.FileInfo.FileList.clear();
+	Global.FileInfo.FileCount = 0;
+	Global.FileInfo.TotalLineCount = 0;
+	Global.FileInfo.LineNumber = 0;
+	Global.FileInfo.FileNum = 0;
+
+#ifdef ARMIPS_ARM
+	Arm.clear();
+#endif
+
+	// process settings
+	Parser parser;
+	SymbolData symData;
+	TempData tempData;
+
+	Logger::setSilent(settings.silent);
+	Logger::setErrorOnWarning(settings.errorOnWarning);
+
+	if (!settings.symFileName.empty())
+		symData.setNocashSymFileName(settings.symFileName, settings.symFileVersion);
+
+	if (!settings.tempFileName.empty())
+		tempData.setFileName(settings.tempFileName);
+
+	Token token;
+	for (size_t i = 0; i < settings.equList.size(); i++)
+	{
+		parser.addEquation(token, settings.equList[i].name, settings.equList[i].value);
+	}
+
+	Global.symbolTable.addLabels(settings.labels);
+	for (const LabelDefinition& label : settings.labels)
+	{
+		symData.addLabel(label.value, label.originalName);
+	}
+
+	if (Logger::hasError())
+		return false;
+
+	// run assembler
+	TextFile input;
+	switch (settings.mode)
+	{
+	case ArmipsMode::FILE:
+		Global.memoryMode = false;
+		if (input.open(settings.inputFileName,TextFile::Read) == false)
+		{
+			Logger::printError(Logger::Error,L"Could not open file");
+			return false;
+		}
+		break;
+	case ArmipsMode::MEMORY:
+		Global.memoryMode = true;
+		Global.memoryFile = settings.memoryFile;
+		input.openMemory(settings.content);
+		break;
+	}
+
+	std::unique_ptr<CAssemblerCommand> content = parser.parseFile(input);
+	Logger::printQueue();
+
+	bool result = !Logger::hasError();
+	if (result == true && content != nullptr)
+		result = encodeAssembly(std::move(content), symData, tempData);
+
+	if (g_fileManager->hasOpenFile())
+	{
+		if (!Global.memoryMode)
+			Logger::printError(Logger::Warning,L"File not closed");
+		g_fileManager->closeFile();
+	}
+
+	// return errors
+	if (settings.errorsResult != nullptr)
+	{
+		StringList errors = Logger::getErrors();
+		for (size_t i = 0; i < errors.size(); i++)
+			settings.errorsResult->push_back(errors[i]);
+	}
+
+	return result;
+}
+
+// file: Core/Common.cpp
+#include <sys/stat.h>
+
+FileManager fileManager;
+FileManager* g_fileManager = &fileManager;
+
+tGlobal Global;
+CArchitecture* Arch;
+
+std::wstring getFolderNameFromPath(const std::wstring& src)
+{
+#ifdef _WIN32
+	size_t s = src.find_last_of(L"\\/");
+#else
+	size_t s = src.rfind(L"/");
+#endif
+	if (s == std::wstring::npos)
+	{
+		return L".";
+	}
+
+	return src.substr(0,s);
+}
+
+std::wstring getFullPathName(const std::wstring& path)
+{
+	if (Global.relativeInclude == true)
+	{
+		if (isAbsolutePath(path))
+		{
+			return path;
+		} else {
+			std::wstring source = Global.FileInfo.FileList[Global.FileInfo.FileNum];
+			return getFolderNameFromPath(source) + L"/" + path;
+		}
+	} else {
+		return path;
+	}
+}
+
+bool checkLabelDefined(const std::wstring& labelName, int section)
+{
+	std::shared_ptr<Label> label = Global.symbolTable.getLabel(labelName,Global.FileInfo.FileNum,section);
+	return label->isDefined();
+}
+
+bool checkValidLabelName(const std::wstring& labelName)
+{
+	return Global.symbolTable.isValidSymbolName(labelName);
+}
+
+bool isPowerOfTwo(int64_t n)
+{
+	if (n == 0) return false;
+	return !(n & (n - 1));
+}
+
+// file: Core/Expression.cpp
+
+enum class ExpressionValueCombination
+{
+	II = (int(ExpressionValueType::Integer) << 2) | (int(ExpressionValueType::Integer) << 0),
+	IF = (int(ExpressionValueType::Integer) << 2) | (int(ExpressionValueType::Float)   << 0),
+	FI = (int(ExpressionValueType::Float)   << 2) | (int(ExpressionValueType::Integer) << 0),
+	FF = (int(ExpressionValueType::Float)   << 2) | (int(ExpressionValueType::Float)   << 0),
+	IS = (int(ExpressionValueType::Integer) << 2) | (int(ExpressionValueType::String)  << 0),
+	FS = (int(ExpressionValueType::Float)   << 2) | (int(ExpressionValueType::String)  << 0),
+	SI = (int(ExpressionValueType::String)  << 2) | (int(ExpressionValueType::Integer) << 0),
+	SF = (int(ExpressionValueType::String)  << 2) | (int(ExpressionValueType::Float)   << 0),
+	SS = (int(ExpressionValueType::String)  << 2) | (int(ExpressionValueType::String)  << 0),
+};
+
+ExpressionValueCombination getValueCombination(ExpressionValueType a, ExpressionValueType b)
+{
+	return (ExpressionValueCombination) ((int(a) << 2) | (int(b) << 0));
+}
+
+ExpressionValue ExpressionValue::operator+(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = intValue + other.intValue;
+		break;
+	case ExpressionValueCombination::FI:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue + other.intValue;
+		break;
+	case ExpressionValueCombination::IF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = intValue + other.floatValue;
+		break;
+	case ExpressionValueCombination::FF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue + other.floatValue;
+		break;
+	case ExpressionValueCombination::IS:
+		result.type = ExpressionValueType::String;
+		result.strValue = to_wstring(intValue) + other.strValue;
+		break;
+	case ExpressionValueCombination::FS:
+		result.type = ExpressionValueType::String;
+		result.strValue = to_wstring(floatValue) + other.strValue;
+		break;
+	case ExpressionValueCombination::SI:
+		result.type = ExpressionValueType::String;
+		result.strValue = strValue + to_wstring(other.intValue);
+		break;
+	case ExpressionValueCombination::SF:
+		result.type = ExpressionValueType::String;
+		result.strValue = strValue + to_wstring(other.floatValue);
+		break;
+	case ExpressionValueCombination::SS:
+		result.type = ExpressionValueType::String;
+		result.strValue = strValue + other.strValue;
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator-(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = intValue - other.intValue;
+		break;
+	case ExpressionValueCombination::FI:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue - other.intValue;
+		break;
+	case ExpressionValueCombination::IF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = intValue - other.floatValue;
+		break;
+	case ExpressionValueCombination::FF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue - other.floatValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator*(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = intValue * other.intValue;
+		break;
+	case ExpressionValueCombination::FI:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue * other.intValue;
+		break;
+	case ExpressionValueCombination::IF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = intValue * other.floatValue;
+		break;
+	case ExpressionValueCombination::FF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue * other.floatValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator/(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		if (intValue == INT64_MIN && other.intValue == -1){
+			result.intValue = INT64_MIN;
+			Logger::queueError(Logger::Warning,L"Division overflow in expression");
+			return result;
+		}
+		if (other.intValue == 0)
+		{
+			result.intValue = ~0;
+			Logger::queueError(Logger::Warning,L"Integer division by zero in expression");
+			return result;
+		}
+		result.intValue = intValue / other.intValue;
+		break;
+	case ExpressionValueCombination::FI:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue / other.intValue;
+		break;
+	case ExpressionValueCombination::IF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = intValue / other.floatValue;
+		break;
+	case ExpressionValueCombination::FF:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = floatValue / other.floatValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator%(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		if (intValue == INT64_MIN && other.intValue == -1){
+			result.intValue = 0;
+			Logger::queueError(Logger::Warning,L"Division overflow in expression");
+			return result;
+		}
+		if (other.intValue == 0)
+		{
+			result.intValue = intValue;
+			Logger::queueError(Logger::Warning,L"Integer division by zero in expression");
+			return result;
+		}
+		result.intValue = intValue % other.intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator!() const
+{
+	ExpressionValue result;
+	result.type = ExpressionValueType::Integer;
+
+	if (isFloat())
+		result.intValue = !floatValue;
+	else
+		result.intValue = !intValue;
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator~() const
+{
+	ExpressionValue result;
+
+	if (isInt())
+	{
+		result.type = ExpressionValueType::Integer;
+		result.intValue = ~intValue;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator<<(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = ((uint64_t) intValue) << other.intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator>>(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = ((uint64_t) intValue) >> other.intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+bool ExpressionValue::operator<(const ExpressionValue& other) const
+{
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		return intValue < other.intValue;
+	case ExpressionValueCombination::FI:
+		return floatValue < other.intValue;
+	case ExpressionValueCombination::IF:
+		return intValue < other.floatValue;
+	case ExpressionValueCombination::FF:
+		return floatValue < other.floatValue;
+	case ExpressionValueCombination::SS:
+		return strValue < other.strValue;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool ExpressionValue::operator<=(const ExpressionValue& other) const
+{
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		return intValue <= other.intValue;
+	case ExpressionValueCombination::FI:
+		return floatValue <= other.intValue;
+	case ExpressionValueCombination::IF:
+		return intValue <= other.floatValue;
+	case ExpressionValueCombination::FF:
+		return floatValue <= other.floatValue;
+	case ExpressionValueCombination::SS:
+		return strValue <= other.strValue;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool ExpressionValue::operator>(const ExpressionValue& other) const
+{
+	return other < *this;
+}
+
+bool ExpressionValue::operator>=(const ExpressionValue& other) const
+{
+	return other <= *this;
+}
+
+bool ExpressionValue::operator==(const ExpressionValue& other) const
+{
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		return intValue == other.intValue;
+	case ExpressionValueCombination::FI:
+		return floatValue == other.intValue;
+	case ExpressionValueCombination::IF:
+		return intValue == other.floatValue;
+	case ExpressionValueCombination::FF:
+		return floatValue == other.floatValue;
+	case ExpressionValueCombination::IS:
+		return to_wstring(intValue) == other.strValue;
+	case ExpressionValueCombination::FS:
+		return to_wstring(floatValue) == other.strValue;
+	case ExpressionValueCombination::SI:
+		return strValue == to_wstring(other.intValue);
+	case ExpressionValueCombination::SF:
+		return strValue == to_wstring(other.floatValue);
+	case ExpressionValueCombination::SS:
+		return strValue == other.strValue;
+	}
+
+	return false;
+}
+
+bool ExpressionValue::operator!=(const ExpressionValue& other) const
+{
+	return !(*this == other);
+}
+
+ExpressionValue ExpressionValue::operator&(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = intValue & other.intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator|(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = intValue | other.intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator^(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = intValue ^ other.intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator&&(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	result.type = ExpressionValueType::Integer;
+
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.intValue = intValue && other.intValue;
+		break;
+	case ExpressionValueCombination::FI:
+		result.floatValue = floatValue && other.intValue;
+		break;
+	case ExpressionValueCombination::IF:
+		result.floatValue = intValue && other.floatValue;
+		break;
+	case ExpressionValueCombination::FF:
+		result.floatValue = floatValue && other.floatValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue ExpressionValue::operator||(const ExpressionValue& other) const
+{
+	ExpressionValue result;
+	result.type = ExpressionValueType::Integer;
+
+	switch (getValueCombination(type,other.type))
+	{
+	case ExpressionValueCombination::II:
+		result.intValue = intValue || other.intValue;
+		break;
+	case ExpressionValueCombination::FI:
+		result.floatValue = floatValue || other.intValue;
+		break;
+	case ExpressionValueCombination::IF:
+		result.floatValue = intValue || other.floatValue;
+		break;
+	case ExpressionValueCombination::FF:
+		result.floatValue = floatValue || other.floatValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionInternal::ExpressionInternal()
+{
+	children = nullptr;
+	childrenCount = 0;
+}
+
+ExpressionInternal::~ExpressionInternal()
+{
+	deallocate();
+}
+
+ExpressionInternal::ExpressionInternal(int64_t value)
+	: ExpressionInternal()
+{
+	type = OperatorType::Integer;
+	intValue = value;
+}
+
+ExpressionInternal::ExpressionInternal(double value)
+	: ExpressionInternal()
+{
+	type = OperatorType::Float;
+	floatValue = value;
+}
+
+ExpressionInternal::ExpressionInternal(const std::wstring& value, OperatorType type)
+	: ExpressionInternal()
+{
+	this->type = type;
+	strValue = value;
+
+	switch (type)
+	{
+	case OperatorType::Identifier:
+		fileNum = Global.FileInfo.FileNum;
+		section = Global.Section;
+		break;
+	case OperatorType::String:
+		break;
+	default:
+		break;
+	}
+}
+
+ExpressionInternal::ExpressionInternal(OperatorType op, ExpressionInternal* a,
+	ExpressionInternal* b, ExpressionInternal* c)
+	: ExpressionInternal()
+{
+	type = op;
+	allocate(3);
+
+	children[0] = a;
+	children[1] = b;
+	children[2] = c;
+}
+
+ExpressionInternal::ExpressionInternal(const std::wstring& name, const std::vector<ExpressionInternal*>& parameters)
+	: ExpressionInternal()
+{
+	type = OperatorType::FunctionCall;
+	allocate(parameters.size());
+
+	strValue = name;
+	for (size_t i = 0; i < parameters.size(); i++)
+	{
+		children[i] = parameters[i];
+	}
+}
+
+void ExpressionInternal::allocate(size_t count)
+{
+	deallocate();
+
+	children = new ExpressionInternal*[count];
+	childrenCount = count;
+}
+
+void ExpressionInternal::deallocate()
+{
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		delete children[i];
+	}
+
+	delete[] children;
+	children = nullptr;
+	childrenCount = 0;
+}
+
+void ExpressionInternal::replaceMemoryPos(const std::wstring& identifierName)
+{
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		if (children[i] != nullptr)
+		{
+			children[i]->replaceMemoryPos(identifierName);
+		}
+	}
+
+	if (type == OperatorType::MemoryPos)
+	{
+		type = OperatorType::Identifier;
+		strValue = identifierName;
+		fileNum = Global.FileInfo.FileNum;
+		section = Global.Section;
+	}
+}
+
+bool ExpressionInternal::checkParameterCount(size_t minParams, size_t maxParams)
+{
+	if (minParams > childrenCount)
+	{
+		Logger::queueError(Logger::Error,L"Not enough parameters for \"%s\" (min %d)",strValue,minParams);
+		return false;
+	}
+
+	if (maxParams < childrenCount)
+	{
+		Logger::queueError(Logger::Error,L"Too many parameters for \"%s\" (min %d)",strValue,maxParams);
+		return false;
+	}
+
+	return true;
+}
+
+ExpressionValue ExpressionInternal::executeExpressionFunctionCall(const ExpressionFunctionEntry& entry)
+{
+	// check parameters
+	if (!checkParameterCount(entry.minParams, entry.maxParams))
+		return {};
+
+	// evaluate parameters
+	std::vector<ExpressionValue> params;
+	params.reserve(childrenCount);
+
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		ExpressionValue result = children[i]->evaluate();
+		if (!result.isValid())
+		{
+			Logger::queueError(Logger::Error,L"%s: Invalid parameter %d", strValue, i+1);
+			return result;
+		}
+
+		params.push_back(result);
+	}
+
+	// execute
+	return entry.function(strValue, params);
+}
+
+ExpressionValue ExpressionInternal::executeExpressionLabelFunctionCall(const ExpressionLabelFunctionEntry& entry)
+{
+	// check parameters
+	if (!checkParameterCount(entry.minParams, entry.maxParams))
+		return {};
+
+	// evaluate parameters
+	std::vector<std::shared_ptr<Label>> params;
+	params.reserve(childrenCount);
+
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		ExpressionInternal *exp = children[i];
+		if (!exp || !exp->isIdentifier())
+		{
+			Logger::queueError(Logger::Error,L"%s: Invalid parameter %d, expecting identifier", strValue, i+1);
+			return {};
+		}
+
+		const std::wstring& name = exp->getStringValue();
+		std::shared_ptr<Label> label = Global.symbolTable.getLabel(name,exp->getFileNum(),exp->getSection());
+		params.push_back(label);
+	}
+
+	// execute
+	return entry.function(strValue, params);
+}
+
+ExpressionValue ExpressionInternal::executeFunctionCall()
+{
+	// try expression functions
+	auto expFuncIt = expressionFunctions.find(strValue);
+	if (expFuncIt != expressionFunctions.end())
+		return executeExpressionFunctionCall(expFuncIt->second);
+
+	// try expression label functions
+	auto expLabelFuncIt = expressionLabelFunctions.find(strValue);
+	if (expLabelFuncIt != expressionLabelFunctions.end())
+		return executeExpressionLabelFunctionCall(expLabelFuncIt->second);
+
+	// try architecture specific expression functions
+	auto& archExpressionFunctions = Arch->getExpressionFunctions();
+	expFuncIt = archExpressionFunctions.find(strValue);
+	if (expFuncIt != archExpressionFunctions.end())
+		return executeExpressionFunctionCall(expFuncIt->second);
+
+	// error
+	Logger::queueError(Logger::Error, L"Unknown function \"%s\"", strValue);
+	return {};
+}
+
+bool isExpressionFunctionSafe(const std::wstring& name, bool inUnknownOrFalseBlock)
+{
+	// expression functions may be unsafe, others are safe
+	ExpFuncSafety safety = ExpFuncSafety::Unsafe;
+	bool found = false;
+
+	auto it = expressionFunctions.find(name);
+	if (it != expressionFunctions.end())
+	{
+		safety = it->second.safety;
+		found = true;
+	}
+
+	if (!found)
+	{
+		auto labelIt = expressionLabelFunctions.find(name);
+		if (labelIt != expressionLabelFunctions.end())
+		{
+			safety = labelIt->second.safety;
+			found = true;
+		}
+	}
+
+	if (!found)
+	{
+		auto& archExpressionFunctions = Arch->getExpressionFunctions();
+		it = archExpressionFunctions.find(name);
+		if (it != archExpressionFunctions.end())
+		{
+			safety = it->second.safety;
+			found = true;
+		}
+	}
+
+	if (inUnknownOrFalseBlock && safety == ExpFuncSafety::ConditionalUnsafe)
+		return false;
+
+	return safety != ExpFuncSafety::Unsafe;
+}
+
+bool ExpressionInternal::simplify(bool inUnknownOrFalseBlock)
+{
+	// check if this expression can actually be simplified
+	// without causing side effects
+	switch (type)
+	{
+	case OperatorType::Identifier:
+	case OperatorType::MemoryPos:
+	case OperatorType::ToString:
+		return false;
+	case OperatorType::FunctionCall:
+		if (isExpressionFunctionSafe(strValue, inUnknownOrFalseBlock) == false)
+			return false;
+		break;
+	default:
+		break;
+	}
+
+	// check if the same applies to all children
+	bool canSimplify = true;
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		if (children[i] != nullptr && children[i]->simplify(inUnknownOrFalseBlock) == false)
+			canSimplify = false;
+	}
+
+	// if so, this expression can be evaluated into a constant
+	if (canSimplify)
+	{
+		ExpressionValue value = evaluate();
+
+		switch (value.type)
+		{
+		case ExpressionValueType::Integer:
+			type = OperatorType::Integer;
+			intValue = value.intValue;
+			break;
+		case ExpressionValueType::Float:
+			type = OperatorType::Float;
+			floatValue = value.floatValue;
+			break;
+		case ExpressionValueType::String:
+			type = OperatorType::String;
+			strValue = value.strValue;
+			break;
+		default:
+			type = OperatorType::Invalid;
+			break;
+		}
+
+		deallocate();
+	}
+
+	return canSimplify;
+}
+
+ExpressionValue ExpressionInternal::evaluate()
+{
+	ExpressionValue val;
+
+	std::shared_ptr<Label> label;
+	switch (type)
+	{
+	case OperatorType::Integer:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = intValue;
+		return val;
+	case OperatorType::Float:
+		val.type = ExpressionValueType::Float;
+		val.floatValue = floatValue;
+		return val;
+	case OperatorType::Identifier:
+		label = Global.symbolTable.getLabel(strValue,fileNum,section);
+		if (label == nullptr)
+		{
+			Logger::queueError(Logger::Error,L"Invalid label name \"%s\"",strValue);
+			return val;
+		}
+
+		if (!label->isDefined())
+		{
+			Logger::queueError(Logger::Error,L"Undefined label \"%s\"",label->getName());
+			return val;
+		}
+
+		val.type = ExpressionValueType::Integer;
+		val.intValue = label->getValue();
+		return val;
+	case OperatorType::String:
+		val.type = ExpressionValueType::String;
+		val.strValue = strValue;
+		return val;
+	case OperatorType::MemoryPos:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = g_fileManager->getVirtualAddress();
+		return val;
+	case OperatorType::ToString:
+		val.type = ExpressionValueType::String;
+		val.strValue = children[0]->toString();
+		return val;
+	case OperatorType::Add:
+		return children[0]->evaluate() + children[1]->evaluate();
+	case OperatorType::Sub:
+		return children[0]->evaluate() - children[1]->evaluate();
+	case OperatorType::Mult:
+		return children[0]->evaluate() * children[1]->evaluate();
+	case OperatorType::Div:
+		return children[0]->evaluate() / children[1]->evaluate();
+	case OperatorType::Mod:
+		return children[0]->evaluate() % children[1]->evaluate();
+	case OperatorType::Neg:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = 0;
+		return val - children[0]->evaluate();
+	case OperatorType::LogNot:
+		return !children[0]->evaluate();
+	case OperatorType::BitNot:
+		return ~children[0]->evaluate();
+	case OperatorType::LeftShift:
+		return children[0]->evaluate() << children[1]->evaluate();
+	case OperatorType::RightShift:
+		return children[0]->evaluate() >> children[1]->evaluate();
+	case OperatorType::Less:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = children[0]->evaluate() < children[1]->evaluate();
+		return val;
+	case OperatorType::Greater:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = children[0]->evaluate() > children[1]->evaluate();
+		return val;
+	case OperatorType::LessEqual:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = children[0]->evaluate() <= children[1]->evaluate();
+		return val;
+	case OperatorType::GreaterEqual:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = children[0]->evaluate() >= children[1]->evaluate();
+		return val;
+	case OperatorType::Equal:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = children[0]->evaluate() == children[1]->evaluate();
+		return val;
+	case OperatorType::NotEqual:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = children[0]->evaluate() != children[1]->evaluate();
+		return val;
+	case OperatorType::BitAnd:
+		return children[0]->evaluate() & children[1]->evaluate();
+	case OperatorType::BitOr:
+		return children[0]->evaluate() | children[1]->evaluate();
+	case OperatorType::LogAnd:
+		return children[0]->evaluate() && children[1]->evaluate();
+	case OperatorType::LogOr:
+		return children[0]->evaluate() || children[1]->evaluate();
+	case OperatorType::Xor:
+		return children[0]->evaluate() ^ children[1]->evaluate();
+	case OperatorType::TertiaryIf:
+		val.type = ExpressionValueType::Integer;
+		val.intValue = 0;
+		if (children[0]->evaluate() == val)
+			return children[2]->evaluate();
+		else
+			return children[1]->evaluate();
+	case OperatorType::FunctionCall:
+		return executeFunctionCall();
+	default:
+		return val;
+	}
+}
+
+static std::wstring escapeString(const std::wstring& text)
+{
+	std::wstring result = text;
+	replaceAll(result,LR"(\)",LR"(\\)");
+	replaceAll(result,LR"(")",LR"(\")");
+
+	return formatString(LR"("%s")",text);
+}
+
+std::wstring ExpressionInternal::formatFunctionCall()
+{
+	std::wstring text = strValue + L"(";
+
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		if (i != 0)
+			text += L",";
+		text += children[i]->toString();
+	}
+
+	return text + L")";
+}
+
+std::wstring ExpressionInternal::toString()
+{
+	switch (type)
+	{
+	case OperatorType::Integer:
+		return formatString(L"%d",intValue);
+	case OperatorType::Float:
+		return formatString(L"%g",floatValue);
+	case OperatorType::Identifier:
+		return strValue;
+	case OperatorType::String:
+		return escapeString(strValue);
+	case OperatorType::MemoryPos:
+		return L".";
+	case OperatorType::Add:
+		return formatString(L"(%s + %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Sub:
+		return formatString(L"(%s - %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Mult:
+		return formatString(L"(%s * %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Div:
+		return formatString(L"(%s / %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Mod:
+		return formatString(L"(%s %% %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Neg:
+		return formatString(L"(-%s)",children[0]->toString());
+	case OperatorType::LogNot:
+		return formatString(L"(!%s)",children[0]->toString());
+	case OperatorType::BitNot:
+		return formatString(L"(~%s)",children[0]->toString());
+	case OperatorType::LeftShift:
+		return formatString(L"(%s << %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::RightShift:
+		return formatString(L"(%s >> %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Less:
+		return formatString(L"(%s < %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Greater:
+		return formatString(L"(%s > %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::LessEqual:
+		return formatString(L"(%s <= %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::GreaterEqual:
+		return formatString(L"(%s >= %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Equal:
+		return formatString(L"(%s == %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::NotEqual:
+		return formatString(L"(%s != %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::BitAnd:
+		return formatString(L"(%s & %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::BitOr:
+		return formatString(L"(%s | %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::LogAnd:
+		return formatString(L"(%s && %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::LogOr:
+		return formatString(L"(%s || %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::Xor:
+		return formatString(L"(%s ^ %s)",children[0]->toString(),children[1]->toString());
+	case OperatorType::TertiaryIf:
+		return formatString(L"(%s ? %s : %s)",children[0]->toString(),children[1]->toString(),children[2]->toString());
+	case OperatorType::ToString:
+		return formatString(L"(%c%s)",L'\U000000B0',children[0]->toString());
+	case OperatorType::FunctionCall:
+		return formatFunctionCall();
+	default:
+		return L"";
+	}
+}
+
+Expression::Expression()
+{
+	expression = nullptr;
+	constExpression = true;
+}
+
+void Expression::setExpression(ExpressionInternal* exp, bool inUnknownOrFalseBlock)
+{
+	expression = std::shared_ptr<ExpressionInternal>(exp);
+	if (exp != nullptr)
+		constExpression = expression->simplify(inUnknownOrFalseBlock);
+	else
+		constExpression = true;
+}
+
+ExpressionValue Expression::evaluate()
+{
+	if (expression == nullptr)
+	{
+		ExpressionValue invalid;
+		return invalid;
+	}
+
+	return expression->evaluate();
+}
+
+void Expression::replaceMemoryPos(const std::wstring& identifierName)
+{
+	if (expression != nullptr)
+		expression->replaceMemoryPos(identifierName);
+}
+
+Expression createConstExpression(int64_t value)
+{
+	Expression exp;
+	ExpressionInternal* num = new ExpressionInternal(value);
+	exp.setExpression(num,false);
+	return exp;
+}
+
+// file: Core/ExpressionFunctions.cpp
+#if ARMIPS_REGEXP
+#include <regex>
+#endif
+
+bool getExpFuncParameter(const std::vector<ExpressionValue>& parameters, size_t index, int64_t& dest,
+	const std::wstring& funcName, bool optional)
+{
+	if (optional && index >= parameters.size())
+		return true;
+
+	if (index >= parameters.size() || parameters[index].isInt() == false)
+	{
+		Logger::queueError(Logger::Error,L"Invalid parameter %d for %s: expecting integer",index+1,funcName);
+		return false;
+	}
+
+	dest = parameters[index].intValue;
+	return true;
+}
+
+bool getExpFuncParameter(const std::vector<ExpressionValue>& parameters, size_t index, const std::wstring*& dest,
+	const std::wstring& funcName, bool optional)
+{
+	if (optional && index >= parameters.size())
+		return true;
+
+	if (index >= parameters.size() || parameters[index].isString() == false)
+	{
+		Logger::queueError(Logger::Error,L"Invalid parameter %d for %s: expecting string",index+1,funcName);
+		return false;
+	}
+
+	dest = &parameters[index].strValue;
+	return true;
+}
+
+#define GET_PARAM(params,index,dest) \
+	if (getExpFuncParameter(params,index,dest,funcName,false) == false) \
+		return ExpressionValue();
+#define GET_OPTIONAL_PARAM(params,index,dest,defaultValue) \
+	dest = defaultValue; \
+	if (getExpFuncParameter(params,index,dest,funcName,true) == false) \
+		return ExpressionValue();
+
+
+ExpressionValue expFuncVersion(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	int64_t value = ARMIPS_VERSION_MAJOR*1000 + ARMIPS_VERSION_MINOR*10 + ARMIPS_VERSION_REVISION;
+	return ExpressionValue(value);
+}
+
+ExpressionValue expFuncEndianness(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+	result.type = ExpressionValueType::String;
+
+	switch (g_fileManager->getEndianness())
+	{
+	case Endianness::Little:
+		return ExpressionValue(L"little");
+	case Endianness::Big:
+		return ExpressionValue(L"big");
+	}
+
+	return ExpressionValue();
+}
+
+ExpressionValue expFuncOutputName(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	std::shared_ptr<AssemblerFile> file = g_fileManager->getOpenFile();
+	if (file == nullptr)
+	{
+		Logger::queueError(Logger::Error,L"outputName: no file opened");
+		return ExpressionValue();
+	}
+
+	std::wstring value = file->getFileName();
+	return ExpressionValue(value);
+}
+
+ExpressionValue expFuncFileExists(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* fileName;
+	GET_PARAM(parameters,0,fileName);
+
+	std::wstring fullName = getFullPathName(*fileName);
+	return ExpressionValue(fileExists(fullName) ? INT64_C(1) : INT64_C(0));
+}
+
+ExpressionValue expFuncFileSize(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* fileName;
+	GET_PARAM(parameters,0,fileName);
+
+	std::wstring fullName = getFullPathName(*fileName);
+	return ExpressionValue((int64_t) fileSize(fullName));
+}
+
+ExpressionValue expFuncToString(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+
+	switch (parameters[0].type)
+	{
+	case ExpressionValueType::String:
+		result.strValue = parameters[0].strValue;
+		break;
+	case ExpressionValueType::Integer:
+		result.strValue = formatString(L"%d",parameters[0].intValue);
+		break;
+	case ExpressionValueType::Float:
+		result.strValue = formatString(L"%#.17g",parameters[0].floatValue);
+		break;
+	default:
+		return result;
+	}
+
+	result.type = ExpressionValueType::String;
+	return result;
+}
+
+ExpressionValue expFuncToHex(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	int64_t value, digits;
+	GET_PARAM(parameters,0,value);
+	GET_OPTIONAL_PARAM(parameters,1,digits,8);
+
+	return ExpressionValue(formatString(L"%0*X",digits,value));
+}
+
+ExpressionValue expFuncInt(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+
+	switch (parameters[0].type)
+	{
+	case ExpressionValueType::Integer:
+		result.intValue = parameters[0].intValue;
+		break;
+	case ExpressionValueType::Float:
+		result.intValue = (int64_t) parameters[0].floatValue;
+		break;
+	default:
+		return result;
+	}
+
+	result.type = ExpressionValueType::Integer;
+	return result;
+}
+
+ExpressionValue expFuncRound(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+
+	switch (parameters[0].type)
+	{
+	case ExpressionValueType::Integer:
+		result.intValue = parameters[0].intValue;
+		break;
+	case ExpressionValueType::Float:
+		result.intValue = llround(parameters[0].floatValue);
+		break;
+	default:
+		return result;
+	}
+
+	result.type = ExpressionValueType::Integer;
+	return result;
+}
+
+ExpressionValue expFuncFloat(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+
+	switch (parameters[0].type)
+	{
+	case ExpressionValueType::Integer:
+		result.floatValue = (double) parameters[0].intValue;
+		break;
+	case ExpressionValueType::Float:
+		result.floatValue = parameters[0].floatValue;
+		break;
+	default:
+		return result;
+	}
+
+	result.type = ExpressionValueType::Float;
+	return result;
+}
+
+ExpressionValue expFuncFrac(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+	double intPart;
+
+	switch (parameters[0].type)
+	{
+	case ExpressionValueType::Float:
+		result.floatValue = modf(parameters[0].floatValue,&intPart);
+		break;
+	default:
+		return result;
+	}
+
+	result.type = ExpressionValueType::Float;
+	return result;
+}
+
+ExpressionValue expFuncMin(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+	double floatMin, floatCur;
+	int64_t intMin, intCur;
+
+	floatCur = floatMin = std::numeric_limits<double>::max();
+	intCur = intMin = std::numeric_limits<int64_t>::max();
+	bool isInt = true;
+
+	for (size_t i = 0; i < parameters.size(); i++)
+	{
+		switch (parameters[i].type)
+		{
+		case ExpressionValueType::Integer:
+			intCur = parameters[i].intValue;
+			floatCur = (double)parameters[i].intValue;
+			break;
+		case ExpressionValueType::Float:
+			floatCur = parameters[i].floatValue;
+			isInt = false;
+			break;
+		default:
+			return result;
+		}
+
+		if (intCur < intMin)
+			intMin = intCur;
+		if (floatCur < floatMin)
+			floatMin = floatCur;
+	}
+
+	if (isInt)
+	{
+		result.intValue = intMin;
+		result.type = ExpressionValueType::Integer;
+	}
+	else
+	{
+		result.floatValue = floatMin;
+		result.type = ExpressionValueType::Float;
+	}
+
+	return result;
+}
+
+ExpressionValue expFuncMax(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+	double floatMax, floatCur;
+	int64_t intMax, intCur;
+
+	floatCur = floatMax = std::numeric_limits<double>::min();
+	intCur = intMax = std::numeric_limits<int64_t>::min();
+	bool isInt = true;
+
+	for (size_t i = 0; i < parameters.size(); i++)
+	{
+		switch (parameters[i].type)
+		{
+		case ExpressionValueType::Integer:
+			intCur = parameters[i].intValue;
+			floatCur = (double)parameters[i].intValue;
+			break;
+		case ExpressionValueType::Float:
+			floatCur = parameters[i].floatValue;
+			isInt = false;
+			break;
+		default:
+			return result;
+		}
+
+		if (intCur > intMax)
+			intMax = intCur;
+		if (floatCur > floatMax)
+			floatMax = floatCur;
+	}
+
+	if (isInt)
+	{
+		result.intValue = intMax;
+		result.type = ExpressionValueType::Integer;
+	}
+	else
+	{
+		result.floatValue = floatMax;
+		result.type = ExpressionValueType::Float;
+	}
+
+	return result;
+}
+
+ExpressionValue expFuncAbs(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	ExpressionValue result;
+
+	switch (parameters[0].type)
+	{
+	case ExpressionValueType::Float:
+		result.type = ExpressionValueType::Float;
+		result.floatValue = fabs(parameters[0].floatValue);
+		break;
+	case ExpressionValueType::Integer:
+		result.type = ExpressionValueType::Integer;
+		result.intValue = parameters[0].intValue >= 0 ?
+			parameters[0].intValue : -parameters[0].intValue;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+ExpressionValue expFuncStrlen(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* source;
+	GET_PARAM(parameters,0,source);
+
+	return ExpressionValue((int64_t)source->size());
+}
+
+ExpressionValue expFuncSubstr(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	int64_t start, count;
+	const std::wstring* source;
+
+	GET_PARAM(parameters,0,source);
+	GET_PARAM(parameters,1,start);
+	GET_PARAM(parameters,2,count);
+
+	return ExpressionValue(source->substr((size_t)start,(size_t)count));
+}
+
+#if ARMIPS_REGEXP
+ExpressionValue expFuncRegExMatch(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* source;
+	const std::wstring* regexString;
+
+	GET_PARAM(parameters,0,source);
+	GET_PARAM(parameters,1,regexString);
+
+#if ARMIPS_EXCEPTIONS
+	try
+	{
+#endif
+		std::wregex regex(*regexString);
+		bool found = std::regex_match(*source,regex);
+		return ExpressionValue(found ? INT64_C(1) : INT64_C(0));
+#if ARMIPS_EXCEPTIONS
+	} catch (std::regex_error&)
+	{
+		Logger::queueError(Logger::Error,L"Invalid regular expression");
+		return ExpressionValue();
+	}
+#endif
+}
+
+ExpressionValue expFuncRegExSearch(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* source;
+	const std::wstring* regexString;
+
+	GET_PARAM(parameters,0,source);
+	GET_PARAM(parameters,1,regexString);
+
+#if ARMIPS_EXCEPTIONS
+	try
+	{
+#endif
+		std::wregex regex(*regexString);
+		bool found = std::regex_search(*source,regex);
+		return ExpressionValue(found ? INT64_C(1) : INT64_C(0));
+#if ARMIPS_EXCEPTIONS
+	} catch (std::regex_error&)
+	{
+		Logger::queueError(Logger::Error,L"Invalid regular expression");
+		return ExpressionValue();
+	}
+#endif
+}
+
+ExpressionValue expFuncRegExExtract(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* source;
+	const std::wstring* regexString;
+	int64_t matchIndex;
+
+	GET_PARAM(parameters,0,source);
+	GET_PARAM(parameters,1,regexString);
+	GET_OPTIONAL_PARAM(parameters,2,matchIndex,0);
+
+#if ARMIPS_EXCEPTIONS
+	try
+	{
+#endif
+		std::wregex regex(*regexString);
+		std::wsmatch result;
+		bool found = std::regex_search(*source,result,regex);
+		if (found == false || (size_t)matchIndex >= result.size())
+		{
+			Logger::queueError(Logger::Error,L"Capture group index %d does not exist",matchIndex);
+			return ExpressionValue();
+		}
+
+		return ExpressionValue(result[(size_t)matchIndex].str());
+#if ARMIPS_EXCEPTIONS
+	} catch (std::regex_error&)
+	{
+		Logger::queueError(Logger::Error,L"Invalid regular expression");
+		return ExpressionValue();
+	}
+#endif
+}
+#endif
+
+ExpressionValue expFuncFind(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	int64_t start;
+	const std::wstring* source;
+	const std::wstring* value;
+
+	GET_PARAM(parameters,0,source);
+	GET_PARAM(parameters,1,value);
+	GET_OPTIONAL_PARAM(parameters,2,start,0);
+
+	size_t pos = source->find(*value,(size_t)start);
+	return ExpressionValue(pos == std::wstring::npos ? INT64_C(-1) : (int64_t) pos);
+}
+
+ExpressionValue expFuncRFind(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	int64_t start;
+	const std::wstring* source;
+	const std::wstring* value;
+
+	GET_PARAM(parameters,0,source);
+	GET_PARAM(parameters,1,value);
+	GET_OPTIONAL_PARAM(parameters,2,start,std::wstring::npos);
+
+	size_t pos = source->rfind(*value,(size_t)start);
+	return ExpressionValue(pos == std::wstring::npos ? INT64_C(-1) : (int64_t) pos);
+}
+
+
+template<typename T>
+ExpressionValue expFuncRead(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* fileName;
+	int64_t pos;
+
+	GET_PARAM(parameters,0,fileName);
+	GET_OPTIONAL_PARAM(parameters,1,pos,0);
+
+	std::wstring fullName = getFullPathName(*fileName);
+
+	BinaryFile file;
+	if (file.open(fullName,BinaryFile::Read) == false)
+	{
+		Logger::queueError(Logger::Error,L"Could not open %s",*fileName);
+		return ExpressionValue();
+	}
+
+	file.setPos(pos);
+
+	T buffer;
+	if (file.read(&buffer, sizeof(T)) != sizeof(T))
+	{
+		Logger::queueError(Logger::Error, L"Failed to read %d byte(s) from offset 0x%08X of %s", sizeof(T), pos, *fileName);
+		return ExpressionValue();
+	}
+
+	return ExpressionValue((int64_t) buffer);
+}
+
+ExpressionValue expFuncReadAscii(const std::wstring& funcName, const std::vector<ExpressionValue>& parameters)
+{
+	const std::wstring* fileName;
+	int64_t start;
+	int64_t length;
+
+	GET_PARAM(parameters,0,fileName);
+	GET_OPTIONAL_PARAM(parameters,1,start,0);
+	GET_OPTIONAL_PARAM(parameters,2,length,0);
+
+	std::wstring fullName = getFullPathName(*fileName);
+
+	int64_t totalSize = fileSize(fullName);
+	if (length == 0 || start+length > totalSize)
+		length = totalSize-start;
+
+	BinaryFile file;
+	if (file.open(fullName,BinaryFile::Read) == false)
+	{
+		Logger::queueError(Logger::Error,L"Could not open %s",fileName);
+		return ExpressionValue();
+	}
+
+	file.setPos((long)start);
+
+	unsigned char* buffer = new unsigned char[length];
+	file.read(buffer,(size_t)length);
+
+	std::wstring result;
+	for (size_t i = 0; i < (size_t) length; i++)
+	{
+		if (buffer[i] < 0x20 || buffer[i] > 0x7F)
+		{
+			Logger::printError(Logger::Warning,L"%s: Non-ASCII character",funcName);
+			return ExpressionValue();
+		}
+
+		result += (wchar_t) buffer[i];
+	}
+
+	delete[] buffer;
+
+	return ExpressionValue(result);
+}
+
+ExpressionValue expLabelFuncDefined(const std::wstring &funcName, const std::vector<std::shared_ptr<Label>> &parameters)
+{
+	if (parameters.empty() || !parameters.front())
+	{
+		Logger::queueError(Logger::Error,L"%s: Invalid parameters", funcName);
+		return ExpressionValue();
+	}
+
+	return ExpressionValue(parameters.front()->isDefined() ? INT64_C(1) : INT64_C(0));
+}
+
+ExpressionValue expLabelFuncOrg(const std::wstring& funcName, const std::vector<std::shared_ptr<Label>>& parameters)
+{
+	// return physical address of label parameter
+	if (parameters.size())
+	{
+		Label* label = parameters.front().get();
+		if (!label)
+			return ExpressionValue();
+
+		return ExpressionValue(parameters.front()->getValue());
+	}
+
+	if(!g_fileManager->hasOpenFile())
+	{
+		Logger::queueError(Logger::Error,L"%s: no file opened", funcName);
+		return ExpressionValue();
+	}
+	return ExpressionValue(g_fileManager->getVirtualAddress());
+}
+
+ExpressionValue expLabelFuncOrga(const std::wstring& funcName, const std::vector<std::shared_ptr<Label>>& parameters)
+{
+	// return physical address of label parameter
+	if (parameters.size())
+	{
+		Label* label = parameters.front().get();
+		if (!label)
+			return ExpressionValue();
+
+		if (!label->hasPhysicalValue())
+		{
+			Logger::queueError(Logger::Error,L"%s: parameter %s has no physical address", funcName, label->getName() );
+			return ExpressionValue();
+		}
+
+		return ExpressionValue(parameters.front()->getPhysicalValue());
+	}
+
+	// return current physical address otherwise
+	if(!g_fileManager->hasOpenFile())
+	{
+		Logger::queueError(Logger::Error,L"%s: no file opened", funcName);
+		return ExpressionValue();
+	}
+	return ExpressionValue(g_fileManager->getPhysicalAddress());
+}
+
+ExpressionValue expLabelFuncHeaderSize(const std::wstring& funcName, const std::vector<std::shared_ptr<Label>>& parameters)
+{
+	// return difference between physical and virtual address of label parameter
+	if (parameters.size())
+	{
+		Label* label = parameters.front().get();
+		if (!label)
+			return ExpressionValue();
+
+		if (!label->hasPhysicalValue())
+		{
+			Logger::queueError(Logger::Error,L"%s: parameter %s has no physical address", funcName, label->getName() );
+			return ExpressionValue();
+		}
+
+		return ExpressionValue(label->getValue() - label->getPhysicalValue());
+	}
+
+	if(!g_fileManager->hasOpenFile())
+	{
+		Logger::queueError(Logger::Error,L"headersize: no file opened");
+		return ExpressionValue();
+	}
+	return ExpressionValue(g_fileManager->getHeaderSize());
+}
+
+const ExpressionFunctionMap expressionFunctions = {
+	{ L"version",		{ &expFuncVersion,			0,	0,	ExpFuncSafety::Safe } },
+	{ L"endianness",	{ &expFuncEndianness,		0,	0,	ExpFuncSafety::Unsafe } },
+	{ L"outputname",	{ &expFuncOutputName,		0,	0,	ExpFuncSafety::Unsafe } },
+	{ L"fileexists",	{ &expFuncFileExists,		1,	1,	ExpFuncSafety::Safe } },
+	{ L"filesize",		{ &expFuncFileSize,			1,	1,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"tostring",		{ &expFuncToString,			1,	1,	ExpFuncSafety::Safe } },
+	{ L"tohex",			{ &expFuncToHex,			1,	2,	ExpFuncSafety::Safe } },
+
+	{ L"int",			{ &expFuncInt,				1,	1,	ExpFuncSafety::Safe } },
+	{ L"float",			{ &expFuncFloat,			1,	1,	ExpFuncSafety::Safe } },
+	{ L"frac",			{ &expFuncFrac,				1,	1,	ExpFuncSafety::Safe } },
+	{ L"abs",			{ &expFuncAbs,				1,	1,	ExpFuncSafety::Safe } },
+	{ L"round",			{ &expFuncRound,			1,	1,	ExpFuncSafety::Safe } },
+	{ L"min",			{ &expFuncMin,				1,	std::numeric_limits<size_t>::max(),	ExpFuncSafety::Safe } },
+	{ L"max",			{ &expFuncMax,				1,	std::numeric_limits<size_t>::max(),	ExpFuncSafety::Safe } },
+
+	{ L"strlen",		{ &expFuncStrlen,			1,	1,	ExpFuncSafety::Safe } },
+	{ L"substr",		{ &expFuncSubstr,			3,	3,	ExpFuncSafety::Safe } },
+#if ARMIPS_REGEXP
+	{ L"regex_match",	{ &expFuncRegExMatch,		2,	2,	ExpFuncSafety::Safe } },
+	{ L"regex_search",	{ &expFuncRegExSearch,		2,	2,	ExpFuncSafety::Safe } },
+	{ L"regex_extract",	{ &expFuncRegExExtract,		2,	3,	ExpFuncSafety::Safe } },
+#endif
+	{ L"find",			{ &expFuncFind,				2,	3,	ExpFuncSafety::Safe } },
+	{ L"rfind",			{ &expFuncRFind,			2,	3,	ExpFuncSafety::Safe } },
+
+	{ L"readbyte",		{ &expFuncRead<uint8_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"readu8",		{ &expFuncRead<uint8_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"readu16",		{ &expFuncRead<uint16_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"readu32",		{ &expFuncRead<uint32_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"readu64",		{ &expFuncRead<uint64_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"reads8",		{ &expFuncRead<int8_t>,		1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"reads16",		{ &expFuncRead<int16_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"reads32",		{ &expFuncRead<int32_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"reads64",		{ &expFuncRead<int64_t>,	1,	2,	ExpFuncSafety::ConditionalUnsafe } },
+	{ L"readascii",		{ &expFuncReadAscii,		1,	3,	ExpFuncSafety::ConditionalUnsafe } },
+};
+
+extern const ExpressionLabelFunctionMap expressionLabelFunctions =
+{
+	{ L"defined",    { &expLabelFuncDefined,      1, 1, ExpFuncSafety::Unsafe } },
+	{ L"org",        { &expLabelFuncOrg,          0, 1, ExpFuncSafety::Unsafe } },
+	{ L"orga",       { &expLabelFuncOrga,         0, 1, ExpFuncSafety::Unsafe } },
+	{ L"headersize", { &expLabelFuncHeaderSize,   0, 1, ExpFuncSafety::Unsafe } },
+};
+
+// file: Core/FileManager.cpp
+
+inline uint64_t swapEndianness64(uint64_t value)
+{
+	return ((value & 0xFF) << 56) | ((value & 0xFF00) << 40) | ((value & 0xFF0000) << 24) | ((value & 0xFF000000) << 8) |
+	((value & 0xFF00000000) >> 8) | ((value & 0xFF0000000000) >> 24) |
+	((value & 0xFF000000000000) >> 40) | ((value & 0xFF00000000000000) >> 56);
+}
+
+inline uint32_t swapEndianness32(uint32_t value)
+{
+	return ((value & 0xFF) << 24) | ((value & 0xFF00) << 8) | ((value & 0xFF0000) >> 8) | ((value & 0xFF000000) >> 24);
+}
+
+inline uint16_t swapEndianness16(uint16_t value)
+{
+	return ((value & 0xFF) << 8) | ((value & 0xFF00) >> 8);
+}
+
+
+GenericAssemblerFile::GenericAssemblerFile(const std::wstring& fileName, int64_t headerSize, bool overwrite)
+{
+	this->fileName = fileName;
+	this->headerSize = headerSize;
+	this->originalHeaderSize = headerSize;
+	this->seekPhysical(0);
+	mode = overwrite == true ? Create : Open;
+}
+
+GenericAssemblerFile::GenericAssemblerFile(const std::wstring& fileName, const std::wstring& originalFileName, int64_t headerSize)
+{
+	this->fileName = fileName;
+	this->originalName = originalFileName;
+	this->headerSize = headerSize;
+	this->originalHeaderSize = headerSize;
+	this->seekPhysical(0);
+	mode = Copy;
+}
+
+bool GenericAssemblerFile::open(bool onlyCheck)
+{
+	headerSize = originalHeaderSize;
+	virtualAddress = headerSize;
+
+	if (onlyCheck == false)
+	{
+		// actually open the file
+		bool success;
+		switch (mode)
+		{
+		case Open:
+			success = handle.open(fileName,BinaryFile::ReadWrite);
+			if (success == false)
+			{
+				Logger::printError(Logger::FatalError,L"Could not open file %s",fileName);
+				return false;
+			}
+			return true;
+
+		case Create:
+			success = handle.open(fileName,BinaryFile::Write);
+			if (success == false)
+			{
+				Logger::printError(Logger::FatalError,L"Could not create file %s",fileName);
+				return false;
+			}
+			return true;
+
+		case Copy:
+			success = copyFile(originalName,fileName);
+			if (success == false)
+			{
+				Logger::printError(Logger::FatalError,L"Could not copy file %s",originalName);
+				return false;
+			}
+
+			success = handle.open(fileName,BinaryFile::ReadWrite);
+			if (success == false)
+			{
+				Logger::printError(Logger::FatalError,L"Could not create file %s",fileName);
+				return false;
+			}
+			return true;
+
+		default:
+			return false;
+		}
+	}
+
+	// else only check if it can be done, don't actually do it permanently
+	bool success, exists;
+	BinaryFile temp;
+	switch (mode)
+	{
+	case Open:
+		success = temp.open(fileName,BinaryFile::ReadWrite);
+		if (success == false)
+		{
+			Logger::queueError(Logger::FatalError,L"Could not open file %s",fileName);
+			return false;
+		}
+		temp.close();
+		return true;
+
+	case Create:
+		// if it exists, check if you can open it with read/write access
+		// otherwise open it with write access and remove it afterwards
+		exists = fileExists(fileName);
+		success = temp.open(fileName,exists ? BinaryFile::ReadWrite : BinaryFile::Write);
+		if (success == false)
+		{
+			Logger::queueError(Logger::FatalError,L"Could not create file %s",fileName);
+			return false;
+		}
+		temp.close();
+
+		if (exists == false)
+			deleteFile(fileName);
+
+		return true;
+
+	case Copy:
+		// check original file
+		success = temp.open(originalName,BinaryFile::ReadWrite);
+		if (success == false)
+		{
+			Logger::queueError(Logger::FatalError,L"Could not open file %s",originalName);
+			return false;
+		}
+		temp.close();
+
+		// check new file, same as create
+		exists = fileExists(fileName);
+		success = temp.open(fileName,exists ? BinaryFile::ReadWrite : BinaryFile::Write);
+		if (success == false)
+		{
+			Logger::queueError(Logger::FatalError,L"Could not create file %s",fileName);
+			return false;
+		}
+		temp.close();
+
+		if (exists == false)
+			deleteFile(fileName);
+
+		return true;
+
+	default:
+		return false;
+	};
+
+	return false;
+}
+
+bool GenericAssemblerFile::write(void* data, size_t length)
+{
+	if (isOpen() == false)
+		return false;
+
+	size_t len = handle.write(data,length);
+	virtualAddress += len;
+	return len == length;
+}
+
+bool GenericAssemblerFile::seekVirtual(int64_t virtualAddress)
+{
+	if (virtualAddress - headerSize < 0)
+	{
+		Logger::queueError(Logger::Error,L"Seeking to virtual address with negative physical address");
+		return false;
+	}
+	if (virtualAddress < 0)
+		Logger::queueError(Logger::Warning,L"Seeking to negative virtual address");
+
+	this->virtualAddress = virtualAddress;
+	int64_t physicalAddress = virtualAddress-headerSize;
+
+	if (isOpen())
+		handle.setPos((long)physicalAddress);
+
+	return true;
+}
+
+bool GenericAssemblerFile::seekPhysical(int64_t physicalAddress)
+{
+	if (physicalAddress < 0)
+	{
+		Logger::queueError(Logger::Error,L"Seeking to negative physical address");
+		return false;
+	}
+	if (physicalAddress + headerSize < 0)
+		Logger::queueError(Logger::Warning,L"Seeking to physical address with negative virtual address");
+
+	virtualAddress = physicalAddress+headerSize;
+
+	if (isOpen())
+		handle.setPos((long)physicalAddress);
+
+	return true;
+}
+
+
+
+FileManager::FileManager()
+{
+	// detect own endianness
+	volatile union
+	{
+		uint32_t i;
+		uint8_t c[4];
+	} u;
+	u.c[3] = 0xAA;
+	u.c[2] = 0xBB;
+	u.c[1] = 0xCC;
+	u.c[0] = 0xDD;
+
+	if (u.i == 0xDDCCBBAA)
+		ownEndianness = Endianness::Big;
+	else if (u.i == 0xAABBCCDD)
+		ownEndianness = Endianness::Little;
+	else
+		Logger::printError(Logger::Error,L"Running on unknown endianness");
+
+	reset();
+}
+
+FileManager::~FileManager()
+{
+
+}
+
+void FileManager::reset()
+{
+	activeFile = nullptr;
+	setEndianness(Endianness::Little);
+}
+
+bool FileManager::checkActiveFile()
+{
+	if (activeFile == nullptr)
+	{
+		Logger::queueError(Logger::Error,L"No file opened");
+		return false;
+	}
+	return true;
+}
+
+bool FileManager::openFile(std::shared_ptr<AssemblerFile> file, bool onlyCheck)
+{
+	if (activeFile != nullptr)
+	{
+		Logger::queueError(Logger::Warning,L"File not closed before opening a new one");
+		activeFile->close();
+	}
+
+	activeFile = file;
+	return activeFile->open(onlyCheck);
+}
+
+void FileManager::addFile(std::shared_ptr<AssemblerFile> file)
+{
+	files.push_back(file);
+}
+
+void FileManager::closeFile()
+{
+	if (activeFile == nullptr)
+	{
+		Logger::queueError(Logger::Warning,L"No file opened");
+		return;
+	}
+
+	activeFile->close();
+	activeFile = nullptr;
+}
+
+bool FileManager::write(void* data, size_t length)
+{
+	if (checkActiveFile() == false)
+		return false;
+
+	if (activeFile->isOpen() == false)
+	{
+		Logger::queueError(Logger::Error,L"No file opened");
+		return false;
+	}
+
+	return activeFile->write(data,length);
+}
+
+bool FileManager::writeU8(uint8_t data)
+{
+	return write(&data,1);
+}
+
+bool FileManager::writeU16(uint16_t data)
+{
+	if (endianness != ownEndianness)
+		data = swapEndianness16(data);
+
+	return write(&data,2);
+}
+
+bool FileManager::writeU32(uint32_t data)
+{
+	if (endianness != ownEndianness)
+		data = swapEndianness32(data);
+
+	return write(&data,4);
+}
+
+bool FileManager::writeU64(uint64_t data)
+{
+	if (endianness != ownEndianness)
+		data = swapEndianness64(data);
+
+	return write(&data,8);
+}
+
+int64_t FileManager::getVirtualAddress()
+{
+	if (activeFile == nullptr)
+		return -1;
+	return activeFile->getVirtualAddress();
+}
+
+int64_t FileManager::getPhysicalAddress()
+{
+	if (activeFile == nullptr)
+		return -1;
+	return activeFile->getPhysicalAddress();
+}
+
+int64_t FileManager::getHeaderSize()
+{
+	if (activeFile == nullptr)
+		return -1;
+	return activeFile->getHeaderSize();
+}
+
+bool FileManager::seekVirtual(int64_t virtualAddress)
+{
+	if (checkActiveFile() == false)
+		return false;
+
+	bool result = activeFile->seekVirtual(virtualAddress);
+	if (result && Global.memoryMode)
+	{
+		int sec = Global.symbolTable.findSection(virtualAddress);
+		if (sec != -1)
+			Global.Section = sec;
+	}
+
+	return result;
+}
+
+bool FileManager::seekPhysical(int64_t virtualAddress)
+{
+	if (checkActiveFile() == false)
+		return false;
+	return activeFile->seekPhysical(virtualAddress);
+}
+
+bool FileManager::advanceMemory(size_t bytes)
+{
+	if (checkActiveFile() == false)
+		return false;
+
+	int64_t pos = activeFile->getVirtualAddress();
+	return activeFile->seekVirtual(pos+bytes);
+}
+
+// file: Core/Misc.cpp
+#include <iostream>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+std::vector<Logger::QueueEntry> Logger::queue;
+std::vector<std::wstring> Logger::errors;
+bool Logger::error = false;
+bool Logger::fatalError = false;
+bool Logger::errorOnWarning = false;
+bool Logger::silent = false;
+int Logger::suppressLevel = 0;
+
+std::wstring Logger::formatError(ErrorType type, const wchar_t* text)
+{
+	std::wstring position;
+
+	if (Global.memoryMode == false && Global.FileInfo.FileList.size() > 0)
+	{
+		std::wstring& fileName = Global.FileInfo.FileList[Global.FileInfo.FileNum];
+		position = formatString(L"%s(%d) ",fileName,Global.FileInfo.LineNumber);
+	}
+
+	switch (type)
+	{
+	case Warning:
+		return formatString(L"%swarning: %s",position,text);
+	case Error:
+		return formatString(L"%serror: %s",position,text);
+	case FatalError:
+		return formatString(L"%sfatal error: %s",position,text);
+	case Notice:
+		return formatString(L"%snotice: %s",position,text);
+	}
+
+	return L"";
+}
+
+void Logger::setFlags(ErrorType type)
+{
+	switch (type)
+	{
+	case Warning:
+		if (errorOnWarning)
+			error = true;
+		break;
+	case Error:
+		error = true;
+		break;
+	case FatalError:
+		error = true;
+		fatalError = true;
+		break;
+	case Notice:
+		break;
+	}
+}
+
+void Logger::clear()
+{
+	queue.clear();
+	errors.clear();
+	error = false;
+	fatalError = false;
+	errorOnWarning = false;
+	silent = false;
+}
+
+void Logger::printLine(const std::wstring& text)
+{
+	if (suppressLevel)
+		return;
+
+	std::wcout << text << std::endl;
+
+#if defined(_MSC_VER) && defined(_DEBUG)
+	OutputDebugStringW(text.c_str());
+	OutputDebugStringW(L"\n");
+#endif
+}
+
+void Logger::printLine(const std::string& text)
+{
+	if (suppressLevel)
+		return;
+
+	std::cout << text << std::endl;
+
+#if defined(_MSC_VER) && defined(_DEBUG)
+	OutputDebugStringA(text.c_str());
+	OutputDebugStringA("\n");
+#endif
+}
+
+void Logger::print(const std::wstring& text)
+{
+	if (suppressLevel)
+		return;
+
+	std::wcout << text;
+
+#if defined(_MSC_VER) && defined(_DEBUG)
+	OutputDebugStringW(text.c_str());
+#endif
+}
+
+void Logger::printError(ErrorType type, const std::wstring& text)
+{
+	if (suppressLevel)
+		return;
+
+	std::wstring errorText = formatError(type,text.c_str());
+	errors.push_back(errorText);
+
+	if (!silent)
+		printLine(errorText);
+
+	setFlags(type);
+}
+
+void Logger::printError(ErrorType type, const wchar_t* text)
+{
+	if (suppressLevel)
+		return;
+
+	std::wstring errorText = formatError(type,text);
+	errors.push_back(errorText);
+
+	if (!silent)
+		printLine(errorText);
+
+	setFlags(type);
+}
+
+void Logger::queueError(ErrorType type, const std::wstring& text)
+{
+	if (suppressLevel)
+		return;
+
+	QueueEntry entry;
+	entry.type = type;
+	entry.text = formatError(type,text.c_str());
+	queue.push_back(entry);
+}
+
+void Logger::queueError(ErrorType type, const wchar_t* text)
+{
+	if (suppressLevel)
+		return;
+
+	QueueEntry entry;
+	entry.type = type;
+	entry.text = formatError(type,text);
+	queue.push_back(entry);
+}
+
+void Logger::printQueue()
+{
+	for (size_t i = 0; i < queue.size(); i++)
+	{
+		errors.push_back(queue[i].text);
+
+		if (!silent)
+			printLine(queue[i].text);
+
+		setFlags(queue[i].type);
+	}
+}
+
+void TempData::start()
+{
+	if (file.getFileName().empty() == false)
+	{
+		if (file.open(TextFile::Write) == false)
+		{
+			Logger::printError(Logger::Error,L"Could not open temp file %s.",file.getFileName());
+			return;
+		}
+
+		size_t fileCount = Global.FileInfo.FileList.size();
+		size_t lineCount = Global.FileInfo.TotalLineCount;
+		size_t labelCount = Global.symbolTable.getLabelCount();
+		size_t equCount = Global.symbolTable.getEquationCount();
+
+		file.writeFormat(L"; %d %S included\n",fileCount,fileCount == 1 ? "file" : "files");
+		file.writeFormat(L"; %d %S\n",lineCount,lineCount == 1 ? "line" : "lines");
+		file.writeFormat(L"; %d %S\n",labelCount,labelCount == 1 ? "label" : "labels");
+		file.writeFormat(L"; %d %S\n\n",equCount,equCount == 1 ? "equation" : "equations");
+		for (size_t i = 0; i < fileCount; i++)
+		{
+			file.writeFormat(L"; %S\n",Global.FileInfo.FileList[i]);
+		}
+		file.writeLine("");
+	}
+}
+
+void TempData::end()
+{
+	if (file.isOpen())
+		file.close();
+}
+
+void TempData::writeLine(int64_t memoryAddress, const std::wstring& text)
+{
+	if (file.isOpen())
+	{
+		wchar_t hexbuf[10] = {0};
+		swprintf(hexbuf, 10, L"%08X ", (int32_t) memoryAddress);
+		std::wstring str = hexbuf + text;
+		while (str.size() < 70)
+			str += ' ';
+
+		str += formatString(L"; %S line %d",
+			Global.FileInfo.FileList[Global.FileInfo.FileNum],Global.FileInfo.LineNumber);
+
+		file.writeLine(str);
+	}
+}
+
+// file: Core/SymbolData.cpp
+#include <algorithm>
+
+SymbolData::SymbolData()
+{
+	clear();
+}
+
+void SymbolData::clear()
+{
+	enabled = true;
+	nocashSymFileName.clear();
+	modules.clear();
+	files.clear();
+	currentModule = 0;
+	currentFunction = -1;
+
+	SymDataModule defaultModule;
+	defaultModule.file = nullptr;
+	modules.push_back(defaultModule);
+}
+
+struct NocashSymEntry
+{
+	int64_t address;
+	std::wstring text;
+
+	bool operator<(const NocashSymEntry& other) const
+	{
+		if (address != other.address)
+			return address < other.address;
+		return text < other.text;
+	}
+};
+
+void SymbolData::writeNocashSym()
+{
+	if (nocashSymFileName.empty())
+		return;
+
+	std::vector<NocashSymEntry> entries;
+	for (size_t k = 0; k < modules.size(); k++)
+	{
+		SymDataModule& module = modules[k];
+		for (size_t i = 0; i < module.symbols.size(); i++)
+		{
+			SymDataSymbol& sym = module.symbols[i];
+
+			size_t size = 0;
+			for (size_t f = 0; f < module.functions.size(); f++)
+			{
+				if (module.functions[f].address == sym.address)
+				{
+					size = module.functions[f].size;
+					break;
+				}
+			}
+
+			NocashSymEntry entry;
+			entry.address = sym.address;
+
+			if (size != 0 && nocashSymVersion >= 2)
+				entry.text = formatString(L"%s,%08X",sym.name,size);
+			else
+				entry.text = sym.name;
+
+			if (nocashSymVersion == 1)
+				std::transform(entry.text.begin(), entry.text.end(), entry.text.begin(), ::towlower);
+
+			entries.push_back(entry);
+		}
+
+		for (const SymDataData& data: module.data)
+		{
+			NocashSymEntry entry;
+			entry.address = data.address;
+
+			switch (data.type)
+			{
+			case Data8:
+				entry.text = formatString(L".byt:%04X",data.size);
+				break;
+			case Data16:
+				entry.text = formatString(L".wrd:%04X",data.size);
+				break;
+			case Data32:
+				entry.text = formatString(L".dbl:%04X",data.size);
+				break;
+			case Data64:
+				entry.text = formatString(L".dbl:%04X",data.size);
+				break;
+			case DataAscii:
+				entry.text = formatString(L".asc:%04X",data.size);
+				break;
+			}
+
+			entries.push_back(entry);
+		}
+	}
+
+	std::sort(entries.begin(),entries.end());
+
+	TextFile file;
+	if (file.open(nocashSymFileName,TextFile::Write,TextFile::ASCII) == false)
+	{
+		Logger::printError(Logger::Error,L"Could not open sym file %s.",file.getFileName());
+		return;
+	}
+	file.writeLine(L"00000000 0");
+
+	for (size_t i = 0; i < entries.size(); i++)
+	{
+		file.writeFormat(L"%08X %s\n",entries[i].address,entries[i].text);
+	}
+
+	file.write("\x1A");
+	file.close();
+}
+
+void SymbolData::write()
+{
+	writeNocashSym();
+}
+
+void SymbolData::addLabel(int64_t memoryAddress, const std::wstring& name)
+{
+	if (!enabled)
+		return;
+
+	SymDataSymbol sym;
+	sym.address = memoryAddress;
+	sym.name = name;
+
+	for (SymDataSymbol& symbol: modules[currentModule].symbols)
+	{
+		if (symbol.address == sym.address && symbol.name == sym.name)
+			return;
+	}
+
+	modules[currentModule].symbols.push_back(sym);
+}
+
+void SymbolData::addData(int64_t address, size_t size, DataType type)
+{
+	if (!enabled)
+		return;
+
+	SymDataData data;
+	data.address = address;
+	data.size = size;
+	data.type = type;
+	modules[currentModule].data.insert(data);
+}
+
+size_t SymbolData::addFileName(const std::wstring& fileName)
+{
+	for (size_t i = 0; i < files.size(); i++)
+	{
+		if (files[i] == fileName)
+			return i;
+	}
+
+	files.push_back(fileName);
+	return files.size()-1;
+}
+
+void SymbolData::startModule(AssemblerFile* file)
+{
+	for (size_t i = 0; i < modules.size(); i++)
+	{
+		if (modules[i].file == file)
+		{
+			currentModule = i;
+			return;
+		}
+	}
+
+	SymDataModule module;
+	module.file = file;
+	modules.push_back(module);
+	currentModule = modules.size()-1;
+}
+
+void SymbolData::endModule(AssemblerFile* file)
+{
+	if (modules[currentModule].file != file)
+		return;
+
+	if (currentModule == 0)
+	{
+		Logger::printError(Logger::Error,L"No module opened");
+		return;
+	}
+
+	if (currentFunction != -1)
+	{
+		Logger::printError(Logger::Error,L"Module closed before function end");
+		currentFunction = -1;
+	}
+
+	currentModule = 0;
+}
+
+void SymbolData::startFunction(int64_t address)
+{
+	if (currentFunction != -1)
+	{
+		endFunction(address);
+	}
+
+	currentFunction = modules[currentModule].functions.size();
+
+	SymDataFunction func;
+	func.address = address;
+	func.size = 0;
+	modules[currentModule].functions.push_back(func);
+}
+
+void SymbolData::endFunction(int64_t address)
+{
+	if (currentFunction == -1)
+	{
+		Logger::printError(Logger::Error,L"Not inside a function");
+		return;
+	}
+
+	SymDataFunction& func = modules[currentModule].functions[currentFunction];
+	func.size = (size_t) (address-func.address);
+	currentFunction = -1;
+}
+
+// file: Core/SymbolTable.cpp
+
+const wchar_t validSymbolCharacters[] = L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.";
+
+bool operator<(SymbolKey const& lhs, SymbolKey const& rhs)
+{
+	if (lhs.file != rhs.file)
+		return lhs.file < rhs.file;
+	if (lhs.section != rhs.section)
+		return lhs.section < rhs.section;
+	return lhs.name.compare(rhs.name) < 0;
+}
+
+SymbolTable::SymbolTable()
+{
+	uniqueCount = 0;
+}
+
+SymbolTable::~SymbolTable()
+{
+	clear();
+}
+
+void SymbolTable::clear()
+{
+	symbols.clear();
+	labels.clear();
+	equationsCount = 0;
+	uniqueCount = 0;
+}
+
+void SymbolTable::setFileSectionValues(const std::wstring& symbol, int& file, int& section)
+{
+	if (symbol[0] == '@')
+	{
+		if (symbol[1] != '@')
+		{
+			// static label, @. the section doesn't matter
+			section = -1;
+		} else {
+			// local label, @@. the file doesn't matter
+			file = -1;
+		}
+	} else {
+		// global label. neither file nor section matters
+		file = section = -1;
+	}
+}
+
+std::shared_ptr<Label> SymbolTable::getLabel(const std::wstring& symbol, int file, int section)
+{
+	if (isValidSymbolName(symbol) == false)
+		return nullptr;
+
+	int actualSection = section;
+	setFileSectionValues(symbol,file,section);
+	SymbolKey key = { symbol, file, section };
+
+	// find label, create new one if it doesn't exist
+	auto it = symbols.find(key);
+	if (it == symbols.end())
+	{
+		SymbolInfo value = { LabelSymbol, labels.size() };
+		symbols[key] = value;
+
+		std::shared_ptr<Label> result = std::make_shared<Label>(symbol);
+		if (section == actualSection)
+			result->setSection(section);			// local, set section of parent
+		else
+			result->setSection(actualSection+1);	// global, set section of children
+		labels.push_back(result);
+		return result;
+	}
+
+	// make sure not to match symbols that aren't labels
+	if (it->second.type != LabelSymbol)
+		return nullptr;
+
+	return labels[it->second.index];
+}
+
+bool SymbolTable::symbolExists(const std::wstring& symbol, int file, int section)
+{
+	if (isValidSymbolName(symbol) == false)
+		return false;
+
+	setFileSectionValues(symbol,file,section);
+
+	SymbolKey key = { symbol, file, section };
+	auto it = symbols.find(key);
+	return it != symbols.end();
+}
+
+bool SymbolTable::isValidSymbolName(const std::wstring& symbol)
+{
+	size_t size = symbol.size();
+	size_t start = 0;
+
+	// don't match empty names
+	if (size == 0 || symbol.compare(L"@") == 0 || symbol.compare(L"@@") == 0)
+		return false;
+
+	if (symbol[0] == '@')
+	{
+		start++;
+		if (size > 1 && symbol[1] == '@')
+			start++;
+	}
+
+	if (symbol[start] >= '0' && symbol[start] <= '9')
+		return false;
+
+	for (size_t i = start; i < size; i++)
+	{
+		if (wcschr(validSymbolCharacters,symbol[i]) == nullptr)
+			return false;
+	}
+
+	return true;
+}
+
+bool SymbolTable::isValidSymbolCharacter(wchar_t character, bool first)
+{
+	if ((character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z')) return true;
+	if (!first && (character >= '0' && character <= '9')) return true;
+	if (character == '_' || character == '.') return true;
+	if (character == '@') return true;
+	return false;
+}
+
+bool SymbolTable::addEquation(const std::wstring& name, int file, int section, size_t referenceIndex)
+{
+	if (isValidSymbolName(name) == false)
+		return false;
+
+	if (symbolExists(name,file,section))
+		return false;
+
+	setFileSectionValues(name,file,section);
+
+	SymbolKey key = { name, file, section };
+	SymbolInfo value = { EquationSymbol, referenceIndex };
+	symbols[key] = value;
+
+	equationsCount++;
+	return true;
+}
+
+bool SymbolTable::findEquation(const std::wstring& name, int file, int section, size_t& dest)
+{
+	setFileSectionValues(name,file,section);
+
+	SymbolKey key = { name, file, section };
+	auto it = symbols.find(key);
+	if (it == symbols.end() || it->second.type != EquationSymbol)
+		return false;
+
+	dest = it->second.index;
+	return true;
+}
+
+// TODO: better
+std::wstring SymbolTable::getUniqueLabelName(bool local)
+{
+	std::wstring name = formatString(L"__armips_label_%08x__",uniqueCount++);
+	if (local)
+		name = L"@@" + name;
+
+	generatedLabels.insert(name);
+	return name;
+}
+
+void SymbolTable::addLabels(const std::vector<LabelDefinition>& labels)
+{
+	for (const LabelDefinition& def: labels)
+	{
+		if (!isValidSymbolName(def.name))
+			continue;
+
+		std::shared_ptr<Label> label = getLabel(def.name,Global.FileInfo.FileNum,Global.Section);
+		if (label == nullptr)
+			continue;
+
+		label->setOriginalName(def.originalName);
+
+		if (isLocalSymbol(def.name) == false)
+			Global.Section++;
+
+		label->setDefined(true);
+		label->setValue(def.value);
+	}
+}
+
+int SymbolTable::findSection(int64_t address)
+{
+	int64_t smallestBefore = -1;
+	int64_t smallestDiff = 0x7FFFFFFF;
+
+	for (auto& lab: labels)
+	{
+		int diff = address-lab->getValue();
+		if (diff >= 0 && diff < smallestDiff)
+		{
+			smallestDiff = diff;
+			smallestBefore = lab->getSection();
+		}
+	}
+
+	return smallestBefore;
 }
 
 // file: Main/main.cpp

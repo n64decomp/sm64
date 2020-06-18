@@ -13,7 +13,7 @@ ALIGNED8 static const u8 exclamation_box_seg8_texture_08012E28[] = {
 
 // 0x08013628
 ALIGNED8 static const u8 exclamation_box_seg8_texture_08013628[] = {
-#include "actors/exclamation_box/vanish_cap_box_sides.rgba16.inc.c"
+#include "actors/exclamation_box/vanish_cap_box_side.rgba16.inc.c"
 };
 
 // 0x08014628
@@ -33,7 +33,7 @@ ALIGNED8 static const u8 exclamation_box_seg8_texture_08015E28[] = {
 
 // 0x08016628
 ALIGNED8 static const u8 exclamation_box_seg8_texture_08016628[] = {
-#include "actors/exclamation_box/wing_cap_box_sides.rgba16.inc.c"
+#include "actors/exclamation_box/wing_cap_box_side.rgba16.inc.c"
 };
 
 // 0x08017628

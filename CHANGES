@@ -1,3 +1,10 @@
+Refresh #10.1
+1.) Diff update (#1033)
+2.) Fix texture dimensions for exclamation boxes (#1034)
+3.) Fix armips compilation on Windows by changing order of inclusion files (#1035)
+4.) Embed libaudiofile into the repo as a single file (#1036)
+5.) Fix some tools issues found while compiling on MSYS2 (#1037)
+
 Refresh #10
 1.) GCC 9 noreturn UB fixes (#961)
 2.) List supported binutils variants in README.md (#960)
