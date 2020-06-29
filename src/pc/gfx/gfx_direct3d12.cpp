@@ -682,7 +682,7 @@ static void gfx_direct3d12_init(void ) {
     // Load d3d12.dll
     d3d.d3d12_module = LoadLibraryW(L"d3d12.dll");
     if (d3d.d3d12_module == nullptr) {
-        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()), gfx_dxgi_get_h_wnd(), "d3d12.dll not found");
+        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()), gfx_dxgi_get_h_wnd(), "d3d12.dll could not be loaded");
     }
     d3d.D3D12CreateDevice = (PFN_D3D12_CREATE_DEVICE)GetProcAddress(d3d.d3d12_module, "D3D12CreateDevice");
 #if DEBUG_D3D
@@ -692,7 +692,7 @@ static void gfx_direct3d12_init(void ) {
     // Load D3DCompiler_47.dll
     d3d.d3dcompiler_module = LoadLibraryW(L"D3DCompiler_47.dll");
     if (d3d.d3dcompiler_module == nullptr) {
-        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()), gfx_dxgi_get_h_wnd(), "D3DCompiler_47.dll not found");
+        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()), gfx_dxgi_get_h_wnd(), "D3DCompiler_47.dll could not be loaded");
     }
     d3d.D3DCompile = (pD3DCompile)GetProcAddress(d3d.d3dcompiler_module, "D3DCompile");
     
