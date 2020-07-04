@@ -13,6 +13,11 @@
 #include "shadow.h"
 #include "sm64.h"
 
+#ifndef TARGET_N64
+// Avoid Z-fighting
+#define find_floor_height_and_data 0.4 + find_floor_height_and_data
+#endif
+
 /**
  * @file shadow.c
  * This file implements a self-contained subsystem used to draw shadows.
