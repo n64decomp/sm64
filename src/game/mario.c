@@ -1550,8 +1550,7 @@ void sink_mario_in_quicksand(struct MarioState *m) {
     struct Object *o = m->marioObj;
 
     if (o->header.gfx.throwMatrix) {
-        // TODO: throwMatrix should probably be an actual matrix pointer
-        *(f32 *) ((u8 *) o->header.gfx.throwMatrix + 0x34) -= m->quicksandDepth;
+        (*o->header.gfx.throwMatrix)[3][1] -= m->quicksandDepth;
     }
 
     o->header.gfx.pos[1] -= m->quicksandDepth;

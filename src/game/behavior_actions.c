@@ -19,6 +19,7 @@
 #include "game_init.h"
 #include "ingame_menu.h"
 #include "interaction.h"
+#include "level_misc_macros.h"
 #include "level_table.h"
 #include "level_update.h"
 #include "levels/bob/header.h"
@@ -173,7 +174,7 @@ Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat
     if (run == TRUE) {
         sp1C = (struct Object *) gCurGraphNodeObject;
         if (sp1C == gMarioObject && sp1C->prevObj != NULL) {
-            create_transformation_from_matrices(sp20, mtx, gCurGraphNodeCamera->matrixPtr);
+            create_transformation_from_matrices(sp20, mtx, *gCurGraphNodeCamera->matrixPtr);
             obj_update_pos_from_parent_transformation(sp20, sp1C->prevObj);
             obj_set_gfx_pos_from_pos(sp1C->prevObj);
         }

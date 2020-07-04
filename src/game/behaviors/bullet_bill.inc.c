@@ -45,7 +45,7 @@ void bullet_bill_act_2(void) {
             cur_obj_play_sound_2(SOUND_OBJ_POUNDING_CANNON);
             cur_obj_shake_screen(SHAKE_POS_SMALL);
         }
-        if (o->oTimer > 150 || o->oMoveFlags & 0x200) {
+        if (o->oTimer > 150 || o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
             o->oAction = 3;
             spawn_mist_particles();
         }

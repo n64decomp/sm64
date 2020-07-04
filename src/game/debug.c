@@ -554,7 +554,7 @@ void debug_print_obj_move_flags(void) {
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_IN_AIR) {
         print_debug_top_down_objectinfo("SKY     %x", gCurrentObject->oMoveFlags);
     }
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_8) {
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_OUT_SCOPE) {
         print_debug_top_down_objectinfo("OUT SCOPE %x", gCurrentObject->oMoveFlags);
     }
 #endif

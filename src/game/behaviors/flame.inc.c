@@ -34,7 +34,7 @@ void bhv_small_piranha_flame_loop(void) {
         obj_check_attacks(&sPiranhaPlantFireHitbox, o->oAction);
         o->oSmallPiranhaFlameUnk104 += o->oSmallPiranhaFlameUnkF4;
 
-        if (o->oSmallPiranhaFlameUnk104 > 1500.0f || (o->oMoveFlags & 0x00000278)) {
+        if (o->oSmallPiranhaFlameUnk104 > 1500.0f || (o->oMoveFlags & (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER))) {
             obj_die_if_health_non_positive();
         }
     }

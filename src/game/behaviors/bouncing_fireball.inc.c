@@ -9,7 +9,7 @@ void bhv_bouncing_fireball_flame_loop(void) {
                 o->oAnimState = random_float() * 10.0f;
                 o->oVelY = 30.0f;
             }
-            if (o->oMoveFlags & 1)
+            if (o->oMoveFlags & OBJ_MOVE_LANDED)
                 o->oAction++;
             break;
         case 1:
@@ -17,7 +17,7 @@ void bhv_bouncing_fireball_flame_loop(void) {
                 o->oVelY = 50.0f;
                 o->oForwardVel = 30.0f;
             }
-            if (o->oMoveFlags & (0x40 | 0x10 | 0x2) && o->oTimer > 100)
+            if (o->oMoveFlags & (OBJ_MOVE_UNDERWATER_ON_GROUND | OBJ_MOVE_AT_WATER_SURFACE | OBJ_MOVE_ON_GROUND) && o->oTimer > 100)
                 obj_mark_for_deletion(o);
             break;
     }

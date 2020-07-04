@@ -12,19 +12,32 @@ static struct ObjectHitbox sBowlingBallHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
-// TODO: these are likely Waypoint structs
-static s16 D_803315B4[] = { 0x0000, 0xED4E, 0x0065, 0xF78A, 0x0001, 0xEC78, 0x0051, 0xF53F, 0x0002,
-                            0xEC50, 0x0021, 0xF0FA, 0x0003, 0xEC9A, 0x0026, 0xEC9A, 0x0004, 0xF053,
-                            0xFEFD, 0xECE3, 0x0005, 0xF5F3, 0xFC05, 0xED54, 0x0006, 0xFBE3, 0xFA89,
-                            0xED3A, 0x0007, 0x02F8, 0xF99B, 0xED1F, 0x0008, 0x0B32, 0xF801, 0xECEA,
-                            0x0009, 0x0D3A, 0xE66E, 0xED1F, 0xFFFF, 0x0000 };
+static Trajectory sThiHugeMetalBallTraj[] = {
+    TRAJECTORY_POS(0, /*pos*/ -4786,   101, -2166),
+    TRAJECTORY_POS(1, /*pos*/ -5000,    81, -2753),
+    TRAJECTORY_POS(2, /*pos*/ -5040,    33, -3846),
+    TRAJECTORY_POS(3, /*pos*/ -4966,    38, -4966),
+    TRAJECTORY_POS(4, /*pos*/ -4013,  -259, -4893),
+    TRAJECTORY_POS(5, /*pos*/ -2573, -1019, -4780),
+    TRAJECTORY_POS(6, /*pos*/ -1053, -1399, -4806),
+    TRAJECTORY_POS(7, /*pos*/   760, -1637, -4833),
+    TRAJECTORY_POS(8, /*pos*/  2866, -2047, -4886),
+    TRAJECTORY_POS(9, /*pos*/  3386, -6546, -4833),
+    TRAJECTORY_END(),
+};
 
-// TODO: these are likely Waypoint structs
-static s16 D_80331608[] = { 0x0000, 0xFA3C, 0x001D, 0xFD58, 0x0001, 0xFA2C, 0x000E, 0xFBD0,
-                            0x0002, 0xFA24, 0x0003, 0xFACD, 0x0003, 0xFAA2, 0xFFEF, 0xFA09,
-                            0x0004, 0xFB66, 0xFFAD, 0xFA28, 0x0005, 0xFEDC, 0xFE58, 0xFA6F,
-                            0x0006, 0x00FA, 0xFE15, 0xFA67, 0x0007, 0x035E, 0xFD9B, 0xFA57,
-                            0x0008, 0x0422, 0xF858, 0xFA57, 0xFFFF, 0x0000 };
+static Trajectory sThiTinyMetalBallTraj[] = {
+    TRAJECTORY_POS(0, /*pos*/ -1476,    29,  -680),
+    TRAJECTORY_POS(1, /*pos*/ -1492,    14, -1072),
+    TRAJECTORY_POS(2, /*pos*/ -1500,     3, -1331),
+    TRAJECTORY_POS(3, /*pos*/ -1374,   -17, -1527),
+    TRAJECTORY_POS(4, /*pos*/ -1178,   -83, -1496),
+    TRAJECTORY_POS(5, /*pos*/  -292,  -424, -1425),
+    TRAJECTORY_POS(6, /*pos*/   250,  -491, -1433),
+    TRAJECTORY_POS(7, /*pos*/   862,  -613, -1449),
+    TRAJECTORY_POS(8, /*pos*/  1058, -1960, -1449),
+    TRAJECTORY_END(),
+};
 
 void bhv_bowling_ball_init(void) {
     o->oGravity = 5.5f;
@@ -42,23 +55,23 @@ void bowling_ball_set_hitbox(void) {
 void bowling_ball_set_waypoints(void) {
     switch (o->oBehParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
-            o->oPathedWaypointsS16 = segmented_to_virtual(bob_seg7_metal_ball_path0);
+            o->oPathedStartWaypoint = segmented_to_virtual(bob_seg7_metal_ball_path0);
             break;
 
         case BBALL_BP_STYPE_TTM:
-            o->oPathedWaypointsS16 = segmented_to_virtual(ttm_seg7_trajectory_070170A0);
+            o->oPathedStartWaypoint = segmented_to_virtual(ttm_seg7_trajectory_070170A0);
             break;
 
         case BBALL_BP_STYPE_BOB_LOWER:
-            o->oPathedWaypointsS16 = segmented_to_virtual(bob_seg7_metal_ball_path1);
+            o->oPathedStartWaypoint = segmented_to_virtual(bob_seg7_metal_ball_path1);
             break;
 
         case BBALL_BP_STYPE_THI_LARGE:
-            o->oPathedWaypointsS16 = D_803315B4;
+            o->oPathedStartWaypoint = (struct Waypoint *) sThiHugeMetalBallTraj;
             break;
 
         case BBALL_BP_STYPE_THI_SMALL:
-            o->oPathedWaypointsS16 = D_80331608;
+            o->oPathedStartWaypoint = (struct Waypoint *) sThiTinyMetalBallTraj;
             break;
     }
 }

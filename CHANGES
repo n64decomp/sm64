@@ -1,3 +1,14 @@
+Refresh 11
+1.) (HEAD -> master, origin/master, origin/HEAD) Make geo_process_level_of_detail endian-independent (#1049)
+2.) Label oMoveFlags and slight cleanup. (#1046)
+3.) Avoid UB in synthesis_resample_and_mix_reverb (#1048)
+4.) Change some void * to correct type (#1047)
+5.) Remove oPathedWaypointsS16 and convert all paths to Trajectory struct. (#1045)
+6.) Mr Blizzard documentation, Tox Box Unks (#1042)
+7.) Pipe input to textconv. (#1041)
+8.) Remove erroneous long double casts from audiofile.cpp (#1039)
+9.) Replace fixed dialogID in play_dialog_sound to DIALOG_COUNT (#1040)
+
 Refresh #10.1
 1.) Diff update (#1033)
 2.) Fix texture dimensions for exclamation boxes (#1034)

@@ -35,9 +35,9 @@ void bhv_scuttlebug_loop(void) {
         o->oScuttlebugUnkF8 = 0;
     switch (o->oSubAction) {
         case 0:
-            if (o->oMoveFlags & 1)
+            if (o->oMoveFlags & OBJ_MOVE_LANDED)
                 cur_obj_play_sound_2(SOUND_OBJ_GOOMBA_ALERT);
-            if (o->oMoveFlags & 3) {
+            if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
                 o->oHomeX = o->oPosX;
                 o->oHomeY = o->oPosY;
                 o->oHomeZ = o->oPosZ;
@@ -85,7 +85,7 @@ void bhv_scuttlebug_loop(void) {
             break;
         case 4:
             o->oForwardVel = -10.0f;
-            if (o->oMoveFlags & 1) {
+            if (o->oMoveFlags & OBJ_MOVE_LANDED) {
                 o->oSubAction++;
                 o->oVelY = 0.0f;
                 o->oScuttlebugUnkFC = 0;
@@ -105,7 +105,7 @@ void bhv_scuttlebug_loop(void) {
     else
         sp18 = 3.0f;
     cur_obj_init_animation_with_accel_and_sound(0, sp18);
-    if (o->oMoveFlags & 3)
+    if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND)
         set_obj_anim_with_accel_and_sound(1, 23, SOUND_OBJ2_SCUTTLEBUG_WALK);
     if (o->parentObj != o) {
         if (obj_is_hidden(o))

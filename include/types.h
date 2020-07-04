@@ -131,7 +131,7 @@ struct GraphNodeObject
     /*0x2C*/ Vec3f scale;
     /*0x38*/ struct GraphNodeObject_sub unk38;
     /*0x4C*/ struct SpawnInfo *unk4C;
-    /*0x50*/ void *throwMatrix; // matrix ptr
+    /*0x50*/ Mat4 *throwMatrix; // matrix ptr
     /*0x54*/ Vec3f cameraToObject;
 };
 

@@ -116,7 +116,7 @@ struct GraphNodePerspective
  */
 struct DisplayListNode
 {
-    void *transform;
+    Mtx *transform;
     void *displayList;
     struct DisplayListNode *next;
 };
@@ -184,7 +184,7 @@ struct GraphNodeCamera
     } config;
     /*0x1C*/ Vec3f pos;
     /*0x28*/ Vec3f focus;
-    /*0x34*/ void *matrixPtr; // pointer to look-at matrix of this camera as a Mat4
+    /*0x34*/ Mat4 *matrixPtr; // pointer to look-at matrix of this camera as a Mat4
     /*0x38*/ s16 roll; // roll in look at matrix. Doesn't account for light direction unlike rollScreen.
     /*0x3A*/ s16 rollScreen; // rolls screen while keeping the light direction consistent
 };

@@ -33,7 +33,7 @@ void bubba_act_0(void) {
             o->oBubbaUnkF8 = random_linear_offset(20, 30);
         }
 
-        if ((o->oBubbaUnkFC = o->oMoveFlags & 0x00000200) != 0) {
+        if ((o->oBubbaUnkFC = o->oMoveFlags & OBJ_MOVE_HIT_WALL) != 0) {
             o->oBubbaUnk1AE = cur_obj_reflect_move_angle_off_wall();
         } else if (o->oTimer > 30 && o->oDistanceToMario < 2000.0f) {
             o->oAction = 1;
@@ -130,8 +130,8 @@ void bhv_bubba_loop(void) {
             break;
     }
 
-    if (o->oMoveFlags & 0x00000078) {
-        if (o->oMoveFlags & 0x00000008) {
+    if (o->oMoveFlags & OBJ_MOVE_MASK_IN_WATER) {
+        if (o->oMoveFlags & OBJ_MOVE_ENTERED_WATER) {
             sp38 = spawn_object(o, MODEL_WATER_SPLASH, bhvWaterSplash);
             if (sp38 != NULL) {
                 obj_scale(sp38, 3.0f);

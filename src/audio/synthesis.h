@@ -19,7 +19,8 @@ struct ReverbRingBufferItem
     s16 *toDownsampleLeft;
     s16 *toDownsampleRight; // data pointed to by left and right are adjacent in memory
     s32 startPos; // start pos in ring buffer
-    s16 lengths[2]; // first length in ring buffer (max until end) and second length in ring buffer (from pos 0)
+    s16 lengthA; // first length in ring buffer (from startPos, at most until end)
+    s16 lengthB; // second length in ring buffer (from pos 0)
 }; // size = 0x14
 
 struct SynthesisReverb

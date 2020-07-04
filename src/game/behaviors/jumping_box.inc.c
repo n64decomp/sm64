@@ -20,14 +20,14 @@ void jumping_box_act_0(void) {
             o->oVelY = random_float() * 5.0f + 15.0f;
             o->oSubAction++;
         }
-    } else if (o->oMoveFlags & 2) {
+    } else if (o->oMoveFlags & OBJ_MOVE_ON_GROUND) {
         o->oSubAction = 0;
         o->oJumpingBoxUnkF8 = random_float() * 60.0f + 30.0f;
     }
 }
 
 void jumping_box_act_1(void) {
-    if (o->oMoveFlags & (0x200 | 0x40 | 0x20 | 0x10 | 0x8 | 0x1)) {
+    if (o->oMoveFlags & (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER | OBJ_MOVE_LANDED)) {
         obj_mark_for_deletion(o);
         spawn_mist_particles();
     }

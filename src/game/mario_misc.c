@@ -574,7 +574,7 @@ Gfx *geo_switch_mario_hand_grab_pos(s32 callContext, struct GraphNode *b, Mat4 *
         // This is why it won't update during a pause buffered hitstun or when the camera is very far
         // away.
         get_pos_from_transform_mtx(marioState->marioBodyState->heldObjLastPosition, *curTransform,
-                                   gCurGraphNodeCamera->matrixPtr);
+                                   *gCurGraphNodeCamera->matrixPtr);
     }
     return NULL;
 }
