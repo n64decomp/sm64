@@ -5,9 +5,9 @@
 
 #include <windows.h>
 #include <wrl/client.h>
-#include "Objbase.h"
-#include "Mmdeviceapi.h"
-#include "audioclient.h"
+#include <objbase.h>
+#include <mmdeviceapi.h>
+#include <audioclient.h>
 
 #include "audio_api.h"
 
