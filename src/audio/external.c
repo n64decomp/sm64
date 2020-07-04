@@ -2137,7 +2137,7 @@ void func_80320A4C(u8 bankIndex, u8 arg1) {
 void play_dialog_sound(u8 dialogID) {
     u8 speaker;
 
-    if (dialogID >= 170) {
+    if (dialogID >= DIALOG_COUNT) {
         dialogID = 0;
     }
 

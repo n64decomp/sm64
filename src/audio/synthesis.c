@@ -13,8 +13,8 @@
 
 #define DMEM_ADDR_TEMP 0x0
 #define DMEM_ADDR_UNCOMPRESSED_NOTE 0x180
-#define DMEM_ADDR_ADPCM_RESAMPLED 0x20
-#define DMEM_ADDR_ADPCM_RESAMPLED2 0x160
+#define DMEM_ADDR_RESAMPLED 0x20
+#define DMEM_ADDR_RESAMPLED2 0x160
 #define DMEM_ADDR_NOTE_PAN_TEMP 0x200
 #define DMEM_ADDR_STEREO_STRONG_TEMP_DRY 0x200
 #define DMEM_ADDR_STEREO_STRONG_TEMP_WET 0x340
@@ -102,14 +102,14 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex, s32 reverbIndex) 
             // Touches both left and right since they are adjacent in memory
             osInvalDCache(item->toDownsampleLeft, DEFAULT_LEN_2CH);
 
-            for (srcPos = 0, dstPos = 0; dstPos < item->lengths[0] / 2;
+            for (srcPos = 0, dstPos = 0; dstPos < item->lengthA / 2;
                  srcPos += reverb->downsampleRate, dstPos++) {
                 reverb->ringBuffer.left[item->startPos + dstPos] =
                     item->toDownsampleLeft[srcPos];
                 reverb->ringBuffer.right[item->startPos + dstPos] =
                     item->toDownsampleRight[srcPos];
             }
-            for (dstPos = 0; dstPos < item->lengths[1] / 2; srcPos += reverb->downsampleRate, dstPos++) {
+            for (dstPos = 0; dstPos < item->lengthB / 2; srcPos += reverb->downsampleRate, dstPos++) {
                 reverb->ringBuffer.left[dstPos] = item->toDownsampleLeft[srcPos];
                 reverb->ringBuffer.right[dstPos] = item->toDownsampleRight[srcPos];
             }
@@ -121,14 +121,14 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex, s32 reverbIndex) 
     excessiveSamples = (nSamples + reverb->nextRingBufferPos) - reverb->bufSizePerChannel;
     if (excessiveSamples < 0) {
         // There is space in the ring buffer before it wraps around
-        item->lengths[0] = nSamples * 2;
-        item->lengths[1] = 0;
+        item->lengthA = nSamples * 2;
+        item->lengthB = 0;
         item->startPos = (s32) reverb->nextRingBufferPos;
         reverb->nextRingBufferPos += nSamples;
     } else {
         // Ring buffer wrapped around
-        item->lengths[0] = (nSamples - excessiveSamples) * 2;
-        item->lengths[1] = excessiveSamples * 2;
+        item->lengthA = (nSamples - excessiveSamples) * 2;
+        item->lengthB = excessiveSamples * 2;
         item->startPos = reverb->nextRingBufferPos;
         reverb->nextRingBufferPos = excessiveSamples;
     }
@@ -153,14 +153,14 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex) {
             // Touches both left and right since they are adjacent in memory
             osInvalDCache(item->toDownsampleLeft, DEFAULT_LEN_2CH);
 
-            for (srcPos = 0, dstPos = 0; dstPos < item->lengths[0] / 2;
+            for (srcPos = 0, dstPos = 0; dstPos < item->lengthA / 2;
                  srcPos += gReverbDownsampleRate, dstPos++) {
                 gSynthesisReverb.ringBuffer.left[dstPos + item->startPos] =
                     item->toDownsampleLeft[srcPos];
                 gSynthesisReverb.ringBuffer.right[dstPos + item->startPos] =
                     item->toDownsampleRight[srcPos];
             }
-            for (dstPos = 0; dstPos < item->lengths[1] / 2; srcPos += gReverbDownsampleRate, dstPos++) {
+            for (dstPos = 0; dstPos < item->lengthB / 2; srcPos += gReverbDownsampleRate, dstPos++) {
                 gSynthesisReverb.ringBuffer.left[dstPos] = item->toDownsampleLeft[srcPos];
                 gSynthesisReverb.ringBuffer.right[dstPos] = item->toDownsampleRight[srcPos];
             }
@@ -171,8 +171,8 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex) {
     numSamplesAfterDownsampling = chunkLen / gReverbDownsampleRate;
     if (((numSamplesAfterDownsampling + gSynthesisReverb.nextRingBufferPos) - gSynthesisReverb.bufSizePerChannel) < 0) {
         // There is space in the ring buffer before it wraps around
-        item->lengths[0] = numSamplesAfterDownsampling * 2;
-        item->lengths[1] = 0;
+        item->lengthA = numSamplesAfterDownsampling * 2;
+        item->lengthB = 0;
         item->startPos = (s32) gSynthesisReverb.nextRingBufferPos;
         gSynthesisReverb.nextRingBufferPos += numSamplesAfterDownsampling;
     } else {
@@ -180,8 +180,8 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex) {
         excessiveSamples =
             (numSamplesAfterDownsampling + gSynthesisReverb.nextRingBufferPos) - gSynthesisReverb.bufSizePerChannel;
         nSamples = numSamplesAfterDownsampling - excessiveSamples;
-        item->lengths[0] = nSamples * 2;
-        item->lengths[1] = excessiveSamples * 2;
+        item->lengthA = nSamples * 2;
+        item->lengthB = excessiveSamples * 2;
         item->startPos = gSynthesisReverb.nextRingBufferPos;
         gSynthesisReverb.nextRingBufferPos = excessiveSamples;
     }
@@ -351,33 +351,33 @@ u64 *synthesis_execute(u64 *cmdBuf, s32 *writtenCmds, s16 *aiBuf, s32 bufLen) {
 #ifdef VERSION_EU
 u64 *synthesis_resample_and_mix_reverb(u64 *cmd, s32 bufLen, s16 reverbIndex, s16 updateIndex) {
     struct ReverbRingBufferItem *item;
-    s16 temp_t9; // sp5a
-    s16 sp58; // sp58
+    s16 startPad;
+    s16 paddedLengthA;
 
     item = &gSynthesisReverbs[reverbIndex].items[gSynthesisReverbs[reverbIndex].curFrame][updateIndex];
 
     aClearBuffer(cmd++, DMEM_ADDR_WET_LEFT_CH, DEFAULT_LEN_2CH);
     if (gSynthesisReverbs[reverbIndex].downsampleRate == 1) {
-        cmd = synthesis_load_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH, item->startPos, item->lengths[0], reverbIndex);
-        if (item->lengths[1] != 0) {
-            cmd = synthesis_load_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH + item->lengths[0], 0, item->lengths[1], reverbIndex);
+        cmd = synthesis_load_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH, item->startPos, item->lengthA, reverbIndex);
+        if (item->lengthB != 0) {
+            cmd = synthesis_load_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH + item->lengthA, 0, item->lengthB, reverbIndex);
         }
         aSetBuffer(cmd++, 0, 0, 0, DEFAULT_LEN_2CH);
         aMix(cmd++, 0, 0x7fff, DMEM_ADDR_WET_LEFT_CH, DMEM_ADDR_LEFT_CH);
         aMix(cmd++, 0, 0x8000 + gSynthesisReverbs[reverbIndex].reverbGain, DMEM_ADDR_WET_LEFT_CH, DMEM_ADDR_WET_LEFT_CH);
     } else {
-        temp_t9 = (item->startPos % 8u) * 2;
-        sp58 = ALIGN(item->lengths[0] + (sp58=temp_t9), 4);
+        startPad = (item->startPos % 8u) * 2;
+        paddedLengthA = ALIGN(startPad + item->lengthA, 4);
 
-        cmd = synthesis_load_reverb_ring_buffer(cmd, 0x20, (item->startPos - temp_t9 / 2), DEFAULT_LEN_1CH, reverbIndex);
-        if (item->lengths[1] != 0) {
-            cmd = synthesis_load_reverb_ring_buffer(cmd, 0x20 + sp58, 0, DEFAULT_LEN_1CH - sp58, reverbIndex);
+        cmd = synthesis_load_reverb_ring_buffer(cmd, DMEM_ADDR_RESAMPLED, (item->startPos - startPad / 2), DEFAULT_LEN_1CH, reverbIndex);
+        if (item->lengthB != 0) {
+            cmd = synthesis_load_reverb_ring_buffer(cmd, DMEM_ADDR_RESAMPLED + paddedLengthA, 0, DEFAULT_LEN_1CH - paddedLengthA, reverbIndex);
         }
 
-        aSetBuffer(cmd++, 0, temp_t9 + DMEM_ADDR_ADPCM_RESAMPLED, DMEM_ADDR_WET_LEFT_CH, bufLen * 2);
+        aSetBuffer(cmd++, 0, DMEM_ADDR_RESAMPLED + startPad, DMEM_ADDR_WET_LEFT_CH, bufLen * 2);
         aResample(cmd++, gSynthesisReverbs[reverbIndex].resampleFlags, gSynthesisReverbs[reverbIndex].resampleRate, VIRTUAL_TO_PHYSICAL2(gSynthesisReverbs[reverbIndex].resampleStateLeft));
 
-        aSetBuffer(cmd++, 0, temp_t9 + DMEM_ADDR_ADPCM_RESAMPLED2, DMEM_ADDR_WET_RIGHT_CH, bufLen * 2);
+        aSetBuffer(cmd++, 0, DMEM_ADDR_RESAMPLED2 + startPad, DMEM_ADDR_WET_RIGHT_CH, bufLen * 2);
         aResample(cmd++, gSynthesisReverbs[reverbIndex].resampleFlags, gSynthesisReverbs[reverbIndex].resampleRate, VIRTUAL_TO_PHYSICAL2(gSynthesisReverbs[reverbIndex].resampleStateRight));
 
         aSetBuffer(cmd++, 0, 0, 0, DEFAULT_LEN_2CH);
@@ -399,10 +399,10 @@ u64 *synthesis_save_reverb_samples(u64 *cmdBuf, s16 reverbIndex, s16 updateIndex
         }
         if (reverb->downsampleRate == 1) {
             // Put the oldest samples in the ring buffer into the wet channels
-            cmd = cmdBuf = synthesis_save_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH, item->startPos, item->lengths[0], reverbIndex);
-            if (item->lengths[1] != 0) {
+            cmd = cmdBuf = synthesis_save_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH, item->startPos, item->lengthA, reverbIndex);
+            if (item->lengthB != 0) {
                 // Ring buffer wrapped
-                cmd = synthesis_save_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH + item->lengths[0], 0, item->lengths[1], reverbIndex);
+                cmd = synthesis_save_reverb_ring_buffer(cmd, DMEM_ADDR_WET_LEFT_CH + item->lengthA, 0, item->lengthB, reverbIndex);
                 cmdBuf = cmd;
             }
         } else {
@@ -515,9 +515,9 @@ u64 *synthesis_do_one_audio_update(s16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateI
         if (gReverbDownsampleRate == 1) {
             // Put the oldest samples in the ring buffer into the wet channels
             aSetLoadBufferPair(cmd++, 0, v1->startPos);
-            if (v1->lengths[1] != 0) {
+            if (v1->lengthB != 0) {
                 // Ring buffer wrapped
-                aSetLoadBufferPair(cmd++, v1->lengths[0], 0);
+                aSetLoadBufferPair(cmd++, v1->lengthA, 0);
                 temp = 0;
             }
 
@@ -534,9 +534,9 @@ u64 *synthesis_do_one_audio_update(s16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateI
             // Same as above but upsample the previously downsampled samples used for reverb first
             temp = 0; //! jesus christ
             t4 = (v1->startPos & 7) * 2;
-            ra = ALIGN(v1->lengths[0] + t4, 4);
+            ra = ALIGN(v1->lengthA + t4, 4);
             aSetLoadBufferPair(cmd++, 0, v1->startPos - t4 / 2);
-            if (v1->lengths[1] != 0) {
+            if (v1->lengthB != 0) {
                 // Ring buffer wrapped
                 aSetLoadBufferPair(cmd++, ra, 0);
                 //! We need an empty statement (even an empty ';') here to make the function match (because IDO).
@@ -555,10 +555,10 @@ u64 *synthesis_do_one_audio_update(s16 *aiBuf, s32 bufLen, u64 *cmd, u32 updateI
         }
         cmd = synthesis_process_notes(aiBuf, bufLen, cmd);
         if (gReverbDownsampleRate == 1) {
-            aSetSaveBufferPair(cmd++, 0, v1->lengths[0], v1->startPos);
-            if (v1->lengths[1] != 0) {
+            aSetSaveBufferPair(cmd++, 0, v1->lengthA, v1->startPos);
+            if (v1->lengthB != 0) {
                 // Ring buffer wrapped
-                aSetSaveBufferPair(cmd++, v1->lengths[0], v1->lengths[1], 0);
+                aSetSaveBufferPair(cmd++, v1->lengthA, v1->lengthB, 0);
             }
         } else {
             // Downsampling is done later by CPU when RSP is done, therefore we need to have double
@@ -969,26 +969,26 @@ u64 *synthesis_process_notes(s16 *aiBuf, s32 bufLen, u64 *cmd) {
                         case 2:
                             switch (curPart) {
                                 case 0:
-                                    aSetBuffer(cmd++, 0, DMEM_ADDR_UNCOMPRESSED_NOTE + sp130, DMEM_ADDR_ADPCM_RESAMPLED, samplesLenAdjusted + 4);
+                                    aSetBuffer(cmd++, 0, DMEM_ADDR_UNCOMPRESSED_NOTE + sp130, DMEM_ADDR_RESAMPLED, samplesLenAdjusted + 4);
 #ifdef VERSION_EU
                                     aResample(cmd++, A_INIT, 0xff60, VIRTUAL_TO_PHYSICAL2(synthesisState->synthesisBuffers->dummyResampleState));
 #else
                                     aResample(cmd++, A_INIT, 0xff60, VIRTUAL_TO_PHYSICAL2(note->synthesisBuffers->dummyResampleState));
 #endif
                                     resampledTempLen = samplesLenAdjusted + 4;
-                                    noteSamplesDmemAddrBeforeResampling = DMEM_ADDR_ADPCM_RESAMPLED + 4;
+                                    noteSamplesDmemAddrBeforeResampling = DMEM_ADDR_RESAMPLED + 4;
 #ifdef VERSION_EU
                                     if (noteSubEu->finished != FALSE) {
 #else
                                     if (note->finished != FALSE) {
 #endif
-                                        aClearBuffer(cmd++, DMEM_ADDR_ADPCM_RESAMPLED + resampledTempLen, samplesLenAdjusted + 0x10);
+                                        aClearBuffer(cmd++, DMEM_ADDR_RESAMPLED + resampledTempLen, samplesLenAdjusted + 0x10);
                                     }
                                     break;
 
                                 case 1:
                                     aSetBuffer(cmd++, 0, DMEM_ADDR_UNCOMPRESSED_NOTE + sp130,
-                                               DMEM_ADDR_ADPCM_RESAMPLED2,
+                                               DMEM_ADDR_RESAMPLED2,
                                                samplesLenAdjusted + 8);
 #ifdef VERSION_EU
                                     aResample(cmd++, A_INIT, 0xff60,
@@ -999,8 +999,8 @@ u64 *synthesis_process_notes(s16 *aiBuf, s32 bufLen, u64 *cmd) {
                                               VIRTUAL_TO_PHYSICAL2(
                                                   note->synthesisBuffers->dummyResampleState));
 #endif
-                                    aDMEMMove(cmd++, DMEM_ADDR_ADPCM_RESAMPLED2 + 4,
-                                              DMEM_ADDR_ADPCM_RESAMPLED + resampledTempLen,
+                                    aDMEMMove(cmd++, DMEM_ADDR_RESAMPLED2 + 4,
+                                              DMEM_ADDR_RESAMPLED + resampledTempLen,
                                               samplesLenAdjusted + 4);
                                     break;
                             }

@@ -4,7 +4,7 @@ void bhv_horizontal_grindel_init(void) {
 }
 
 void bhv_horizontal_grindel_update(void) {
-    if (o->oMoveFlags & 0x00000003) {
+    if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         if (!o->oHorizontalGrindelOnGround) {
             cur_obj_play_sound_2(SOUND_OBJ_THWOMP);
             o->oHorizontalGrindelOnGround = TRUE;

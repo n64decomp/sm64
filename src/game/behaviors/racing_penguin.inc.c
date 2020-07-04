@@ -88,7 +88,7 @@ static void racing_penguin_act_race(void) {
         cur_obj_init_animation_with_sound(1);
         cur_obj_rotate_yaw_toward(o->oPathedTargetYaw, (s32)(15.0f * o->oForwardVel));
 
-        if (cur_obj_check_if_at_animation_end() && (o->oMoveFlags & 0x00000003)) {
+        if (cur_obj_check_if_at_animation_end() && (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND)) {
             spawn_object_relative_with_scale(0, 0, -100, 0, 4.0f, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
         }
     }
@@ -104,7 +104,7 @@ static void racing_penguin_act_race(void) {
 
 static void racing_penguin_act_finish_race(void) {
     if (o->oForwardVel != 0.0f) {
-        if (o->oTimer > 5 && (o->oMoveFlags & 0x00000200)) {
+        if (o->oTimer > 5 && (o->oMoveFlags & OBJ_MOVE_HIT_WALL)) {
             cur_obj_play_sound_2(SOUND_OBJ_POUNDING_LOUD);
             set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
             o->oForwardVel = 0.0f;

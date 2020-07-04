@@ -292,7 +292,7 @@ static void eyerok_hand_act_show_eye(void) {
             if (o->parentObj->oEyerokBossNumHands != 2) {
                 obj_face_yaw_approach(o->oMoveAngleYaw, 0x800);
                 if (o->oTimer > 10
-                    && (o->oPosZ - gMarioObject->oPosZ > 0.0f || (o->oMoveFlags & 0x00000400))) {
+                    && (o->oPosZ - gMarioObject->oPosZ > 0.0f || (o->oMoveFlags & OBJ_MOVE_HIT_EDGE))) {
                     o->parentObj->oEyerokBossActiveHand = 0;
                     o->oForwardVel = 0.0f;
                 }
@@ -321,7 +321,7 @@ static void eyerok_hand_act_attacked(void) {
         o->collisionData = segmented_to_virtual(ssl_seg7_collision_07028274);
     }
 
-    if (o->oMoveFlags & 0x00000003) {
+    if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         o->oForwardVel = 0.0f;
     }
 }
@@ -346,7 +346,7 @@ static void eyerok_hand_act_die(void) {
         create_sound_spawner(SOUND_OBJ2_EYEROK_SOUND_LONG);
     }
 
-    if (o->oMoveFlags & 0x00000003) {
+    if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         cur_obj_play_sound_2(SOUND_OBJ_POUNDING_LOUD);
         o->oForwardVel = 0.0f;
     }
@@ -378,7 +378,7 @@ static void eyerok_hand_act_retreat(void) {
 static void eyerok_hand_act_target_mario(void) {
     if (eyerok_check_mario_relative_z(400) != 0 || o->oPosZ - gMarioObject->oPosZ > 0.0f
         || o->oPosZ - o->parentObj->oPosZ > 1700.0f || absf(o->oPosX - o->parentObj->oPosX) > 900.0f
-        || (o->oMoveFlags & 0x00000200)) {
+        || (o->oMoveFlags & OBJ_MOVE_HIT_WALL)) {
         o->oForwardVel = 0.0f;
         if (approach_f32_ptr(&o->oPosY, o->oHomeY + 300.0f, 20.0f)) {
             o->oAction = EYEROK_HAND_ACT_SMASH;
@@ -394,7 +394,7 @@ static void eyerok_hand_act_smash(void) {
     s16 sp1E;
 
     if (o->oTimer > 20) {
-        if (o->oMoveFlags & 0x00000003) {
+        if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
             if (o->oGravity < -4.0f) {
                 eyerok_hand_pound_ground();
                 o->oGravity = -4.0f;
@@ -418,7 +418,7 @@ static void eyerok_hand_act_smash(void) {
 }
 
 static void eyerok_hand_act_fist_push(void) {
-    if (o->oTimer > 5 && (o->oPosZ - gMarioObject->oPosZ > 0.0f || (o->oMoveFlags & 0x00000400))) {
+    if (o->oTimer > 5 && (o->oPosZ - gMarioObject->oPosZ > 0.0f || (o->oMoveFlags & OBJ_MOVE_HIT_EDGE))) {
         o->oAction = EYEROK_HAND_ACT_FIST_SWEEP;
         o->oForwardVel = 0.0f;
 
@@ -433,7 +433,7 @@ static void eyerok_hand_act_fist_push(void) {
 }
 
 static void eyerok_hand_act_fist_sweep(void) {
-    if (o->oPosZ - o->parentObj->oPosZ < 1000.0f || (o->oMoveFlags & 0x400)) {
+    if (o->oPosZ - o->parentObj->oPosZ < 1000.0f || (o->oMoveFlags & OBJ_MOVE_HIT_EDGE)) {
         o->oAction = EYEROK_HAND_ACT_RETREAT;
         o->oForwardVel = 0.0f;
     } else {
@@ -470,7 +470,7 @@ static void eyerok_hand_act_double_pound(void) {
         o->oAction = EYEROK_HAND_ACT_RETREAT;
         o->parentObj->oEyerokBossUnk1AC = o->oBehParams2ndByte;
     } else if (o->parentObj->oEyerokBossActiveHand == o->oBehParams2ndByte) {
-        if (o->oMoveFlags & 0x00000003) {
+        if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
             if (o->oGravity < -15.0f) {
                 o->parentObj->oEyerokBossActiveHand = 0;
                 eyerok_hand_pound_ground();

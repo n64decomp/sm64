@@ -42,7 +42,7 @@ Gfx *geo_update_projectile_pos_from_parent(s32 callContext, UNUSED struct GraphN
     if (callContext == GEO_CONTEXT_RENDER) {
         sp1C = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
         if (sp1C->prevObj) {
-            create_transformation_from_matrices(sp20, mtx, gCurGraphNodeCamera->matrixPtr);
+            create_transformation_from_matrices(sp20, mtx, *gCurGraphNodeCamera->matrixPtr);
             obj_update_pos_from_parent_transformation(sp20, sp1C->prevObj);
             obj_set_gfx_pos_from_pos(sp1C->prevObj);
         }
@@ -1285,7 +1285,7 @@ static void cur_obj_move_update_underwater_flags(void) {
 }
 
 static void cur_obj_move_update_ground_air_flags(UNUSED f32 gravity, f32 bounciness) {
-    o->oMoveFlags &= ~OBJ_MOVE_13;
+    o->oMoveFlags &= ~OBJ_MOVE_BOUNCE;
 
     if (o->oPosY < o->oFloorHeight) {
         // On the first frame that we touch the ground, set OBJ_MOVE_LANDED.
@@ -1305,9 +1305,9 @@ static void cur_obj_move_update_ground_air_flags(UNUSED f32 gravity, f32 bouncin
         }
 
         if (o->oVelY > 5.0f) {
-            //! If OBJ_MOVE_13 tracks bouncing, it overestimates, since velY
-            // could be > 5 here without bounce (e.g. jump into misa)
-            o->oMoveFlags |= OBJ_MOVE_13;
+            //! This overestimates since velY could be > 5 here
+            //! without bounce (e.g. jump into misa).
+            o->oMoveFlags |= OBJ_MOVE_BOUNCE;
         }
     } else {
         o->oMoveFlags &= ~OBJ_MOVE_LANDED;
@@ -1379,7 +1379,8 @@ void cur_obj_move_y(f32 gravity, f32 bounciness, f32 buoyancy) {
         }
     }
 
-    if (o->oMoveFlags & OBJ_MOVE_MASK_33) {
+    if (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_AT_WATER_SURFACE
+        | OBJ_MOVE_UNDERWATER_OFF_GROUND)) {
         o->oMoveFlags &= ~OBJ_MOVE_IN_AIR;
     } else {
         o->oMoveFlags |= OBJ_MOVE_IN_AIR;
@@ -1766,7 +1767,7 @@ static void cur_obj_update_floor_and_resolve_wall_collisions(s16 steepSlopeDegre
 
     if (o->activeFlags & (ACTIVE_FLAG_FAR_AWAY | ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         cur_obj_update_floor();
-        o->oMoveFlags &= ~OBJ_MOVE_MASK_HIT_WALL_OR_IN_WATER;
+        o->oMoveFlags &= ~(OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER);
 
         if (o->oPosY > o->oFloorHeight) {
             o->oMoveFlags |= OBJ_MOVE_IN_AIR;
@@ -1935,7 +1936,7 @@ void obj_set_throw_matrix_from_transform(struct Object *obj) {
         obj_apply_scale_to_transform(obj);
     }
 
-    obj->header.gfx.throwMatrix = obj->transform;
+    obj->header.gfx.throwMatrix = &obj->transform;
 
     //! Sets scale of gCurrentObject instead of obj. Not exploitable since this
     //  function is only called with obj = gCurrentObject
@@ -1953,7 +1954,7 @@ void obj_build_transform_relative_to_parent(struct Object *obj) {
     obj->oPosY = obj->transform[3][1];
     obj->oPosZ = obj->transform[3][2];
 
-    obj->header.gfx.throwMatrix = obj->transform;
+    obj->header.gfx.throwMatrix = &obj->transform;
 
     //! Sets scale of gCurrentObject instead of obj. Not exploitable since this
     //  function is only called with obj = gCurrentObject
@@ -2246,23 +2247,23 @@ static void stub_obj_helpers_2(void) {
 }
 
 s32 cur_obj_set_direction_table(s8 *a0) {
-    o->oToxBoxUnk1AC = a0;
-    o->oToxBoxUnk1B0 = 0;
+    o->oToxBoxMovementPattern = a0;
+    o->oToxBoxMovementStep = 0;
 
-    return *(s8 *) o->oToxBoxUnk1AC;
+    return *(s8 *) o->oToxBoxMovementPattern;
 }
 
 s32 cur_obj_progress_direction_table(void) {
     s8 spF;
-    s8 *sp8 = o->oToxBoxUnk1AC;
-    s32 sp4 = o->oToxBoxUnk1B0 + 1;
+    s8 *sp8 = o->oToxBoxMovementPattern;
+    s32 sp4 = o->oToxBoxMovementStep + 1;
 
     if (sp8[sp4] != -1) {
         spF = sp8[sp4];
-        o->oToxBoxUnk1B0++;
+        o->oToxBoxMovementStep++;
     } else {
         spF = sp8[0];
-        o->oToxBoxUnk1B0 = 0;
+        o->oToxBoxMovementStep = 0;
     }
 
     return spF;
@@ -2759,7 +2760,7 @@ void cur_obj_align_gfx_with_floor(void) {
         floorNormal[2] = floor->normal.z;
 
         mtxf_align_terrain_normal(o->transform, floorNormal, position, o->oFaceAngleYaw);
-        o->header.gfx.throwMatrix = o->transform;
+        o->header.gfx.throwMatrix = &o->transform;
     }
 }
 

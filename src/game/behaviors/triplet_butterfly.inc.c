@@ -120,7 +120,7 @@ static void triplet_butterfly_act_explode(void) {
 
     obj_check_attacks(&sTripletButterflyExplodeHitbox, -1);
 
-    if (o->oAction == -1 || (o->oMoveFlags & 0x00000200) || o->oTimer >= 158) {
+    if (o->oAction == -1 || (o->oMoveFlags & OBJ_MOVE_HIT_WALL) || o->oTimer >= 158) {
         o->oPosY += o->oGraphYOffset;
         spawn_object(o, MODEL_EXPLOSION, bhvExplosion);
         obj_mark_for_deletion(o);

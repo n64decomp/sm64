@@ -41,7 +41,7 @@ void bhv_donut_platform_spawner_update(void) {
 }
 
 void bhv_donut_platform_update(void) {
-    if (o->oTimer != 0 && ((o->oMoveFlags & 0x00000003) || o->oDistanceToMario > 2500.0f)) {
+    if (o->oTimer != 0 && ((o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) || o->oDistanceToMario > 2500.0f)) {
         o->parentObj->oDonutPlatformSpawnerSpawnedPlatforms =
             o->parentObj->oDonutPlatformSpawnerSpawnedPlatforms
             & ((1 << o->oBehParams2ndByte) ^ 0xFFFFFFFF);

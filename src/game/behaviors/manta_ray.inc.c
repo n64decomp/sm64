@@ -1,10 +1,16 @@
 // manta_ray.c.inc
 
-// TODO: these are likely Waypoint structs
-static s16 D_803316A8[] = { 0x0000, 0xEE6C, 0xFA9C, 0xFFD8, 0x0001, 0xEFE8, 0xF740, 0x02E4, 0x0002,
-                            0xF330, 0xF3F8, 0x0410, 0x0003, 0xF740, 0xF308, 0x02D0, 0x0004, 0xF8D0,
-                            0xF3BC, 0xFEE8, 0x0005, 0xF6F0, 0xF650, 0xFBB4, 0x0006, 0xF36C, 0xF9C0,
-                            0xFAB0, 0x0007, 0xEFAC, 0xFC04, 0xFBF0, 0xFFFF, 0x0000 };
+static Trajectory sMantaRayTraj[] = { 
+    TRAJECTORY_POS(0, /*pos*/ -4500, -1380,   -40), 
+    TRAJECTORY_POS(1, /*pos*/ -4120, -2240,   740), 
+    TRAJECTORY_POS(2, /*pos*/ -3280, -3080,  1040), 
+    TRAJECTORY_POS(3, /*pos*/ -2240, -3320,   720), 
+    TRAJECTORY_POS(4, /*pos*/ -1840, -3140,  -280), 
+    TRAJECTORY_POS(5, /*pos*/ -2320, -2480, -1100), 
+    TRAJECTORY_POS(6, /*pos*/ -3220, -1600, -1360), 
+    TRAJECTORY_POS(7, /*pos*/ -4180, -1020, -1040), 
+    TRAJECTORY_END(),
+};
 
 static struct ObjectHitbox sMantaRayHitbox = {
     /* interactType:      */ INTERACT_DAMAGE,
@@ -31,7 +37,7 @@ void manta_ray_move(void) {
     s32 sp18;
 
     sp1E = o->header.gfx.unk38.animFrame;
-    gCurrentObject->oPathedWaypointsS16 = &D_803316A8;
+    gCurrentObject->oPathedStartWaypoint = (struct Waypoint *) sMantaRayTraj;
     sp18 = cur_obj_follow_path(sp18);
     o->oMantaUnkF8 = o->oPathedTargetYaw;
     o->oMantaUnkF4 = o->oPathedTargetPitch;

@@ -136,8 +136,6 @@
 #define /*0x1C4*/ oDeathSound                 OBJECT_FIELD_S32(0x4F)
 
 /* Pathed (see obj_follow_path) */
-// TODO: These two 0x0FC fields need merged, one is data and one is a C struct.
-#define /*0x0FC*/ oPathedWaypointsS16      OBJECT_FIELD_VPTR(0x1D)
 #define /*0x0FC*/ oPathedStartWaypoint     OBJECT_FIELD_WAYPOINT(0x1D)
 #define /*0x100*/ oPathedPrevWaypoint      OBJECT_FIELD_WAYPOINT(0x1E)
 #define /*0x104*/ oPathedPrevWaypointFlags OBJECT_FIELD_S32(0x1F)
@@ -966,8 +964,8 @@
 #define /*0x110*/ oToadMessageState          OBJECT_FIELD_S32(0x22)
 
 /* Tox Box */
-#define /*0x1AC*/ oToxBoxUnk1AC OBJECT_FIELD_VPTR(0x49)
-#define /*0x1B0*/ oToxBoxUnk1B0 OBJECT_FIELD_S32(0x4A)
+#define /*0x1AC*/ oToxBoxMovementPattern OBJECT_FIELD_VPTR(0x49)
+#define /*0x1B0*/ oToxBoxMovementStep    OBJECT_FIELD_S32(0x4A)
 
 /* TTC Rotating Solid */
 #define /*0x0F4*/ oTTCRotatingSolidNumTurns      OBJECT_FIELD_S32(0x1B)

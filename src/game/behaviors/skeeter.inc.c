@@ -32,7 +32,7 @@ static void skeeter_spawn_waves(void) {
 }
 
 static void skeeter_act_idle(void) {
-    if (o->oMoveFlags & 0x00000003) {
+    if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         cur_obj_init_animation_with_sound(3);
         o->oForwardVel = 0.0f;
 
@@ -42,7 +42,7 @@ static void skeeter_act_idle(void) {
     } else {
         cur_obj_init_animation_with_sound(1);
 
-        if (o->oMoveFlags & 0x00000010) {
+        if (o->oMoveFlags & OBJ_MOVE_AT_WATER_SURFACE) {
             skeeter_spawn_waves();
             if (o->oTimer > 60
                 && obj_smooth_turn(&o->oSkeeterUnk1AC, &o->oMoveAngleYaw, o->oSkeeterTargetAngle, 0.02f,
@@ -61,13 +61,13 @@ static void skeeter_act_idle(void) {
 }
 
 static void skeeter_act_lunge(void) {
-    if (!(o->oMoveFlags & 0x00000010)) {
+    if (!(o->oMoveFlags & OBJ_MOVE_AT_WATER_SURFACE)) {
         o->oAction = SKEETER_ACT_IDLE;
     } else {
         skeeter_spawn_waves();
         cur_obj_init_animation_with_sound(0);
 
-        if (o->oMoveFlags & 0x00000200) {
+        if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
             o->oMoveAngleYaw = cur_obj_reflect_move_angle_off_wall();
             o->oForwardVel *= 0.3f;
             o->oFlags &= ~0x00000008;
@@ -92,7 +92,7 @@ static void skeeter_act_lunge(void) {
 static void skeeter_act_walk(void) {
     f32 sp24;
 
-    if (!(o->oMoveFlags & 0x00000003)) {
+    if (!(o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND)) {
         o->oAction = SKEETER_ACT_IDLE;
     } else {
         obj_forward_vel_approach(o->oSkeeterUnkFC, 0.4f);
