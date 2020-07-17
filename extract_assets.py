@@ -152,9 +152,15 @@ def main():
             )
             sys.exit(1)
 
+    make = "make"
+
+    for path in os.environ["PATH"].split(os.pathsep):
+        if os.path.isfile(os.path.join(path, "gmake")):
+            make = "gmake"
+
     # Make sure tools exist
     subprocess.check_call(
-        ["make", "-s", "-C", "tools/", "n64graphics", "skyconv", "mio0", "aifc_decode"]
+        [make, "-s", "-C", "tools/", "n64graphics", "skyconv", "mio0", "aifc_decode"]
     )
 
     # Go through the assets in roughly alphabetical order (but assets in the same
