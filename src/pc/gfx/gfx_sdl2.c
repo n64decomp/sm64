@@ -1,4 +1,6 @@
-#if !defined(__linux__) && defined(ENABLE_OPENGL)
+#include "../compat.h"
+
+#if !defined(__linux__) && !defined(__BSD__) && defined(ENABLE_OPENGL)
 
 #ifdef __MINGW32__
 #define FOR_WINDOWS 1
