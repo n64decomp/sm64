@@ -778,7 +778,7 @@ static void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVel
  * Transitions for a variety of airborne actions.
  */
 static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actionArg) {
-    f32 fowardVel;
+    f32 forwardVel;
 
     if (m->squishTimer != 0 || m->quicksandDepth >= 1.0f) {
         if (action == ACT_DOUBLE_JUMP || action == ACT_TWIRLING) {
@@ -859,10 +859,10 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             break;
 
         case ACT_DIVE:
-            if ((fowardVel = m->forwardVel + 15.0f) > 48.0f) {
-                fowardVel = 48.0f;
+            if ((forwardVel = m->forwardVel + 15.0f) > 48.0f) {
+                forwardVel = 48.0f;
             }
-            mario_set_forward_vel(m, fowardVel);
+            mario_set_forward_vel(m, forwardVel);
             break;
 
         case ACT_LONG_JUMP:
