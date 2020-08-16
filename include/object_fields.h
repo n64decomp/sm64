@@ -1084,7 +1084,7 @@
 #define /*0x0F4*/ oCannonBarrelBubblesUnkF4 OBJECT_FIELD_F32(0x1B)
 
 /* Water Level Pillar */
-#define /*0x0F8*/ oWaterLevelPillarUnkF8 OBJECT_FIELD_S32(0x1C)
+#define /*0x0F8*/ oWaterLevelPillarDrained OBJECT_FIELD_S32(0x1C)
 
 /* Water Level Trigger */
 #define /*0x0F4*/ oWaterLevelTriggerUnkF4            OBJECT_FIELD_S32(0x1B)
