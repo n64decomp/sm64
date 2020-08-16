@@ -932,7 +932,7 @@ static void treat_far_home_as_mario(f32 threshold) {
 #include "behaviors/flying_bookend_switch.inc.c"
 
 /**
- * Used by fly guy, piranha plant, and fire spitters.
+ * Used by bowser, fly guy, piranha plant, and fire spitters.
  */
 void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 scale, s32 model,
                    f32 startSpeed, f32 endSpeed, s16 movePitch) {
@@ -942,9 +942,9 @@ void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 sca
                                             model, bhvSmallPiranhaFlame);
 
     if (sp2C != NULL) {
-        sp2C->oSmallPiranhaFlameUnkF4 = startSpeed;
-        sp2C->oSmallPiranhaFlameUnkF8 = endSpeed;
-        sp2C->oSmallPiranhaFlameUnkFC = model;
+        sp2C->oSmallPiranhaFlameStartSpeed = startSpeed;
+        sp2C->oSmallPiranhaFlameEndSpeed = endSpeed;
+        sp2C->oSmallPiranhaFlameModel = model;
         sp2C->oMoveAnglePitch = movePitch;
     }
 }

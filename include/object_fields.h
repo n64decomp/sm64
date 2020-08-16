@@ -504,9 +504,9 @@
 #define /*0x0F8*/ oBlueFlameUnkF8 OBJECT_FIELD_F32(0x1C)
 
 /* Small Piranha Flame */
-#define /*0x0F4*/ oSmallPiranhaFlameUnkF4  OBJECT_FIELD_F32(0x1B)
-#define /*0x0F8*/ oSmallPiranhaFlameUnkF8  OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oSmallPiranhaFlameUnkFC  OBJECT_FIELD_S32(0x1D)
+#define /*0x0F4*/ oSmallPiranhaFlameStartSpeed  OBJECT_FIELD_F32(0x1B)
+#define /*0x0F8*/ oSmallPiranhaFlameEndSpeed  OBJECT_FIELD_F32(0x1C)
+#define /*0x0FC*/ oSmallPiranhaFlameModel  OBJECT_FIELD_S32(0x1D)
 #define /*0x100*/ oSmallPiranhaFlameUnk100 OBJECT_FIELD_S32(0x1E)
 #define /*0x104*/ oSmallPiranhaFlameUnk104 OBJECT_FIELD_F32(0x1F)
 
