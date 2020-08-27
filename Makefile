@@ -45,7 +45,7 @@ ifeq ($(VERSION),sh)
   VERSION_DEF := VERSION_SH
   GRUCODE_DEF := F3D_NEW
 # TODO: GET RID OF THIS!!! We should mandate assets for Shindou like EU but we dont have the addresses extracted yet so we'll just pretend you have everything extracted for now.
-  NOEXTRACT := 1 
+  NOEXTRACT := 1
 else
   $(error unknown version "$(VERSION)")
 endif
@@ -106,13 +106,15 @@ endif
 # on tools and assets, and we use directory globs further down
 # in the makefile that we want should cover assets.)
 
+PYTHON := python3
+
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),distclean)
 
 # Make sure assets exist
 NOEXTRACT ?= 0
 ifeq ($(NOEXTRACT),0)
-DUMMY != ./extract_assets.py $(VERSION) >&2 || echo FAIL
+DUMMY != $(PYTHON) extract_assets.py $(VERSION) >&2 || echo FAIL
 ifeq ($(DUMMY),FAIL)
   $(error Failed to extract assets)
 endif
@@ -260,7 +262,6 @@ LD        := $(CROSS)ld
 AR        := $(CROSS)ar
 OBJDUMP   := $(CROSS)objdump
 OBJCOPY   := $(CROSS)objcopy
-PYTHON    := python3
 
 # change the compiler to gcc, to use the default, install the gcc-mips-linux-gnu package
 ifeq ($(COMPILER),gcc)
@@ -344,7 +345,7 @@ clean:
 
 distclean:
 	$(RM) -r $(BUILD_DIR_BASE)
-	./extract_assets.py --clean
+	$(PYTHON) extract_assets.py --clean
 
 test: $(ROM)
 	$(EMULATOR) $(EMU_FLAGS) $<
