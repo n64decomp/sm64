@@ -1,5 +1,23 @@
+Refresh 12
+
+1.) Debug box improvements (#1066)
+2.) Improve 'geo_render_mirror_mario' (#1064)
+3.) Cleanup and small labeling (#1063)
+4.) Anim renames and other related renames (#1062)
+5.) remove do while 0 and make one line comments consistent (#1061)
+6.) fixed typo in segments.h (#1060)
+7.) Name unknown fields (from public repo) (#1058)
+8.) Change 'void *' to 'struct MainPoolState *' (#1057)
+9.) Fix type of freeList (#1056)
+10.) Newer version of diff script (#1055)
+11.) Add stubbed_printfs based on unused audio strings (#1054)
+12.) Fix comment in paintings.c (#1053)
+13.) Add defines for hardcoded cell/floor height values (#1051)
+14.) Update README.md: Remove GitHub specific Markdown syntax (#1052)
+15.) Properly label interation status that handle's Bowser's shockwave attack (#1050)
+
 Refresh 11
-1.) (HEAD -> master, origin/master, origin/HEAD) Make geo_process_level_of_detail endian-independent (#1049)
+1.) Make geo_process_level_of_detail endian-independent (#1049)
 2.) Label oMoveFlags and slight cleanup. (#1046)
 3.) Avoid UB in synthesis_resample_and_mix_reverb (#1048)
 4.) Change some void * to correct type (#1047)

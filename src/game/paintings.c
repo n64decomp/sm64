@@ -577,7 +577,7 @@ void painting_update_ripple_state(struct Painting *painting) {
         //! After ~6.47 days, paintings with RIPPLE_TRIGGER_CONTINUOUS will increment this to
         //! 16777216 (1 << 24), at which point it will freeze (due to floating-point
         //! imprecision?) and the painting will stop rippling. This happens to HMC, DDD, and
-        //! CotMC. This happens on Wii VC. Untested on N64 and Wii U VC.
+        //! CotMC.
         painting->rippleTimer += 1.0;
     }
     if (painting->rippleTrigger == RIPPLE_TRIGGER_PROXIMITY) {

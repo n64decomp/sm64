@@ -27,7 +27,7 @@
 #include "spawn_object.h"
 #include "spawn_sound.h"
 
-s8 D_8032F0A0[] = { 0xF8, 0x08, 0xFC, 0x04 };
+s8 D_8032F0A0[] = { -8, 8, -4, 4 };
 s16 D_8032F0A4[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 static s8 sLevelsWithRooms[] = { LEVEL_BBH, LEVEL_CASTLE, LEVEL_HMC, -1 };
 
@@ -203,11 +203,9 @@ Gfx *geo_switch_area(s32 callContext, struct GraphNode *node) {
 }
 
 void obj_update_pos_from_parent_transformation(Mat4 a0, struct Object *a1) {
-    f32 spC, sp8, sp4;
-
-    spC = a1->oParentRelativePosX;
-    sp8 = a1->oParentRelativePosY;
-    sp4 = a1->oParentRelativePosZ;
+    f32 spC = a1->oParentRelativePosX;
+    f32 sp8 = a1->oParentRelativePosY;
+    f32 sp4 = a1->oParentRelativePosZ;
 
     a1->oPosX = spC * a0[0][0] + sp8 * a0[1][0] + sp4 * a0[2][0] + a0[3][0];
     a1->oPosY = spC * a0[0][1] + sp8 * a0[1][1] + sp4 * a0[2][1] + a0[3][1];
@@ -386,7 +384,7 @@ s16 obj_angle_to_object(struct Object *obj1, struct Object *obj2) {
     f32 z1, x1, z2, x2;
     s16 angle;
 
-    z1 = obj1->oPosZ; z2 = obj2->oPosZ; //ordering of instructions..
+    z1 = obj1->oPosZ; z2 = obj2->oPosZ; // ordering of instructions..
     x1 = obj1->oPosX; x2 = obj2->oPosX;
 
     angle = atan2s(z2 - z1, x2 - x1);
@@ -532,8 +530,8 @@ struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedAr
     obj = create_object(behaviorAddr);
 
     obj->parentObj = parent;
-    obj->header.gfx.unk18 = parent->header.gfx.unk18;
-    obj->header.gfx.unk19 = parent->header.gfx.unk18;
+    obj->header.gfx.areaIndex = parent->header.gfx.areaIndex;
+    obj->header.gfx.activeAreaIndex = parent->header.gfx.areaIndex;
 
     geo_obj_init((struct GraphNodeObject *) &obj->header.gfx, gLoadedGraphNodes[model], gVec3fZero,
                  gVec3sZero);
@@ -542,9 +540,8 @@ struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedAr
 }
 
 struct Object *spawn_object(struct Object *parent, s32 model, const BehaviorScript *behavior) {
-    struct Object *obj;
+    struct Object *obj = spawn_object_at_origin(parent, 0, model, behavior);
 
-    obj = spawn_object_at_origin(parent, 0, model, behavior);
     obj_copy_pos_and_angle(obj, parent);
 
     return obj;
@@ -565,9 +562,8 @@ struct Object *try_to_spawn_object(s16 offsetY, f32 scale, struct Object *parent
 }
 
 struct Object *spawn_object_with_scale(struct Object *parent, s32 model, const BehaviorScript *behavior, f32 scale) {
-    struct Object *obj;
+    struct Object *obj = spawn_object_at_origin(parent, 0, model, behavior);
 
-    obj = spawn_object_at_origin(parent, 0, model, behavior);
     obj_copy_pos_and_angle(obj, parent);
     obj_scale(obj, scale);
 
@@ -596,10 +592,8 @@ struct Object *spawn_object_relative(s16 behaviorParam, s16 relativePosX, s16 re
 struct Object *spawn_object_relative_with_scale(s16 behaviorParam, s16 relativePosX, s16 relativePosY,
                                                 s16 relativePosZ, f32 scale, struct Object *parent,
                                                 s32 model, const BehaviorScript *behavior) {
-    struct Object *obj;
-
-    obj = spawn_object_relative(behaviorParam, relativePosX, relativePosY, relativePosZ, parent, model,
-                                behavior);
+    struct Object *obj = spawn_object_relative(behaviorParam, relativePosX, relativePosY, relativePosZ,
+                                               parent, model, behavior);
     obj_scale(obj, scale);
 
     return obj;
@@ -678,11 +672,9 @@ void linear_mtxf_transpose_mul_vec3f(Mat4 m, Vec3f dst, Vec3f v) {
 }
 
 void obj_apply_scale_to_transform(struct Object *obj) {
-    f32 scaleX, scaleY, scaleZ;
-
-    scaleX = obj->header.gfx.scale[0];
-    scaleY = obj->header.gfx.scale[1];
-    scaleZ = obj->header.gfx.scale[2];
+    f32 scaleX = obj->header.gfx.scale[0];
+    f32 scaleY = obj->header.gfx.scale[1];
+    f32 scaleZ = obj->header.gfx.scale[2];
 
     obj->transform[0][0] *= scaleX;
     obj->transform[0][1] *= scaleX;
@@ -725,7 +717,6 @@ void cur_obj_init_animation(s32 animIndex) {
     struct Animation **anims = o->oAnimations;
     geo_obj_init_animation(&o->header.gfx, &anims[animIndex]);
 }
-
 
 void cur_obj_init_animation_with_sound(s32 animIndex) {
     struct Animation **anims = o->oAnimations;
@@ -967,42 +958,40 @@ void cur_obj_set_vel_from_mario_vel(f32 f12, f32 f14) {
 }
 
 BAD_RETURN(s16) cur_obj_reverse_animation(void) {
-    if (o->header.gfx.unk38.animFrame >= 0) {
-        o->header.gfx.unk38.animFrame--;
+    if (o->header.gfx.animInfo.animFrame >= 0) {
+        o->header.gfx.animInfo.animFrame--;
     }
 }
 
 BAD_RETURN(s32) cur_obj_extend_animation_if_at_end(void) {
-    s32 sp4 = o->header.gfx.unk38.animFrame;
-    s32 sp0 = o->header.gfx.unk38.curAnim->unk08 - 2;
+    s32 sp4 = o->header.gfx.animInfo.animFrame;
+    s32 sp0 = o->header.gfx.animInfo.curAnim->loopEnd - 2;
 
-    if (sp4 == sp0) o->header.gfx.unk38.animFrame--;
+    if (sp4 == sp0) o->header.gfx.animInfo.animFrame--;
 }
 
 s32 cur_obj_check_if_near_animation_end(void) {
-    u32 spC = (s32) o->header.gfx.unk38.curAnim->flags;
-    s32 sp8 = o->header.gfx.unk38.animFrame;
-    s32 sp4 = o->header.gfx.unk38.curAnim->unk08 - 2;
-    s32 sp0 = FALSE;
+    u32 animFlags = (s32) o->header.gfx.animInfo.curAnim->flags;
+    s32 animFrame = o->header.gfx.animInfo.animFrame;
+    s32 nearLoopEnd = o->header.gfx.animInfo.curAnim->loopEnd - 2;
+    s32 isNearEnd = FALSE;
 
-    if (spC & 0x01) {
-        if (sp4 + 1 == sp8) {
-            sp0 = TRUE;
-        }
+    if (animFlags & ANIM_FLAG_NOLOOP && nearLoopEnd + 1 == animFrame) {
+        isNearEnd = TRUE;
     }
 
-    if (sp8 == sp4) {
-        sp0 = TRUE;
+    if (animFrame == nearLoopEnd) {
+        isNearEnd = TRUE;
     }
 
-    return sp0;
+    return isNearEnd;
 }
 
 s32 cur_obj_check_if_at_animation_end(void) {
-    s32 sp4 = o->header.gfx.unk38.animFrame;
-    s32 sp0 = o->header.gfx.unk38.curAnim->unk08 - 1;
+    s32 animFrame = o->header.gfx.animInfo.animFrame;
+    s32 lastFrame = o->header.gfx.animInfo.curAnim->loopEnd - 1;
 
-    if (sp4 == sp0) {
+    if (animFrame == lastFrame) {
         return TRUE;
     } else {
         return FALSE;
@@ -1010,7 +999,7 @@ s32 cur_obj_check_if_at_animation_end(void) {
 }
 
 s32 cur_obj_check_anim_frame(s32 frame) {
-    s32 animFrame = o->header.gfx.unk38.animFrame;
+    s32 animFrame = o->header.gfx.animInfo.animFrame;
 
     if (animFrame == frame) {
         return TRUE;
@@ -1020,7 +1009,7 @@ s32 cur_obj_check_anim_frame(s32 frame) {
 }
 
 s32 cur_obj_check_anim_frame_in_range(s32 startFrame, s32 rangeLength) {
-    s32 animFrame = o->header.gfx.unk38.animFrame;
+    s32 animFrame = o->header.gfx.animInfo.animFrame;
 
     if (animFrame >= startFrame && animFrame < startFrame + rangeLength) {
         return TRUE;
@@ -1030,7 +1019,7 @@ s32 cur_obj_check_anim_frame_in_range(s32 startFrame, s32 rangeLength) {
 }
 
 s32 cur_obj_check_frame_prior_current_frame(s16 *a0) {
-    s16 sp6 = o->header.gfx.unk38.animFrame;
+    s16 sp6 = o->header.gfx.animInfo.animFrame;
 
     while (*a0 != -1) {
         if (*a0 == sp6) {
@@ -1527,7 +1516,7 @@ s32 cur_obj_outside_home_square(f32 halfLength) {
         return TRUE;
     }
 
-    return 0;
+    return FALSE;
 }
 
 s32 cur_obj_outside_home_rectangle(f32 minX, f32 maxX, f32 minZ, f32 maxZ) {
@@ -1579,7 +1568,7 @@ void cur_obj_start_cam_event(UNUSED struct Object *obj, s32 cameraEvent) {
 
 void set_mario_interact_hoot_if_in_range(UNUSED s32 sp0, UNUSED s32 sp4, f32 sp8) {
     if (o->oDistanceToMario < sp8) {
-        gMarioObject->oInteractStatus = 1;
+        gMarioObject->oInteractStatus = INT_STATUS_HOOT_GRABBED_BY_MARIO;
     }
 }
 
@@ -1657,21 +1646,21 @@ f32 cur_obj_abs_y_dist_to_home(void) {
 }
 
 s32 cur_obj_advance_looping_anim(void) {
-    s32 spC = o->header.gfx.unk38.animFrame;
-    s32 sp8 = o->header.gfx.unk38.curAnim->unk08;
-    s32 sp4;
+    s32 animFrame = o->header.gfx.animInfo.animFrame;
+    s32 loopEnd = o->header.gfx.animInfo.curAnim->loopEnd;
+    s32 result;
 
-    if (spC < 0) {
-        spC = 0;
-    } else if (sp8 - 1 == spC) {
-        spC = 0;
+    if (animFrame < 0) {
+        animFrame = 0;
+    } else if (loopEnd - 1 == animFrame) {
+        animFrame = 0;
     } else {
-        spC++;
+        animFrame++;
     }
 
-    sp4 = (spC << 16) / sp8;
+    result = (animFrame << 16) / loopEnd;
 
-    return sp4;
+    return result;
 }
 
 static s32 cur_obj_detect_steep_floor(s16 steepAngleDegrees) {
@@ -1680,7 +1669,7 @@ static s32 cur_obj_detect_steep_floor(s16 steepAngleDegrees) {
     f32 deltaFloorHeight;
     f32 steepNormalY = coss((s16)(steepAngleDegrees * (0x10000 / 360)));
 
-    if (o->oForwardVel != 0) {
+    if (o->oForwardVel != 0.0f) {
         intendedX = o->oPosX + o->oVelX;
         intendedZ = o->oPosZ + o->oVelZ;
         intendedFloorHeight = find_floor(intendedX, o->oPosY, intendedZ, &intendedFloor);
@@ -1725,14 +1714,14 @@ s32 cur_obj_resolve_wall_collisions(void) {
 
             o->oWallAngle = atan2s(wall->normal.z, wall->normal.x);
             if (abs_angle_diff(o->oWallAngle, o->oMoveAngleYaw) > 0x4000) {
-                return 1;
+                return TRUE;
             } else {
-                return 0;
+                return FALSE;
             }
         }
     }
 
-    return 0;
+    return FALSE;
 }
 
 static void cur_obj_update_floor(void) {
@@ -1824,7 +1813,7 @@ void cur_obj_move_standard(s16 steepSlopeAngleDegrees) {
         cur_obj_move_xz(steepSlopeNormalY, careAboutEdgesAndSteepSlopes);
         cur_obj_move_y(gravity, bounciness, buoyancy);
 
-        if (o->oForwardVel < 0) {
+        if (o->oForwardVel < 0.0f) {
             negativeSpeed = TRUE;
         }
         o->oForwardVel = sqrtf(sqr(o->oVelX) + sqr(o->oVelZ));
@@ -2161,11 +2150,11 @@ f32 absf(f32 x) {
     }
 }
 
-s32 absi(s32 a0) {
-    if (a0 >= 0) {
-        return a0;
+s32 absi(s32 x) {
+    if (x >= 0) {
+        return x;
     } else {
-        return -a0;
+        return -x;
     }
 }
 
@@ -2222,7 +2211,7 @@ void cur_obj_push_mario_away(f32 radius) {
 void cur_obj_push_mario_away_from_cylinder(f32 radius, f32 extentY) {
     f32 marioRelY = gMarioObject->oPosY - o->oPosY;
 
-    if (marioRelY < 0) {
+    if (marioRelY < 0.0f) {
         marioRelY = -marioRelY;
     }
 
@@ -2323,11 +2312,11 @@ s32 cur_obj_shake_y_until(s32 cycles, s32 amount) {
 
 s32 cur_obj_move_up_and_down(s32 a0) {
     if (a0 >= 4 || a0 < 0) {
-        return 1;
+        return TRUE;
     }
 
     o->oPosY += D_8032F0A0[a0];
-    return 0;
+    return FALSE;
 }
 
 void cur_obj_call_action_function(void (*actionFunctions[])(void)) {
@@ -2550,12 +2539,9 @@ void clear_time_stop_flags(s32 flags) {
 }
 
 s32 cur_obj_can_mario_activate_textbox(f32 radius, f32 height, UNUSED s32 unused) {
-    f32 latDistToMario;
-    UNUSED s16 angleFromMario;
-
     if (o->oDistanceToMario < 1500.0f) {
-        latDistToMario = lateral_dist_between_objects(o, gMarioObject);
-        angleFromMario = obj_angle_to_object(gMarioObject, o);
+        f32 latDistToMario = lateral_dist_between_objects(o, gMarioObject);
+        UNUSED s16 angleFromMario = obj_angle_to_object(gMarioObject, o);
 
         if (latDistToMario < radius && o->oPosY < gMarioObject->oPosY + 160.0f
             && gMarioObject->oPosY < o->oPosY + height && !(gMarioStates[0].action & ACT_FLAG_AIR)
@@ -2693,7 +2679,7 @@ s32 cur_obj_update_dialog_with_cutscene(s32 actionArg, s32 dialogFlags, s32 cuts
         case DIALOG_UNK2_TURN_AND_INTERRUPT_MARIO_ACTION:
             if (dialogFlags & DIALOG_UNK2_FLAG_0) {
                 doneTurning = cur_obj_rotate_yaw_toward(obj_angle_to_object(o, gMarioObject), 0x800);
-                if (o->oDialogResponse >= 0x21) {
+                if (o->oDialogResponse >= 33) {
                     doneTurning = TRUE;
                 }
             }
@@ -2822,7 +2808,7 @@ void obj_copy_behavior_params(struct Object *dst, struct Object *src) {
 
 void cur_obj_init_animation_and_anim_frame(s32 animIndex, s32 animFrame) {
     cur_obj_init_animation_with_sound(animIndex);
-    o->header.gfx.unk38.animFrame = animFrame;
+    o->header.gfx.animInfo.animFrame = animFrame;
 }
 
 s32 cur_obj_init_animation_and_check_if_near_end(s32 animIndex) {

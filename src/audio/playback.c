@@ -55,8 +55,14 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb)
         volRight = gDefaultPanVolume[127 - pan];
     }
 
-    velocity = MAX(0.0f, velocity);
-    velocity = MIN(32767.f, velocity);
+    if (velocity < 0.0f) {
+        stubbed_printf("Audio: setvol: volume minus %f\n", velocity);
+        velocity = 0.0f;
+    }
+    if (velocity > 32767.f) {
+        stubbed_printf("Audio: setvol: volume overflow %f\n", velocity);
+        velocity = 32767.f;
+    }
 
     sub->targetVolLeft =  ((s32) (velocity * volLeft) & 0xffff) >> 5;
     sub->targetVolRight = ((s32) (velocity * volRight) & 0xffff) >> 5;
@@ -79,6 +85,7 @@ void note_set_resampling_rate(struct Note *note, f32 resamplingRateInput) {
     struct NoteSubEu *tempSub = &note->noteSubEu;
 
     if (resamplingRateInput < 0.0f) {
+        stubbed_printf("Audio: setpitch: pitch minus %f\n", resamplingRateInput);
         resamplingRateInput = 0.0f;
     }
     if (resamplingRateInput < 2.0f) {
@@ -117,17 +124,21 @@ struct Instrument *get_instrument_inner(s32 bankId, s32 instId) {
     struct Instrument *inst;
 
     if (IS_BANK_LOAD_COMPLETE(bankId) == FALSE) {
+        stubbed_printf("Audio: voiceman: No bank error %d\n", bankId);
         gAudioErrorFlags = bankId + 0x10000000;
         return NULL;
     }
 
     if (instId >= gCtlEntries[bankId].numInstruments) {
+        stubbed_printf("Audio: voiceman: progNo. overflow %d,%d\n",
+                instId, gCtlEntries[bankId].numInstruments);
         gAudioErrorFlags = ((bankId << 8) + instId) + 0x3000000;
         return NULL;
     }
 
     inst = gCtlEntries[bankId].instruments[instId];
     if (inst == NULL) {
+        stubbed_printf("Audio: voiceman: progNo. undefined %d,%d\n", bankId, instId);
         gAudioErrorFlags = ((bankId << 8) + instId) + 0x1000000;
         return inst;
     }
@@ -141,6 +152,7 @@ struct Instrument *get_instrument_inner(s32 bankId, s32 instId) {
         return inst;
     }
 
+    stubbed_printf("Audio: voiceman: BAD Voicepointer %x,%d,%d\n", inst, bankId, instId);
     gAudioErrorFlags = ((bankId << 8) + instId) + 0x2000000;
     return NULL;
 }
@@ -148,16 +160,20 @@ struct Instrument *get_instrument_inner(s32 bankId, s32 instId) {
 struct Drum *get_drum(s32 bankId, s32 drumId) {
     struct Drum *drum;
     if (drumId >= gCtlEntries[bankId].numDrums) {
+        stubbed_printf("Audio: voiceman: Percussion Overflow %d,%d\n",
+                drumId, gCtlEntries[bankId].numDrums);
         gAudioErrorFlags = ((bankId << 8) + drumId) + 0x4000000;
-        return 0;
+        return NULL;
     }
 #ifndef NO_SEGMENTED_MEMORY
     if ((uintptr_t) gCtlEntries[bankId].drums < 0x80000000U) {
-        return 0;
+        stubbed_printf("Percussion Pointer Error\n");
+        return NULL;
     }
 #endif
     drum = gCtlEntries[bankId].drums[drumId];
     if (drum == NULL) {
+        stubbed_printf("Audio: voiceman: Percpointer NULL %d,%d\n", bankId, drumId);
         gAudioErrorFlags = ((bankId << 8) + drumId) + 0x5000000;
     }
     return drum;
@@ -232,8 +248,8 @@ void process_notes(void) {
 #endif
     s32 i;
 
-    // Macro versions of audio_list_push_front and audio_list_remove
-    // (PREPEND does not actually need to be a macro, but it seems likely.)
+    // Macro versions of audio_list_push_front and audio_list_remove.
+    // Should ideally be changed to use copt.
 #define PREPEND(item, head_arg)                                                                        \
     ((it = (item), it->prev != NULL)                                                                   \
          ? it                                                                                          \
@@ -257,6 +273,7 @@ void process_notes(void) {
             if (!playbackState->parentLayer->enabled && playbackState->priority >= NOTE_PRIORITY_MIN) {
                 goto c;
             } else if (playbackState->parentLayer->seqChannel->seqPlayer == NULL) {
+                eu_stubbed_printf_0("CAUTION:SUB IS SEPARATED FROM GROUP");
                 sequence_channel_disable(playbackState->parentLayer->seqChannel);
                 playbackState->priority = NOTE_PRIORITY_STOPPING;
                 continue;
@@ -292,6 +309,7 @@ void process_notes(void) {
                             playbackState->wantedParentLayer = NO_LAYER;
                             // don't skip
                         } else {
+                            eu_stubbed_printf_0("Error:Wait Track disappear\n");
                             note_disable(note);
                             audio_list_remove(&note->listItem);
                             audio_list_push_back(&note->listItem.pool->disabled, &note->listItem);
@@ -435,7 +453,10 @@ void seq_channel_layer_decay_release_internal(struct SequenceChannelLayer *seqLa
 
     if (note->parentLayer != seqLayer) {
 #ifdef VERSION_EU
-        if (note->parentLayer == NO_LAYER && note->wantedParentLayer == NO_LAYER && note->prevParentLayer == seqLayer && target != ADSR_STATE_DECAY) {
+        if (note->parentLayer == NO_LAYER && note->wantedParentLayer == NO_LAYER &&
+                note->prevParentLayer == seqLayer && target != ADSR_STATE_DECAY) {
+            // Just guessing that this printf goes here... it's hard to parse.
+            eu_stubbed_printf_0("Slow Release Batting\n");
             note->adsr.fadeOutVel = gAudioBufferParameters.updatesPerFrameInv;
             note->adsr.action |= ADSR_ACTION_RELEASE;
         }
@@ -503,6 +524,7 @@ s32 build_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLaye
     u8 sampleCountIndex;
 
     if (waveId < 128) {
+        stubbed_printf("Audio:Wavemem: Bad voiceno (%d)\n", waveId);
         waveId = 128;
     }
 
@@ -531,6 +553,7 @@ s32 build_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLaye
 
     return sampleCountIndex;
 }
+
 #else
 void build_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLayer) {
     s32 i;
@@ -671,7 +694,11 @@ void note_pool_clear(struct NotePool *pool) {
 #ifdef VERSION_EU
         for (;;) {
             cur = source->next;
-            if (cur == source || cur == NULL) {
+            if (cur == source) {
+                break;
+            }
+            if (cur == NULL) {
+                eu_stubbed_printf_0("Audio: C-Alloc : Dealloc voice is NULL\n");
                 break;
             }
             audio_list_remove(cur);
@@ -703,6 +730,7 @@ void note_pool_fill(struct NotePool *pool, s32 count) {
 
     for (i = 0, j = 0; j < count; i++) {
         if (i == 4) {
+            eu_stubbed_printf_1("Alloc Error:Dim voice-Alloc %d", count);
             return;
         }
 
@@ -741,7 +769,9 @@ void note_pool_fill(struct NotePool *pool, s32 count) {
 
 void audio_list_push_front(struct AudioListItem *list, struct AudioListItem *item) {
     // add 'item' to the front of the list given by 'list', if it's not in any list
-    if (item->prev == NULL) {
+    if (item->prev != NULL) {
+        eu_stubbed_printf_0("Error:Same List Add\n");
+    } else {
         item->prev = list;
         item->next = list->next;
         list->next->prev = item;
@@ -753,14 +783,16 @@ void audio_list_push_front(struct AudioListItem *list, struct AudioListItem *ite
 
 void audio_list_remove(struct AudioListItem *item) {
     // remove 'item' from the list it's in, if any
-    if (item->prev != NULL) {
+    if (item->prev == NULL) {
+        eu_stubbed_printf_0("Already Cut\n");
+    } else {
         item->prev->next = item->next;
         item->next->prev = item->prev;
         item->prev = NULL;
     }
 }
 
-struct Note *pop_node_with_value_less_equal(struct AudioListItem *list, s32 limit) {
+struct Note *pop_node_with_lower_prio(struct AudioListItem *list, s32 limit) {
     struct AudioListItem *cur = list->next;
     struct AudioListItem *best;
 
@@ -894,8 +926,10 @@ struct Note *alloc_note_from_decaying(struct NotePool *pool, struct SequenceChan
 
 struct Note *alloc_note_from_active(struct NotePool *pool, struct SequenceChannelLayer *seqLayer) {
     struct Note *note =
-        pop_node_with_value_less_equal(&pool->active, seqLayer->seqChannel->notePriority);
-    if (note != NULL) {
+        pop_node_with_lower_prio(&pool->active, seqLayer->seqChannel->notePriority);
+    if (note == NULL) {
+        eu_stubbed_printf_0("Audio: C-Alloc : lowerPrio is NULL\n");
+    } else {
         func_80319728(note, seqLayer);
         audio_list_push_back(&pool->releasing, &note->listItem);
     }
@@ -928,6 +962,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
         if (!(ret = alloc_note_from_disabled(&seqLayer->seqChannel->notePool, seqLayer))
             && !(ret = alloc_note_from_decaying(&seqLayer->seqChannel->notePool, seqLayer))
             && !(ret = alloc_note_from_active(&seqLayer->seqChannel->notePool, seqLayer))) {
+            eu_stubbed_printf_0("Sub Limited Warning: Drop Voice");
             seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
             return NULL;
         }
@@ -941,6 +976,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
             && !(ret = alloc_note_from_decaying(&seqLayer->seqChannel->seqPlayer->notePool, seqLayer))
             && !(ret = alloc_note_from_active(&seqLayer->seqChannel->notePool, seqLayer))
             && !(ret = alloc_note_from_active(&seqLayer->seqChannel->seqPlayer->notePool, seqLayer))) {
+            eu_stubbed_printf_0("Warning: Drop Voice");
             seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
             return NULL;
         }
@@ -951,6 +987,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
         if (!(ret = alloc_note_from_disabled(&gNoteFreeLists, seqLayer))
             && !(ret = alloc_note_from_decaying(&gNoteFreeLists, seqLayer))
             && !(ret = alloc_note_from_active(&gNoteFreeLists, seqLayer))) {
+            eu_stubbed_printf_0("Warning: Drop Voice");
             seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
             return NULL;
         }
@@ -966,6 +1003,7 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer) {
         && !(ret = alloc_note_from_active(&seqLayer->seqChannel->notePool, seqLayer))
         && !(ret = alloc_note_from_active(&seqLayer->seqChannel->seqPlayer->notePool, seqLayer))
         && !(ret = alloc_note_from_active(&gNoteFreeLists, seqLayer))) {
+        eu_stubbed_printf_0("Warning: Drop Voice");
         seqLayer->status = SOUND_LOAD_STATUS_NOT_LOADED;
         return NULL;
     }
@@ -1010,7 +1048,6 @@ void reclaim_notes(void) {
     }
 }
 #endif
-
 
 void note_init_all(void) {
     struct Note *note;

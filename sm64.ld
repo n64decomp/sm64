@@ -420,6 +420,12 @@ SECTIONS
       /* wildcard doesn't match on EU due to files being moved to engine/ */
       BUILD_DIR/src/game*.o(.data*);
 #endif
+      BUILD_DIR/src/audio/synthesis.o(.data*);
+      BUILD_DIR/src/audio/heap.o(.data*);
+      BUILD_DIR/src/audio/load.o(.data*);
+      BUILD_DIR/src/audio/playback.o(.data*);
+      BUILD_DIR/src/audio/effects.o(.data*);
+      BUILD_DIR/src/audio/seqplayer.o(.data*);
       BUILD_DIR/src/audio/external.o(.data*);
       BUILD_DIR/src/audio/port_eu.o(.data*);
       BUILD_DIR/src/audio/data.o(.data*);

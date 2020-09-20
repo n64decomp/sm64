@@ -256,7 +256,7 @@ void print_stageinfo(void) {
 void print_string_array_info(const char **strArr) {
     s32 i;
 
-    if (sDebugStringArrPrinted == FALSE) {
+    if (!sDebugStringArrPrinted) {
         sDebugStringArrPrinted += 1; // again, why not = TRUE...
         for (i = 0; i < 8; i++) {
             // sDebugPage is assumed to be 4 or 5 here.
@@ -401,7 +401,7 @@ void try_modify_debug_controls(void) {
     if (gPlayer1Controller->buttonPressed & Z_TRIG) {
         sNoExtraDebug ^= 1;
     }
-    if (!(gPlayer1Controller->buttonDown & (L_TRIG | R_TRIG)) && sNoExtraDebug == FALSE) {
+    if (!(gPlayer1Controller->buttonDown & (L_TRIG | R_TRIG)) && !sNoExtraDebug) {
         sp4 = 1;
         if (gPlayer1Controller->buttonDown & B_BUTTON) {
             sp4 = 100;

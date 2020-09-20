@@ -5,7 +5,7 @@
 
 .byte  0x80, 0x37, 0x12, 0x40   /* PI BSD Domain 1 register */
 .word  0x0000000F               /* Clockrate setting*/
-.word  entry_point               /* Entrypoint */
+.word  entry_point              /* Entrypoint */
 
 /* Revision */
 .if VERSION_SH == 1
@@ -39,8 +39,7 @@
 .endif
 
 .if VERSION_SH == 1
-    .byte 0x03                  /* Version (Shindou) */
+    .byte  0x03                 /* Version (Shindou) */
 .else
     .byte  0x00                 /* Version */
 .endif
-

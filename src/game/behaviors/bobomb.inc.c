@@ -69,12 +69,12 @@ void bobomb_act_patrol(void) {
     UNUSED s16 sp22;
     s16 collisionFlags;
 
-    sp22 = o->header.gfx.unk38.animFrame;
+    sp22 = o->header.gfx.animInfo.animFrame;
     o->oForwardVel = 5.0;
 
     collisionFlags = object_step();
     if ((obj_return_home_if_safe(o, o->oHomeX, o->oHomeY, o->oHomeZ, 400) == 1)
-        && (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, o->oAngleToMario, 0x2000) == 1)) {
+        && (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, o->oAngleToMario, 0x2000) == TRUE)) {
         o->oBobombFuseLit = 1;
         o->oAction = BOBOMB_ACT_CHASE_MARIO;
     }
@@ -85,7 +85,7 @@ void bobomb_act_chase_mario(void) {
     UNUSED u8 filler[4];
     s16 sp1a, collisionFlags;
 
-    sp1a = ++o->header.gfx.unk38.animFrame;
+    sp1a = ++o->header.gfx.animInfo.animFrame;
     o->oForwardVel = 20.0;
 
     collisionFlags = object_step();
@@ -286,7 +286,7 @@ void bhv_bobomb_buddy_init(void) {
 
 void bobomb_buddy_act_idle(void) {
     UNUSED u8 filler[4];
-    s16 sp1a = o->header.gfx.unk38.animFrame;
+    s16 sp1a = o->header.gfx.animInfo.animFrame;
     UNUSED s16 collisionFlags = 0;
 
     o->oBobombBuddyPosXCopy = o->oPosX;
@@ -383,7 +383,7 @@ void bobomb_buddy_act_talk(void) {
 }
 
 void bobomb_buddy_act_turn_to_talk(void) {
-    s16 sp1e = o->header.gfx.unk38.animFrame;
+    s16 sp1e = o->header.gfx.animInfo.animFrame;
     if ((sp1e == 5) || (sp1e == 16))
         cur_obj_play_sound_2(SOUND_OBJ_BOBOMB_WALK);
 

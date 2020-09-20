@@ -146,7 +146,7 @@ static void homing_amp_chase_loop(void) {
     check_amp_attack();
 
     // Give up if Mario goes further than 1500 units from the amp's original position
-    if (is_point_within_radius_of_mario(o->oHomeX, o->oHomeY, o->oHomeZ, 1500) == FALSE) {
+    if (!is_point_within_radius_of_mario(o->oHomeX, o->oHomeY, o->oHomeZ, 1500)) {
         o->oAction = HOMING_AMP_ACT_GIVE_UP;
     }
 }
@@ -178,7 +178,7 @@ static void homing_amp_give_up_loop(void) {
  */
 static void amp_attack_cooldown_loop(void) {
     // Turn intangible and wait for 90 frames before chasing Mario again after hitting him.
-    o->header.gfx.unk38.animFrame += 2;
+    o->header.gfx.animInfo.animFrame += 2;
     o->oForwardVel = 0;
 
     cur_obj_become_intangible();

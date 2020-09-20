@@ -98,7 +98,7 @@ void bully_act_knockback(void) {
         o->oMoveAngleYaw = o->oFaceAngleYaw;
         obj_turn_toward_object(o, gMarioObject, 16, 1280);
     } else
-        o->header.gfx.unk38.animFrame = 0;
+        o->header.gfx.animInfo.animFrame = 0;
 
     if (o->oBullyKBTimerAndMinionKOCounter == 18) {
         o->oAction = BULLY_ACT_CHASE_MARIO;
@@ -139,7 +139,7 @@ void bully_backup_check(s16 collisionFlags) {
 }
 
 void bully_play_stomping_sound(void) {
-    s16 sp26 = o->header.gfx.unk38.animFrame;
+    s16 sp26 = o->header.gfx.animInfo.animFrame;
     switch (o->oAction) {
         case BULLY_ACT_PATROL:
             if (sp26 == 0 || sp26 == 12) {

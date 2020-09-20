@@ -62,8 +62,8 @@ extern f32 gVolRampingRhs128[128];
 // non-constant .data
 extern s16 gTatumsPerBeat;
 extern s8 gUnusedCount80333EE8;
-extern s32 gAudioHeapSize;
-extern s32 D_80333EF0; // amount of heap designated to gAudioInitPool, 0x2500
+extern s32 gAudioHeapSize; // AUDIO_HEAP_SIZE
+extern s32 gAudioInitPoolSize; // AUDIO_INIT_POOL_SIZE
 extern volatile s32 gAudioLoadLock;
 
 // .bss
@@ -103,15 +103,14 @@ extern u16 gUnused80226E98[0x10];
 
 extern u32 gAudioRandom;
 
-//make my life easier
 #ifdef VERSION_EU
 #define UNUSED_COUNT_80333EE8 24
 #define AUDIO_HEAP_SIZE 0x2c500
-#define D_80333EF0_VAL 0x2c00
+#define AUDIO_INIT_POOL_SIZE 0x2c00
 #else
 #define UNUSED_COUNT_80333EE8 16
 #define AUDIO_HEAP_SIZE 0x31150
-#define D_80333EF0_VAL 0x2500
+#define AUDIO_INIT_POOL_SIZE 0x2500
 #endif
 
 

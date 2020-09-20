@@ -71,7 +71,7 @@ enum MenuButtonTypes {
     MENU_BUTTON_ERASE_MAX,
 
     // Sound Mode Menu (SOUND SELECT)
-    // This menu includes language settings on PAL
+    // This menu includes language settings on EU
     MENU_BUTTON_SOUND_MODE = MENU_BUTTON_ERASE_MAX,
     MENU_BUTTON_OPTION_MIN,
     MENU_BUTTON_STEREO = MENU_BUTTON_OPTION_MIN,

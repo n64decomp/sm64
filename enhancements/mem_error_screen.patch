@@ -170,7 +170,7 @@ index a3afffee..8b05fcf1 100644
 +        create_thread(&gGameLoopThread, 5, thread5_mem_error_message_loop, NULL, gThread5Stack + 0x2000, 10);
      osStartThread(&gGameLoopThread);
  
-     while (1) {
+     while (TRUE) {
 diff --git a/src/game/mem_error_screen.c b/src/game/mem_error_screen.c
 new file mode 100644
 index 00000000..81efaf91

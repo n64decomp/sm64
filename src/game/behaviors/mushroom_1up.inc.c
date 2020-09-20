@@ -20,11 +20,13 @@ void bhv_1up_common_init(void) {
 void bhv_1up_init(void) {
     bhv_1up_common_init();
     if (o->oBehParams2ndByte == 1) {
-        if ((save_file_get_flags() & 0x50) == 0)
+        if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
             o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+        }
     } else if (o->oBehParams2ndByte == 2) {
-        if ((save_file_get_flags() & 0xa0) == 0)
+        if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
             o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+        }
     }
 }
 

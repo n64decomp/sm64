@@ -16,8 +16,8 @@ void bhv_heave_ho_throw_mario_loop(void) {
         case 2:
             cur_obj_play_sound_2(SOUND_OBJ_HEAVEHO_TOSSED);
             gMarioObject->oInteractStatus |= INT_STATUS_MARIO_UNK2;
-            gMarioStates->forwardVel = -45.0f;
-            gMarioStates->vel[1] = 95.0f;
+            gMarioStates[0].forwardVel = -45.0f;
+            gMarioStates[0].vel[1] = 95.0f;
             o->parentObj->oHeaveHoUnk88 = 0;
             break;
     }
@@ -27,7 +27,7 @@ void heave_ho_act_1(void) {
     s32 sp1C = 0;
     o->oForwardVel = 0.0f;
     cur_obj_reverse_animation();
-    while (1) {
+    while (TRUE) {
         if (D_8032F460[sp1C][0] == -1) {
             o->oAction = 2;
             break;

@@ -3,16 +3,16 @@
 /**
  * @file Contains behavior for the ukiki objects.
  *
- * Hat ukiki is the ukiki that steals Mario's hat.
+ * Cap ukiki is the ukiki that steals Mario's cap.
  * Cage ukiki is the ukiki that triggers the cage star.
  */
 
 /**
- * Sets the hat ukiki to its home if Mario is far away
+ * Sets the cap ukiki to its home if Mario is far away
  * or makes him wait to respawn if in water.
  */
-void handle_hat_ukiki_reset(void) {
-    if (o->oBehParams2ndByte == UKIKI_HAT) {
+void handle_cap_ukiki_reset(void) {
+    if (o->oBehParams2ndByte == UKIKI_CAP) {
         if (cur_obj_mario_far_away()) {
             cur_obj_set_pos_to_home_and_stop();
             o->oAction = UKIKI_ACT_IDLE;
@@ -23,12 +23,12 @@ void handle_hat_ukiki_reset(void) {
 }
 
 /**
- * Returns TRUE if Mario has his hat and ukiki is
- * the hat ukiki.
+ * Returns TRUE if Mario has his cap and ukiki is
+ * the cap ukiki.
  */
-s32 is_hat_ukiki_and_mario_has_hat(void) {
-    if (o->oBehParams2ndByte == UKIKI_HAT) {
-        if (does_mario_have_hat(gMarioState)) {
+s32 is_cap_ukiki_and_mario_has_normal_cap_on_head(void) {
+    if (o->oBehParams2ndByte == UKIKI_CAP) {
+        if (does_mario_have_normal_cap_on_head(gMarioState)) {
             return TRUE;
         }
     }
@@ -124,7 +124,7 @@ void idle_ukiki_taunt(void) {
 void ukiki_act_idle(void) {
     idle_ukiki_taunt();
 
-    if (is_hat_ukiki_and_mario_has_hat()) {
+    if (is_cap_ukiki_and_mario_has_normal_cap_on_head()) {
         if (o->oDistanceToMario > 700.0f && o->oDistanceToMario < 1000.0f) {
             o->oAction = UKIKI_ACT_RUN;
         } else if (o->oDistanceToMario <= 700.0f && 200.0f < o->oDistanceToMario) {
@@ -140,8 +140,8 @@ void ukiki_act_idle(void) {
         o->oAction = UKIKI_ACT_GO_TO_CAGE;
     }
 
-    // Jump away from Mario after stealing his hat.
-    if (o->oUkikiTextState == UKIKI_TEXT_STOLE_HAT) {
+    // Jump away from Mario after stealing his cap.
+    if (o->oUkikiTextState == UKIKI_TEXT_STOLE_CAP) {
         o->oMoveAngleYaw = gMarioObject->oMoveAngleYaw + 0x8000;
 
         if (check_if_moving_over_floor(50.0f, 150.0f)) {
@@ -159,10 +159,10 @@ void ukiki_act_idle(void) {
             }
         }
 
-        o->oUkikiTextState = UKIKI_TEXT_HAS_HAT;
+        o->oUkikiTextState = UKIKI_TEXT_HAS_CAP;
     }
 
-    if (o->oBehParams2ndByte == UKIKI_HAT) {
+    if (o->oBehParams2ndByte == UKIKI_CAP) {
         if (o->oPosY < -1550.0f) {
             o->oAction = UKIKI_ACT_RETURN_HOME;
         }
@@ -171,7 +171,7 @@ void ukiki_act_idle(void) {
 
 /**
  * Ukiki attempts to run home, which is often impossible depending on terrain.
- * Only used for the hat ukiki.
+ * Only used for the cap ukiki.
  */
 void ukiki_act_return_home(void) {
     UNUSED s32 unused;
@@ -232,7 +232,7 @@ void ukiki_act_turn_to_mario(void) {
         o->oAction = UKIKI_ACT_IDLE;
     }
 
-    if (is_hat_ukiki_and_mario_has_hat()){
+    if (is_cap_ukiki_and_mario_has_normal_cap_on_head()){
         if (o->oDistanceToMario > 500.0f) {
             o->oAction = UKIKI_ACT_RUN;
         }
@@ -248,7 +248,7 @@ void ukiki_act_run(void) {
     s32 fleeMario = TRUE;
     s16 goalYaw = o->oAngleToMario + 0x8000;
 
-    if (is_hat_ukiki_and_mario_has_hat()) {
+    if (is_cap_ukiki_and_mario_has_normal_cap_on_head()) {
         fleeMario = FALSE;
         goalYaw = o->oAngleToMario;
     }
@@ -488,7 +488,7 @@ void ukiki_free_loop(void) {
     }
 
     cur_obj_move_standard(steepSlopeAngleDegrees);
-    handle_hat_ukiki_reset();
+    handle_cap_ukiki_reset();
 
     if(!(o->oMoveFlags & OBJ_MOVE_MASK_IN_WATER)) {
         exec_anim_sound_state(sUkikiSoundStates);
@@ -499,7 +499,7 @@ void ukiki_free_loop(void) {
  * Unused function for timing ukiki's blinking.
  * Image still present in Ukiki's actor graphics.
  *
- * Possibly unused so AnimState could be used for wearing a hat?
+ * Possibly unused so AnimState could be used for wearing a cap?
  */
 static void ukiki_blink_timer(void) {
     if (gGlobalTimer % 50 < 7) {
@@ -555,37 +555,37 @@ void cage_ukiki_held_loop(void) {
 }
 
 /**
- * Called by the main behavior function for the hat ukiki whenever it is held.
+ * Called by the main behavior function for the cap ukiki whenever it is held.
  */
-void hat_ukiki_held_loop(void) {
+void cap_ukiki_held_loop(void) {
     switch(o->oUkikiTextState) {
         case UKIKI_TEXT_DEFAULT:
             if (mario_lose_cap_to_enemy(2)) {
-                o->oUkikiTextState = UKIKI_TEXT_STEAL_HAT;
-                o->oUkikiHasHat |= UKIKI_HAT_ON;
+                o->oUkikiTextState = UKIKI_TEXT_STEAL_CAP;
+                o->oUkikiHasCap |= UKIKI_CAP_ON;
             } else {}
             break;
 
-        case UKIKI_TEXT_STEAL_HAT:
+        case UKIKI_TEXT_STEAL_CAP:
             if (cur_obj_update_dialog(2, 2, DIALOG_100, 0)) {
                 o->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
-                o->oUkikiTextState = UKIKI_TEXT_STOLE_HAT;
+                o->oUkikiTextState = UKIKI_TEXT_STOLE_CAP;
             }
             break;
 
-        case UKIKI_TEXT_STOLE_HAT:
+        case UKIKI_TEXT_STOLE_CAP:
             break;
 
-        case UKIKI_TEXT_HAS_HAT:
+        case UKIKI_TEXT_HAS_CAP:
             if (cur_obj_update_dialog(2, 18, DIALOG_101, 0)) {
                 mario_retrieve_cap();
                 set_mario_npc_dialog(0);
-                o->oUkikiHasHat &= ~UKIKI_HAT_ON;
-                o->oUkikiTextState = UKIKI_TEXT_GAVE_HAT_BACK;
+                o->oUkikiHasCap &= ~UKIKI_CAP_ON;
+                o->oUkikiTextState = UKIKI_TEXT_GAVE_CAP_BACK;
             }
             break;
 
-        case UKIKI_TEXT_GAVE_HAT_BACK:
+        case UKIKI_TEXT_GAVE_CAP_BACK:
             o->oUkikiTextState = UKIKI_TEXT_DEFAULT;
             o->oAction = UKIKI_ACT_IDLE;
             break;
@@ -593,20 +593,20 @@ void hat_ukiki_held_loop(void) {
 }
 
 /**
- * Initializatation for ukiki, determines if it has Mario's hat.
+ * Initializatation for ukiki, determines if it has Mario's cap.
  */
 void bhv_ukiki_init(void) {
-    if (o->oBehParams2ndByte == UKIKI_HAT) {
+    if (o->oBehParams2ndByte == UKIKI_CAP) {
         if (save_file_get_flags() & SAVE_FLAG_CAP_ON_UKIKI) {
-            o->oUkikiTextState = UKIKI_TEXT_HAS_HAT;
-            o->oUkikiHasHat |= UKIKI_HAT_ON;
+            o->oUkikiTextState = UKIKI_TEXT_HAS_CAP;
+            o->oUkikiHasCap |= UKIKI_CAP_ON;
         }
     }
 }
 
 /**
  * The main behavior function for ukiki. Chooses which behavior to use
- * dependent on the held state and whick ukiki it is (cage or hat).
+ * dependent on the held state and whick ukiki it is (cage or cap).
  */
 void bhv_ukiki_loop(void) {
     switch(o->oHeldState) {
@@ -620,8 +620,8 @@ void bhv_ukiki_loop(void) {
             cur_obj_unrender_and_reset_state(UKIKI_ANIM_HELD, 0);
             obj_copy_pos(o, gMarioObject);
 
-            if (o->oBehParams2ndByte == UKIKI_HAT) {
-                hat_ukiki_held_loop();
+            if (o->oBehParams2ndByte == UKIKI_CAP) {
+                cap_ukiki_held_loop();
             } else {
                 cage_ukiki_held_loop();
             }
@@ -633,8 +633,8 @@ void bhv_ukiki_loop(void) {
             break;
     }
 
-    if (o->oUkikiHasHat & UKIKI_HAT_ON) {
-        o->oAnimState = UKIKI_ANIM_STATE_HAT_ON;
+    if (o->oUkikiHasCap & UKIKI_CAP_ON) {
+        o->oAnimState = UKIKI_ANIM_STATE_CAP_ON;
     } else {
         o->oAnimState = UKIKI_ANIM_STATE_DEFAULT;
     }

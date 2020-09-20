@@ -528,8 +528,6 @@ $(BUILD_DIR)/actors/%.o: OPT_FLAGS := -g
 $(BUILD_DIR)/bin/%.o: OPT_FLAGS := -g
 $(BUILD_DIR)/src/goddard/%.o: OPT_FLAGS := -g
 $(BUILD_DIR)/src/goddard/%.o: MIPSISET := -mips1
-$(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
-$(BUILD_DIR)/src/audio/load.o: OPT_FLAGS := -O2 -framepointer -Wo,-loopunroll,0
 $(BUILD_DIR)/lib/src/%.o: OPT_FLAGS :=
 $(BUILD_DIR)/lib/src/math/ll%.o: MIPSISET := -mips3 -32
 $(BUILD_DIR)/lib/src/math/%.o: OPT_FLAGS := -O2
@@ -545,15 +543,22 @@ $(BUILD_DIR)/lib/src/_Ldtob.o: OPT_FLAGS := -O3
 $(BUILD_DIR)/lib/src/_Printf.o: OPT_FLAGS := -O3
 $(BUILD_DIR)/lib/src/sprintf.o: OPT_FLAGS := -O3
 
-# enable loop unrolling except for external.c (external.c might also have used
-# unrolling, but it makes one loop harder to match)
-$(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2
-$(BUILD_DIR)/src/audio/load.o: OPT_FLAGS := -O2
+# Enable loop unrolling except for external.c (external.c might also have used
+# unrolling, but it makes one loop harder to match).
+# For all audio files other than external.c and port_eu.c, put string literals
+# in .data. (In Shindou, the port_eu.c string literals also moved to .data.)
+$(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2 -use_readwrite_const
+$(BUILD_DIR)/src/audio/port_eu.o: OPT_FLAGS := -O2
 $(BUILD_DIR)/src/audio/external.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
 else
 
+$(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
+$(BUILD_DIR)/src/audio/load.o: OPT_FLAGS := -O2 -framepointer -Wo,-loopunroll,0
+
 # The source-to-source optimizer copt is enabled for audio. This makes it use
 # acpp, which needs -Wp,-+ to handle C++-style comments.
+# All other files than external.c should really use copt, but only a few have
+# been matched so far.
 $(BUILD_DIR)/src/audio/effects.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0 -sopt,-inline=sequence_channel_process_sound,-scalaroptimize=1 -Wp,-+
 $(BUILD_DIR)/src/audio/synthesis.o: OPT_FLAGS := -O2 -sopt,-scalaroptimize=1 -Wp,-+
 #$(BUILD_DIR)/src/audio/seqplayer.o: OPT_FLAGS := -O2 -sopt,-inline_manual,-scalaroptimize=1 -Wp,-+ #-Wo,-v,-bb,-l,seqplayer_list.txt

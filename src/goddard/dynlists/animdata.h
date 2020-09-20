@@ -16,7 +16,7 @@ extern struct AnimDataInfo anim_mario_eyebrows_4[3];
 extern struct AnimDataInfo anim_mario_eyebrows_5[3];
 extern struct AnimDataInfo anim_mario_eye_left[3];
 extern struct AnimDataInfo anim_mario_eye_right[3];
-extern struct AnimDataInfo anim_mario_hat[3];
+extern struct AnimDataInfo anim_mario_cap[3];
 extern struct AnimDataInfo anim_mario_lips_3[3];
 extern struct AnimDataInfo anim_mario_lips_4[3];
 extern struct AnimDataInfo anim_mario_ear_left[3];

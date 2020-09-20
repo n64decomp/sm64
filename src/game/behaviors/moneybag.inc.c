@@ -55,7 +55,7 @@ void moneybag_check_mario_collision(void) {
 // sp20 = collisionFlags
 
 void moneybag_jump(s8 collisionFlags) {
-    s16 animFrame = o->header.gfx.unk38.animFrame;
+    s16 animFrame = o->header.gfx.animInfo.animFrame;
 
     switch (o->oMoneybagJumpState) {
         case MONEYBAG_JUMP_PREPARE:
@@ -96,7 +96,7 @@ void moneybag_jump(s8 collisionFlags) {
             if (o->oTimer >= 61) {
                 o->oMoneybagJumpState = MONEYBAG_JUMP_LANDING;
                 o->oForwardVel = 0;
-                o->header.gfx.unk38.animFrame = 0;
+                o->header.gfx.animInfo.animFrame = 0;
             }
             break;
 

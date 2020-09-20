@@ -86,11 +86,11 @@ struct VblankHandler
 
 struct Animation {
     /*0x00*/ s16 flags;
-    /*0x02*/ s16 unk02;
-    /*0x04*/ s16 unk04;
-    /*0x06*/ s16 unk06;
-    /*0x08*/ s16 unk08;
-    /*0x0A*/ s16 unk0A;
+    /*0x02*/ s16 animYTransDivisor;
+    /*0x04*/ s16 startFrame;
+    /*0x06*/ s16 loopStart;
+    /*0x08*/ s16 loopEnd;
+    /*0x0A*/ s16 unusedBoneCount;
     /*0x0C*/ const s16 *values;
     /*0x10*/ const u16 *index;
     /*0x14*/ u32 length; // only used with Mario animations to determine how much to load. 0 otherwise.
@@ -108,8 +108,7 @@ struct GraphNode
     /*0x10*/ struct GraphNode *children;
 };
 
-// struct AnimInfo?
-struct GraphNodeObject_sub
+struct AnimInfo
 {
     /*0x00 0x38*/ s16 animID;
     /*0x02 0x3A*/ s16 animYTrans;
@@ -124,12 +123,12 @@ struct GraphNodeObject
 {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ struct GraphNode *sharedChild;
-    /*0x18*/ s8 unk18;
-    /*0x19*/ s8 unk19;
+    /*0x18*/ s8 areaIndex;
+    /*0x19*/ s8 activeAreaIndex;
     /*0x1A*/ Vec3s angle;
     /*0x20*/ Vec3f pos;
     /*0x2C*/ Vec3f scale;
-    /*0x38*/ struct GraphNodeObject_sub unk38;
+    /*0x38*/ struct AnimInfo animInfo;
     /*0x4C*/ struct SpawnInfo *unk4C;
     /*0x50*/ Mat4 *throwMatrix; // matrix ptr
     /*0x54*/ Vec3f cameraToObject;

@@ -29,7 +29,7 @@ void bhv_intro_peach_loop(void) {
             gCurrentObject->oIntroPeachPitchFromFocus = -9984.f;
             gCurrentObject->oIntroPeachYawFromFocus = -768.f;
             gCurrentObject->oOpacity = 255;
-            gCurrentObject->header.gfx.unk38.animFrame = 100;
+            gCurrentObject->header.gfx.animInfo.animFrame = 100;
             break;
         case 1:
             intro_peach_set_pos_and_opacity(gCurrentObject, 0.f, 0.f);
