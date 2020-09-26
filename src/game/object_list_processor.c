@@ -63,10 +63,12 @@ s16 gDebugInfoOverwrite[16][8];
  */
 u32 gTimeStopState;
 
+#ifndef USE_SYSTEM_MALLOC
 /**
  * The pool that objects are allocated from.
  */
 struct Object gObjectPool[OBJECT_POOL_CAPACITY];
+#endif
 
 /**
  * A special object whose purpose is to act as a parent for macro objects.
@@ -540,16 +542,20 @@ void clear_objects(void) {
 
     debug_unknown_level_select_check();
 
+#ifndef USE_SYSTEM_MALLOC
     init_free_object_list();
+#endif
     clear_object_lists(gObjectListArray);
 
     stub_behavior_script_2();
     stub_obj_list_processor_1();
 
+#ifndef USE_SYSTEM_MALLOC
     for (i = 0; i < OBJECT_POOL_CAPACITY; i++) {
         gObjectPool[i].activeFlags = ACTIVE_FLAG_DEACTIVATED;
         geo_reset_object_node(&gObjectPool[i].header.gfx);
     }
+#endif
 
     gObjectMemoryPool = mem_pool_init(0x800, MEMORY_POOL_LEFT);
     gObjectLists = gObjectListArray;

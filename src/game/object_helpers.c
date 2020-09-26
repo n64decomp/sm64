@@ -551,7 +551,13 @@ struct Object *try_to_spawn_object(s16 offsetY, f32 scale, struct Object *parent
                                    const BehaviorScript *behavior) {
     struct Object *obj;
 
-    if (gFreeObjectList.next != NULL) {
+    if (
+#ifdef USE_SYSTEM_MALLOC
+        TRUE
+#else
+        gFreeObjectList.next != NULL
+#endif
+    ) {
         obj = spawn_object(parent, model, behavior);
         obj->oPosY += offsetY;
         obj_scale(obj, scale);

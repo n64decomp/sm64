@@ -12,7 +12,13 @@ void bhv_object_bubble_loop(void) {
     f32 bubbleY = o->oPosY;
 
     if (bubbleY > waterY) {
-        if (gFreeObjectList.next) {
+        if (
+#ifdef USE_SYSTEM_MALLOC
+            TRUE
+#else
+            gFreeObjectList.next != NULL
+#endif
+        ) {
             bubbleSplash = spawn_object_at_origin(o, 0, MODEL_SMALL_WATER_SPLASH, bhvBubbleSplash);
             bubbleSplash->oPosX = o->oPosX;
             bubbleSplash->oPosY = bubbleY + 5.0f;

@@ -454,7 +454,7 @@ ifeq ($(TARGET_WEB),1)
   PLATFORM_LDFLAGS := -lm -no-pie -s TOTAL_MEMORY=20MB -g4 --source-map-base http://localhost:8080/ -s "EXTRA_EXPORTED_RUNTIME_METHODS=['callMain']"
 endif
 
-PLATFORM_CFLAGS += -DNO_SEGMENTED_MEMORY
+PLATFORM_CFLAGS += -DNO_SEGMENTED_MEMORY -DUSE_SYSTEM_MALLOC
 
 # Compiler and linker flags for graphics backend
 ifeq ($(ENABLE_OPENGL),1)

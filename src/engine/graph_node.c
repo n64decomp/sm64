@@ -312,6 +312,10 @@ struct GraphNodeObject *init_graph_node_object(struct AllocOnlyPool *pool,
         vec3f_copy(graphNode->pos, pos);
         vec3f_copy(graphNode->scale, scale);
         vec3s_copy(graphNode->angle, angle);
+#ifdef USE_SYSTEM_MALLOC
+        // To avoid uninitialised memory usage in audio code
+        vec3f_copy(graphNode->cameraToObject, gVec3fZero);
+#endif
         graphNode->sharedChild = sharedChild;
         graphNode->throwMatrix = NULL;
         graphNode->animInfo.animID = 0;

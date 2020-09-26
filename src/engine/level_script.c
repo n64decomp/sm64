@@ -55,6 +55,10 @@ static s16 sScriptStatus;
 static s32 sRegister;
 static struct LevelCommand *sCurrentCmd;
 
+#ifdef USE_SYSTEM_MALLOC
+static struct MemoryPool *sMemPoolForGoddard;
+#endif
+
 static s32 eval_script_op(s8 op, s32 arg) {
     s32 result = 0;
 
@@ -280,7 +284,23 @@ static void level_cmd_load_mio0(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
+#ifdef USE_SYSTEM_MALLOC
+static void *alloc_for_goddard(u32 size) {
+    return mem_pool_alloc(sMemPoolForGoddard, size);
+}
+
+static void free_for_goddard(void *ptr) {
+    mem_pool_free(sMemPoolForGoddard, ptr);
+}
+#endif
+
 static void level_cmd_load_mario_head(void) {
+#ifdef USE_SYSTEM_MALLOC
+    sMemPoolForGoddard = mem_pool_init(0, 0);
+    gdm_init(alloc_for_goddard, free_for_goddard);
+    gdm_setup();
+    gdm_maketestdl(CMD_GET(s16, 2));
+#else
     // TODO: Fix these hardcoded sizes
     void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000), MEMORY_POOL_LEFT);
     if (addr != NULL) {
@@ -291,6 +311,7 @@ static void level_cmd_load_mario_head(void) {
         gdm_maketestdl(CMD_GET(s16, 2));
     } else {
     }
+#endif
 
     sCurrentCmd = CMD_NEXT;
 }
@@ -320,8 +341,12 @@ static void level_cmd_clear_level(void) {
 
 static void level_cmd_alloc_level_pool(void) {
     if (sLevelPool == NULL) {
+#ifdef USE_SYSTEM_MALLOC
+        sLevelPool = alloc_only_pool_init();
+#else
         sLevelPool = alloc_only_pool_init(main_pool_available() - sizeof(struct AllocOnlyPool),
                                           MEMORY_POOL_LEFT);
+#endif
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -330,7 +355,9 @@ static void level_cmd_alloc_level_pool(void) {
 static void level_cmd_free_level_pool(void) {
     s32 i;
 
+#ifndef USE_SYSTEM_MALLOC
     alloc_only_pool_resize(sLevelPool, sLevelPool->usedSpace);
+#endif
     sLevelPool = NULL;
 
     for (i = 0; i < 8; i++) {

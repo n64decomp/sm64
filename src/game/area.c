@@ -159,6 +159,11 @@ void load_obj_warp_nodes(void) {
     struct ObjectWarpNode *sp24;
     struct Object *sp20 = (struct Object *) gObjParentGraphNode.children;
 
+#ifdef USE_SYSTEM_MALLOC
+    if (sp20 == NULL) {
+        return;
+    }
+#endif
     do {
         struct Object *sp1C = sp20;
 

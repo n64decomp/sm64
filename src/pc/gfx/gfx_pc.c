@@ -100,6 +100,11 @@ static struct RSP {
     } texture_scaling_factor;
     
     struct LoadedVertex loaded_vertices[MAX_VERTICES + 4];
+
+    uint8_t saved_opcode;
+    uint8_t saved_tile;
+    uint16_t saved_uls, saved_ult;
+    int32_t saved_lrx, saved_lry, saved_ulx, saved_uly;
 } rsp;
 
 static struct RDP {
@@ -1459,6 +1464,56 @@ static void gfx_run_dl(Gfx* cmd) {
                 gfx_sp_set_other_mode(C0(8, 8) + 32, C0(0, 8), (uint64_t) cmd->words.w1 << 32);
 #endif
                 break;
+#ifdef F3D_OLD
+            case (uint8_t)G_RDPHALF_2:
+#else
+            case (uint8_t)G_RDPHALF_1:
+#endif
+                switch (rsp.saved_opcode) {
+                    case G_TEXRECT:
+                    case G_TEXRECTFLIP:
+#ifdef F3DEX_GBI_2E
+                        rsp.saved_ulx = (int32_t)(C0(0, 24) << 8) >> 8;
+#endif
+                        rsp.saved_uls = (uint16_t)C1(16, 16);
+                        rsp.saved_ult = (uint16_t)C1(0, 16);
+                        break;
+#ifdef F3DEX_GBI_2E
+                    case G_FILLRECT:
+                    {
+                        int32_t ulx = (int32_t)(C0(0, 24) << 8) >> 8;
+                        int32_t uly = (int32_t)(C1(0, 24) << 8) >> 8;
+                        gfx_dp_fill_rectangle(ulx, uly, rsp.saved_lrx, rsp.saved_lry);
+                        rsp.saved_opcode = G_NOOP;
+                        break;
+                    }
+#endif
+                }
+                break;
+#ifdef F3D_OLD
+            case (uint8_t)G_RDPHALF_CONT:
+#else
+            case (uint8_t)G_RDPHALF_2:
+#endif
+                switch (rsp.saved_opcode) {
+                    case G_TEXRECT:
+                    case G_TEXRECTFLIP:
+                    {
+                        uint8_t tile = rsp.saved_tile;
+                        int32_t ulx = rsp.saved_ulx, lrx = rsp.saved_lrx, lry = rsp.saved_lry;
+                        uint16_t uls = rsp.saved_uls, ult = rsp.saved_ult;
+#ifdef F3DEX_GBI_2E
+                        int32_t uly = (int32_t)(C0(0, 24) << 8) >> 8;
+#else
+                        int32_t uly = rsp.saved_uly;
+#endif
+                        uint16_t dsdx = (uint16_t)C1(16, 16);
+                        uint16_t dtdy = (uint16_t)C1(0, 16);
+                        gfx_dp_texture_rectangle(ulx, uly, lrx, lry, tile, uls, ult, dsdx, dtdy, rsp.saved_opcode == G_TEXRECTFLIP);
+                        rsp.saved_opcode = G_NOOP;
+                        break;
+                    }
+                }
             
             // RDP Commands:
             case G_SETTIMG:
@@ -1503,45 +1558,26 @@ static void gfx_run_dl(Gfx* cmd) {
             case G_TEXRECT:
             case G_TEXRECTFLIP:
             {
-                int32_t lrx, lry, tile, ulx, uly;
-                uint32_t uls, ult, dsdx, dtdy;
+                rsp.saved_opcode = opcode;
 #ifdef F3DEX_GBI_2E
-                lrx = (int32_t)(C0(0, 24) << 8) >> 8;
-                lry = (int32_t)(C1(0, 24) << 8) >> 8;
-                ++cmd;
-                ulx = (int32_t)(C0(0, 24) << 8) >> 8;
-                uly = (int32_t)(C1(0, 24) << 8) >> 8;
-                ++cmd;
-                uls = C0(16, 16);
-                ult = C0(0, 16);
-                dsdx = C1(16, 16);
-                dtdy = C1(0, 16);
+                rsp.saved_lrx = (int32_t)(C0(0, 24) << 8) >> 8;
+                rsp.saved_lry = (int32_t)(C1(0, 24) << 8) >> 8;
+                rsp.saved_tile = (int32_t)C1(24, 3);
 #else
-                lrx = C0(12, 12);
-                lry = C0(0, 12);
-                tile = C1(24, 3);
-                ulx = C1(12, 12);
-                uly = C1(0, 12);
-                ++cmd;
-                uls = C1(16, 16);
-                ult = C1(0, 16);
-                ++cmd;
-                dsdx = C1(16, 16);
-                dtdy = C1(0, 16);
+                rsp.saved_lrx = C0(12, 12);
+                rsp.saved_lry = C0(0, 12);
+                rsp.saved_tile = C1(24, 3);
+                rsp.saved_ulx = C1(12, 12);
+                rsp.saved_uly = C1(0, 12);
 #endif
-                gfx_dp_texture_rectangle(ulx, uly, lrx, lry, tile, uls, ult, dsdx, dtdy, opcode == G_TEXRECTFLIP);
                 break;
             }
             case G_FILLRECT:
 #ifdef F3DEX_GBI_2E
             {
-                int32_t lrx, lry, ulx, uly;
-                lrx = (int32_t)(C0(0, 24) << 8) >> 8;
-                lry = (int32_t)(C1(0, 24) << 8) >> 8;
-                ++cmd;
-                ulx = (int32_t)(C0(0, 24) << 8) >> 8;
-                uly = (int32_t)(C1(0, 24) << 8) >> 8;
-                gfx_dp_fill_rectangle(ulx, uly, lrx, lry);
+                rsp.saved_opcode = G_FILLRECT;
+                rsp.saved_lrx = (int32_t)(C0(0, 24) << 8) >> 8;
+                rsp.saved_lry = (int32_t)(C1(0, 24) << 8) >> 8;
                 break;
             }
 #else
