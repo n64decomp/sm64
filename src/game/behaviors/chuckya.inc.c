@@ -9,15 +9,15 @@ void common_anchor_mario_behavior(f32 sp28, f32 sp2C, s32 sp30) {
             break;
         case 2:
             gMarioObject->oInteractStatus |= (sp30 + INT_STATUS_MARIO_UNK2);
-            gMarioStates->forwardVel = sp28;
-            gMarioStates->vel[1] = sp2C;
+            gMarioStates[0].forwardVel = sp28;
+            gMarioStates[0].vel[1] = sp2C;
             o->parentObj->oChuckyaUnk88 = 0;
             break;
         case 3:
             gMarioObject->oInteractStatus |=
                 (INT_STATUS_MARIO_UNK2 + INT_STATUS_MARIO_UNK6); // loads 2 interactions at once?
-            gMarioStates->forwardVel = 10.0f;
-            gMarioStates->vel[1] = 10.0f;
+            gMarioStates[0].forwardVel = 10.0f;
+            gMarioStates[0].vel[1] = 10.0f;
             o->parentObj->oChuckyaUnk88 = 0;
             break;
     }

@@ -12,15 +12,12 @@ void osViSetSpecialFeatures(u32 func) {
         D_80334914->features |= OS_VI_GAMMA_DITHER;
     }
     if (func & OS_VI_GAMMA_DITHER_OFF) {
-
         D_80334914->features &= ~OS_VI_GAMMA_DITHER;
     }
     if (func & OS_VI_DIVOT_ON) {
-
         D_80334914->features |= OS_VI_DIVOT;
     }
     if (func & OS_VI_DIVOT_OFF) {
-
         D_80334914->features &= ~OS_VI_DIVOT;
     }
     if (func & OS_VI_DITHER_FILTER_ON) {

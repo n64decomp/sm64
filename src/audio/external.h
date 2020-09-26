@@ -21,6 +21,9 @@
 extern s32 gAudioErrorFlags;
 extern f32 gDefaultSoundArgs[3];
 
+// defined in data.c, used by the game
+extern u32 gAudioRandom;
+
 extern u8 gAudioSPTaskYieldBuffer[]; // ucode yield data ptr; only used in JP
 
 struct SPTask *create_next_audio_frame_task(void);

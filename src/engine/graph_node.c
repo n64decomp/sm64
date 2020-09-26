@@ -314,12 +314,12 @@ struct GraphNodeObject *init_graph_node_object(struct AllocOnlyPool *pool,
         vec3s_copy(graphNode->angle, angle);
         graphNode->sharedChild = sharedChild;
         graphNode->throwMatrix = NULL;
-        graphNode->unk38.animID = 0;
-        graphNode->unk38.curAnim = NULL;
-        graphNode->unk38.animFrame = 0;
-        graphNode->unk38.animFrameAccelAssist = 0;
-        graphNode->unk38.animAccel = 0x10000;
-        graphNode->unk38.animTimer = 0;
+        graphNode->animInfo.animID = 0;
+        graphNode->animInfo.curAnim = NULL;
+        graphNode->animInfo.animFrame = 0;
+        graphNode->animInfo.animFrameAccelAssist = 0;
+        graphNode->animInfo.animAccel = 0x10000;
+        graphNode->animInfo.animTimer = 0;
         graphNode->node.flags |= GRAPH_RENDER_HAS_ANIMATION;
     }
 
@@ -698,7 +698,7 @@ void geo_obj_init(struct GraphNodeObject *graphNode, void *sharedChild, Vec3f po
     graphNode->sharedChild = sharedChild;
     graphNode->unk4C = 0;
     graphNode->throwMatrix = NULL;
-    graphNode->unk38.curAnim = NULL;
+    graphNode->animInfo.curAnim = NULL;
 
     graphNode->node.flags |= GRAPH_RENDER_ACTIVE;
     graphNode->node.flags &= ~GRAPH_RENDER_INVISIBLE;
@@ -717,12 +717,12 @@ void geo_obj_init_spawninfo(struct GraphNodeObject *graphNode, struct SpawnInfo 
     graphNode->pos[1] = (f32) spawn->startPos[1];
     graphNode->pos[2] = (f32) spawn->startPos[2];
 
-    graphNode->unk18 = spawn->areaIndex;
-    graphNode->unk19 = spawn->activeAreaIndex;
+    graphNode->areaIndex = spawn->areaIndex;
+    graphNode->activeAreaIndex = spawn->activeAreaIndex;
     graphNode->sharedChild = spawn->unk18;
     graphNode->unk4C = spawn;
     graphNode->throwMatrix = NULL;
-    graphNode->unk38.curAnim = 0;
+    graphNode->animInfo.curAnim = 0;
 
     graphNode->node.flags |= GRAPH_RENDER_ACTIVE;
     graphNode->node.flags &= ~GRAPH_RENDER_INVISIBLE;
@@ -737,11 +737,11 @@ void geo_obj_init_animation(struct GraphNodeObject *graphNode, struct Animation 
     struct Animation **animSegmented = segmented_to_virtual(animPtrAddr);
     struct Animation *anim = segmented_to_virtual(*animSegmented);
 
-    if (graphNode->unk38.curAnim != anim) {
-        graphNode->unk38.curAnim = anim;
-        graphNode->unk38.animFrame = anim->unk04 + ((anim->flags & ANIM_FLAG_FORWARD) ? 1 : -1);
-        graphNode->unk38.animAccel = 0;
-        graphNode->unk38.animYTrans = 0;
+    if (graphNode->animInfo.curAnim != anim) {
+        graphNode->animInfo.curAnim = anim;
+        graphNode->animInfo.animFrame = anim->startFrame + ((anim->flags & ANIM_FLAG_FORWARD) ? 1 : -1);
+        graphNode->animInfo.animAccel = 0;
+        graphNode->animInfo.animYTrans = 0;
     }
 }
 
@@ -752,15 +752,15 @@ void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, struct Anim
     struct Animation **animSegmented = segmented_to_virtual(animPtrAddr);
     struct Animation *anim = segmented_to_virtual(*animSegmented);
 
-    if (graphNode->unk38.curAnim != anim) {
-        graphNode->unk38.curAnim = anim;
-        graphNode->unk38.animYTrans = 0;
-        graphNode->unk38.animFrameAccelAssist =
-            (anim->unk04 << 16) + ((anim->flags & ANIM_FLAG_FORWARD) ? animAccel : -animAccel);
-        graphNode->unk38.animFrame = graphNode->unk38.animFrameAccelAssist >> 16;
+    if (graphNode->animInfo.curAnim != anim) {
+        graphNode->animInfo.curAnim = anim;
+        graphNode->animInfo.animYTrans = 0;
+        graphNode->animInfo.animFrameAccelAssist =
+            (anim->startFrame << 16) + ((anim->flags & ANIM_FLAG_FORWARD) ? animAccel : -animAccel);
+        graphNode->animInfo.animFrame = graphNode->animInfo.animFrameAccelAssist >> 16;
     }
 
-    graphNode->unk38.animAccel = animAccel;
+    graphNode->animInfo.animAccel = animAccel;
 }
 
 /**
@@ -789,7 +789,7 @@ s32 retrieve_animation_index(s32 frame, u16 **attributes) {
  * whether it plays forwards or backwards, and whether it stops or loops at
  * the end etc.
  */
-s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist) {
+s16 geo_update_animation_frame(struct AnimInfo *obj, s32 *accelAssist) {
     s32 result;
     struct Animation *anim;
 
@@ -810,11 +810,11 @@ s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist
             result = (obj->animFrame - 1) << 16;
         }
 
-        if (GET_HIGH_S16_OF_32(result) < anim->unk06) {
+        if (GET_HIGH_S16_OF_32(result) < anim->loopStart) {
             if (anim->flags & ANIM_FLAG_NOLOOP) {
-                SET_HIGH_S16_OF_32(result, anim->unk06);
+                SET_HIGH_S16_OF_32(result, anim->loopStart);
             } else {
-                SET_HIGH_S16_OF_32(result, anim->unk08 - 1);
+                SET_HIGH_S16_OF_32(result, anim->loopEnd - 1);
             }
         }
     } else {
@@ -824,11 +824,11 @@ s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist
             result = (obj->animFrame + 1) << 16;
         }
 
-        if (GET_HIGH_S16_OF_32(result) >= anim->unk08) {
+        if (GET_HIGH_S16_OF_32(result) >= anim->loopEnd) {
             if (anim->flags & ANIM_FLAG_NOLOOP) {
-                SET_HIGH_S16_OF_32(result, anim->unk08 - 1);
+                SET_HIGH_S16_OF_32(result, anim->loopEnd - 1);
             } else {
-                SET_HIGH_S16_OF_32(result, anim->unk06);
+                SET_HIGH_S16_OF_32(result, anim->loopStart);
             }
         }
     }
@@ -849,7 +849,7 @@ s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist
  * animations without lateral translation.
  */
 void geo_retreive_animation_translation(struct GraphNodeObject *obj, Vec3f position) {
-    struct Animation *animation = obj->unk38.curAnim;
+    struct Animation *animation = obj->animInfo.curAnim;
     u16 *attribute;
     s16 *values;
     s16 frame;
@@ -858,7 +858,7 @@ void geo_retreive_animation_translation(struct GraphNodeObject *obj, Vec3f posit
         attribute = segmented_to_virtual((void *) animation->index);
         values = segmented_to_virtual((void *) animation->values);
 
-        frame = obj->unk38.animFrame;
+        frame = obj->animInfo.animFrame;
 
         if (frame < 0) {
             frame = 0;

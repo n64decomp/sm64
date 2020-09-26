@@ -36,7 +36,7 @@ void manta_ray_move(void) {
     s16 sp1E;
     s32 sp18;
 
-    sp1E = o->header.gfx.unk38.animFrame;
+    sp1E = o->header.gfx.animInfo.animFrame;
     gCurrentObject->oPathedStartWaypoint = (struct Waypoint *) sMantaRayTraj;
     sp18 = cur_obj_follow_path(sp18);
     o->oMantaUnkF8 = o->oPathedTargetYaw;

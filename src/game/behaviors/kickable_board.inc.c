@@ -3,17 +3,17 @@
 s32 check_mario_attacking(UNUSED s32 sp18) {
     if (obj_check_if_collided_with_object(o, gMarioObject)) {
         if (abs_angle_diff(o->oMoveAngleYaw, gMarioObject->oMoveAngleYaw) > 0x6000) {
-            if (gMarioStates->action == ACT_SLIDE_KICK)
+            if (gMarioStates[0].action == ACT_SLIDE_KICK)
                 return 1;
-            if (gMarioStates->action == ACT_PUNCHING)
+            if (gMarioStates[0].action == ACT_PUNCHING)
                 return 1;
-            if (gMarioStates->action == ACT_MOVE_PUNCHING)
+            if (gMarioStates[0].action == ACT_MOVE_PUNCHING)
                 return 1;
-            if (gMarioStates->action == ACT_SLIDE_KICK_SLIDE)
+            if (gMarioStates[0].action == ACT_SLIDE_KICK_SLIDE)
                 return 1;
-            if (gMarioStates->action == ACT_JUMP_KICK)
+            if (gMarioStates[0].action == ACT_JUMP_KICK)
                 return 2;
-            if (gMarioStates->action == ACT_WALL_KICK_AIR)
+            if (gMarioStates[0].action == ACT_WALL_KICK_AIR)
                 return 2;
         }
     }

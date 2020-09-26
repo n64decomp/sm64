@@ -107,11 +107,32 @@ extern u8 gBankSetsData[];  // bank_sets.s
  * Performs an immediate DMA copy
  */
 void audio_dma_copy_immediate(uintptr_t devAddr, void *vAddr, size_t nbytes) {
+    eu_stubbed_printf_3("Romcopy %x -> %x ,size %x\n", devAddr, vAddr, nbytes);
     osInvalDCache(vAddr, nbytes);
     osPiStartDma(&gAudioDmaIoMesg, OS_MESG_PRI_HIGH, OS_READ, devAddr, vAddr, nbytes,
                  &gAudioDmaMesgQueue);
     osRecvMesg(&gAudioDmaMesgQueue, NULL, OS_MESG_BLOCK);
+    eu_stubbed_printf_0("Romcopyend\n");
 }
+
+#ifdef VERSION_EU
+u8 audioString34[] = "CAUTION:WAVE CACHE FULL %d";
+u8 audioString35[] = "BASE %x %x\n";
+u8 audioString36[] = "LOAD %x %x %x\n";
+u8 audioString37[] = "INSTTOP    %x\n";
+u8 audioString38[] = "INSTMAP[0] %x\n";
+u8 audioString39[] = "already flags %d\n";
+u8 audioString40[] = "already flags %d\n";
+u8 audioString41[] = "ERR:SLOW BANK DMA BUSY\n";
+u8 audioString42[] = "ERR:SLOW DMA BUSY\n";
+u8 audioString43[] = "Check %d  bank %d\n";
+u8 audioString44[] = "Cache Check\n";
+u8 audioString45[] = "NO BANK ERROR\n";
+u8 audioString46[] = "BANK %d LOADING START\n";
+u8 audioString47[] = "BANK %d LOAD MISS (NO MEMORY)!\n";
+u8 audioString48[] = "BANK %d ALREADY CACHED\n";
+u8 audioString49[] = "BANK LOAD MISS! FOR %d\n";
+#endif
 
 /**
  * Performs an asynchronus (normal priority) DMA copy
@@ -666,11 +687,13 @@ void *sequence_dma_async(s32 seqId, s32 arg1, struct SequencePlayer *seqPlayer) 
     u8 *seqData;
     OSMesgQueue *mesgQueue;
 
+    eu_stubbed_printf_1("Seq %d Loading Start\n", seqId);
     seqLength = gSeqFileHeader->seqArray[seqId].len + 0xf;
     seqLength = ALIGN16(seqLength);
     seqData = gSeqFileHeader->seqArray[seqId].offset;
     ptr = alloc_bank_or_seq(&gSeqLoadedPool, 1, seqLength, arg1, seqId);
     if (ptr == NULL) {
+        eu_stubbed_printf_0("Heap Overflow Error\n");
         return NULL;
     }
 
@@ -678,8 +701,8 @@ void *sequence_dma_async(s32 seqId, s32 arg1, struct SequencePlayer *seqPlayer) 
         // Immediately load short sequenece
         audio_dma_copy_immediate((uintptr_t) seqData, ptr, seqLength);
         if (1) {
-        gSeqLoadStatus[seqId] = SOUND_LOAD_STATUS_COMPLETE;
         }
+        gSeqLoadStatus[seqId] = SOUND_LOAD_STATUS_COMPLETE;
     } else {
         audio_dma_copy_immediate((uintptr_t) seqData, ptr, 0x40);
         mesgQueue = &seqPlayer->seqDmaMesgQueue;
@@ -742,12 +765,12 @@ struct AudioBank *load_banks_immediate(s32 seqId, u8 *arg1) {
     u16 offset;
     u8 i;
 
-#ifdef VERSION_EU
     offset = ((u16 *) gAlBankSets)[seqId];
+#ifdef VERSION_EU
     for (i = gAlBankSets[offset++]; i != 0; i--) {
         bankId = gAlBankSets[offset++];
 #else
-    offset = ((u16 *) gAlBankSets)[seqId] + 1;
+    offset++;
     for (i = gAlBankSets[offset - 1]; i != 0; i--) {
         offset++;
         bankId = gAlBankSets[offset - 1];
@@ -787,6 +810,7 @@ void preload_sequence(u32 seqId, u8 preloadMask) {
     if (preloadMask & PRELOAD_SEQUENCE) {
         // @bug should be IS_SEQ_LOAD_COMPLETE
         if (IS_BANK_LOAD_COMPLETE(seqId) == TRUE) {
+            eu_stubbed_printf_1("SEQ  %d ALREADY CACHED\n", seqId);
             sequenceData = get_bank_or_seq(&gSeqLoadedPool, 2, seqId);
         } else {
             sequenceData = NULL;
@@ -828,6 +852,7 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
         s32 dummy = 0;
         s32 bankId = get_missing_bank(seqId, &dummy, &numMissingBanks);
         if (numMissingBanks == 1) {
+            eu_stubbed_printf_0("Ok,one bank slow load Start \n");
             if (bank_load_async(bankId, 2, seqPlayer) == NULL) {
                 return;
             }
@@ -835,17 +860,25 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
             // as default, not the missing one. This code path never gets
             // taken, though -- all sequence loading is synchronous.
             seqPlayer->defaultBank[0] = bankId;
-        } else if (load_banks_immediate(seqId, &seqPlayer->defaultBank[0]) == NULL) {
-            return;
+        } else {
+            eu_stubbed_printf_1("Sorry,too many %d bank is none.fast load Start \n", numMissingBanks);
+            if (load_banks_immediate(seqId, &seqPlayer->defaultBank[0]) == NULL) {
+                return;
+            }
         }
     } else if (load_banks_immediate(seqId, &seqPlayer->defaultBank[0]) == NULL) {
         return;
     }
 
+    eu_stubbed_printf_2("Seq %d:Default Load Id is %d\n", seqId, seqPlayer->defaultBank[0]);
+    eu_stubbed_printf_0("Seq Loading Start\n");
+
     seqPlayer->seqId = seqId;
     sequenceData = get_bank_or_seq(&gSeqLoadedPool, 2, seqId);
     if (sequenceData == NULL) {
         if (seqPlayer->seqDmaInProgress) {
+            eu_stubbed_printf_0("Error:Before Sequence-SlowDma remain.\n");
+            eu_stubbed_printf_0("      Cancel Seq Start.\n");
             return;
         }
 
@@ -860,6 +893,7 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
         }
     }
 
+    eu_stubbed_printf_1("SEQ  %d ALREADY CACHED\n", seqId);
     init_sequence_player(player);
     seqPlayer->scriptState.depth = 0;
     seqPlayer->delay = 0;
@@ -935,6 +969,16 @@ void audio_init() {
     }
 #endif
 
+#ifdef TARGET_N64
+    eu_stubbed_printf_3("Clear Workarea %x -%x size %x \n",
+        (uintptr_t) &gAudioGlobalsStartMarker,
+        (uintptr_t) &gAudioGlobalsEndMarker,
+        (uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker
+    );
+#endif
+
+    eu_stubbed_printf_1("AudioHeap is %x\n", gAudioHeapSize);
+
     for (i = 0; i < NUMAIBUFFERS; i++) {
         gAiBufferLengths[i] = 0xa0;
     }
@@ -952,7 +996,7 @@ void audio_init() {
     gCurrAudioFrameDmaCount = 0;
     gSampleDmaNumListItems = 0;
 
-    sound_init_main_pools(D_80333EF0);
+    sound_init_main_pools(gAudioInitPoolSize);
 
     for (i = 0; i < NUMAIBUFFERS; i++) {
         gAiBuffers[i] = soundAlloc(&gAudioInitPool, AIBUFFER_LEN);
@@ -969,6 +1013,11 @@ void audio_init() {
 #else
     audio_reset_session(&gAudioSessionPresets[0]);
 #endif
+
+    // Not sure about these prints
+    eu_stubbed_printf_1("Heap reset.Synth Change %x \n", 0);
+    eu_stubbed_printf_3("Heap %x %x %x\n", 0, 0, 0);
+    eu_stubbed_printf_0("Main Heap Initialize.\n");
 
     // Load header for sequence data (assets/music_data.sbk.s)
     gSeqFileHeader = (ALSeqFile *) buf;
@@ -1011,5 +1060,12 @@ void audio_init() {
 
     init_sequence_players();
     gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;
-}
 
+    // Should probably contain the sizes of the data banks, but those aren't
+    // easily accessible from here.
+    eu_stubbed_printf_0("---------- Init Completed. ------------\n");
+    eu_stubbed_printf_1(" Syndrv    :[%6d]\n", 0); // gSoundDataADSR
+    eu_stubbed_printf_1(" Seqdrv    :[%6d]\n", 0); // gMusicData
+    eu_stubbed_printf_1(" audiodata :[%6d]\n", 0); // gSoundDataRaw
+    eu_stubbed_printf_0("---------------------------------------\n");
+}

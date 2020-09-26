@@ -13,7 +13,7 @@
 void bhv_camera_lakitu_init(void) {
     if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
         // Despawn unless this is the very beginning of the game
-        if (gShouldNotPlayCastleMusic != TRUE) {
+        if (gNeverEnteredCastle != TRUE) {
             obj_mark_for_deletion(o);
         }
     } else {

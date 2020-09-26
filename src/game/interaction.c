@@ -132,10 +132,10 @@ static u8 sJustTeleported = FALSE;
 static u8 sPssSlideStarted = FALSE;
 
 /**
- * Returns the type of hat Mario is wearing.
+ * Returns the type of cap Mario is wearing.
  */
 u32 get_mario_cap_flag(struct Object *capObject) {
-    void *script = virtual_to_segmented(0x13, capObject->behavior);
+    const BehaviorScript *script = virtual_to_segmented(0x13, capObject->behavior);
 
     if (script == bhvNormalCap) {
         return MARIO_NORMAL_CAP;
@@ -149,6 +149,7 @@ u32 get_mario_cap_flag(struct Object *capObject) {
 
     return 0;
 }
+
 /**
  * Returns true if the passed in object has a moving angle yaw
  * in the angular range given towards Mario.
@@ -340,14 +341,14 @@ void mario_stop_riding_and_holding(struct MarioState *m) {
     }
 }
 
-u32 does_mario_have_hat(struct MarioState *m) {
-    return (m->flags & MARIO_CAP_FLAGS) == (MARIO_NORMAL_CAP | MARIO_CAP_ON_HEAD);
+u32 does_mario_have_normal_cap_on_head(struct MarioState *m) {
+    return (m->flags & (MARIO_CAPS | MARIO_CAP_ON_HEAD)) == (MARIO_NORMAL_CAP | MARIO_CAP_ON_HEAD);
 }
 
 void mario_blow_off_cap(struct MarioState *m, f32 capSpeed) {
     struct Object *capObject;
 
-    if (does_mario_have_hat(m)) {
+    if (does_mario_have_normal_cap_on_head(m)) {
         save_file_set_cap_pos(m->pos[0], m->pos[1], m->pos[2]);
 
         m->flags &= ~(MARIO_NORMAL_CAP | MARIO_CAP_ON_HEAD);
@@ -367,7 +368,7 @@ void mario_blow_off_cap(struct MarioState *m, f32 capSpeed) {
 u32 mario_lose_cap_to_enemy(u32 arg) {
     u32 wasWearingCap = FALSE;
 
-    if (does_mario_have_hat(gMarioState)) {
+    if (does_mario_have_normal_cap_on_head(gMarioState)) {
         save_file_set_flags(arg == 1 ? SAVE_FLAG_CAP_ON_KLEPTO : SAVE_FLAG_CAP_ON_UKIKI);
         gMarioState->flags &= ~(MARIO_NORMAL_CAP | MARIO_CAP_ON_HEAD);
         wasWearingCap = TRUE;
@@ -416,7 +417,7 @@ struct Object *mario_get_collided_object(struct MarioState *m, u32 interactType)
 
 u32 mario_check_object_grab(struct MarioState *m) {
     u32 result = FALSE;
-    void *script;
+    const BehaviorScript *script;
 
     if (m->input & INPUT_INTERACT_OBJ_GRABBABLE) {
         script = virtual_to_segmented(0x13, m->interactObj->behavior);
@@ -702,6 +703,7 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
     queue_rumble_data(5, 80);
 #endif
     set_camera_shake_from_hit(shake);
+
     return damage;
 }
 
@@ -819,7 +821,6 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);
 #ifndef VERSION_JP
         update_mario_sound_and_camera(m);
-        // func_802521A0
 #endif
 
         if (grandStar) {
@@ -1220,6 +1221,7 @@ u32 interact_clam_or_bubba(struct MarioState *m, UNUSED u32 interactType, struct
     if (!(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
         sDelayInvincTimer = TRUE;
     }
+
     return TRUE;
 }
 
@@ -1295,6 +1297,7 @@ u32 interact_shock(struct MarioState *m, UNUSED u32 interactType, struct Object 
     if (!(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
         sDelayInvincTimer = TRUE;
     }
+
     return FALSE;
 }
 
@@ -1357,6 +1360,7 @@ u32 interact_hit_from_below(struct MarioState *m, UNUSED u32 interactType, struc
     if (!(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
         sDelayInvincTimer = TRUE;
     }
+
     return FALSE;
 }
 
@@ -1394,6 +1398,7 @@ u32 interact_bounce_top(struct MarioState *m, UNUSED u32 interactType, struct Ob
     if (!(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
         sDelayInvincTimer = TRUE;
     }
+
     return FALSE;
 }
 
@@ -1410,6 +1415,7 @@ u32 interact_unknown_08(struct MarioState *m, UNUSED u32 interactType, struct Ob
     if (!(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
         sDelayInvincTimer = TRUE;
     }
+
     return FALSE;
 }
 
@@ -1421,6 +1427,7 @@ u32 interact_damage(struct MarioState *m, UNUSED u32 interactType, struct Object
     if (!(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
         sDelayInvincTimer = TRUE;
     }
+
     return FALSE;
 }
 
@@ -1625,7 +1632,7 @@ u32 interact_cap(struct MarioState *m, UNUSED u32 interactType, struct Object *o
 }
 
 u32 interact_grabbable(struct MarioState *m, u32 interactType, struct Object *o) {
-    void *script = virtual_to_segmented(0x13, o->behavior);
+    const BehaviorScript *script = virtual_to_segmented(0x13, o->behavior);
 
     if (o->oInteractionSubtype & INT_SUBTYPE_KICKABLE) {
         u32 interaction = determine_interaction(m, o);
@@ -1653,6 +1660,7 @@ u32 interact_grabbable(struct MarioState *m, u32 interactType, struct Object *o)
     if (script != bhvBowser) {
         push_mario_out_of_object(m, o, -5.0f);
     }
+
     return FALSE;
 }
 
@@ -1668,7 +1676,7 @@ u32 mario_can_talk(struct MarioState *m, u32 arg) {
             return TRUE;
         }
 
-        val6 = m->marioObj->header.gfx.unk38.animID;
+        val6 = m->marioObj->header.gfx.animInfo.animID;
 
         if (val6 == 0x0080 || val6 == 0x007F || val6 == 0x006C) {
             return TRUE;

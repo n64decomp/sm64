@@ -63,6 +63,29 @@
 #define FLOAT_CAST(x) (f32) (s32) (x)
 #endif
 
+// No-op printf macro which leaves string literals in rodata in IDO. IDO
+// doesn't support variadic macros, so instead we let the parameter list
+// expand to a no-op comma expression. Another possibility is that it might
+// have expanded to something with "if (0)". See also goddard/gd_main.h.
+// On US/JP, -sopt optimizes away these except for external.c.
+#ifdef __sgi
+#define stubbed_printf
+#else
+#define stubbed_printf(...)
+#endif
+
+#ifdef VERSION_EU
+#define eu_stubbed_printf_0(msg) stubbed_printf(msg)
+#define eu_stubbed_printf_1(msg, a) stubbed_printf(msg, a)
+#define eu_stubbed_printf_2(msg, a, b) stubbed_printf(msg, a, b)
+#define eu_stubbed_printf_3(msg, a, b, c) stubbed_printf(msg, a, b, c)
+#else
+#define eu_stubbed_printf_0(msg)
+#define eu_stubbed_printf_1(msg, a)
+#define eu_stubbed_printf_2(msg, a, b)
+#define eu_stubbed_printf_3(msg, a, b, c)
+#endif
+
 struct NotePool;
 
 struct AudioListItem
@@ -202,6 +225,7 @@ struct M64ScriptState {
     u8 depth;
 }; // size = 0x1C
 
+// Also known as a Group, according to debug strings.
 struct SequencePlayer
 {
     /*US/JP, EU   */
@@ -326,6 +350,8 @@ struct NoteAttributes
 #endif
 }; // size = 0x10
 
+// Also known as a SubTrack, according to debug strings.
+// Confusingly, a SubTrack is a container of Tracks.
 struct SequenceChannel
 {
     /* U/J, EU  */
@@ -394,7 +420,8 @@ struct SequenceChannel
     /*0x80, 0x84*/ struct NotePool notePool;
 }; // size = 0xC0, 0xC4 in EU
 
-struct SequenceChannelLayer // Maybe SequenceTrack?
+// Also known as a Track, according to debug strings.
+struct SequenceChannelLayer
 {
     /* U/J, EU */
     /*0x00, 0x00*/ u8 enabled : 1;
@@ -507,6 +534,11 @@ struct Note
     /* U/J, EU  */
     /*0xA4, 0x00*/ struct AudioListItem listItem;
     /*      0x10*/ struct NoteSynthesisState synthesisState;
+    // The next members are actually part of a struct (NotePlaybackState), but
+    // that results in messy US/EU ifdefs. Instead we cast to a struct pointer
+    // when needed... This breaks alignment on non-N64 platforms, which we hack
+    // around by skipping the padding in that case.
+    // TODO: use macros or something instead.
 #ifdef TARGET_N64
     u8 pad0[12];
 #endif
@@ -527,6 +559,7 @@ struct Note
     /*    , 0xB0*/ struct NoteSubEu noteSubEu;
 }; // size = 0xC0
 #else
+// volatile Note, needed in synthesis_process_notes
 struct vNote
 {
     /* U/J, EU  */

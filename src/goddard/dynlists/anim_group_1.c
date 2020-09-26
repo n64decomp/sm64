@@ -1417,7 +1417,7 @@ struct AnimDataInfo anim_mario_eye_right[3] = {
 };
 
 /* @ 0401BB14 */
-s16 animdata_mario_hat_1[820][3] = {
+s16 animdata_mario_cap_1[820][3] = {
     { 0, 0, 1539 },     { 0, 0, 1539 },     { 0, 0, 1539 },     { 0, 0, 1538 },     { 0, 0, 1538 },
     { 0, 0, 1537 },     { 0, 0, 1537 },     { 0, 0, 1536 },     { 0, 0, 1536 },     { 0, 0, 1535 },
     { 0, 0, 1535 },     { 0, 0, 1534 },     { 0, 0, 1534 },     { 0, 0, 1534 },     { 0, 0, 1534 },
@@ -1585,7 +1585,7 @@ s16 animdata_mario_hat_1[820][3] = {
 };
 
 /* @ 0401CE4C */
-s16 animdata_mario_hat_2[166][3] = {
+s16 animdata_mario_cap_2[166][3] = {
     { 0, 0, 1539 }, { 0, 0, 1539 }, { 0, 0, 1539 }, { 0, 0, 1538 }, { 0, 0, 1538 }, { 0, 0, 1538 },
     { 0, 0, 1537 }, { 0, 0, 1537 }, { 0, 0, 1536 }, { 0, 0, 1536 }, { 0, 0, 1535 }, { 0, 0, 1535 },
     { 0, 0, 1535 }, { 0, 0, 1534 }, { 0, 0, 1534 }, { 0, 0, 1534 }, { 0, 0, 1534 }, { 0, 0, 1534 },
@@ -1617,9 +1617,9 @@ s16 animdata_mario_hat_2[166][3] = {
 };
 
 /* @ 0401D230 */
-struct AnimDataInfo anim_mario_hat[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_hat_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_hat_2 },
+struct AnimDataInfo anim_mario_cap[3] = {
+    { 820, GD_ANIM_3H_SCALED, animdata_mario_cap_1 },
+    { 166, GD_ANIM_3H_SCALED, animdata_mario_cap_2 },
     END_ANIMDATA_INFO_ARR,
 };
 

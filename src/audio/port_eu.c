@@ -168,7 +168,6 @@ void eu_process_audio_cmd(struct EuAudioCmd *cmd) {
 
     case 0x82:
     case 0x88:
-        // load_sequence(arg1, arg2, 0);
         load_sequence(cmd->u.s.arg1, cmd->u.s.arg2, cmd->u.s.arg3);
         func_8031D690(cmd->u.s.arg1, cmd->u2.as_s32);
         break;

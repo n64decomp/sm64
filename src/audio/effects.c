@@ -502,6 +502,7 @@ s32 adsr_update(struct AdsrState *adsr) {
         return 0.0f;
     }
     if (adsr->current > 1.0f) {
+        eu_stubbed_printf_1("Audio:Envp: overflow  %f\n", adsr->current);
         return 1.0f;
     }
     return adsr->current;

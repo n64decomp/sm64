@@ -112,8 +112,8 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
     struct Object *newObj;
     struct LoadedPreset preset;
 
-    gMacroObjectDefaultParent.header.gfx.unk18 = areaIndex;
-    gMacroObjectDefaultParent.header.gfx.unk19 = areaIndex;
+    gMacroObjectDefaultParent.header.gfx.areaIndex = areaIndex;
+    gMacroObjectDefaultParent.header.gfx.activeAreaIndex = areaIndex;
 
     while (TRUE) {
         if (*macroObjList == -1) { // An encountered value of -1 means the list has ended.
@@ -184,8 +184,8 @@ void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList) {
 
     UNUSED u8 pad2[10];
 
-    gMacroObjectDefaultParent.header.gfx.unk18 = areaIndex;
-    gMacroObjectDefaultParent.header.gfx.unk19 = areaIndex;
+    gMacroObjectDefaultParent.header.gfx.areaIndex = areaIndex;
+    gMacroObjectDefaultParent.header.gfx.activeAreaIndex = areaIndex;
 
     while (TRUE) {
         macroObjPreset = *macroObjList++;
@@ -258,8 +258,8 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
     numOfSpecialObjects = **specialObjList;
     (*specialObjList)++;
 
-    gMacroObjectDefaultParent.header.gfx.unk18 = areaIndex;
-    gMacroObjectDefaultParent.header.gfx.unk19 = areaIndex;
+    gMacroObjectDefaultParent.header.gfx.areaIndex = areaIndex;
+    gMacroObjectDefaultParent.header.gfx.activeAreaIndex = areaIndex;
 
     for (i = 0; i < numOfSpecialObjects; i++) {
         presetID = (u8) * *specialObjList;

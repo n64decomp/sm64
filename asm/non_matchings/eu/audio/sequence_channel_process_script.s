@@ -1,3 +1,17 @@
+.data
+    .asciiz "Audio:Track :Call Macro Level Over Error!\n"
+    .balign 4
+    .asciiz "Audio:Track :Loops Macro Level Over Error!\n"
+    .balign 4
+    .asciiz "SUB:ERR:BANK %d NOT CACHED.\n"
+    .balign 4
+    .asciiz "SUB:ERR:BANK %d NOT CACHED.\n"
+    .balign 4
+    .asciiz "Audio:Track: CTBLCALL Macro Level Over Error!\n"
+    .balign 4
+    .asciiz "Err :Sub %x ,address %x:Undefined SubTrack Function %x"
+    .balign 4
+
 .late_rodata
 .late_rodata_alignment 4
 glabel jtbl_EU_80306714

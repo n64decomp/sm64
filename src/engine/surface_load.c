@@ -21,8 +21,8 @@ s32 unused8038BE90;
  * Partitions for course and object surfaces. The arrays represent
  * the 16x16 cells that each level is split into.
  */
-SpatialPartitionCell gStaticSurfacePartition[16][16];
-SpatialPartitionCell gDynamicSurfacePartition[16][16];
+SpatialPartitionCell gStaticSurfacePartition[NUM_CELLS][NUM_CELLS];
+SpatialPartitionCell gDynamicSurfacePartition[NUM_CELLS][NUM_CELLS];
 
 /**
  * Pools of data to contain either surface nodes or surfaces.
@@ -83,7 +83,7 @@ static struct Surface *alloc_surface(void) {
  * Iterates through the entire partition, clearing the surfaces.
  */
 static void clear_spatial_partition(SpatialPartitionCell *cells) {
-    register s32 i = 16 * 16;
+    register s32 i = NUM_CELLS * NUM_CELLS;
 
     while (i--) {
         (*cells)[SPATIAL_PARTITION_FLOORS].next = NULL;
@@ -201,18 +201,18 @@ static s16 lower_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
-    coord += 0x2000;
+    coord += LEVEL_BOUNDARY_MAX;
     if (coord < 0) {
         coord = 0;
     }
 
     // [0, 16)
-    index = coord / 0x400;
+    index = coord / CELL_SIZE;
 
     // Include extra cell if close to boundary
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
-    if (coord % 0x400 < 50) {
+    if (coord % CELL_SIZE < 50) {
         index -= 1;
     }
 
@@ -233,23 +233,23 @@ static s16 upper_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
-    coord += 0x2000;
+    coord += LEVEL_BOUNDARY_MAX;
     if (coord < 0) {
         coord = 0;
     }
 
     // [0, 16)
-    index = coord / 0x400;
+    index = coord / CELL_SIZE;
 
     // Include extra cell if close to boundary
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
-    if (coord % 0x400 > 0x400 - 50) {
+    if (coord % CELL_SIZE > CELL_SIZE - 50) {
         index += 1;
     }
 
-    if (index > 15) {
-        index = 15;
+    if (index > (NUM_CELLS - 1)) {
+        index = (NUM_CELLS - 1);
     }
 
     // Potentially < 0, but since lower index is >= 0, not exploitable

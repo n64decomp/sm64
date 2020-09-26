@@ -634,15 +634,15 @@
     #define UKIKI_TEXT_DEFAULT       0
     #define UKIKI_TEXT_CAGE_TEXTBOX  1
     #define UKIKI_TEXT_GO_TO_CAGE    2
-    #define UKIKI_TEXT_STOLE_HAT     3
-    #define UKIKI_TEXT_HAS_HAT       4
-    #define UKIKI_TEXT_GAVE_HAT_BACK 5
+    #define UKIKI_TEXT_STOLE_CAP     3
+    #define UKIKI_TEXT_HAS_CAP       4
+    #define UKIKI_TEXT_GAVE_CAP_BACK 5
     #define UKIKI_TEXT_DO_NOT_LET_GO 6
-    #define UKIKI_TEXT_STEAL_HAT     7
+    #define UKIKI_TEXT_STEAL_CAP     7
 
     /* oBehParams2ndByte */
     #define UKIKI_CAGE 0
-    #define UKIKI_HAT  1
+    #define UKIKI_CAP  1
 
     /* Animations */
     #define UKIKI_ANIM_RUN           0
@@ -662,10 +662,10 @@
     /* oAnimState */
     #define UKIKI_ANIM_STATE_DEFAULT    0
     #define UKIKI_ANIM_STATE_EYE_CLOSED 1
-    #define UKIKI_ANIM_STATE_HAT_ON     2
+    #define UKIKI_ANIM_STATE_CAP_ON     2
 
-    /* oUkikiHasHat */
-    #define UKIKI_HAT_ON 1
+    /* oUkikiHasCap */
+    #define UKIKI_CAP_ON 1
 
 /* Ukiki Cage Star */
     /* oAction */

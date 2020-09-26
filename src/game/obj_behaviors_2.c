@@ -362,7 +362,7 @@ static s32 cur_obj_set_anim_if_at_end(s32 arg0) {
 static s32 cur_obj_play_sound_at_anim_range(s8 arg0, s8 arg1, u32 sound) {
     s32 val04;
 
-    if ((val04 = o->header.gfx.unk38.animAccel / 0x10000) <= 0) {
+    if ((val04 = o->header.gfx.animInfo.animAccel / 0x10000) <= 0) {
         val04 = 1;
     }
 
@@ -759,7 +759,7 @@ static s32 obj_handle_attacks(struct ObjectHitbox *hitbox, s32 attackedMarioActi
 static void obj_act_knockback(UNUSED f32 baseScale) {
     cur_obj_update_floor_and_walls();
 
-    if (o->header.gfx.unk38.curAnim != NULL) {
+    if (o->header.gfx.animInfo.curAnim != NULL) {
         cur_obj_extend_animation_if_at_end();
     }
 
@@ -778,7 +778,7 @@ static void obj_act_squished(f32 baseScale) {
 
     cur_obj_update_floor_and_walls();
 
-    if (o->header.gfx.unk38.curAnim != NULL) {
+    if (o->header.gfx.animInfo.curAnim != NULL) {
         cur_obj_extend_animation_if_at_end();
     }
 
@@ -932,19 +932,17 @@ static void treat_far_home_as_mario(f32 threshold) {
 #include "behaviors/flying_bookend_switch.inc.c"
 
 /**
- * Used by fly guy, piranha plant, and fire spitters.
+ * Used by bowser, fly guy, piranha plant, and fire spitters.
  */
 void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 scale, s32 model,
                    f32 startSpeed, f32 endSpeed, s16 movePitch) {
-    struct Object *sp2C;
-
-    sp2C = spawn_object_relative_with_scale(1, relativePosX, relativePosY, relativePosZ, scale, o,
-                                            model, bhvSmallPiranhaFlame);
+    struct Object *sp2C = spawn_object_relative_with_scale(1, relativePosX, relativePosY, relativePosZ,
+                                                           scale, o, model, bhvSmallPiranhaFlame);
 
     if (sp2C != NULL) {
-        sp2C->oSmallPiranhaFlameUnkF4 = startSpeed;
-        sp2C->oSmallPiranhaFlameUnkF8 = endSpeed;
-        sp2C->oSmallPiranhaFlameUnkFC = model;
+        sp2C->oSmallPiranhaFlameStartSpeed = startSpeed;
+        sp2C->oSmallPiranhaFlameEndSpeed = endSpeed;
+        sp2C->oSmallPiranhaFlameModel = model;
         sp2C->oMoveAnglePitch = movePitch;
     }
 }

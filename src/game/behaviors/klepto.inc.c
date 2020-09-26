@@ -31,7 +31,7 @@ static s32 klepto_set_and_check_if_anim_at_end(void) {
     } else if (o->oSoundStateID == 5) {
         if (cur_obj_set_anim_if_at_end(0)) {
             cur_obj_play_sound_2(SOUND_GENERAL_SWISH_WATER);
-            o->header.gfx.unk38.animFrame = 9;
+            o->header.gfx.animInfo.animFrame = 9;
         }
     } else {
         if (cur_obj_check_anim_frame(9)) {

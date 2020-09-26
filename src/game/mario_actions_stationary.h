@@ -5,8 +5,6 @@
 
 #include "types.h"
 
-#define INPUT_UNKNOWN_A41F 0xA41F
-
 s32 check_common_idle_cancels(struct MarioState *m);
 s32 check_common_hold_idle_cancels(struct MarioState *m);
 s32 act_idle(struct MarioState *m);

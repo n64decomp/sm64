@@ -167,11 +167,17 @@ void discard_bank(s32 bankId) {
         struct Note *note = &gNotes[i];
 
 #ifdef VERSION_EU
-        if (note->noteSubEu.bankId == bankId) {
+        if (note->noteSubEu.bankId == bankId)
 #else
-        if (note->bankId == bankId) {
+        if (note->bankId == bankId)
 #endif
+        {
+            // (These prints are unclear. Arguments are picked semi-randomly.)
+            eu_stubbed_printf_1("Warning:Kill Note  %x \n", i);
             if (note->priority >= NOTE_PRIORITY_MIN) {
+                eu_stubbed_printf_3("Kill Voice %d (ID %d) %d\n", note->waveId,
+                        bankId, note->priority);
+                eu_stubbed_printf_0("Warning: Running Sequence's data disappear!\n");
                 note->parentLayer->enabled = FALSE;
                 note->parentLayer->finished = TRUE;
             }
@@ -209,6 +215,7 @@ void *soundAlloc(struct SoundAllocPool *pool, u32 size) {
             *pos = 0;
         }
     } else {
+        eu_stubbed_printf_1("Heap OverFlow : Not Allocate %d!\n", size);
         return NULL;
     }
     return start;
@@ -309,7 +316,7 @@ static void unused_803163D4(void) {
 void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg3, s32 id) {
     // arg3 = 0, 1 or 2?
 
-    struct TemporaryPool *tp; // sp30
+    struct TemporaryPool *tp;
     struct PersistentPool *persistent = &arg0->persistent;
     struct SoundAllocPool *pool;
     void *ret;
@@ -342,17 +349,17 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
             isSound = TRUE;
         }
 
-        firstVal  = (tp->entries[0].id == (s8)nullID ? SOUND_LOAD_STATUS_NOT_LOADED : table[tp->entries[0].id]); // a3, a2
-        secondVal = (tp->entries[1].id == (s8)nullID ? SOUND_LOAD_STATUS_NOT_LOADED : table[tp->entries[1].id]); // a1
+        firstVal  = (tp->entries[0].id == (s8)nullID ? SOUND_LOAD_STATUS_NOT_LOADED : table[tp->entries[0].id]);
+        secondVal = (tp->entries[1].id == (s8)nullID ? SOUND_LOAD_STATUS_NOT_LOADED : table[tp->entries[1].id]);
 
 #ifndef VERSION_EU
         leftNotLoaded = (firstVal == SOUND_LOAD_STATUS_NOT_LOADED);
-        leftDiscardable = (firstVal == SOUND_LOAD_STATUS_DISCARDABLE); // t0
+        leftDiscardable = (firstVal == SOUND_LOAD_STATUS_DISCARDABLE);
         leftAvail = (firstVal != SOUND_LOAD_STATUS_IN_PROGRESS);
         rightNotLoaded = (secondVal == SOUND_LOAD_STATUS_NOT_LOADED);
         rightDiscardable = (secondVal == SOUND_LOAD_STATUS_DISCARDABLE);
         rightAvail = (secondVal != SOUND_LOAD_STATUS_IN_PROGRESS);
-        bothDiscardable = (leftDiscardable && rightDiscardable); // a0
+        bothDiscardable = (leftDiscardable && rightDiscardable);
 
         if (leftNotLoaded) {
             tp->nextSide = 0;
@@ -360,7 +367,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
             tp->nextSide = 1;
         } else if (bothDiscardable) {
             // Use the opposite side from last time.
-        } else if (firstVal == SOUND_LOAD_STATUS_DISCARDABLE) { //??!
+        } else if (firstVal == SOUND_LOAD_STATUS_DISCARDABLE) { // ??! (I blame copt)
             tp->nextSide = 0;
         } else if (rightDiscardable) {
             tp->nextSide = 1;
@@ -373,27 +380,42 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
             return NULL;
         }
 #else
+        if (0) {
+            // It's unclear where these string literals go.
+            eu_stubbed_printf_0("DataHeap Not Allocate \n");
+            eu_stubbed_printf_1("StayHeap Not Allocate %d\n", 0);
+            eu_stubbed_printf_1("AutoHeap Not Allocate %d\n", 0);
+        }
+
         if (firstVal == SOUND_LOAD_STATUS_NOT_LOADED) {
             tp->nextSide = 0;
         } else if (secondVal == SOUND_LOAD_STATUS_NOT_LOADED) {
             tp->nextSide = 1;
-        } else if ((firstVal == SOUND_LOAD_STATUS_DISCARDABLE) && (secondVal == SOUND_LOAD_STATUS_DISCARDABLE)) {
-            // Use the opposite side from last time.
-        } else if (firstVal == SOUND_LOAD_STATUS_DISCARDABLE) {
-            tp->nextSide = 0;
-        } else if (secondVal == SOUND_LOAD_STATUS_DISCARDABLE) {
-            tp->nextSide = 1;
-        } else if (firstVal != SOUND_LOAD_STATUS_IN_PROGRESS) {
-            tp->nextSide = 0;
-        } else if (secondVal != SOUND_LOAD_STATUS_IN_PROGRESS) {
-            tp->nextSide = 1;
         } else {
-            // Both left and right sides are being loaded into.
-            return NULL;
+            eu_stubbed_printf_0("WARNING: NO FREE AUTOSEQ AREA.\n");
+            if ((firstVal == SOUND_LOAD_STATUS_DISCARDABLE) && (secondVal == SOUND_LOAD_STATUS_DISCARDABLE)) {
+                // Use the opposite side from last time.
+            } else if (firstVal == SOUND_LOAD_STATUS_DISCARDABLE) {
+                tp->nextSide = 0;
+            } else if (secondVal == SOUND_LOAD_STATUS_DISCARDABLE) {
+                tp->nextSide = 1;
+            } else {
+                eu_stubbed_printf_0("WARNING: NO STOP AUTO AREA.\n");
+                eu_stubbed_printf_0("         AND TRY FORCE TO STOP SIDE \n");
+                if (firstVal != SOUND_LOAD_STATUS_IN_PROGRESS) {
+                    tp->nextSide = 0;
+                } else if (secondVal != SOUND_LOAD_STATUS_IN_PROGRESS) {
+                    tp->nextSide = 1;
+                } else {
+                    // Both left and right sides are being loaded into.
+                    eu_stubbed_printf_0("TWO SIDES ARE LOADING... ALLOC CANCELED.\n");
+                    return NULL;
+                }
+            }
         }
 #endif
 
-        pool = &arg0->temporary.pool; // a1
+        pool = &arg0->temporary.pool;
         if (tp->entries[tp->nextSide].id != (s8)nullID) {
             table[tp->entries[tp->nextSide].id] = SOUND_LOAD_STATUS_NOT_LOADED;
             if (isSound == TRUE) {
@@ -410,6 +432,8 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
                 pool->cur = pool->start + size;
 
                 if (tp->entries[1].ptr < pool->cur) {
+                    eu_stubbed_printf_0("WARNING: Before Area Overlaid After.");
+
                     // Throw out the entry on the other side if it doesn't fit.
                     // (possible @bug: what if it's currently being loaded?)
                     table[tp->entries[1].id] = SOUND_LOAD_STATUS_NOT_LOADED;
@@ -444,6 +468,8 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
                 tp->entries[1].size = size;
 
                 if (tp->entries[1].ptr < pool->cur) {
+                    eu_stubbed_printf_0("WARNING: After Area Overlaid Before.");
+
                     table[tp->entries[0].id] = SOUND_LOAD_STATUS_NOT_LOADED;
 
                     switch (isSound) {
@@ -463,6 +489,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
                 break;
 
             default:
+                eu_stubbed_printf_1("MEMORY:SzHeapAlloc ERROR: sza->side %d\n", tp->nextSide);
                 return NULL;
         }
 
@@ -486,6 +513,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
     {
         switch (arg3) {
             case 2:
+                eu_stubbed_printf_0("MEMORY:StayHeap OVERFLOW.");
 #ifdef VERSION_EU
                 return alloc_bank_or_seq(arg0, arg1, size, 0, id);
 #else
@@ -494,6 +522,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
                 return ret;
 #endif
             case 1:
+                eu_stubbed_printf_1("MEMORY:StayHeap OVERFLOW (REQ:%d)", arg1 * size);
                 return NULL;
         }
     }
@@ -523,11 +552,13 @@ void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 id) {
             temporary->nextSide = 0;
             return temporary->entries[1].ptr;
         }
+        eu_stubbed_printf_1("Auto Heap Unhit for ID %d\n", id);
         return NULL;
     } else {
         struct PersistentPool *persistent = &arg0->persistent;
         for (i = 0; i < persistent->numEntries; i++) {
             if (id == persistent->entries[i].id) {
+                eu_stubbed_printf_2("Cache hit %d at stay %d\n", id, i);
                 return persistent->entries[i].ptr;
             }
         }
@@ -537,7 +568,7 @@ void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 id) {
             return get_bank_or_seq(arg0, 0, id);
 #else
             // Prevent tail call optimization by using a temporary.
-            // (Did they compile with -Wo,-notail?)
+            // Either copt or -Wo,-notail.
             ret = get_bank_or_seq(arg0, 0, id);
             return ret;
 #endif
@@ -567,25 +598,27 @@ void func_eu_802e27e4_unused(f32 arg0, f32 arg1, u16 *arg2) {
     }
 
     for (i = 0; i < 8; i++) {
+        eu_stubbed_printf_1("%d ", arg2[i]);
     }
+    eu_stubbed_printf_0("\n");
 
-    for (i = 8; i < 16; i += 4) {
+    for (i = 8; i < 16; i++) {
+        eu_stubbed_printf_1("%d ", arg2[i]);
     }
+    eu_stubbed_printf_0("\n");
 }
 #endif
 
-#ifdef VERSION_EU
 void decrease_reverb_gain(void) {
+#ifdef VERSION_EU
     s32 i;
     for (i = 0; i < gNumSynthesisReverbs; i++) {
         gSynthesisReverbs[i].reverbGain -= gSynthesisReverbs[i].reverbGain / 8;
     }
-}
 #else
-void decrease_reverb_gain(void) {
     gSynthesisReverb.reverbGain -= gSynthesisReverb.reverbGain / 4;
-}
 #endif
+}
 
 #ifdef VERSION_EU
 s32 audio_shut_down_and_reset_step(void) {
@@ -681,10 +714,10 @@ void audio_reset_session(void) {
 #ifndef VERSION_EU
     s32 frames;
     s32 remainingDmas;
-#endif
-#ifdef VERSION_EU
+#else
     struct SynthesisReverb *reverb;
 #endif
+    eu_stubbed_printf_1("Heap Reconstruct Start %x\n", gAudioResetPresetIdToLoad);
 
 #ifndef VERSION_EU
     if (gAudioLoadLock != AUDIO_LOCK_UNINITIALIZED) {
@@ -938,3 +971,16 @@ void audio_reset_session(void) {
     }
 #endif
 }
+
+#ifdef VERSION_EU
+u8 audioString22[] = "SFrame Sample %d %d %d\n";
+u8 audioString23[] = "AHPBASE %x\n";
+u8 audioString24[] = "AHPCUR  %x\n";
+u8 audioString25[] = "HeapTop %x\n";
+u8 audioString26[] = "SynoutRate %d / %d \n";
+u8 audioString27[] = "FXSIZE %d\n";
+u8 audioString28[] = "FXCOMP %d\n";
+u8 audioString29[] = "FXDOWN %d\n";
+u8 audioString30[] = "WaveCacheLen: %d\n";
+u8 audioString31[] = "SpecChange Finished\n";
+#endif

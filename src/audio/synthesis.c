@@ -74,11 +74,12 @@ f32 gLeftVolRampings[3][1024];
 f32 gRightVolRampings[3][1024];
 f32 *gCurrentLeftVolRamping; // Points to any of the three left buffers above
 f32 *gCurrentRightVolRamping; // Points to any of the three right buffers above
+
+u8 audioString1[] = "pitch %x: delaybytes %d : olddelay %d\n";
+u8 audioString2[] = "cont %x: delaybytes %d : olddelay %d\n";
+
 #else
 struct SynthesisReverb gSynthesisReverb;
-#endif
-
-#ifndef VERSION_EU
 u8 sAudioSynthesisPad[0x20];
 #endif
 
@@ -616,8 +617,6 @@ u64 *synthesis_process_notes(s16 *aiBuf, s32 bufLen, u64 *cmd) {
     s32 s6;
     u8 *sampleAddr;                          // sp120, spF4
 #endif
-
-    // sp6c is a temporary!
 
 #ifdef VERSION_EU
     s32 samplesLenAdjusted; // 108,      spEC

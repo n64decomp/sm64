@@ -913,7 +913,7 @@ void create_dialog_box_with_response(s16 dialog) {
 }
 
 void reset_dialog_render_state(void) {
-    level_set_transition(0, 0);
+    level_set_transition(0, NULL);
 
     if (gDialogBoxType == DIALOG_TYPE_ZOOM) {
         trigger_cutscene_dialog(2);
@@ -1760,7 +1760,7 @@ void render_dialog_entries(void) {
             break;
         case DIALOG_STATE_CLOSING:
             if (gDialogBoxOpenTimer == 20.0f) {
-                level_set_transition(0, 0);
+                level_set_transition(0, NULL);
                 play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gDefaultSoundArgs);
 
                 if (gDialogBoxType == DIALOG_TYPE_ZOOM) {
@@ -2608,7 +2608,7 @@ s16 render_pause_courses_and_castle(void) {
         case DIALOG_STATE_OPENING:
             gDialogLineNum = 1;
             gDialogTextAlpha = 0;
-            level_set_transition(-1, 0);
+            level_set_transition(-1, NULL);
 #if defined(VERSION_JP) || defined(VERSION_SH)
             play_sound(SOUND_MENU_PAUSE, gDefaultSoundArgs);
 #else
@@ -2639,7 +2639,7 @@ s16 render_pause_courses_and_castle(void) {
              || gPlayer3Controller->buttonPressed & START_BUTTON)
 #endif
             {
-                level_set_transition(0, 0);
+                level_set_transition(0, NULL);
                 play_sound(SOUND_MENU_PAUSE_2, gDefaultSoundArgs);
                 gDialogBoxState = DIALOG_STATE_OPENING;
                 gMenuMode = -1;
@@ -2666,7 +2666,7 @@ s16 render_pause_courses_and_castle(void) {
              || gPlayer3Controller->buttonPressed & START_BUTTON)
 #endif
             {
-                level_set_transition(0, 0);
+                level_set_transition(0, NULL);
                 play_sound(SOUND_MENU_PAUSE_2, gDefaultSoundArgs);
                 gMenuMode = -1;
                 gDialogBoxState = DIALOG_STATE_OPENING;
@@ -2757,7 +2757,7 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
         gCourseCompleteCoinsEqual = 1;
         gCourseCompleteCoins = gHudDisplay.coins;
 
-        if (gGotFileCoinHiScore != 0) {
+        if (gGotFileCoinHiScore) {
             print_hud_course_complete_string(HUD_PRINT_HISCORE);
         }
     } else {
@@ -2771,7 +2771,7 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
             }
         }
 
-        if (gHudDisplay.coins == gCourseCompleteCoins && gGotFileCoinHiScore != 0) {
+        if (gHudDisplay.coins == gCourseCompleteCoins && gGotFileCoinHiScore) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP2, gDefaultSoundArgs);
         }
     }
@@ -2992,7 +2992,7 @@ s16 render_course_complete_screen(void) {
             render_course_complete_lvl_info_and_hud_str();
             if (gCourseDoneMenuTimer > 100 && gCourseCompleteCoinsEqual == 1) {
                 gDialogBoxState = DIALOG_STATE_VERTICAL;
-                level_set_transition(-1, 0);
+                level_set_transition(-1, NULL);
                 gDialogTextAlpha = 0;
                 gDialogLineNum = 1;
             }
@@ -3013,7 +3013,7 @@ s16 render_course_complete_screen(void) {
                  || gPlayer3Controller->buttonPressed & Z_TRIG
 #endif
                 )) {
-                level_set_transition(0, 0);
+                level_set_transition(0, NULL);
                 play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
                 gDialogBoxState = DIALOG_STATE_OPENING;
                 gMenuMode = -1;

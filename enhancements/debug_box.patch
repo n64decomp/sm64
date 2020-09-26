@@ -8,24 +8,24 @@ index 240605d8..88c1a314 100644
  #include "save_file.h"
  #include "level_table.h"
 +#include "debug_box.h"
- 
+
  struct SpawnInfo gPlayerSpawnInfos[1];
  struct GraphNode *D_8033A160[0x100];
 @@ -353,6 +354,8 @@ void render_game(void) {
      if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
          geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
- 
+
 +        render_debug_boxes();
 +
          gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&D_8032CF00));
- 
+
          gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
 diff --git a/src/game/debug_box.c b/src/game/debug_box.c
 new file mode 100644
 index 00000000..0ee87ec7
 --- /dev/null
 +++ b/src/game/debug_box.c
-@@ -0,0 +1,244 @@
+@@ -0,0 +1,281 @@
 +#include <ultra64.h>
 +
 +#include "sm64.h"
@@ -52,7 +52,7 @@ index 00000000..0ee87ec7
 + *        gSPViewport(...);
 + *        gDPSetScissor(...);
 + *    //...
-+ * 
++ *
 + * Now just call debug_box() whenever you want to draw one!
 + *
 + * debug_box by default takes two arguments: a center and bounds vec3f.
@@ -67,24 +67,39 @@ index 00000000..0ee87ec7
 + * Internal struct containing box info
 + */
 +struct DebugBox {
++    u32 color;
 +    Vec3s center;
 +    Vec3s bounds;
 +    s16 yaw;
 +};
 +
-+struct DebugBox *sBoxes[MAX_DEBUG_BOXES];
++struct DebugBox sBoxes[MAX_DEBUG_BOXES];
 +s16 sNumBoxes = 0;
 +
 +extern Mat4 gMatStack[32]; //XXX: Hack
 +
 +/**
-+ * The debug boxes' transparency
++ * The debug boxes' default transparency
 + */
-+#define DBG_BOX_ALPHA 0x7F
++#define DBG_BOX_ALPHA     0x7F
 +/**
-+ * The debug boxes' color
++ * The debug boxes' default color. sCurBoxColor is reset to this every frame.
 + */
-+#define DBG_BOX_COL 0xFF, 0x00, 0x00, DBG_BOX_ALPHA
++#define DBG_BOX_DEF_COLOR 0xFF0000
++
++/**
++ * The color that new boxes will be drawn with.
++ */
++u32 sCurBoxColor = DBG_BOX_ALPHA << 24 | DBG_BOX_DEF_COLOR;
++
++/**
++ * The allocated size of a rotated box's dl
++ */
++#define DBG_BOX_ROT_DLSIZE ((s32)(6 * sizeof(Gfx) + 8 * sizeof(Vtx)))
++/**
++ * The allocated size of a normal box's dl
++ */
++#define DBG_BOX_DLSIZE     ((s32)(2 * sizeof(Gfx) + 8 * sizeof(Vtx)))
 +
 +/**
 + * Sets up the RCP for drawing the boxes
@@ -107,14 +122,14 @@ index 00000000..0ee87ec7
 + * Actually draws the box
 + */
 +static const Gfx dl_debug_draw_box[] = {
-+    gsSP2Triangles( 0,  1,  2, 0x0,  2,  1,  3, 0x0),
-+    gsSP2Triangles( 2,  3,  6, 0x0,  6,  3,  7, 0x0),
++    gsSP2Triangles(5,  4,  6, 0x0,  5,  6,  7, 0x0), // front
++    gsSP2Triangles(0,  1,  2, 0x0,  2,  1,  3, 0x0), // back
 +
-+    gsSP2Triangles( 4,  0,  2, 0x0,  2,  6,  4, 0x0),
-+    gsSP2Triangles( 1,  5,  3, 0x0,  3,  5,  7, 0x0),
-+    
-+    gsSP2Triangles( 1,  0,  4, 0x0,  1,  4,  5, 0x0),
-+    gsSP2Triangles( 5,  4,  6, 0x0,  5,  6,  7, 0x0),
++    gsSP2Triangles(4,  0,  2, 0x0,  2,  6,  4, 0x0), // left
++    gsSP2Triangles(1,  5,  3, 0x0,  3,  5,  7, 0x0), // right
++
++    gsSP2Triangles(1,  0,  4, 0x0,  1,  4,  5, 0x0), // top
++    gsSP2Triangles(2,  3,  6, 0x0,  6,  3,  7, 0x0), // bottom
 +
 +    gsSPEndDisplayList(),
 +};
@@ -126,17 +141,29 @@ index 00000000..0ee87ec7
 + */
 +static void append_debug_box(Vec3f center, Vec3f bounds, s16 yaw)
 +{
-+    if (sNumBoxes >= MAX_DEBUG_BOXES ||
-+       (sBoxes[sNumBoxes] = mem_pool_alloc(gEffectsMemoryPool, sizeof(struct DebugBox))) == NULL) {
++    if (sNumBoxes >= MAX_DEBUG_BOXES) {
 +        return;
 +    }
 +
-+    vec3f_to_vec3s(sBoxes[sNumBoxes]->center, center);
-+    vec3f_to_vec3s(sBoxes[sNumBoxes]->bounds, bounds);
++    vec3f_to_vec3s(sBoxes[sNumBoxes].center, center);
++    vec3f_to_vec3s(sBoxes[sNumBoxes].bounds, bounds);
 +
-+    sBoxes[sNumBoxes]->yaw = yaw;
++    sBoxes[sNumBoxes].yaw = yaw;
++    sBoxes[sNumBoxes].color = sCurBoxColor;
 +
 +    ++sNumBoxes;
++}
++
++/**
++ * Draw new boxes with the given color.
++ * Color format is 32-bit ARGB.
++ * If the alpha component is zero, DBG_BOX_ALPHA (0x7f) will be used instead.
++ * Ex: 0xFF0000 becomes 0x7FFF0000
++ */
++void debug_box_color(u32 color)
++{
++    if ((color >> 24) == 0) color |= (DBG_BOX_ALPHA << 24);
++    sCurBoxColor = color;
 +}
 +
 +/**
@@ -176,9 +203,9 @@ index 00000000..0ee87ec7
 +{
 +    Vec3f center, bounds;
 +
-+    bounds[0] = pMax[0] - pMin[0] / 2.0f;
-+    bounds[1] = pMax[1] - pMin[1] / 2.0f;
-+    bounds[2] = pMax[2] - pMin[2] / 2.0f;
++    bounds[0] = (pMax[0] - pMin[0]) / 2.0f;
++    bounds[1] = (pMax[1] - pMin[1]) / 2.0f;
++    bounds[2] = (pMax[2] - pMin[2]) / 2.0f;
 +
 +    center[0] = pMin[0] + bounds[0];
 +    center[1] = pMin[1] + bounds[1];
@@ -187,12 +214,15 @@ index 00000000..0ee87ec7
 +    append_debug_box(center, bounds, yaw);
 +}
 +
-+static void render_box(struct DebugBox *box)
++static void render_box(int index)
 +{
-+    Vtx *verts = alloc_display_list(8 * sizeof(Vtx));
++    Vtx *verts;
 +    Mtx *translate;
 +    Mtx *rotate;
 +    Mtx *translateback;
++    struct DebugBox *box = &sBoxes[index];
++    u32 color = box->color;
++
 +    s32 x0 = box->center[0],
 +        y0 = box->center[1],
 +        z0 = box->center[2];
@@ -200,6 +230,13 @@ index 00000000..0ee87ec7
 +    s32 xb = box->bounds[0],
 +        yb = box->bounds[1],
 +        zb = box->bounds[2];
++
++    if (box->yaw != 0 && (Gfx*)gGfxPoolEnd - gDisplayListHead < DBG_BOX_ROT_DLSIZE)
++        return;
++    else if ((Gfx*)gGfxPoolEnd - gDisplayListHead < DBG_BOX_DLSIZE)
++        return;
++
++    verts = alloc_display_list(8 * sizeof(Vtx));
 +
 +    if (verts != NULL) {
 +        if (box->yaw != 0) {
@@ -217,7 +254,8 @@ index 00000000..0ee87ec7
 +            gSPMatrix(gDisplayListHead++, rotate,        G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
 +            gSPMatrix(gDisplayListHead++, translateback, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
 +        }
-+        
++
++#define DBG_BOX_COL /**/ (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, (color >> 24) & 0xff
 +#define DBG_BOX_VTX(i, x, y, z) make_vertex(verts, i, x, y, z, 0, 0, DBG_BOX_COL)
 +        DBG_BOX_VTX(0, x0 - xb, y0 + yb, z0 - zb);
 +        DBG_BOX_VTX(1, x0 + xb, y0 + yb, z0 - zb);
@@ -228,7 +266,7 @@ index 00000000..0ee87ec7
 +        DBG_BOX_VTX(6, x0 - xb, y0 - yb, z0 + zb);
 +        DBG_BOX_VTX(7, x0 + xb, y0 - yb, z0 + zb);
 +#undef DBG_BOX_VTX
-+        
++
 +        gSPVertex(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(verts), 8, 0);
 +
 +        gSPDisplayList(gDisplayListHead++, dl_debug_draw_box);
@@ -244,15 +282,15 @@ index 00000000..0ee87ec7
 +    s32 i;
 +    Mtx *mtx;
 +
++    debug_box_color(DBG_BOX_DEF_COLOR);
++
 +    if (sNumBoxes == 0) {
 +        return;
 +    }
 +
 +    mtx = alloc_display_list(sizeof(Mtx));
-+    if (mtx == NULL) {
-+        for (i = 0; i < sNumBoxes; ++i) {
-+            mem_pool_free(gEffectsMemoryPool, sBoxes[i]);
-+        }
++    // Don't draw if there isn't space for the configuration + at least one box
++    if (mtx == NULL || ((Gfx*)gGfxPoolEnd - gDisplayListHead) <= (s32)(2 * sizeof(Gfx)) + DBG_BOX_DLSIZE) {
 +        sNumBoxes = 0;
 +        return;
 +    }
@@ -264,8 +302,7 @@ index 00000000..0ee87ec7
 +    gSPDisplayList(gDisplayListHead++, dl_debug_box_begin);
 +
 +    for (i = 0; i < sNumBoxes; ++i) {
-+        render_box(sBoxes[i]);
-+        mem_pool_free(gEffectsMemoryPool, sBoxes[i]);
++        render_box(i);
 +    }
 +
 +    sNumBoxes = 0;
@@ -275,23 +312,24 @@ new file mode 100644
 index 00000000..cdb3dc9d
 --- /dev/null
 +++ b/src/game/debug_box.h
-@@ -0,0 +1,25 @@
-+#ifndef _DEBUG_DRAW_CUBE_H
-+#define _DEBUG_DRAW_CUBE_H
+@@ -0,0 +1,26 @@
++#ifndef DEBUG_BOX_H
++#define DEBUG_BOX_H
 +
 +/**
 + * @file debug_box.h
-+ * Draws debug boxes, see debug_box.inc.c for details
++ * Draws debug boxes, see debug_box.c for details
 + */
 +
 +#include "types.h"
 +
 +/**
 + * The max amount of debug boxes before debug_box() just returns.
-+ * You can set this to something higher like 1000, but things like text will stop rendering.
++ * You can set this to something higher, but you might run out of space in the gfx pool.
 + */
-+#define MAX_DEBUG_BOXES 100
++#define MAX_DEBUG_BOXES 512
 +
++void debug_box_color(u32 color);
 +void debug_box(Vec3f center, Vec3f bounds);
 +void debug_box_rot(Vec3f center, Vec3f bounds, s16 yaw);
 +
@@ -300,4 +338,4 @@ index 00000000..cdb3dc9d
 +
 +void render_debug_boxes(void);
 +
-+#endif /* _DEBUG_DRAW_CUBE_H */
++#endif /* DEBUG_BOX_H */

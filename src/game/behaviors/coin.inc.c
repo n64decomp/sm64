@@ -138,9 +138,7 @@ void spawn_coin_in_formation(s32 sp50, s32 sp54) {
     Vec3i sp40;
     s32 sp3C = 1;
     s32 sp38 = 1;
-    UNUSED s32 unused;
-    sp40[2] = 0;
-    sp40[0] = (sp40[1] = sp40[2]);
+    sp40[0] = sp40[1] = sp40[2] = 0;
     switch (sp54 & 7) {
         case 0:
             sp40[2] = 160 * (sp50 - 2);

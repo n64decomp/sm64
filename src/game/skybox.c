@@ -214,7 +214,7 @@ calculate_skybox_scaled_y(s8 player, UNUSED f32 fov) {
 /**
  * Converts the upper left xPos and yPos to the index of the upper left tile in the skybox.
  */
-static int get_top_left_tile_idx(s8 player) {
+static s32 get_top_left_tile_idx(s8 player) {
     s32 tileCol = sSkyBoxInfo[player].scaledX / SKYBOX_TILE_WIDTH;
     s32 tileRow = (SKYBOX_HEIGHT - sSkyBoxInfo[player].scaledY) / SKYBOX_TILE_HEIGHT;
 

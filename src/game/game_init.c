@@ -45,7 +45,7 @@ struct MarioAnimation D_80339D10;
 struct MarioAnimation gDemo;
 UNUSED u8 filler80339D30[0x90];
 
-int unused8032C690 = 0;
+s32 unused8032C690 = 0;
 u32 gGlobalTimer = 0;
 
 static u16 sCurrFBNum = 0;
@@ -280,7 +280,7 @@ void draw_reset_bars(void) {
         sp18 += D_8032C648++ * (SCREEN_WIDTH / 4);
 
         for (sp24 = 0; sp24 < ((SCREEN_HEIGHT / 16) + 1); sp24++) {
-            // Must be on one line to match -O2
+            // Loop must be one line to match on -O2
             for (sp20 = 0; sp20 < (SCREEN_WIDTH / 4); sp20++) *sp18++ = 0;
             sp18 += ((SCREEN_WIDTH / 4) * 14);
         }
@@ -613,7 +613,7 @@ void thread5_game_loop(UNUSED void *arg) {
 #ifdef TARGET_N64
     rendering_init();
 
-    while (1) {
+    while (TRUE) {
 #else
     gGlobalTimer++;
 }
