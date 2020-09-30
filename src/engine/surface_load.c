@@ -634,6 +634,10 @@ void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects
     alloc_only_pool_clear(sDynamicSurfaceNodePool);
     alloc_only_pool_clear(sDynamicSurfacePool);
     sStaticSurfaceLoadComplete = FALSE;
+
+    // Originally they forgot to clear this matrix,
+    // results in segfaults if this is not done.
+    clear_dynamic_surfaces();
 #endif
 
     clear_static_surfaces();
