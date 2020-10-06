@@ -1413,12 +1413,12 @@ s32 update_parallel_tracking_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     // Check if the camera should go to the previous path
     if (sParTrackIndex != 0) {
         // get Mario's distance to the next path
-        calculate_angles(sParTrackPath[sParTrackIndex].pos, sParTrackPath[sParTrackIndex + 1].pos, &nextPitch, &nextYaw);
+        calculate_angles(sParTrackPath[sParTrackIndex].pos, (sParTrackPath + sParTrackIndex + 1)->pos, &nextPitch, &nextYaw);
         vec3f_set_dist_and_angle(sParTrackPath[sParTrackIndex].pos, nextPathPos, 700.f, nextPitch, nextYaw);
         distToPrev = calc_abs_dist(marioPos, nextPathPos);
 
         // get Mario's distance to the previous path
-        calculate_angles(sParTrackPath[sParTrackIndex].pos, sParTrackPath[sParTrackIndex - 1].pos, &prevPitch, &prevYaw);
+        calculate_angles(sParTrackPath[sParTrackIndex].pos, (sParTrackPath + sParTrackIndex - 1)->pos, &prevPitch, &prevYaw);
         vec3f_set_dist_and_angle(sParTrackPath[sParTrackIndex].pos, prevPathPos, 700.f, prevPitch, prevYaw);
         distToNext = calc_abs_dist(marioPos, prevPathPos);
         if (distToPrev > distToNext) {
