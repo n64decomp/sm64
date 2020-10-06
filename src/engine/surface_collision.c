@@ -637,16 +637,16 @@ f32 find_poison_gas_level(f32 x, f32 z) {
             val = *p;
 
             if (val >= 50) {
-                loX = *(p + 1);
-                loZ = *(p + 2);
-                hiX = *(p + 3);
-                hiZ = *(p + 4);
+                loX = p[1];
+                loZ = p[2];
+                hiX = p[3];
+                hiZ = p[4];
 
                 // If the location is within a gas's box and it is a gas box.
                 // Gas has a value of 50, 60, etc.
                 if (loX < x && x < hiX && loZ < z && z < hiZ && val % 10 == 0) {
                     // Set the gas height. Since this breaks, only return the first height.
-                    gasLevel = *(p + 5);
+                    gasLevel = p[5];
                     break;
                 }
             }

@@ -41,8 +41,8 @@ Vtx_t gBubbleTempVtx[3] = {
  * kill flower and bubble particles.
  */
 s32 particle_is_laterally_close(s32 index, s32 x, s32 z, s32 distance) {
-    s32 xPos = (gEnvFxBuffer + index)->xPos;
-    s32 zPos = (gEnvFxBuffer + index)->zPos;
+    s32 xPos = gEnvFxBuffer[index].xPos;
+    s32 zPos = gEnvFxBuffer[index].zPos;
 
     if (sqr(xPos - x) + sqr(zPos - z) > sqr(distance)) {
         return 0;
@@ -80,18 +80,18 @@ void envfx_update_flower(Vec3s centerPos) {
     s16 centerZ = centerPos[2];
 
     for (i = 0; i < sBubbleParticleMaxCount; i++) {
-        (gEnvFxBuffer + i)->isAlive = particle_is_laterally_close(i, centerX, centerZ, 3000);
-        if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->xPos = random_flower_offset() + centerX;
-            (gEnvFxBuffer + i)->zPos = random_flower_offset() + centerZ;
-            (gEnvFxBuffer + i)->yPos = find_floor_height_and_data((gEnvFxBuffer + i)->xPos, 10000.0f,
-                                                                  (gEnvFxBuffer + i)->zPos, &floorGeo);
-            (gEnvFxBuffer + i)->isAlive = 1;
-            (gEnvFxBuffer + i)->animFrame = random_float() * 5.0f;
+        gEnvFxBuffer[i].isAlive = particle_is_laterally_close(i, centerX, centerZ, 3000);
+        if (gEnvFxBuffer[i].isAlive == 0) {
+            gEnvFxBuffer[i].xPos = random_flower_offset() + centerX;
+            gEnvFxBuffer[i].zPos = random_flower_offset() + centerZ;
+            gEnvFxBuffer[i].yPos = find_floor_height_and_data(gEnvFxBuffer[i].xPos, 10000.0f,
+                                                                  gEnvFxBuffer[i].zPos, &floorGeo);
+            gEnvFxBuffer[i].isAlive = 1;
+            gEnvFxBuffer[i].animFrame = random_float() * 5.0f;
         } else if ((timer & 0x03) == 0) {
-            (gEnvFxBuffer + i)->animFrame += 1;
-            if ((gEnvFxBuffer + i)->animFrame > 5) {
-                (gEnvFxBuffer + i)->animFrame = 0;
+            gEnvFxBuffer[i].animFrame += 1;
+            if (gEnvFxBuffer[i].animFrame > 5) {
+                gEnvFxBuffer[i].animFrame = 0;
             }
         }
     }
@@ -115,34 +115,34 @@ void envfx_set_lava_bubble_position(s32 index, Vec3s centerPos) {
     centerY = centerPos[1];
     centerZ = centerPos[2];
 
-    (gEnvFxBuffer + index)->xPos = random_float() * 6000.0f - 3000.0f + centerX;
-    (gEnvFxBuffer + index)->zPos = random_float() * 6000.0f - 3000.0f + centerZ;
+    gEnvFxBuffer[index].xPos = random_float() * 6000.0f - 3000.0f + centerX;
+    gEnvFxBuffer[index].zPos = random_float() * 6000.0f - 3000.0f + centerZ;
 
-    if ((gEnvFxBuffer + index)->xPos > 8000) {
-        (gEnvFxBuffer + index)->xPos = 16000 - (gEnvFxBuffer + index)->xPos;
+    if (gEnvFxBuffer[index].xPos > 8000) {
+        gEnvFxBuffer[index].xPos = 16000 - gEnvFxBuffer[index].xPos;
     }
-    if ((gEnvFxBuffer + index)->xPos < -8000) {
-        (gEnvFxBuffer + index)->xPos = -16000 - (gEnvFxBuffer + index)->xPos;
+    if (gEnvFxBuffer[index].xPos < -8000) {
+        gEnvFxBuffer[index].xPos = -16000 - gEnvFxBuffer[index].xPos;
     }
 
-    if ((gEnvFxBuffer + index)->zPos > 8000) {
-        (gEnvFxBuffer + index)->zPos = 16000 - (gEnvFxBuffer + index)->zPos;
+    if (gEnvFxBuffer[index].zPos > 8000) {
+        gEnvFxBuffer[index].zPos = 16000 - gEnvFxBuffer[index].zPos;
     }
-    if ((gEnvFxBuffer + index)->zPos < -8000) {
-        (gEnvFxBuffer + index)->zPos = -16000 - (gEnvFxBuffer + index)->zPos;
+    if (gEnvFxBuffer[index].zPos < -8000) {
+        gEnvFxBuffer[index].zPos = -16000 - gEnvFxBuffer[index].zPos;
     }
 
     floorY =
-        find_floor((gEnvFxBuffer + index)->xPos, centerY + 500, (gEnvFxBuffer + index)->zPos, &surface);
+        find_floor(gEnvFxBuffer[index].xPos, centerY + 500, gEnvFxBuffer[index].zPos, &surface);
     if (surface == NULL) {
-        (gEnvFxBuffer + index)->yPos = -10000;
+        gEnvFxBuffer[index].yPos = -10000;
         return;
     }
 
     if (surface->type == SURFACE_BURNING) {
-        (gEnvFxBuffer + index)->yPos = floorY;
+        gEnvFxBuffer[index].yPos = floorY;
     } else {
-        (gEnvFxBuffer + index)->yPos = -10000;
+        gEnvFxBuffer[index].yPos = -10000;
     }
 }
 
@@ -161,14 +161,14 @@ void envfx_update_lava(Vec3s centerPos) {
     centerZ = centerPos[2];
 
     for (i = 0; i < sBubbleParticleMaxCount; i++) {
-        if ((gEnvFxBuffer + i)->isAlive == 0) {
+        if (gEnvFxBuffer[i].isAlive == 0) {
             envfx_set_lava_bubble_position(i, centerPos);
-            (gEnvFxBuffer + i)->isAlive = 1;
+            gEnvFxBuffer[i].isAlive = 1;
         } else if ((timer & 0x01) == 0) {
-            (gEnvFxBuffer + i)->animFrame += 1;
-            if ((gEnvFxBuffer + i)->animFrame > 8) {
-                (gEnvFxBuffer + i)->isAlive = 0;
-                (gEnvFxBuffer + i)->animFrame = 0;
+            gEnvFxBuffer[i].animFrame += 1;
+            if (gEnvFxBuffer[i].animFrame > 8) {
+                gEnvFxBuffer[i].isAlive = 0;
+                gEnvFxBuffer[i].animFrame = 0;
             }
         }
     }
@@ -207,11 +207,11 @@ void envfx_rotate_around_whirlpool(s32 *x, s32 *y, s32 *z) {
 s32 envfx_is_whirlpool_bubble_alive(s32 index) {
     s32 UNUSED sp4;
 
-    if ((gEnvFxBuffer + index)->bubbleY < gEnvFxBubbleConfig[ENVFX_STATE_DEST_Y] - 100) {
+    if (gEnvFxBuffer[index].bubbleY < gEnvFxBubbleConfig[ENVFX_STATE_DEST_Y] - 100) {
         return 0;
     }
 
-    if ((gEnvFxBuffer + index)->angleAndDist[1] < 10) {
+    if (gEnvFxBuffer[index].angleAndDist[1] < 10) {
         return 0;
     }
 
@@ -226,39 +226,39 @@ void envfx_update_whirlpool(void) {
     s32 i;
 
     for (i = 0; i < sBubbleParticleMaxCount; i++) {
-        (gEnvFxBuffer + i)->isAlive = envfx_is_whirlpool_bubble_alive(i);
-        if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->angleAndDist[1] = random_float() * 1000.0f;
-            (gEnvFxBuffer + i)->angleAndDist[0] = random_float() * 65536.0f;
-            (gEnvFxBuffer + i)->xPos =
+        gEnvFxBuffer[i].isAlive = envfx_is_whirlpool_bubble_alive(i);
+        if (gEnvFxBuffer[i].isAlive == 0) {
+            gEnvFxBuffer[i].angleAndDist[1] = random_float() * 1000.0f;
+            gEnvFxBuffer[i].angleAndDist[0] = random_float() * 65536.0f;
+            gEnvFxBuffer[i].xPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_X]
-                + sins((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
-            (gEnvFxBuffer + i)->zPos =
+                + sins(gEnvFxBuffer[i].angleAndDist[0]) * gEnvFxBuffer[i].angleAndDist[1];
+            gEnvFxBuffer[i].zPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z]
-                + coss((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
-            (gEnvFxBuffer + i)->bubbleY =
+                + coss(gEnvFxBuffer[i].angleAndDist[0]) * gEnvFxBuffer[i].angleAndDist[1];
+            gEnvFxBuffer[i].bubbleY =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (random_float() * 100.0f - 50.0f);
-            (gEnvFxBuffer + i)->yPos = (i + gEnvFxBuffer)->bubbleY;
-            (gEnvFxBuffer + i)->unusedBubbleVar = 0;
-            (gEnvFxBuffer + i)->isAlive = 1;
+            gEnvFxBuffer[i].yPos = gEnvFxBuffer[i].bubbleY;
+            gEnvFxBuffer[i].unusedBubbleVar = 0;
+            gEnvFxBuffer[i].isAlive = 1;
 
-            envfx_rotate_around_whirlpool(&(gEnvFxBuffer + i)->xPos, &(gEnvFxBuffer + i)->yPos,
-                                          &(gEnvFxBuffer + i)->zPos);
+            envfx_rotate_around_whirlpool(&gEnvFxBuffer[i].xPos, &gEnvFxBuffer[i].yPos,
+                                          &gEnvFxBuffer[i].zPos);
         } else {
-            (gEnvFxBuffer + i)->angleAndDist[1] -= 40;
-            (gEnvFxBuffer + i)->angleAndDist[0] +=
-                (s16)(3000 - (gEnvFxBuffer + i)->angleAndDist[1] * 2) + 0x400;
-            (gEnvFxBuffer + i)->xPos =
+            gEnvFxBuffer[i].angleAndDist[1] -= 40;
+            gEnvFxBuffer[i].angleAndDist[0] +=
+                (s16)(3000 - gEnvFxBuffer[i].angleAndDist[1] * 2) + 0x400;
+            gEnvFxBuffer[i].xPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_X]
-                + sins((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
-            (gEnvFxBuffer + i)->zPos =
+                + sins(gEnvFxBuffer[i].angleAndDist[0]) * gEnvFxBuffer[i].angleAndDist[1];
+            gEnvFxBuffer[i].zPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z]
-                + coss((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
-            (gEnvFxBuffer + i)->bubbleY -= 40 - ((s16)(gEnvFxBuffer + i)->angleAndDist[1] / 100);
-            (gEnvFxBuffer + i)->yPos = (i + gEnvFxBuffer)->bubbleY;
+                + coss(gEnvFxBuffer[i].angleAndDist[0]) * gEnvFxBuffer[i].angleAndDist[1];
+            gEnvFxBuffer[i].bubbleY -= 40 - ((s16)gEnvFxBuffer[i].angleAndDist[1] / 100);
+            gEnvFxBuffer[i].yPos = gEnvFxBuffer[i].bubbleY;
 
-            envfx_rotate_around_whirlpool(&(gEnvFxBuffer + i)->xPos, &(gEnvFxBuffer + i)->yPos,
-                                          &(gEnvFxBuffer + i)->zPos);
+            envfx_rotate_around_whirlpool(&gEnvFxBuffer[i].xPos, &gEnvFxBuffer[i].yPos,
+                                          &gEnvFxBuffer[i].zPos);
         }
     }
 }
@@ -272,7 +272,7 @@ s32 envfx_is_jestream_bubble_alive(s32 index) {
 
     if (!particle_is_laterally_close(index, gEnvFxBubbleConfig[ENVFX_STATE_SRC_X],
                                      gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z], 1000)
-        || gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + 1500 < (gEnvFxBuffer + index)->yPos) {
+        || gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + 1500 < gEnvFxBuffer[index].yPos) {
         return 0;
     }
 
@@ -287,23 +287,23 @@ void envfx_update_jetstream(void) {
     s32 i;
 
     for (i = 0; i < sBubbleParticleMaxCount; i++) {
-        (gEnvFxBuffer + i)->isAlive = envfx_is_jestream_bubble_alive(i);
-        if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->angleAndDist[1] = random_float() * 300.0f;
-            (gEnvFxBuffer + i)->angleAndDist[0] = random_u16();
-            (gEnvFxBuffer + i)->xPos =
+        gEnvFxBuffer[i].isAlive = envfx_is_jestream_bubble_alive(i);
+        if (gEnvFxBuffer[i].isAlive == 0) {
+            gEnvFxBuffer[i].angleAndDist[1] = random_float() * 300.0f;
+            gEnvFxBuffer[i].angleAndDist[0] = random_u16();
+            gEnvFxBuffer[i].xPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_X]
-                + sins((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
-            (gEnvFxBuffer + i)->zPos =
+                + sins(gEnvFxBuffer[i].angleAndDist[0]) * gEnvFxBuffer[i].angleAndDist[1];
+            gEnvFxBuffer[i].zPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Z]
-                + coss((gEnvFxBuffer + i)->angleAndDist[0]) * (gEnvFxBuffer + i)->angleAndDist[1];
-            (gEnvFxBuffer + i)->yPos =
+                + coss(gEnvFxBuffer[i].angleAndDist[0]) * gEnvFxBuffer[i].angleAndDist[1];
+            gEnvFxBuffer[i].yPos =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (random_float() * 400.0f - 200.0f);
         } else {
-            (gEnvFxBuffer + i)->angleAndDist[1] += 10;
-            (gEnvFxBuffer + i)->xPos += sins((gEnvFxBuffer + i)->angleAndDist[0]) * 10.0f;
-            (gEnvFxBuffer + i)->zPos += coss((gEnvFxBuffer + i)->angleAndDist[0]) * 10.0f;
-            (gEnvFxBuffer + i)->yPos -= ((gEnvFxBuffer + i)->angleAndDist[1] / 30) - 50;
+            gEnvFxBuffer[i].angleAndDist[1] += 10;
+            gEnvFxBuffer[i].xPos += sins(gEnvFxBuffer[i].angleAndDist[0]) * 10.0f;
+            gEnvFxBuffer[i].zPos += coss(gEnvFxBuffer[i].angleAndDist[0]) * 10.0f;
+            gEnvFxBuffer[i].yPos -= (gEnvFxBuffer[i].angleAndDist[1] / 30) - 50;
         }
     }
 }
@@ -353,7 +353,7 @@ s32 envfx_init_bubble(s32 mode) {
         }
 
         for (i = 0; i < sBubbleParticleCount; i++) {
-            (gEnvFxBuffer + i)->animFrame = random_float() * 7.0f;
+            gEnvFxBuffer[i].animFrame = random_float() * 7.0f;
         }
 
         if (0) {
@@ -471,17 +471,17 @@ void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s verte
  */
 void envfx_set_bubble_texture(s32 mode, s16 index) {
     void **imageArr;
-    s16 frame = (gEnvFxBuffer + index)->animFrame;
+    s16 frame = gEnvFxBuffer[index].animFrame;
 
     switch (mode) {
         case ENVFX_FLOWERS:
             imageArr = segmented_to_virtual(&flower_bubbles_textures_ptr_0B002008);
-            frame = (gEnvFxBuffer + index)->animFrame;
+            frame = gEnvFxBuffer[index].animFrame;
             break;
 
         case ENVFX_LAVA_BUBBLES:
             imageArr = segmented_to_virtual(&lava_bubble_ptr_0B006020);
-            frame = (gEnvFxBuffer + index)->animFrame;
+            frame = gEnvFxBuffer[index].animFrame;
             break;
 
         case ENVFX_WHIRLPOOL_BUBBLES:
@@ -491,7 +491,7 @@ void envfx_set_bubble_texture(s32 mode, s16 index) {
             break;
     }
 
-    gDPSetTextureImage(sGfxCursor++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, *(imageArr + frame));
+    gDPSetTextureImage(sGfxCursor++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, imageArr[frame]);
     gSPDisplayList(sGfxCursor++, &tiny_bubble_dl_0B006D68);
 }
 

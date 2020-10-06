@@ -60,7 +60,7 @@ s16 bhv_mips_find_furthest_waypoint_to_mario(void) {
 
     // For each waypoint in MIPS path...
     for (i = 0; i < 10; i++) {
-        waypoint = segmented_to_virtual(*(pathBase + i));
+        waypoint = segmented_to_virtual(pathBase[i]);
         x = waypoint->pos[0];
         y = waypoint->pos[1];
         z = waypoint->pos[2];

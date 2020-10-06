@@ -129,12 +129,12 @@ void wiggler_init_segments(void) {
         for (i = 0; i <= 3; i++) {
             chain_segment_init(segments + i);
 
-            (segments + i)->posX = o->oPosX;
-            (segments + i)->posY = o->oPosY;
-            (segments + i)->posZ = o->oPosZ;
+            segments[i].posX = o->oPosX;
+            segments[i].posY = o->oPosY;
+            segments[i].posZ = o->oPosZ;
 
-            (segments + i)->pitch = o->oFaceAnglePitch;
-            (segments + i)->yaw = o->oFaceAngleYaw;
+            segments[i].pitch = o->oFaceAnglePitch;
+            segments[i].yaw = o->oFaceAngleYaw;
         }
 
         o->header.gfx.animInfo.animFrame = -1;
