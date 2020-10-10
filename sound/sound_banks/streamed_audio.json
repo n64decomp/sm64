@@ -1,0 +1,205 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "streamed_audio",
+    "envelopes": {
+        "envelope": [
+            [
+                6,
+                32700
+            ],
+            [
+                6,
+                32700
+            ],
+            [
+                32700,
+                29430
+            ],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "inst0": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "23_custom_herogarden"
+        },
+        "inst1": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "24_custom_eggmanstage1"
+        },
+        "inst2": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "25_custom_eggman1"
+        },
+        "inst5": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "28_custom_newbob"
+        },
+        "inst6": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "29_custom_newwf"
+        },
+        "inst7": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "2A_custom_newjrb"
+        },
+        "inst8": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "2B_custom_newccm"
+        },
+        "inst9": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "2C_custom_newbbh"
+        },
+        "inst10": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "2D_custom_newbbh2"
+        },
+        "inst11": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "2E_custom_newhmc"
+        },
+        "inst12": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "2F_custom_newlll"
+        },
+        "inst13": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "30_custom_newlll2"
+        },
+        "inst14": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "31_custom_newssl"
+        },
+        "inst15": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "32_custom_newssl2"
+        },
+        "inst17": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newddd"
+        },
+        "inst18": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_eggmanstage2"
+        },
+        "inst19": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_eggman2"
+        },
+        "inst20": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newwdw"
+        },
+        "inst21": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newsm"
+        },
+        "inst22": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newsm2"
+        },
+        "inst23": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newttm"
+        },
+        "inst24": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "34_custom_newttm2"
+        },
+        "inst26": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newthi"
+        },
+        "inst27": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "34_custom_newthi2"
+        },
+        "inst28": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_newttc"
+        },
+        "inst29": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "34_custom_newrr"
+        },
+        "inst31": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "33_custom_eggmanstage3"
+        },
+        "inst32": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "34_custom_eggman3"
+        },
+        "inst34": {
+            "release_rate": 10,
+            "envelope": "envelope",
+            "sound": "34_custom_newboss"
+        }
+    },
+    "instrument_list": [
+        "inst0",
+        "inst1",
+        "inst2",
+        null,
+        null,
+        "inst5",
+        "inst6",
+        "inst7",
+        "inst8",
+        "inst9",
+        "inst10",
+        "inst11",
+        "inst12",
+        "inst13",
+        "inst14",
+        "inst15",
+        null,
+        "inst17",
+        "inst18",
+        "inst19",
+        "inst20",
+        "inst21",
+        "inst22",
+        "inst23",
+        "inst24",
+        null,
+        "inst26",
+        "inst27",
+        "inst28",
+        "inst29",
+        null,
+        "inst31",
+        "inst32",
+        null,
+        "inst34"
+    ]
+}

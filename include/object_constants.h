@@ -1,11 +1,10 @@
-#ifndef OBJECT_CONSTANTS_H
-#define OBJECT_CONSTANTS_H
+#ifndef _OBJECT_CONSTANTS_H
+#define _OBJECT_CONSTANTS_H
 
 // This file contains macros that provide descriptive names for
 // field-specific and object-specific constants, e.g. actions.
 
 /* activeFlags */
-#define ACTIVE_FLAG_DEACTIVATED            0         // 0x0000
 #define ACTIVE_FLAG_ACTIVE                 (1 <<  0) // 0x0001
 #define ACTIVE_FLAG_FAR_AWAY               (1 <<  1) // 0x0002
 #define ACTIVE_FLAG_UNK2                   (1 <<  2) // 0x0004
@@ -13,11 +12,12 @@
 #define ACTIVE_FLAG_UNIMPORTANT            (1 <<  4) // 0x0010
 #define ACTIVE_FLAG_INITIATED_TIME_STOP    (1 <<  5) // 0x0020
 #define ACTIVE_FLAG_MOVE_THROUGH_GRATE     (1 <<  6) // 0x0040
-#define ACTIVE_FLAG_DITHERED_ALPHA         (1 <<  7) // 0x0080
+#define ACTIVE_FLAG_UNK7                   (1 <<  7) // 0x0080
 #define ACTIVE_FLAG_UNK8                   (1 <<  8) // 0x0100
 #define ACTIVE_FLAG_UNK9                   (1 <<  9) // 0x0200
 #define ACTIVE_FLAG_UNK10                  (1 << 10) // 0x0400
 
+#define ACTIVE_FLAGS_DEACTIVATED 0
 
 /* respawnInfoType */
 #define RESPAWN_INFO_TYPE_NULL 0
@@ -80,21 +80,29 @@
 #define OBJ_MOVE_UNDERWATER_OFF_GROUND (1 <<  5) // 0x0020
 #define OBJ_MOVE_UNDERWATER_ON_GROUND  (1 <<  6) // 0x0040
 #define OBJ_MOVE_IN_AIR                (1 <<  7) // 0x0080
-#define OBJ_MOVE_OUT_SCOPE             (1 <<  8) // 0x0100
+#define OBJ_MOVE_8                     (1 <<  8) // 0x0100
 #define OBJ_MOVE_HIT_WALL              (1 <<  9) // 0x0200
 #define OBJ_MOVE_HIT_EDGE              (1 << 10) // 0x0400
 #define OBJ_MOVE_ABOVE_LAVA            (1 << 11) // 0x0800
 #define OBJ_MOVE_LEAVING_WATER         (1 << 12) // 0x1000
-#define OBJ_MOVE_BOUNCE                (1 << 13) // 0x2000
+#define OBJ_MOVE_13                    (1 << 13) // 0x2000
 #ifndef VERSION_JP
 #define OBJ_MOVE_ABOVE_DEATH_BARRIER   (1 << 14) // 0x4000
 #endif
 
 #define OBJ_MOVE_MASK_ON_GROUND (OBJ_MOVE_LANDED | OBJ_MOVE_ON_GROUND)
+#define OBJ_MOVE_MASK_33 0x33
 #define OBJ_MOVE_MASK_IN_WATER (\
     OBJ_MOVE_ENTERED_WATER |\
     OBJ_MOVE_AT_WATER_SURFACE |\
     OBJ_MOVE_UNDERWATER_OFF_GROUND |\
+    OBJ_MOVE_UNDERWATER_ON_GROUND)
+#define OBJ_MOVE_MASK_HIT_WALL_OR_IN_WATER \
+    (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER)
+#define OBJ_MOVE_MASK_NOT_AIR (\
+    OBJ_MOVE_LANDED |\
+    OBJ_MOVE_ON_GROUND |\
+    OBJ_MOVE_AT_WATER_SURFACE |\
     OBJ_MOVE_UNDERWATER_ON_GROUND)
 
 /* oActiveParticleFlags */
@@ -203,7 +211,7 @@
     #define BLUE_FISH_ACT_TURN 1
     #define BLUE_FISH_ACT_ASCEND 2
     #define BLUE_FISH_ACT_TURN_BACK 3
-
+    
     /* oAction: bhv_blue_fish_spawn_loop */
     #define BLUE_FISH_ACT_SPAWN 0
     #define BLUE_FISH_ACT_ROOM 1
@@ -634,15 +642,15 @@
     #define UKIKI_TEXT_DEFAULT       0
     #define UKIKI_TEXT_CAGE_TEXTBOX  1
     #define UKIKI_TEXT_GO_TO_CAGE    2
-    #define UKIKI_TEXT_STOLE_CAP     3
-    #define UKIKI_TEXT_HAS_CAP       4
-    #define UKIKI_TEXT_GAVE_CAP_BACK 5
+    #define UKIKI_TEXT_STOLE_HAT     3
+    #define UKIKI_TEXT_HAS_HAT       4
+    #define UKIKI_TEXT_GAVE_HAT_BACK 5
     #define UKIKI_TEXT_DO_NOT_LET_GO 6
-    #define UKIKI_TEXT_STEAL_CAP     7
+    #define UKIKI_TEXT_STEAL_HAT     7
 
     /* oBehParams2ndByte */
     #define UKIKI_CAGE 0
-    #define UKIKI_CAP  1
+    #define UKIKI_HAT  1
 
     /* Animations */
     #define UKIKI_ANIM_RUN           0
@@ -662,10 +670,10 @@
     /* oAnimState */
     #define UKIKI_ANIM_STATE_DEFAULT    0
     #define UKIKI_ANIM_STATE_EYE_CLOSED 1
-    #define UKIKI_ANIM_STATE_CAP_ON     2
+    #define UKIKI_ANIM_STATE_HAT_ON     2
 
-    /* oUkikiHasCap */
-    #define UKIKI_CAP_ON 1
+    /* oUkikiHasHat */
+    #define UKIKI_HAT_ON 1
 
 /* Ukiki Cage Star */
     /* oAction */
@@ -749,11 +757,11 @@
     /* Walking sounds */
     #define PENGUIN_WALK_BABY 0
     #define PENGUIN_WALK_BIG  1
-
+    
     /* Animations */
     #define PENGUIN_ANIM_WALK 0
     #define PENGUIN_ANIM_IDLE 3
-
+    
 /* Racing penguin */
     /* oAction */
     #define RACING_PENGUIN_ACT_WAIT_FOR_MARIO 0
@@ -762,14 +770,14 @@
     #define RACING_PENGUIN_ACT_RACE 3
     #define RACING_PENGUIN_ACT_FINISH_RACE 4
     #define RACING_PENGUIN_ACT_SHOW_FINAL_TEXT 5
-
+    
 /* SL walking penguin */
     /* oAction */
     #define SL_WALKING_PENGUIN_ACT_MOVING_FORWARDS 0
     #define SL_WALKING_PENGUIN_ACT_TURNING_BACK 1
     #define SL_WALKING_PENGUIN_ACT_RETURNING 2
     #define SL_WALKING_PENGUIN_ACT_TURNING_FORWARDS 3
-
+    
 /* Snowman wind */
     /* oSubAction */
     #define SL_SNOWMAN_WIND_ACT_IDLE 0
@@ -963,18 +971,4 @@
     #define BOWSER_PUZZLE_ACT_WAIT_FOR_COMPLETE 1
     #define BOWSER_PUZZLE_ACT_DONE 2
 
-/* Mr Blizzard */
-    /* oAction */
-    #define MR_BLIZZARD_ACT_SPAWN_SNOWBALL 0
-    #define MR_BLIZZARD_ACT_HIDE_UNHIDE 1
-    #define MR_BLIZZARD_ACT_RISE_FROM_GROUND 2
-    #define MR_BLIZZARD_ACT_ROTATE 3
-    #define MR_BLIZZARD_ACT_THROW_SNOWBALL 4
-    #define MR_BLIZZARD_ACT_BURROW 5
-    #define MR_BLIZZARD_ACT_DEATH 6
-    #define MR_BLIZZARD_ACT_JUMP 7
-    /* oBehParams2ndByte */
-    #define MR_BLIZZARD_STYPE_NO_CAP 0
-    #define MR_BLIZZARD_STYPE_JUMPING 1
-
-#endif // OBJECT_CONSTANTS_H
+#endif

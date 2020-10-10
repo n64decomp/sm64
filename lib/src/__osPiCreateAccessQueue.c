@@ -6,13 +6,13 @@ OSMesg osPiMesgBuff[PIAccessQueueSize];
 OSMesgQueue gOsPiMessageQueue;
 u32 gOsPiAccessQueueCreated = 0;
 
-void __osPiCreateAccessQueue(void) {
+void __osPiCreateAccessQueue() {
     gOsPiAccessQueueCreated = 1;
     osCreateMesgQueue(&gOsPiMessageQueue, &osPiMesgBuff[0], PIAccessQueueSize - 1);
     osSendMesg(&gOsPiMessageQueue, NULL, OS_MESG_NOBLOCK);
 }
 
-void __osPiGetAccess(void) {
+void __osPiGetAccess() {
     OSMesg sp1c;
     if (!gOsPiAccessQueueCreated) {
         __osPiCreateAccessQueue();
@@ -20,6 +20,6 @@ void __osPiGetAccess(void) {
     osRecvMesg(&gOsPiMessageQueue, &sp1c, OS_MESG_BLOCK);
 }
 
-void __osPiRelAccess(void) {
+void __osPiRelAccess() {
     osSendMesg(&gOsPiMessageQueue, NULL, OS_MESG_NOBLOCK);
 }

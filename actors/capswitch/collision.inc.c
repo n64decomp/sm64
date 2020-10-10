@@ -1,6 +1,6 @@
 // Capswitch
 
-const Collision capswitch_collision_050033D0[] = {
+const s16 capswitch_collision_050033D0[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(292, 0, 254),
@@ -27,7 +27,7 @@ const Collision capswitch_collision_050033D0[] = {
     COL_END(),
 };
 
-const Collision capswitch_collision_05003448[] = {
+const s16 capswitch_collision_05003448[] = {
     COL_INIT(),
     COL_VERTEX_INIT(0x8),
     COL_VERTEX(292, 0, 254),

@@ -1,0 +1,356 @@
+diff -Naur sm64_refresh11/assets.json sm64_refresh11_edit/assets.json
+--- sm64_refresh11/assets.json	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/assets.json	2020-07-17 10:54:43.118917600 -0500
+@@ -1217,31 +1217,6 @@
+ "textures/inside/inside_castle_textures.0A000.rgba16.png": [32,64,4096,{"jp":[3555104,40960],"us":[3561856,40960],"eu":[3435456,40960],"sh":[3409824,40960]}],
+ "textures/inside/inside_castle_textures.0B000.rgba16.png": [32,32,2048,{"jp":[3555104,45056],"us":[3561856,45056],"eu":[3435456,45056],"sh":[3409824,45056]}],
+ "textures/inside/inside_castle_textures.0B800.rgba16.png": [64,32,4096,{"jp":[3555104,47104],"us":[3561856,47104],"eu":[3435456,47104],"sh":[3409824,47104]}],
+-"textures/intro_raw/hand_closed.rgba16.png": [32,32,2048,{"jp":[2455304],"us":[2463112],"eu":[2331912],"sh":[2308680]}],
+-"textures/intro_raw/hand_open.rgba16.png": [32,32,2048,{"jp":[2453248],"us":[2461056],"eu":[2329856],"sh":[2306624]}],
+-"textures/intro_raw/mario_face_shine.ia8.png": [32,32,1024,{"jp":[2503888],"us":[2511696],"eu":[2380496],"sh":[2357264]}],
+-"textures/intro_raw/red_star_0.rgba16.png": [32,32,2048,{"jp":[2457352],"us":[2465160],"eu":[2333960],"sh":[2310728]}],
+-"textures/intro_raw/red_star_1.rgba16.png": [32,32,2048,{"jp":[2459400],"us":[2467208],"eu":[2336008],"sh":[2312776]}],
+-"textures/intro_raw/red_star_2.rgba16.png": [32,32,2048,{"jp":[2461448],"us":[2469256],"eu":[2338056],"sh":[2314824]}],
+-"textures/intro_raw/red_star_3.rgba16.png": [32,32,2048,{"jp":[2463496],"us":[2471304],"eu":[2340104],"sh":[2316872]}],
+-"textures/intro_raw/red_star_4.rgba16.png": [32,32,2048,{"jp":[2465544],"us":[2473352],"eu":[2342152],"sh":[2318920]}],
+-"textures/intro_raw/red_star_5.rgba16.png": [32,32,2048,{"jp":[2467592],"us":[2475400],"eu":[2344200],"sh":[2320968]}],
+-"textures/intro_raw/red_star_6.rgba16.png": [32,32,2048,{"jp":[2469640],"us":[2477448],"eu":[2346248],"sh":[2323016]}],
+-"textures/intro_raw/red_star_7.rgba16.png": [32,32,2048,{"jp":[2471688],"us":[2479496],"eu":[2348296],"sh":[2325064]}],
+-"textures/intro_raw/sparkle_0.rgba16.png": [32,32,2048,{"jp":[2490888],"us":[2498696],"eu":[2367496],"sh":[2344264]}],
+-"textures/intro_raw/sparkle_1.rgba16.png": [32,32,2048,{"jp":[2492936],"us":[2500744],"eu":[2369544],"sh":[2346312]}],
+-"textures/intro_raw/sparkle_2.rgba16.png": [32,32,2048,{"jp":[2494984],"us":[2502792],"eu":[2371592],"sh":[2348360]}],
+-"textures/intro_raw/sparkle_3.rgba16.png": [32,32,2048,{"jp":[2497032],"us":[2504840],"eu":[2373640],"sh":[2350408]}],
+-"textures/intro_raw/sparkle_4.rgba16.png": [32,32,2048,{"jp":[2499080],"us":[2506888],"eu":[2375688],"sh":[2352456]}],
+-"textures/intro_raw/sparkle_5.rgba16.png": [32,32,2048,{"jp":[2501128],"us":[2508936],"eu":[2377736],"sh":[2354504]}],
+-"textures/intro_raw/white_star_0.rgba16.png": [32,32,2048,{"jp":[2473736],"us":[2481544],"eu":[2350344],"sh":[2327112]}],
+-"textures/intro_raw/white_star_1.rgba16.png": [32,32,2048,{"jp":[2475784],"us":[2483592],"eu":[2352392],"sh":[2329160]}],
+-"textures/intro_raw/white_star_2.rgba16.png": [32,32,2048,{"jp":[2477832],"us":[2485640],"eu":[2354440],"sh":[2331208]}],
+-"textures/intro_raw/white_star_3.rgba16.png": [32,32,2048,{"jp":[2479880],"us":[2487688],"eu":[2356488],"sh":[2333256]}],
+-"textures/intro_raw/white_star_4.rgba16.png": [32,32,2048,{"jp":[2481928],"us":[2489736],"eu":[2358536],"sh":[2335304]}],
+-"textures/intro_raw/white_star_5.rgba16.png": [32,32,2048,{"jp":[2483976],"us":[2491784],"eu":[2360584],"sh":[2337352]}],
+-"textures/intro_raw/white_star_6.rgba16.png": [32,32,2048,{"jp":[2486024],"us":[2493832],"eu":[2362632],"sh":[2339400]}],
+-"textures/intro_raw/white_star_7.rgba16.png": [32,32,2048,{"jp":[2488072],"us":[2495880],"eu":[2364680],"sh":[2341448]}],
+ "textures/machine/ttc_textures.00000.rgba16.png": [32,32,2048,{"jp":[3460352,0],"us":[3467104,0],"eu":[3340704,0],"sh":[3315072,0]}],
+ "textures/machine/ttc_textures.00800.rgba16.png": [32,32,2048,{"jp":[3460352,2048],"us":[3467104,2048],"eu":[3340704,2048],"sh":[3315072,2048]}],
+ "textures/machine/ttc_textures.01000.rgba16.png": [32,32,2048,{"jp":[3460352,4096],"us":[3467104,4096],"eu":[3340704,4096],"sh":[3315072,4096]}],
+diff -Naur sm64_refresh11/include/level_commands.h sm64_refresh11_edit/include/level_commands.h
+--- sm64_refresh11/include/level_commands.h	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/include/level_commands.h	2020-07-17 10:50:56.641328000 -0500
+@@ -30,10 +30,6 @@
+ #define WHIRLPOOL_COND_BOWSER2_BEATEN 2
+ #define WHIRLPOOL_COND_AT_LEAST_SECOND_STAR 3
+ 
+-// Head defines
+-#define REGULAR_FACE 0x0002
+-#define DIZZY_FACE 0x0003
+-
+ #ifdef NO_SEGMENTED_MEMORY
+ #define EXECUTE(seg, script, scriptEnd, entry) \
+     CMD_BBH(0x00, 0x10, 0x0000), \
+@@ -165,8 +161,8 @@
+     CMD_PTR(romEnd)
+ #endif
+ 
+-#define LOAD_MARIO_HEAD(sethead) \
+-    CMD_BBH(0x19, 0x04, sethead)
++#define LOAD_MARIO_HEAD() \
++    CMD_BBH(0x32, 0x04, 0x0000)
+ 
+ #ifdef NO_SEGMENTED_MEMORY
+ #define LOAD_MIO0_TEXTURE(seg, romStart, romEnd) \
+diff -Naur sm64_refresh11/levels/intro/geo.c sm64_refresh11_edit/levels/intro/geo.c
+--- sm64_refresh11/levels/intro/geo.c	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/levels/intro/geo.c	2020-07-17 10:52:22.299391000 -0500
+@@ -58,9 +58,6 @@
+       GEO_ZBUFFER(1),
+       GEO_OPEN_NODE(),
+          GEO_CAMERA_FRUSTUM(45, 128, 16384),
+-         GEO_OPEN_NODE(),
+-            GEO_ASM(2, geo_draw_mario_head_goddard),
+-         GEO_CLOSE_NODE(),
+       GEO_CLOSE_NODE(),
+    GEO_CLOSE_NODE(),
+    GEO_END(),
+@@ -80,9 +77,6 @@
+       GEO_ZBUFFER(1),
+       GEO_OPEN_NODE(),
+          GEO_CAMERA_FRUSTUM(45, 128, 16384),
+-         GEO_OPEN_NODE(),
+-            GEO_ASM(3, geo_draw_mario_head_goddard),
+-         GEO_CLOSE_NODE(),
+       GEO_CLOSE_NODE(),
+    GEO_CLOSE_NODE(),
+    GEO_END(),
+diff -Naur sm64_refresh11/levels/intro/script.c sm64_refresh11_edit/levels/intro/script.c
+--- sm64_refresh11/levels/intro/script.c	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/levels/intro/script.c	2020-07-17 10:51:27.633668400 -0500
+@@ -44,7 +44,6 @@
+     INIT_LEVEL(),
+     BLACKOUT(/*active*/ TRUE),
+     FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),
+-    LOAD_MARIO_HEAD(/*loadHeadID*/ REGULAR_FACE),
+     LOAD_RAW(/*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
+     LOAD_MIO0_TEXTURE(/*seg*/ 0x0A, _title_screen_bg_mio0SegmentRomStart, _title_screen_bg_mio0SegmentRomEnd),
+     ALLOC_LEVEL_POOL(),
+@@ -69,7 +68,6 @@
+     INIT_LEVEL(),
+     BLACKOUT(/*active*/ TRUE),
+     FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),
+-    LOAD_MARIO_HEAD(/*loadHeadID*/ DIZZY_FACE),
+     LOAD_RAW(/*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
+     LOAD_MIO0_TEXTURE(/*seg*/ 0x0A, _title_screen_bg_mio0SegmentRomStart, _title_screen_bg_mio0SegmentRomEnd),
+     ALLOC_LEVEL_POOL(),
+diff -Naur sm64_refresh11/Makefile sm64_refresh11_edit/Makefile
+--- sm64_refresh11/Makefile	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/Makefile	2020-07-17 10:54:19.174262900 -0500
+@@ -152,8 +152,6 @@
+ ULTRA_ASM_DIRS := lib/asm lib/data
+ ULTRA_BIN_DIRS := lib/bin
+ 
+-GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
+-
+ MIPSISET := -mips2
+ MIPSBIT := -32
+ 
+@@ -184,7 +182,6 @@
+ C_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c)) $(LEVEL_C_FILES)
+ S_FILES := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
+ ULTRA_C_FILES := $(foreach dir,$(ULTRA_SRC_DIRS),$(wildcard $(dir)/*.c))
+-GODDARD_C_FILES := $(foreach dir,$(GODDARD_SRC_DIRS),$(wildcard $(dir)/*.c))
+ ULTRA_S_FILES := $(foreach dir,$(ULTRA_ASM_DIRS),$(wildcard $(dir)/*.s))
+ GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c
+ 
+@@ -217,10 +214,8 @@
+ ULTRA_O_FILES := $(foreach file,$(ULTRA_S_FILES),$(BUILD_DIR)/$(file:.s=.o)) \
+                  $(foreach file,$(ULTRA_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
+ 
+-GODDARD_O_FILES := $(foreach file,$(GODDARD_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
+-
+ # Automatic dependency files
+-DEP_FILES := $(O_FILES:.o=.d) $(ULTRA_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
++DEP_FILES := $(O_FILES:.o=.d) $(ULTRA_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
+ 
+ # Files with GLOBAL_ASM blocks
+ ifeq ($(NON_MATCHING),0)
+@@ -401,7 +396,7 @@
+ 	$(CPP) $(VERSION_CFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) charmap.txt - $@
+ 
+ RSP_DIRS := $(BUILD_DIR)/rsp
+-ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS) $(GODDARD_SRC_DIRS) $(ULTRA_SRC_DIRS) $(ULTRA_ASM_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) include) $(MIO0_DIR) $(addprefix $(MIO0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION) $(RSP_DIRS)
++ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS) $(ULTRA_SRC_DIRS) $(ULTRA_ASM_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) include) $(MIO0_DIR) $(addprefix $(MIO0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION) $(RSP_DIRS)
+ 
+ # Make sure build directory exists before compiling anything
+ DUMMY != mkdir -p $(ALL_DIRS)
+@@ -526,8 +521,6 @@
+ $(BUILD_DIR)/levels/%/leveldata.o: OPT_FLAGS := -g
+ $(BUILD_DIR)/actors/%.o: OPT_FLAGS := -g
+ $(BUILD_DIR)/bin/%.o: OPT_FLAGS := -g
+-$(BUILD_DIR)/src/goddard/%.o: OPT_FLAGS := -g
+-$(BUILD_DIR)/src/goddard/%.o: MIPSISET := -mips1
+ $(BUILD_DIR)/src/audio/%.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
+ $(BUILD_DIR)/src/audio/load.o: OPT_FLAGS := -O2 -framepointer -Wo,-loopunroll,0
+ $(BUILD_DIR)/lib/src/%.o: OPT_FLAGS :=
+@@ -600,11 +593,8 @@
+ 	$(AR) rcs -o $@ $(ULTRA_O_FILES)
+ 	tools/patch_libultra_math $@
+ 
+-$(BUILD_DIR)/libgoddard.a: $(GODDARD_O_FILES)
+-	$(AR) rcs -o $@ $(GODDARD_O_FILES)
+-
+-$(ELF): $(O_FILES) $(MIO0_OBJ_FILES) $(SOUND_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) undefined_syms.txt $(BUILD_DIR)/libultra.a $(BUILD_DIR)/libgoddard.a
+-	$(LD) -L $(BUILD_DIR) $(LDFLAGS) -o $@ $(O_FILES)$(LIBS) -lultra -lgoddard
++$(ELF): $(O_FILES) $(MIO0_OBJ_FILES) $(SOUND_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) undefined_syms.txt $(BUILD_DIR)/libultra.a
++	$(LD) -L $(BUILD_DIR) $(LDFLAGS) -o $@ $(O_FILES)$(LIBS) -lultra
+ 
+ $(ROM): $(ELF)
+ 	$(OBJCOPY) $(OBJCOPYFLAGS) $< $(@:.z64=.bin) -O binary
+diff -Naur sm64_refresh11/Makefile.split sm64_refresh11_edit/Makefile.split
+--- sm64_refresh11/Makefile.split	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/Makefile.split	2020-07-17 10:53:32.285105300 -0500
+@@ -244,8 +244,6 @@
+ # --------------------------------------
+ 
+ # intro and ipl3 textures are not compressed
+-INTRO_RAW_FILES              := $(wildcard $(TEXTURE_DIR)/intro_raw/*.png)
+-$(BUILD_DIR)/src/goddard/renderer.o: $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%.inc.c,$(INTRO_RAW_FILES)))
+ 
+ IPL3_TEXTURE_FILES          := $(wildcard $(TEXTURE_DIR)/ipl3_raw/*.png)
+ IPL3_RAW_FILES              := $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%,$(IPL3_TEXTURE_FILES)))
+diff -Naur sm64_refresh11/sm64.ld sm64_refresh11_edit/sm64.ld
+--- sm64_refresh11/sm64.ld	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/sm64.ld	2020-07-17 10:53:11.397044000 -0500
+@@ -771,22 +771,6 @@
+       BUILD_DIR/src/menu/file_select.o(.text);
+       BUILD_DIR/src/menu/star_select.o(.text);
+       BUILD_DIR/src/menu*.o(.text);
+-      BUILD_DIR/libgoddard.a:gd_main.o(.text);
+-      BUILD_DIR/libgoddard.a:gd_memory.o(.text);
+-      BUILD_DIR/libgoddard.a:sfx.o(.text);
+-      BUILD_DIR/libgoddard.a:draw_objects.o(.text);
+-      BUILD_DIR/libgoddard.a:objects.o(.text);
+-      BUILD_DIR/libgoddard.a:skin_movement.o(.text);
+-      BUILD_DIR/libgoddard.a:particles.o(.text);
+-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.text);
+-      BUILD_DIR/libgoddard.a:old_menu.o(.text);
+-      BUILD_DIR/libgoddard.a:debug_utils.o(.text);
+-      BUILD_DIR/libgoddard.a:joints.o(.text);
+-      BUILD_DIR/libgoddard.a:skin.o(.text);
+-      BUILD_DIR/libgoddard.a:gd_math.o(.text);
+-      BUILD_DIR/libgoddard.a:shape_helper.o(.text);
+-      BUILD_DIR/libgoddard.a:renderer.o(.text);
+-      BUILD_DIR/libgoddard.a:*.o(.text);
+       /* data, rodata, per file */
+       BUILD_DIR/src/menu/level_select_menu.o(.data*);
+       BUILD_DIR/src/menu/level_select_menu.o(.rodata*);
+@@ -797,31 +781,6 @@
+       BUILD_DIR/src/menu/star_select.o(.rodata*);
+       BUILD_DIR/src/menu*.o(.data*);
+       BUILD_DIR/src/menu*.o(.rodata*);
+-      /* goddard subsystem data */
+-      BUILD_DIR/libgoddard.a:gd_main.o(.data*);
+-      BUILD_DIR/libgoddard.a:draw_objects.o(.data*);
+-      BUILD_DIR/libgoddard.a:objects.o(.data*);
+-      BUILD_DIR/libgoddard.a:particles.o(.data*);
+-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.data*);
+-      BUILD_DIR/libgoddard.a:debug_utils.o(.data*);
+-      BUILD_DIR/libgoddard.a:joints.o(.data*);
+-      BUILD_DIR/libgoddard.a:shape_helper.o(.data*);
+-      BUILD_DIR/libgoddard.a:renderer.o(.data*);
+-      /* goddard subsystem rodata */
+-      BUILD_DIR/libgoddard.a:gd_main.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:gd_memory.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:draw_objects.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:objects.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:skin_movement.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:particles.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:old_menu.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:debug_utils.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:joints.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:skin.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:gd_math.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:shape_helper.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:renderer.o(.rodata*);
+    }
+    END_SEG(goddard)
+    BEGIN_NOLOAD(goddard)
+@@ -830,21 +789,6 @@
+       BUILD_DIR/src/menu/file_select.o(.bss*);
+       BUILD_DIR/src/menu/star_select.o(.bss*);
+       BUILD_DIR/src/menu*.o(.bss*);
+-      BUILD_DIR/libgoddard.a:gd_main.o(.bss*);
+-      BUILD_DIR/libgoddard.a:gd_memory.o(.bss*);
+-      BUILD_DIR/libgoddard.a:sfx.o(.bss*);
+-      BUILD_DIR/libgoddard.a:draw_objects.o(.bss*);
+-      BUILD_DIR/libgoddard.a:objects.o(.bss*);
+-      BUILD_DIR/libgoddard.a:skin_movement.o(.bss*);
+-      BUILD_DIR/libgoddard.a:particles.o(.bss*);
+-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.bss*);
+-      BUILD_DIR/libgoddard.a:old_menu.o(.bss*);
+-      BUILD_DIR/libgoddard.a:debug_utils.o(.bss*);
+-      BUILD_DIR/libgoddard.a:joints.o(.bss*);
+-      BUILD_DIR/libgoddard.a:skin.o(.bss*);
+-      BUILD_DIR/libgoddard.a:shape_helper.o(.bss*);
+-      BUILD_DIR/libgoddard.a:renderer.o(.bss*);
+-      BUILD_DIR/libgoddard.a:*.o(.bss*);
+    }
+    END_NOLOAD(goddard)
+ 
+@@ -889,29 +833,6 @@
+    MIO0_SEG(debug_level_select, 0x07000000)
+    MIO0_SEG(title_screen_bg, 0x0A000000)
+ 
+-   /* 271B20-2A42A0 [32780] */
+-   BEGIN_SEG(gd_dynlists, 0x04000000)
+-   {
+-      BUILD_DIR/libgoddard.a:dynlist_test_cube.o(.data);
+-      BUILD_DIR/libgoddard.a:dynlist_unused.o(.data);
+-      BUILD_DIR/libgoddard.a:dynlist_mario_face.o(.data);
+-      BUILD_DIR/libgoddard.a:dynlists_mario_eyes.o(.data);
+-      BUILD_DIR/libgoddard.a:dynlists_mario_eyebrows_mustache.o(.data);
+-      BUILD_DIR/libgoddard.a:dynlist_mario_master.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_mario_mustache_right.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_mario_mustache_left.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_mario_lips_1.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_mario_lips_2.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_mario_eyebrows_1.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_group_1.o(.data);
+-      BUILD_DIR/libgoddard.a:anim_group_2.o(.data);
+-      BUILD_DIR/libgoddard.a:dynlist_test_cube.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:dynlist_unused.o(.rodata*);
+-      BUILD_DIR/libgoddard.a:*.o(.data);
+-      BUILD_DIR/libgoddard.a:*.o(.rodata);
+-   }
+-   END_SEG(gd_dynlists)
+-
+    gMainLevels = __romPos;
+ 
+    BEGIN_SEG(menu, 0x14000000)
+diff -Naur sm64_refresh11/src/engine/level_script.c sm64_refresh11_edit/src/engine/level_script.c
+--- sm64_refresh11/src/engine/level_script.c	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/src/engine/level_script.c	2020-07-17 10:50:28.151813100 -0500
+@@ -16,7 +16,6 @@
+ #include "game/profiler.h"
+ #include "game/save_file.h"
+ #include "game/sound_init.h"
+-#include "goddard/renderer.h"
+ #include "geo_layout.h"
+ #include "graph_node.h"
+ #include "level_script.h"
+@@ -281,17 +280,6 @@
+ }
+ 
+ static void level_cmd_load_mario_head(void) {
+-    // TODO: Fix these hardcoded sizes
+-    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000), MEMORY_POOL_LEFT);
+-    if (addr != NULL) {
+-        gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(0xE1000));
+-        gd_add_to_heap(gZBuffer, sizeof(gZBuffer)); // 0x25800
+-        gd_add_to_heap(gFrameBuffer0, 3 * sizeof(gFrameBuffer0)); // 0x70800
+-        gdm_setup();
+-        gdm_maketestdl(CMD_GET(s16, 2));
+-    } else {
+-    }
+-
+     sCurrentCmd = CMD_NEXT;
+ }
+ 
+diff -Naur sm64_refresh11/src/game/mario_misc.c sm64_refresh11_edit/src/game/mario_misc.c
+--- sm64_refresh11/src/game/mario_misc.c	2020-07-04 10:18:55.000000000 -0500
++++ sm64_refresh11_edit/src/game/mario_misc.c	2020-07-17 10:51:51.562861800 -0500
+@@ -12,7 +12,6 @@
+ #include "engine/math_util.h"
+ #include "envfx_snow.h"
+ #include "game_init.h"
+-#include "goddard/renderer.h"
+ #include "interaction.h"
+ #include "level_update.h"
+ #include "mario_misc.h"
+@@ -78,27 +77,6 @@
+ // (message NPC related things, the Mario head geo, and Mario geo
+ // functions)
+ 
+-/**
+- * Geo node script that draws Mario's head on the title screen.
+- */
+-Gfx *geo_draw_mario_head_goddard(s32 callContext, struct GraphNode *node, Mat4 *c) {
+-    Gfx *gfx = NULL;
+-    s16 sfx = 0;
+-    struct GraphNodeGenerated *asGenerated = (struct GraphNodeGenerated *) node;
+-    UNUSED Mat4 *transform = c;
+-
+-    if (callContext == GEO_CONTEXT_RENDER) {
+-        if (gPlayer1Controller->controllerData != NULL && gWarpTransition.isActive == 0) {
+-            gd_copy_p1_contpad(gPlayer1Controller->controllerData);
+-        }
+-        gfx = (Gfx *) PHYSICAL_TO_VIRTUAL(gdm_gettestdl(asGenerated->parameter));
+-        D_8032C6A0 = gd_vblank;
+-        sfx = gd_sfx_to_play();
+-        play_menu_sounds(sfx);
+-    }
+-    return gfx;
+-}
+-
+ static void toad_message_faded(void) {
+     if (gCurrentObject->oDistanceToMario > 700.0f) {
+         gCurrentObject->oToadMessageRecentlyTalked = 0;

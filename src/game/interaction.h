@@ -1,7 +1,5 @@
-#ifndef INTERACTION_H
-#define INTERACTION_H
-
-#include <PR/ultratypes.h>
+#ifndef _INTERACTION_H
+#define _INTERACTION_H
 
 #include "types.h"
 
@@ -59,7 +57,7 @@
 //INTERACT_BOUNCE_TOP
 #define INT_SUBTYPE_TWIRL_BOUNCE 0x00000080
 
-// INTERACT_STAR_OR_KEY
+// INTERACT_STAR_OR_KEY 
 #define INT_SUBTYPE_NO_EXIT 0x00000400
 #define INT_SUBTYPE_GRAND_STAR 0x00000800
 
@@ -84,7 +82,7 @@
 #define INT_STATUS_MARIO_UNK1            (1 <<  1) /* 0x00000002 */
 #define INT_STATUS_MARIO_UNK2            (1 <<  2) /* 0x00000004 */
 #define INT_STATUS_MARIO_DROP_OBJECT     (1 <<  3) /* 0x00000008 */
-#define INT_STATUS_HIT_BY_SHOCKWAVE      (1 <<  4) /* 0x00000010 */
+#define INT_STATUS_MARIO_UNK4            (1 <<  4) /* 0x00000010 */
 #define INT_STATUS_MARIO_UNK5            (1 <<  5) /* 0x00000020 */
 #define INT_STATUS_MARIO_UNK6            (1 <<  6) /* 0x00000040 */
 #define INT_STATUS_MARIO_UNK7            (1 <<  7) /* 0x00000080 */
@@ -98,20 +96,40 @@
 #define INT_STATUS_TOUCHED_BOB_OMB       (1 << 23) /* 0x00800000 */
 
 
-s16 mario_obj_angle_to_object(struct MarioState *m, struct Object *o);
-void mario_stop_riding_object(struct MarioState *m);
-void mario_grab_used_object(struct MarioState *m);
-void mario_drop_held_object(struct MarioState *m);
-void mario_throw_held_object(struct MarioState *m);
-void mario_stop_riding_and_holding(struct MarioState *m);
-u32 does_mario_have_normal_cap_on_head(struct MarioState *m);
-void mario_blow_off_cap(struct MarioState *m, f32 capSpeed);
-u32 mario_lose_cap_to_enemy(u32 arg);
-void mario_retrieve_cap(void);
-struct Object *mario_get_collided_object(struct MarioState *m, u32 interactType);
-u32 mario_check_object_grab(struct MarioState *m);
-u32 get_door_save_file_flag(struct Object *door);
-void mario_process_interactions(struct MarioState *m);
-void mario_handle_special_floors(struct MarioState *m);
+struct BullyCollisionData {
+  /*0x00*/ f32 conversionRatio;
+  /*0x04*/ f32 radius;
+  /*0x08*/ f32 posX;
+  /*0x0C*/ f32 posZ;
+  /*0x10*/ f32 velX;
+  /*0x14*/ f32 velZ;
+};
 
-#endif // INTERACTION_H
+extern u8 D_03009AC8[];
+
+extern s16 mario_obj_angle_to_object(struct MarioState *, struct Object *);
+extern void mario_stop_riding_object(struct MarioState *);
+extern void mario_grab_used_object(struct MarioState *);
+extern void mario_drop_held_object(struct MarioState *);
+extern void mario_throw_held_object(struct MarioState *);
+extern void mario_stop_riding_and_holding(struct MarioState *);
+extern u32 does_mario_have_hat(struct MarioState *);
+extern void mario_blow_off_cap(struct MarioState *, f32);
+extern u32 mario_lose_cap_to_enemy(u32);
+extern void mario_retrieve_cap(void);
+extern struct Object *mario_get_collided_object(struct MarioState *, u32);
+extern u32 mario_check_object_grab(struct MarioState *);
+extern u32 get_door_save_file_flag(struct Object *);
+extern void mario_process_interactions(struct MarioState *);
+extern void mario_handle_special_floors(struct MarioState *);
+extern BAD_RETURN(s32) init_bully_collision_data(
+    struct BullyCollisionData *data,
+    f32 posX,
+    f32 posZ,
+    f32 forwardVel,
+    s16 yaw,
+    f32 conversionRatio,
+    f32 radius);
+extern void transfer_bully_speed(struct BullyCollisionData *, struct BullyCollisionData *);
+
+#endif /* _INTERACTION_H */

@@ -1,6 +1,5 @@
-#ifndef MODEL_IDS_H
-#define MODEL_IDS_H
-
+#ifndef _MODEL_IDS_H
+#define _MODEL_IDS_H
 #define ACT_1 (1 << 0)
 #define ACT_2 (1 << 1)
 #define ACT_3 (1 << 2)
@@ -377,6 +376,7 @@
 #define MODEL_MR_BLIZZARD_HIDDEN          0x55        // mr_blizzard_hidden_geo
 #define MODEL_MR_BLIZZARD                 0x56        // mr_blizzard_geo
 #define MODEL_PENGUIN                     0x57        // penguin_geo
+#define MODEL_PENGUIN_CHAO                0xF0        // penguin_chao_geo
 
 // group 8
 #define MODEL_CAP_SWITCH_EXCLAMATION      0x54        // cap_switch_exclamation_seg5_dl_05002E00
@@ -385,16 +385,29 @@
 
 // group 9
 #define MODEL_BOO                         0x54        // boo_geo
-#define MODEL_BETA_BOO_KEY                   0x55        // small_key_geo
+#define MODEL_BETA_BOO_KEY                0x55        // small_key_geo
 #define MODEL_HAUNTED_CHAIR               0x56        // haunted_chair_geo
 #define MODEL_MAD_PIANO                   0x57        // mad_piano_geo
 #define MODEL_BOOKEND_PART                0x58        // bookend_part_geo
 #define MODEL_BOOKEND                     0x59        // bookend_geo
 #define MODEL_HAUNTED_CAGE                0x5A        // haunted_cage_geo
+#define MODEL_KINGBOO                     0xEF        // kingboo_geo
 
 // group 10
 #define MODEL_BIRDS                       0x54        // birds_geo
 #define MODEL_YOSHI                       0x55        // yoshi_geo
+#define MODEL_MARK                        0xFC        // mark_geo
+
+// group 10 - for ending cutscene
+
+#define MODEL_CHOCOLA_ED                  0xFA        // chocola_ed_geo
+#define MODEL_CHEESE_ED                   0xF9        // cheese_ed_geo
+#define MODEL_GEMERL_ED                   0xF8        // gemerl_ed_geo
+#define MODEL_MARK_ED                     0xF7        // mark_ed_geo
+#define MODEL_KATALINA_ED                 0xF6        // katalina_ed_geo
+#define MODEL_BLAZE_ED                    0xF4        // blaze_ed_geo
+#define MODEL_MARINE_ED                   0xF3        // marine_ed_geo
+#define MODEL_MIPS_ED                     0xF2        // mips_ed_geo
 
 // group 11
 #define MODEL_ENEMY_LAKITU                0x54        // enemy_lakitu_geo
@@ -433,11 +446,17 @@
 #define MODEL_CHAIN_CHOMP                 0x66        // chain_chomp
 #define MODEL_KOOPA_FLAG                  0x6A        // koopa_flag_geo
 #define MODEL_WOODEN_POST                 0x6B        // wooden_post_geo
+#define MODEL_GEMERL2                     0xFF        // gemerl2_geo
 
 // group 15
 #define MODEL_MIPS                        0x64        // mips_geo
 #define MODEL_BOO_CASTLE                  0x65        // boo_castle_geo
 #define MODEL_LAKITU                      0x66        // lakitu_geo
+#define MODEL_CHOCOLA_FIX                 0xFE        // chocola_fix_geo
+#define MODEL_TOAD_ORIGINAL               0xFD        // toad_original_geo
+#define MODEL_KATALINA                    0xFB        // katalina_geo
+#define MODEL_BLAZE                       0xF5        // blaze_geo
+#define MODEL_MARINE2                     0xF1        // marine2_geo
 
 // group 16
 #define MODEL_CHILL_BULLY                 0x64        // chilly_chief_geo
@@ -450,6 +469,9 @@
 #define MODEL_MR_I_IRIS                   0x66        // mr_i_iris_geo
 #define MODEL_MR_I                        0x67        // mr_i_geo
 #define MODEL_DORRIE                      0x68        // dorrie_geo
+
+#define MODEL_CHEESE_FOLLOW               0xEE        // cheese_follow_geo
+#define MODEL_MARIOFLY                    0xED        // mariofly_geo
 
 // other models
 #define MODEL_YELLOW_COIN                 0x74        // yellow_coin_geo
@@ -474,6 +496,7 @@
 #define MODEL_MARIOS_WING_CAP             0x87        // marios_wing_cap_geo
 #define MODEL_MARIOS_CAP                  0x88        // marios_cap_geo
 #define MODEL_EXCLAMATION_BOX             0x89        // exclamation_box_geo
+#define MODEL_EXCLAMATION_BOX_NEW         0xFA        // exclamation_box_new_geo
 #define MODEL_DIRT_ANIMATION              0x8A        // dirt_animation_geo
 #define MODEL_CARTOON_STAR                0x8B        // cartoon_star_geo
 #define MODEL_BLUE_COIN_SWITCH            0x8C        // blue_coin_switch_geo
@@ -586,4 +609,4 @@
 #define MODEL_VCUTM_WARP_PIPE                     MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
 #define MODEL_CASTLE_GROUNDS_WARP_PIPE            MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
 
-#endif // MODEL_IDS_H
+#endif

@@ -8,8 +8,7 @@ OSTime _osCurrentTime;
 u32 D_80365DA8;
 u32 __osViIntrCount;
 u32 D_80365DB0;
-
-void __osTimerServicesInit(void) {
+void __osTimerServicesInit() {
     _osCurrentTime = 0;
     D_80365DA8 = 0;
     __osViIntrCount = 0;
@@ -21,7 +20,7 @@ void __osTimerServicesInit(void) {
     D_80334830->msg = NULL;
 }
 
-void __osTimerInterrupt(void) {
+void __osTimerInterrupt() {
     OSTimer *sp24;
     u32 sp20;
     u32 sp1c;

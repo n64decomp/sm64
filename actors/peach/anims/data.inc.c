@@ -10,3 +10,4 @@
 #include "anim_05018664.inc.c"
 #include "anim_0501B328.inc.c"
 #include "anim_0501C404.inc.c"
+#include "anim_peach_new_smooch.inc.c"

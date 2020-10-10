@@ -1,15 +1,14 @@
-#include <PR/ultratypes.h>
-
-#include "debug_utils.h"
-#include "draw_objects.h"
-#include "dynlist_proc.h"
-#include "gd_math.h"
+#include <ultra64.h>
+#include <macros.h>
 #include "gd_types.h"
-#include "macros.h"
+#include "draw_objects.h"
 #include "objects.h"
 #include "particles.h"
-#include "renderer.h"
+#include "dynlist_proc.h"
+#include "debug_utils.h"
 #include "skin.h"
+#include "gd_math.h"
+#include "renderer.h"
 
 // static types
 typedef union {
@@ -237,9 +236,9 @@ struct Connection *func_801825FC(struct ObjVertex *vtx1, struct ObjVertex *vtx2)
     sp34->unk1C.vtx = vtx1;
     sp34->unk20.vtx = vtx2;
     push_dynobj_stash();
-    set_cur_dynobj((struct GdObj *)vtx1);
+    set_cur_dynobj(vtx1);
     d_get_world_pos(&sp28);
-    set_cur_dynobj((struct GdObj *)vtx2);
+    set_cur_dynobj(vtx2);
     d_get_world_pos(&sp1C);
     sp28.x -= sp1C.x;
     sp28.y -= sp1C.y;

@@ -96,7 +96,7 @@ void dorrie_act_raise_head(void) {
     o->collisionData = segmented_to_virtual(dorrie_seg6_collision_0600F644);
     if (cur_obj_check_if_near_animation_end()) {
         o->oAction = DORRIE_ACT_MOVE;
-    } else if (o->oDorrieLiftingMario && o->header.gfx.animInfo.animFrame < 74) {
+    } else if (o->oDorrieLiftingMario && o->header.gfx.unk38.animFrame < 74) {
         if (set_mario_npc_dialog(2) == 2) {
             o->oDorrieHeadRaiseSpeed += 0x1CC;
             if (cur_obj_check_anim_frame(73)) {
@@ -115,7 +115,7 @@ void bhv_dorrie_update(void) {
     UNUSED s32 unused2;
     f32 maxOffsetY;
 
-    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if (!(o->activeFlags & 0x0008)) {
         o->oDorrieForwardDistToMario = o->oDistanceToMario * coss(o->oAngleToMario - o->oMoveAngleYaw);
 
         obj_perform_position_op(0);

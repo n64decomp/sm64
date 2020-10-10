@@ -1,18 +1,17 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
-#include "behavior_data.h"
-#include "debug.h"
+#include "sm64.h"
 #include "engine/behavior_script.h"
+#include "object_helpers.h"
+#include "audio/external.h"
+#include "print.h"
 #include "engine/surface_collision.h"
+#include "mario.h"
 #include "game_init.h"
 #include "main.h"
-#include "object_constants.h"
-#include "object_fields.h"
-#include "object_helpers.h"
+#include "debug.h"
 #include "object_list_processor.h"
-#include "print.h"
-#include "sm64.h"
-#include "types.h"
+#include "behavior_data.h"
 
 #define DEBUG_INFO_NOFLAGS (0 << 0)
 #define DEBUG_INFO_FLAG_DPRINT (1 << 0)
@@ -256,7 +255,7 @@ void print_stageinfo(void) {
 void print_string_array_info(const char **strArr) {
     s32 i;
 
-    if (!sDebugStringArrPrinted) {
+    if (sDebugStringArrPrinted == FALSE) {
         sDebugStringArrPrinted += 1; // again, why not = TRUE...
         for (i = 0; i < 8; i++) {
             // sDebugPage is assumed to be 4 or 5 here.
@@ -401,7 +400,7 @@ void try_modify_debug_controls(void) {
     if (gPlayer1Controller->buttonPressed & Z_TRIG) {
         sNoExtraDebug ^= 1;
     }
-    if (!(gPlayer1Controller->buttonDown & (L_TRIG | R_TRIG)) && !sNoExtraDebug) {
+    if (!(gPlayer1Controller->buttonDown & (L_TRIG | R_TRIG)) && sNoExtraDebug == FALSE) {
         sp4 = 1;
         if (gPlayer1Controller->buttonDown & B_BUTTON) {
             sp4 = 100;
@@ -554,7 +553,7 @@ void debug_print_obj_move_flags(void) {
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_IN_AIR) {
         print_debug_top_down_objectinfo("SKY     %x", gCurrentObject->oMoveFlags);
     }
-    if (gCurrentObject->oMoveFlags & OBJ_MOVE_OUT_SCOPE) {
+    if (gCurrentObject->oMoveFlags & OBJ_MOVE_8) {
         print_debug_top_down_objectinfo("OUT SCOPE %x", gCurrentObject->oMoveFlags);
     }
 #endif

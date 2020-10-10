@@ -1,38 +1,172 @@
 {
     "comment": "This file lists all sequences together with the sound banks they use. If a sequence uses multiple banks, the first bank will be used by default, and it can switch between them using the chan_setbank command; e.g. chan_setbank 0 will switch to the first bank in the given list.",
-    "00_sound_player": ["00", "01_terrain", "02_water", "03", "04", "05", "06", "07", "08_mario", "09", "0A_mario_peach"],
-    "01_cutscene_collect_star": ["22"],
-    "02_menu_title_screen": ["11"],
-    "03_level_grass": ["22"],
-    "04_level_inside_castle": ["0E"],
-    "05_level_water": ["13"],
-    "06_level_hot": ["0F"],
-    "07_level_boss_koopa": ["12"],
-    "08_level_snow": ["0B"],
-    "09_level_slide": ["0D"],
-    "0A_level_spooky": ["10", "21"],
-    "0B_event_piranha_plant": ["14_piranha_music_box"],
-    "0C_level_underground": ["15"],
-    "0D_menu_star_select": ["16_course_start"],
-    "0E_event_powerup": ["17"],
-    "0F_event_metal_cap": ["18"],
-    "10_event_koopa_message": ["12"],
-    "11_level_koopa_road": ["19"],
-    "12_event_high_score": ["1F"],
-    "13_event_merry_go_round": ["21"],
-    "14_event_race": ["1A"],
-    "15_cutscene_star_spawn": ["0E"],
-    "16_event_boss": ["1B"],
-    "17_cutscene_collect_key": ["1A"],
-    "18_event_endless_stairs": ["1C_endless_stairs"],
-    "19_level_boss_koopa_final": ["1D_bowser_organ"],
-    "1A_cutscene_credits": ["25"],
-    "1B_event_solve_puzzle": ["14_piranha_music_box"],
-    "1C_event_toad_message": ["20"],
-    "1D_event_peach_message": ["1E"],
-    "1E_cutscene_intro": ["1B"],
-    "1F_cutscene_victory": ["1A"],
-    "20_cutscene_ending": ["23"],
-    "21_menu_file_select": ["24"],
-    "22_cutscene_lakitu": {"ifdef": ["VERSION_US", "VERSION_EU"], "banks": ["1B"]}
+    "00_sound_player": [
+        "00",
+        "01_terrain",
+        "02_water",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08_mario",
+        "09",
+        "0A_mario_peach"
+    ],
+    "01_cutscene_collect_star": [
+        "streamed_audio"
+    ],
+    "02_menu_title_screen": [
+        "0D"
+    ],
+    "03_level_grass": [
+        "streamed_audio"
+    ],
+    "04_level_inside_castle": [
+        "streamed_audio"
+    ],
+    "05_level_water": [
+        "streamed_audio"
+    ],
+    "06_level_hot": [
+        "streamed_audio"
+    ],
+    "07_level_boss_koopa": [
+        "streamed_audio"
+    ],
+    "08_level_snow": [
+        "streamed_audio"
+    ],
+    "09_level_slide": [
+        "streamed_audio"
+    ],
+    "0A_level_spooky": [
+        "streamed_audio"
+    ],
+    "0B_event_piranha_plant": [
+        "14_piranha_music_box"
+    ],
+    "0C_level_underground": [
+        "streamed_audio"
+    ],
+    "0D_menu_star_select": [
+        "16_course_start"
+    ],
+    "0E_event_powerup": [
+        "17"
+    ],
+    "0F_event_metal_cap": [
+        "18"
+    ],
+    "10_event_koopa_message": [
+        "12"
+    ],
+    "11_level_koopa_road": [
+        "streamed_audio"
+    ],
+    "12_event_high_score": [
+        "1F"
+    ],
+    "13_event_merry_go_round": [
+        "streamed_audio"
+    ],
+    "14_event_race": [
+        "1A"
+    ],
+    "15_cutscene_star_spawn": [
+        "0E"
+    ],
+    "16_event_boss": [
+        "streamed_audio"
+    ],
+    "17_cutscene_collect_key": [
+        "1A"
+    ],
+    "18_event_endless_stairs": [
+        "1C_endless_stairs"
+    ],
+    "19_level_boss_koopa_final": [
+        "streamed_audio"
+    ],
+    "1A_cutscene_credits": [
+        "streamed_audio"
+    ],
+    "1B_event_solve_puzzle": [
+        "14_piranha_music_box"
+    ],
+    "1C_event_toad_message": [
+        "20"
+    ],
+    "1D_event_peach_message": [
+        "1E"
+    ],
+    "1E_cutscene_intro": [
+        "1B"
+    ],
+    "1F_cutscene_victory": [
+        "1A"
+    ],
+    "20_cutscene_ending": [
+        "23"
+    ],
+    "21_menu_file_select": [
+        "11"
+    ],
+    "22_cutscene_lakitu": {
+        "ifdef": [
+            "VERSION_US",
+            "VERSION_EU"
+        ],
+        "banks": [
+            "1B"
+        ]
+    },
+    "23_custom_herogarden": [
+        "streamed_audio"
+    ],
+    "24_custom_eggmanstage1": [
+        "streamed_audio"
+    ],
+    "25_custom_eggman1": [
+        "streamed_audio"
+    ],
+    "26_custom_newstarget": [
+        "22"
+    ],
+    "27_custom_newcredits": [
+        "25"
+    ],
+    "28_custom_newbob": [
+        "streamed_audio"
+    ],
+    "29_custom_newwf": [
+        "streamed_audio"
+    ],
+    "2A_custom_newjrb": [
+        "streamed_audio"
+    ],
+    "2B_custom_newccm": [
+        "streamed_audio"
+    ],
+    "2C_custom_newbbh": [
+        "streamed_audio"
+    ],
+    "2D_custom_newbbh2": [
+        "streamed_audio"
+    ],
+    "2E_custom_newhmc": [
+        "streamed_audio"
+    ],
+    "2F_custom_newlll": [
+        "streamed_audio"
+    ],
+    "30_custom_newlll2": [
+        "streamed_audio"
+    ],
+    "31_custom_newssl": [
+        "streamed_audio"
+    ],
+    "32_custom_newssl2": [
+        "streamed_audio"
+    ]
 }

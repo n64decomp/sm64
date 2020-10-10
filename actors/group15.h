@@ -86,4 +86,27 @@ extern const Gfx toad_seg6_dl_06008A90[];
 extern const Gfx toad_seg6_dl_06008BD8[];
 extern const struct Animation *const toad_seg6_anims_0600FB58[];
 
+#include "toad/geo_header.h"
+
+#include "lakitu_cameraman/geo_header.h"
+
+#include "toad_original/geo_header.h"
+
+#include "katalina/geo_header.h"
+
+#include "katalina/anim_header.h"
+#include "chocola_fix/geo_header.h"
+
+#include "blaze/geo_header.h"
+
+
+#include "blaze/anim_header.h"
+#include "marine/geo_header.h"
+
+
+#include "marine/anim_header.h"
+#include "boo_castle/geo_header.h"
+
+#include "mips/geo_header.h"
+
 #endif

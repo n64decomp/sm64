@@ -49,7 +49,7 @@ void moving_coin_flicker(void) {
 
 void coin_collected(void) {
     spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
-    o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+    o->activeFlags = 0;
 }
 
 void bhv_moving_yellow_coin_init(void) {
@@ -80,11 +80,11 @@ void bhv_moving_yellow_coin_loop(void) {
             break;
 
         case MOV_YCOIN_ACT_LAVA_DEATH:
-            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+            o->activeFlags = 0;
             break;
 
         case MOV_YCOIN_ACT_DEATH_PLANE_DEATH:
-            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+            o->activeFlags = 0;
             break;
     }
 
@@ -206,11 +206,11 @@ void bhv_blue_coin_sliding_loop(void) {
             break;
 
         case 100:
-            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+            o->activeFlags = 0;
             break;
 
         case 101:
-            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+            o->activeFlags = 0;
             break;
     }
 

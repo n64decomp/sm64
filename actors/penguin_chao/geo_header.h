@@ -1,0 +1,30 @@
+extern const GeoLayout penguin_chao_geo[];
+extern Vtx penguin_chao_000_offset_mesh_vtx_0[62];
+extern Gfx penguin_chao_000_offset_mesh_tri_0[];
+extern Vtx penguin_chao_000_offset_mesh_vtx_1[59];
+extern Gfx penguin_chao_000_offset_mesh_tri_1[];
+extern Vtx penguin_chao_000_offset_002_mesh_vtx_0[42];
+extern Gfx penguin_chao_000_offset_002_mesh_tri_0[];
+extern Vtx penguin_chao_000_offset_003_mesh_vtx_0[40];
+extern Gfx penguin_chao_000_offset_003_mesh_tri_0[];
+extern Vtx penguin_chao_000_offset_004_mesh_vtx_0[32];
+extern Gfx penguin_chao_000_offset_004_mesh_tri_0[];
+extern Vtx penguin_chao_000_offset_005_mesh_vtx_0[32];
+extern Gfx penguin_chao_000_offset_005_mesh_tri_0[];
+extern Vtx penguin_chao_000_offset_006_mesh_vtx_0[6];
+extern Gfx penguin_chao_000_offset_006_mesh_tri_0[];
+extern Vtx penguin_chao_000_offset_006_mesh_vtx_1[136];
+extern Gfx penguin_chao_000_offset_006_mesh_tri_1[];
+extern Vtx penguin_chao_000_offset_006_mesh_vtx_2[29];
+extern Gfx penguin_chao_000_offset_006_mesh_tri_2[];
+extern Vtx penguin_chao_000_offset_006_mesh_vtx_3[47];
+extern Gfx penguin_chao_000_offset_006_mesh_tri_3[];
+
+extern Gfx penguin_chao_000_offset_mesh[];
+extern Gfx penguin_chao_000_offset_002_mesh[];
+extern Gfx penguin_chao_000_offset_003_mesh[];
+extern Gfx penguin_chao_000_offset_004_mesh[];
+extern Gfx penguin_chao_000_offset_005_mesh[];
+extern Gfx penguin_chao_000_offset_006_mesh[];
+extern Gfx penguin_chao_material_revert_render_settings[];
+

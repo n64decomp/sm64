@@ -342,4 +342,15 @@ extern const Gfx white_particle_small_dl_end[];
 extern const Gfx white_particle_small_dl[];
 extern const Gfx white_particle_small_unused_dl[];
 
+
+#include "mario/geo_header.h"
+
+
+#include "cheese_follow/geo_header.h"
+#include "cheese_follow/anim_header.h"
+
+#include "mariofly/geo_header.h"
+
+
+#include "mariofly/anim_header.h"
 #endif

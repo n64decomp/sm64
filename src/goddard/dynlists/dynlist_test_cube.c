@@ -1,6 +1,5 @@
 // early unused test dynlist
-#include <PR/ultratypes.h>
-
+#include <ultra64.h>
 #include "dynlist_macros.h"
 #include "dynlists.h"
 #include "../dynlist_proc.h"

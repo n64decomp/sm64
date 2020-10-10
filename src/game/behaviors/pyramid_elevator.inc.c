@@ -79,7 +79,7 @@ void bhv_pyramid_elevator_trajectory_marker_ball_loop(void) {
 
     if (elevator != NULL) {
         if (elevator->oAction != PYRAMID_ELEVATOR_IDLE) {
-            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+            o->activeFlags = 0;
         }
     }
 }

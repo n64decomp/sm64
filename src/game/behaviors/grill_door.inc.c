@@ -1,7 +1,9 @@
 // grill_door.c.inc
 
-struct OpenableGrill gOpenableGrills[] = { { 320, MODEL_BOB_BARS_GRILLS, bob_seg7_collision_gate },
-                                           { 410, MODEL_HMC_RED_GRILLS,  hmc_seg7_collision_0702B65C } };
+extern u8 bob_seg7_collision_gate[];
+extern u8 hmc_seg7_collision_0702B65C[];
+struct Struct8032FCE8 D_8032FCE8[] = { { 320, MODEL_BOB_BARS_GRILLS, bob_seg7_collision_gate },
+                                       { 410, MODEL_HMC_RED_GRILLS, hmc_seg7_collision_0702B65C } };
 
 void bhv_openable_cage_door_loop(void) {
     if (gCurrentObject->oAction == 0) {
@@ -16,18 +18,18 @@ void bhv_openable_cage_door_loop(void) {
 }
 
 void bhv_openable_grill_loop(void) {
-    struct Object *grillObj;
-    s32 grillIdx;
+    struct Object *sp3C;
+    s32 sp38;
     switch (o->oAction) {
         case 0:
-            grillIdx = o->oBehParams2ndByte;
-            grillObj = spawn_object_relative(-1, gOpenableGrills[grillIdx].halfWidth, 0, 0, o, gOpenableGrills[grillIdx].modelID,
-                                             bhvOpenableCageDoor);
-            grillObj->oMoveAngleYaw += 0x8000;
-            obj_set_collision_data(grillObj, gOpenableGrills[grillIdx].collision);
-            grillObj = spawn_object_relative(1, -gOpenableGrills[grillIdx].halfWidth, 0, 0, o, gOpenableGrills[grillIdx].modelID,
-                                             bhvOpenableCageDoor);
-            obj_set_collision_data(grillObj, gOpenableGrills[grillIdx].collision);
+            sp38 = o->oBehParams2ndByte;
+            sp3C = spawn_object_relative(-1, D_8032FCE8[sp38].unk0, 0, 0, o, D_8032FCE8[sp38].unk1,
+                                         bhvOpenableCageDoor);
+            sp3C->oMoveAngleYaw += 0x8000;
+            obj_set_collision_data(sp3C, D_8032FCE8[sp38].unk2);
+            sp3C = spawn_object_relative(1, -D_8032FCE8[sp38].unk0, 0, 0, o, D_8032FCE8[sp38].unk1,
+                                         bhvOpenableCageDoor);
+            obj_set_collision_data(sp3C, D_8032FCE8[sp38].unk2);
             o->oAction++;
             break;
         case 1:
@@ -36,8 +38,8 @@ void bhv_openable_grill_loop(void) {
                 o->oAction++;
             break;
         case 2:
-            grillObj = o->oOpenableGrillUnkF4;
-            if (grillObj->oAction == 2) {
+            sp3C = o->oOpenableGrillUnkF4;
+            if (sp3C->oAction == 2) {
                 o->oOpenableGrillUnk88 = 2;
                 cur_obj_play_sound_2(SOUND_GENERAL_CAGE_OPEN);
                 o->oAction++;

@@ -53,7 +53,7 @@ static u8 sKoopaShelledAttackHandlers[] = {
 struct KoopaTheQuickProperties {
     s16 initText;
     s16 winText;
-    void const *path;
+    void *path;
     Vec3s starPos;
 };
 
@@ -473,7 +473,7 @@ s32 obj_begin_race(s32 noTimer) {
         cur_obj_play_sound_2(SOUND_GENERAL_RACE_GUN_SHOT);
 
         if (!noTimer) {
-            play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE), 0);
+            play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_LEVEL_SPOOKY), 0);
 
             level_control_timer(TIMER_CONTROL_SHOW);
             level_control_timer(TIMER_CONTROL_START);
@@ -499,7 +499,7 @@ static void koopa_the_quick_act_wait_before_race(void) {
 
     if (o->oKoopaTheQuickInitTextboxCooldown != 0) {
         o->oKoopaTheQuickInitTextboxCooldown -= 1;
-    } else if (cur_obj_can_mario_activate_textbox_2(400.0f, 400.0f)) {
+    } else if (cur_obj_can_mario_activate_textbox_2(200.0f, 200.0f)) {
         //! The next action doesn't execute until next frame, giving mario one
         //  frame where he can jump, and thus no longer be ready to speak.
         //  (On J, he has two frames and doing this enables time stop - see
@@ -709,7 +709,7 @@ static void koopa_the_quick_act_after_race(void) {
 
     if (o->parentObj->oKoopaRaceEndpointUnk100 == 0) {
         if (cur_obj_can_mario_activate_textbox_2(400.0f, 400.0f)) {
-            stop_background_music(SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE));
+            stop_background_music(SEQUENCE_ARGS(4, SEQ_LEVEL_SPOOKY));
 
             // Determine which text to display
 

@@ -31,11 +31,11 @@
 #define SOUND_NO_ECHO               0x20 // not in JP
 #define SOUND_LO_BITFLAG_UNK8       0x80 // restart playing on each play_sound call?
 
-/* Audio playback bitflags. */
-#define SOUND_NO_VOLUME_LOSS        0x1000000 // No volume loss with distance
-#define SOUND_VIBRATO               0x2000000 // Randomly alter frequency each audio frame
-#define SOUND_NO_PRIORITY_LOSS      0x4000000 // Do not prioritize closer sounds
-#define SOUND_NO_FREQUENCY_LOSS     0x8000000 // Frequency scale does not change with distance
+/* Audio playback bitflags. TODO: Figure out what these mean and use them below. */
+#define SOUND_PL_BITFLAG_UNK1       0x1000000
+#define SOUND_PL_BITFLAG_UNK2       0x2000000
+#define SOUND_PL_BITFLAG_UNK4       0x4000000
+#define SOUND_PL_BITFLAG_UNK8       0x8000000
 
 // silence
 #define NO_SOUND                    0
@@ -223,8 +223,8 @@
 /* not verified */ #define SOUND_GENERAL_QUIET_BUBBLE2      SOUND_ARG_LOAD(3, 0, 0x0D, 0x00, 8)
 #define SOUND_GENERAL_CASTLE_TRAP_OPEN                      SOUND_ARG_LOAD(3, 0, 0x0E, 0x80, 8)
 #define SOUND_GENERAL_WALL_EXPLOSION                        SOUND_ARG_LOAD(3, 0, 0x0F, 0x00, 8)
-/* not verified */ #define SOUND_GENERAL_COIN               SOUND_ARG_LOAD(3, 8, 0x11, 0x80, 8)
-/* not verified */ #define SOUND_GENERAL_COIN_WATER         SOUND_ARG_LOAD(3, 8, 0x12, 0x80, 8)
+/* not verified */ #define SOUND_GENERAL_COIN               SOUND_ARG_LOAD(3, 8, 0x11, 0x00, 8)
+/* not verified */ #define SOUND_GENERAL_COIN_WATER         SOUND_ARG_LOAD(3, 8, 0x11, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_SHORT_STAR         SOUND_ARG_LOAD(3, 0, 0x16, 0x00, 9)
 /* not verified */ #define SOUND_GENERAL_BIG_CLOCK          SOUND_ARG_LOAD(3, 0, 0x17, 0x00, 8)
 /* not verified */ #define SOUND_GENERAL_LOUD_POUND         0x3018 // _TERRAIN?
@@ -522,6 +522,7 @@
 // to play two channel 3 sounds at once (since just one sound from each channel
 // can play at a given time).
 #define SOUND_GENERAL2_BOBOMB_EXPLOSION         SOUND_ARG_LOAD(8, 0, 0x2E, 0x20, 8)
+#define SOUND_GENERAL2_BADNIK_EXPLOSION         SOUND_ARG_LOAD(8, 0, 0x2B, 0x20, 8)
 #define SOUND_GENERAL2_PURPLE_SWITCH            SOUND_ARG_LOAD(8, 0, 0x3E, 0xC0, 8)
 #define SOUND_GENERAL2_ROTATING_BLOCK_CLICK     SOUND_ARG_LOAD(8, 0, 0x40, 0x00, 8)
 #define SOUND_GENERAL2_SPINDEL_ROLL             SOUND_ARG_LOAD(8, 0, 0x48, 0x20, 8)
@@ -558,4 +559,4 @@
 #define SOUND_OBJ2_BOSS_DIALOG_GRUNT            SOUND_ARG_LOAD(9, 0, 0x69, 0x40, 8)
 #define SOUND_OBJ2_MRI_SPINNING                 SOUND_ARG_LOAD(9, 0, 0x6B, 0x00, 8)
 
-#endif // AUDIO_DEFINES_H
+#endif /* AUDIO_DEFINES_H */

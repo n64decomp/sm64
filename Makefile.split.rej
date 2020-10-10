@@ -1,0 +1,11 @@
+--- Makefile.split	2020-07-04 10:18:55.000000000 -0500
++++ Makefile.split	2020-07-17 10:53:32.285105300 -0500
+@@ -244,8 +244,6 @@
+ # --------------------------------------
+ 
+ # intro and ipl3 textures are not compressed
+-INTRO_RAW_FILES              := $(wildcard $(TEXTURE_DIR)/intro_raw/*.png)
+-$(BUILD_DIR)/src/goddard/renderer.o: $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%.inc.c,$(INTRO_RAW_FILES)))
+ 
+ IPL3_TEXTURE_FILES          := $(wildcard $(TEXTURE_DIR)/ipl3_raw/*.png)
+ IPL3_RAW_FILES              := $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%,$(IPL3_TEXTURE_FILES)))

@@ -1,5 +1,5 @@
-#ifndef MARIO_GEO_SWITCH_CASE_IDS_H
-#define MARIO_GEO_SWITCH_CASE_IDS_H
+#ifndef _MARIO_GEO_SWITCH_CASE_IDS_H
+#define _MARIO_GEO_SWITCH_CASE_IDS_H
 
 /* Mario Geo-Switch-Case IDs */
 
@@ -9,7 +9,7 @@ enum MarioEyesGSCId
     /*0x01*/ MARIO_EYES_OPEN,
     /*0x02*/ MARIO_EYES_HALF_CLOSED,
     /*0x03*/ MARIO_EYES_CLOSED,
-    /*0x04*/ MARIO_EYES_LOOK_LEFT,  // unused
+    /*0x04*/ MARIO_EYES_LOOK_LEFT,
     /*0x05*/ MARIO_EYES_LOOK_RIGHT, // unused
     /*0x06*/ MARIO_EYES_LOOK_UP,    // unused
     /*0x07*/ MARIO_EYES_LOOK_DOWN,  // unused
@@ -42,4 +42,5 @@ enum MarioGrabPosGSCId
     /*0x03*/ GRAB_POS_BOWSER
 };
 
-#endif // MARIO_GEO_SWITCH_CASE_IDS_H
+
+#endif /* _MARIO_GEO_SWITCH_CASE_IDS_H */

@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "sm64.h"
+#include "prevent_bss_reordering.h"
 #include "audio/external.h"
 #include "game_init.h"
 #include "memory.h"
@@ -61,11 +62,11 @@ struct SPTask *sCurrentAudioSPTask = NULL;
 struct SPTask *sCurrentDisplaySPTask = NULL;
 struct SPTask *sNextAudioSPTask = NULL;
 struct SPTask *sNextDisplaySPTask = NULL;
-s8 sAudioEnabled = TRUE;
+s8 sAudioEnabled = 1;
 u32 sNumVblanks = 0;
 s8 gResetTimer = 0;
 s8 D_8032C648 = 0;
-s8 gDebugLevelSelect = FALSE;
+s8 gDebugLevelSelect = 0;
 s8 D_8032C650 = 0;
 
 s8 gShowProfiler = FALSE;
@@ -245,7 +246,7 @@ void handle_vblank(void) {
     receive_new_tasks();
 
     // First try to kick off an audio task. If the gfx task is currently
-    // running, we need to asynchronously interrupt it -- handle_sp_complete
+    // running, we need to asychronously interrupt it -- handle_sp_complete
     // will pick up on what we're doing and start the audio task for us.
     // If there is already an audio task running, there is nothing to do.
     // If there is no audio task available, try a gfx task instead.
@@ -254,7 +255,7 @@ void handle_vblank(void) {
             interrupt_gfx_sptask();
         } else {
             profiler_log_vblank_time();
-            if (sAudioEnabled) {
+            if (sAudioEnabled != 0) {
                 start_sptask(M_AUDTASK);
             } else {
                 pretend_audio_sptask_done();
@@ -298,7 +299,7 @@ void handle_sp_complete(void) {
 
         // Start the audio task, as expected by handle_vblank.
         profiler_log_vblank_time();
-        if (sAudioEnabled) {
+        if (sAudioEnabled != 0) {
             start_sptask(M_AUDTASK);
         } else {
             pretend_audio_sptask_done();
@@ -349,7 +350,7 @@ void thread3_main(UNUSED void *arg) {
     create_thread(&gGameLoopThread, 5, thread5_game_loop, NULL, gThread5Stack + 0x2000, 10);
     osStartThread(&gGameLoopThread);
 
-    while (TRUE) {
+    while (1) {
         OSMesg msg;
 
         osRecvMesg(&gIntrMesgQueue, &msg, OS_MESG_BLOCK);
@@ -394,7 +395,7 @@ void send_sp_task_message(OSMesg *msg) {
 }
 
 void dispatch_audio_sptask(struct SPTask *spTask) {
-    if (sAudioEnabled && spTask != NULL) {
+    if (sAudioEnabled != 0 && spTask != NULL) {
         osWritebackDCacheAll();
         osSendMesg(&gSPTaskMesgQueue, spTask, OS_MESG_NOBLOCK);
     }
@@ -415,11 +416,11 @@ void send_display_list(struct SPTask *spTask) {
 }
 
 void turn_on_audio(void) {
-    sAudioEnabled = TRUE;
+    sAudioEnabled = 1;
 }
 
 void turn_off_audio(void) {
-    sAudioEnabled = FALSE;
+    sAudioEnabled = 0;
     while (sCurrentAudioSPTask != NULL) {
         ;
     }
@@ -456,7 +457,7 @@ void thread1_idle(UNUSED void *arg) {
     osSetThreadPri(NULL, 0);
 
     // halt
-    while (TRUE) {
+    while (1) {
         ;
     }
 }

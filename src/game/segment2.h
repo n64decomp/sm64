@@ -1,8 +1,10 @@
 #ifndef SEGMENT2_H
 #define SEGMENT2_H
 
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include "types.h"
+
+extern u8 _segment2_mio0SegmentRomStart[];
+extern u8 _segment2_mio0SegmentRomEnd[];
 
 extern u8 seg2_course_name_table[];
 extern u8 seg2_act_name_table[];
@@ -64,4 +66,4 @@ extern Gfx dl_billboard_num_7[];
 extern Gfx dl_billboard_num_8[];
 extern Gfx dl_billboard_num_9[];
 
-#endif // SEGMENT2_H
+#endif /* SEGMENT2_H */

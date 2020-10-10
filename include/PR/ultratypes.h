@@ -37,8 +37,6 @@ typedef s32 intptr_t;
 typedef s32 ptrdiff_t;
 #else
 #include <stddef.h>
-#include <stdint.h>
-typedef ptrdiff_t ssize_t;
 #endif
 
 #endif

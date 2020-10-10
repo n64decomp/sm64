@@ -1,8 +1,7 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include <ultra64.h>
 
 // cave
 extern const u8 cave_09000000[];
@@ -278,4 +277,4 @@ extern const Gfx title_screen_bg_dl_0A000190[];
 extern const u8 *const mario_title_texture_table[];
 extern const u8 *const game_over_texture_table[];
 
-#endif // TEXTURES_H
+#endif

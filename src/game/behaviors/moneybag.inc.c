@@ -55,7 +55,7 @@ void moneybag_check_mario_collision(void) {
 // sp20 = collisionFlags
 
 void moneybag_jump(s8 collisionFlags) {
-    s16 animFrame = o->header.gfx.animInfo.animFrame;
+    s16 animFrame = o->header.gfx.unk38.animFrame;
 
     switch (o->oMoneybagJumpState) {
         case MONEYBAG_JUMP_PREPARE:
@@ -96,7 +96,7 @@ void moneybag_jump(s8 collisionFlags) {
             if (o->oTimer >= 61) {
                 o->oMoneybagJumpState = MONEYBAG_JUMP_LANDING;
                 o->oForwardVel = 0;
-                o->header.gfx.animInfo.animFrame = 0;
+                o->header.gfx.unk38.animFrame = 0;
             }
             break;
 
@@ -166,7 +166,7 @@ void moneybag_act_disappear(void) {
     o->oOpacity -= 6;
     if (o->oOpacity < 0) {
         o->oOpacity = 0;
-        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+        o->activeFlags = 0;
     }
 }
 
@@ -175,7 +175,7 @@ void moneybag_act_death(void) {
         obj_spawn_yellow_coins(o, 5);
         create_sound_spawner(SOUND_GENERAL_SPLATTERING);
         spawn_mist_particles();
-        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+        o->activeFlags = 0;
     }
 }
 
@@ -186,7 +186,7 @@ void bhv_moneybag_loop(void) {
             o->oOpacity += 12;
             if (o->oOpacity >= 256) {
                 o->oOpacity = 255;
-                o->parentObj->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+                o->parentObj->activeFlags = 0;
                 o->oAction = MONEYBAG_ACT_MOVE_AROUND;
             }
             break;

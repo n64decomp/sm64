@@ -1,7 +1,6 @@
-#include <PR/ultratypes.h>
-
-#include "debug_utils.h"
+#include <ultra64.h>
 #include "gd_memory.h"
+#include "debug_utils.h"
 #include "renderer.h"
 
 /**

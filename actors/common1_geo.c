@@ -16,7 +16,7 @@
 #include "flame/geo.inc.c"
 #include "blue_fish/geo.inc.c"
 #include "leaves/geo.inc.c"
-#include "mario_cap/geo.inc.c"
+// #include "mario_cap/geo.inc.c"
 #include "number/geo.inc.c"
 #include "mushroom_1up/geo.inc.c"
 #include "star/geo.inc.c"
@@ -25,3 +25,7 @@
 #include "white_particle/geo.inc.c"
 #include "wooden_signpost/geo.inc.c"
 #include "tree/geo.inc.c"
+
+#include "marios_cap/geo.inc.c"
+#include "marios_wing_cap/geo.inc.c"
+#include "marios_metal_cap/geo.inc.c"

@@ -1,8 +1,8 @@
-#ifndef SHADOW_H
-#define SHADOW_H
+#ifndef _SHADOW_H
+#define _SHADOW_H
 
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include <ultra64.h>
+#include "types.h"
 
 /**
  * Shadow types. Shadows are circles, squares, or hardcoded rectangles, and
@@ -48,6 +48,7 @@ extern s8 gMarioOnIceOrCarpet;
  * Given the (x, y, z) location of an object, create a shadow below that object
  * with the given initial solidity and "shadowType" (described above).
  */
-Gfx *create_shadow_below_xyz(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 shadowSolidity, s8 shadowType);
+extern Gfx *create_shadow_below_xyz(
+    f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 shadowSolidity, s8 shadowType);
 
-#endif // SHADOW_H
+#endif /* _SHADOW_H */

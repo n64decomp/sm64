@@ -1,10 +1,6 @@
 #ifndef SCREEN_TRANSITION_H
 #define SCREEN_TRANSITION_H
 
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
-
-#include "macros.h"
 #include "types.h"
 
 enum TextureTransitionID
@@ -21,7 +17,7 @@ enum TextureTransitionType
     TRANS_TYPE_CLAMP
 };
 
-s32 render_screen_transition(s8 fadeTimer, s8 transType, u8 transTime, struct WarpTransitionData *transData);
-Gfx *geo_cannon_circle_base(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx);
+extern int render_screen_transition(s8 fadeTimer, s8 transType, u8 transTime, struct WarpTransitionData *transData);
+extern Gfx *geo_cannon_circle_base(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]);
 
-#endif // SCREEN_TRANSITION_H
+#endif /* SCREEN_TRANSITION_H */

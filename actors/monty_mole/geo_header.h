@@ -1,0 +1,38 @@
+extern const GeoLayout monty_mole_geo[];
+extern Vtx monty_mole_000_offset_001_mesh_vtx_0[13];
+extern Gfx monty_mole_000_offset_001_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_001_mesh_vtx_1[32];
+extern Gfx monty_mole_000_offset_001_mesh_tri_1[];
+extern Vtx monty_mole_000_offset_002_mesh_vtx_0[94];
+extern Gfx monty_mole_000_offset_002_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_002_mesh_vtx_1[25];
+extern Gfx monty_mole_000_offset_002_mesh_tri_1[];
+extern Vtx monty_mole_000_offset_002_mesh_vtx_2[7];
+extern Gfx monty_mole_000_offset_002_mesh_tri_2[];
+extern Vtx monty_mole_000_offset_002_mesh_vtx_3[8];
+extern Gfx monty_mole_000_offset_002_mesh_tri_3[];
+extern Vtx monty_mole_000_offset_002_mesh_vtx_4[16];
+extern Gfx monty_mole_000_offset_002_mesh_tri_4[];
+extern Vtx monty_mole_000_offset_003_mesh_vtx_0[23];
+extern Gfx monty_mole_000_offset_003_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_004_mesh_vtx_0[23];
+extern Gfx monty_mole_000_offset_004_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_005_mesh_vtx_0[8];
+extern Gfx monty_mole_000_offset_005_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_006_mesh_vtx_0[24];
+extern Gfx monty_mole_000_offset_006_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_007_mesh_vtx_0[8];
+extern Gfx monty_mole_000_offset_007_mesh_tri_0[];
+extern Vtx monty_mole_000_offset_008_mesh_vtx_0[24];
+extern Gfx monty_mole_000_offset_008_mesh_tri_0[];
+
+extern Gfx monty_mole_000_offset_001_mesh[];
+extern Gfx monty_mole_000_offset_002_mesh[];
+extern Gfx monty_mole_000_offset_003_mesh[];
+extern Gfx monty_mole_000_offset_004_mesh[];
+extern Gfx monty_mole_000_offset_005_mesh[];
+extern Gfx monty_mole_000_offset_006_mesh[];
+extern Gfx monty_mole_000_offset_007_mesh[];
+extern Gfx monty_mole_000_offset_008_mesh[];
+extern Gfx monty_mole_material_revert_render_settings[];
+

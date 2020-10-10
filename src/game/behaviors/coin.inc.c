@@ -93,13 +93,13 @@ void bhv_coin_loop(void) {
             obj_mark_for_deletion(o);
     }
 #ifndef VERSION_JP
-    if (o->oMoveFlags & OBJ_MOVE_BOUNCE) {
+    if (o->oMoveFlags & OBJ_MOVE_13) {
         if (o->oCoinUnk1B0 < 5)
             cur_obj_play_sound_2(0x30364081);
         o->oCoinUnk1B0++;
     }
 #else
-    if (o->oMoveFlags & OBJ_MOVE_BOUNCE)
+    if (o->oMoveFlags & OBJ_MOVE_13)
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
 #endif
     if (cur_obj_wait_then_blink(400, 20))
@@ -138,7 +138,9 @@ void spawn_coin_in_formation(s32 sp50, s32 sp54) {
     Vec3i sp40;
     s32 sp3C = 1;
     s32 sp38 = 1;
-    sp40[0] = sp40[1] = sp40[2] = 0;
+    UNUSED s32 unused;
+    sp40[2] = 0;
+    sp40[0] = (sp40[1] = sp40[2]);
     switch (sp54 & 7) {
         case 0:
             sp40[2] = 160 * (sp50 - 2);
@@ -206,7 +208,7 @@ void bhv_coin_formation_loop(void) {
 void coin_inside_boo_act_1(void) {
     cur_obj_update_floor_and_walls();
     cur_obj_if_hit_wall_bounce_away();
-    if (o->oMoveFlags & OBJ_MOVE_BOUNCE)
+    if (o->oMoveFlags & OBJ_MOVE_13)
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
     if (o->oTimer > 90 || (o->oMoveFlags & OBJ_MOVE_LANDED)) {
         obj_set_hitbox(o, &sYellowCoinHitbox);

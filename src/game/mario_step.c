@@ -152,7 +152,7 @@ u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
         }
     }
 
-    return FALSE;
+    return 0;
 }
 
 u32 mario_push_off_steep_floor(struct MarioState *m, u32 action, u32 actionArg) {
@@ -181,10 +181,10 @@ u32 mario_update_moving_sand(struct MarioState *m) {
         m->vel[0] += pushSpeed * sins(pushAngle);
         m->vel[2] += pushSpeed * coss(pushAngle);
 
-        return TRUE;
+        return 1;
     }
 
-    return FALSE;
+    return 0;
 }
 
 u32 mario_update_windy_ground(struct MarioState *m) {
@@ -214,10 +214,10 @@ u32 mario_update_windy_ground(struct MarioState *m) {
 #if VERSION_JP
         play_sound(SOUND_ENV_WIND2, m->marioObj->header.gfx.cameraToObject);
 #endif
-        return TRUE;
+        return 1;
     }
 
-    return FALSE;
+    return 0;
 }
 
 void stop_and_set_height_to_floor(struct MarioState *m) {
@@ -352,16 +352,16 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     f32 displacementZ;
 
     if (m->vel[1] > 0) {
-        return FALSE;
+        return 0;
     }
 
     displacementX = nextPos[0] - intendedPos[0];
     displacementZ = nextPos[2] - intendedPos[2];
 
-    // Only ledge grab if the wall displaced Mario in the opposite direction of
+    // Only ledge grab if the wall displaced mario in the opposite direction of
     // his velocity.
     if (displacementX * m->vel[0] + displacementZ * m->vel[2] > 0.0f) {
-        return FALSE;
+        return 0;
     }
 
     //! Since the search for floors starts at y + 160, we will sometimes grab
@@ -371,7 +371,7 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     ledgePos[1] = find_floor(ledgePos[0], nextPos[1] + 160.0f, ledgePos[2], &ledgeFloor);
 
     if (ledgePos[1] - nextPos[1] <= 100.0f) {
-        return FALSE;
+        return 0;
     }
 
     vec3f_copy(m->pos, ledgePos);
@@ -382,7 +382,7 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
 
     m->faceAngle[0] = 0;
     m->faceAngle[1] = atan2s(wall->normal.z, wall->normal.x) + 0x8000;
-    return TRUE;
+    return 1;
 }
 
 s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepArg) {
@@ -437,7 +437,7 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
         }
 
         //! When ceilHeight - floorHeight <= 160, the step result says that
-        // Mario landed, but his movement is cancelled and his referenced floor
+        // mario landed, but his movement is cancelled and his referenced floor
         // isn't updated (pedro spots)
         m->pos[1] = floorHeight;
         return AIR_STEP_LANDED;

@@ -1,6 +1,5 @@
 #include "libultra_internal.h"
 #include "hardware.h"
-
 // this file must include some globally referenced data because it is not called anywhere
 // data, comes shortly before _Ldtob I think, before crash_screen
 
@@ -8,9 +7,8 @@ extern OSPiHandle *D_80302DFC;
 // bss
 OSPiHandle LeoDiskHandle;
 OSPiHandle *__osDiskHandle;
-
 // some kind of piHandle init function, maybe osDriveRomInit or osCartRomInit
-OSPiHandle *osLeoDiskInit(void) {
+OSPiHandle *osLeoDiskInit() {
     s32 sp1c;
     LeoDiskHandle.type = 2;
     LeoDiskHandle.baseAddress = (0xa0000000 | 0x05000000);

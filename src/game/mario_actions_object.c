@@ -1,4 +1,4 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
 #include "sm64.h"
 #include "mario_actions_object.h"
@@ -47,7 +47,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
                 m->actionArg = 1;
             }
 
-            if (m->marioObj->header.gfx.animInfo.animFrame >= 2) {
+            if (m->marioObj->header.gfx.unk38.animFrame >= 2) {
                 if (mario_check_object_grab(m)) {
                     return TRUE;
                 }
@@ -63,7 +63,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
         case 2:
             set_mario_animation(m, MARIO_ANIM_FIRST_PUNCH_FAST);
 
-            if (m->marioObj->header.gfx.animInfo.animFrame <= 0) {
+            if (m->marioObj->header.gfx.unk38.animFrame <= 0) {
                 m->flags |= MARIO_PUNCHING;
             }
 
@@ -87,7 +87,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
                 m->actionArg = 4;
             }
 
-            if (m->marioObj->header.gfx.animInfo.animFrame > 0) {
+            if (m->marioObj->header.gfx.unk38.animFrame > 0) {
                 m->flags |= MARIO_PUNCHING;
             }
 
@@ -98,7 +98,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
 
         case 5:
             set_mario_animation(m, MARIO_ANIM_SECOND_PUNCH_FAST);
-            if (m->marioObj->header.gfx.animInfo.animFrame <= 0) {
+            if (m->marioObj->header.gfx.unk38.animFrame <= 0) {
                 m->flags |= MARIO_PUNCHING;
             }
 
@@ -130,7 +130,7 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
         case 9:
             play_mario_action_sound(m, SOUND_MARIO_PUNCH_HOO, 1);
             set_mario_animation(m, MARIO_ANIM_BREAKDANCE);
-            animFrame = m->marioObj->header.gfx.animInfo.animFrame;
+            animFrame = m->marioObj->header.gfx.unk38.animFrame;
 
             if (animFrame >= 2 && animFrame < 8) {
                 m->flags |= MARIO_TRIPPING;
@@ -217,7 +217,7 @@ s32 act_dive_picking_up(struct MarioState *m) {
     }
 
     //! Hands-free holding. Landing on a slope or being pushed off a ledge while
-    // landing from a dive grab sets Mario's action to a non-holding action
+    // landing from a dive grab sets mario's action to a non-holding action
     // without dropping the object, causing the hands-free holding glitch.
     if (m->input & INPUT_OFF_FLOOR) {
         return set_mario_action(m, ACT_FREEFALL, 0);

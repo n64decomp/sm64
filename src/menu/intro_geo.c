@@ -1,13 +1,11 @@
-#include <PR/ultratypes.h>
-
+#include "ultra64.h"
+#include "sm64.h"
+#include "prevent_bss_reordering.h"
+#include "types.h"
 #include "game/memory.h"
 #include "game/segment2.h"
 #include "game/segment7.h"
 #include "intro_geo.h"
-#include "sm64.h"
-#include "textures.h"
-#include "types.h"
-#include "prevent_bss_reordering.h"
 
 // frame counts for the zoom in, hold, and zoom out of title model
 #define INTRO_STEPS_ZOOM_IN 20
@@ -24,6 +22,17 @@ struct GraphNodeMore {
     /*0x18*/ u32 unk18;
 };
 
+// title screen segment A
+extern Gfx title_screen_bg_dl_0A000118[];
+extern Gfx title_screen_bg_dl_0A000100[];
+extern Gfx title_screen_bg_dl_0A000130[];
+extern Gfx title_screen_bg_dl_0A000148[];
+extern Gfx title_screen_bg_dl_0A000160[];
+extern Gfx title_screen_bg_dl_0A000178[];
+extern Gfx title_screen_bg_dl_0A000190[];
+extern const u8 *const mario_title_texture_table[];
+extern const u8 *const game_over_texture_table[];
+
 // intro geo bss
 s32 gGameOverFrameCounter;
 s32 gGameOverTableIndex;
@@ -31,8 +40,8 @@ s16 gTitleZoomCounter;
 s32 gTitleFadeCounter;
 
 // intro screen background display lists for each of four 80x20 textures
-const Gfx *introBackgroundDlRows[] = { title_screen_bg_dl_0A000130, title_screen_bg_dl_0A000148,
-                                       title_screen_bg_dl_0A000160, title_screen_bg_dl_0A000178 };
+Gfx *introBackgroundDlRows[] = { title_screen_bg_dl_0A000130, title_screen_bg_dl_0A000148,
+                                 title_screen_bg_dl_0A000160, title_screen_bg_dl_0A000178 };
 
 // intro screen background texture X offsets
 float introBackgroundOffsetX[] = {
@@ -110,7 +119,7 @@ Gfx *geo_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) {
         }
         guScale(scaleMat, scaleX, scaleY, scaleZ);
         gSPMatrix(displayListIter++, scaleMat, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        gSPDisplayList(displayListIter++, &intro_seg7_dl_0700B3A0);
+        gSPDisplayList(displayListIter++, &title_cream64_title_cream64_mesh);
         gSPPopMatrix(displayListIter++, G_MTX_MODELVIEW);
         gSPEndDisplayList(displayListIter);
         gTitleZoomCounter++;
@@ -140,7 +149,7 @@ Gfx *geo_fade_transition(s32 sp40, struct GraphNode *sp44, UNUSED void *context)
             if (0) {
             }
         }
-        gSPDisplayList(displayListIter++, &intro_seg7_dl_0700C6A0);
+        //gSPDisplayList(displayListIter++, &intro_seg7_dl_0700C6A0);
         gSPEndDisplayList(displayListIter);
         if (gTitleZoomCounter >= 0x13) {
             gTitleFadeCounter += 0x1a;

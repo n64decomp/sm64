@@ -98,7 +98,7 @@ void flying_bookend_act_3(void) {
 }
 
 void bhv_flying_bookend_loop(void) {
-    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if (!(o->activeFlags & 0x0008)) {
         o->oDeathSound = SOUND_OBJ_POUNDING1;
         cur_obj_scale(o->header.gfx.scale[0]);
 
@@ -118,7 +118,7 @@ void bhv_flying_bookend_loop(void) {
         }
 
         obj_check_attacks(&sFlyingBookendHitbox, -1);
-        if (o->oAction == -1 || (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL))) {
+        if (o->oAction == -1 || (o->oMoveFlags & 0x00000203)) {
             o->oNumLootCoins = 0;
             obj_die_if_health_non_positive();
         }
@@ -130,7 +130,7 @@ void bhv_flying_bookend_loop(void) {
 void bhv_bookend_spawn_loop(void) {
     struct Object *sp1C;
 
-    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if (!(o->activeFlags & 0x0008)) {
         if (o->oTimer > 40 && obj_is_near_to_and_facing_mario(600.0f, 0x2000)) {
             sp1C = spawn_object(o, MODEL_BOOKEND, bhvFlyingBookend);
             if (sp1C != NULL) {
@@ -145,7 +145,7 @@ void bhv_bookend_spawn_loop(void) {
 void bookshelf_manager_act_0(void) {
     s32 val04;
 
-    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if (!(o->activeFlags & 0x0008)) {
         for (val04 = 0; val04 < 3; val04++) {
             spawn_object_relative(val04, D_80331B30[val04].unk00, D_80331B30[val04].unk02, 0, o,
                                   MODEL_BOOKEND, bhvBookSwitch);
@@ -167,7 +167,7 @@ void bookshelf_manager_act_1(void) {
 }
 
 void bookshelf_manager_act_2(void) {
-    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if (!(o->activeFlags & 0x0008)) {
         if (o->oBookSwitchManagerUnkF4 < 0) {
             if (o->oTimer > 30) {
                 o->oBookSwitchManagerUnkF4 = o->oBookSwitchManagerUnkF8 = 0;

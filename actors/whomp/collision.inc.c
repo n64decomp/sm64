@@ -1,7 +1,7 @@
 // Whomp
 
 // 0x06020A0C - 0x06020A90
-const Collision whomp_seg6_collision_06020A0C[] = {
+const s16 whomp_seg6_collision_06020A0C[] = {
 #ifdef VERSION_JP
     COL_INIT(),
     COL_VERTEX_INIT(0x8),

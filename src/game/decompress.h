@@ -1,6 +1,8 @@
-#ifndef DECOMPRESS_H
-#define DECOMPRESS_H
+#ifndef _DECOMPRESS_H
+#define _DECOMPRESS_H
 
-void decompress(void *mio0, void *dest);
+#include "types.h"
 
-#endif // DECOMPRESS_H
+extern void decompress(void *, void *);
+
+#endif /* _DECOMPRESS_H */

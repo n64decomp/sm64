@@ -37,3 +37,12 @@ UNUSED static const u64 binid_5 = 5;
 #include "chain_chomp/anims/data.inc.c"
 #include "chain_chomp/anims/table.inc.c"
 UNUSED static const u64 binid_6 = 6;
+
+#include "gemerl/model.inc.c"
+#include "gemerl/anims/data.inc.c"
+#include "gemerl/anims/table.inc.c"
+
+#include "gemerl2/model.inc.c"
+#include "gemerl2/anims/data.inc.c"
+#include "gemerl2/anims/table.inc.c"
+#include "koopa_noshell/model.inc.c"

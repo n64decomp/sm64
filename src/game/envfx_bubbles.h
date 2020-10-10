@@ -1,8 +1,7 @@
-#ifndef ENVFX_BUBBLES_H
-#define ENVFX_BUBBLES_H
+#ifndef INGAME_MENU_3_H
+#define INGAME_MENU_3_H
 
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include "types.h"
 
 #define ENVFX_STATE_UNUSED          0
 #define ENVFX_STATE_SRC_X           1 // whirlpool / jetsream bubble source position
@@ -17,6 +16,6 @@
 
 // Used to communicate from whirlpool behavior to envfx
 extern s16 gEnvFxBubbleConfig[10];
-Gfx *envfx_update_bubbles(s32 mode, Vec3s marioPos, Vec3s camTo, Vec3s camFrom);
+extern Gfx *envfx_update_bubbles(s32 sp28, Vec3s sp2C, Vec3s sp30, Vec3s sp34);
 
-#endif // ENVFX_BUBBLES_H
+#endif // INGAME_MENU_3_H

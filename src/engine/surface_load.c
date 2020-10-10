@@ -1,4 +1,4 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
 #include "prevent_bss_reordering.h"
 
@@ -21,8 +21,8 @@ s32 unused8038BE90;
  * Partitions for course and object surfaces. The arrays represent
  * the 16x16 cells that each level is split into.
  */
-SpatialPartitionCell gStaticSurfacePartition[NUM_CELLS][NUM_CELLS];
-SpatialPartitionCell gDynamicSurfacePartition[NUM_CELLS][NUM_CELLS];
+SpatialPartitionCell gStaticSurfacePartition[16][16];
+SpatialPartitionCell gDynamicSurfacePartition[16][16];
 
 /**
  * Pools of data to contain either surface nodes or surfaces.
@@ -83,7 +83,7 @@ static struct Surface *alloc_surface(void) {
  * Iterates through the entire partition, clearing the surfaces.
  */
 static void clear_spatial_partition(SpatialPartitionCell *cells) {
-    register s32 i = NUM_CELLS * NUM_CELLS;
+    register s32 i = 16 * 16;
 
     while (i--) {
         (*cells)[SPATIAL_PARTITION_FLOORS].next = NULL;
@@ -201,18 +201,18 @@ static s16 lower_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
-    coord += LEVEL_BOUNDARY_MAX;
+    coord += 0x2000;
     if (coord < 0) {
         coord = 0;
     }
 
     // [0, 16)
-    index = coord / CELL_SIZE;
+    index = coord / 0x400;
 
     // Include extra cell if close to boundary
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
-    if (coord % CELL_SIZE < 50) {
+    if (coord % 0x400 < 50) {
         index -= 1;
     }
 
@@ -233,23 +233,23 @@ static s16 upper_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
-    coord += LEVEL_BOUNDARY_MAX;
+    coord += 0x2000;
     if (coord < 0) {
         coord = 0;
     }
 
     // [0, 16)
-    index = coord / CELL_SIZE;
+    index = coord / 0x400;
 
     // Include extra cell if close to boundary
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
-    if (coord % CELL_SIZE > CELL_SIZE - 50) {
+    if (coord % 0x400 > 0x400 - 50) {
         index += 1;
     }
 
-    if (index > (NUM_CELLS - 1)) {
-        index = (NUM_CELLS - 1);
+    if (index > 15) {
+        index = 15;
     }
 
     // Potentially < 0, but since lower index is >= 0, not exploitable
@@ -491,7 +491,8 @@ static s16 *read_vertex_data(s16 **data) {
 }
 
 /**
- * Loads in special environmental regions, such as water, poison gas, and JRB fog.
+ * Loads in special environmental regions, such as water,
+ * poison gas, and JRB fog.
  */
 static void load_environmental_regions(s16 **data) {
     s32 numRegions;
@@ -532,57 +533,6 @@ void alloc_surface_pools(void) {
     reset_red_coins_collected();
 }
 
-#ifdef NO_SEGMENTED_MEMORY
-/**
- * Get the size of the terrain data, to get the correct size when copying later.
- */
-u32 get_area_terrain_size(s16 *data) {
-    s16 *startPos = data;
-    s32 end = FALSE;
-    s16 terrainLoadType;
-    s32 numVertices;
-    s32 numRegions;
-    s32 numSurfaces;
-    s16 hasForce;
-
-    while (!end) {
-        terrainLoadType = *data++;
-
-        switch (terrainLoadType) {
-            case TERRAIN_LOAD_VERTICES:
-                numVertices = *data++;
-                data += 3 * numVertices;
-                break;
-
-            case TERRAIN_LOAD_OBJECTS:
-                data += get_special_objects_size(data);
-                break;
-
-            case TERRAIN_LOAD_ENVIRONMENT:
-                numRegions = *data++;
-                data += 6 * numRegions;
-                break;
-
-            case TERRAIN_LOAD_CONTINUE:
-                continue;
-
-            case TERRAIN_LOAD_END:
-                end = TRUE;
-                break;
-
-            default:
-                numSurfaces = *data++;
-                hasForce = surface_has_force(terrainLoadType);
-                data += (3 + hasForce) * numSurfaces;
-                break;
-        }
-    }
-
-    return data - startPos;
-}
-#endif
-
-
 /**
  * Process the level file, loading in vertices, surfaces, some objects, and environmental
  * boxes (water, gas, JRB fog).
@@ -600,7 +550,7 @@ void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects
 
     clear_static_surfaces();
 
-    // A while loop iterating through each section of the level data. Sections of data
+    // A while loop interating through each section of the level data. Sections of data
     // are prefixed by a terrain "type." This type is reused for surfaces as the surface
     // type.
     while (TRUE) {
@@ -657,7 +607,7 @@ static void unused_80383604(void) {
 }
 
 /**
- * Applies an object's transformation to the object's vertices.
+ * Applies an object's tranformation to the object's vertices.
  */
 void transform_object_vertices(s16 **data, s16 *vertexData) {
     register s16 *vertices;
@@ -697,7 +647,8 @@ void transform_object_vertices(s16 **data, s16 *vertexData) {
 }
 
 /**
- * Load in the surfaces for the gCurrentObject. This includes setting the flags, exertion, and room.
+ * Load in the surfaces for the gCurrentObject. This includes setting the flags,
+ * exertion, and room.
  */
 void load_object_surfaces(s16 **data, s16 *vertexData) {
     s32 surfaceType;

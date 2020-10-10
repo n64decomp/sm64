@@ -1,9 +1,7 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
-#include "prevent_bss_reordering.h"
 #include "area.h"
 #include "sm64.h"
-#include "gfx_dimensions.h"
 #include "behavior_data.h"
 #include "game_init.h"
 #include "object_list_processor.h"
@@ -51,27 +49,29 @@ u8 gWarpTransBlue = 0;
 s16 gCurrSaveFileNum = 1;
 s16 gCurrLevelNum = LEVEL_MIN;
 
-/*
+/* 
  * The following two tables are used in get_mario_spawn_type() to determine spawn type
  * from warp behavior.
  * When looping through sWarpBhvSpawnTable, if the behavior function in the table matches
  * the spawn behavior executed, the index of that behavior is used with sSpawnTypeFromWarpBhv
 */
 
+// D_8032CE9C
 const BehaviorScript *sWarpBhvSpawnTable[] = {
-    bhvDoorWarp,                bhvStar,                   bhvExitPodiumWarp,          bhvWarp,
-    bhvWarpPipe,                bhvFadingWarp,             bhvInstantActiveWarp,       bhvAirborneWarp,
-    bhvHardAirKnockBackWarp,    bhvSpinAirborneCircleWarp, bhvDeathWarp,               bhvSpinAirborneWarp,
-    bhvFlyingWarp,              bhvSwimmingWarp,           bhvPaintingStarCollectWarp, bhvPaintingDeathWarp,
-    bhvAirborneStarCollectWarp, bhvAirborneDeathWarp,      bhvLaunchStarCollectWarp,   bhvLaunchDeathWarp,
+    bhvDoorWarp, bhvStar,       bhvExitPodiumWarp, bhvWarp,
+    bhvWarpPipe, bhvFadingWarp, bhvWarps60,        bhvWarps64,
+    bhvWarps68,  bhvWarps6C,    bhvDeathWarp,      bhvWarps74,
+    bhvWarps78,  bhvWarps94,    bhvWarps7C,        bhvPaintingDeathWarp,
+    bhvWarps88,  bhvWarps84,    bhvWarps8C,        bhvWarps90,
 };
 
+// D_8032CEEC
 u8 sSpawnTypeFromWarpBhv[] = {
-    MARIO_SPAWN_DOOR_WARP,             MARIO_SPAWN_UNKNOWN_02,           MARIO_SPAWN_UNKNOWN_03,            MARIO_SPAWN_UNKNOWN_03,
-    MARIO_SPAWN_UNKNOWN_03,            MARIO_SPAWN_TELEPORT,             MARIO_SPAWN_INSTANT_ACTIVE,        MARIO_SPAWN_AIRBORNE,
-    MARIO_SPAWN_HARD_AIR_KNOCKBACK,    MARIO_SPAWN_SPIN_AIRBORNE_CIRCLE, MARIO_SPAWN_DEATH,                 MARIO_SPAWN_SPIN_AIRBORNE,
-    MARIO_SPAWN_FLYING,                MARIO_SPAWN_SWIMMING,             MARIO_SPAWN_PAINTING_STAR_COLLECT, MARIO_SPAWN_PAINTING_DEATH,
-    MARIO_SPAWN_AIRBORNE_STAR_COLLECT, MARIO_SPAWN_AIRBORNE_DEATH,       MARIO_SPAWN_LAUNCH_STAR_COLLECT,   MARIO_SPAWN_LAUNCH_DEATH,
+    MARIO_SPAWN_UNKNOWN_01, MARIO_SPAWN_UNKNOWN_02, MARIO_SPAWN_UNKNOWN_03, MARIO_SPAWN_UNKNOWN_03,
+    MARIO_SPAWN_UNKNOWN_03, MARIO_SPAWN_UNKNOWN_04, MARIO_SPAWN_UNKNOWN_10, MARIO_SPAWN_UNKNOWN_12,
+    MARIO_SPAWN_UNKNOWN_13, MARIO_SPAWN_UNKNOWN_14, MARIO_SPAWN_DEATH,      MARIO_SPAWN_UNKNOWN_16,
+    MARIO_SPAWN_UNKNOWN_17, MARIO_SPAWN_UNKNOWN_11, MARIO_SPAWN_UNKNOWN_20, MARIO_SPAWN_PAINTING_DEATH,
+    MARIO_SPAWN_UNKNOWN_22, MARIO_SPAWN_UNKNOWN_23, MARIO_SPAWN_UNKNOWN_24, MARIO_SPAWN_UNKNOWN_25,
 };
 
 Vp D_8032CF00 = { {
@@ -106,14 +106,14 @@ void set_warp_transition_rgb(u8 red, u8 green, u8 blue) {
 
 void print_intro_text(void) {
 #ifdef VERSION_EU
-    s32 language = eu_get_language();
+    int language = eu_get_language();
 #endif
     if ((gGlobalTimer & 0x1F) < 20) {
         if (gControllerBits == 0) {
 #ifdef VERSION_EU
-            print_text_centered(SCREEN_WIDTH / 2, 20, gNoControllerMsg[language]);
+            print_text_centered(160, 20, gNoControllerMsg[language]);
 #else
-            print_text_centered(SCREEN_WIDTH / 2, 20, "NO CONTROLLER");
+            print_text_centered(160, 20, "NO CONTROLLER");
 #endif
         } else {
 #ifdef VERSION_EU
@@ -162,7 +162,7 @@ void load_obj_warp_nodes(void) {
     do {
         struct Object *sp1C = sp20;
 
-        if (sp1C->activeFlags != ACTIVE_FLAG_DEACTIVATED && get_mario_spawn_type(sp1C) != 0) {
+        if (sp1C->activeFlags && get_mario_spawn_type(sp1C) != 0) {
             sp24 = area_get_warp_node_from_params(sp1C);
             if (sp24 != NULL) {
                 sp24->object = sp1C;
@@ -207,14 +207,14 @@ void clear_area_graph_nodes(void) {
     s32 i;
 
     if (gCurrentArea != NULL) {
-        geo_call_global_function_nodes(&gCurrentArea->unk04->node, GEO_CONTEXT_AREA_UNLOAD);
+        geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_UNLOAD);
         gCurrentArea = NULL;
         gWarpTransition.isActive = FALSE;
     }
 
     for (i = 0; i < 8; i++) {
         if (gAreaData[i].unk04 != NULL) {
-            geo_call_global_function_nodes(&gAreaData[i].unk04->node, GEO_CONTEXT_AREA_INIT);
+            geo_call_global_function_nodes(gAreaData[i].unk04, GEO_CONTEXT_AREA_INIT);
             gAreaData[i].unk04 = NULL;
         }
     }
@@ -235,14 +235,14 @@ void load_area(s32 index) {
         }
 
         load_obj_warp_nodes();
-        geo_call_global_function_nodes(&gCurrentArea->unk04->node, GEO_CONTEXT_AREA_LOAD);
+        geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_LOAD);
     }
 }
 
 void unload_area(void) {
     if (gCurrentArea != NULL) {
         unload_objects_from_area(0, gCurrentArea->index);
-        geo_call_global_function_nodes(&gCurrentArea->unk04->node, GEO_CONTEXT_AREA_UNLOAD);
+        geo_call_global_function_nodes(gCurrentArea->unk04, GEO_CONTEXT_AREA_UNLOAD);
 
         gCurrentArea->flags = 0;
         gCurrentArea = NULL;
@@ -283,7 +283,7 @@ void change_area(s32 index) {
     }
 
     if (areaFlags & 0x01) {
-        gMarioObject->header.gfx.areaIndex = index, gMarioSpawnInfo->areaIndex = index;
+        gMarioObject->header.gfx.unk18 = index, gMarioSpawnInfo->areaIndex = index;
     }
 }
 
@@ -331,7 +331,7 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
 
         if (transType & 1) // Is the image fading in?
         {
-            gWarpTransition.data.startTexRadius = GFX_DIMENSIONS_FULL_RADIUS;
+            gWarpTransition.data.startTexRadius = SCREEN_WIDTH;
             if (transType >= 0x0F) {
                 gWarpTransition.data.endTexRadius = 16;
             } else {
@@ -344,7 +344,7 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
             } else {
                 gWarpTransition.data.startTexRadius = 0;
             }
-            gWarpTransition.data.endTexRadius = GFX_DIMENSIONS_FULL_RADIUS;
+            gWarpTransition.data.endTexRadius = SCREEN_WIDTH;
         }
     }
 }
@@ -380,7 +380,7 @@ void render_game(void) {
         if (gPauseScreenMode != 0) {
             gSaveOptSelectIndex = gPauseScreenMode;
         }
-
+        
         if (D_8032CE78 != NULL) {
             make_viewport_clip_rect(D_8032CE78);
         } else
@@ -390,7 +390,7 @@ void render_game(void) {
         if (gWarpTransition.isActive) {
             if (gWarpTransDelay == 0) {
                 gWarpTransition.isActive = !render_screen_transition(0, gWarpTransition.type, gWarpTransition.time,
-                                                                     &gWarpTransition.data);
+                                                          &gWarpTransition.data);
                 if (!gWarpTransition.isActive) {
                     if (gWarpTransition.type & 1) {
                         gWarpTransition.pauseRendering = TRUE;
@@ -404,7 +404,7 @@ void render_game(void) {
         }
     } else {
         render_text_labels();
-        if (D_8032CE78 != NULL) {
+        if (D_8032CE78 != 0) {
             clear_viewport(D_8032CE78, gWarpTransFBSetColor);
         } else {
             clear_frame_buffer(gWarpTransFBSetColor);
@@ -412,5 +412,5 @@ void render_game(void) {
     }
 
     D_8032CE74 = NULL;
-    D_8032CE78 = NULL;
+    D_8032CE78 = 0;
 }

@@ -94,12 +94,16 @@
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "21"
+            "sound": "34"
         },
         "inst2": {
-            "release_rate": 208,
-            "envelope": "envelope2",
-            "sound": "35"
+            "release_rate": 15,
+            "normal_range_lo": 27,
+            "normal_range_hi": 46,
+            "envelope": "envelope10",
+            "sound_lo": "23",
+            "sound": "24",
+            "sound_hi": "25"
         },
         "inst3": {
             "release_rate": 10,
@@ -122,9 +126,9 @@
             "sound": "1B"
         },
         "inst7": {
-            "release_rate": 208,
-            "envelope": "envelope7",
-            "sound": "1C"
+            "release_rate": 10,
+            "envelope": "envelope3",
+            "sound": "26"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope8", "sound": {"sample": "06", "tuning": 0.210224}},

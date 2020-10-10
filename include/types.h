@@ -1,5 +1,5 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef _TYPES_H_
+#define _TYPES_H_
 
 // This file contains various data types used in Super Mario 64 that don't yet
 // have an appropriate header.
@@ -86,11 +86,11 @@ struct VblankHandler
 
 struct Animation {
     /*0x00*/ s16 flags;
-    /*0x02*/ s16 animYTransDivisor;
-    /*0x04*/ s16 startFrame;
-    /*0x06*/ s16 loopStart;
-    /*0x08*/ s16 loopEnd;
-    /*0x0A*/ s16 unusedBoneCount;
+    /*0x02*/ s16 unk02;
+    /*0x04*/ s16 unk04;
+    /*0x06*/ s16 unk06;
+    /*0x08*/ s16 unk08;
+    /*0x0A*/ s16 unk0A;
     /*0x0C*/ const s16 *values;
     /*0x10*/ const u16 *index;
     /*0x14*/ u32 length; // only used with Mario animations to determine how much to load. 0 otherwise.
@@ -108,7 +108,8 @@ struct GraphNode
     /*0x10*/ struct GraphNode *children;
 };
 
-struct AnimInfo
+// struct AnimInfo?
+struct GraphNodeObject_sub
 {
     /*0x00 0x38*/ s16 animID;
     /*0x02 0x3A*/ s16 animYTrans;
@@ -123,14 +124,14 @@ struct GraphNodeObject
 {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ struct GraphNode *sharedChild;
-    /*0x18*/ s8 areaIndex;
-    /*0x19*/ s8 activeAreaIndex;
+    /*0x18*/ s8 unk18;
+    /*0x19*/ s8 unk19;
     /*0x1A*/ Vec3s angle;
     /*0x20*/ Vec3f pos;
     /*0x2C*/ Vec3f scale;
-    /*0x38*/ struct AnimInfo animInfo;
+    /*0x38*/ struct GraphNodeObject_sub unk38;
     /*0x4C*/ struct SpawnInfo *unk4C;
-    /*0x50*/ Mat4 *throwMatrix; // matrix ptr
+    /*0x50*/ void *throwMatrix; // matrix ptr
     /*0x54*/ Vec3f cameraToObject;
 };
 
@@ -339,10 +340,10 @@ struct MarioState
     /*0xB4*/ u8 squishTimer;
     /*0xB5*/ u8 fadeWarpOpacity;
     /*0xB6*/ u16 capTimer;
-    /*0xB8*/ s16 prevNumStarsForDialog;
+    /*0xB8*/ s16 unkB8;
     /*0xBC*/ f32 peakHeight;
     /*0xC0*/ f32 quicksandDepth;
     /*0xC4*/ f32 unkC4;
 };
 
-#endif // TYPES_H
+#endif

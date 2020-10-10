@@ -1,18 +1,14 @@
-#ifndef GEO_LAYOUT_H
-#define GEO_LAYOUT_H
-
-#include <PR/ultratypes.h>
+#ifndef _GEO_LAYOUT_H_
+#define _GEO_LAYOUT_H_
 
 #include "game/memory.h"
-#include "macros.h"
-#include "types.h"
 
 #define GEO_CMD_FLAGS_RESET 0
 #define GEO_CMD_FLAGS_SET   1
 #define GEO_CMD_FLAGS_CLEAR 2
 
 #define CMD_SIZE_SHIFT (sizeof(void *) >> 3)
-#define CMD_PROCESS_OFFSET(offset) (((offset) & 3) | (((offset) & ~3) << CMD_SIZE_SHIFT))
+#define CMD_PROCESS_OFFSET(offset) ((offset & 3) | ((offset & ~3) << CMD_SIZE_SHIFT))
 
 #define cur_geo_cmd_u8(offset) \
     (gGeoLayoutCommand[CMD_PROCESS_OFFSET(offset)])
@@ -84,4 +80,4 @@ void geo_layout_cmd_node_culling_radius(void);
 
 struct GraphNode *process_geo_layout(struct AllocOnlyPool *a0, void *segptr);
 
-#endif // GEO_LAYOUT_H
+#endif /* _GEO_LAYOUT_H_ */

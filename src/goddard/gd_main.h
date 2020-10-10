@@ -1,7 +1,8 @@
 #ifndef GD_MAIN_H
 #define GD_MAIN_H
 
-#include <PR/ultratypes.h>
+#include <ultra64.h>
+
 
 // In various files of the Goddard subsystem, there are miscellaneous
 // unused rodata strings. These are likely byproducts of a printf macro
@@ -85,4 +86,4 @@ extern s32 gGdUseVtxNormal;
 extern struct GdControl gGdCtrl;
 extern struct GdControl gGdCtrlPrev;
 
-#endif // GD_MAIN_H
+#endif /* GD_MAIN_H */

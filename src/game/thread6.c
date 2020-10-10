@@ -282,7 +282,6 @@ void rumble_thread_update_vi(void) {
         return;
     }
 
-    // 0x56525443 = 'VRTC'
     osSendMesg(&gRumbleThreadVIMesgQueue, (OSMesg) 0x56525443, OS_MESG_NOBLOCK);
 }
 

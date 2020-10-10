@@ -2,7 +2,6 @@
 #define CASTLE_INSIDE_HEADER_H
 
 #include "types.h"
-#include "game/paintings.h"
 #include "game/moving_texture.h"
 
 // geo

@@ -77,37 +77,39 @@
             "sound_lo": "00",
             "sound": "01"
         },
+        // slap bass
         "inst1": {
-            "release_rate": 100,
-            "normal_range_lo": 41,
+            "release_rate": 208,
             "envelope": "envelope1",
-            "sound_lo": "00",
-            "sound": "01"
+            "sound": "1A"
         },
         "inst2": {
             "release_rate": 180,
             "envelope": "envelope2",
             "sound": "02"
         },
+        // percussive organ
         "inst3": {
             "release_rate": 208,
             "envelope": "envelope3",
-            "sound": "02"
+            "sound": "35"
         },
+        // acoustic steel guitar
         "inst4": {
             "release_rate": 76,
             "envelope": "envelope4",
-            "sound": "03"
+            "sound": "21"
         },
         "inst5": {
             "release_rate": 53,
             "envelope": "envelope5",
             "sound": "04"
         },
+        // Xylophone
         "inst6": {
             "release_rate": 208,
             "envelope": "envelope6",
-            "sound": "05"
+            "sound": "3A"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope7", "sound": {"sample": "06", "tuning": 0.210224}},

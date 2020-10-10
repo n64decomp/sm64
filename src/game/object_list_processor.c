@@ -1,24 +1,24 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
 #include "sm64.h"
-#include "area.h"
 #include "behavior_data.h"
-#include "camera.h"
-#include "debug.h"
 #include "engine/behavior_script.h"
+#include "area.h"
+#include "camera.h"
 #include "engine/graph_node.h"
-#include "engine/surface_collision.h"
-#include "engine/surface_load.h"
 #include "interaction.h"
-#include "level_update.h"
-#include "mario.h"
-#include "memory.h"
-#include "object_collision.h"
-#include "object_helpers.h"
-#include "object_list_processor.h"
-#include "platform_displacement.h"
+#include "debug.h"
 #include "profiler.h"
 #include "spawn_object.h"
+#include "engine/surface_collision.h"
+#include "memory.h"
+#include "level_update.h"
+#include "object_collision.h"
+#include "object_helpers.h"
+#include "platform_displacement.h"
+#include "engine/surface_load.h"
+#include "object_list_processor.h"
+#include "mario.h"
 
 
 /**
@@ -86,7 +86,7 @@ struct ObjectNode *gObjectLists;
 struct ObjectNode gFreeObjectList;
 
 /**
- * The object representing Mario.
+ * The object representing mario.
  */
 struct Object *gMarioObject;
 
@@ -218,7 +218,7 @@ struct ParticleProperties sParticleTypes[] = {
 };
 
 /**
- * Copy position, velocity, and angle variables from MarioState to the Mario
+ * Copy position, velocity, and angle variables from MarioState to the mario
  * object.
  */
 void copy_mario_state_to_object(void) {
@@ -272,7 +272,7 @@ void bhv_mario_update(void) {
     gCurrentObject->oMarioParticleFlags = particleFlags;
 
     // Mario code updates MarioState's versions of position etc, so we need
-    // to sync it with the Mario object
+    // to sync it with the mario object
     copy_mario_state_to_object();
 
     i = 0;
@@ -308,7 +308,7 @@ s32 update_objects_starting_at(struct ObjectNode *objList, struct ObjectNode *fi
 
 /**
  * Update objects in objList starting with firstObj while time stop is active.
- * This means that only certain select objects will be updated, such as Mario,
+ * This means that only certain select objects will be updated, such as mario,
  * doors, unimportant objects, and the object that initiated time stop.
  * The exact set of objects that are updated depends on which flags are set
  * in gTimeStopState.
@@ -440,7 +440,7 @@ void unload_objects_from_area(UNUSED s32 unused, s32 areaIndex) {
             obj = (struct Object *) node;
             node = node->next;
 
-            if (obj->header.gfx.activeAreaIndex == areaIndex) {
+            if (obj->header.gfx.unk19 == areaIndex) {
                 unload_object(obj);
             }
         }
@@ -455,10 +455,10 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
     gTimeStopState = 0;
 
     gWDWWaterLevelChanging = FALSE;
-    gMarioOnMerryGoRound = FALSE;
+    gMarioOnMerryGoRound = 0;
 
-    //! (Spawning Displacement) On the Japanese version, Mario's platform object
-    //  isn't cleared when transitioning between areas. This can cause Mario to
+    //! (Spawning Displacement) On the Japanese version, mario's platform object
+    //  isn't cleared when transitioning between areas. This can cause mario to
     //  receive displacement after spawning.
 #ifndef VERSION_JP
     clear_mario_platform();
@@ -519,11 +519,12 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
     }
 }
 
-void stub_obj_list_processor_1(void) {
+void stub_obj_list_processor_1() {
 }
 
 /**
- * Clear objects, dynamic surfaces, and some miscellaneous level data used by objects.
+ * Clear objects, dynamic surfaces, and some miscellaneous level data used by
+ * objects.
  */
 void clear_objects(void) {
     s32 i;
@@ -547,7 +548,7 @@ void clear_objects(void) {
     stub_obj_list_processor_1();
 
     for (i = 0; i < OBJECT_POOL_CAPACITY; i++) {
-        gObjectPool[i].activeFlags = ACTIVE_FLAG_DEACTIVATED;
+        gObjectPool[i].activeFlags = ACTIVE_FLAGS_DEACTIVATED;
         geo_reset_object_node(&gObjectPool[i].header.gfx);
     }
 
@@ -647,7 +648,7 @@ void update_objects(UNUSED s32 unused) {
     cycleCounts[2] = get_clock_difference(cycleCounts[0]);
     update_terrain_objects();
 
-    // If Mario was touching a moving platform at the end of last frame, apply
+    // If mario was touching a moving platform at the end of last frame, apply
     // displacement now
     //! If the platform object unloaded and a different object took its place,
     //  displacement could be applied incorrectly
@@ -665,7 +666,7 @@ void update_objects(UNUSED s32 unused) {
     cycleCounts[5] = get_clock_difference(cycleCounts[0]);
     unload_deactivated_objects();
 
-    // Check if Mario is on a platform object and save this object
+    // Check if mario is on a platform object and save this object
     cycleCounts[6] = get_clock_difference(cycleCounts[0]);
     update_mario_platform();
 

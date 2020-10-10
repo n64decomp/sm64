@@ -1,5 +1,5 @@
-#ifndef MACROS_H
-#define MACROS_H
+#ifndef _MACROS_H_
+#define _MACROS_H_
 
 #include "platform_info.h"
 
@@ -25,13 +25,6 @@
 #define UNUSED
 #endif
 
-// Avoid undefined behaviour for non-returning functions
-#ifdef __GNUC__
-#define NORETURN __attribute__((noreturn))
-#else
-#define NORETURN
-#endif
-
 // Static assertions
 #ifdef __GNUC__
 #define STATIC_ASSERT(cond, msg) _Static_assert(cond, msg)
@@ -53,7 +46,6 @@
 #define ALIGNED16
 #endif
 
-#ifndef NO_SEGMENTED_MEMORY
 // convert a virtual address to physical.
 #define VIRTUAL_TO_PHYSICAL(addr)   ((uintptr_t)(addr) & 0x1FFFFFFF)
 
@@ -62,11 +54,5 @@
 
 // another way of converting virtual to physical
 #define VIRTUAL_TO_PHYSICAL2(addr)  ((u8 *)(addr) - 0x80000000U)
-#else
-// no conversion needed other than cast
-#define VIRTUAL_TO_PHYSICAL(addr)   ((uintptr_t)(addr))
-#define PHYSICAL_TO_VIRTUAL(addr)   ((uintptr_t)(addr))
-#define VIRTUAL_TO_PHYSICAL2(addr)  ((void *)(addr))
-#endif
 
-#endif // MACROS_H
+#endif

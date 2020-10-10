@@ -59,6 +59,7 @@ void exclamation_box_act_1(void) {
         || ((o->oBehParams >> 24) & 0xFF) != 0) {
         o->oAction = 2;
         cur_obj_set_model(MODEL_EXCLAMATION_BOX);
+            spawn_object(o, MODEL_EXCLAMATION_POINT, bhvRotatingExclamationMark);
     }
 }
 

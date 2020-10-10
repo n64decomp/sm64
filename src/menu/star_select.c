@@ -1,24 +1,25 @@
-#include <PR/ultratypes.h>
+#include "src/game/texscroll.h"
+#include <ultra64.h>
 
+#include "sm64.h"
 #include "audio/external.h"
-#include "behavior_data.h"
-#include "engine/behavior_script.h"
-#include "engine/graph_node.h"
-#include "eu_translation.h"
-#include "game/area.h"
 #include "game/game_init.h"
+#include "game/memory.h"
+#include "game/area.h"
+#include "game/save_file.h"
+#include "game/object_helpers.h"
 #include "game/ingame_menu.h"
 #include "game/level_update.h"
-#include "game/memory.h"
-#include "game/object_helpers.h"
-#include "game/object_list_processor.h"
-#include "game/save_file.h"
 #include "game/segment2.h"
 #include "game/segment7.h"
-#include "sm64.h"
-#include "star_select.h"
+#include "game/object_list_processor.h"
+#include "engine/behavior_script.h"
+#include "engine/graph_node.h"
+#include "behavior_data.h"
 #include "text_strings.h"
-#include "prevent_bss_reordering.h"
+#include "star_select.h"
+#include "eu_translation.h"
+#include <prevent_bss_reordering.h>
 
 /**
  * @file star_select.c
@@ -409,7 +410,7 @@ s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
 
 /**
  * Loads act selector button actions with selected act value checks.
- * Also updates objects and returns act number selected after is chosen.
+ * Also updates objects and returns act number selected after is choosen.
  */
 s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
     if (sActSelectorMenuTimer >= 11) {
@@ -435,7 +436,7 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
         }
     }
 
-    area_update_objects();
+    area_update_objects(); scroll_textures();
     sActSelectorMenuTimer++;
     return sLoadedActNum;
 }

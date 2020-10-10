@@ -32,3 +32,7 @@ UNUSED static const u64 binid_3 = 3;
 #include "spiny/anims/data.inc.c"
 #include "spiny/anims/table.inc.c"
 UNUSED static const u64 binid_4 = 4;
+
+#include "marine2/model.inc.c"
+#include "marine2/anims/data.inc.c"
+#include "marine2/anims/table.inc.c"

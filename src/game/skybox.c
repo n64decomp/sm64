@@ -1,14 +1,13 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
-#include "area.h"
+#include "sm64.h"
 #include "engine/math_util.h"
-#include "geo_misc.h"
-#include "gfx_dimensions.h"
-#include "level_update.h"
 #include "memory.h"
+#include "area.h"
 #include "save_file.h"
 #include "segment2.h"
-#include "sm64.h"
+#include "level_update.h"
+#include "geo_misc.h"
 
 
 /**
@@ -135,7 +134,7 @@ u8 sSkyboxColors[][3] = {
  *                 (how far is the camera rotated from 0, scaled 0 to 1)   *
  *                 (the screen width)
  */
-s32 calculate_skybox_scaled_x(s8 player, f32 fov) {
+int calculate_skybox_scaled_x(s8 player, f32 fov) {
     f32 yaw = sSkyBoxInfo[player].yaw;
 
     //! double literals are used instead of floats
@@ -155,7 +154,7 @@ s32 calculate_skybox_scaled_x(s8 player, f32 fov) {
  * fov may have been used in an earlier version, but the developers changed the function to always use
  * 90 degrees.
  */
-s32 calculate_skybox_scaled_y(s8 player, UNUSED f32 fov) {
+int calculate_skybox_scaled_y(s8 player, UNUSED f32 fov) {
     // Convert pitch to degrees. Pitch is bounded between -90 (looking down) and 90 (looking up).
     f32 pitchInDegrees = (f32) sSkyBoxInfo[player].pitch * 360.0 / 65535.0;
 
@@ -179,7 +178,7 @@ s32 calculate_skybox_scaled_y(s8 player, UNUSED f32 fov) {
 /**
  * Converts the upper left xPos and yPos to the index of the upper left tile in the skybox.
  */
-static s32 get_top_left_tile_idx(s8 player) {
+static int get_top_left_tile_idx(s8 player) {
     s32 tileCol = sSkyBoxInfo[player].scaledX / SKYBOX_TILE_WIDTH;
     s32 tileRow = (SKYBOX_HEIGHT - sSkyBoxInfo[player].scaledY) / SKYBOX_TILE_HEIGHT;
 
@@ -242,16 +241,6 @@ void *create_skybox_ortho_matrix(s8 player) {
     f32 top = sSkyBoxInfo[player].scaledY;
     Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
-#ifdef WIDESCREEN
-    f32 half_width = (4.0f / 3.0f) / GFX_DIMENSIONS_ASPECT_RATIO * SCREEN_WIDTH / 2;
-    f32 center = (sSkyBoxInfo[player].scaledX + SCREEN_WIDTH / 2);
-    if (half_width < SCREEN_WIDTH / 2) {
-        // A wider screen than 4:3
-        left = center - half_width;
-        right = center + half_width;
-    }
-#endif
-
     if (mtx != NULL) {
         guOrtho(mtx, left, right, bottom, top, 0.0f, 3.0f, 1.0f);
     } else {
@@ -264,7 +253,7 @@ void *create_skybox_ortho_matrix(s8 player) {
  * Creates the skybox's display list, then draws the 3x3 grid of tiles.
  */
 Gfx *init_skybox_display_list(s8 player, s8 background, s8 colorIndex) {
-    s32 dlCommandCount = 5 + (3 * 3) * 7; // 5 for the start and end, plus 9 skybox tiles
+    s32 dlCommandCount = 5 + 9 * 7; // 5 for the start and end, plus 9 skybox tiles
     void *skybox = alloc_display_list(dlCommandCount * sizeof(Gfx));
     Gfx *dlist = skybox;
 

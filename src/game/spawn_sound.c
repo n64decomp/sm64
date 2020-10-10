@@ -1,13 +1,13 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
-#include "audio/external.h"
-#include "behavior_data.h"
-#include "engine/behavior_script.h"
-#include "engine/graph_node.h"
-#include "object_helpers.h"
-#include "object_list_processor.h"
 #include "sm64.h"
+#include "engine/behavior_script.h"
+#include "object_helpers.h"
+#include "audio/external.h"
 #include "spawn_sound.h"
+#include "object_list_processor.h"
+#include "behavior_data.h"
+#include "engine/graph_node.h"
 #include "thread6.h"
 
 /*
@@ -19,7 +19,7 @@ void exec_anim_sound_state(struct SoundState *soundStates) {
     s32 stateIdx = gCurrentObject->oSoundStateID;
 
     switch (soundStates[stateIdx].playSound) {
-        // since we have an array of sound states corresponding to
+        // since we have an array of sound states cooresponding to
         // various behaviors, not all entries intend to play sounds. the
         // boolean being 0 for unused entries skips these states.
         case FALSE:
@@ -55,9 +55,9 @@ void create_sound_spawner(s32 soundMagic) {
 }
 
 /*
- * The following 2 functions are relevant to the sound state function
+ * The following 2 functions are relevent to the sound state function
  * above. While only cur_obj_play_sound_2 is used, they may have been intended as
- * separate left/right leg functions that went unused.
+ * seperate left/right leg functions that went unused.
  */
 void cur_obj_play_sound_1(s32 soundMagic) {
     if (gCurrentObject->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
@@ -91,9 +91,9 @@ void cur_obj_play_sound_2(s32 soundMagic) {
  * might show that the developers were testing several ranges, or certain
  * objects had different ranges, or had these for other unknown purposes.
  * Technically, these functions are only educated guesses. Trust these
- * interpretations at your own discretion.
+ * interpretations at your own discrection.
  */
-s32 calc_dist_to_volume_range_1(f32 distance) // range from 60-124
+int calc_dist_to_volume_range_1(f32 distance) // range from 60-124
 {
     s32 volume;
 
@@ -108,7 +108,7 @@ s32 calc_dist_to_volume_range_1(f32 distance) // range from 60-124
     return volume;
 }
 
-s32 calc_dist_to_volume_range_2(f32 distance) // range from 79.2-143.2
+int calc_dist_to_volume_range_2(f32 distance) // range from 79.2-143.2
 {
     s32 volume;
 

@@ -1,7 +1,4 @@
 #include <ultra64.h>
-#ifdef NO_SEGMENTED_MEMORY
-#include <string.h>
-#endif
 
 #include "sm64.h"
 #include "audio/external.h"
@@ -16,14 +13,15 @@
 #include "game/profiler.h"
 #include "game/save_file.h"
 #include "game/sound_init.h"
-#include "goddard/renderer.h"
 #include "geo_layout.h"
 #include "graph_node.h"
 #include "level_script.h"
-#include "level_misc_macros.h"
 #include "math_util.h"
 #include "surface_collision.h"
 #include "surface_load.h"
+
+#define CMD_SIZE_SHIFT (sizeof(void *) >> 3)
+#define CMD_PROCESS_OFFSET(offset) ((offset & 3) | ((offset & ~3) << CMD_SIZE_SHIFT))
 
 #define CMD_GET(type, offset) (*(type *) (CMD_PROCESS_OFFSET(offset) + (u8 *) sCurrentCmd))
 
@@ -281,18 +279,7 @@ static void level_cmd_load_mio0(void) {
 }
 
 static void level_cmd_load_mario_head(void) {
-    // TODO: Fix these hardcoded sizes
-    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000), MEMORY_POOL_LEFT);
-    if (addr != NULL) {
-        gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(0xE1000));
-        gd_add_to_heap(gZBuffer, sizeof(gZBuffer)); // 0x25800
-        gd_add_to_heap(gFrameBuffer0, 3 * sizeof(gFrameBuffer0)); // 0x70800
-        gdm_setup();
-        gdm_maketestdl(CMD_GET(s16, 2));
-    } else {
-    }
-
-    sCurrentCmd = CMD_NEXT;
+    //sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_load_mio0_texture(void) {
@@ -354,7 +341,7 @@ static void level_cmd_begin_area(void) {
 
         sCurrAreaIndex = areaIndex;
         screenArea->areaIndex = areaIndex;
-        gAreas[areaIndex].unk04 = screenArea;
+        gAreas[areaIndex].unk04 = (struct GraphNode *) screenArea;
 
         if (node != NULL) {
             gAreas[areaIndex].camera = (struct Camera *) node->config.camera;
@@ -602,18 +589,7 @@ static void level_cmd_set_gamma(void) {
 
 static void level_cmd_set_terrain_data(void) {
     if (sCurrAreaIndex != -1) {
-#ifndef NO_SEGMENTED_MEMORY
         gAreas[sCurrAreaIndex].terrainData = segmented_to_virtual(CMD_GET(void *, 4));
-#else
-        Collision *data;
-        u32 size;
-
-        // The game modifies the terrain data and must be reset upon level reload.
-        data = segmented_to_virtual(CMD_GET(void *, 4));
-        size = get_area_terrain_size(data) * sizeof(Collision);
-        gAreas[sCurrAreaIndex].terrainData = alloc_only_pool_alloc(sLevelPool, size);
-        memcpy(gAreas[sCurrAreaIndex].terrainData, data, size);
-#endif
     }
     sCurrentCmd = CMD_NEXT;
 }
@@ -627,19 +603,7 @@ static void level_cmd_set_rooms(void) {
 
 static void level_cmd_set_macro_objects(void) {
     if (sCurrAreaIndex != -1) {
-#ifndef NO_SEGMENTED_MEMORY
         gAreas[sCurrAreaIndex].macroObjects = segmented_to_virtual(CMD_GET(void *, 4));
-#else
-        // The game modifies the macro object data (for example marking coins as taken),
-        // so it must be reset when the level reloads.
-        MacroObject *data = segmented_to_virtual(CMD_GET(void *, 4));
-        s32 len = 0;
-        while (data[len++] != MACRO_OBJECT_END()) {
-            len += 4;
-        }
-        gAreas[sCurrAreaIndex].macroObjects = alloc_only_pool_alloc(sLevelPool, len * sizeof(MacroObject));
-        memcpy(gAreas[sCurrAreaIndex].macroObjects, data, len * sizeof(MacroObject));
-#endif
     }
     sCurrentCmd = CMD_NEXT;
 }

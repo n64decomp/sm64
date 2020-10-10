@@ -1,25 +1,24 @@
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include <ultra64.h>
 
+#include "sm64.h"
 #include "audio/external.h"
-#include "behavior_data.h"
-#include "dialog_ids.h"
-#include "engine/behavior_script.h"
-#include "engine/graph_node.h"
-#include "engine/math_util.h"
-#include "file_select.h"
-#include "game/area.h"
 #include "game/game_init.h"
 #include "game/ingame_menu.h"
 #include "game/object_helpers.h"
-#include "game/object_list_processor.h"
-#include "game/print.h"
+#include "game/area.h"
 #include "game/save_file.h"
+#include "game/spawn_object.h"
+#include "game/object_list_processor.h"
 #include "game/segment2.h"
 #include "game/segment7.h"
-#include "game/spawn_object.h"
-#include "sm64.h"
+#include "game/print.h"
+#include "engine/behavior_script.h"
+#include "engine/graph_node.h"
+#include "engine/math_util.h"
+#include "behavior_data.h"
 #include "text_strings.h"
+#include "file_select.h"
+#include "dialog_ids.h"
 
 #include "eu_translation.h"
 #ifdef VERSION_EU
@@ -42,7 +41,7 @@ static s16 sSoundTextX;
 static s16 sSoundTextY;
 #endif
 
-//! @Bug (UB Array Access) For EU, more buttons were added than the array was extended.
+//! @Bug (UB Array Access) For PAL, more buttons were added than the array was extended.
 //! This causes no currently known issues on console (as the other variables are not changed
 //! while this is used) but can cause issues with other compilers.
 #ifdef VERSION_EU
@@ -118,7 +117,7 @@ static s16 sMainMenuTimer = 0;
 // 0: gSoundMode = 0 (Stereo) | 1: gSoundMode = 3 (Mono) | 2: gSoundMode = 1 (Headset)
 static s8 sSoundMode = 0;
 
-// Active language for EU arrays, values defined similar to sSoundMode
+// Active language for PAL arrays, values defined similar to sSoundMode
 // 0: English | 1: French | 2: German
 #ifdef VERSION_EU
 static s8 sLanguageMode = LANGUAGE_ENGLISH;
@@ -139,7 +138,7 @@ static s8 sSelectedFileNum = 0;
 // coin high score, 1 for high score across all files.
 static s8 sScoreFileCoinScoreMode = 0;
 
-// In EU, if no save file exists, open the language menu so the user can find it.
+// In PAL, if no save file exists, open the language menu so the user can find it.
 #ifdef VERSION_EU
 static s8 sOpenLangSettings = FALSE;
 #endif
@@ -1708,7 +1707,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     s16 starCount;
 
     if (save_file_exists(fileIndex) == TRUE) {
-        starCount = save_file_get_total_star_count(fileIndex, COURSE_MIN - 1, COURSE_MAX - 1);
+        starCount = save_file_get_total_star_count(fileIndex, 0, 24);
         // Print star icon
         print_hud_lut_string(HUD_LUT_GLOBAL, x, y, starIcon);
         // If star count is less than 100, print x icon and move
@@ -2495,8 +2494,7 @@ void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) {
     // Print "[star] x"
     print_menu_generic_string(x, y, textStarX);
     // Print number of castle secret stars
-    int_to_str(save_file_get_total_star_count(fileIndex, COURSE_BONUS_STAGES - 1, COURSE_MAX - 1),
-               secretStarsText);
+    int_to_str(save_file_get_total_star_count(fileIndex, 15, 24), secretStarsText);
 #ifdef VERSION_EU
     print_menu_generic_string(x + 20, y, secretStarsText);
 #else
@@ -2770,7 +2768,7 @@ static void print_file_select_strings(void) {
 /**
  * Geo function that prints file select strings and the cursor.
  */
-Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     if (callContext == GEO_CONTEXT_RENDER) {
         print_file_select_strings();
         print_menu_cursor();

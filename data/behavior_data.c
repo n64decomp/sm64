@@ -15,6 +15,7 @@
 
 #include "actors/common0.h"
 #include "actors/common1.h"
+#include "actors/group0.h"
 #include "actors/group1.h"
 #include "actors/group2.h"
 #include "actors/group3.h"
@@ -1315,6 +1316,67 @@ const BehaviorScript bhvEndToad[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_end_toad_loop),
     END_LOOP(),
+
+};
+
+const BehaviorScript bhvEndToadGemerl[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, gemerl_ed_anims),
+    ANIMATE(0),
+    BEGIN_LOOP(),
+
+    END_LOOP(),
+};
+
+const BehaviorScript bhvEndToadMark[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, mark_ed_anims),
+    ANIMATE(0),
+    BEGIN_LOOP(),
+
+    END_LOOP(),
+};
+
+const BehaviorScript bhvEndToadKatalina[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, katalina_ed_anims),
+    ANIMATE(0),
+    BEGIN_LOOP(),
+
+    END_LOOP(),
+};
+
+const BehaviorScript bhvEndToadBlaze[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, blaze_ed_anims),
+    ANIMATE(0),
+    BEGIN_LOOP(),
+
+    END_LOOP(),
+};
+
+const BehaviorScript bhvEndToadMarine[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, marine_ed_anims),
+    ANIMATE(0),
+    BEGIN_LOOP(),
+
+    END_LOOP(),
+};
+
+const BehaviorScript bhvEndMips[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, mips_ed_anims),
+    ANIMATE(0),
+    BEGIN_LOOP(),
+
+    END_LOOP(),
 };
 
 const BehaviorScript bhvEndPeach[] = {
@@ -2607,6 +2669,8 @@ const BehaviorScript bhvExclamationBox[] = {
     LOAD_COLLISION_DATA(exclamation_box_outline_seg8_collision_08025F78),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_FLOAT(oCollisionDistance, 300),
+    LOAD_ANIMATIONS(oAnimations, exclamation_box_anims),
+    ANIMATE(0),
     SET_HOME(),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_exclamation_box_loop),
@@ -3396,7 +3460,7 @@ const BehaviorScript bhvShallowWaterWave[] = {
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     DISABLE_RENDERING(),
     BEGIN_REPEAT(5),
-        SPAWN_WATER_DROPLET(&gShallowWaterWaveDropletParams),
+        SPAWN_WATER_DROPLET(&sShallowWaterWaveDropletParams),
     END_REPEAT_CONTINUE(),
     DELAY(1),
     PARENT_BIT_CLEAR(oActiveParticleFlags, ACTIVE_PARTICLE_SHALLOW_WATER_WAVE),
@@ -3411,7 +3475,7 @@ const BehaviorScript bhvShallowWaterSplash[] = {
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     DISABLE_RENDERING(),
     BEGIN_REPEAT(18),
-        SPAWN_WATER_DROPLET(&gShallowWaterSplashDropletParams),
+        SPAWN_WATER_DROPLET(&sShallowWaterSplashDropletParams),
     END_REPEAT_CONTINUE(),
     CALL_NATIVE(bhv_shallow_water_splash_init),
     DELAY(1),
@@ -3530,6 +3594,81 @@ const BehaviorScript bhvToadMessage[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvToadMessageChocola[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, toad_seg6_anims_0600FB58),
+    ANIMATE(6),
+    SET_INTERACT_TYPE(INTERACT_TEXT),
+    SET_HITBOX(/*Radius*/ 80, /*Height*/ 100),
+    SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_toad_message_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_toad_message_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvToadMessageKatalina[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, katalina_anims),
+    ANIMATE(0),
+    SET_INTERACT_TYPE(INTERACT_TEXT),
+    SET_HITBOX(/*Radius*/ 80, /*Height*/ 160),
+    SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_toad_message_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_toad_message_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvToadMessageBlaze[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, blaze_anims),
+    ANIMATE(0),
+    SET_INTERACT_TYPE(INTERACT_TEXT),
+    SET_HITBOX(/*Radius*/ 80, /*Height*/ 160),
+    SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_toad_message_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_toad_message_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvToadMessageMarine[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, marine2_anims),
+    ANIMATE(0),
+    SET_INTERACT_TYPE(INTERACT_TEXT),
+    SET_HITBOX(/*Radius*/ 80, /*Height*/ 160),
+    SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_toad_message_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_toad_message_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvToadMessageOriginal[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, toad_seg6_anims_0600FB58),
+    ANIMATE(6),
+    SET_INTERACT_TYPE(INTERACT_TEXT),
+    SET_HITBOX(/*Radius*/ 80, /*Height*/ 100),
+    SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_toad_message_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_toad_message_loop),
+    END_LOOP(),
+};
+
 const BehaviorScript bhvUnlockDoorStar[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
@@ -3539,19 +3678,19 @@ const BehaviorScript bhvUnlockDoorStar[] = {
     END_LOOP(),
 };
 
-const BehaviorScript bhvInstantActiveWarp[] = {
+const BehaviorScript bhvWarps60[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvAirborneWarp[] = {
+const BehaviorScript bhvWarps64[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvHardAirKnockBackWarp[] = {
+const BehaviorScript bhvWarps68[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvSpinAirborneCircleWarp[] = {
+const BehaviorScript bhvWarps6C[] = {
     BREAK(),
 };
 
@@ -3559,15 +3698,15 @@ const BehaviorScript bhvDeathWarp[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvSpinAirborneWarp[] = {
+const BehaviorScript bhvWarps74[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvFlyingWarp[] = {
+const BehaviorScript bhvWarps78[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvPaintingStarCollectWarp[] = {
+const BehaviorScript bhvWarps7C[] = {
     BREAK(),
 };
 
@@ -3575,23 +3714,23 @@ const BehaviorScript bhvPaintingDeathWarp[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvAirborneDeathWarp[] = {
+const BehaviorScript bhvWarps84[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvAirborneStarCollectWarp[] = {
+const BehaviorScript bhvWarps88[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvLaunchStarCollectWarp[] = {
+const BehaviorScript bhvWarps8C[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvLaunchDeathWarp[] = {
+const BehaviorScript bhvWarps90[] = {
     BREAK(),
 };
 
-const BehaviorScript bhvSwimmingWarp[] = {
+const BehaviorScript bhvWarps94[] = {
     BREAK(),
 };
 
@@ -3987,6 +4126,19 @@ const BehaviorScript bhvExplosion[] = {
     CALL_NATIVE(bhv_explosion_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_explosion_loop),
+        ADD_INT(oAnimState, 1),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvExplosionNoDmg[] = {
+    BEGIN(OBJ_LIST_DESTRUCTIVE),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BILLBOARD(),
+    SET_INT(oIntangibleTimer, 0),
+    SET_INT(oAnimState, -1),
+    CALL_NATIVE(bhv_explosion_nd_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_explosion_nd_loop),
         ADD_INT(oAnimState, 1),
     END_LOOP(),
 };
@@ -5075,6 +5227,22 @@ const BehaviorScript bhvYoshi[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvMark[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, mark_anims),
+    SET_INTERACT_TYPE(INTERACT_TEXT),
+    DROP_TO_FLOOR(),
+    SET_HITBOX(/*Radius*/ 90, /*Height*/ 160),
+    ANIMATE(0),
+    SET_HOME(),
+    CALL_NATIVE(bhv_yoshi_init),
+    BEGIN_LOOP(),
+        SET_INT(oIntangibleTimer, 0),
+        CALL_NATIVE(bhv_yoshi_loop),
+    END_LOOP(),
+};
+
 const BehaviorScript bhvKoopa[] = {
     BEGIN(OBJ_LIST_PUSHABLE),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
@@ -5089,6 +5257,24 @@ const BehaviorScript bhvKoopa[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_koopa_update),
     END_LOOP(),
+    
+};
+
+const BehaviorScript bhvKoopaG[] = {
+    BEGIN(OBJ_LIST_PUSHABLE),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    DROP_TO_FLOOR(),
+    LOAD_ANIMATIONS(oAnimations, gemerl2_anims),
+    ANIMATE(9),
+    SET_HOME(),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 10, /*Gravity*/ -400, /*Bounciness*/ 0, /*Drag strength*/ 0, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
+    SCALE(/*Unused*/ 0, /*Field*/ 150),
+    SET_FLOAT(oKoopaAgility, 1),
+    CALL_NATIVE(bhv_koopa_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_koopa_update),
+    END_LOOP(),
+    
 };
 
 const BehaviorScript bhvKoopaRaceEndpoint[] = {
@@ -5563,7 +5749,7 @@ const BehaviorScript bhvMrBlizzard[] = {
     SET_HOME(),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ 0, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
     CALL_NATIVE(bhv_mr_blizzard_init),
-    SET_FLOAT(oMrBlizzardScale, 1),
+    SET_FLOAT(oMrBlizzardUnkF4, 1),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_mr_blizzard_update),
     END_LOOP(),
@@ -6106,4 +6292,13 @@ const BehaviorScript bhvIntroScene[] = {
     END_LOOP(),
 };
 
-
+const BehaviorScript bhvCheeseFollow[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, cheese_follow_anims),
+    ANIMATE(0),
+    CALL_NATIVE(bhv_cheese_follow_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_cheese_act_follow_mario),
+    END_LOOP(),
+};

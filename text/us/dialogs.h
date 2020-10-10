@@ -19,8 +19,8 @@
 DEFINE_DIALOG(DIALOG_000, 1, 6, 30, 200, _("\
 Wow! You're smack in the\n\
 middle of the battlefield.\n\
-You'll find the Power\n\
-Stars that Bowser stole\n\
+You'll find the Star\n\
+Rings that Eggman stole\n\
 inside the painting\n\
 worlds.\n\
 First, talk to the\n\
@@ -41,21 +41,21 @@ Watch out! If you wander\n\
 around here, you're liable\n\
 to be " PLASTERED " by a\n\
 water bomb!\n\
-Those enemy Bob-ombs love\n\
+Those enemy Bombs love\n\
 to fight, and they're\n\
 always finding ways to\n\
 attack.\n\
 This meadow has become\n\
 a battlefield ever since\n\
 the Big Bob-omb got his\n\
-paws on the Power Star.\n\
-Can you recover the Star\n\
+paws on the Star Ring.\n\
+Can you recover the Ring\n\
 for us? Cross the bridge\n\
 and go left up the path\n\
 to find the Big Bob-omb.\n\
 Please come back to see\n\
 me after you've retrieved\n\
-the Power Star!"))
+the Star Ring!"))
 
 DEFINE_DIALOG(DIALOG_002, 1, 4, 95, 200, _("\
 Hey, you! It's dangerous\n\
@@ -76,14 +76,14 @@ You can talk to us\n\
 whenever you'd like to!"))
 
 DEFINE_DIALOG(DIALOG_003, 1, 5, 95, 200, _("\
-Thank you, Mario! The Big\n\
+Thank you, Cream! The Big\n\
 Bob-omb is nothing but a\n\
 big dud now! But the\n\
 battle for the castle has\n\
 just begun.\n\
 Other enemies are holding\n\
-the other Power Stars. If\n\
-you recover more Stars,\n\
+the other Star Rings. If\n\
+you recover more Rings,\n\
 you can open new doors\n\
 that lead to new worlds!\n\
 My Bob-omb Buddies are\n\
@@ -102,40 +102,50 @@ We'll prepare all of the\n\
 cannons in this course for\n\
 you to use. Bon Voyage!"))
 
-DEFINE_DIALOG(DIALOG_005, 1, 3, 30, 200, _("\
-Hey, Mario! Is it true\n\
-that you beat the Big\n\
-Bob-omb? Cool!\n\
-You must be strong. And\n\
-pretty fast. So, how fast\n\
-are you, anyway?\n\
-Fast enough to beat me...\n\
-Koopa the Quick? I don't\n\
-think so. Just try me.\n\
-How about a race to the\n\
-mountaintop, where the\n\
-Big Bob-omb was?\n\
-Whaddya say? When I say\n\
-『Go,』 let the race begin!\n\
+DEFINE_DIALOG(DIALOG_005, 1, 5, 30, 200, _("\
+Hey, Cream and Cheese! Didn't\n\
+expect to see you so soo-I mean,\n\
+nice running into you here. I\n\
+heard you beat the Big Bob-omb.\n\
+I knew you two had it in you.\n\
+This is a nice place, nice even\n\
+to race at. I know you're  \n\
+fast but how about a race to \n\
+the top of the mountain? \n\
+I know you won't cheat. \n\
+I won't even use my boosters.\n\
 \n\
+...Why did I sound like a \n\
+turtle? Well, it's a long story.\n\
+You see...\n\
+...Anyway!! When I say\n\
+『Go,』 let the race begin!\n\
 Ready....\n\
 \n\
 //Go!////Don't Go"))
 
 DEFINE_DIALOG(DIALOG_006, 1, 3, 30, 200, _("\
-Hey!!! Don't try to " SCAM_ME
-"You've gotta run\n\
-the whole course.\n\
-Later. Look me up when\n\
-you want to race for\n\
-real."))
+Cream, how could you!! I \n\
+never thought you would stoop\n\
+to cheating! \n\
+Come find me back by the \n\
+bob-omb buddies if you want to \n\
+have a real race. Later..."))
 
 DEFINE_DIALOG(DIALOG_007, 1, 5, 30, 200, _("\
-Hufff...fff...pufff...\n\
-Whoa! You...really...are...\n\
-fast! A human blur!\n\
-Here you go--you've won\n\
-it, fair and square!"))
+Haha, I knew you were fast but\n\
+that were incredible! Your\n\
+mom would be proud! Speaking of,\n\
+I know you'll save her in no \n\
+time!\n\
+...Why don't I help to find her?\n\
+Well you see, I need a tune up\n\
+after that race but once I'm\n\
+ready, I'll be out there\n\
+too!\n\
+In the meantime, Take this \n\
+Star Ring I found for besting\n\
+me. You've earned it!!"))
 
 DEFINE_DIALOG(DIALOG_008, 1, 4, 30, 200, _("\
 BEWARE OF CHAIN CHOMP\n\
@@ -143,25 +153,25 @@ Extreme Danger!\n\
 Get close and press [C]^\n\
 for a better look.\n\
 Scary, huh?\n\
-See the Red Coin on top\n\
+See the Silver Coin on top\n\
 of the stake?\n\
 \n\
 When you collect eight of\n\
-them, a Power Star will\n\
+them, a Star Ring will\n\
 appear in the meadow\n\
 across the bridge."))
 
 DEFINE_DIALOG(DIALOG_009, 1, 5, 30, 200, _("\
-Long time, no see! Wow,\n\
-have you gotten fast!\n\
-Have you been training\n\
-on the sly, or is it the\n\
-power of the Stars?\n\
-I've been feeling down\n\
-about losing the last\n\
-race. This is my home\n\
-course--how about a\n\
-rematch?\n\
+Well, look who just got here.\n\
+Was wondering when you'd show\n\
+up. This place is pretty \n\
+nice if a bit strange.\n\
+\n\
+But I'm feeling refreshed\n\
+and ready to race again!\n\
+Want to give it a go? You \n\
+can you use this as an excuse\n\
+to explore the island.\n\
 The goal is in\n\
 Windswept Valley.\n\
 Ready?\n\
@@ -170,11 +180,11 @@ Ready?\n\
 
 DEFINE_DIALOG(DIALOG_010, 1, 4, 30, 200, _("\
 You've stepped on the\n\
-Wing Cap Switch. Wearing\n\
-the Wing Cap, you can\n\
+Wing Locket Switch. Wearing\n\
+the Wing Locket, you can\n\
 soar through the sky.\n\
-Now Wing Caps will pop\n\
-out of all the red blocks\n\
+Now Wing Lockets will pop\n\
+out of all the red capsules\n\
 you find.\n\
 \n\
 Would you like to Save?\n\
@@ -183,12 +193,12 @@ Would you like to Save?\n\
 
 DEFINE_DIALOG(DIALOG_011, 1, 4, 30, 200, _("\
 You've just stepped on\n\
-the Metal Cap Switch!\n\
-The Metal Cap makes\n\
+the Metal Locket Switch!\n\
+The Metal Locket makes\n\
 Mario invincible.\n\
-Now Metal Caps will\n\
+Now Metal Lockets will\n\
 pop out of all of the\n\
-green blocks you find.\n\
+green capsules you find.\n\
 \n\
 Would you like to Save?\n\
 \n\
@@ -196,12 +206,12 @@ Would you like to Save?\n\
 
 DEFINE_DIALOG(DIALOG_012, 1, 4, 30, 200, _("\
 You've just stepped on\n\
-the Vanish Cap Switch.\n\
-The Vanish Cap makes\n\
+the Vanish Locket Switch.\n\
+The Vanish Locket makes\n\
 Mario disappear.\n\
-Now Vanish Caps will pop\n\
+Now Vanish Lockets will pop\n\
 from all of the blue\n\
-blocks you find.\n\
+capsules you find.\n\
 \n\
 Would you like to Save?\n\
 \n\
@@ -209,14 +219,14 @@ Would you like to Save?\n\
 
 DEFINE_DIALOG(DIALOG_013, 1, 5, 30, 200, _("\
 You've collected 100\n\
-coins! Mario gains more\n\
+rings! Cream gains more\n\
 power from the castle.\n\
 Do you want to Save?\n\
 //Yes////No"))
 
 DEFINE_DIALOG(DIALOG_014, 1, 4, 30, 200, _("\
-Wow! Another Power Star!\n\
-Mario gains more courage\n\
+Wow! Another Red Star Ring!\n\
+Cream gains more courage\n\
 from the power of the\n\
 castle.\n\
 Do you want to Save?\n\
@@ -243,22 +253,26 @@ I'm the Big Bob-omb, lord\n\
 of all blasting matter,\n\
 king of ka-booms the\n\
 world over!\n\
-How dare you scale my\n\
-mountain? By what right\n\
-do you set foot on my\n\
-imperial mountaintop?\n\
-You may have eluded my\n\
-guards, but you'll never\n\
-escape my grasp...\n\
+...Oh it's just not the same \n\
+since that Eggman fellow \n\
+replaced my entire army with \n\
+these faceless bombs. \n\
+I mean they do get the job  \n\
+done. I can't complain too\n\
+much. I just miss my old army.\n\
+My proud and nobile troops!\n\
+(All this for a child's  \n\
+birthday party...) \n\
 \n\
-...and you'll never take\n\
-away my Power Star. I\n\
-hereby challenge you,\n\
-Mario!\n\
-If you want the Star I\n\
-hold, you must prove\n\
-yourself in battle.\n\
 \n\
+Still, this mountain and Star  \n\
+Ring are mine to claim as king  \n\
+and no child will tell me\n\
+otherwise.\n\
+To earn these, you must best \n\
+me in battle. Do know that I \n\
+will not hold back and I hope \n\
+you won't either. \n\
 Can you pick me up from\n\
 the back and hurl me to\n\
 this royal turf? I think\n\
@@ -275,19 +289,19 @@ Shhh! Please walk\n\
 quietly in the hallway!"))
 
 DEFINE_DIALOG(DIALOG_020, 1, 6, 95, 150, _("\
-Dear Mario:\n\
+Dear Cream:\n\
 Please come to the\n\
 castle. I've baked\n\
 a cake for you.\n\
-Yours truly--\n\
-Princess Toadstool"))
+Your loving mother--\n\
+Princess Vanilla"))
 
 DEFINE_DIALOG(DIALOG_021, 1, 5, 95, 200, _("\
-Welcome.\n\
-No one's home!\n\
-Now " SCRAM "\n\
-and don't come back!\n\
-Gwa ha ha!"))
+Welcome all.\n\
+This castle is\n\
+now property of Eggman\n\
+Enterprises.\n\
+Now " SCRAM "! "))
 
 DEFINE_DIALOG(DIALOG_022, 1, 2, 95, 200, _("\
 You need a key to open\n\
@@ -299,51 +313,51 @@ Maybe it's for the\n\
 basement..."))
 
 DEFINE_DIALOG(DIALOG_024, 1, 5, 95, 200, _("\
-You need Star power to\n\
+You need Star Ring power to\n\
 open this door. Recover a\n\
-Power Star from an enemy\n\
+Star Ring from an enemy\n\
 inside one of the castle's\n\
 paintings."))
 
 DEFINE_DIALOG(DIALOG_025, 1, 4, 95, 200, _("\
 It takes the power of\n\
-3 Stars to open this\n\
+3 Star Rings to open this\n\
 door. You need [%] more\n\
-Stars."))
+Star Rings."))
 
 DEFINE_DIALOG(DIALOG_026, 1, 4, 95, 200, _("\
 It takes the power of\n\
-8 Stars to open this\n\
+8 Star Rings to open this\n\
 door. You need [%] more\n\
-Stars."))
+Star Rings."))
 
 DEFINE_DIALOG(DIALOG_027, 1, 4, 95, 200, _("\
 It takes the power of\n\
-30 Stars to open this\n\
+30 Star Rings to open this\n\
 door. You need [%] more\n\
-Stars."))
+Star Rings."))
 
 DEFINE_DIALOG(DIALOG_028, 1, 4, 95, 200, _("\
 It takes the power of\n\
-50 Stars to open this\n\
+50 Star Rings to open this\n\
 door. You need [%] more\n\
-Stars."))
+Star Rings."))
 
 DEFINE_DIALOG(DIALOG_029, 1, 5, 95, 200, _("\
 To open the door that\n\
 leads to the 『endless』\n\
 stairs, you need 70\n\
-Stars.\n\
+Star Rings.\n\
 Bwa ha ha!"))
 
 DEFINE_DIALOG(DIALOG_030, 1, 6, 30, 200, _("\
-Hello! The Lakitu Bros.,\n\
+Hello! Omochao here,\n\
 cutting in with a live\n\
-update on Mario's\n\
-progress. He's about to\n\
+update on Cream's\n\
+progress. She's about to\n\
 learn a technique for\n\
 sneaking up on enemies.\n\
-The trick is this: He has\n\
+The trick is this: She has\n\
 to walk very slowly in\n\
 order to walk quietly.\n\
 \n\
@@ -358,83 +372,83 @@ action from a distance.\n\
 When you can't move the\n\
 camera any farther, the\n\
 buzzer will sound. This is\n\
-the Lakitu Bros.,\n\
-signing off."))
+Omochao here, signing off."))
 
 DEFINE_DIALOG(DIALOG_031, 1, 5, 30, 200, _("\
-No way! You beat me...\n\
-again!! And I just spent\n\
-my entire savings on\n\
-these new Koopa\n\
-Mach 1 Sprint shoes!\n\
-Here, I guess I have to\n\
-hand over this Star to\n\
-the winner of the race.\n\
-Congrats, Mario!"))
+I see exploring the castle\n\
+hasn't worn you out! You\n\
+and Cheese continue to improve!\n\
+You're getting close to \n\
+saving your mom!\n\
+I need to get myself fixed\n\
+up again so here, take this \n\
+Star Ring for beating me!!\n\
+Congrats, you two!"))
 
 DEFINE_DIALOG(DIALOG_032, 1, 5, 30, 200, _("\
-If you get the Wing Cap,\n\
-you can fly! Put the cap\n\
+If you get the Wing Locket,\n\
+you can fly! Put the locket\n\
 on, then do a Triple\n\
 Jump--jump three times\n\
 in a row--to take off.\n\
 You can fly even higher\n\
 if you blast out of a\n\
 cannon wearing the\n\
-Wing Cap!\n\
+Wing Locket!\n\
 \n\
 Use the [C] Buttons to look\n\
 around while flying, and\n\
 press [Z] to land."))
 
 DEFINE_DIALOG(DIALOG_033, 1, 6, 30, 200, _("\
-Ciao! You've reached\n\
-Princess Toadstool's\n\
-castle via a warp pipe.\n\
-Using the controller is a\n\
-piece of cake. Press [A] to\n\
-jump and [B] to attack.\n\
-Press [B] to read signs,\n\
-too. Use the Control Stick\n\
-in the center of the\n\
-controller to move Mario\n\
-around. Now, head for\n\
-the castle."))
+Chao!..err Ciao! You've reached\n\
+Princess Peach's castle\n\
+via a warp ring. Looks like\n\
+it got a bit of a makeover.\n\
+\n\
+\n\
+On the eve of your birthday,\n\
+your mom went through all the\n\
+effort to organize this whole \n\
+event and here you are\n\
+blissfully unaware of everything \n\
+going on.\n\
+Your friends in the castle are\n\
+aware and trying to keep the \n\
+facade, as best as they can at\n\
+least. Still, be wary of the \n\
+dangers that lay in front of you.\n\
+\n\
+Head toward the bridge and\n\
+talk to Omochao. Your\n\
+adventure in the Mushroom\n\
+Kingdom finally begins!"))
 
 DEFINE_DIALOG(DIALOG_034, 1, 6, 30, 200, _("\
-Good afternoon. The\n\
-Lakitu Bros., here,\n\
-reporting live from just\n\
-outside the Princess's\n\
-castle.\n\
-\n\
-Mario has just arrived\n\
-on the scene, and we'll\n\
-be filming the action live\n\
-as he enters the castle\n\
-and pursues the missing\n\
-Power Stars.\n\
-As seasoned cameramen,\n\
-we'll be shooting from the\n\
-recommended angle, but\n\
-you can change the\n\
-camera angle by pressing\n\
-the [C] Buttons.\n\
-If we can't adjust the\n\
-view any further, we'll\n\
-buzz. To take a look at\n\
-the surroundings, stop\n\
-and press [C]^.\n\
-\n\
-Press [A] to resume play.\n\
-Switch camera modes with\n\
-the [R] Button. Signs along\n\
-the way will review these\n\
-instructions.\n\
-\n\
-For now, reporting live,\n\
-this has been the\n\
-Lakitu Bros."))
+Good morning, Cream! I see\n\
+you're doing fine this morning.\n\
+I'll be your camera for\n\
+this adventure through the castle.\n\
+Just use the [C] buttons to guide\n\
+me around!\n\
+Just note that you'll be unable\n\
+to fly freely like you're used \n\
+to. Clearly not a limitation of\n\
+the developer's knowledge of \n\
+programming for this hack, \n\
+no sir! \n\
+Most enemies, music, objects \n\
+and of course, dialog have been  \n\
+updated to fit the theme.\n\
+You'll find out more as you\n\
+explore the castle. Otherwise,\n\
+this is still a vanilla hack.\n\
+Your friends are waiting inside\n\
+to assist you as they can. But\n\
+for the most part, this is\n\
+all on you, and they believe\n\
+in you, as do I! Good luck,\n\
+Cream, and have fun!!"))
 
 DEFINE_DIALOG(DIALOG_035, 1, 5, 30, 200, _("\
 There are four camera, or\n\
@@ -442,21 +456,21 @@ There are four camera, or\n\
 to look around using the\n\
 Control Stick.\n\
 \n\
-You'll usually see Mario\n\
-through Lakitu's camera.\n\
+You'll usually see Cream\n\
+through Omochao's camera.\n\
 It is the camera\n\
 recommended for normal\n\
 play.\n\
 You can change angles by\n\
 pressing [C]>. If you press\n\
 [R], the view switches to\n\
-Mario's camera, which\n\
+Cream's camera, which\n\
 is directly behind him.\n\
 Press [R] again to return\n\
-to Lakitu's camera. Press\n\
-[C]| to see Mario from\n\
+to Omochao's camera. Press\n\
+[C]| to see Cream from\n\
 afar, using either\n\
-Lakitu's or Mario's view."))
+Omochao's or Cream's view."))
 
 DEFINE_DIALOG(DIALOG_036, 1, 5, 30, 200, _("\
 OBSERVATION PLATFORM\n\
@@ -465,10 +479,10 @@ around. Don't miss\n\
 anything!\n\
 \n\
 Press [R] to switch to\n\
-Mario's camera. It\n\
-always follows Mario.\n\
+Cream's camera. It\n\
+always follows Cream.\n\
 Press [R] again to switch\n\
-to Lakitu's camera.\n\
+to Omochao's camera.\n\
 Pause the game and\n\
 switch the mode to 『fix』\n\
 the camera in place while\n\
@@ -482,28 +496,28 @@ a better sledder!\n\
 Better luck next time!"))
 
 DEFINE_DIALOG(DIALOG_038, 1, 3, 95, 200, _("\
-Reacting to the Star\n\
+Reacting to the Star Rings\n\
 power, the door slowly\n\
 opens."))
 
 DEFINE_DIALOG(DIALOG_039, 1, 4, 30, 200, _("\
 No visitors allowed,\n\
 by decree of\n\
-the Big Bob-omb\n\
+the Big Bob-omb.\n\
 \n\
 I shall never surrender my\n\
-Stars, for they hold the\n\
+Star Rings, for they hold the\n\
 power of the castle in\n\
 their glow.\n\
 They were a gift from\n\
-Bowser, the Koopa King\n\
+Eggman, the fine Genius\n\
 himself, and they lie well\n\
 hidden within my realm.\n\
 Not a whisper of their\n\
 whereabouts shall leave\n\
 my lips. Oh, all right,\n\
 perhaps one hint:\n\
-Heed the Star names at\n\
+Heed the Star Ring names at\n\
 the beginning of the\n\
 course.\n\
 //--The Big Bob-omb"))
@@ -514,12 +528,11 @@ Cold, Cold Crevasse\n\
 Below!"))
 
 DEFINE_DIALOG(DIALOG_041, 1, 3, 30, 200, _("\
-I win! You lose!\n\
-Ha ha ha!\n\
-\n\
-That's what you get for\n\
-messin' with Koopa the\n\
-Quick.\n\
+Huh, didn't expect to win\n\
+that honestly. You going\n\
+easy on me, Cream?\n\
+Well, either way, I'm always\n\
+up for a rematch!! \n\
 Better luck next time!"))
 
 DEFINE_DIALOG(DIALOG_042, 1, 4, 30, 200, _("\
@@ -534,7 +547,7 @@ edge if you move slowly.\n\
 When you want to let go,\n\
 either press [Z] or press\n\
 the Control Stick in the\n\
-direction of Mario's back.\n\
+direction of Cream's back.\n\
 To climb up, press Up on\n\
 the Control Stick. To\n\
 scurry up quickly, press\n\
@@ -567,7 +580,7 @@ grab on."))
 DEFINE_DIALOG(DIALOG_045, 1, 6, 95, 200, _("\
 Whew! I'm just about\n\
 flapped out. You should\n\
-lay off the pasta, Mario!\n\
+lay off the sweets, Cream!\n\
 That's it for now. Press\n\
 [A] to let go. Okay,\n\
 bye byyyyyyeeee!"))
@@ -667,12 +680,12 @@ air with both jumps."))
 
 DEFINE_DIALOG(DIALOG_053, 1, 5, 30, 200, _("\
 Sometimes, if you pass\n\
-through a coin ring or\n\
+through a ring ring or\n\
 find a secret point in a\n\
 course, a red number will\n\
 appear.\n\
 If you trigger five red\n\
-numbers, a secret Star\n\
+numbers, a secret Star Ring\n\
 will show up."))
 
 DEFINE_DIALOG(DIALOG_054, 1, 5, 30, 200, _("\
@@ -683,10 +696,10 @@ Control Stick. To slow\n\
 down, pull back."))
 
 DEFINE_DIALOG(DIALOG_055, 1, 4, 30, 200, _("\
-Hey-ey, Mario, buddy,\n\
+Hey-ey, little buddy,\n\
 howzit goin'? Step right\n\
 up. You look like a fast\n\
-sleddin' kind of guy.\n\
+sleddin' kind of gal.\n\
 I know speed when I see\n\
 it, yes siree--I'm the\n\
 world champion sledder,\n\
@@ -700,21 +713,21 @@ DEFINE_DIALOG(DIALOG_056, 1, 6, 30, 200, _("\
 You brrrr-oke my record!\n\
 Unbelievable! I knew\n\
 that you were the coolest.\n\
-Now you've proven\n\
-that you're also the\n\
-fastest!\n\
+Now what's your name? Cream?\n\
+Well, Cream, you've proven that\n\
+you're the fastest around!\n\
 I can't award you a gold\n\
 medal, but here, take this\n\
-Star instead. You've\n\
+Star Ring instead. You've\n\
 earned it!"))
 
 DEFINE_DIALOG(DIALOG_057, 1, 4, 30, 200, _("\
 Egad! My baby!! Have you\n\
-seen my baby??? She's\n\
-the most precious baby in\n\
+seen my chao??? She's\n\
+the most precious chao in\n\
 the whole wide world.\n\
 (They say she has my\n\
-beak...) I just can't\n\
+eyes...) I just can't\n\
 remember where I left\n\
 her.\n\
 Let's see...I stopped\n\
@@ -724,17 +737,17 @@ don't know!"))
 
 DEFINE_DIALOG(DIALOG_058, 1, 4, 30, 200, _("\
 You found my precious,\n\
-precious baby! Where\n\
+precious chao! Where\n\
 have you been? How can\n\
-I ever thank you, Mario?\n\
+I ever thank you, Cream?\n\
 Oh, I do have this...\n\
-...Star. Here, take it\n\
+...Star Ring. Here, take it\n\
 with my eternal\n\
 gratitude."))
 
 DEFINE_DIALOG(DIALOG_059, 1, 4, 30, 200, _("\
-That's not my baby! She\n\
-looks nothing like me!\n\
+That's not my chao! She\n\
+looks nothing like her!\n\
 Her parents must be\n\
 worried sick!"))
 
@@ -777,7 +790,7 @@ I'm serious.\n\
 DEFINE_DIALOG(DIALOG_062, 1, 3, 30, 200, _("\
 Hidden inside the green\n\
 block is the amazing\n\
-Metal Cap.\n\
+Metal Locket.\n\
 Wearing it, you won't\n\
 catch fire or be hurt\n\
 by enemy attacks.\n\
@@ -788,23 +801,23 @@ The only problem:\n"
 YOU_CANT_SWIM_IN_IT))
 
 DEFINE_DIALOG(DIALOG_063, 1, 5, 30, 200, _("\
-The Vanish Cap is inside\n\
+The Vanish Locket is inside\n\
 the blue block. Mr. I.\n\
 will be surprised, since\n\
 you'll be invisible when\n\
 you wear it!\n\
-Even the Big Boo will be\n\
+Even King Boo Boom will be\n\
 fooled--and you can walk\n\
 through secret walls, too."))
 
 DEFINE_DIALOG(DIALOG_064, 1, 5, 30, 200, _("\
 When you put on the Wing\n\
-Cap that comes from a\n\
+Locket that comes from a\n\
 red block, do the Triple\n\
 Jump to soar high into\n\
 the sky.\n\
 Use the Control Stick to\n\
-guide Mario. Pull back to\n\
+guide Cream. Pull back to\n\
 to fly up, press forward\n\
 to nose down, and press [Z]\n\
 to land."))
@@ -829,7 +842,7 @@ Easy as pie, right?\n\
 \n\
 \n\
 But remember:\n\
-Mario can't breathe under\n\
+Cream can't breathe under\n\
 the water! Return to the\n\
 surface for air when the\n\
 Power Meter runs low.\n\
@@ -839,13 +852,13 @@ can't open doors that\n\
 are underwater."))
 
 DEFINE_DIALOG(DIALOG_066, 1, 5, 30, 200, _("\
-Mario, it's Peach!\n\
-Please be careful! Bowser\n\
-is so wicked! He will try\n\
+Cream, it's your mother!\n\
+Please be careful! Eggman\n\
+is so dasterdly! He will try\n\
 to burn you with his\n\
-horrible flame breath.\n\
+mech's flame breath.\n\
 Run around behind and\n\
-grab him by the tail with\n\
+grab his mech by the tail with\n\
 the [B] Button. Once you\n\
 grab hold, swing him\n\
 around in great circles.\n\
@@ -855,25 +868,36 @@ The faster you swing him,\n\
 the farther he'll fly.\n\
 \n\
 Use the [C] Buttons to look\n\
-around, Mario. You have\n\
-to throw Bowser into one\n\
+around, Cream. You have\n\
+to throw Eggman into one\n\
 of the bombs in the four\n\
 corners.\n\
 Aim well, then press [B]\n\
-again to launch Bowser.\n\
-Good luck, Mario! Our\n\
-fate is in your hands."))
+again to launch Eggman.\n\
+Good luck, Cream, I believe\n\
+in you!"))
 
 DEFINE_DIALOG(DIALOG_067, 1, 5, 30, 200, _("\
-Tough luck, Mario!\n\
-Princess Toadstool isn't\n\
-here...Gwa ha ha!! Go\n\
-ahead--just try to grab\n\
-me by the tail!\n\
+Ho, ho!! I didn't expect to\n\
+see you so soon! Trying\n\
+to save your precious mommy?\n\
+Hah! Good luck with that you\n\
+little brat!!!\n\
+(Hmm. Should I add more \n\
+energy to that? She did say\n\
+make it as believable as \n\
+possible..)\n\
+\n\
+Meet my latest invention: \n\
+The Egg Koopa Mk. 2!!!\n\
+Carefully crafted to deal\n\
+with rodents such as yourself.\n\
+\n\
 You'll never be able to\n\
 swing ME around! A wimp\n\
-like you won't throw me\n\
-out of here! Never! Ha!"))
+and coward such as yourself\n\
+will never throw me out of here!\n\
+Never! Ha!"))
 
 DEFINE_DIALOG(DIALOG_068, 1, 5, 30, 200, _("\
 It's Lethal Lava Land!\n\
@@ -882,7 +906,7 @@ into a pool of flames,\n\
 you'll be hopping mad, but\n\
 don't lose your cool.\n\
 You can still control\n\
-Mario--just try to keep\n\
+Cream--just try to keep\n\
 calm!"))
 
 DEFINE_DIALOG(DIALOG_069, 1, 6, 30, 200, _("\
@@ -905,7 +929,7 @@ game, then select\n\
 『Exit Course.』\n\
 \n\
 You don't have to collect\n\
-all Power Stars in one\n\
+all Star Rings in one\n\
 course before going on to\n\
 the next.\n\
 \n\
@@ -914,14 +938,14 @@ more experienced, to pick\n\
 up difficult ones.\n\
 \n\
 \n\
-Whenever you find a Star,\n\
+Whenever you find a Star Ring,\n\
 a hint for finding the\n\
 next one will appear on\n\
 the course's start screen.\n\
 \n\
 You can, however, collect\n\
 any of the remaining\n\
-Stars next. You don't\n\
+Star Rings next. You don't\n\
 have to recover the one\n\
 described by the hint."))
 
@@ -935,12 +959,13 @@ air!\n\
 Circle: Shelter\n\
 Arrow: Entrance-Exit"))
 
-DEFINE_DIALOG(DIALOG_072, 1, 5, 30, 200, _("\
+DEFINE_DIALOG(DIALOG_072, 1, 6, 30, 200, _("\
 High winds ahead!\n\
-Pull your Cap down tight.\n\
-If it blows off, you'll\n\
-have to find it on this\n\
-mountain."))
+Don't get blown off or you'll \n\
+have to climb back up the  \n\
+mountain! Don't worry, you \n\
+won't lose anything! Not \n\
+like you got a hat to lose!!"))
 
 DEFINE_DIALOG(DIALOG_073, 1, 4, 95, 200, _("\
 Aarrgh! Ahoy, matey. I\n\
@@ -968,7 +993,7 @@ hang down from it.\n\
 To drop from the edge,\n\
 either press the Control\n\
 Stick in the direction of\n\
-Mario's back or press the\n\
+Cream's back or press the\n\
 [Z] Button.\n\
 To get up onto the ledge,\n\
 either press Up on the\n\
@@ -977,50 +1002,62 @@ as soon as you grab the\n\
 ledge to climb up quickly."))
 
 DEFINE_DIALOG(DIALOG_075, 1, 5, 30, 200, _("\
-Mario!! My castle is in\n\
+Cream!! This castle is in\n\
 great peril. I know that\n\
-Bowser is the cause...and\n\
+Eggman is the cause...and\n\
 I know that only you can\n\
 stop him!\n\
 The doors in the castle\n\
 that have been sealed by\n\
-Bowser can be opened only\n\
-with Star Power.\n\
+Eggman can be opened only\n\
+with Red Star Rings.\n\
 \n\
 But there are secret\n\
 paths in the castle,\n\
-paths that Bowser hasn't\n\
+paths that Eggman hasn't\n\
 found.\n\
 \n\
 One of those paths is in\n\
 this room, and it holds\n\
 one of the castle's Secret\n\
-Stars!\n\
+Star Rings!\n\
 \n\
-Find that Secret Star,\n\
-Mario! It will help you\n\
+Find that Secret Star Ring,\n\
+Cream! It will help you\n\
 on your quest. Please,\n\
-Mario, you have to\n\
+Cream, you have to\n\
 help us!\n\
 Retrieve all of the\n\
-Power Stars in the castle\n\
+Red Star Rings in the castle\n\
 and free us from this\n\
 awful prison!\n\
 Please!"))
 
 DEFINE_DIALOG(DIALOG_076, 1, 6, 30, 200, _("\
-Thanks to the power of\n\
-the Stars, life is\n\
-returning to the castle.\n\
-Please, Mario, you have\n\
-to give Bowser the boot!\n\
+Cream, there you are! I heard\n\
+you were in the castle but\n\
+I never saw you when exploring.\n\
+Are you doing alright, this\n\
+place can be a bit of a maze\n\
+but what castle isn't, huh.\n\
+Your mother? I haven't seen\n\
+her, sadly. I assume she's \n\
+being kept at the very top.\n\
+Would make sense really. \n\
+But you're almost there!\n\
 \n\
-Here, let me tell you a\n\
-little something about the\n\
-castle. In the room with\n\
+By the way, have you seen\n\
+Marine? She went off exploring\n\
+on her own and hasn't returned.\n\
+I assume you'd found her...\n\
+oh you haven't? Huh. Well if \n\
+you do, please let me know!\n\
+I do have some hints for \n\
+you: In the room with\n\
 the mirrors, look carefully\n\
 for anything that's not\n\
 reflected in the mirror.\n\
+\n\
 And when you go to the\n\
 water town, you can flood\n\
 it with a high jump into\n\
@@ -1032,13 +1069,13 @@ It is decreed that one\n\
 shall pound the pillars."))
 
 DEFINE_DIALOG(DIALOG_078, 1, 5, 30, 200, _("\
-Break open the Blue Coin\n\
+Break open the Blue Ring\n\
 Block by Pounding the\n\
 Ground with the [Z] Button.\n\
-One Blue Coin is worth\n\
-five Yellow Coins.\n\
+One Blue Ring is worth\n\
+five Yellow Rings.\n\
 But you have to hurry!\n\
-The coins will disappear\n\
+The rings will disappear\n\
 if you're not quick to\n\
 collect them! Too bad."))
 
@@ -1067,56 +1104,83 @@ The city welcomes visitors\n\
 with the depth they bring\n\
 as they enter."))
 
-DEFINE_DIALOG(DIALOG_082, 1, 4, 30, 200, _("\
-Hold on to your hat! If\n\
-you lose it, you'll be\n\
-injured easily.\n\
+DEFINE_DIALOG(DIALOG_082, 1, 6, 30, 200, _("\
+Oh...it's you. The one \n\
+who just takes over this \n\
+castle and changes it to fit \n\
+your dumb little theme.\n\
+Didn't think there would \n\
+still be a toad left but nope!\n\
+I'm still here and ain't \n\
+leaving. The Princess may rent \n\
+the castle as she wishes\n\
+but this is what I trained\n\
+for!\n\
 \n\
-If you do lose your Cap,\n\
-you'll have to find it in\n\
-the course where you\n\
-lost it.\n\
-Oh, boy, it's not looking\n\
-good for Peach. She's\n\
-still trapped somewhere\n\
-inside the walls.\n\
-Please, Mario, you have\n\
-to help her! Did you know\n\
-that there are enemy\n\
-worlds inside the walls?\n\
-Yup. It's true. Bowser's\n\
-troops are there, too.\n\
-Oh, here, take this. I've\n\
-been keeping it for you."))
+I'm not giving up my spot\n\
+for some weird jiggly blue\n\
+thing or to a pair of freaky \n\
+rabbits like yourselves! Just\n\
+looking at you makes me sick!\n\
+Bleh!!\n\
+Here, take this stupid thing\n\
+I found here and get out of\n\
+my sight. You disgust me. \n\
+Go eat a carrot or something,\n\
+ugly."))
 
 DEFINE_DIALOG(DIALOG_083, 1, 6, 30, 200, _("\
+Lil' Sis!! You're finally \n\
+here!! I was worried something\n\
+had happened to you. Happy bir-\n\
+uhh I mean happy to see you!\n\
+(Meet Katalina, Cream's big\n\
+sis in spirit.)\n\
+I didn't see Mama anywhere\n\
+but I saw this strange door\n\
+up the stairs. She may be in\n\
+there, but I think you may\n\
+need a lot of Star Rings.\n\
+\n\
+...Mr. Mark? OH, you mean \n\
+Papa! I think he said he was\n\
+on the roof. I'm not sure \n\
+why but maybe he thought\n\
+Mama would be up there.\n\
+\n\
+Well I did hear somethings\n\
+from the nice Toads:\n\
 There's something strange\n\
 about that clock. As you\n\
 jump inside, watch the\n\
 position of the big hand.\n\
+Good luck, Lil' Sis! I \n\
+know you can save Mama \n\
+(so we can have some of \n\
+her delicious cake!!~))\n\
 Oh, look what I found!\n\
-Here, Mario, catch!"))
+Here ya go, Cream!"))
 
 DEFINE_DIALOG(DIALOG_084, 1, 3, 30, 200, _("\
-Yeeoww! Unhand me,\n\
-brute! I'm late, so late,\n\
-I must make haste!\n\
-This shiny thing? Mine!\n\
-It's mine. Finders,\n\
-keepers, losers...\n\
-Late, late, late...\n\
-Ouch! Take it then! A\n\
-gift from Bowser, it was.\n\
-Now let me be! I have a\n\
-date! I cannot be late\n\
-for tea!"))
+AAAaaa! Help me, please!\n\
+...Thank you very much...\n\
+Cream was it??\n\
+Eggman attached this thing\n\
+on me and it made me go \n\
+crazy.\n\
+I don't know how you big\n\
+fellas can handle so many\n\
+of these things.\n\
+So please, take it off my \n\
+non-existent hands and\n\
+let me relax a bit."))
 
 DEFINE_DIALOG(DIALOG_085, 1, 5, 30, 200, _("\
-You don't stand a ghost\n\
-of a chance in this house.\n\
-If you walk out of here,\n\
-you deserve...\n\
-...a Ghoul Medal..."))
+Bunch of spoops hanging \n\
+in this here house. Leave \n\
+now or deal with the spoops \n\
+personally.\n\
+Have fuuuuun."))
 
 DEFINE_DIALOG(DIALOG_086, 1, 3, 30, 200, _("\
 Running around in circles\n\
@@ -1165,30 +1229,30 @@ Strong Gusts!\n\
 But the wind makes a\n\
 comfy ride."))
 
-DEFINE_DIALOG(DIALOG_092, 1, 5, 30, 200, _("\
-Pestering me again, are\n\
-you, Mario? Can't you see\n\
-that I'm having a merry\n\
-little time, making\n\
-mischief with my minions?\n\
-Now, return those Stars!\n\
-My troops in the walls\n\
-need them! Bwa ha ha!"))
+DEFINE_DIALOG(DIALOG_092, 1, 6, 30, 200, _("\
+Persistent, aren't you??\n\
+I've made more improvements\n\
+to the Egg Koopa, I'll be\n\
+ready for anything you\n\
+throw at me.\n\
+Bwa ha ha!"))
 
 DEFINE_DIALOG(DIALOG_093, 1, 5, 30, 200, _("\
-Mario! You again! Well\n\
-that's just fine--I've\n\
-been looking for something\n\
-to fry with my fire\n\
-breath!\n\
-Your Star Power is\n\
-useless against me!\n\
-Your friends are all\n\
-trapped within the\n\
-walls...\n\
-And you'll never see the\n\
-Princess again!\n\
-Bwa ha ha ha!"))
+Alright, I'm done messing \n\
+around. Time to show you\n\
+the real power of my \n\
+genius! \n\
+\n\
+Your little blue friend's\n\
+not here to help you this\n\
+time! (let's be real, he didn't\n\
+really do much this whole game\n\
+anyway...)\n\
+It's just you and me. \n\
+Get ready for the final act.\n\
+If you care about your mommy\n\
+so much, show me everything\n\
+you got!!"))
 
 DEFINE_DIALOG(DIALOG_094, 1, 4, 30, 200, _("\
 Get a good run up the\n\
@@ -1196,18 +1260,12 @@ slope! Do you remember\n\
 the Long Jump? Run, press\n\
 [Z], then jump!"))
 
-DEFINE_DIALOG(DIALOG_095, 1, 4, 30, 200, _("\
-To read a sign, stand in\n\
-front of it and press [B],\n\
-like you did just now.\n\
-\n\
-When you want to talk to\n\
-a Koopa Troopa or other\n\
-animal, stand right in\n\
-front of it.\n\
-Please recover the Stars\n\
-that were stolen by\n\
-Bowser in this course."))
+DEFINE_DIALOG(DIALOG_095, 1, 5, 30, 200, _("\
+Boy were you expecting some\n\
+wit in this sign? Nah, this\n\
+is 3 am me trying to type\n\
+something witty out. Brain has \n\
+effectively left the building..."))
 
 DEFINE_DIALOG(DIALOG_096, 1, 4, 30, 200, _("\
 The path is narrow here.\n\
@@ -1232,7 +1290,6 @@ DEFINE_DIALOG(DIALOG_098, 1, 2, 95, 200, _("\
 Come on in here...\n\
 ...heh, heh, heh..."))
 
-// unused
 DEFINE_DIALOG(DIALOG_099, 1, 5, 95, 200, _("\
 Eh he he...\n\
 You're mine, now, hee hee!\n\
@@ -1243,18 +1300,16 @@ that? Heh, heh, heh!"))
 DEFINE_DIALOG(DIALOG_100, 1, 3, 95, 200, _("\
 Ukkiki...Wakkiki...kee kee!\n\
 Ha! I snagged it!\n\
-It's mine! Heeheeheeee!"))
+...Wait what did I snag???"))
 
-DEFINE_DIALOG(DIALOG_101, 1, 3, 95, 200, _("\
+DEFINE_DIALOG(DIALOG_101, 1, 4, 95, 200, _("\
 Ackk! Let...go...\n\
-You're...choking...me...\n\
-Cough...I've been framed!\n\
-This Cap? Oh, all right,\n\
-take it. It's a cool Cap,\n\
-but I'll give it back.\n\
-I think it looks better on\n\
-me than it does on you,\n\
-though! Eeeee! Kee keee!"))
+I don't have your cap or\n\
+your locket!! Darn thing\n\
+seems to be stuck to you.\n\
+Curse you programmer and your\n\
+limited knowledge of this \n\
+code!!"))
 
 DEFINE_DIALOG(DIALOG_102, 1, 5, 30, 200, _("\
 Pssst! The Boos are super\n\
@@ -1275,17 +1330,17 @@ shall shine the light..."))
 
 DEFINE_DIALOG(DIALOG_104, 1, 5, 30, 200, _("\
 The shadowy star in front\n\
-of you is a 『Star\n\
+of you is a 『Star Ring\n\
 Marker.』 When you collect\n\
-all 8 Red Coins, the Star\n\
-will appear here."))
+all 8 Silver Rings, the Star\n\
+Ring will appear here."))
 
 DEFINE_DIALOG(DIALOG_105, 1, 3, 95, 200, _("\
 Ready for blastoff! Come\n\
 on, hop into the cannon!\n\
 \n\
-You can reach the Star on\n\
-the floating island by\n\
+You can reach the Star Ring\n\
+on the floating island by\n\
 using the four cannons.\n\
 Use the Control Stick to\n\
 aim, then press [A] to fire.\n\
@@ -1310,7 +1365,7 @@ DEFINE_DIALOG(DIALOG_108, 1, 2, 95, 200, _("\
 Boooooo-m! Here comes\n\
 the master of mischief,\n\
 the tower of terror,\n\
-the Big Boo!\n\
+King Boo Boom!\n\
 Ka ha ha ha..."))
 
 DEFINE_DIALOG(DIALOG_109, 1, 4, 95, 200, _("\
@@ -1339,12 +1394,12 @@ present for you. It's sure\n\
 to warm you up."))
 
 DEFINE_DIALOG(DIALOG_112, 1, 4, 30, 200, _("\
-Collect as many coins as\n\
+Collect as many rings as\n\
 possible! They'll refill\n\
 your Power Meter.\n\
 \n\
 You can check to see how\n\
-many coins you've\n\
+many rings you've\n\
 collected in each of the\n\
 15 enemy worlds.\n\
 You can also recover\n\
@@ -1356,12 +1411,12 @@ through the heart, the\n\
 more power you'll recover."))
 
 DEFINE_DIALOG(DIALOG_113, 1, 6, 30, 200, _("\
-There are special Caps in\n\
+There are special Lockets in\n\
 the red, green and blue\n\
-blocks. Step on the\n\
+capsules. Step on the\n\
 switches in the hidden\n\
 courses to activate the\n\
-Cap Blocks."))
+Locket Capsules."))
 
 DEFINE_DIALOG(DIALOG_114, 1, 5, 95, 200, _("\
 It makes me so mad! We\n\
@@ -1391,15 +1446,20 @@ Can it be that a\n\
 pipsqueak like you has\n\
 defused the Bob-omb\n\
 king????\n\
-You might be fast enough\n\
-to ground me, but you'll\n\
-have to pick up the pace\n\
-if you want to take King\n\
-Bowser by the tail.\n\
-Methinks my troops could\n\
-learn a lesson from you!\n\
-Here is your Star, as I\n\
-promised, Mario.\n\
+You've impressed me, little\n\
+rabbit, but you need to \n\
+improve fast if you wish to \n\
+defeat Eggman and save the \n\
+princess.\n\
+Though from your glance, I\n\
+feel this isn't your first\n\
+time dealing with the \n\
+mustachioed man.\n\
+\n\
+I wish thee well on your\n\
+journey. Here is the Star \n\
+Ring, as promised. Good luck, \n\
+little one. You'll need it.\n\
 \n\
 If you want to see me\n\
 again, select this Star\n\
@@ -1425,44 +1485,43 @@ We...crushed like pebble.\n\
 You so strong!\n\
 You rule ancient pyramid!\n\
 For today...\n\
-Now, take Star of Power.\n\
+Now, take Ring of Power.\n\
 We...sleep...darkness."))
 
 DEFINE_DIALOG(DIALOG_119, 1, 6, 30, 200, _("\
-Grrr! I was a bit\n\
-careless. This is not as I\n\
-had planned...but I still\n\
-hold the power of the\n\
-Stars, and I still have\n\
-Peach.\n\
-Bwa ha ha! You'll get no\n\
-more Stars from me! I'm\n\
-not finished with you yet,\n\
-but I'll let you go for\n\
-now. You'll pay for this...\n\
-later!"))
+Gah! What strength! I \n\
+clearly miscalculated this\n\
+encounter. Never the less, I\n\
+still have the princess\n\
+and the Star Rings!!\n\
+\n\
+Next time, you won't be as\n\
+lucky. I'll make the needed\n\
+improvements and return \n\
+stronger! Until then, \n\
+farewell! Gwa ha ha !!"))
 
 DEFINE_DIALOG(DIALOG_120, 1, 4, 30, 200, _("\
-Ooowaah! Can it be that\n\
-I've lost??? The power of\n\
-the Stars has failed me...\n\
-this time.\n\
-Consider this a draw.\n\
-Next time, I'll be in\n\
-perfect condition.\n\
+Again??!! This hunk of junk\n\
+must be on the fritz. This\n\
+is what I get for using\n\
+old parts.\n\
+I will return at full\n\
+power, Star Rings giving\n\
+me their strength. \n\
 \n\
-Now, if you want to see\n\
-your precious Princess,\n\
-come to the top of the\n\
-tower.\n\
+If you wish to seal your \n\
+fate, meet me at the top of\n\
+the castle. Bring everything\n\
+you got!!\n\
 I'll be waiting!\n\
 Gwa ha ha ha!"))
 
 DEFINE_DIALOG(DIALOG_121, 1, 5, 30, 200, _("\
 Nooo! It can't be!\n\
 You've really beaten me,\n\
-Mario?!! I gave those\n\
-troops power, but now\n\
+Cream?!! I gave those\n\
+badniks power, but now\n\
 it's fading away!\n\
 Arrgghh! I can see peace\n\
 returning to the world! I\n\
@@ -1471,7 +1530,14 @@ It's not over yet...\n\
 \n\
 C'mon troops! Let's watch\n\
 the ending together!\n\
-Bwa ha ha!"))
+Bwa ha ha!\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+(Oh and...umm...\n\
+Happy Birthday...)"))
 
 DEFINE_DIALOG(DIALOG_122, 1, 4, 30, 200, _("\
 The Black Hole\n\
@@ -1482,7 +1548,7 @@ Left: Underground Lake"))
 DEFINE_DIALOG(DIALOG_123, 1, 4, 30, 200, _("\
 Metal Cavern\n\
 Right: To Waterfall\n\
-Left: Metal Cap Switch"))
+Left: Metal Locket Switch"))
 
 DEFINE_DIALOG(DIALOG_124, 1, 4, 30, 200, _("\
 Work Elevator\n\
@@ -1521,39 +1587,39 @@ king out of the ring!"))
 
 DEFINE_DIALOG(DIALOG_129, 1, 5, 30, 200, _("\
 Welcome to the Vanish\n\
-Cap Switch Course! All of\n\
-the blue blocks you find\n\
+Locket Switch Course! All of\n\
+the blue capsules you find\n\
 will become solid once you\n\
-step on the Cap Switch.\n\
+step on the Locket Switch.\n\
 You'll disappear when you\n\
-put on the Vanish Cap, so\n\
+put on the Vanish Locket, so\n\
 you'll be able to elude\n\
 enemies and walk through\n\
 many things. Try it out!"))
 
 DEFINE_DIALOG(DIALOG_130, 1, 5, 30, 200, _("\
-Welcome to the Metal Cap\n\
+Welcome to the Metal Locket\n\
 Switch Course! Once you\n\
-step on the Cap Switch,\n\
-the green blocks will\n\
+step on the Locket Switch,\n\
+the green capsules will\n\
 become solid.\n\
 When you turn your body\n\
 into metal with the Metal\n\
-Cap, you can walk\n\
+Locket, you can walk\n\
 underwater! Try it!"))
 
 DEFINE_DIALOG(DIALOG_131, 1, 5, 30, 200, _("\
-Welcome to the Wing Cap\n\
+Welcome to the Wing Locket\n\
 Course! Step on the red\n\
 switch at the top of the\n\
 tower, in the center of\n\
 the rainbow ring.\n\
 When you trigger the\n\
 switch, all of the red\n\
-blocks you find will\n\
+capsules you find will\n\
 become solid.\n\
 \n\
-Try out the Wing Cap! Do\n\
+Try out the Wing Locket! Do\n\
 the Triple Jump to take\n\
 off and press [Z] to land.\n\
 \n\
@@ -1565,7 +1631,7 @@ just as you would when\n\
 flying an airplane."))
 
 DEFINE_DIALOG(DIALOG_132, 1, 4, 30, 200, _("\
-Whoa, Mario, pal, you\n\
+Whoa, Cream, pal, you\n\
 aren't trying to cheat,\n\
 are you? Shortcuts aren't\n\
 allowed.\n\
@@ -1575,117 +1641,86 @@ disqualified! Next time,\n\
 play fair!"))
 
 DEFINE_DIALOG(DIALOG_133, 1, 6, 30, 200, _("\
-Am I glad to see you! The\n\
-Princess...and I...and,\n\
-well, everybody...we're all\n\
-trapped inside the castle\n\
-walls.\n\
+Chaoooo!!! Chao chao \n\
+chaaaooo!!\n\
 \n\
-Bowser has stolen the\n\
-castle's Stars, and he's\n\
-using their power to\n\
-create his own world in\n\
-the paintings and walls.\n\
 \n\
-Please recover the Power\n\
-Stars! As you find them,\n\
+\n\
+\n\
+(Cream, you finally arrived!!\n\
+Mama...and I...and, well,\n\
+everyone!! We're all trapped \n\
+inside the castle walls.\n\
+\n\
+\n\
+Please recover the Star\n\
+Rings! As you find them,\n\
 you can use their power\n\
 to open the doors that\n\
-Bowser has sealed.\n\
+Eggman has sealed.\n\
 \n\
 There are four rooms on\n\
 the first floor. Start in\n\
 the one with the painting\n\
 of Bob-omb inside. It's\n\
-the only room that Bowser\n\
+the only room that Eggman\n\
 hasn't sealed.\n\
 When you collect eight\n\
-Power Stars, you'll be\n\
+Star Rings, you'll be\n\
 able to open the door\n\
-with the big star. The\n\
-Princess must be inside!"))
+with the big star. Mama\n\
+must be inside!)"))
 
 DEFINE_DIALOG(DIALOG_134, 1, 5, 30, 200, _("\
-The names of the Stars\n\
-are also hints for\n\
-finding them. They are\n\
-displayed at the beginning\n\
-of each course.\n\
-You can collect the Stars\n\
-in any order. You won't\n\
-find some Stars, enemies\n\
-or items unless you select\n\
-a specific Star.\n\
-After you collect some\n\
-Stars, you can try\n\
-another course.\n\
-We're all waiting for\n\
-your help!"))
+Now ya probably \n\
+wonder'n: how did I\n\
+end up out here? Well...\n\
+I'm puzzlin that out\n\
+myself!!\n\
+I was lookin for treasure\n\
+in this rich lookin castle,\n\
+jump up to the balcony and\n\
+I end up falling in 'ere!\n\
+\n\
+Next thing ya knew all I\n\
+see are these clouds\n\
+and rainbows everywhere!\n\
+\n\
+\n\
+They pulled one over on me\n\
+boobytrapping the place!\n\
+Not like Blaze's\n\
+castle back home at all.\n\
+\n\
+Speaking of, if ya spot \n\
+her, tell her I'm literally\n\
+in the sky! Haha...haah..\n\
+...\n\
+You know the way out?"))
 
-DEFINE_DIALOG(DIALOG_135, 1, 5, 30, 200, _("\
-It was Bowser who stole\n\
-the Stars. I saw him with\n\
-my own eyes!\n\
-\n\
-\n\
-He's hidden six Stars in\n\
-each course, but you\n\
-won't find all of them in\n\
-some courses until you\n\
-press the Cap Switches.\n\
-The Stars you've found\n\
-will show on each course's\n\
-starting screen.\n\
-\n\
-\n\
-If you want to see some\n\
-of the enemies you've\n\
-already defeated, select\n\
-the Stars you recovered\n\
-from them."))
+DEFINE_DIALOG(DIALOG_135, 1, 2, 30, 200, _("\
+I showed you my Emote \n\
+Ball, answer me"))
 
-DEFINE_DIALOG(DIALOG_136, 1, 6, 30, 200, _("\
-Wow! You've already\n\
-recovered that many\n\
-Stars? Way to go, Mario!\n\
-I'll bet you'll have us out\n\
-of here in no time!\n\
-\n\
-Be careful, though.\n\
-Bowser and his band\n\
-wrote the book on 『bad.』\n\
-Take my advice: When you\n\
-need to recover from\n\
-injuries, collect coins.\n\
-Yellow Coins refill one\n\
-piece of the Power Meter,\n\
-Red Coins refill two\n\
-pieces, and Blue Coins\n\
-refill five.\n\
-\n\
-To make Blue Coins\n\
-appear, pound on Blue\n\
-Coin Blocks.\n\
+DEFINE_DIALOG(DIALOG_136, 1, 3, 30, 200, _("\
+Chaaaao....\n\
 \n\
 \n\
-\n\
-Also, if you fall from\n\
-high places, you'll\n\
-minimize damage if you\n\
-Pound the Ground as you\n\
-land."))
+(Henlo miss crem. \n\
+Habby... birth... \n\
+love u)"))
 
 DEFINE_DIALOG(DIALOG_137, 1, 6, 30, 200, _("\
-Thanks, Mario! The castle\n\
+Thanks, Cream! The castle\n\
 is recovering its energy\n\
-as you retrieve Power\n\
-Stars, and you've chased\n\
-Bowser right out of here,\n\
+as you retrieve Star\n\
+Rings, and you've chased\n\
+Eggman right out of here,\n\
 on to some area ahead.\n\
 Oh, by the by, are you\n\
-collecting coins? Special\n\
-Stars appear when you\n\
-collect 100 coins in each\n\
+collecting rings? Special\n\
+Star Rings appear when you\n\
+collect 100 rings in each\n\
 of the 15 courses!"))
 
 DEFINE_DIALOG(DIALOG_138, 1, 3, 30, 200, _("\
@@ -1711,7 +1746,7 @@ Arrow: You are here"))
 
 DEFINE_DIALOG(DIALOG_141, 1, 5, 150, 200, _("\
 You've recovered one of\n\
-the stolen Power Stars!\n\
+the stolen Red Star Rings!\n\
 Now you can open some of\n\
 the sealed doors in the\n\
 castle.\n\
@@ -1720,17 +1755,17 @@ on the second floor and\n\
 the room with the\n\
 painting of Whomp's\n\
 Fortress on Floor 1.\n\
-Bowser's troops are still\n\
+Eggman's troops are still\n\
 gaining power, so you\n\
 can't give up. Save us,\n\
-Mario! Keep searching for\n\
-Stars!"))
+Cream! Keep searching for\n\
+Star Rings!"))
 
 DEFINE_DIALOG(DIALOG_142, 1, 5, 150, 200, _("\
 You've recovered three\n\
-Power Stars! Now you can\n\
+Red Star Rings! Now you can\n\
 open any door with a 3\n\
-on its star.\n\
+on its star ring.\n\
 \n\
 You can come and go from\n\
 the open courses as you\n\
@@ -1740,25 +1775,25 @@ careful!"))
 
 DEFINE_DIALOG(DIALOG_143, 1, 6, 150, 200, _("\
 You've recovered eight of\n\
-the Power Stars! Now you\n\
+the Red Star Rings! Now you\n\
 can open the door with\n\
-the big Star! But Bowser\n\
+the big Star Ring! But Eggman\n\
 is just ahead...can you\n\
 hear the Princess calling?"))
 
 DEFINE_DIALOG(DIALOG_144, 1, 6, 150, 200, _("\
 You've recovered 30\n\
-Power Stars! Now you can\n\
+Red Star Rings! Now you can\n\
 open the door with the\n\
-big Star! But before you\n\
+big Star Rings! But before you\n\
 move on, how's it going\n\
 otherwise?\n\
 Did you pound the two\n\
-columns down? You didn't\n\
-lose your hat, did you?\n\
-If you did, you'll have to\n\
-stomp on the condor to\n\
-get it back!\n\
+columns down? Is your friend\n\
+Cheese doing alright?\n\
+He seems fine! Always there\n\
+when you need him.\n\
+\n\
 They say that Bowser has\n\
 sneaked out of the sea\n\
 and into the underground.\n\
@@ -1767,49 +1802,49 @@ cornered him?"))
 
 DEFINE_DIALOG(DIALOG_145, 1, 6, 150, 200, _("\
 You've recovered 50\n\
-Power Stars! Now you can\n\
-open the Star Door on the\n\
-third floor. Bowser's\n\
+Red Star Rings! Now you can\n\
+open the Star Ring Door on the\n\
+third floor. Eggman's\n\
 there, you know.\n\
 \n\
 Oh! You've found all of\n\
-the Cap Switches, haven't\n\
+the Locket Switches, haven't\n\
 you? Red, green and blue?\n\
-The Caps you get from the\n\
-colored blocks are really\n\
+The Lockets you get from the\n\
+colored capsules are really\n\
 helpful.\n\
 Hurry along, now. The\n\
 third floor is just ahead."))
 
 DEFINE_DIALOG(DIALOG_146, 1, 6, 150, 200, _("\
-You've found 70 Power\n\
-Stars! The mystery of the\n\
+You've found 70 Red Star \n\
+Rings! The mystery of the\n\
 endless stairs is solved,\n\
 thanks to you--and is\n\
-Bowser ever upset! Now,\n\
+Eggman ever upset! Now,\n\
 on to the final bout!"))
 
 DEFINE_DIALOG(DIALOG_147, 1, 5, 30, 200, _("\
-Are you using the Cap\n\
-Blocks? You really should,\n\
+Are you using the Locket\n\
+Capsules? You really should,\n\
 you know.\n\
 \n\
 \n\
 To make them solid so you\n\
 can break them, you have\n\
-to press the colored Cap\n\
+to press the colored Locket\n\
 Switches in the castle's\n\
 hidden courses.\n\
 You'll find the hidden\n\
 courses only after\n\
 regaining some of the\n\
-Power Stars.\n\
+Red Star Rings.\n\
 \n\
-The Cap Blocks are a big\n\
+The Locket Capsules are a big\n\
 help! Red for the Wing\n\
-Cap, green for the Metal\n\
-Cap, blue for the Vanish\n\
-Cap."))
+Locket, green for the Metal\n\
+Locket, blue for the Vanish\n\
+Locket."))
 
 DEFINE_DIALOG(DIALOG_148, 1, 6, 30, 200, _("\
 Snowman Mountain ahead.\n\
@@ -1827,16 +1862,16 @@ automatically.\n\
 
 DEFINE_DIALOG(DIALOG_149, 1, 3, 30, 200, _("\
 Welcome to\n\
-Princess Toadstool's\n\
+Princess Vanilla's\n\
 secret slide!\n\
-There's a Star hidden\n\
-here that Bowser couldn't\n\
+There's a Star Ring hidden\n\
+here that Eggman couldn't\n\
 find.\n\
 When you slide, press\n\
 forward to speed up,\n\
 pull back to slow down.\n\
-If you slide really\n\
-fast, you'll win the Star!"))
+If you slide really fast,\n\
+you'll win the Star Ring!"))
 
 DEFINE_DIALOG(DIALOG_150, 1, 5, 30, 200, _("\
 Waaaa! You've flooded my\n\
@@ -1851,7 +1886,7 @@ huff...it makes me so...\n\
 MAD!!!\n\
 Everything's been going\n\
 wrong ever since I got\n\
-this Star...It's so shiny,\n\
+this Ring...It's so shiny,\n\
 but it makes me feel...\n\
 strange..."))
 
@@ -1867,7 +1902,7 @@ Waaaaaaaaaaaaaaaaa!!!"))
 DEFINE_DIALOG(DIALOG_152, 1, 3, 30, 200, _("\
 Owwch! Uncle! Uncle!\n\
 Okay, I " GIVE_UP ". Take this\n\
-Star!\n\
+Ring!\n\
 Whew! I feel better now.\n\
 I don't really need it\n\
 anymore, anyway--\n\
@@ -1887,29 +1922,19 @@ Whatever it is, it's\n\
 bugging me! I think I'll\n\
 blow it away!"))
 
-DEFINE_DIALOG(DIALOG_154, 1, 5, 30, 200, _("\
-Hold on to your hat! If\n\
-you lose it, you'll be\n\
-easily injured. If you\n\
-lose it, look for it in the\n\
-course where you lost it.\n\
-Speaking of lost, the\n\
-Princess is still stuck in\n\
-the walls somewhere.\n\
-Please help, Mario!\n\
-\n\
-Oh, you know that there\n\
-are secret worlds in the\n\
-walls as well as in the\n\
-paintings, right?"))
+DEFINE_DIALOG(DIALOG_154, 1, 4, 30, 200, _("\
+Hey hey, what did I say???\n\
+Get lost, you weebaboo\n\
+rabbit!! I already gave you\n\
+that dumb thing, go piss off."))
 
 DEFINE_DIALOG(DIALOG_155, 1, 6, 30, 200, _("\
-Thanks to the power of\n\
-the Stars, life is\n\
-returning to the castle.\n\
-Please, Mario, you have\n\
-to give Bowser the boot!\n\
-\n\
+Any progress on finding \n\
+Marine? Hmm, I can tell from\n\
+your face that that's a no.\n\
+Knowing her, she'll just pop\n\
+up when you least expect it. \n\
+Thank you though.\n\
 Here, let me tell you a\n\
 little something about the\n\
 castle. In the room with\n\
@@ -1919,9 +1944,16 @@ reflected in the mirror.\n\
 And when you go to the\n\
 water town, you can flood\n\
 it with a high jump into\n\
-the painting."))
+the painting.\n\
+Keep at it, Cream. You'll\n\
+find your mom in no time!"))
 
 DEFINE_DIALOG(DIALOG_156, 1, 5, 30, 200, _("\
+I know you'll find Mama, \n\
+Lil' Sis!! Papa, me and \n\
+everyone else believe in you!!\n\
+But I can at least try to\n\
+help you with that giant clock.\n\
 The world inside the\n\
 clock is so strange!\n\
 When you jump inside,\n\
@@ -1981,73 +2013,101 @@ Enjoy!!!"
 #endif
 
 DEFINE_DIALOG(DIALOG_161, 1, 4, 30, 200, _("\
-Mario!!!\n\
-It that really you???\n\
-It has been so long since\n\
-our last adventure!\n\
-They told me that I might\n\
-see you if I waited here,\n\
-but I'd just about given\n\
-up hope!\n\
-Is it true? Have you\n\
-really beaten Bowser? And\n\
-restored the Stars to the\n\
-castle?\n\
-And saved the Princess?\n\
-I knew you could do it!\n\
-Now I have a very special\n\
-message for you.\n\
+Heeey, it's the birthday bun!\n\
+If you made it up here, that\n\
+means the party is just about \n\
+to start!\n\
+Well since you're at the end,\n\
+I'm sure you realized this\n\
+whole thing has been setup just\n\
+for you. \n\
+Though I have a feeling that\n\
+Eggman fella wasn't messing \n\
+aroundnear the end? But that \n\
+didn't stop you, did it??\n\
+I'm proud of ya, kid. We all\n\
+are. Oh, speaking of! I have\n\
+this from the dev of this whole\n\
+project. Ahem...\n\
 『Thanks for playing Super\n\
-Mario 64! This is the\n\
+Cream 64! This is the\n\
 end of the game, but not\n\
-the end of the fun." \
+the end of the fun. \n\
+Wanna give a special thanks to\n\
+rom-hack-discussion on the\n\
+Simpleflips discord specifically\n\
+to the following:\n\
+Cheezepin, Wiseguy, Sweet Matt,\n\
+anonymousmoose, PablosCorner, \n\
+kurethedead, The Sour OG, Rovert,\n\
+Arthurtilly, Theison and more!!\n\
+Also special thanks to the \n\
+Sonic specific discords I'm\n\
+in for also giving me suggestions \n\
+and feedback.\n\
+and ANOTHER special thanks to\n\
+my good friends, Magicalpoptarts,\n\
+Catti, Fudger Nutter and the \n\
+Roys Boys for all the support!\n\
+It's been a crazy ride and\n\
+I'm glad to have this finally\n\
+completed, or at least to a \n\
+certain point that I'm happy with.\n\
+I'm gonna take a well needed\n\
+break and, hopefully at some\n\
+point, I'll use these new assets\n\
+to create that custom hack." \
 KEEP_ON_PLAYING "』\n\
 \n\
-The Super Mario 64 Team"))
+Gamebun~"))
 
 DEFINE_DIALOG(DIALOG_162, 1, 4, 30, 200, _("\
-No, no, no! Not you\n\
-again! I'm in a great\n\
-hurry, can't you see?\n\
-\n\
-I've no time to squabble\n\
-over Stars. Here, have it.\n\
-I never meant to hide it\n\
-from you...\n\
-It's just that I'm in such\n\
-a rush. That's it, that's\n\
-all. Now, I must be off.\n\
-Owww! Let me go!"))
+Oh thank goodness you\n\
+got me again!! I keep falling\n\
+for his schemes like the dum\n\
+dum I am.\n\
+Please, take this Star Ring\n\
+and get it away from me. \n\
+I need to get out of this\n\
+basement...\n\
+I'll make sure to see you\n\
+later, Cream! I won't forget \n\
+your generousity!! "))
 
 DEFINE_DIALOG(DIALOG_163, 1, 5, 30, 200, _("\
 Noooo! You've really\n\
 beaten me this time,\n\
-Mario! I can't stand\n\
-losing to you!\n\
-\n\
+Cream! I can't believe\n\
+you destroyed my greatest\n\
+invention!!\n\
 My troops...worthless!\n\
 They've turned over all\n\
-the Power Stars! What?!\n\
+the Red Star Rings! What?!\n\
 There are 120 in all???\n\
 \n\
-Amazing! There were some\n\
-in the castle that I\n\
+Incredible! There were some\n\
+in the castle that I somehow\n\
 missed??!!\n\
 \n\
 \n\
-Now I see peace\n\
-returning to the world...\n\
-Oooo! I really hate that!\n\
-I can't watch--\n\
-I'm outta here!\n\
+You may have won this fight\n\
+but I'll be back! Just you\n\
+wait and see what I'll come\n\
+up with next. Sayonara,\n\
+Cream the Rabbit.\n\
 Just you wait until next\n\
 time. Until then, keep\n\
 that Control Stick\n\
 smokin'!\n\
-Buwaa ha ha!"))
+Buwaa ha ha!\n\
+\n\
+\n\
+\n\
+(Oh and...umm...\n\
+Happy Birthday...)"))
 
 DEFINE_DIALOG(DIALOG_164, 1, 4, 30, 200, _("\
-Mario! What's up, pal?\n\
+Cream! What's up, pal?\n\
 I haven't been on the\n\
 slide lately, so I'm out\n\
 of shape.\n\
@@ -2069,28 +2129,66 @@ this post."))
 
 DEFINE_DIALOG(DIALOG_166, 1, 4, 30, 200, _("\
 I'll be back soon.\n\
-I'm out training now,\n\
+I'm getting a tune up,\n\
 so come back later.\n\
-//--Koopa the Quick"))
+//--Gemerl the Gizoid"))
 
 DEFINE_DIALOG(DIALOG_167, 1, 4, 30, 200, _("\
-Princess Toadstool's\n\
-castle is just ahead.\n\
+Welcome to Super Cream 64!\n\
+This sign exists purely to act\n\
+as the credits so not to include \n\
+a huge readme in the file.\n\
+Assets credits:\n\
 \n\
 \n\
-Press [A] to jump, [Z] to\n\
-crouch, and [B] to punch,\n\
-read a sign, or grab\n\
-something.\n\
-Press [B] again to throw\n\
-something you're holding."))
+\n\
+Ripped Models, Textures and\n\
+Sounds:\n\
+Models/Textures/Sounds-\n\
+Resources\n\
+Custom Models:\n\
+Gamebun\n\
+Red Star Ring sprite:\n\
+Fiery\n\
+New Midis:\n\
+VGMusic\n\
+edited into m64s:\n\
+Gamebun\n\
+Streamed music possible thanks\n\
+to sm64-audio-manager by \n\
+Arthurtilly\n\
+\n\
+Cheese follow code possible\n\
+thanks to Cheezepin and Wiseguy\n\
+\n\
+\n\
+Console tested by Sweet Matt\n\
+(it works but chugs so play\n\
+at your own risk.)\n\
+\n\
+Wanna give a special thanks to\n\
+rom-hack-discussion on the\n\
+Simpleflips discord specifically\n\
+to the following: \n\
+Cheezepin, Wiseguy, Sweet Matt,\n\
+anonymousmoose, PablosCorner, \n\
+kurethedead, The Sour OG, Rovert,\n\
+Arthurtilly, Theison and more!!\n\
+Also special thanks to the \n\
+Sonic specific discords I'm\n\
+in for also giving me suggestions \n\
+and feedback.\n\
+and ANOTHER special thanks to\n\
+my good friends, Magicalpoptarts,\n\
+Catti, Fudger Nutter and the \n\
+Roys Boys for all the support!"))
 
 DEFINE_DIALOG(DIALOG_168, 1, 5, 30, 200, _("\
 Hey! Knock it off! That's\n\
 the second time you've\n\
 nailed me. Now you're\n\
-asking for it, linguine\n\
-breath!"))
+asking for it, short\n\
+stuff!"))
 
 DEFINE_DIALOG(DIALOG_169, 1, 4, 30, 200, _("\
 Keep out!\n\

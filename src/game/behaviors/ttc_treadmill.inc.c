@@ -9,7 +9,7 @@
 /**
  * Collision models for the different sized treadmills.
  */
-static Collision const *sTTCTreadmillCollisionModels[] = {
+static void *sTTCTreadmillCollisionModels[] = {
     ttc_seg7_collision_070152B4,
     ttc_seg7_collision_070153E0,
 };

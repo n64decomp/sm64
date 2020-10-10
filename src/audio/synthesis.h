@@ -19,8 +19,7 @@ struct ReverbRingBufferItem
     s16 *toDownsampleLeft;
     s16 *toDownsampleRight; // data pointed to by left and right are adjacent in memory
     s32 startPos; // start pos in ring buffer
-    s16 lengthA; // first length in ring buffer (from startPos, at most until end)
-    s16 lengthB; // second length in ring buffer (from pos 0)
+    s16 lengths[2]; // first length in ring buffer (max until end) and second length in ring buffer (from pos 0)
 }; // size = 0x14
 
 struct SynthesisReverb
@@ -64,7 +63,7 @@ extern f32 *gCurrentRightVolRamping; // Points to any of the three right buffers
 extern struct SynthesisReverb gSynthesisReverb;
 #endif
 
-u64 *synthesis_execute(u64 *cmdBuf, s32 *writtenCmds, s16 *aiBuf, s32 bufLen);
+u64 *synthesis_execute(u64 *cmdBuf, s32 *writtenCmds, u16 *aiBuf, s32 bufLen);
 #ifndef VERSION_EU
 void note_init_volume(struct Note *note);
 void note_set_vel_pan_reverb(struct Note *note, f32 velocity, f32 pan, u8 reverb);
@@ -73,4 +72,4 @@ void note_enable(struct Note *note);
 void note_disable(struct Note *note);
 #endif
 
-#endif // AUDIO_SYNTHESIS_H
+#endif /* AUDIO_SYNTHESIS_H */

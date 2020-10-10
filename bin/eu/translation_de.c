@@ -1,7 +1,5 @@
 // SM64 (EU) Segment 19 - Deutsch
 
-#include "macros.h"
-
 #include "game/ingame_menu.h"
 
 #include "make_const_nonconst.h"

@@ -102,7 +102,7 @@
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "1A"
+            "sound": "22"
         },
         "inst2": {
             "release_rate": 208,
@@ -121,10 +121,8 @@
         },
         "inst5": {
             "release_rate": 53,
-            "normal_range_hi": 50,
             "envelope": "envelope5",
-            "sound": "16",
-            "sound_hi": "45"
+            "sound": "22"
         },
         "inst6": {
             "release_rate": 10,
@@ -152,9 +150,13 @@
             "sound_hi": "20"
         },
         "inst9": {
-            "release_rate": 43,
-            "envelope": "envelope9",
-            "sound": "41"
+            "release_rate": 15,
+            "normal_range_lo": 27,
+            "normal_range_hi": 46,
+            "envelope": "envelope10",
+            "sound_lo": "23",
+            "sound": "24",
+            "sound_hi": "25"
         },
         "inst10": {
             "release_rate": 15,

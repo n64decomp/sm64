@@ -1,8 +1,7 @@
-#ifndef GEO_MISC_H
-#define GEO_MISC_H
+#ifndef _TRANSPARENT_TEXTURE_H
+#define _TRANSPARENT_TEXTURE_H
 
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include "types.h"
 
 enum FlyingCarpetState
 {
@@ -13,20 +12,15 @@ enum FlyingCarpetState
 
 extern s8 gFlyingCarpetState;
 
-#ifndef GBI_FLOATS
 extern void make_vertex(
     Vtx *vtx, s32 n, s16 x, s16 y, s16 z, s16 tx, s16 ty, u8 r, u8 g, u8 b, u8 a
 );
-#else
-extern void make_vertex(
-    Vtx *vtx, s32 n, f32 x, f32 y, f32 z, s16 tx, s16 ty, u8 r, u8 g, u8 b, u8 a
-);
-#endif
 extern s16 round_float(f32);
-extern Gfx *geo_exec_inside_castle_light(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]);
-extern Gfx *geo_exec_flying_carpet_timer_update(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]);
-extern Gfx *geo_exec_flying_carpet_create(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]);
-extern Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]);
+extern Gfx *geo_exec_inside_castle_light(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_exec_flying_carpet_timer_update(s32 callContext, struct GraphNode *node,
+                                                f32 mtx[4][4]);
+extern Gfx *geo_exec_flying_carpet_create(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
+extern Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, f32 mtx[4][4]);
 
 #define gLoadBlockTexture(dl, width, height, format, image)                                                  \
 {                                                                                                            \
@@ -38,4 +32,5 @@ extern Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, UN
     gDPLoadBlock((dl), G_TX_LOADTILE, 0, 0, (width) * (height) - 1, CALC_DXT((width), G_IM_SIZ_16b_BYTES))   \
 }
 
-#endif // GEO_MISC_H
+
+#endif /* _TRANSPARENT_TEXTURE_H */

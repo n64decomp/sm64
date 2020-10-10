@@ -10,7 +10,7 @@ const struct Animation *const peach_seg5_anims_0501C41C[] = {
     &peach_seg5_anim_05015468,
     &peach_seg5_anim_05016798,
     &peach_seg5_anim_05018664,
-    &peach_seg5_anim_0501B328,
+    &peach_anim_peach_new_smooch, // Smooch
     &peach_seg5_anim_0501C404,
     NULL,
 };

@@ -1,0 +1,10 @@
+--- src/game/mario_misc.c	2020-07-04 10:18:55.000000000 -0500
++++ src/game/mario_misc.c	2020-07-17 10:51:51.562861800 -0500
+@@ -12,7 +12,6 @@
+ #include "engine/math_util.h"
+ #include "envfx_snow.h"
+ #include "game_init.h"
+-#include "goddard/renderer.h"
+ #include "interaction.h"
+ #include "level_update.h"
+ #include "mario_misc.h"

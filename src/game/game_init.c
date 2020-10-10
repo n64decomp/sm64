@@ -1,7 +1,6 @@
 #include <ultra64.h>
 
 #include "sm64.h"
-#include "gfx_dimensions.h"
 #include "audio/external.h"
 #include "buffers/buffers.h"
 #include "buffers/gfx_output_buffer.h"
@@ -17,7 +16,7 @@
 #include "sound_init.h"
 #include "print.h"
 #include "segment2.h"
-#include "segment_symbols.h"
+#include "main_entry.h"
 #include "thread6.h"
 #include <prevent_bss_reordering.h>
 
@@ -45,7 +44,7 @@ struct MarioAnimation D_80339D10;
 struct MarioAnimation gDemo;
 UNUSED u8 filler80339D30[0x90];
 
-s32 unused8032C690 = 0;
+int unused8032C690 = 0;
 u32 gGlobalTimer = 0;
 
 static u16 sCurrFBNum = 0;
@@ -141,16 +140,15 @@ void display_frame_buffer(void) {
 }
 
 /** Clears the framebuffer, allowing it to be overwritten. */
-void clear_frame_buffer(s32 color) {
+void clear_frame_buffer(s32 a) {
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
     gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
 
-    gDPSetFillColor(gDisplayListHead++, color);
-    gDPFillRectangle(gDisplayListHead++,
-                     GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), BORDER_HEIGHT,
-                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - BORDER_HEIGHT - 1);
+    gDPSetFillColor(gDisplayListHead++, a);
+    gDPFillRectangle(gDisplayListHead++, 0, BORDER_HEIGHT, SCREEN_WIDTH - 1,
+                     SCREEN_HEIGHT - 1 - BORDER_HEIGHT);
 
     gDPPipeSync(gDisplayListHead++);
 
@@ -158,24 +156,19 @@ void clear_frame_buffer(s32 color) {
 }
 
 /** Clears and initializes the viewport. */
-void clear_viewport(Vp *viewport, s32 color) {
+void clear_viewport(Vp *viewport, s32 b) {
     s16 vpUlx = (viewport->vp.vtrans[0] - viewport->vp.vscale[0]) / 4 + 1;
     s16 vpUly = (viewport->vp.vtrans[1] - viewport->vp.vscale[1]) / 4 + 1;
-    s16 vpLrx = (viewport->vp.vtrans[0] + viewport->vp.vscale[0]) / 4 - 2;
+    s16 VpLrx = (viewport->vp.vtrans[0] + viewport->vp.vscale[0]) / 4 - 2;
     s16 vpLry = (viewport->vp.vtrans[1] + viewport->vp.vscale[1]) / 4 - 2;
-
-#ifdef WIDESCREEN
-    vpUlx = GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(vpUlx);
-    vpLrx = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(SCREEN_WIDTH - vpLrx);
-#endif
 
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
     gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
 
-    gDPSetFillColor(gDisplayListHead++, color);
-    gDPFillRectangle(gDisplayListHead++, vpUlx, vpUly, vpLrx, vpLry);
+    gDPSetFillColor(gDisplayListHead++, b);
+    gDPFillRectangle(gDisplayListHead++, vpUlx, vpUly, VpLrx, vpLry);
 
     gDPPipeSync(gDisplayListHead++);
 
@@ -193,11 +186,9 @@ void draw_screen_borders(void) {
     gDPSetFillColor(gDisplayListHead++, GPACK_RGBA5551(0, 0, 0, 0) << 16 | GPACK_RGBA5551(0, 0, 0, 0));
 
 #if BORDER_HEIGHT != 0
-    gDPFillRectangle(gDisplayListHead++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), 0,
-                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, BORDER_HEIGHT - 1);
-    gDPFillRectangle(gDisplayListHead++,
-                     GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), SCREEN_HEIGHT - BORDER_HEIGHT,
-                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - 1);
+    gDPFillRectangle(gDisplayListHead++, 0, 0, SCREEN_WIDTH - 1, BORDER_HEIGHT - 1);
+    gDPFillRectangle(gDisplayListHead++, 0, SCREEN_HEIGHT - BORDER_HEIGHT, SCREEN_WIDTH - 1,
+                     SCREEN_HEIGHT - 1);
 #endif
 }
 
@@ -230,9 +221,17 @@ void create_task_structure(void) {
     gGfxSPTask->task.t.ucode_data_size = SP_UCODE_DATA_SIZE;
     gGfxSPTask->task.t.dram_stack = (u64 *) gGfxSPTaskStack;
     gGfxSPTask->task.t.dram_stack_size = SP_DRAM_STACK_SIZE8;
+    #ifdef VERSION_EU
+    // terrible hack
+    gGfxSPTask->task.t.output_buff = 
+        (u64 *)((u8 *) gGfxSPTaskOutputBuffer - 0x670 + 0x280);
+    gGfxSPTask->task.t.output_buff_size =
+        (u64 *)((u8 *) gGfxSPTaskOutputBuffer+ 0x280 + 0x17790);
+    #else
     gGfxSPTask->task.t.output_buff = gGfxSPTaskOutputBuffer;
     gGfxSPTask->task.t.output_buff_size =
         (u64 *)((u8 *) gGfxSPTaskOutputBuffer + sizeof(gGfxSPTaskOutputBuffer));
+    #endif
     gGfxSPTask->task.t.data_ptr = (u64 *) &gGfxPool->buffer;
     gGfxSPTask->task.t.data_size = entries * sizeof(Gfx);
     gGfxSPTask->task.t.yield_data_ptr = (u64 *) gGfxSPTaskYieldBuffer;
@@ -278,7 +277,7 @@ void draw_reset_bars(void) {
         sp18 += D_8032C648++ * (SCREEN_WIDTH / 4);
 
         for (sp24 = 0; sp24 < ((SCREEN_HEIGHT / 16) + 1); sp24++) {
-            // Loop must be one line to match on -O2
+            // Must be on one line to match -O2
             for (sp20 = 0; sp20 < (SCREEN_WIDTH / 4); sp20++) *sp18++ = 0;
             sp18 += ((SCREEN_WIDTH / 4) * 14);
         }
@@ -548,7 +547,7 @@ void init_controllers(void) {
         if (gControllerBits & (1 << port)) {
             // the game allows you to have just 1 controller plugged
             // into any port in order to play the game. this was probably
-            // so if any of the ports didn't work, you can have controllers
+            // so if any of the ports didnt work, you can have controllers
             // plugged into any of them and it will work.
 #ifdef VERSION_SH
             gControllers[cont].port = port;
@@ -603,7 +602,7 @@ void thread5_game_loop(UNUSED void *arg) {
     set_sound_mode(save_file_get_sound_mode());
     rendering_init();
 
-    while (TRUE) {
+    while (1) {
         // if the reset timer is active, run the process to reset the game.
         if (gResetTimer) {
             draw_reset_bars();

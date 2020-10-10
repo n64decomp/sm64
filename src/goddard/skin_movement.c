@@ -1,13 +1,12 @@
-#include <PR/ultratypes.h>
-
-#include "debug_utils.h"
-#include "gd_math.h"
+#include <ultra64.h>
+#include <macros.h>
 #include "gd_types.h"
-#include "joints.h"
-#include "macros.h"
 #include "objects.h"
-#include "skin.h"
 #include "skin_movement.h"
+#include "debug_utils.h"
+#include "joints.h"
+#include "skin.h"
+#include "gd_math.h"
 
 /* bss */
 struct ObjWeight *sSkinNetCurWeight;
@@ -15,7 +14,7 @@ static Mat4f D_801B9EA8; // TODO: rename to sHead2Mtx?
 static struct ObjJoint *D_801B9EE8;
 
 /* @ 22FDB0 for 0x180 */
-void func_801815E0(Mat4f *mtx) {
+void Unknown801815E0(Mat4f *mtx) {
     struct GdVec3f scratchVec;
 
     scratchVec.x = (*mtx)[0][0];
@@ -108,7 +107,7 @@ void func_80181894(struct ObjJoint *joint) {
 }
 
 /* @ 2301A0 for 0x110 */
-void func_801819D0(struct ObjVertex *vtx) {
+void Unknown801819D0(struct ObjVertex *vtx) {
     struct GdVec3f localVec;
     UNUSED u8 pad24[0x10];
 
@@ -127,7 +126,7 @@ void func_801819D0(struct ObjVertex *vtx) {
     }
 }
 
-/* @ 2302B0 for 0xA8; orig name: func_80181AE0 */
+/* @ 2302B0 for 0xA8; orig name: Unknown80181AE0 */
 void reset_weight(struct ObjWeight *weight) {
     UNUSED u32 vtxCount;
     UNUSED u32 pad20;
@@ -137,7 +136,7 @@ void reset_weight(struct ObjWeight *weight) {
     sTargetWeightID = 0;
     if ((skinGroup = gGdSkinNet->skinGrp) != NULL) {
         vtxCount =
-            apply_to_obj_types_in_group(OBJ_TYPE_VERTICES, (applyproc_t) func_801819D0, skinGroup);
+            apply_to_obj_types_in_group(OBJ_TYPE_VERTICES, (applyproc_t) Unknown801819D0, skinGroup);
     } else {
         fatal_printf("reset_weight(): Skin net has no SkinGroup");
     }
@@ -148,7 +147,7 @@ void reset_weight(struct ObjWeight *weight) {
 }
 
 /* @ 230358 for 0x78; rename to reset_joint_weight? */
-void func_80181B88(struct ObjJoint *joint) {
+void Unknown80181B88(struct ObjJoint *joint) {
     struct ObjGroup *group;
 
     gd_inverse_mat4f(&joint->matE8, &D_801B9EA8);

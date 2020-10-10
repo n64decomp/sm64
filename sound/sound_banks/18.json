@@ -55,6 +55,18 @@
             [1, 32700],
             [32700, 29430],
             "hang"
+        ],
+        "envelope9": [
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope10": [
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
         ]
     },
     "instruments": {
@@ -71,7 +83,7 @@
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "37"
+            "sound": "22"
         },
         "inst3": {
             "release_rate": 208,
@@ -175,6 +187,16 @@
             "sound_lo": "38",
             "sound": {"sample": "08", "tuning": 2.121321},
             "sound_hi": "38"
+        },
+        "inst8": {
+            "release_rate": 208,
+            "envelope": "envelope9",
+            "sound": "29"
+        },
+        "inst9": {
+            "release_rate": 208,
+            "envelope": "envelope10",
+            "sound": "29"
         }
     },
     "instrument_list": [
@@ -182,8 +204,8 @@
         "inst1",
         "inst2",
         "inst3",
-        null,
-        null,
+        "inst8",
+        "inst9",
         null,
         null,
         null,

@@ -94,4 +94,44 @@ extern const Gfx yoshi_seg5_dl_05022408[];
 extern const Gfx yoshi_seg5_dl_05022608[];
 extern const struct Animation *const yoshi_seg5_anims_05024100[];
 
+#include "peach/geo_header.h"
+
+#include "mark/geo_header.h"
+
+
+#include "mark/anim_header.h"
+#include "mark_ed/geo_header.h"
+
+
+#include "mark_ed/anim_header.h"
+#include "chocola_ed/geo_header.h"
+
+#include "cheese_ed/geo_header.h"
+
+#include "gemerl_ed/geo_header.h"
+
+
+#include "gemerl_ed/anim_header.h"
+
+#include "gemerl/anim_header.h"
+#include "katalina_ed/geo_header.h"
+
+
+#include "katalina_ed/anim_header.h"
+#include "blaze_ed/geo_header.h"
+
+
+#include "blaze_ed/anim_header.h"
+#include "marine_ed/geo_header.h"
+
+
+#include "marine_ed/anim_header.h"
+#include "toad_original_ed/geo_header.h"
+
+
+#include "toad_original_ed/anim_header.h"
+#include "mips_ed/geo_header.h"
+
+
+#include "mips_ed/anim_header.h"
 #endif

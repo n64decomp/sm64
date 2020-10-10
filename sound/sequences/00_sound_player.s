@@ -2160,7 +2160,7 @@ chan_end
 
 .layer_CB2:
 layer_transpose 253
-layer_note1 39, 0x1c, 127
+layer_note1 43, 0x1c, 127
 layer_end
 
 .sound_mario_whoa:
@@ -2453,7 +2453,7 @@ chan_setlayer 0, .layer_E49
 chan_end
 
 .layer_E49:
-layer_note1 38, 0x91, 127
+layer_note1 38, 0xF0, 127
 layer_end
 
 .sound_mario_punch_wah:
@@ -2514,12 +2514,12 @@ layer_jump .layer_C4E
 
   .sound_mario_game_over:
   chan_setbank 8
-  chan_setinstr 17
+  chan_setinstr 18
   chan_setlayer 0, .layer_EA0
   chan_end
 
   .layer_EA0:
-  layer_note1 39, 0x55, 110
+  layer_note1 39, 0x55, 0
   layer_end
 
   .sound_mario_hello:
@@ -2529,7 +2529,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_EAC:
-  layer_note1 39, 0x46, 127
+  layer_note1 39, 0x0, 0
   layer_end
 
   .sound_mario_press_start_to_play:
@@ -2539,7 +2539,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_EB8:
-  layer_note1 39, 0x12c, 127
+  layer_note1 39, 0x12c, 0
   layer_end
 
   .sound_mario_twirl_bounce:
@@ -2549,7 +2549,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_EC5:
-  layer_note1 39, 0x30, 127
+  layer_note1 39, 0x40, 127
   layer_end
 
   .sound_mario_snoring3:
@@ -2570,9 +2570,9 @@ layer_jump .layer_C4E
 
   .layer_fn_EE1:
   layer_setinstr 21
-  layer_note1 37, 0x53, 127
+  layer_note1 39, 0x53, 127
   layer_setinstr 15
-  layer_note1 37, 0x4e, 64
+  layer_note1 39, 0x4e, 64
   layer_end
 
   .sound_mario_so_longa_bowser:
@@ -2638,7 +2638,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_F47:
-  layer_note1 39, 0x64, 127
+  layer_note1 39, 0xB4, 127
   layer_end
 
   .sound_peach_something_special:
@@ -2718,7 +2718,7 @@ sound_ref .sound_general_quiet_bubble2
 sound_ref .sound_general_castle_trap_open
 sound_ref .sound_general_wall_explosion
 sound_ref .sound_general_coin
-sound_ref .sound_general_coin
+sound_ref .sound_general_ring
 sound_ref .sound_general_coin_water
 sound_ref .sound_general_coin_water
 sound_ref .sound_general_coin_water
@@ -2744,7 +2744,7 @@ sound_ref .sound_general_clam_shell3
 sound_ref .sound_general_painting_eject
 sound_ref .sound_general_painting_eject
 sound_ref .sound_general_painting_eject
-sound_ref .sound_general_painting_eject
+sound_ref .sound_general_explosion_badnik
 sound_ref .sound_menu_star_sound
 sound_ref .sound_general_platform
 sound_ref .sound_general_bobomb_explosion
@@ -3065,6 +3065,17 @@ layer_note1 30, 0x5, 40
 layer_note1 42, 0x37, 85
 layer_end
 
+.sound_general_ring:
+chan_setbank 8
+chan_setinstr 17
+chan_setlayer 0, .layer_11E5
+chan_end
+
+.layer_11E5:
+
+layer_note1 39, 0x37, 95
+layer_end
+
 .sound_general_coin_water:
 chan_setbank 9
 chan_setinstr 3
@@ -3259,6 +3270,16 @@ chan_setlayer 0, .layer_1338
 chan_end
 
 .layer_1338:
+layer_note1 39, 0x73, 127
+layer_end
+
+.sound_general_explosion_badnik:
+chan_setbank 8
+chan_setinstr 18
+chan_setlayer 0, .layer_1339
+chan_end
+
+.layer_1339:
 layer_note1 39, 0x73, 95
 layer_end
 
@@ -3869,25 +3890,13 @@ layer_note1 31, 0x7f, 115
 layer_end
 
 .sound_general_collect_1up:
-chan_setbank 9
-chan_setinstr 3
-chan_setenvelope .envelope_3358
+chan_setbank 8
+chan_setinstr 19
 chan_setlayer 0, .layer_1734
-chan_setdecayrelease 50
-chan_setlayer 1, .layer_1732
 chan_end
 
-.layer_1732:
-layer_delay 0x4
-
 .layer_1734:
-layer_transpose 24
-layer_note1 31, 0xc, 100
-layer_note1 34, 0xc, 100
-layer_note1 43, 0xc, 100
-layer_note1 39, 0xc, 100
-layer_note1 41, 0xc, 100
-layer_note1 46, 0x18, 100
+layer_note1 39, 0x96, 95
 layer_end
 
 .sound_general_rotating_block_alert:
@@ -5232,8 +5241,8 @@ layer_note1 39, 0x18, 127
 layer_end
 
 .sound_obj_boo_laugh_short:
-chan_setbank 6
-chan_setinstr 9
+chan_setbank 9
+chan_setinstr 6
 chan_setlayer 0, .layer_202E
 chan_end
 
@@ -6072,8 +6081,8 @@ layer_note1 34, 0xaf, 127
 layer_end
 
 .sound_obj_boo_laugh_long:
-chan_setbank 6
-chan_setinstr 9
+chan_setbank 9
+chan_setinstr 6
 chan_setval 25
 chan_call .set_reverb
 chan_setlayer 0, .layer_253E
@@ -7300,7 +7309,7 @@ chan_setlayer 0, .layer_2D87
 chan_end
 
 .layer_2D87:
-layer_note1 39, 0x18, 105
+layer_note1 39, 0x28, 105
 layer_end
 
 .sound_menu_camera_turn:

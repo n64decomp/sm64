@@ -130,16 +130,16 @@
  * File Select Text
  */
 // Main Screens
-#define TEXT_MARIO _("MARIO") // View Score Menu
+#define TEXT_MARIO _("CREAM") // View Score Menu
 #define TEXT_SELECT_FILE _("SELECT FILE")
 #define TEXT_CHECK_FILE _("CHECK FILE")
 #define TEXT_COPY_FILE _("COPY FILE")
 #define TEXT_ERASE_FILE _("ERASE FILE")
 #define TEXT_SOUND_SELECT _("SOUND SELECT")
-#define TEXT_FILE_MARIO_A _("MARIO A")
-#define TEXT_FILE_MARIO_B _("MARIO B")
-#define TEXT_FILE_MARIO_C _("MARIO C")
-#define TEXT_FILE_MARIO_D _("MARIO D")
+#define TEXT_FILE_MARIO_A _("CREAM A")
+#define TEXT_FILE_MARIO_B _("CREAM B")
+#define TEXT_FILE_MARIO_C _("CREAM C")
+#define TEXT_FILE_MARIO_D _("CREAM D")
 
 // Menu Options
 #define TEXT_SCORE _("SCORE")
@@ -179,7 +179,7 @@
 #define TEXT_SURE _("SURE?")
 #define TEXT_YES _("YES")
 #define TEXT_NO _("NO")
-#define TEXT_FILE_MARIO_A_JUST_ERASED _("MARIO A JUST ERASED")
+#define TEXT_FILE_MARIO_A_JUST_ERASED _("CREAM A JUST ERASED")
 
 /**
  * Menus Text (Pause, Course Completed)
@@ -194,8 +194,8 @@
 #endif
 
 // Camera Options
-#define TEXT_LAKITU_MARIO _("LAKITU + MARIO")
-#define TEXT_LAKITU_STOP _("LAKITU + STOP")
+#define TEXT_LAKITU_MARIO _("CREAM + OMOCHAO")
+#define TEXT_LAKITU_STOP _("OMOCHAO + STOP")
 #define TEXT_NORMAL_UPCLOSE __("(NORMAL)(UP-CLOSE)")
 #define TEXT_NORMAL_FIXED __("(NORMAL)(FIXED)")
 
@@ -212,15 +212,15 @@
 /**
  * Ending Peach cutscene text.
  */
-#define TEXT_FILE_MARIO_EXCLAMATION _("Mario!")
-#define TEXT_POWER_STARS_RESTORED __("The power of the Stars is restored to the castle...")
+#define TEXT_FILE_MARIO_EXCLAMATION _("Cream!")
+#define TEXT_POWER_STARS_RESTORED __("The rings are restored and everyone is saved...")
 #define TEXT_THANKS_TO_YOU __("...and it's all thanks to you!")
-#define TEXT_THANK_YOU_MARIO __("Thank you, Mario!")
-#define TEXT_SOMETHING_SPECIAL __("We have to do something special for you...")
-#define TEXT_LISTEN_EVERYBODY _("Listen, everybody,")
-#define TEXT_LETS_HAVE_CAKE _("let's bake a delicious cake...")
-#define TEXT_FOR_MARIO _("...for Mario...")
-#define TEXT_FILE_MARIO_QUESTION _("Mario!")
+#define TEXT_THANK_YOU_MARIO __("I'm so proud of you, Cream!")
+#define TEXT_SOMETHING_SPECIAL __("I hope you had a wonderful birthday!")
+#define TEXT_LISTEN_EVERYBODY _("Ok, everybody,")
+#define TEXT_LETS_HAVE_CAKE _("We have a delicious cake to finish...")
+#define TEXT_FOR_MARIO _("...for Cream...")
+#define TEXT_FILE_MARIO_QUESTION _("Cream!")
 
 #endif
 
@@ -470,6 +470,6 @@
 #define TEXT_MENU_SA_DE _("   VERSTECKTES AQUARIUM")
 #define TEXT_MENU_NONE_DE _("")
 #define TEXT_MENU_STARS_DE _("   GEHEIME STERNE")
-#endif // VERSION_EU
+#endif
 
-#endif // TEXT_STRINGS_H
+#endif

@@ -82,11 +82,9 @@ SECTIONS
 
    /* lib/src/__osDevMgrMain.c and lib/src/osCreateViManager.c contain infinite
     * loops compiled without -g, which cause the return statements and the .o
-    * files themselves to be aligned to 32-byte boundaries. But the linker
-    * Nintendo used did not respect .o file alignment, and aligned the files
-    * only to 16 bytes, in some cases misaligning them. We force the same to
-    * happen using the SUBALIGN directive. This is harmless; the alignment is
-    * just an optimization. */
+    * files themselves to be aligned to 32-byte boundaries. But in the binary,
+    * they are actually aligned only to 16 bytes! We force this to happen using
+    * a SUBALIGN directive. */
    BEGIN_SEG(main, SEG_MAIN) SUBALIGN(16)
    {
       BUILD_DIR/asm/entry.o(.text);
@@ -152,7 +150,6 @@ SECTIONS
       BUILD_DIR/src/audio/seqplayer.o(.text);
       BUILD_DIR/src/audio/external.o(.text);
       BUILD_DIR/src/audio/port_eu.o(.text);
-
 #if defined(VERSION_EU) || defined(VERSION_SH)
       BUILD_DIR/libultra.a:string.o(.text);
       BUILD_DIR/libultra.a:_Printf.o(.text);
@@ -261,7 +258,9 @@ SECTIONS
       BUILD_DIR/libultra.a:func_802F7140.o(.text)
       BUILD_DIR/libultra.a:func_802F71A0.o(.text)
       BUILD_DIR/libultra.a:func_802F71F0.o(.text)
+
       BUILD_DIR/lib/rsp.o(.text);
+
 #else
       BUILD_DIR/src/game*.o(.text);
       BUILD_DIR/src/audio*.o(.text);
@@ -311,7 +310,9 @@ SECTIONS
       BUILD_DIR/libultra.a:guTranslateF.o(.text);
       BUILD_DIR/libultra.a:guRotateF.o(.text);
       BUILD_DIR/libultra.a:guScaleF.o(.text);
+#ifndef VERSION_EU
       BUILD_DIR/libultra.a:osAiSetFrequency.o(.text);
+#endif
       BUILD_DIR/libultra.a:alBnkfNew.o(.text);
       BUILD_DIR/libultra.a:osWritebackDCache.o(.text);
       BUILD_DIR/libultra.a:osAiGetLength.o(.text);
@@ -417,21 +418,16 @@ SECTIONS
       BUILD_DIR/src/game/obj_behaviors.o(.data*);
       BUILD_DIR/src/game/obj_behaviors_2.o(.data*);
 #ifndef VERSION_EU
-      /* wildcard doesn't match on EU due to files being moved to engine/ */
+      /* wildcard doesn't work on EU due to files being moved to engine/ */
       BUILD_DIR/src/game*.o(.data*);
 #endif
-      BUILD_DIR/src/audio/synthesis.o(.data*);
-      BUILD_DIR/src/audio/heap.o(.data*);
-      BUILD_DIR/src/audio/load.o(.data*);
-      BUILD_DIR/src/audio/playback.o(.data*);
-      BUILD_DIR/src/audio/effects.o(.data*);
-      BUILD_DIR/src/audio/seqplayer.o(.data*);
       BUILD_DIR/src/audio/external.o(.data*);
       BUILD_DIR/src/audio/port_eu.o(.data*);
       BUILD_DIR/src/audio/data.o(.data*);
       BUILD_DIR/src/audio*.o(.data*);
 
 #ifdef VERSION_EU
+
       BUILD_DIR/libultra.a:_Printf.o(.data*);
       BUILD_DIR/libultra.a:osInitialize.o(.data*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.data*);
@@ -439,15 +435,21 @@ SECTIONS
       BUILD_DIR/libultra.a:osCreatePiManager.o(.data*);
       BUILD_DIR/libultra.a:osContInit.o(.data*);
       BUILD_DIR/libultra.a:osAiSetNextBuffer.o(.data*);
+
       BUILD_DIR/libultra.a:_Litob.o(.data*);
+
       BUILD_DIR/libultra.a:__osExceptionPreamble.o(.data*);
+
       BUILD_DIR/libultra.a:osTimer.o(.data*);
       BUILD_DIR/libultra.a:__osViInit.o(.data*);
-      BUILD_DIR/libultra.a:__osDequeueThread.o(.data*);
+      BUILD_DIR/libultra.a:__osDequeueThread.o(.data*);  // ffff...
+
       BUILD_DIR/libultra.a:__osPiCreateAccessQueue.o(.data*);
       BUILD_DIR/libultra.a:__osSiCreateAccessQueue.o(.data*);
       BUILD_DIR/libultra.a:osViData.o(.data*);
+
 #else
+
       BUILD_DIR/libultra.a:osViTable.o(.data*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.data*);
       BUILD_DIR/libultra.a:osCreatePiManager.o(.data*);
@@ -468,7 +470,9 @@ SECTIONS
       BUILD_DIR/libultra.a:__osSyncPutChars.o(.data*);
       BUILD_DIR/libultra.a:guRotateF.o(.data*);
       BUILD_DIR/libultra.a:*.o(.data*);
+
 #endif
+
 
       /* rodata */
       BUILD_DIR/src/game/crash_screen.o(.rodata*);
@@ -530,7 +534,6 @@ SECTIONS
 
 #ifdef VERSION_EU
       BUILD_DIR/libultra.a:_Printf.o(.rodata*);
-#endif
 
       BUILD_DIR/libultra.a:guPerspectiveF.o(.rodata*);
       BUILD_DIR/libultra.a:llconv.o(.rodata*);
@@ -538,20 +541,25 @@ SECTIONS
       BUILD_DIR/libultra.a:sinf.o(.rodata*);
       BUILD_DIR/libultra.a:guRotateF.o(.rodata*);
 
-#ifdef VERSION_EU
       BUILD_DIR/libultra.a:_Litob.o(.rodata*);
       BUILD_DIR/libultra.a:_Ldtob.o(.rodata*);
+      
       BUILD_DIR/libultra.a:__osExceptionPreamble.o(.rodata*);
       BUILD_DIR/libultra.a:__osDevMgrMain.o(.rodata*);
+      
       BUILD_DIR/libultra.a:NaN.o(.rodata*);
 #else
+      BUILD_DIR/libultra.a:guPerspectiveF.o(.rodata*);
+      BUILD_DIR/libultra.a:llconv.o(.rodata*);
+      BUILD_DIR/libultra.a:cosf.o(.rodata*);
+      BUILD_DIR/libultra.a:sinf.o(.rodata*);
+      BUILD_DIR/libultra.a:guRotateF.o(.rodata*);
       BUILD_DIR/libultra.a:_Printf.o(.rodata*);
       BUILD_DIR/libultra.a:__osExceptionPreamble.o(.rodata*);
       BUILD_DIR/libultra.a:NaN.o(.rodata*);
       BUILD_DIR/libultra.a:_Litob.o(.rodata*);
       BUILD_DIR/libultra.a:_Ldtob.o(.rodata*);
 #endif
-
       BUILD_DIR/libultra.a:osSetIntMask.o(.rodata*);
       BUILD_DIR/libultra.a:guLookAtRef.o(.rodata*); /* Fast3DEX2 only */
 #ifndef VERSION_EU
@@ -603,26 +611,33 @@ SECTIONS
 #endif
       BUILD_DIR/src/audio/external.o(.bss*);
       BUILD_DIR/src/audio/port_eu.o(.bss*);
-
+   
 #ifdef VERSION_EU
       BUILD_DIR/libultra.a:osInitialize.o(.bss*);
+
       BUILD_DIR/libultra.a:osSetEventMesg.o(.bss*);
       BUILD_DIR/libultra.a:osSpTaskLoadGo.o(.bss*);
       BUILD_DIR/libultra.a:osCreateViManager.o(.bss*);
+      
       BUILD_DIR/libultra.a:osCreatePiManager.o(.bss*);
       BUILD_DIR/libultra.a:osContStartReadData.o(.bss*);
       BUILD_DIR/libultra.a:osContInit.o(.bss*);
+
       BUILD_DIR/libultra.a:guRotateF.o(.bss*);
+
       BUILD_DIR/libultra.a:unk_stack_data.o(.bss*);
       BUILD_DIR/libultra.a:osTimer.o(.bss*);
       BUILD_DIR/libultra.a:__osPiCreateAccessQueue.o(.bss*);
       BUILD_DIR/libultra.a:__osSiCreateAccessQueue.o(.bss*);
       BUILD_DIR/libultra.a:osEepromWrite.o(.bss*);
+      
       BUILD_DIR/libultra.a:kdebugserver.o(.bss*);
       BUILD_DIR/libultra.a:osLeoDiskInit.o(.bss*)
+
       BUILD_DIR/libultra.a:_Printf.o(.bss*);
       BUILD_DIR/libultra.a:osAiSetNextBuffer.o(.bss*);
       BUILD_DIR/libultra.a:EU_D_802f4330.o(.bss*);
+
 #else
       BUILD_DIR/libultra.a:osSetEventMesg.o(.bss*);
       BUILD_DIR/libultra.a:osSpTaskLoadGo.o(.bss*);
@@ -709,7 +724,7 @@ SECTIONS
    }
    END_NOLOAD(engine)
 
-   ASSERT((. <= SEG_FRAMEBUFFERS), "Error: engine segment extended into framebuffers.")
+   // ASSERT((. <= SEG_FRAMEBUFFERS), "Error: engine segment extended into framebuffers.")
 
    . = SEG_FRAMEBUFFERS;
    BEGIN_NOLOAD(framebuffers)
@@ -777,22 +792,6 @@ SECTIONS
       BUILD_DIR/src/menu/file_select.o(.text);
       BUILD_DIR/src/menu/star_select.o(.text);
       BUILD_DIR/src/menu*.o(.text);
-      BUILD_DIR/libgoddard.a:gd_main.o(.text);
-      BUILD_DIR/libgoddard.a:gd_memory.o(.text);
-      BUILD_DIR/libgoddard.a:sfx.o(.text);
-      BUILD_DIR/libgoddard.a:draw_objects.o(.text);
-      BUILD_DIR/libgoddard.a:objects.o(.text);
-      BUILD_DIR/libgoddard.a:skin_movement.o(.text);
-      BUILD_DIR/libgoddard.a:particles.o(.text);
-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.text);
-      BUILD_DIR/libgoddard.a:old_menu.o(.text);
-      BUILD_DIR/libgoddard.a:debug_utils.o(.text);
-      BUILD_DIR/libgoddard.a:joints.o(.text);
-      BUILD_DIR/libgoddard.a:skin.o(.text);
-      BUILD_DIR/libgoddard.a:gd_math.o(.text);
-      BUILD_DIR/libgoddard.a:shape_helper.o(.text);
-      BUILD_DIR/libgoddard.a:renderer.o(.text);
-      BUILD_DIR/libgoddard.a:*.o(.text);
       /* data, rodata, per file */
       BUILD_DIR/src/menu/level_select_menu.o(.data*);
       BUILD_DIR/src/menu/level_select_menu.o(.rodata*);
@@ -803,31 +802,6 @@ SECTIONS
       BUILD_DIR/src/menu/star_select.o(.rodata*);
       BUILD_DIR/src/menu*.o(.data*);
       BUILD_DIR/src/menu*.o(.rodata*);
-      /* goddard subsystem data */
-      BUILD_DIR/libgoddard.a:gd_main.o(.data*);
-      BUILD_DIR/libgoddard.a:draw_objects.o(.data*);
-      BUILD_DIR/libgoddard.a:objects.o(.data*);
-      BUILD_DIR/libgoddard.a:particles.o(.data*);
-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.data*);
-      BUILD_DIR/libgoddard.a:debug_utils.o(.data*);
-      BUILD_DIR/libgoddard.a:joints.o(.data*);
-      BUILD_DIR/libgoddard.a:shape_helper.o(.data*);
-      BUILD_DIR/libgoddard.a:renderer.o(.data*);
-      /* goddard subsystem rodata */
-      BUILD_DIR/libgoddard.a:gd_main.o(.rodata*);
-      BUILD_DIR/libgoddard.a:gd_memory.o(.rodata*);
-      BUILD_DIR/libgoddard.a:draw_objects.o(.rodata*);
-      BUILD_DIR/libgoddard.a:objects.o(.rodata*);
-      BUILD_DIR/libgoddard.a:skin_movement.o(.rodata*);
-      BUILD_DIR/libgoddard.a:particles.o(.rodata*);
-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.rodata*);
-      BUILD_DIR/libgoddard.a:old_menu.o(.rodata*);
-      BUILD_DIR/libgoddard.a:debug_utils.o(.rodata*);
-      BUILD_DIR/libgoddard.a:joints.o(.rodata*);
-      BUILD_DIR/libgoddard.a:skin.o(.rodata*);
-      BUILD_DIR/libgoddard.a:gd_math.o(.rodata*);
-      BUILD_DIR/libgoddard.a:shape_helper.o(.rodata*);
-      BUILD_DIR/libgoddard.a:renderer.o(.rodata*);
    }
    END_SEG(goddard)
    BEGIN_NOLOAD(goddard)
@@ -836,21 +810,6 @@ SECTIONS
       BUILD_DIR/src/menu/file_select.o(.bss*);
       BUILD_DIR/src/menu/star_select.o(.bss*);
       BUILD_DIR/src/menu*.o(.bss*);
-      BUILD_DIR/libgoddard.a:gd_main.o(.bss*);
-      BUILD_DIR/libgoddard.a:gd_memory.o(.bss*);
-      BUILD_DIR/libgoddard.a:sfx.o(.bss*);
-      BUILD_DIR/libgoddard.a:draw_objects.o(.bss*);
-      BUILD_DIR/libgoddard.a:objects.o(.bss*);
-      BUILD_DIR/libgoddard.a:skin_movement.o(.bss*);
-      BUILD_DIR/libgoddard.a:particles.o(.bss*);
-      BUILD_DIR/libgoddard.a:dynlist_proc.o(.bss*);
-      BUILD_DIR/libgoddard.a:old_menu.o(.bss*);
-      BUILD_DIR/libgoddard.a:debug_utils.o(.bss*);
-      BUILD_DIR/libgoddard.a:joints.o(.bss*);
-      BUILD_DIR/libgoddard.a:skin.o(.bss*);
-      BUILD_DIR/libgoddard.a:shape_helper.o(.bss*);
-      BUILD_DIR/libgoddard.a:renderer.o(.bss*);
-      BUILD_DIR/libgoddard.a:*.o(.bss*);
    }
    END_NOLOAD(goddard)
 
@@ -861,22 +820,30 @@ SECTIONS
    {
       BUILD_DIR/src/buffers/buffers.o(.bss*);
       BUILD_DIR/src/audio/globals_start.o(.bss*);
+
       BUILD_DIR/src/audio/synthesis.o(.bss*);
       BUILD_DIR/src/audio/heap.o(.bss*);
       BUILD_DIR/src/audio/load.o(.bss*);
       BUILD_DIR/src/audio/data.o(.bss*);
-      BUILD_DIR/src/audio*.o(.bss*);
-
+      BUILD_DIR/src/audio/globals_end.o(.bss*);
 #ifdef VERSION_EU
-      . = ALIGN(0x200);
-#else
+      . += 0x4f0;
+#endif
+      
+#ifndef VERSION_EU
       . = ALIGN(0x1000);
 #endif
       BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
+
+      BUILD_DIR/src/audio*.o(.bss*);
    }
    END_NOLOAD(buffers)
 
-   ASSERT((. <= SEG_MAIN), "Error: buffers segment extended into main")
+   /* While EU is being worked on, don't warn for a too large buffers segment.
+    * This is a broken thing to do, so please enforce this again when it's fixed! */
+#ifndef VERSION_EU
+   ASSERT((. <= SEG_MAIN), "Error: buffers segment extended into main.")
+#endif
 
    /* 0x268020 0x268020-0 [0] */
    BEGIN_SEG(intro, 0x14000000)
@@ -894,29 +861,6 @@ SECTIONS
 
    MIO0_SEG(debug_level_select, 0x07000000)
    MIO0_SEG(title_screen_bg, 0x0A000000)
-
-   /* 271B20-2A42A0 [32780] */
-   BEGIN_SEG(gd_dynlists, 0x04000000)
-   {
-      BUILD_DIR/libgoddard.a:dynlist_test_cube.o(.data);
-      BUILD_DIR/libgoddard.a:dynlist_unused.o(.data);
-      BUILD_DIR/libgoddard.a:dynlist_mario_face.o(.data);
-      BUILD_DIR/libgoddard.a:dynlists_mario_eyes.o(.data);
-      BUILD_DIR/libgoddard.a:dynlists_mario_eyebrows_mustache.o(.data);
-      BUILD_DIR/libgoddard.a:dynlist_mario_master.o(.data);
-      BUILD_DIR/libgoddard.a:anim_mario_mustache_right.o(.data);
-      BUILD_DIR/libgoddard.a:anim_mario_mustache_left.o(.data);
-      BUILD_DIR/libgoddard.a:anim_mario_lips_1.o(.data);
-      BUILD_DIR/libgoddard.a:anim_mario_lips_2.o(.data);
-      BUILD_DIR/libgoddard.a:anim_mario_eyebrows_1.o(.data);
-      BUILD_DIR/libgoddard.a:anim_group_1.o(.data);
-      BUILD_DIR/libgoddard.a:anim_group_2.o(.data);
-      BUILD_DIR/libgoddard.a:dynlist_test_cube.o(.rodata*);
-      BUILD_DIR/libgoddard.a:dynlist_unused.o(.rodata*);
-      BUILD_DIR/libgoddard.a:*.o(.data);
-      BUILD_DIR/libgoddard.a:*.o(.rodata);
-   }
-   END_SEG(gd_dynlists)
 
    gMainLevels = __romPos;
 
@@ -979,7 +923,14 @@ SECTIONS
       BUILD_DIR/assets/mario_anim_data.o(.data);
       BUILD_DIR/assets/mario_anim_data.o(.rodata);
       BUILD_DIR/assets/demo_data.o(.data);
-      BUILD_DIR/sound/sound_data.o(.data);
+      gSoundDataADSR = .;
+      BUILD_DIR/sound/sound_data.ctl.o(.data);
+      gSoundDataRaw = .;
+      BUILD_DIR/sound/sound_data.tbl.o(.data);
+      gMusicData = .;
+      BUILD_DIR/sound/sequences.bin.o(.data);
+      gBankSetsData = .;
+      BUILD_DIR/sound/bank_sets.o(.data);
    }
    END_SEG(assets)
 

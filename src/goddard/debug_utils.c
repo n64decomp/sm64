@@ -1,9 +1,8 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 #include <stdarg.h>
-
-#include "debug_utils.h"
+#include <macros.h>
 #include "gd_types.h"
-#include "macros.h"
+#include "debug_utils.h"
 #include "renderer.h"
 
 // types
@@ -125,10 +124,6 @@ void remove_all_memtrackers(void) {
         sMemTrackers[i].end = 0.0f;
         sMemTrackers[i].total = 0.0f;
     }
-
-#ifdef AVOID_UB
-    sNumActiveMemTrackers = 0;
-#endif
 }
 
 /* 23AE20 -> 23AE44; orig name: func_8018C650 */

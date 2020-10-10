@@ -1,9 +1,7 @@
-#ifndef AUDIO_SEQPLAYER_H
-#define AUDIO_SEQPLAYER_H
+#ifndef _AUDIO_SEQPLAYER_H
+#define _AUDIO_SEQPLAYER_H
 
-#include <PR/ultratypes.h>
-
-#include "internal.h"
+#include "types.h"
 #include "playback.h"
 
 void seq_channel_layer_disable(struct SequenceChannelLayer *seqPlayer);
@@ -15,4 +13,4 @@ void process_sequences(s32 iterationsRemaining);
 void init_sequence_player(u32 player);
 void init_sequence_players(void);
 
-#endif // AUDIO_SEQPLAYER_H
+#endif /* _AUDIO_SEQPLAYER_H */

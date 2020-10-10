@@ -10,3 +10,5 @@
 #include "spindrift/geo.inc.c"
 #include "penguin/geo.inc.c"
 #include "snowman/geo.inc.c"
+
+#include "penguin_chao/geo.inc.c"

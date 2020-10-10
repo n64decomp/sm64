@@ -118,7 +118,7 @@ void haunted_chair_act_1(void) {
                 }
                 o->oFaceAngleYaw += 0x2710;
             }
-        } else if (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL)) {
+        } else if (o->oMoveFlags & 0x00000203) {
             obj_die_if_health_non_positive();
         }
     }
@@ -128,7 +128,7 @@ void haunted_chair_act_1(void) {
 }
 
 void bhv_haunted_chair_loop(void) {
-    if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if (!(o->activeFlags & 0x0008)) {
         switch (o->oAction) {
             case 0:
                 haunted_chair_act_0();

@@ -25,3 +25,10 @@
 #include "white_particle_small/model.inc.c"
 
 #include "sparkle_animation/model.inc.c"
+
+#include "cheese_follow/model.inc.c"
+#include "cheese_follow/anims/data.inc.c"
+#include "cheese_follow/anims/table.inc.c"
+#include "mariofly/model.inc.c"
+#include "mariofly/anims/data.inc.c"
+#include "mariofly/anims/table.inc.c"

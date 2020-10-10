@@ -15,26 +15,26 @@ void bhv_small_piranha_flame_loop(void) {
         }
     } else {
         cur_obj_update_floor_and_walls();
-        if (approach_f32_ptr(&o->oSmallPiranhaFlameStartSpeed, o->oSmallPiranhaFlameEndSpeed, 0.6f)) {
+        if (approach_f32_ptr(&o->oSmallPiranhaFlameUnkF4, o->oSmallPiranhaFlameUnkF8, 0.6f)) {
             cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x200);
         }
 
-        obj_compute_vel_from_move_pitch(o->oSmallPiranhaFlameStartSpeed);
+        obj_compute_vel_from_move_pitch(o->oSmallPiranhaFlameUnkF4);
         cur_obj_move_standard(-78);
-        spawn_object_with_scale(o, o->oSmallPiranhaFlameModel, bhvSmallPiranhaFlame,
+        spawn_object_with_scale(o, o->oSmallPiranhaFlameUnkFC, bhvSmallPiranhaFlame,
                                 0.4f * o->header.gfx.scale[0]);
 
         if (o->oTimer > o->oSmallPiranhaFlameUnk100) {
             spawn_object_relative_with_scale(1, 0, o->oGraphYOffset, 0, o->header.gfx.scale[0], o,
-                                             o->oSmallPiranhaFlameModel, bhvFlyguyFlame);
+                                             o->oSmallPiranhaFlameUnkFC, bhvFlyguyFlame);
             o->oSmallPiranhaFlameUnk100 = random_linear_offset(8, 15);
             o->oTimer = 0;
         }
 
         obj_check_attacks(&sPiranhaPlantFireHitbox, o->oAction);
-        o->oSmallPiranhaFlameUnk104 += o->oSmallPiranhaFlameStartSpeed;
+        o->oSmallPiranhaFlameUnk104 += o->oSmallPiranhaFlameUnkF4;
 
-        if (o->oSmallPiranhaFlameUnk104 > 1500.0f || (o->oMoveFlags & (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER))) {
+        if (o->oSmallPiranhaFlameUnk104 > 1500.0f || (o->oMoveFlags & 0x00000278)) {
             obj_die_if_health_non_positive();
         }
     }

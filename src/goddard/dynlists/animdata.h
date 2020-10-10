@@ -1,5 +1,5 @@
-#ifndef GD_ANIMDATA_H
-#define GD_ANIMDATA_H
+#ifndef _GD_ANIMATION_DATA_
+#define _GD_ANIMATION_DATA_
 
 #include "../gd_types.h"
 #define END_ANIMDATA_INFO_ARR { -1, GD_ANIM_EMPTY, NULL }
@@ -16,7 +16,7 @@ extern struct AnimDataInfo anim_mario_eyebrows_4[3];
 extern struct AnimDataInfo anim_mario_eyebrows_5[3];
 extern struct AnimDataInfo anim_mario_eye_left[3];
 extern struct AnimDataInfo anim_mario_eye_right[3];
-extern struct AnimDataInfo anim_mario_cap[3];
+extern struct AnimDataInfo anim_mario_hat[3];
 extern struct AnimDataInfo anim_mario_lips_3[3];
 extern struct AnimDataInfo anim_mario_lips_4[3];
 extern struct AnimDataInfo anim_mario_ear_left[3];
@@ -30,4 +30,4 @@ extern struct AnimDataInfo anim_mario_intro[3];
 extern struct AnimDataInfo anim_silver_star[3];
 extern struct AnimDataInfo anim_red_star[3];
 
-#endif // GD_ANIMDATA_H
+#endif /* _GD_ANIMATION_DATA_ */

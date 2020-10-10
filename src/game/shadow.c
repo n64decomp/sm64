@@ -1,17 +1,22 @@
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
+#include <ultra64.h>
 #include <math.h>
 
+#include "sm64.h"
+#include "shadow.h"
+
+#include "area.h"
+#include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
+#include "mario_animation_ids.h"
+#include "mario.h"
+#include "memory.h"
+#include "rendering_graph_node.h"
+#include "object_list_processor.h"
+#include "segment2.h"
+#include "save_file.h"
 #include "geo_misc.h"
 #include "level_table.h"
-#include "memory.h"
-#include "object_list_processor.h"
-#include "rendering_graph_node.h"
-#include "segment2.h"
-#include "shadow.h"
-#include "sm64.h"
 
 /**
  * @file shadow.c
@@ -424,7 +429,7 @@ void make_shadow_vertex(Vtx *vertices, s8 index, struct Shadow s, s8 shadowVerte
     f32 relX, relY, relZ;
 
     u8 solidity = s.solidity;
-    if (gShadowAboveWaterOrLava) {
+    if (gShadowAboveWaterOrLava != 0) {
         solidity = 200;
     }
 
@@ -540,8 +545,8 @@ s8 correct_shadow_solidity_for_animations(s32 isLuigi, u8 initialSolidity, struc
             break;
     }
 
-    animFrame = player->header.gfx.animInfo.animFrame;
-    switch (player->header.gfx.animInfo.animID) {
+    animFrame = player->header.gfx.unk38.animFrame;
+    switch (player->header.gfx.unk38.animID) {
         case MARIO_ANIM_IDLE_ON_LEDGE:
             ret = SHADOW_SOLIDITY_NO_SHADOW;
             break;

@@ -1,15 +1,17 @@
-#include <PR/ultratypes.h>
+#include <ultra64.h>
 
 #include "sm64.h"
-#include "game/debug.h"
 #include "game/level_update.h"
+#include "game/debug.h"
+#include "game/camera.h"
 #include "game/mario.h"
-#include "game/object_list_processor.h"
+#include "behavior_script.h"
 #include "surface_collision.h"
 #include "surface_load.h"
+#include "game/object_list_processor.h"
 
 /**************************************************
- *                      WALLS                     *
+ *                      WALLS                      *
  **************************************************/
 
 /**
@@ -199,8 +201,8 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
 
     // World (level) consists of a 16x16 grid. Find where the collision is on
     // the grid (round toward -inf)
-    cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
-    cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
+    cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0x0F;
+    cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0x0F;
 
     // Check for surfaces belonging to objects.
     node = gDynamicSurfacePartition[cellZ][cellX][SPATIAL_PARTITION_WALLS].next;
@@ -217,13 +219,14 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
 }
 
 /**************************************************
- *                     CEILINGS                   *
+ *                     CEILINGS                    *
  **************************************************/
 
 /**
  * Iterate through the list of ceilings and find the first ceiling over a given point.
  */
-static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 x, s32 y, s32 z, f32 *pheight) {
+static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 x, s32 y, s32 z,
+                                           f32 *pheight) {
     register struct Surface *surf;
     register s32 x1, z1, x2, z2, x3, z3;
     struct Surface *ceil = NULL;
@@ -307,8 +310,8 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     s16 cellZ, cellX;
     struct Surface *ceil, *dynamicCeil;
     struct SurfaceNode *surfaceList;
-    f32 height = CELL_HEIGHT_LIMIT;
-    f32 dynamicHeight = CELL_HEIGHT_LIMIT;
+    f32 height = 20000.0f;
+    f32 dynamicHeight = 20000.0f;
     s16 x, y, z;
 
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
@@ -327,8 +330,8 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     }
 
     // Each level is split into cells to limit load, find the appropriate cell.
-    cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
-    cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
+    cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0xF;
+    cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0xF;
 
     // Check for surfaces belonging to objects.
     surfaceList = gDynamicSurfacePartition[cellZ][cellX][SPATIAL_PARTITION_CEILS].next;
@@ -352,7 +355,7 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
 }
 
 /**************************************************
- *                     FLOORS                     *
+ *                     FLOORS                      *
  **************************************************/
 
 /**
@@ -396,7 +399,8 @@ f32 find_floor_height_and_data(f32 xPos, f32 yPos, f32 zPos, struct FloorGeometr
 /**
  * Iterate through the list of floors and find the first floor under a given point.
  */
-static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32 x, s32 y, s32 z, f32 *pheight) {
+static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32 x, s32 y, s32 z,
+                                            f32 *pheight) {
     register struct Surface *surf;
     register s32 x1, z1, x2, z2, x3, z3;
     f32 nx, ny, nz;
@@ -480,13 +484,13 @@ f32 find_floor_height(f32 x, f32 y, f32 z) {
 }
 
 /**
- * Find the highest dynamic floor under a given position. Perhaps originally static
+ * Find the highest dynamic floor under a given position. Perhaps originally static and
  * and dynamic floors were checked separately.
  */
 f32 unused_find_dynamic_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     struct SurfaceNode *surfaceList;
     struct Surface *floor;
-    f32 floorHeight = FLOOR_LOWER_LIMIT;
+    f32 floorHeight = -11000.0f;
 
     // Would normally cause PUs, but dynamic floors unload at that range.
     s16 x = (s16) xPos;
@@ -494,8 +498,8 @@ f32 unused_find_dynamic_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfl
     s16 z = (s16) zPos;
 
     // Each level is split into cells to limit load, find the appropriate cell.
-    s16 cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
-    s16 cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
+    s16 cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0x0F;
+    s16 cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0x0F;
 
     surfaceList = gDynamicSurfacePartition[cellZ][cellX][SPATIAL_PARTITION_FLOORS].next;
     floor = find_floor_from_list(surfaceList, x, y, z, &floorHeight);
@@ -514,8 +518,8 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     struct Surface *floor, *dynamicFloor;
     struct SurfaceNode *surfaceList;
 
-    f32 height = FLOOR_LOWER_LIMIT;
-    f32 dynamicHeight = FLOOR_LOWER_LIMIT;
+    f32 height = -11000.0f;
+    f32 dynamicHeight = -11000.0f;
 
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
     // float locations  can return floors despite them not existing there.
@@ -534,8 +538,8 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     }
 
     // Each level is split into cells to limit load, find the appropriate cell.
-    cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
-    cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & (NUM_CELLS - 1);
+    cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0xF;
+    cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0xF;
 
     // Check for surfaces belonging to objects.
     surfaceList = gDynamicSurfacePartition[cellZ][cellX][SPATIAL_PARTITION_FLOORS].next;
@@ -580,7 +584,7 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
 }
 
 /**************************************************
- *               ENVIRONMENTAL BOXES              *
+ *               ENVIRONMENTAL BOXES               *
  **************************************************/
 
 /**
@@ -591,7 +595,7 @@ f32 find_water_level(f32 x, f32 z) {
     s32 numRegions;
     s16 val;
     f32 loX, hiX, loZ, hiZ;
-    f32 waterLevel = FLOOR_LOWER_LIMIT;
+    f32 waterLevel = -11000.0f;
     s16 *p = gEnvironmentRegions;
 
     if (p != NULL) {
@@ -627,7 +631,7 @@ f32 find_poison_gas_level(f32 x, f32 z) {
     UNUSED s32 unused;
     s16 val;
     f32 loX, hiX, loZ, hiZ;
-    f32 gasLevel = FLOOR_LOWER_LIMIT;
+    f32 gasLevel = -11000.0f;
     s16 *p = gEnvironmentRegions;
 
     if (p != NULL) {
@@ -659,7 +663,7 @@ f32 find_poison_gas_level(f32 x, f32 z) {
 }
 
 /**************************************************
- *                      DEBUG                     *
+ *                      DEBUG                      *
  **************************************************/
 
 /**
@@ -689,25 +693,25 @@ void debug_surface_list_info(f32 xPos, f32 zPos) {
     s32 cellX = (xPos + LEVEL_BOUNDARY_MAX) / CELL_SIZE;
     s32 cellZ = (zPos + LEVEL_BOUNDARY_MAX) / CELL_SIZE;
 
-    list = gStaticSurfacePartition[cellZ & (NUM_CELLS - 1)][cellX & (NUM_CELLS - 1)][SPATIAL_PARTITION_FLOORS].next;
+    list = gStaticSurfacePartition[cellZ & 0x0F][cellX & 0x0F][SPATIAL_PARTITION_FLOORS].next;
     numFloors += surface_list_length(list);
 
-    list = gDynamicSurfacePartition[cellZ & (NUM_CELLS - 1)][cellX & (NUM_CELLS - 1)][SPATIAL_PARTITION_FLOORS].next;
+    list = gDynamicSurfacePartition[cellZ & 0x0F][cellX & 0x0F][SPATIAL_PARTITION_FLOORS].next;
     numFloors += surface_list_length(list);
 
-    list = gStaticSurfacePartition[cellZ & (NUM_CELLS - 1)][cellX & (NUM_CELLS - 1)][SPATIAL_PARTITION_WALLS].next;
+    list = gStaticSurfacePartition[cellZ & 0x0F][cellX & 0x0F][SPATIAL_PARTITION_WALLS].next;
     numWalls += surface_list_length(list);
 
-    list = gDynamicSurfacePartition[cellZ & (NUM_CELLS - 1)][cellX & (NUM_CELLS - 1)][SPATIAL_PARTITION_WALLS].next;
+    list = gDynamicSurfacePartition[cellZ & 0x0F][cellX & 0x0F][SPATIAL_PARTITION_WALLS].next;
     numWalls += surface_list_length(list);
 
-    list = gStaticSurfacePartition[cellZ & (NUM_CELLS - 1)][cellX & (NUM_CELLS - 1)][SPATIAL_PARTITION_CEILS].next;
+    list = gStaticSurfacePartition[cellZ & 0x0F][cellX & 0x0F][SPATIAL_PARTITION_CEILS].next;
     numCeils += surface_list_length(list);
 
-    list = gDynamicSurfacePartition[cellZ & (NUM_CELLS - 1)][cellX & (NUM_CELLS - 1)][SPATIAL_PARTITION_CEILS].next;
+    list = gDynamicSurfacePartition[cellZ & 0x0F][cellX & 0x0F][SPATIAL_PARTITION_CEILS].next;
     numCeils += surface_list_length(list);
 
-    print_debug_top_down_mapinfo("area   %x", cellZ * NUM_CELLS + cellX);
+    print_debug_top_down_mapinfo("area   %x", cellZ * 16 + cellX);
 
     // Names represent ground, walls, and roofs as found in SMS.
     print_debug_top_down_mapinfo("dg %d", numFloors);
@@ -737,7 +741,7 @@ void debug_surface_list_info(f32 xPos, f32 zPos) {
  * Perhaps an original implementation of surfaces before they were more specialized.
  */
 s32 unused_resolve_floor_or_ceil_collisions(s32 checkCeil, f32 *px, f32 *py, f32 *pz, f32 radius,
-                                            struct Surface **psurface, f32 *surfaceHeight) {
+                                                   struct Surface **psurface, f32 *surfaceHeight) {
     f32 nx, ny, nz, oo;
     f32 x = *px;
     f32 y = *py;

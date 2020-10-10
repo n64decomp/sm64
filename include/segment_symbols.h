@@ -1,7 +1,6 @@
 #ifndef SEGMENT_SYMBOLS_H
 #define SEGMENT_SYMBOLS_H
 
-#ifndef NO_SEGMENTED_MEMORY
 #define DECLARE_SEGMENT(name) \
     extern u8 _##name##SegmentRomStart[]; \
     extern u8 _##name##SegmentRomEnd[];
@@ -35,8 +34,6 @@ DECLARE_ACTOR_SEGMENT(group15)
 DECLARE_ACTOR_SEGMENT(group16)
 DECLARE_ACTOR_SEGMENT(group17)
 
-DECLARE_SEGMENT(entry)
-DECLARE_SEGMENT(engine)
 DECLARE_SEGMENT(behavior)
 DECLARE_SEGMENT(scripts)
 DECLARE_SEGMENT(goddard)
@@ -53,8 +50,6 @@ DECLARE_LEVEL_SEGMENT(ending)
 
 #undef STUB_LEVEL
 #undef DEFINE_LEVEL
-
-DECLARE_SEGMENT(segment2_mio0)
 
 DECLARE_SEGMENT(water_skybox_mio0)
 DECLARE_SEGMENT(ccm_skybox_mio0)
@@ -84,12 +79,4 @@ DECLARE_SEGMENT(title_screen_bg_mio0)
 
 DECLARE_SEGMENT(debug_level_select_mio0)
 
-#ifdef VERSION_EU
-DECLARE_SEGMENT(translation_de_mio0)
-DECLARE_SEGMENT(translation_en_mio0)
-DECLARE_SEGMENT(translation_fr_mio0)
 #endif
-
-#endif
-
-#endif // SEGMENT_SYMBOLS_H

@@ -1,15 +1,8 @@
-#ifndef SURFACE_COLLISION_H
-#define SURFACE_COLLISION_H
+#ifndef _SURFACE_COLLISION_H
+#define _SURFACE_COLLISION_H
 
-#include <PR/ultratypes.h>
-
-#include "types.h"
-
-#define LEVEL_BOUNDARY_MAX  0x2000
-#define CELL_SIZE           0x400       
-
-#define CELL_HEIGHT_LIMIT   20000.f
-#define FLOOR_LOWER_LIMIT  -11000.f
+#define LEVEL_BOUNDARY_MAX 0x2000
+#define CELL_SIZE          0x400
 
 struct WallCollisionData
 {
@@ -40,4 +33,5 @@ f32 find_water_level(f32 x, f32 z);
 f32 find_poison_gas_level(f32 x, f32 z);
 void debug_surface_list_info(f32 xPos, f32 zPos);
 
-#endif // SURFACE_COLLISION_H
+
+#endif /* _SURFACE_COLLISION_H */

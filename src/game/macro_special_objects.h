@@ -1,21 +1,20 @@
 #ifndef MACRO_SPECIAL_OBJECTS_H
 #define MACRO_SPECIAL_OBJECTS_H
 
-#include <PR/ultratypes.h>
-
 #include "types.h"
 
-s16 convert_rotation(s16 inRotation);
+/*.bss*/
+extern struct Object gMacroObjectDefaultParent;
 
-void spawn_macro_abs_yrot_2params(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params);
-void spawn_macro_abs_yrot_param1(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params);
-void spawn_macro_abs_special(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 unkA, s16 unkB, s16 unkC);
+/* Functions */
+extern s16  convert_rotation(s16 inRotation);
 
-void spawn_macro_objects(s16 areaIndex, s16 *macroObjList);
-void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList);
-void spawn_special_objects(s16 areaIndex, s16 **specialObjList);
-#ifdef NO_SEGMENTED_MEMORY
-u32 get_special_objects_size(s16 *data);
-#endif
+extern void spawn_macro_abs_yrot_2params(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params);
+extern void spawn_macro_abs_yrot_param1(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params);
+extern void spawn_macro_abs_special(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 unkA, s16 unkB, s16 unkC);
 
-#endif // MACRO_SPECIAL_OBJECTS_H
+extern void spawn_macro_objects(s16 areaIndex, s16 * macroObjList);
+extern void spawn_macro_objects_hardcoded(s16 areaIndex, s16 * macroObjList);
+extern void spawn_special_objects(s16 areaIndex, s16 ** specialObjList);
+
+#endif /* MACRO_SPECIAL_OBJECTS_H */

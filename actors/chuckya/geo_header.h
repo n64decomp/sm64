@@ -1,0 +1,38 @@
+extern const GeoLayout chuckya_geo[];
+extern Vtx chuckya_000_displaylist_mesh_vtx_0[28];
+extern Gfx chuckya_000_displaylist_mesh_tri_0[];
+extern Vtx chuckya_002_offset_mesh_vtx_0[5];
+extern Gfx chuckya_002_offset_mesh_tri_0[];
+extern Vtx chuckya_000_displaylist_001_mesh_vtx_0[15];
+extern Gfx chuckya_000_displaylist_001_mesh_tri_0[];
+extern Vtx chuckya_000_displaylist_001_mesh_vtx_1[144];
+extern Gfx chuckya_000_displaylist_001_mesh_tri_1[];
+extern Vtx chuckya_000_displaylist_001_mesh_vtx_2[12];
+extern Gfx chuckya_000_displaylist_001_mesh_tri_2[];
+extern Vtx chuckya_000_displaylist_001_mesh_vtx_3[6];
+extern Gfx chuckya_000_displaylist_001_mesh_tri_3[];
+extern Vtx chuckya_000_displaylist_002_mesh_vtx_0[28];
+extern Gfx chuckya_000_displaylist_002_mesh_tri_0[];
+extern Vtx chuckya_000_displaylist_003_mesh_vtx_0[24];
+extern Gfx chuckya_000_displaylist_003_mesh_tri_0[];
+extern Vtx chuckya_000_displaylist_003_mesh_vtx_1[67];
+extern Gfx chuckya_000_displaylist_003_mesh_tri_1[];
+extern Vtx chuckya_000_displaylist_004_mesh_vtx_0[28];
+extern Gfx chuckya_000_displaylist_004_mesh_tri_0[];
+extern Vtx chuckya_000_displaylist_005_mesh_vtx_0[71];
+extern Gfx chuckya_000_displaylist_005_mesh_tri_0[];
+extern Vtx chuckya_000_displaylist_005_mesh_vtx_1[24];
+extern Gfx chuckya_000_displaylist_005_mesh_tri_1[];
+extern Vtx chuckya_002_offset_003_mesh_vtx_0[9];
+extern Gfx chuckya_002_offset_003_mesh_tri_0[];
+
+extern Gfx chuckya_000_displaylist_mesh[];
+extern Gfx chuckya_002_offset_mesh[];
+extern Gfx chuckya_000_displaylist_001_mesh[];
+extern Gfx chuckya_000_displaylist_002_mesh[];
+extern Gfx chuckya_000_displaylist_003_mesh[];
+extern Gfx chuckya_000_displaylist_004_mesh[];
+extern Gfx chuckya_000_displaylist_005_mesh[];
+extern Gfx chuckya_002_offset_003_mesh[];
+extern Gfx chuckya_material_revert_render_settings[];
+
