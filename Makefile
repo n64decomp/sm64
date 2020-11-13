@@ -261,6 +261,14 @@ AR        := $(CROSS)ar
 OBJDUMP   := $(CROSS)objdump
 OBJCOPY   := $(CROSS)objcopy
 PYTHON    := python3
+PRINT     := printf
+
+NO_COL  := \033[0m
+RED     := \033[0;31m
+GREEN   := \033[0;32m
+BLUE    := \033[0;34m
+YELLOW  := \033[0;33m
+BLINK   := \033[33;5m
 
 # change the compiler to gcc, to use the default, install the gcc-mips-linux-gnu package
 ifeq ($(COMPILER),gcc)
@@ -336,7 +344,8 @@ endif
 
 all: $(ROM)
 ifeq ($(COMPARE),1)
-	@$(SHA1SUM) -c $(TARGET).sha1 || (echo 'The build succeeded, but did not match the official ROM. This is expected if you are making changes to the game.\nTo silence this message, use "make COMPARE=0"'. && false)
+	@$(PRINT) "$(GREEN)Checking if ROM matches.. $(NO_COL)\n"
+	@$(SHA1SUM) -c $(TARGET).sha1 || ($(PRINT) "$(YELLOW)Building the ROM file has succeeded, but does not match the original ROM.\nThis is expected, and not an error, if you are making modifications.\nTo silence this message, use 'make COMPARE=0.' $(NO_COL)\n" && false)
 endif
 
 clean:
@@ -360,10 +369,12 @@ $(BUILD_DIR)/src/game/crash_screen.o: $(CRASH_TEXTURE_C_FILES)
 $(BUILD_DIR)/lib/rsp.o: $(BUILD_DIR)/rsp/rspboot.bin $(BUILD_DIR)/rsp/fast3d.bin $(BUILD_DIR)/rsp/audio.bin
 
 $(BUILD_DIR)/include/text_strings.h: include/text_strings.h.in
-	$(TEXTCONV) charmap.txt $< $@
+	@$(PRINT) "$(GREEN)Processing:  $(BLUE)$@ $(NO_COL)\n"
+	@$(TEXTCONV) charmap.txt $< $@
 
 $(BUILD_DIR)/include/text_menu_strings.h: include/text_menu_strings.h.in
-	$(TEXTCONV) charmap_menu.txt $< $@
+	@$(PRINT) "$(GREEN)Processing:  $(BLUE)$@ $(NO_COL)\n"
+	@$(TEXTCONV) charmap_menu.txt $< $@
 
 ifeq ($(COMPILER),gcc)
 $(BUILD_DIR)/lib/src/math/%.o: CFLAGS += -fno-builtin
@@ -395,10 +406,12 @@ endif
 endif
 
 $(BUILD_DIR)/text/%/define_courses.inc.c: text/define_courses.inc.c text/%/courses.h
-	$(CPP) $(VERSION_CFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) charmap.txt - $@
+	@$(PRINT) "$(GREEN)Preprocessing course defines $(NO_COL)\n"
+	@$(CPP) $(VERSION_CFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) charmap.txt - $@
 
 $(BUILD_DIR)/text/%/define_text.inc.c: text/define_text.inc.c text/%/courses.h text/%/dialogs.h
-	$(CPP) $(VERSION_CFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) charmap.txt - $@
+	@$(PRINT) "$(GREEN)Preprocessing text defines $(NO_COL)\n"
+	@$(CPP) $(VERSION_CFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) charmap.txt - $@
 
 RSP_DIRS := $(BUILD_DIR)/rsp
 ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS) $(GODDARD_SRC_DIRS) $(ULTRA_SRC_DIRS) $(ULTRA_ASM_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) include) $(MIO0_DIR) $(addprefix $(MIO0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION) $(RSP_DIRS)
@@ -417,19 +430,23 @@ $(BUILD_DIR)/src/game/ingame_menu.o: $(BUILD_DIR)/include/text_strings.h
 
 # RGBA32, RGBA16, IA16, IA8, IA4, IA1, I8, I4
 $(BUILD_DIR)/%: %.png
-	$(N64GRAPHICS) -i $@ -g $< -f $(lastword $(subst ., ,$@))
+	@$(PRINT) "$(GREEN)Converting $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@$(N64GRAPHICS) -i $@ -g $< -f $(lastword $(subst ., ,$@))
 
 $(BUILD_DIR)/%.inc.c: $(BUILD_DIR)/% %.png
-	hexdump -v -e '1/1 "0x%X,"' $< > $@
-	echo >> $@
+	@$(PRINT) "$(GREEN)Dumping $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@hexdump -v -e '1/1 "0x%X,"' $< > $@
+	@echo >> $@
 
 # Color Index CI8
 $(BUILD_DIR)/%.ci8: %.ci8.png
-	$(N64GRAPHICS_CI) -i $@ -g $< -f ci8
+	@$(PRINT) "$(GREEN)Converting $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@$(N64GRAPHICS_CI) -i $@ -g $< -f ci8
 
 # Color Index CI4
 $(BUILD_DIR)/%.ci4: %.ci4.png
-	$(N64GRAPHICS_CI) -i $@ -g $< -f ci4
+	@$(PRINT) "$(GREEN)Converting $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@$(N64GRAPHICS_CI) -i $@ -g $< -f ci4
 
 ################################################################
 
@@ -438,88 +455,113 @@ $(BUILD_DIR)/%.ci4: %.ci4.png
 # TODO: ideally this would be `-Trodata-segment=0x07000000` but that doesn't set the address
 
 $(BUILD_DIR)/bin/%.elf: $(BUILD_DIR)/bin/%.o
-	$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map -o $@ $<
+	@$(PRINT) "$(GREEN)Linking elf file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map -o $@ $<
 $(BUILD_DIR)/actors/%.elf: $(BUILD_DIR)/actors/%.o
-	$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map -o $@ $<
+	@$(PRINT) "$(GREEN)Linking elf file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map -o $@ $<
 
 # Override for level.elf, which otherwise matches the above pattern
 .SECONDEXPANSION:
 $(BUILD_DIR)/levels/%/leveldata.elf: $(BUILD_DIR)/levels/%/leveldata.o $(BUILD_DIR)/bin/$$(TEXTURE_BIN).elf
-	$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map --just-symbols=$(BUILD_DIR)/bin/$(TEXTURE_BIN).elf -o $@ $<
+	@$(PRINT) "$(GREEN)Linking elf file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map --just-symbols=$(BUILD_DIR)/bin/$(TEXTURE_BIN).elf -o $@ $<
 
 $(BUILD_DIR)/bin/%.bin: $(BUILD_DIR)/bin/%.elf
-	$(EXTRACT_DATA_FOR_MIO) $< $@
+	@$(PRINT) "$(GREEN)Extracting compressionable data from:  $(BLUE)$< $(NO_COL)\n"
+	@$(EXTRACT_DATA_FOR_MIO) $< $@
 
 $(BUILD_DIR)/actors/%.bin: $(BUILD_DIR)/actors/%.elf
-	$(EXTRACT_DATA_FOR_MIO) $< $@
+	@$(PRINT) "$(GREEN)Extracting compressionable data from:  $(BLUE)$< $(NO_COL)\n"
+	@$(EXTRACT_DATA_FOR_MIO) $< $@
 
 $(BUILD_DIR)/levels/%/leveldata.bin: $(BUILD_DIR)/levels/%/leveldata.elf
-	$(EXTRACT_DATA_FOR_MIO) $< $@
+	@$(PRINT) "$(GREEN)Extracting compressionable data from:  $(BLUE)$< $(NO_COL)\n"
+	@$(EXTRACT_DATA_FOR_MIO) $< $@
 
 $(BUILD_DIR)/%.mio0: $(BUILD_DIR)/%.bin
-	$(MIO0TOOL) $< $@
+	@$(PRINT) "$(GREEN)Compressing $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@$(MIO0TOOL) $< $@
 
 $(BUILD_DIR)/%.mio0.o: $(BUILD_DIR)/%.mio0.s
-	$(AS) $(ASFLAGS) -o $@ $<
+	@$(PRINT) "$(GREEN)Assembling ASM source file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.mio0.s: $(BUILD_DIR)/%.mio0
-	printf ".section .data\n\n.incbin \"$<\"\n" > $@
+	@$(PRINT) "$(GREEN)Dumping $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@printf ".section .data\n\n.incbin \"$<\"\n" > $@
 
 $(BUILD_DIR)/%.table: %.aiff
-	$(AIFF_EXTRACT_CODEBOOK) $< >$@
+	@$(PRINT) "$(GREEN)Extracting codebook from:  $(BLUE)$< $(NO_COL)\n"
+	@$(AIFF_EXTRACT_CODEBOOK) $< >$@
 
 $(BUILD_DIR)/%.aifc: $(BUILD_DIR)/%.table %.aiff
-	$(VADPCM_ENC) -c $^ $@
+	@$(PRINT) "$(GREEN)Encoding VADPCM from:  $(BLUE)$(word 2,$^) $(NO_COL)\n"
+	@$(VADPCM_ENC) -c $^ $@
 
 $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
-	$(RSPASM) -sym $@.sym -definelabel $(VERSION_DEF) 1 -definelabel $(GRUCODE_DEF) 1 -strequ CODE_FILE $(BUILD_DIR)/rsp/$*.bin -strequ DATA_FILE $(BUILD_DIR)/rsp/$*_data.bin $<
+	@$(PRINT) "$(GREEN)Assembling RSP source file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(RSPASM) -sym $@.sym -definelabel $(VERSION_DEF) 1 -definelabel $(GRUCODE_DEF) 1 -strequ CODE_FILE $(BUILD_DIR)/rsp/$*.bin -strequ DATA_FILE $(BUILD_DIR)/rsp/$*_data.bin $<
 
 $(ENDIAN_BITWIDTH): tools/determine-endian-bitwidth.c
-	$(CC) -c $(CFLAGS) -o $@.dummy2 $< 2>$@.dummy1; true
-	grep -o 'msgbegin --endian .* --bitwidth .* msgend' $@.dummy1 > $@.dummy2
-	head -n1 <$@.dummy2 | cut -d' ' -f2-5 > $@
+	@$(PRINT) "$(GREEN)Generating endian-bitwidth $(NO_COL)\n"
+	@$(CC) -c $(CFLAGS) -o $@.dummy2 $< 2>$@.dummy1; true
+	@grep -o 'msgbegin --endian .* --bitwidth .* msgend' $@.dummy1 > $@.dummy2
+	@head -n1 <$@.dummy2 | cut -d' ' -f2-5 > $@
 	@rm $@.dummy1
 	@rm $@.dummy2
 
 $(SOUND_BIN_DIR)/sound_data.ctl: sound/sound_banks/ $(SOUND_BANK_FILES) $(SOUND_SAMPLE_AIFCS) $(ENDIAN_BITWIDTH)
-	$(PYTHON) tools/assemble_sound.py $(BUILD_DIR)/sound/samples/ sound/sound_banks/ $(SOUND_BIN_DIR)/sound_data.ctl $(SOUND_BIN_DIR)/sound_data.tbl $(VERSION_CFLAGS) $$(cat $(ENDIAN_BITWIDTH))
+	@$(PRINT) "$(GREEN)Generating:  $(BLUE)$@ $(NO_COL)\n"
+	@$(PYTHON) tools/assemble_sound.py $(BUILD_DIR)/sound/samples/ sound/sound_banks/ $(SOUND_BIN_DIR)/sound_data.ctl $(SOUND_BIN_DIR)/sound_data.tbl $(VERSION_CFLAGS) $$(cat $(ENDIAN_BITWIDTH))
 
 $(SOUND_BIN_DIR)/sound_data.tbl: $(SOUND_BIN_DIR)/sound_data.ctl
 	@true
 
 ifeq ($(VERSION),sh)
 $(SOUND_BIN_DIR)/sequences.bin: $(SOUND_BANK_FILES) sound/sequences.json sound/sequences/ sound/sequences/jp/ $(SOUND_SEQUENCE_FILES) $(ENDIAN_BITWIDTH)
-	$(PYTHON) tools/assemble_sound.py --sequences $@ $(SOUND_BIN_DIR)/bank_sets sound/sound_banks/ sound/sequences.json $(SOUND_SEQUENCE_FILES) $(VERSION_CFLAGS) $$(cat $(ENDIAN_BITWIDTH))
+	@$(PRINT) "$(GREEN)Generating:  $(BLUE)$@ $(NO_COL)\n"
+	@$(PYTHON) tools/assemble_sound.py --sequences $@ $(SOUND_BIN_DIR)/bank_sets sound/sound_banks/ sound/sequences.json $(SOUND_SEQUENCE_FILES) $(VERSION_CFLAGS) $$(cat $(ENDIAN_BITWIDTH))
 else
 $(SOUND_BIN_DIR)/sequences.bin: $(SOUND_BANK_FILES) sound/sequences.json sound/sequences/ sound/sequences/$(VERSION)/ $(SOUND_SEQUENCE_FILES) $(ENDIAN_BITWIDTH)
-	$(PYTHON) tools/assemble_sound.py --sequences $@ $(SOUND_BIN_DIR)/bank_sets sound/sound_banks/ sound/sequences.json $(SOUND_SEQUENCE_FILES) $(VERSION_CFLAGS) $$(cat $(ENDIAN_BITWIDTH))
+	@$(PRINT) "$(GREEN)Generating:  $(BLUE)$@ $(NO_COL)\n"
+	@$(PYTHON) tools/assemble_sound.py --sequences $@ $(SOUND_BIN_DIR)/bank_sets sound/sound_banks/ sound/sequences.json $(SOUND_SEQUENCE_FILES) $(VERSION_CFLAGS) $$(cat $(ENDIAN_BITWIDTH))
 endif
 
 $(SOUND_BIN_DIR)/bank_sets: $(SOUND_BIN_DIR)/sequences.bin
 	@true
 
 $(SOUND_BIN_DIR)/%.m64: $(SOUND_BIN_DIR)/%.o
-	$(OBJCOPY) -j .rodata $< -O binary $@
+	@$(PRINT) "$(GREEN)Generating:  $(BLUE)$@ $(NO_COL)\n"
+	@$(OBJCOPY) -j .rodata $< -O binary $@
 
 $(SOUND_BIN_DIR)/%.o: $(SOUND_BIN_DIR)/%.s
-	$(AS) $(ASFLAGS) -o $@ $<
+	@$(PRINT) "$(GREEN)Assembling ASM source file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(AS) $(ASFLAGS) -o $@ $<
 
 $(SOUND_BIN_DIR)/%.inc.c: $(SOUND_BIN_DIR)/%
-	hexdump -v -e '1/1 "0x%X,"' $< > $@
-	echo >> $@
+	@$(PRINT) "$(GREEN)Dumping $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
+	@hexdump -v -e '1/1 "0x%X,"' $< > $@
+	@echo >> $@
 
 $(SOUND_BIN_DIR)/sound_data.o: $(SOUND_BIN_DIR)/sound_data.ctl.inc.c $(SOUND_BIN_DIR)/sound_data.tbl.inc.c $(SOUND_BIN_DIR)/sequences.bin.inc.c $(SOUND_BIN_DIR)/bank_sets.inc.c
 
 $(BUILD_DIR)/levels/scripts.o: $(BUILD_DIR)/include/level_headers.h
 
 $(BUILD_DIR)/include/level_headers.h: levels/level_headers.h.in
-	$(CPP) -I . levels/level_headers.h.in | $(PYTHON) tools/output_level_headers.py > $(BUILD_DIR)/include/level_headers.h
+	@$(PRINT) "$(GREEN)Preprocessing level headers $(NO_COL)\n"
+	@$(CPP) -I . levels/level_headers.h.in | $(PYTHON) tools/output_level_headers.py > $(BUILD_DIR)/include/level_headers.h
 
 $(BUILD_DIR)/assets/mario_anim_data.c: $(wildcard assets/anims/*.inc.c)
-	$(PYTHON) tools/mario_anims_converter.py > $@
+	@$(PRINT) "$(GREEN)Processing Mario animations $(NO_COL)\n"
+	@$(PYTHON) tools/mario_anims_converter.py > $@
 
 $(BUILD_DIR)/assets/demo_data.c: assets/demo_data.json $(wildcard assets/demos/*.bin)
-	$(PYTHON) tools/demo_data_converter.py assets/demo_data.json $(VERSION_CFLAGS) > $@
+	@$(PRINT) "$(GREEN)Processing demo data $(NO_COL)\n"
+	@$(PYTHON) tools/demo_data_converter.py assets/demo_data.json $(VERSION_CFLAGS) > $@
+    
+$(BUILD_DIR)/assets/%.o: $(BUILD_DIR)/assets/%.s
+	$(AS) $(ASFLAGS) -o $@ $<
 
 ifeq ($(COMPILER),ido)
 # Source code
@@ -584,36 +626,44 @@ endif
 $(GLOBAL_ASM_O_FILES): $(GLOBAL_ASM_DEP).$(NON_MATCHING)
 $(GLOBAL_ASM_DEP).$(NON_MATCHING):
 	@rm -f $(GLOBAL_ASM_DEP).*
-	touch $@
+	@touch $@
 
 $(BUILD_DIR)/%.o: %.c
+	@$(PRINT) "$(GREEN)Compiling C source file:  $(BLUE)$@ $(NO_COL)\n"
 	@$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
-	$(CC) -c $(CFLAGS) -o $@ $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
 
 
 $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
+	@$(PRINT) "$(GREEN)Compiling C source file:  $(BLUE)$@ $(NO_COL)\n"
 	@$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
-	$(CC) -c $(CFLAGS) -o $@ $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
-	$(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@ $<
+	@$(PRINT) "$(GREEN)Assembling ASM source file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@ $<
 
 $(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT)
-	$(CPP) $(VERSION_CFLAGS) -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
+	@$(PRINT) "$(GREEN)Preprocessing linker script $(NO_COL)\n"
+	@$(CPP) $(VERSION_CFLAGS) -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
 
 $(BUILD_DIR)/libultra.a: $(ULTRA_O_FILES)
-	$(AR) rcs -o $@ $(ULTRA_O_FILES)
-	tools/patch_libultra_math $@
+	@$(PRINT) "$(GREEN)Building libultra:  $(BLUE)$@ $(NO_COL)\n"
+	@$(AR) rcs -o $@ $(ULTRA_O_FILES)
+	@tools/patch_libultra_math $@
 
 $(BUILD_DIR)/libgoddard.a: $(GODDARD_O_FILES)
-	$(AR) rcs -o $@ $(GODDARD_O_FILES)
+	@$(PRINT) "$(GREEN)Building libgoddard:  $(BLUE)$@ $(NO_COL)\n"
+	@$(AR) rcs -o $@ $(GODDARD_O_FILES)
 
 $(ELF): $(O_FILES) $(MIO0_OBJ_FILES) $(SOUND_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) undefined_syms.txt $(BUILD_DIR)/libultra.a $(BUILD_DIR)/libgoddard.a
-	$(LD) -L $(BUILD_DIR) $(LDFLAGS) -o $@ $(O_FILES)$(LIBS) -lultra -lgoddard
+	@$(PRINT) "$(GREEN)Linking elf file:  $(BLUE)$@ $(NO_COL)\n"
+	@$(LD) -L $(BUILD_DIR) $(LDFLAGS) -o $@ $(O_FILES)$(LIBS) -lultra -lgoddard
 
 $(ROM): $(ELF)
-	$(OBJCOPY) $(OBJCOPYFLAGS) $< $(@:.z64=.bin) -O binary
-	$(N64CKSUM) $(@:.z64=.bin) $@
+	@$(PRINT) "$(GREEN)Creating N64 ROM:  $(BLUE)$@ $(NO_COL)\n"
+	@$(OBJCOPY) $(OBJCOPYFLAGS) $< $(@:.z64=.bin) -O binary
+	@$(N64CKSUM) $(@:.z64=.bin) $@
 
 $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@
