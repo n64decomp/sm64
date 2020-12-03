@@ -191,11 +191,22 @@
     #define BOBOMB_BUDDY_HAS_NOT_TALKED 0
     #define BOBOMB_BUDDY_HAS_TALKED 2
 
+/* Fish Spawer */
+    /* oAction */
+    #define FISH_SPAWNER_ACT_SPAWN   0
+    #define FISH_SPAWNER_ACT_IDLE    1
+    #define FISH_SPAWNER_ACT_RESPAWN 2    
+    /* oBehParams2ndByte */
+    #define FISH_SPAWNER_BP_MANY_BLUE 0
+    #define FISH_SPAWNER_BP_FEW_BLUE  1
+    #define FISH_SPAWNER_BP_MANY_CYAN 2
+    #define FISH_SPAWNER_BP_FEW_CYAN  3
+
 /* Fish */
     /* oAction */
     #define FISH_ACT_INIT 0
-    #define FISH_ACT_ACTIVE 1
-    #define FISH_ACT_RESPAWN 2
+    #define FISH_ACT_ROAM 1
+    #define FISH_ACT_FLEE 2
 
 /* Blue_Fish */
     /* oAction */
@@ -229,7 +240,7 @@
     #define AMP_BP_ROT_RADIUS_200 0
     #define AMP_BP_ROT_RADIUS_300 1
     #define AMP_BP_ROT_RADIUS_400 2
-    #define AMP_BP_ROT_RADIUS_0 3
+    #define AMP_BP_ROT_RADIUS_0   3
 
     /* oAction */
     #define AMP_ACT_IDLE 2
@@ -583,6 +594,11 @@
     /* oBehParams2ndByte */
     #define CAMERA_LAKITU_BP_FOLLOW_CAMERA 0
     #define CAMERA_LAKITU_BP_INTRO 1
+
+/* Manta Ray */
+    /* oAction */
+    #define MANTA_ACT_SPAWN_RINGS 0
+    #define MANTA_ACT_NO_RINGS    1
 
 /* Monty mole */
     /* oAction */

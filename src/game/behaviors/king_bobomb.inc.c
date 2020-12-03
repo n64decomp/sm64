@@ -33,7 +33,7 @@ void king_bobomb_act_0(void) {
         o->oHealth = 3;
         if (cur_obj_can_mario_activate_textbox_2(500.0f, 100.0f)) {
             o->oSubAction++;
-            func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
+            seq_player_lower_volume(SEQ_PLAYER_LEVEL, 60, 40);
         }
     } else if (cur_obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, DIALOG_017)) {
         o->oAction = 2;
@@ -152,7 +152,6 @@ void king_bobomb_act_6(void) {
             o->oKingBobombUnk104++;
         if (o->oKingBobombUnk104 > 3) {
             o->oSubAction++;
-            ; // Needed to match
         }
     } else {
         if (o->oSubAction == 1) {

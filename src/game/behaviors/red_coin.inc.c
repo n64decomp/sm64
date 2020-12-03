@@ -70,7 +70,7 @@ void bhv_red_coin_loop(void) {
 #ifndef VERSION_JP
             play_sound(SOUND_MENU_COLLECT_RED_COIN
                            + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
-                       gDefaultSoundArgs);
+                       gGlobalSoundSource);
 #endif
         }
 

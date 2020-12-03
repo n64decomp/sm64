@@ -109,7 +109,8 @@ if len(mybin) != len(basebin):
 
 if mybin == basebin:
     print("No differences!")
-    exit(0)
+    if not args.by_name:
+        exit(0)
 
 
 def search_map(rom_addr):
@@ -273,7 +274,8 @@ for i in range(24, len(mybin), 4):
         map_search_diff.append(search_map(i))
 if diffs == 0:
     print("No differences!")
-    exit()
+    if not args.by_name:
+        exit()
 definite_shift = diffs > shift_cap
 if not definite_shift:
     print(str(diffs) + " differing word(s).")

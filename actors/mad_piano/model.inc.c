@@ -25,32 +25,32 @@ UNUSED static const Lights1 mad_piano_lights_unused4 = gdSPDefLights1(
 );
 
 // 0x05006AF0
-ALIGNED8 static const u8 mad_piano_seg5_texture_05006AF0[] = {
+ALIGNED8 static const Texture mad_piano_seg5_texture_05006AF0[] = {
 #include "actors/mad_piano/mad_piano_tooth.rgba16.inc.c"
 };
 
 // 0x050072F0
-ALIGNED8 static const u8 mad_piano_seg5_texture_050072F0[] = {
+ALIGNED8 static const Texture mad_piano_seg5_texture_050072F0[] = {
 #include "actors/mad_piano/mad_piano_body.rgba16.inc.c"
 };
 
 // 0x050076F0
-ALIGNED8 static const u8 mad_piano_seg5_texture_050076F0[] = {
+ALIGNED8 static const Texture mad_piano_seg5_texture_050076F0[] = {
 #include "actors/mad_piano/mad_piano_keys_corner.rgba16.inc.c"
 };
 
 // 0x05007AF0
-ALIGNED8 static const u8 mad_piano_seg5_texture_05007AF0[] = {
+ALIGNED8 static const Texture mad_piano_seg5_texture_05007AF0[] = {
 #include "actors/mad_piano/mad_piano_mouth.rgba16.inc.c"
 };
 
 // 0x05007EF0
-ALIGNED8 static const u8 mad_piano_seg5_texture_05007EF0[] = {
+ALIGNED8 static const Texture mad_piano_seg5_texture_05007EF0[] = {
 #include "actors/mad_piano/mad_piano_keys.rgba16.inc.c"
 };
 
 // 0x050082F0
-ALIGNED8 static const u8 mad_piano_seg5_texture_050082F0[] = {
+ALIGNED8 static const Texture mad_piano_seg5_texture_050082F0[] = {
 #include "actors/mad_piano/mad_piano_keys_edge.rgba16.inc.c"
 };
 

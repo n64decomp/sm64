@@ -31,24 +31,24 @@
         "inst0": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "2E"
+            "sound": "2E_accordion"
         },
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "2E"
+            "sound": "2E_accordion"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "2F"
+            "sound": "2F_sleigh_bells"
         },
         "inst3": {
             "release_rate": 10,
             "normal_range_lo": 18,
             "envelope": "envelope3",
-            "sound_lo": "12",
-            "sound": "13"
+            "sound_lo": "12_snare_drum_1",
+            "sound": "13_snare_drum_2"
         }
     },
     "instrument_list": [

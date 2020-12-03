@@ -5,18 +5,24 @@
 
 #include "types.h"
 
-#define LEVEL_BOUNDARY_MAX  0x2000
-#define CELL_SIZE           0x400       
+// Range level area is 16384x16384 (-8192 to +8192 in x and z)
+#define LEVEL_BOUNDARY_MAX  0x2000 // 8192
 
-#define CELL_HEIGHT_LIMIT   20000.f
-#define FLOOR_LOWER_LIMIT  -11000.f
+#define CELL_SIZE           (1 << 10) // 0x400
+
+#define CELL_HEIGHT_LIMIT           20000
+#define FLOOR_LOWER_LIMIT           -11000
+#define FLOOR_LOWER_LIMIT_MISC      (FLOOR_LOWER_LIMIT + 1000)
+// same as FLOOR_LOWER_LIMIT_MISC, explicitly for shadow.c 
+// It doesn't match if ".0" is removed or ".f" is added
+#define FLOOR_LOWER_LIMIT_SHADOW    (FLOOR_LOWER_LIMIT + 1000.0)
 
 struct WallCollisionData
 {
     /*0x00*/ f32 x, y, z;
     /*0x0C*/ f32 offsetY;
     /*0x10*/ f32 radius;
-    /*0x14*/ s16 unk14;
+    /*0x14*/ s16 unused;
     /*0x16*/ s16 numWalls;
     /*0x18*/ struct Surface *walls[4];
 };

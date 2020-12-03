@@ -50,12 +50,12 @@
         "inst4": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "04"
+            "sound": "04_camera_buzz"
         },
         "inst5": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "05"
+            "sound": "05_camera_shutter"
         },
         "inst6": {
             "release_rate": 208,

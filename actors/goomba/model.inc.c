@@ -37,17 +37,17 @@ static const Lights1 goomba_seg8_lights_08019518 = gdSPDefLights1(
 );
 
 // 0x08019530
-ALIGNED8 static const u8 goomba_seg8_texture_08019530[] = {
+ALIGNED8 static const Texture goomba_seg8_texture_08019530[] = {
 #include "actors/goomba/goomba_body.rgba16.inc.c"
 };
 
 // 0x08019D30
-ALIGNED8 static const u8 goomba_seg8_texture_08019D30[] = {
+ALIGNED8 static const Texture goomba_seg8_texture_08019D30[] = {
 #include "actors/goomba/goomba_face.rgba16.inc.c"
 };
 
 // 0x0801A530
-ALIGNED8 static const u8 goomba_seg8_texture_0801A530[] = {
+ALIGNED8 static const Texture goomba_seg8_texture_0801A530[] = {
 #include "actors/goomba/goomba_face_blink.rgba16.inc.c"
 };
 

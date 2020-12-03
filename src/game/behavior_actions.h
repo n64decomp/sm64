@@ -197,7 +197,7 @@ void bhv_lll_bowser_puzzle_piece_loop(void);
 void bhv_lll_bowser_puzzle_loop(void);
 void bhv_tuxies_mother_loop(void);
 void bhv_small_penguin_loop(void);
-void bhv_large_fish_group_loop(void);
+void bhv_fish_spawner_loop(void);
 void bhv_fish_loop(void);
 void bhv_wdw_express_elevator_loop(void);
 void bhv_bub_spawner_loop(void);

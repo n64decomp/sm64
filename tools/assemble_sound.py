@@ -9,6 +9,7 @@ import sys
 
 TYPE_CTL = 1
 TYPE_TBL = 2
+TYPE_SEQ = 3
 
 STACK_TRACES = False
 DUMP_INDIVIDUAL_BINS = False
@@ -34,6 +35,7 @@ class SampleBank:
     def __init__(self, name, entries):
         self.name = name
         self.uses = []
+        self.index = None
         self.entries = entries
         self.name_to_entry = {}
         for e in entries:
@@ -70,9 +72,9 @@ def strip_comments(string):
 
 def pack(fmt, *args):
     if WORD_BYTES == 4:
-        fmt = fmt.replace('P', 'I').replace('X', '')
+        fmt = fmt.replace("P", "I").replace("X", "")
     else:
-        fmt = fmt.replace('P', 'Q').replace('X', 'xxxx')
+        fmt = fmt.replace("P", "Q").replace("X", "xxxx")
     return struct.pack(ENDIAN_MARKER + fmt, *args)
 
 
@@ -131,7 +133,7 @@ def parse_aifc(data, name, fname):
     sections = []
     while i < len(data):
         tp = data[i : i + 4]
-        le, = struct.unpack(">I", data[i + 4 : i + 8])
+        (le,) = struct.unpack(">I", data[i + 4 : i + 8])
         i += 8
         sections.append((tp, data[i : i + le]))
         i = align(i + le, 2)
@@ -307,7 +309,7 @@ def normalize_sound_json(json):
             fixup.append((inst, "sound"))
             fixup.append((inst, "sound_hi"))
     for (obj, key) in fixup:
-        if isinstance(obj, dict) and isinstance(obj.get(key, None), str):
+        if isinstance(obj, dict) and isinstance(obj.get(key), str):
             obj[key] = {"sample": obj[key]}
 
 
@@ -449,15 +451,30 @@ def validate_bank(json, sample_bank):
         validate(inst in seen_instruments, "unreferenced instrument " + inst)
 
 
+def apply_ifs(json, defines):
+    if isinstance(json, dict) and "ifdef" in json and "then" in json and "else" in json:
+        validate_json_format(json, {"ifdef": list})
+        true = any(d in defines for d in json["ifdef"])
+        return apply_ifs(json["then"] if true else json["else"], defines)
+    elif isinstance(json, list):
+        for i in range(len(json)):
+            json[i] = apply_ifs(json[i], defines)
+    elif isinstance(json, dict):
+        for key in json:
+            json[key] = apply_ifs(json[key], defines)
+    return json
+
+
 def apply_version_diffs(json, defines):
-    if "VERSION_EU" in defines and isinstance(json.get("date", None), str):
-        json["date"] = json["date"].replace("1996-03-19", "1996-06-24")
+    date_str = json.get("date")
+    if "VERSION_EU" in defines and isinstance(date_str, str):
+        json["date"] = date_str.replace("1996-03-19", "1996-06-24")
 
     ifdef_removed = set()
     for key, inst in json["instruments"].items():
         if (
             isinstance(inst, dict)
-            and isinstance(inst.get("ifdef", None), list)
+            and isinstance(inst.get("ifdef"), list)
             and all(d not in defines for d in inst["ifdef"])
         ):
             ifdef_removed.add(key)
@@ -484,7 +501,7 @@ def mark_sample_bank_uses(bank):
                 mark_used(inst["sound_hi"]["sample"])
 
 
-def serialize_ctl(bank, base_ser):
+def serialize_ctl(bank, base_ser, is_shindou):
     json = bank.json
 
     drums = []
@@ -495,17 +512,18 @@ def serialize_ctl(bank, base_ser):
         else:
             instruments.append(inst)
 
-    y, m, d = map(int, json.get("date", "0000-00-00").split("-"))
-    date = y * 10000 + m * 100 + d
-    base_ser.add(
-        pack(
-            "IIII",
-            len(json["instrument_list"]),
-            len(drums),
-            1 if len(bank.sample_bank.uses) > 1 else 0,
-            to_bcd(date),
+    if not is_shindou:
+        y, m, d = map(int, json.get("date", "0000-00-00").split("-"))
+        date = y * 10000 + m * 100 + d
+        base_ser.add(
+            pack(
+                "IIII",
+                len(json["instrument_list"]),
+                len(drums),
+                1 if len(bank.sample_bank.uses) > 1 else 0,
+                to_bcd(date),
+            )
         )
-    )
 
     ser = ReserveSerializer()
     if drums:
@@ -538,10 +556,12 @@ def serialize_ctl(bank, base_ser):
         sample_len = len(aifc.data)
 
         # Sample
-        ser.add(pack("PP", 0, aifc.offset))
+        ser.add(pack("IX", align(sample_len, 2) if is_shindou else 0))
+        ser.add(pack("P", aifc.offset))
         loop_addr_buf = ser.reserve(WORD_BYTES)
         book_addr_buf = ser.reserve(WORD_BYTES)
-        ser.add(pack("I", align(sample_len, 2)))
+        if not is_shindou:
+            ser.add(pack("I", align(sample_len, 2)))
         ser.align(16)
 
         # Book
@@ -638,8 +658,12 @@ def serialize_ctl(bank, base_ser):
 
     base_ser.add(ser.finish())
 
+    return pack(
+        "BBBB", bank.sample_bank.index, 0xFF, len(json["instrument_list"]), len(drums)
+    )
 
-def serialize_tbl(sample_bank, ser):
+
+def serialize_tbl(sample_bank, ser, is_shindou):
     ser.reset_garbage_pos()
     base_addr = ser.size
     for aifc in sample_bank.entries:
@@ -649,32 +673,72 @@ def serialize_tbl(sample_bank, ser):
         aifc.offset = ser.size - base_addr
         ser.add(aifc.data)
     ser.align(2)
-    ser.align_garbage(16)
+    if is_shindou and sample_bank.index not in [4, 10]:
+        ser.align(16)
+    else:
+        ser.align_garbage(16)
 
 
-def serialize_seqfile(entries, serialize_entry, entry_list, magic, extra_padding=True):
-    ser = ReserveSerializer()
-    ser.add(pack("HHX", magic, len(entry_list)))
-    table = ser.reserve(len(entry_list) * 2 * WORD_BYTES)
-    ser.align(16)
-    data_start = ser.size
-
-    ser2 = GarbageSerializer()
+def serialize_seqfile(
+    out_filename,
+    out_header_filename,
+    entries,
+    serialize_entry,
+    entry_list,
+    magic,
+    is_shindou,
+    extra_padding=True,
+):
+    data_ser = GarbageSerializer()
     entry_offsets = []
     entry_lens = []
+    entry_meta = []
     for entry in entries:
-        entry_offsets.append(ser2.size)
-        serialize_entry(entry, ser2)
-        entry_lens.append(ser2.size - entry_offsets[-1])
-    ser.add(ser2.finish())
-    if extra_padding:
-        ser.add(b"\0")
-    ser.align(64)
+        entry_offsets.append(data_ser.size)
+        ret = serialize_entry(entry, data_ser, is_shindou)
+        entry_meta.append(ret)
+        entry_lens.append(data_ser.size - entry_offsets[-1])
+    data = data_ser.finish()
 
-    for ent in entry_list:
-        table.append(pack("P", entry_offsets[ent] + data_start))
-        table.append(pack("IX", entry_lens[ent]))
-    return ser.finish()
+    if is_shindou:
+        ser = ReserveSerializer()
+        ser.add(pack("H", len(entries)))
+        ser.align(16)
+        sh_magic = 0x0204 if magic == TYPE_TBL else 0x0203
+
+        # Ignore entry_list and loop over all entries instead. This makes a
+        # difference for sample banks, where US/JP/EU doesn't use a normal
+        # header for sample banks but instead has a mapping from sound bank to
+        # sample bank offset/length. Shindou uses a normal header and makes the
+        # mapping part of the sound bank header instead (part of entry_meta).
+        for i in range(len(entries)):
+            ser.add(pack("PIH", entry_offsets[i], entry_lens[i], sh_magic))
+            ser.add(entry_meta[i] or b"\0\0\0\0")
+            ser.align(16)
+
+        if out_header_filename:
+            with open(out_header_filename, "wb") as f:
+                f.write(ser.finish())
+        with open(out_filename, "wb") as f:
+            f.write(data)
+
+    else:
+        ser = ReserveSerializer()
+        ser.add(pack("HHX", magic, len(entry_list)))
+        table = ser.reserve(len(entry_list) * 2 * WORD_BYTES)
+        ser.align(16)
+        data_start = ser.size
+
+        ser.add(data)
+        if extra_padding:
+            ser.add(b"\0")
+        ser.align(64)
+
+        for index in entry_list:
+            table.append(pack("P", entry_offsets[index] + data_start))
+            table.append(pack("IX", entry_lens[index]))
+        with open(out_filename, "wb") as f:
+            f.write(ser.finish())
 
 
 def validate_and_normalize_sequence_json(json, bank_names, defines):
@@ -707,7 +771,14 @@ def validate_and_normalize_sequence_json(json, bank_names, defines):
 
 
 def write_sequences(
-    inputs, out_filename, out_bank_sets, sound_bank_dir, seq_json, defines
+    inputs,
+    out_filename,
+    out_header_filename,
+    out_bank_sets,
+    sound_bank_dir,
+    seq_json,
+    defines,
+    is_shindou,
 ):
     bank_names = sorted(
         [os.path.splitext(os.path.basename(x))[0] for x in os.listdir(sound_bank_dir)]
@@ -767,28 +838,36 @@ def write_sequences(
             )
         ind_to_name[ind] = key
 
-    while ind_to_name and json.get(ind_to_name[-1], None) is None:
+    while ind_to_name and json.get(ind_to_name[-1]) is None:
         ind_to_name.pop()
 
-    def serialize_file(name, ser):
-        if json.get(name, None) is None:
+    def serialize_file(name, ser, is_shindou):
+        if json.get(name) is None:
             return
         ser.reset_garbage_pos()
         with open(name_to_fname[name], "rb") as f:
             ser.add(f.read())
-        ser.align_garbage(16)
+        if is_shindou and name.startswith("17"):
+            ser.align(16)
+        else:
+            ser.align_garbage(16)
 
-    with open(out_filename, "wb") as f:
-        n = range(len(ind_to_name))
-        f.write(serialize_seqfile(ind_to_name, serialize_file, n, 3, False))
+    serialize_seqfile(
+        out_filename,
+        out_header_filename,
+        ind_to_name,
+        serialize_file,
+        range(len(ind_to_name)),
+        TYPE_SEQ,
+        is_shindou,
+        extra_padding=False,
+    )
 
     with open(out_bank_sets, "wb") as f:
         ser = ReserveSerializer()
         table = ser.reserve(len(ind_to_name) * 2)
         for name in ind_to_name:
-            bank_set = json.get(name, None)
-            if bank_set is None:
-                bank_set = []
+            bank_set = json.get(name) or []
             table.append(pack("H", ser.size))
             ser.add(bytes([len(bank_set)]))
             for bank in bank_set[::-1]:
@@ -799,6 +878,7 @@ def write_sequences(
 
 def main():
     global STACK_TRACES
+    global DUMP_INDIVIDUAL_BINS
     global ENDIAN_MARKER
     global WORD_BYTES
     need_help = False
@@ -806,6 +886,7 @@ def main():
     cpp_command = None
     print_samples = False
     sequences_out_file = None
+    sequences_header_out_file = None
     defines = []
     args = []
     for i, a in enumerate(sys.argv[1:], 1):
@@ -833,10 +914,10 @@ def main():
             skip_next = 1
         elif a == "--bitwidth":
             bitwidth = sys.argv[i + 1]
-            if bitwidth == 'native':
-                WORD_BYTES = struct.calcsize('P')
+            if bitwidth == "native":
+                WORD_BYTES = struct.calcsize("P")
             else:
-                if bitwidth not in ['32', '64']:
+                if bitwidth not in ["32", "64"]:
                     fail("--bitwidth takes argument 32, 64 or native")
                 WORD_BYTES = int(bitwidth) // 8
             skip_next = 1
@@ -844,14 +925,17 @@ def main():
             defines.append(a[2:])
         elif a == "--stack-trace":
             STACK_TRACES = True
+        elif a == "--dump-individual-bins":
+            DUMP_INDIVIDUAL_BINS = True
         elif a == "--print-samples":
             print_samples = True
         elif a == "--sequences":
             sequences_out_file = sys.argv[i + 1]
-            bank_sets_out_file = sys.argv[i + 2]
-            sound_bank_dir = sys.argv[i + 3]
-            sequence_json = sys.argv[i + 4]
-            skip_next = 4
+            sequences_header_out_file = sys.argv[i + 2]
+            bank_sets_out_file = sys.argv[i + 3]
+            sound_bank_dir = sys.argv[i + 4]
+            sequence_json = sys.argv[i + 5]
+            skip_next = 5
         elif a.startswith("-"):
             print("Unrecognized option " + a)
             sys.exit(1)
@@ -859,34 +943,42 @@ def main():
             args.append(a)
 
     defines_set = {d.split("=")[0] for d in defines}
+    is_shindou = "VERSION_SH" in defines_set
 
     if sequences_out_file is not None and not need_help:
         write_sequences(
             args,
             sequences_out_file,
+            sequences_header_out_file,
             bank_sets_out_file,
             sound_bank_dir,
             sequence_json,
             defines_set,
+            is_shindou,
         )
         sys.exit(0)
 
-    if need_help or len(args) != 4:
+    if need_help or len(args) != 6:
         print(
             "Usage: {} <samples dir> <sound bank dir>"
-            " <out .ctl file> <out .tbl file>"
+            " <out .ctl file> <out .ctl Shindou header file>"
+            " <out .tbl file> <out .tbl Shindou header file>"
             " [--cpp <preprocessor>]"
             " [-D <symbol>]"
             " [--stack-trace]"
-            " | --sequences <out sequence .bin> <out bank sets .bin> <sound bank dir> "
-            "<sequences.json> <inputs...>".format(sys.argv[0])
+            " | --sequences <out sequence .bin> <out Shindou sequence header .bin> "
+            "<out bank sets .bin> <sound bank dir> <sequences.json> <inputs...>".format(
+                sys.argv[0]
+            )
         )
         sys.exit(0 if need_help else 1)
 
     sample_bank_dir = args[0]
     sound_bank_dir = args[1]
     ctl_data_out = args[2]
-    tbl_data_out = args[3]
+    ctl_data_header_out = args[3]
+    tbl_data_out = args[4]
+    tbl_data_header_out = args[5]
 
     banks = []
     sample_banks = []
@@ -932,6 +1024,7 @@ def main():
                 data = strip_comments(data)
             bank_json = orderedJsonDecoder.decode(data)
 
+            bank_json = apply_ifs(bank_json, defines_set)
             validate_bank_toplevel(bank_json)
             apply_version_diffs(bank_json, defines_set)
             normalize_sound_json(bank_json)
@@ -954,34 +1047,40 @@ def main():
 
     sample_banks = [b for b in sample_banks if b.uses]
     sample_banks.sort(key=lambda b: b.uses[0].name)
-    sample_bank_index = {}
+    sample_bank_index = 0
     for sample_bank in sample_banks:
-        sample_bank_index[sample_bank] = len(sample_bank_index)
+        sample_bank.index = sample_bank_index
+        sample_bank_index += 1
 
-    with open(tbl_data_out, "wb") as out:
-        out.write(
-            serialize_seqfile(
-                sample_banks,
-                serialize_tbl,
-                [sample_bank_index[x.sample_bank] for x in banks],
-                TYPE_TBL,
-            )
-        )
+    serialize_seqfile(
+        tbl_data_out,
+        tbl_data_header_out,
+        sample_banks,
+        serialize_tbl,
+        [x.sample_bank.index for x in banks],
+        TYPE_TBL,
+        is_shindou,
+    )
 
-    with open(ctl_data_out, "wb") as out:
-        if DUMP_INDIVIDUAL_BINS:
-            # Debug logic, may simplify diffing
-            os.makedirs("ctl/", exist_ok=True)
-            for b in banks:
-                with open("ctl/" + b.name + ".bin", "wb") as f:
-                    ser = GarbageSerializer()
-                    serialize_ctl(b, ser)
-                    f.write(ser.finish())
-            print("wrote to ctl/")
+    if DUMP_INDIVIDUAL_BINS:
+        # Debug logic, may simplify diffing
+        os.makedirs("ctl/", exist_ok=True)
+        for b in banks:
+            with open("ctl/" + b.name + ".bin", "wb") as f:
+                ser = GarbageSerializer()
+                serialize_ctl(b, ser, is_shindou)
+                f.write(ser.finish())
+        print("wrote to ctl/")
 
-        out.write(
-            serialize_seqfile(banks, serialize_ctl, list(range(len(banks))), TYPE_CTL)
-        )
+    serialize_seqfile(
+        ctl_data_out,
+        ctl_data_header_out,
+        banks,
+        serialize_ctl,
+        list(range(len(banks))),
+        TYPE_CTL,
+        is_shindou,
+    )
 
     if print_samples:
         for sample_bank in sample_banks:

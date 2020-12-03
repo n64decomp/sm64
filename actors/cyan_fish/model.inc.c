@@ -4,7 +4,7 @@
 UNUSED static const u64 cyan_fish_unused_1 = 0;
 
 // 0x0600D468
-ALIGNED8 static const u8 cyan_fish_seg6_texture_0600D468[] = {
+ALIGNED8 static const Texture cyan_fish_seg6_texture_0600D468[] = {
 #include "actors/cyan_fish/cyan_fish.rgba16.inc.c"
 };
 

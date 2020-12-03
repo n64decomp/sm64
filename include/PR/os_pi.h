@@ -1,12 +1,13 @@
 #ifndef _ULTRA64_PI_H_
 #define _ULTRA64_PI_H_
+#include <ultra64.h>
 
 /* Ultra64 Parallel Interface */
 
 /* Types */
 
 typedef struct {
-#if !defined(VERSION_EU) && !defined(VERSION_SH)
+#if !defined(VERSION_EU)
     u32 errStatus;
 #endif
     void *dramAddr;
@@ -22,8 +23,8 @@ typedef struct {
     u16 blockNum;      // 6
     s32 sectorNum;     // 8
     uintptr_t devAddr; // c
-#if defined(VERSION_EU) || defined(VERSION_SH)
-    u32 unk10; //error status added moved to blockinfo
+#if defined(VERSION_EU)
+    u32 errStatus; //error status added moved to blockinfo
 #endif
     u32 bmCtlShadow;        // 10
     u32 seqCtlShadow;       // 14

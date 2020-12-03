@@ -15,7 +15,7 @@
 #include "interaction.h"
 #include "camera.h"
 #include "level_table.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 #define POLE_NONE          0
 #define POLE_TOUCHED_FLOOR 1
@@ -174,7 +174,7 @@ s32 act_holding_pole(struct MarioState *m) {
 #ifdef VERSION_SH
         reset_rumble_timers();
 #endif
-        func_80320A4C(1, marioObj->oMarioPoleYawVel / 0x100 * 2);
+        set_sound_moving_speed(SOUND_BANK_MOVING, marioObj->oMarioPoleYawVel / 0x100 * 2);
     } else {
         marioObj->oMarioPoleYawVel = 0;
         m->faceAngle[1] -= m->controller->stickX * 16.0f;
@@ -471,7 +471,7 @@ s32 act_hang_moving(struct MarioState *m) {
     if (m->marioObj->header.gfx.animInfo.animFrame == 12) {
         play_sound(SOUND_ACTION_HANGING_STEP, m->marioObj->header.gfx.cameraToObject);
 #ifdef VERSION_SH
-        queue_rumble_data(5, 30);
+        queue_rumble_data(1, 30);
 #endif
     }
 

@@ -17,12 +17,12 @@ glabel rspF3DEnd
 
 .else /* Use one of the Fast3DEX series grucodes. */
 glabel rspF3DStart
-    .if F3DEX_GBI_2 == 1
-        .incbin "lib/PR/f3dex2/F3DEX2.bin"
+    .if F3DZEX_GBI_2 == 1
+        .incbin "lib/PR/f3dex2/F3DZEX_NoN.bin"
     .elseif F3DEX_GBI == 1
         .incbin "lib/PR/f3dex/F3DEX.bin"
-    .else /* Fast3DZEX */
-        .incbin "lib/PR/f3dex2/F3DZEX.bin"
+    .elseif F3DEX_GBI_2 == 1
+        .incbin "lib/PR/f3dex2/F3DEX2.bin"
     .endif
 glabel rspF3DEnd
 .endif
@@ -132,12 +132,12 @@ glabel rspF3DDataEnd
 
 .else /* Using one of the Fast3DEX series grucodes */
 glabel rspF3DDataStart
-    .if F3DEX_GBI_2 == 1
-        .incbin "lib/PR/f3dex2/F3DEX2_data.bin"
+    .if F3DZEX_GBI_2 == 1
+        .incbin "lib/PR/f3dex2/F3DZEX_NoN_data.bin"
     .elseif F3DEX_GBI == 1
         .incbin "lib/PR/f3dex/F3DEX_data.bin"
-    .else /* Fast3DZEX */
-        .incbin "lib/PR/f3dex2/F3DZEX_data.bin"
+    .elseif F3DEX_GBI_2 == 1
+        .incbin "lib/PR/f3dex2/F3DEX2_data.bin"
     .endif
 glabel rspF3DDataEnd
 .endif

@@ -21,7 +21,7 @@
 #define HUD_LUT_GLOBAL 2
 
 // For file select JP HUD difference
-#ifdef VERSION_JP
+#if defined(VERSION_JP) || defined(VERSION_SH)
 #define HUD_LUT_DIFF HUD_LUT_JPMENU
 #else
 #define HUD_LUT_DIFF HUD_LUT_GLOBAL
@@ -124,10 +124,10 @@ void handle_menu_scrolling(s8 scrollDirection, s8 *currentIndex, s8 minIndex, s8
 #if defined(VERSION_US) || defined(VERSION_EU)
 s16 get_str_x_pos_from_center(s16 centerPos, u8 *str, f32 scale);
 #endif
-#ifdef VERSION_JP
+#if defined(VERSION_JP) || defined(VERSION_SH)
 #define get_str_x_pos_from_center get_str_x_pos_from_center_scale
 #endif
-#if defined(VERSION_JP) || defined(VERSION_EU)
+#if defined(VERSION_JP) || defined(VERSION_EU) || defined(VERSION_SH)
 s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale);
 #endif
 void print_hud_my_score_coins(s32 useCourseCoinScore, s8 fileNum, s8 courseNum, s16 x, s16 y);

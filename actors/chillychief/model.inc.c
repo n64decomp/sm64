@@ -25,17 +25,17 @@ UNUSED static const Lights1 chillychief_lights_unused = gdSPDefLights1(
 );
 
 // 0x06000060
-ALIGNED8 static const u8 chilly_chief_seg6_texture_06000060[] = {
+ALIGNED8 static const Texture chilly_chief_seg6_texture_06000060[] = {
 #include "actors/chillychief/chill_bully_left_side.rgba16.inc.c"
 };
 
 // 0x06001060
-ALIGNED8 static const u8 chilly_chief_seg6_texture_06001060[] = {
+ALIGNED8 static const Texture chilly_chief_seg6_texture_06001060[] = {
 #include "actors/chillychief/chill_bully_right_side.rgba16.inc.c"
 };
 
 // 0x06002060
-ALIGNED8 static const u8 chilly_chief_seg6_texture_06002060[] = {
+ALIGNED8 static const Texture chilly_chief_seg6_texture_06002060[] = {
 #include "actors/chillychief/chill_bully_eye.rgba16.inc.c"
 };
 

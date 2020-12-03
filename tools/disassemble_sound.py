@@ -111,7 +111,7 @@ def parse_bcd(data):
 
 def serialize_f80(num):
     num = float(num)
-    f64, = struct.unpack(">Q", struct.pack(">d", num))
+    (f64,) = struct.unpack(">Q", struct.pack(">d", num))
     f64_sign_bit = f64 & 2 ** 63
     if num == 0.0:
         if f64_sign_bit:
@@ -153,7 +153,7 @@ def parse_drum(data, addr):
     assert loaded == 0
     assert pad == 0
     sound = parse_sound(data[4:12])
-    env_addr, = struct.unpack(">I", data[12:])
+    (env_addr,) = struct.unpack(">I", data[12:])
     assert env_addr != 0
     return Drum(name, addr, release_rate, pan, env_addr, sound)
 
@@ -205,9 +205,12 @@ def parse_book(addr, bank_data):
     return Book(order, npredictors, table)
 
 
-def parse_sample(data, bank_data, sample_bank):
-    zero, addr, loop, book, sample_size = struct.unpack(">IIIII", data)
-    assert zero == 0
+def parse_sample(data, bank_data, sample_bank, is_shindou):
+    if is_shindou:
+        sample_size, addr, loop, book = struct.unpack(">IIII", data)
+    else:
+        zero, addr, loop, book, sample_size = struct.unpack(">IIIII", data)
+        assert zero == 0
     assert loop != 0
     assert book != 0
     loop = parse_loop(loop, bank_data)
@@ -226,9 +229,7 @@ def parse_envelope(addr, data_bank):
     return entries
 
 
-def parse_ctl(header, data, sample_bank, index):
-    name_tbl.clear()
-    name = "{:02X}".format(index)
+def parse_ctl_header(header):
     num_instruments, num_drums, shared = struct.unpack(">III", header[:12])
     date = parse_bcd(header[12:])
     y = date // 10000
@@ -236,14 +237,21 @@ def parse_ctl(header, data, sample_bank, index):
     d = date % 100
     iso_date = "{:02}-{:02}-{:02}".format(y, m, d)
     assert shared in [0, 1]
+    return num_instruments, num_drums, iso_date
+
+
+def parse_ctl(parsed_header, data, sample_bank, index, is_shindou):
+    name_tbl.clear()
+    name = "{:02X}".format(index)
+    num_instruments, num_drums, iso_date = parsed_header
     # print("{}: {}, {} + {}".format(name, iso_date, num_instruments, num_drums))
 
-    drum_base_addr, = struct.unpack(">I", data[:4])
+    (drum_base_addr,) = struct.unpack(">I", data[:4])
     drum_addrs = []
     if num_drums != 0:
         assert drum_base_addr != 0
         for i in range(num_drums):
-            drum_addr, = struct.unpack(
+            (drum_addr,) = struct.unpack(
                 ">I", data[drum_base_addr + i * 4 : drum_base_addr + i * 4 + 4]
             )
             assert drum_addr != 0
@@ -255,7 +263,7 @@ def parse_ctl(header, data, sample_bank, index):
     inst_addrs = []
     inst_list = []
     for i in range(num_instruments):
-        inst_addr, = struct.unpack(
+        (inst_addr,) = struct.unpack(
             ">I", data[inst_base_addr + i * 4 : inst_base_addr + i * 4 + 4]
         )
         if inst_addr == 0:
@@ -314,7 +322,9 @@ def parse_ctl(header, data, sample_bank, index):
 
     samples = {}
     for addr in sorted(sample_addrs):
-        samples[addr] = parse_sample(data[addr : addr + 20], data, sample_bank)
+        sample_size = 16 if is_shindou else 20
+        sample_data = data[addr : addr + sample_size]
+        samples[addr] = parse_sample(sample_data, data, sample_bank, is_shindou)
         samples[addr].tunings.extend(tunings[addr])
 
     env_data = {}
@@ -331,7 +341,7 @@ def parse_ctl(header, data, sample_bank, index):
         for addr in range(min(used_env_addrs) + 4, max(used_env_addrs), 4):
             if addr not in used_env_addrs:
                 unused_envs.add(addr)
-                stub_marker, = struct.unpack(">I", data[addr : addr + 4])
+                (stub_marker,) = struct.unpack(">I", data[addr : addr + 4])
                 assert stub_marker == 0
                 env = parse_envelope(addr, data)
                 env_data[addr] = env
@@ -372,6 +382,32 @@ def parse_seqfile(data, filetype):
         prev = max(prev, offset + length)
         entries.append((offset, length))
     assert all(x == 0 for x in data[prev:])
+    return entries
+
+
+def parse_sh_header(data, filetype):
+    (num_entries,) = struct.unpack(">H", data[:2])
+    assert data[2:16] == b"\0" * 14
+    prev = 0
+    entries = []
+    for i in range(num_entries):
+        subdata = data[16 + 16 * i : 32 + 16 * i]
+        offset, length, magic = struct.unpack(">IIH", subdata[:10])
+        assert offset == prev
+        assert magic == (0x0204 if filetype == TYPE_TBL else 0x0203)
+        prev = offset + length
+        if filetype == TYPE_CTL:
+            assert subdata[14:16] == b"\0" * 2
+            sample_bank_index, magic2, num_instruments, num_drums = struct.unpack(
+                ">BBBB", subdata[10:14]
+            )
+            assert magic2 == 0xFF
+            entries.append(
+                (offset, length, (sample_bank_index, num_instruments, num_drums))
+            )
+        else:
+            assert subdata[10:16] == b"\0" * 6
+            entries.append((offset, length))
     return entries
 
 
@@ -543,11 +579,19 @@ def main():
     need_help = False
     only_samples = False
     only_samples_list = []
-    for a in sys.argv[1:]:
+    shindou_headers = None
+    skip_next = 0
+    for i, a in enumerate(sys.argv[1:], 1):
+        if skip_next > 0:
+            skip_next -= 1
+            continue
         if a == "--help" or a == "-h":
             need_help = True
         elif a == "--only-samples":
             only_samples = True
+        elif a == "--shindou-headers":
+            shindou_headers = sys.argv[i + 1 : i + 5]
+            skip_next = 4
         elif a.startswith("-"):
             print("Unrecognized option " + a)
             sys.exit(1)
@@ -556,36 +600,68 @@ def main():
         else:
             args.append(a)
 
-    expected_num_args = 2 if only_samples else 4
-    if need_help or len(args) != expected_num_args:
+    expected_num_args = 5 + (0 if only_samples else 2)
+    if (
+        need_help
+        or len(args) != expected_num_args
+        or (shindou_headers and len(shindou_headers) != 4)
+    ):
         print(
             "Usage: {}"
-            " <.ctl file> <.tbl file>"
+            " <.z64 rom> <ctl offset> <ctl size> <tbl offset> <tbl size>"
+            " [--shindou-headers <ctl header offset> <ctl header size>"
+            " <tbl header offset> <tbl header size>]"
             " (<samples outdir> <sound bank outdir> |"
             " --only-samples file:index ...)".format(sys.argv[0])
         )
         sys.exit(0 if need_help else 1)
 
-    ctl_data = open(args[0], "rb").read()
-    tbl_data = open(args[1], "rb").read()
+    rom_file = open(args[0], "rb")
+
+    def read_at(offset, size):
+        rom_file.seek(int(offset))
+        return rom_file.read(int(size))
+
+    ctl_data = read_at(args[1], args[2])
+    tbl_data = read_at(args[3], args[4])
+
+    ctl_header_data = None
+    tbl_header_data = None
+    if shindou_headers:
+        ctl_header_data = read_at(shindou_headers[0], shindou_headers[1])
+        tbl_header_data = read_at(shindou_headers[2], shindou_headers[3])
 
     if not only_samples:
-        samples_out_dir = args[2]
-        banks_out_dir = args[3]
-
-    ctl_entries = parse_seqfile(ctl_data, TYPE_CTL)
-    tbl_entries = parse_seqfile(tbl_data, TYPE_TBL)
-    assert len(ctl_entries) == len(tbl_entries)
-
-    tbls, sample_banks, sample_bank_map = parse_tbl(tbl_data, tbl_entries)
+        samples_out_dir = args[5]
+        banks_out_dir = args[6]
 
     banks = []
-    for ((offset, length), sample_bank_name, index) in zip(
-        ctl_entries, tbls, range(len(ctl_entries))
-    ):
-        sample_bank = sample_bank_map[sample_bank_name]
-        entry = ctl_data[offset : offset + length]
-        banks.append(parse_ctl(entry[:16], entry[16:], sample_bank, index))
+
+    if shindou_headers:
+        ctl_entries = parse_sh_header(ctl_header_data, TYPE_CTL)
+        tbl_entries = parse_sh_header(tbl_header_data, TYPE_TBL)
+
+        sample_banks = parse_tbl(tbl_data, tbl_entries)[1]
+
+        for index, (offset, length, sh_meta) in enumerate(ctl_entries):
+            sample_bank = sample_banks[sh_meta[0]]
+            entry = ctl_data[offset : offset + length]
+            header = (sh_meta[1], sh_meta[2], "0000-00-00")
+            banks.append(parse_ctl(header, entry, sample_bank, index, True))
+    else:
+        ctl_entries = parse_seqfile(ctl_data, TYPE_CTL)
+        tbl_entries = parse_seqfile(tbl_data, TYPE_TBL)
+        assert len(ctl_entries) == len(tbl_entries)
+
+        tbls, sample_banks, sample_bank_map = parse_tbl(tbl_data, tbl_entries)
+
+        for index, (offset, length), sample_bank_name in zip(
+            range(len(ctl_entries)), ctl_entries, tbls
+        ):
+            sample_bank = sample_bank_map[sample_bank_name]
+            entry = ctl_data[offset : offset + length]
+            header = parse_ctl_header(entry[:16])
+            banks.append(parse_ctl(header, entry[16:], sample_bank, index, False))
 
     # Special mode used for asset extraction: generate aifc files, with paths
     # given by command line arguments

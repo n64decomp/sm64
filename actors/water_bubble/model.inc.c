@@ -7,7 +7,7 @@ static const Lights1 water_bubble_seg5_lights_0500FE68 = gdSPDefLights1(
 );
 
 // 0x0500FE80
-ALIGNED8 static const u8 water_bubble_seg5_texture_0500FE80[] = {
+ALIGNED8 static const Texture water_bubble_seg5_texture_0500FE80[] = {
 #include "actors/water_bubble/water_bubble.rgba16.inc.c"
 };
 

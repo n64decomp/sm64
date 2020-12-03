@@ -5,8 +5,8 @@
 
 // geo
 extern const GeoLayout intro_geo_0002D0[];
-extern const GeoLayout intro_geo_00035C[];
-extern const GeoLayout intro_geo_0003B8[];
+extern const GeoLayout intro_geo_mario_head_regular[];
+extern const GeoLayout intro_geo_mario_head_dizzy[];
 extern const GeoLayout intro_geo_000414[];
 
 // leveldata
@@ -16,9 +16,9 @@ extern const f32 intro_seg7_table_0700C790[];
 extern const f32 intro_seg7_table_0700C880[];
 
 // script
-extern const LevelScript level_intro_entry_1[];
-extern const LevelScript level_intro_entry_2[];
-extern const LevelScript level_intro_entry_3[];
+extern const LevelScript level_intro_splash_screen[];
+extern const LevelScript level_intro_mario_head_regular[];
+extern const LevelScript level_intro_mario_head_dizzy[];
 extern const LevelScript level_intro_entry_4[];
 extern const LevelScript script_intro_L1[];
 extern const LevelScript script_intro_L2[];

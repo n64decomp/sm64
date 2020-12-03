@@ -19,22 +19,22 @@ static const Lights1 manta_lights_unused = gdSPDefLights1(
 );
 
 // 0x050017A0
-ALIGNED8 static const u8 manta_seg5_texture_050017A0[] = {
+ALIGNED8 static const Texture manta_seg5_texture_050017A0[] = {
 #include "actors/manta/manta_fin_corner.rgba16.inc.c"
 };
 
 // 0x05001FA0
-ALIGNED8 static const u8 manta_seg5_texture_05001FA0[] = {
+ALIGNED8 static const Texture manta_seg5_texture_05001FA0[] = {
 #include "actors/manta/manta_gills.rgba16.inc.c"
 };
 
 // 0x05002FA0
-ALIGNED8 static const u8 manta_seg5_texture_05002FA0[] = {
+ALIGNED8 static const Texture manta_seg5_texture_05002FA0[] = {
 #include "actors/manta/manta_eye.rgba16.inc.c"
 };
 
 // 0x050037A0
-ALIGNED8 static const u8 manta_seg5_texture_050037A0[] = {
+ALIGNED8 static const Texture manta_seg5_texture_050037A0[] = {
 #include "actors/manta/manta_fin_edge.rgba16.inc.c"
 };
 

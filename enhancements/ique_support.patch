@@ -36,7 +36,7 @@ index 00000000..8fb4c449
 +    nop
 +    nop
 diff --git a/lib/src/__osViSwapContext.c b/lib/src/__osViSwapContext.c
-index d7741994..9aced7cf 100644
+index b9d364b1..fa149b5d 100644
 --- a/lib/src/__osViSwapContext.c
 +++ b/lib/src/__osViSwapContext.c
 @@ -52,7 +52,9 @@ void __osViSwapContext() {
@@ -47,9 +47,9 @@ index d7741994..9aced7cf 100644
 +    /* Make sure bit 13 is cleared. Otherwise, graphics will be corrupted on
 +     * iQue Player. This has no effect on N64. */
 +    HW_REG(VI_CONTROL_REG, u32) = s1->features & ~(1 << 13);
-     D_80334914 = D_80334910;
-     D_80334910 = s1;
-     *D_80334914 = *D_80334910;
+     __osViNext = __osViCurr;
+     __osViCurr = s1;
+     *__osViNext = *__osViCurr;
 diff --git a/lib/src/consoleType.c b/lib/src/consoleType.c
 new file mode 100644
 index 00000000..ef08d1ef
@@ -188,7 +188,7 @@ index ea784b2c..116dae2d 100644
      __osSiRelAccess();
      return sp34;
 diff --git a/lib/src/osEepromWrite.c b/lib/src/osEepromWrite.c
-index 1a86477b..52a23e5e 100644
+index 1a86477b..a94f8721 100644
 --- a/lib/src/osEepromWrite.c
 +++ b/lib/src/osEepromWrite.c
 @@ -1,5 +1,6 @@
@@ -253,7 +253,7 @@ index 1a86477b..52a23e5e 100644
 +
 +        sp20 = *(unkStruct2 *) sp2c;
 +        sp34 = (sp20.unk01 & 0xc0) >> 4;
-+    } else if (gConsoleType == CONSOLE_N64) {
++    } else if (gConsoleType == CONSOLE_IQUE) {
 +        u8 *__osBbEepromAddress = * (u8**) 0x8000035C;
 +        s32 i;
  
@@ -269,7 +269,7 @@ index 1a86477b..52a23e5e 100644
      return sp34;
  }
 diff --git a/lib/src/osInitialize.c b/lib/src/osInitialize.c
-index 3cbca8ea..20723b2f 100644
+index ea247636..4adb45cb 100644
 --- a/lib/src/osInitialize.c
 +++ b/lib/src/osInitialize.c
 @@ -1,6 +1,7 @@
@@ -280,7 +280,7 @@ index 3cbca8ea..20723b2f 100644
  
  #define PIF_ADDR_START (void *) 0x1FC007FC
  
-@@ -46,6 +47,7 @@ void osInitialize(void) {
+@@ -54,6 +55,7 @@ void osInitialize(void) {
      UNUSED u32 eu_sp30;
  #endif
      UNUSED u32 sp2c;
@@ -289,19 +289,19 @@ index 3cbca8ea..20723b2f 100644
      __osSetSR(__osGetSR() | 0x20000000);
      __osSetFpcCsr(0x01000800);
 diff --git a/sm64.ld b/sm64.ld
-index 3275819f..6f97698f 100755
+index f80f5b4d..e53d4e40 100755
 --- a/sm64.ld
 +++ b/sm64.ld
-@@ -261,6 +261,8 @@ SECTIONS
-       BUILD_DIR/libultra.a:func_802F7140.o(.text)
-       BUILD_DIR/libultra.a:func_802F71A0.o(.text)
-       BUILD_DIR/libultra.a:func_802F71F0.o(.text)
+@@ -300,6 +300,8 @@ SECTIONS
+ #ifdef VERSION_SH
+       BUILD_DIR/libultra.a:unk_shindou_file_3.o(.text)
+ #endif
 +      BUILD_DIR/libultra.a:consoleType.o(.text)
 +      BUILD_DIR/libultra.a:skGetId.o(.text)
        BUILD_DIR/lib/rsp.o(.text);
  #else
        BUILD_DIR/src/game*.o(.text);
-@@ -371,6 +373,8 @@ SECTIONS
+@@ -410,6 +412,8 @@ SECTIONS
        BUILD_DIR/libultra.a:__osGetCause.o(.text);
        BUILD_DIR/libultra.a:__osAtomicDec.o(.text);
        BUILD_DIR/libultra.a:guLookAtRef.o(.text); /* Fast3DEX2 only */

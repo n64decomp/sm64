@@ -7,42 +7,42 @@ static const Lights1 exclamation_box_seg8_lights_08012E10 = gdSPDefLights1(
 );
 
 // 0x08012E28
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08012E28[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08012E28[] = {
 #include "actors/exclamation_box/vanish_cap_box_front.rgba16.inc.c"
 };
 
 // 0x08013628
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08013628[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08013628[] = {
 #include "actors/exclamation_box/vanish_cap_box_side.rgba16.inc.c"
 };
 
 // 0x08014628
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08014628[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08014628[] = {
 #include "actors/exclamation_box/metal_cap_box_front.rgba16.inc.c"
 };
 
 // 0x08014E28
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08014E28[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08014E28[] = {
 #include "actors/exclamation_box/metal_cap_box_side.rgba16.inc.c"
 };
 
 // 0x08015E28
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08015E28[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08015E28[] = {
 #include "actors/exclamation_box/wing_cap_box_front.rgba16.inc.c"
 };
 
 // 0x08016628
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08016628[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08016628[] = {
 #include "actors/exclamation_box/wing_cap_box_side.rgba16.inc.c"
 };
 
 // 0x08017628
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08017628[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08017628[] = {
 #include "actors/exclamation_box/exclamation_box_front.rgba16.inc.c"
 };
 
 // 0x08017E28
-ALIGNED8 static const u8 exclamation_box_seg8_texture_08017E28[] = {
+ALIGNED8 static const Texture exclamation_box_seg8_texture_08017E28[] = {
 #include "actors/exclamation_box/exclamation_box_side.rgba16.inc.c"
 };
 

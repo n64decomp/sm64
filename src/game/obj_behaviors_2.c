@@ -936,14 +936,14 @@ static void treat_far_home_as_mario(f32 threshold) {
  */
 void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 scale, s32 model,
                    f32 startSpeed, f32 endSpeed, s16 movePitch) {
-    struct Object *sp2C = spawn_object_relative_with_scale(1, relativePosX, relativePosY, relativePosZ,
+    struct Object *obj = spawn_object_relative_with_scale(1, relativePosX, relativePosY, relativePosZ,
                                                            scale, o, model, bhvSmallPiranhaFlame);
 
-    if (sp2C != NULL) {
-        sp2C->oSmallPiranhaFlameStartSpeed = startSpeed;
-        sp2C->oSmallPiranhaFlameEndSpeed = endSpeed;
-        sp2C->oSmallPiranhaFlameModel = model;
-        sp2C->oMoveAnglePitch = movePitch;
+    if (obj != NULL) {
+        obj->oSmallPiranhaFlameStartSpeed = startSpeed;
+        obj->oSmallPiranhaFlameEndSpeed = endSpeed;
+        obj->oSmallPiranhaFlameModel = model;
+        obj->oMoveAnglePitch = movePitch;
     }
 }
 

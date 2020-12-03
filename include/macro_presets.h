@@ -39,8 +39,8 @@ struct MacroPreset MacroObjectPresets[] = {
     {bhvBobombBuddyOpensCannon, MODEL_BOBOMB_BUDDY, 0},
     {bhvButterfly, MODEL_BUTTERFLY, 0}, // unused
     {bhvBouncingFireball, MODEL_NONE, 0}, // unused
-    {bhvLargeFishGroup, MODEL_NONE, 0}, // unused
-    {bhvLargeFishGroup, MODEL_NONE, 1},
+    {bhvFishSpawner, MODEL_NONE, 0}, // unused
+    {bhvFishSpawner, MODEL_NONE, 1},
     {bhvBetaFishSplashSpawner, MODEL_NONE, 0},
     {bhvHidden1upInPoleSpawner, MODEL_NONE, 0},
     {bhvGoomba, MODEL_GOOMBA, 1},
@@ -251,8 +251,8 @@ struct MacroPreset MacroObjectPresets[] = {
     {bhvSeaweedBundle, MODEL_NONE, 0},
     {bhvBetaChestBottom, MODEL_TREASURE_CHEST_BASE, 0}, // unused
     {bhvBowserBomb, MODEL_WATER_MINE, 0}, // unused
-    {bhvLargeFishGroup, MODEL_NONE, 2}, // unused
-    {bhvLargeFishGroup, MODEL_NONE, 3},
+    {bhvFishSpawner, MODEL_NONE, 2}, // unused
+    {bhvFishSpawner, MODEL_NONE, 3},
     {bhvJetStreamRingSpawner, MODEL_WATER_RING, 0}, // unused
     {bhvJetStreamRingSpawner, MODEL_WATER_RING, 0}, // unused
     {bhvSkeeter, MODEL_SKEETER, 0},

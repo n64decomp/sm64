@@ -15,7 +15,7 @@
 #include "save_file.h"
 #include "sound_init.h"
 #include "surface_terrains.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 s32 check_common_idle_cancels(struct MarioState *m) {
     mario_drop_held_object(m);
@@ -325,10 +325,10 @@ s32 act_sleeping(struct MarioState *m) {
 
 s32 act_waking_up(struct MarioState *m) {
     if (!m->actionTimer) {
-        func_803205E8(SOUND_MARIO_SNORING1, m->marioObj->header.gfx.cameraToObject);
-        func_803205E8(SOUND_MARIO_SNORING2, m->marioObj->header.gfx.cameraToObject);
+        stop_sound(SOUND_MARIO_SNORING1, m->marioObj->header.gfx.cameraToObject);
+        stop_sound(SOUND_MARIO_SNORING2, m->marioObj->header.gfx.cameraToObject);
 #ifndef VERSION_JP
-        func_803205E8(SOUND_MARIO_SNORING3, m->marioObj->header.gfx.cameraToObject);
+        stop_sound(SOUND_MARIO_SNORING3, m->marioObj->header.gfx.cameraToObject);
 #endif
         raise_background_noise(2);
     }

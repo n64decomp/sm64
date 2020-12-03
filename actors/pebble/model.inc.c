@@ -9,7 +9,7 @@ static const Vtx pebble_seg3_vertex_0301C2C0[] = {
 };
 
 // 0x0301C300
-ALIGNED8 static const u8 pebble_seg3_texture_0301C300[] = {
+ALIGNED8 static const Texture pebble_seg3_texture_0301C300[] = {
 #include "actors/pebble/pebble.rgba16.inc.c"
 };
 

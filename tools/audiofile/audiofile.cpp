@@ -14637,7 +14637,7 @@ static status _afOpenFile (int access, File *f, const char *filename,
 	filehandle->m_access = access;
 	filehandle->m_seekok = f->canSeek();
 	if (filename != NULL)
-		filehandle->m_fileName = strdup(filename);
+		filehandle->m_fileName = _af_strdup(filename);
 	else
 		filehandle->m_fileName = NULL;
 	filehandle->m_fileFormat = fileFormat;

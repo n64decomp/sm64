@@ -830,14 +830,14 @@ s32 bowser_dead_not_bits_end(void) {
     s32 ret = 0;
     if (o->oBowserUnkF8 < 2) {
         if (o->oBowserUnkF8 == 0) {
-            func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
+            seq_player_lower_volume(SEQ_PLAYER_LEVEL, 60, 40);
             o->oBowserUnkF8++;
         }
         if (cur_obj_update_dialog(2, 18, sBowserDefeatedDialogText[o->oBehParams2ndByte], 0)) {
             o->oBowserUnkF8++;
             cur_obj_play_sound_2(SOUND_GENERAL2_BOWSER_EXPLODE);
-            sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
-            sequence_player_fade_out(0, 1);
+            seq_player_unlower_volume(SEQ_PLAYER_LEVEL, 60);
+            seq_player_fade_out(SEQ_PLAYER_LEVEL, 1);
         }
     } else if (bowser_dead_twirl_into_trophy()) {
         bowser_dead_hide();
@@ -859,13 +859,13 @@ s32 bowser_dead_bits_end(void) {
         else
             dialogID = DIALOG_163;
         if (o->oBowserUnkF8 == 0) {
-            func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
+            seq_player_lower_volume(SEQ_PLAYER_LEVEL, 60, 40);
             o->oBowserUnkF8++;
         }
         if (cur_obj_update_dialog(2, 18, dialogID, 0)) {
             cur_obj_set_model(MODEL_BOWSER2);
-            sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
-            sequence_player_fade_out(0, 1);
+            seq_player_unlower_volume(SEQ_PLAYER_LEVEL, 60);
+            seq_player_fade_out(SEQ_PLAYER_LEVEL, 1);
             bowser_spawn_grand_star_key();
             o->oBowserUnkF8++;
         }
@@ -963,9 +963,9 @@ s32 bowser_check_fallen_off_stage(void) // bowser off stage?
         if (o->oPosY < o->oHomeY - 1000.0f)
             return 1;
         if (o->oMoveFlags & OBJ_MOVE_LANDED) {
-            if (o->oFloorType == 1)
+            if (o->oFloorType == SURFACE_BURNING)
                 return 1;
-            if (o->oFloorType == 10)
+            if (o->oFloorType == SURFACE_DEATH_PLANE)
                 return 1;
         }
     }
@@ -1382,9 +1382,9 @@ void bowser_flame_despawn(void) {
 s32 bowser_flame_should_despawn(s32 maxTime) {
     if (maxTime < o->oTimer)
         return 1;
-    if (o->oFloorType == 1)
+    if (o->oFloorType == SURFACE_BURNING)
         return 1;
-    if (o->oFloorType == 10)
+    if (o->oFloorType == SURFACE_DEATH_PLANE)
         return 1;
     return 0;
 }
@@ -1398,7 +1398,7 @@ void bhv_flame_bowser_init(void) {
         o->oVelY = 20.0f;
     o->oForwardVel = 10.0f;
     o->oGravity = -1.0f;
-    o->oFlameUnkF4 = random_float() + 1.0f;
+    o->oFlameScale = random_float() + 1.0f;
 }
 
 void bhv_flame_large_burning_out_init(void) {
@@ -1406,12 +1406,12 @@ void bhv_flame_large_burning_out_init(void) {
     o->oMoveAngleYaw = random_u16();
     o->oVelY = 10.0f;
     o->oForwardVel = 0.0f;
-    o->oFlameUnkF4 = 7.0f;
+    o->oFlameScale = 7.0f;
 }
 
 void bowser_flame_move(void) {
     s32 sp4;
-    sp4 = ((o->oFlameUnkF8 + gGlobalTimer) & 0x3F) << 10;
+    sp4 = ((o->oFlameSpeedTimerOffset + gGlobalTimer) & 0x3F) << 10;
     o->oPosX += sins(o->oMoveAngleYaw) * sins(sp4) * 4.0f;
     o->oPosZ += coss(o->oMoveAngleYaw) * sins(sp4) * 4.0f;
 }
@@ -1427,22 +1427,22 @@ void bhv_flame_bowser_loop(void) {
         if (o->oMoveFlags & OBJ_MOVE_LANDED) {
             o->oAction++;
             if (cur_obj_has_behavior(bhvFlameLargeBurningOut))
-                o->oFlameUnkF4 = 8.0f;
+                o->oFlameScale = 8.0f;
             else
-                o->oFlameUnkF4 = random_float() * 2 + 6.0f;
+                o->oFlameScale = random_float() * 2 + 6.0f;
             o->oForwardVel = 0;
             o->oVelY = 0;
             o->oGravity = 0;
         }
     } else {
         cur_obj_become_tangible();
-        if (o->oTimer > o->oFlameUnkF4 * 10 + 5.0f) {
-            o->oFlameUnkF4 -= 0.15;
-            if (o->oFlameUnkF4 <= 0)
+        if (o->oTimer > o->oFlameScale * 10 + 5.0f) {
+            o->oFlameScale -= 0.15;
+            if (o->oFlameScale <= 0)
                 bowser_flame_despawn();
         }
     }
-    cur_obj_scale(o->oFlameUnkF4);
+    cur_obj_scale(o->oFlameScale);
     o->oGraphYOffset = o->header.gfx.scale[1] * 14.0f;
     obj_set_hitbox(o, &sBowserFlameHitbox);
 }
@@ -1451,20 +1451,20 @@ void bhv_flame_moving_forward_growing_init(void) {
     o->oForwardVel = 30.0f;
     obj_translate_xz_random(o, 80.0f);
     o->oAnimState = (s32)(random_float() * 10.0f);
-    o->oFlameUnkF4 = 3.0f;
+    o->oFlameScale = 3.0f;
 }
 
 void bhv_flame_moving_forward_growing_loop(void) {
     UNUSED s32 unused;
     UNUSED struct Object *sp18;
     obj_set_hitbox(o, &sGrowingBowserFlameHitbox);
-    o->oFlameUnkF4 = o->oFlameUnkF4 + 0.5;
-    cur_obj_scale(o->oFlameUnkF4);
+    o->oFlameScale = o->oFlameScale + 0.5;
+    cur_obj_scale(o->oFlameScale);
     if (o->oMoveAnglePitch > 0x800)
         o->oMoveAnglePitch -= 0x200;
     cur_obj_set_pos_via_transform();
     cur_obj_update_floor_height();
-    if (o->oFlameUnkF4 > 30.0f)
+    if (o->oFlameScale > 30.0f)
         obj_mark_for_deletion(o);
     if (o->oPosY < o->oFloorHeight) {
         o->oPosY = o->oFloorHeight;
@@ -1482,7 +1482,7 @@ void bhv_flame_floating_landing_init(void) {
         o->oForwardVel = random_float() * 70.0f;
     o->oVelY = random_float() * 20.0f;
     o->oGravity = -1.0f;
-    o->oFlameUnkF8 = random_float() * 64.0f;
+    o->oFlameSpeedTimerOffset = random_float() * 64.0f;
 }
 
 void bhv_flame_floating_landing_loop(void) {
@@ -1509,18 +1509,18 @@ void bhv_blue_bowser_flame_init(void) {
     o->oAnimState = (s32)(random_float() * 10.0f);
     o->oVelY = 7.0f;
     o->oForwardVel = 35.0f;
-    o->oFlameUnkF4 = 3.0f;
+    o->oFlameScale = 3.0f;
     o->oFlameUnkFC = random_float() * 0.5;
     o->oGravity = 1.0f;
-    o->oFlameUnkF8 = (s32)(random_float() * 64.0f);
+    o->oFlameSpeedTimerOffset = (s32)(random_float() * 64.0f);
 }
 
 void bhv_blue_bowser_flame_loop(void) {
     s32 i;
     obj_set_hitbox(o, &sGrowingBowserFlameHitbox);
-    if (o->oFlameUnkF4 < 16.0f)
-        o->oFlameUnkF4 = o->oFlameUnkF4 + 0.5;
-    cur_obj_scale(o->oFlameUnkF4);
+    if (o->oFlameScale < 16.0f)
+        o->oFlameScale = o->oFlameScale + 0.5;
+    cur_obj_scale(o->oFlameScale);
     cur_obj_update_floor_and_walls();
     cur_obj_move_standard(0x4e);
     if (o->oTimer > 0x14) {
@@ -1542,26 +1542,26 @@ void bhv_flame_bouncing_init(void) {
     o->oAnimState = (s32)(random_float() * 10.0f);
     o->oVelY = 30.0f;
     o->oForwardVel = 20.0f;
-    o->oFlameUnkF4 = o->header.gfx.scale[0];
-    o->oFlameUnkF8 = (s32)(random_float() * 64.0f);
+    o->oFlameScale = o->header.gfx.scale[0];
+    o->oFlameSpeedTimerOffset = (s32)(random_float() * 64.0f);
 }
 
 void bhv_flame_bouncing_loop(void) {
-    struct Object *sp1C;
+    struct Object *bowser;
     if (o->oTimer == 0)
-        o->oFlameUnk100 = cur_obj_nearest_object_with_behavior(bhvBowser);
-    sp1C = o->oFlameUnk100;
+        o->oFlameBowser = cur_obj_nearest_object_with_behavior(bhvBowser);
+    bowser = o->oFlameBowser;
     o->oForwardVel = 15.0f;
     o->oBounciness = -1.0f;
-    cur_obj_scale(o->oFlameUnkF4);
+    cur_obj_scale(o->oFlameScale);
     obj_set_hitbox(o, &sGrowingBowserFlameHitbox);
     cur_obj_update_floor_and_walls();
     cur_obj_move_standard(78);
     if (bowser_flame_should_despawn(300))
         obj_mark_for_deletion(o);
-    if (sp1C != NULL)
-        if (sp1C->oHeldState == 0)
-            if (lateral_dist_between_objects(o, sp1C) < 300.0f)
+    if (bowser != NULL)
+        if (bowser->oHeldState == 0)
+            if (lateral_dist_between_objects(o, bowser) < 300.0f)
                 obj_mark_for_deletion(o);
 }
 
@@ -1570,16 +1570,16 @@ void bhv_blue_flames_group_loop(void) {
     s32 i;
     if (o->oTimer == 0) {
         o->oMoveAngleYaw = obj_angle_to_object(o, gMarioObject);
-        o->oBlueFlameUnkF8 = 5.0f;
+        o->oBlueFlameNextScale = 5.0f;
     }
     if (o->oTimer < 16) {
         if ((o->oTimer & 1) == 0) {
             for (i = 0; i < 3; i++) {
                 flame = spawn_object(o, MODEL_BLUE_FLAME, bhvFlameBouncing);
                 flame->oMoveAngleYaw += i * 0x5555;
-                flame->header.gfx.scale[0] = o->oBlueFlameUnkF8;
+                flame->header.gfx.scale[0] = o->oBlueFlameNextScale;
             }
-            o->oBlueFlameUnkF8 -= 0.5;
+            o->oBlueFlameNextScale -= 0.5;
         }
     } else
         obj_mark_for_deletion(o);

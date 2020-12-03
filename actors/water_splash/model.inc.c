@@ -9,42 +9,42 @@ static const Vtx water_splash_seg4_vertex_0402A588[] = {
 };
 
 // 0x0402A5C8
-ALIGNED8 static const u8 water_splash_seg4_texture_0402A5C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_0402A5C8[] = {
 #include "actors/water_splash/water_splash_0.rgba16.inc.c"
 };
 
 // 0x0402B5C8
-ALIGNED8 static const u8 water_splash_seg4_texture_0402B5C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_0402B5C8[] = {
 #include "actors/water_splash/water_splash_1.rgba16.inc.c"
 };
 
 // 0x0402C5C8
-ALIGNED8 static const u8 water_splash_seg4_texture_0402C5C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_0402C5C8[] = {
 #include "actors/water_splash/water_splash_2.rgba16.inc.c"
 };
 
 // 0x0402D5C8
-ALIGNED8 static const u8 water_splash_seg4_texture_0402D5C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_0402D5C8[] = {
 #include "actors/water_splash/water_splash_3.rgba16.inc.c"
 };
 
 // 0x0402E5C8
-ALIGNED8 static const u8 water_splash_seg4_texture_0402E5C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_0402E5C8[] = {
 #include "actors/water_splash/water_splash_4.rgba16.inc.c"
 };
 
 // 0x0402F5C8
-ALIGNED8 static const u8 water_splash_seg4_texture_0402F5C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_0402F5C8[] = {
 #include "actors/water_splash/water_splash_5.rgba16.inc.c"
 };
 
 // 0x040305C8
-ALIGNED8 static const u8 water_splash_seg4_texture_040305C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_040305C8[] = {
 #include "actors/water_splash/water_splash_6.rgba16.inc.c"
 };
 
 // 0x040315C8
-ALIGNED8 static const u8 water_splash_seg4_texture_040315C8[] = {
+ALIGNED8 static const Texture water_splash_seg4_texture_040315C8[] = {
 #include "actors/water_splash/water_splash_7.rgba16.inc.c"
 };
 

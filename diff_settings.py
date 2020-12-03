@@ -17,4 +17,4 @@ def apply(config, args):
     config['myimg'] = f'build/{lang}/sm64.{lang}.z64'
     config['baseimg'] = f'baserom.{lang}.z64'
     config['makeflags'] = [f'VERSION={lang}']
-    config['source_directories'] = ['src', 'include']
+    config['source_directories'] = ['src', 'include', 'lib', 'lib/src', 'asm', 'rsp']

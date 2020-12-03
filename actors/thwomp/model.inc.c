@@ -7,12 +7,12 @@ static const Lights1 thwomp_seg5_lights_050098E8 = gdSPDefLights1(
 );
 
 // 0x05009900
-ALIGNED8 static const u8 thwomp_seg5_texture_05009900[] = {
+ALIGNED8 static const Texture thwomp_seg5_texture_05009900[] = {
 #include "actors/thwomp/thwomp_face.rgba16.inc.c"
 };
 
 // 0x0500A900
-ALIGNED8 static const u8 thwomp_seg5_texture_0500A900[] = {
+ALIGNED8 static const Texture thwomp_seg5_texture_0500A900[] = {
 #include "actors/thwomp/thwomp_surface.rgba16.inc.c"
 };
 

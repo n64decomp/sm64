@@ -2,7 +2,7 @@
 
 #define OS_VI_MANAGER_MESSAGE_BUFF_SIZE 5
 
-static OSMgrArgs viMgrMainArgs = { 0 };
+OSMgrArgs viMgrMainArgs = { 0 };
 static OSThread viMgrThread;
 static u32 viMgrStack[0x400]; // stack bottom
 static OSMesgQueue __osViMesgQueue;
@@ -42,11 +42,11 @@ void osCreateViManager(OSPri pri) {
         int_disabled = __osDisableInt();
         viMgrMainArgs.initialized = TRUE;
         viMgrMainArgs.mgrThread = &viMgrThread;
-        viMgrMainArgs.unk08 = &__osViMesgQueue;
-        viMgrMainArgs.unk0c = &__osViMesgQueue;
-        viMgrMainArgs.unk10 = NULL;
+        viMgrMainArgs.cmdQueue = &__osViMesgQueue;
+        viMgrMainArgs.eventQueue = &__osViMesgQueue;
+        viMgrMainArgs.accessQueue = NULL;
         viMgrMainArgs.dma_func = NULL;
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
         viMgrMainArgs.edma_func = NULL;
 #endif
 
@@ -59,6 +59,7 @@ void osCreateViManager(OSPri pri) {
         }
     }
 }
+
 void viMgrMain(void *vargs) {
     static u16 retrace;
     OSViContext *context;
@@ -76,8 +77,8 @@ void viMgrMain(void *vargs) {
 
     args = (OSMgrArgs *) vargs;
 
-    while (1) {
-        osRecvMesg(args->unk0c, &mesg, OS_MESG_BLOCK);
+    while (TRUE) {
+        osRecvMesg(args->eventQueue, &mesg, OS_MESG_BLOCK);
         switch (*(u16 *) mesg) {
             case 13:
                 __osViSwapContext();

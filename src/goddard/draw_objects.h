@@ -6,6 +6,19 @@
 #include "gd_types.h"
 #include "macros.h"
 
+// TODO: make this an enum without causing bss reordering
+#define COLOUR_BLACK     0
+#define COLOUR_WHITE     1
+#define COLOUR_RED       2
+#define COLOUR_GREEN     3
+#define COLOUR_BLUE      4
+#define COLOUR_GRAY      5
+#define COLOUR_DARK_GRAY 6
+#define COLOUR_DARK_BLUE 7
+#define COLOUR_YELLOW    8
+#define COLOUR_PINK      9
+#define COLOUR_BLACK2   10  // same as COLOUR_BLACK
+
 // data
 extern struct ObjCamera *gViewUpdateCamera;
 
@@ -23,8 +36,8 @@ void draw_label(struct ObjLabel *label);
 void draw_net(struct ObjNet *self);
 void draw_gadget(struct ObjGadget *gdgt);
 void draw_camera(struct ObjCamera *cam);
-void func_80179B9C(struct GdVec3f *pos, struct ObjCamera *cam, struct ObjView *view);
-void nop_obj_draw(UNUSED struct GdObj *nop);
+void world_pos_to_screen_coords(struct GdVec3f *pos, struct ObjCamera *cam, struct ObjView *view);
+void draw_nothing(UNUSED struct GdObj *nop);
 void draw_particle(struct GdObj *obj);
 void draw_bone(struct GdObj *obj);
 void draw_joint(struct GdObj *obj);

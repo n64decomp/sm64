@@ -37,12 +37,12 @@ UNUSED static const Lights1 skeeter_lights_unused6 = gdSPDefLights1(
 );
 
 // 0x06000090
-ALIGNED8 static const u8 skeeter_seg6_texture_06000090[] = {
+ALIGNED8 static const Texture skeeter_seg6_texture_06000090[] = {
 #include "actors/skeeter/skeeter_eye.rgba16.inc.c"
 };
 
 // 0x06000890
-ALIGNED8 static const u8 skeeter_seg6_texture_06000890[] = {
+ALIGNED8 static const Texture skeeter_seg6_texture_06000890[] = {
 #include "actors/skeeter/skeeter_iris.rgba16.inc.c"
 };
 

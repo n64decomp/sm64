@@ -248,8 +248,8 @@ static s16 upper_cell_index(s16 coord) {
         index += 1;
     }
 
-    if (index > (NUM_CELLS - 1)) {
-        index = (NUM_CELLS - 1);
+    if (index > NUM_CELLS_INDEX) {
+        index = NUM_CELLS_INDEX;
     }
 
     // Potentially < 0, but since lower index is >= 0, not exploitable

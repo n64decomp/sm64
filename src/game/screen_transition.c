@@ -90,7 +90,7 @@ s16 calc_tex_transition_radius(s8 fadeTimer, s8 transTime, struct WarpTransition
     f32 radiusTime = sTransitionColorFadeCount[fadeTimer] * texRadius / (f32)(transTime - 1);
     f32 result = transData->startTexRadius + radiusTime;
 
-    return (s16)(result + 0.5);;
+    return (s16)(result + 0.5);
 }
 
 f32 calc_tex_transition_time(s8 fadeTimer, s8 transTime, struct WarpTransitionData *transData) {
