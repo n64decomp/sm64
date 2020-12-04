@@ -5,6 +5,7 @@
 #include "data.h"
 #include "load.h"
 #include "seqplayer.h"
+#include "internal.h"
 #include "external.h"
 
 
@@ -1858,8 +1859,7 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
 }
 
 #elif defined(VERSION_SH)
-#ifdef NON_MATCHING // regalloc
-u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisState *synthesisState, s32 nSamples, u16 inBuf, s32 headsetPanSettings, u32 flags) {
+u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisState *synthesisState, s32 nSamples, u16 inBuf, s32 headsetPanSettings, UNUSED u32 flags) {
     u16 sourceRight;
     u16 sourceLeft;
     u16 targetLeft;
@@ -1868,10 +1868,7 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
     s16 rampRight;
     s32 sourceReverbVol;
     s16 reverbVol;
-    s32 bit;
-    s32 sourceVol;
-    s32 targetVol;
-    UNUSED s32 pad[2];
+    s32 temp = 0;
 
     sourceLeft = synthesisState->curVolLeft;
     sourceRight = synthesisState->curVolRight;
@@ -1879,6 +1876,7 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
     targetRight = note->targetVolRight;
     targetLeft <<= 4;
     targetRight <<= 4;
+
     if (targetLeft != sourceLeft) {
         rampLeft = (targetLeft - sourceLeft) / (nSamples >> 3);
     } else {
@@ -1889,12 +1887,11 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
     } else {
         rampRight = 0;
     }
+
     sourceReverbVol = synthesisState->reverbVol;
-    targetVol = note->reverbVol & 0x7f;
-    sourceVol = sourceReverbVol & 0x7f;
-    bit = (sourceReverbVol & 0x80) >> 7;
     if (note->reverbVol != sourceReverbVol) {
-        reverbVol = ((targetVol - sourceVol) << 9) / (nSamples >> 3);
+        temp = ((note->reverbVol & 0x7f) - (sourceReverbVol & 0x7f)) << 9;
+        reverbVol = temp / (nSamples >> 3);
         synthesisState->reverbVol = note->reverbVol;
     } else {
         reverbVol = 0;
@@ -1904,14 +1901,14 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
 
     if (note->usesHeadsetPanEffects) {
         aClearBuffer(cmd++, DMEM_ADDR_NOTE_PAN_TEMP, DEFAULT_LEN_1CH);
-        aEnvSetup1(cmd++, (sourceVol * 2), reverbVol, rampLeft, rampRight);
+        aEnvSetup1(cmd++, (sourceReverbVol & 0x7f) * 2, reverbVol, rampLeft, rampRight);
         aEnvSetup2(cmd++, sourceLeft, sourceRight);
 
         switch (headsetPanSettings) {
             case 1:
                 aEnvMixer(cmd++,
                     inBuf, nSamples,
-                    bit,
+                    (sourceReverbVol & 0x80) >> 7,
                     note->stereoStrongRight, note->stereoStrongLeft,
                     DMEM_ADDR_NOTE_PAN_TEMP,
                     DMEM_ADDR_RIGHT_CH,
@@ -1921,7 +1918,7 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
             case 2:
                 aEnvMixer(cmd++,
                     inBuf, nSamples,
-                    bit,
+                    (sourceReverbVol & 0x80) >> 7,
                     note->stereoStrongRight, note->stereoStrongLeft,
                     DMEM_ADDR_LEFT_CH,
                     DMEM_ADDR_NOTE_PAN_TEMP,
@@ -1931,7 +1928,7 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
             default:
                 aEnvMixer(cmd++,
                     inBuf, nSamples,
-                    bit,
+                    (sourceReverbVol & 0x80) >> 7,
                     note->stereoStrongRight, note->stereoStrongLeft,
                     DMEM_ADDR_LEFT_CH,
                     DMEM_ADDR_RIGHT_CH,
@@ -1940,11 +1937,11 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
                 break;
         }
     } else {
-        aEnvSetup1(cmd++, (sourceVol * 2), reverbVol, rampLeft, rampRight);
+        aEnvSetup1(cmd++, (sourceReverbVol & 0x7f) * 2, reverbVol, rampLeft, rampRight);
         aEnvSetup2(cmd++, sourceLeft, sourceRight);
         aEnvMixer(cmd++,
                 inBuf, nSamples,
-                bit,
+                (sourceReverbVol & 0x80) >> 7,
                 note->stereoStrongRight, note->stereoStrongLeft,
                 DMEM_ADDR_LEFT_CH,
                 DMEM_ADDR_RIGHT_CH,
@@ -1953,9 +1950,6 @@ u64 *process_envelope(u64 *cmd, struct NoteSubEu *note, struct NoteSynthesisStat
     }
     return cmd;
 }
-#else
-GLOBAL_ASM("asm/non_matchings/sh/audio/synthesis/process_envelope.s")
-#endif
 #endif
 
 #if defined(VERSION_EU) || defined(VERSION_SH)

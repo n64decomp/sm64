@@ -1,3 +1,11 @@
+Refresh 13 2
+
+- No more nonmatchings remain for all builds including Shindou.
+
+1.) Shindou OK (#1118)
+2.) Match shindou sequence_player_process_sequence (#1117)
+3.) Match func_sh_802f4e50 (#1116)
+
 Refresh 13
 
 - No more nonmatchings remain for US, JP, or EU builds. Three(!!!) remain for Shindou (SH).

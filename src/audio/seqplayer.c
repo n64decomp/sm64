@@ -2228,18 +2228,17 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
     }
 }
 
-#if defined(VERSION_SH) && !defined(NON_MATCHING) // regalloc
-void sequence_player_process_sequence(struct SequencePlayer *seqPlayer);
-GLOBAL_ASM("asm/non_matchings/sh/audio/seqplayer/sequence_player_process_sequence.s")
-#else
 void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
     u8 cmd;
+#ifdef VERSION_SH
+    UNUSED u32 pad;
+#endif
     u8 loBits;
     u8 temp;
     s32 value;
     s32 i;
     u16 u16v;
-    u8 *tempPtr;
+    u8 *seqData;
     struct M64ScriptState *state;
 #if defined(VERSION_EU) || defined(VERSION_SH)
     s32 temp32;
@@ -2518,19 +2517,19 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 
 #if defined(VERSION_EU) || defined(VERSION_SH)
                     case 0xda:
-                        temp = m64_read_u8(state);
+                        cmd = m64_read_u8(state);
                         u16v = m64_read_s16(state);
-                        switch (temp) {
+                        switch (cmd) {
                             case SEQUENCE_PLAYER_STATE_0:
                             case SEQUENCE_PLAYER_STATE_FADE_OUT:
                                 if (seqPlayer->state != SEQUENCE_PLAYER_STATE_2) {
                                     seqPlayer->fadeTimerUnkEu = u16v;
-                                    seqPlayer->state = temp;
+                                    seqPlayer->state = cmd;
                                 }
                                 break;
                             case SEQUENCE_PLAYER_STATE_2:
                                 seqPlayer->fadeRemainingFrames = u16v;
-                                seqPlayer->state = temp;
+                                seqPlayer->state = cmd;
                                 seqPlayer->fadeVelocity =
                                     (0.0f - seqPlayer->fadeVolume) / (s32)(u16v & 0xFFFFu);
                                 break;
@@ -2557,22 +2556,22 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
                         break;
 #else
                     case 0xdb: // seq_setvol
-                        temp = m64_read_u8(state);
+                        cmd = m64_read_u8(state);
                         switch (seqPlayer->state) {
                             case SEQUENCE_PLAYER_STATE_2:
                                 if (seqPlayer->fadeRemainingFrames != 0) {
-                                    f32 targetVolume = FLOAT_CAST(temp) / US_FLOAT(127.0);
+                                    f32 targetVolume = FLOAT_CAST(cmd) / US_FLOAT(127.0);
                                     seqPlayer->fadeVelocity = (targetVolume - seqPlayer->fadeVolume)
                                                               / FLOAT_CAST(seqPlayer->fadeRemainingFrames);
                                     break;
                                 }
                                 // fallthrough
                             case SEQUENCE_PLAYER_STATE_0:
-                                seqPlayer->fadeVolume = FLOAT_CAST(temp) / US_FLOAT(127.0);
+                                seqPlayer->fadeVolume = FLOAT_CAST(cmd) / US_FLOAT(127.0);
                                 break;
                             case SEQUENCE_PLAYER_STATE_FADE_OUT:
                             case SEQUENCE_PLAYER_STATE_4:
-                                seqPlayer->volume = FLOAT_CAST(temp) / US_FLOAT(127.0);
+                                seqPlayer->volume = FLOAT_CAST(cmd) / US_FLOAT(127.0);
                                 break;
                         }
                         break;
@@ -2617,11 +2616,11 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
                     case 0xd2: // seq_setshortnotevelocitytable
                     case 0xd1: // seq_setshortnotedurationtable
                         u16v = m64_read_s16(state);
-                        tempPtr = seqPlayer->seqData + u16v;
+                        seqData = seqPlayer->seqData + u16v;
                         if (cmd == 0xd2) {
-                            seqPlayer->shortNoteVelocityTable = tempPtr;
+                            seqPlayer->shortNoteVelocityTable = seqData;
                         } else {
-                            seqPlayer->shortNoteDurationTable = tempPtr;
+                            seqPlayer->shortNoteDurationTable = seqData;
                         }
                         break;
 
@@ -2647,14 +2646,15 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 
 #ifdef VERSION_SH
                     case 0xc7:
-                        temp = m64_read_u8(state);
+                        cmd = m64_read_u8(state);
                         u16v = m64_read_s16(state);
-                        seqPlayer->seqData[u16v] = (u8) value + temp;
+                        seqData = seqPlayer->seqData + u16v;
+                        *seqData = (u8)value + cmd;
                         break;
 
                     case 0xc6:
                         seqPlayer->unkSh = TRUE;
-                        break;
+                        return;
 #endif
 
                     default:
@@ -2735,7 +2735,6 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 #endif
     }
 }
-#endif
 
 // This runs 240 times per second.
 void process_sequences(UNUSED s32 iterationsRemaining) {

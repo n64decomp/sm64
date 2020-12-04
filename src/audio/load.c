@@ -53,7 +53,7 @@ struct PendingDmaAudioBank {
     struct AudioBank *audioBank;
     uintptr_t devAddr;
     void *vAddr;
-    s32 remaining;
+    u32 remaining;
     u32 transferSize;
     u32 encodedInfo;
     OSMesgQueue *retQueue;
@@ -155,7 +155,7 @@ void func_sh_802f4bd8(struct PendingDmaSample *arg0, s32 len);
 void func_sh_802f4c5c(uintptr_t devAddr, void *vAddr, size_t nbytes, s32 arg3);
 struct PendingDmaAudioBank *func_sh_802f4cb4(uintptr_t devAddr, void *vAddr, s32 size, s32 medium, s32 numChunks, OSMesgQueue *retQueue, s32 encodedInfo);
 void func_sh_802f4dcc(s32 audioResetStatus);
-void func_sh_802f4e50(struct PendingDmaAudioBank *arg0, u32 arg1);
+void func_sh_802f4e50(struct PendingDmaAudioBank *audioBank, s32 audioResetStatus);
 void func_sh_802f50ec(struct PendingDmaAudioBank *arg0, size_t len);
 void func_sh_802f517c(uintptr_t devAddr, void *vAddr, size_t nbytes, s32 arg3);
 s32 func_sh_802f5310(s32 bankId, struct AudioBank *mem, struct PatchStruct *patchInfo, s32 arg3);
@@ -2168,99 +2168,95 @@ void func_sh_802f4dcc(s32 audioResetStatus) {
     }
 }
 
-#ifndef NON_MATCHING
-GLOBAL_ASM("asm/non_matchings/sh/audio/load/func_sh_802f4e50.s")
-#else
-void func_sh_802f4e50(struct PendingDmaAudioBank *arg0, u32 arg1) {
-    ALSeqFile *sp5C;
-    s32 temp_a0;
-    s32 sp44;
-    s32 id;
-    struct PatchStruct sp2C;
-    u8 t0;
-    u32 sp24;
-
-    sp5C = gAlTbl;
-    if (arg0->timer >= 2) {
-        arg0->timer = arg0->timer - 1;
+void func_sh_802f4e50(struct PendingDmaAudioBank *audioBank, s32 audioResetStatus) {
+    ALSeqFile *alSeqFile;
+    u32 *encodedInfo;
+    OSMesg mesg;
+    u32 temp;
+    u32 seqId;
+    s32 bankId1;
+    s32 bankId2;
+    struct PatchStruct patchStruct;
+    alSeqFile = gAlTbl;
+    if (audioBank->timer >= 2) {
+        audioBank->timer--;
         return;
     }
-    if (arg0->timer == 1) {
-        arg0->timer = 0;
+    if (audioBank->timer == 1) {
+        audioBank->timer = 0;
     } else {
-        if (arg1 != 0) {
-            osRecvMesg(&arg0->dmaRetQueue, NULL, OS_MESG_BLOCK);
-            arg0->inProgress = 0;
+        if (audioResetStatus != 0) {
+            osRecvMesg(&audioBank->dmaRetQueue, NULL, OS_MESG_BLOCK);
+            audioBank->inProgress = 0;
             return;
         }
-        if (osRecvMesg(&arg0->dmaRetQueue, NULL, OS_MESG_NOBLOCK) == -1) {
+        if (osRecvMesg(&audioBank->dmaRetQueue, NULL, OS_MESG_NOBLOCK) == -1) {
             return;
         }
     }
-    sp24 = arg0->remaining;
-    if (sp24 == 0) {
-        arg1 = arg0->encodedInfo;
-        sp24 = (arg1 >> 8) & 0xff;
-        t0 = (arg0->encodedInfo) >> 0x10;
-        switch (t0) {
+
+    encodedInfo = &audioBank->encodedInfo;
+    if (audioBank->remaining == 0) {
+        mesg = (OSMesg) audioBank->encodedInfo;
+        mesg = mesg;    //! needs an extra read from mesg here to match...
+        temp = *encodedInfo;
+        seqId = (temp >> 8) & 0xFF;
+        switch ((u8) (temp >> 0x10)) {
             case 0:
-                if (gSeqLoadStatus[sp24] != 5) {
-                    gSeqLoadStatus[sp24] = (arg0->encodedInfo) & 0xff;
+                if (gSeqLoadStatus[seqId] != 5) {
+                    gSeqLoadStatus[seqId] = (u8) (temp & 0xFF);
                 }
                 break;
             case 2:
-                if (gUnkLoadStatus[sp24] != 5) {
-                    gUnkLoadStatus[sp24] = (arg0->encodedInfo) & 0xff;
+                if (gUnkLoadStatus[seqId] != 5) {
+                    gUnkLoadStatus[seqId] = (u8) (temp & 0xFF);
                 }
                 break;
             case 1:
-                if (gBankLoadStatus[sp24] != 5) {
-                    gBankLoadStatus[sp24] = (arg0->encodedInfo) & 0xff;
+                if (gBankLoadStatus[seqId] != 5) {
+                    gBankLoadStatus[seqId] = (u8) (temp & 0xFF);
                 }
-                temp_a0 = gCtlEntries[sp24].bankId1;
-                sp44 = gCtlEntries[sp24].bankId2;
-                sp2C.bankId1 = temp_a0;
-                sp2C.bankId2 = sp44;
-                if (temp_a0 != 0xFF) {
-                    sp2C.baseAddr1 = func_sh_802f3598(temp_a0, &sp2C.medium1);
+                bankId1 = gCtlEntries[seqId].bankId1;
+                bankId2 = gCtlEntries[seqId].bankId2;
+                patchStruct.bankId1 = bankId1;
+                patchStruct.bankId2 = bankId2;
+                if (bankId1 != 0xFF) {
+                    patchStruct.baseAddr1 = func_sh_802f3598(bankId1, &patchStruct.medium1);
                 } else {
-                    sp2C.baseAddr1 = NULL;
+                    patchStruct.baseAddr1 = NULL;
                 }
-                if (sp44 != 0xFF) {
-                    sp2C.baseAddr2 = func_sh_802f3598(sp44, &sp2C.medium2);
+                if (bankId2 != 0xFF) {
+                    patchStruct.baseAddr2 = func_sh_802f3598(bankId2, &patchStruct.medium2);
                 } else {
-                    sp2C.baseAddr2 = NULL;
+                    patchStruct.baseAddr2 = NULL;
                 }
-                func_sh_802f5310(sp24, arg0->audioBank, &sp2C, 1);
+
+                func_sh_802f5310(seqId, audioBank->audioBank, &patchStruct, 1);
                 break;
-
         }
-        arg1 = arg0->encodedInfo;
-        arg0->inProgress = 0;
-        osSendMesg(arg0->retQueue, (OSMesg) arg1, 0);
-    } else {
-        sp24 = arg0->remaining;
-        if (sp24 < arg0->transferSize) {
-            if (1 == arg0->medium) {
-                func_sh_802f517c(arg0->devAddr, arg0->vAddr, sp24, sp5C->unk2);
-            } else {
-                func_sh_802f50ec(arg0, sp24);
-            }
-            arg0->remaining = 0;
+        mesg = (OSMesg) audioBank->encodedInfo;
+        audioBank->inProgress = 0;
+        osSendMesg(audioBank->retQueue, mesg, OS_MESG_NOBLOCK);
+    } else if (audioBank->remaining < audioBank->transferSize) {
+        if (audioBank->medium == 1) {
+            func_sh_802f517c(audioBank->devAddr, audioBank->vAddr, audioBank->remaining, alSeqFile->unk2);
         } else {
-            if (1 == arg0->medium) {
-                func_sh_802f517c(arg0->devAddr, arg0->vAddr, arg0->transferSize, sp5C->unk2);
-            } else {
-                func_sh_802f50ec(arg0, arg0->transferSize);
-            }
-
-            arg0->remaining = arg0->remaining - arg0->transferSize;
-            arg0->devAddr = arg0->devAddr + arg0->transferSize;
-            arg0->vAddr = ((u8 *) arg0->vAddr) + arg0->transferSize;
+            func_sh_802f50ec(audioBank, audioBank->remaining);
         }
+
+        audioBank->remaining = 0;
+    } else {
+        if (audioBank->medium == 1) {
+            func_sh_802f517c(audioBank->devAddr, audioBank->vAddr, audioBank->transferSize, alSeqFile->unk2);
+        } else {
+            func_sh_802f50ec(audioBank, audioBank->transferSize);
+        }
+
+        audioBank->remaining -= audioBank->transferSize;
+        audioBank->devAddr   += audioBank->transferSize;
+        audioBank->vAddr = ((u8 *) audioBank->vAddr) + audioBank->transferSize;
     }
 }
-#endif
 
 extern char shindouDebugPrint110[];
 void func_sh_802f50ec(struct PendingDmaAudioBank *arg0, size_t len) {
