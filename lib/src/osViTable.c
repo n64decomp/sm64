@@ -324,25 +324,16 @@ OSViMode osViModeTable[] = {
           /*vBurst*/ 918020,
           /*vIntr*/ 2 } } },
 
-#if defined(VERSION_JP) || defined(VERSION_EU) || defined(VERSION_SH)
+#if !defined(VERSION_US)
     /*osViModePalLpn1*/
     { /*type*/ 14,
       /*comRegs*/
       { /*ctrl*/ 12814,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 625,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -362,19 +353,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12878,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -394,19 +376,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12574,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 625,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -426,19 +399,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12382,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -458,19 +422,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 13071,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 625,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -490,19 +445,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12879,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -522,19 +468,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12319,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 625,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -554,19 +491,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12383,
         /*width*/ 320,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 512,
         /*vCurrent*/ 0 },
@@ -586,19 +514,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12878,
         /*width*/ 1280,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 1024,
         /*vCurrent*/ 0 },
@@ -618,19 +537,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12878,
         /*width*/ 640,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 1024,
         /*vCurrent*/ 0 },
@@ -650,19 +560,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12382,
         /*width*/ 1280,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 1024,
         /*vCurrent*/ 0 },
@@ -682,19 +583,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12382,
         /*width*/ 640,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 1024,
         /*vCurrent*/ 0 },
@@ -714,19 +606,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 13135,
         /*width*/ 1280,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 1024,
         /*vCurrent*/ 0 },
@@ -746,19 +629,10 @@ OSViMode osViModeTable[] = {
       /*comRegs*/
       { /*ctrl*/ 12879,
         /*width*/ 640,
-#ifdef VERSION_SH
-        /*burst*/ 72621626,
-#else
         /*burst*/ 67380026,
-#endif
         /*vSync*/ 624,
-#ifdef VERSION_SH
-        /*hSync*/ 1510505,
-        /*leap*/ 208604269,
-#else
         /*hSync*/ 1379433,
         /*leap*/ 208604270,
-#endif
         /*hStart*/ 8389376,
         /*xScale*/ 1024,
         /*vCurrent*/ 0 },
@@ -774,7 +648,7 @@ OSViMode osViModeTable[] = {
           /*vBurst*/ 852585,
           /*vIntr*/ 2 } } },
 #endif
-#if defined(VERSION_US) || defined(VERSION_EU) || defined (VERSION_SH)
+#if !defined(VERSION_JP)
     /*osViModePalLpn1*/
     { /*type*/ 28,
       /*comRegs*/

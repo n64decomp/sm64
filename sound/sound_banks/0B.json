@@ -51,41 +51,41 @@
             "normal_range_lo": 29,
             "normal_range_hi": 63,
             "envelope": "envelope0",
-            "sound_lo": "3B_banjo_2",
-            "sound": "3C_acoustic_guitar",
+            "sound_lo": "3B",
+            "sound": "3C",
             "sound_hi": "3D"
         },
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "2E_accordion"
+            "sound": "2E"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "2E_accordion"
+            "sound": "2E"
         },
         "inst3": {
             "release_rate": 208,
             "envelope": "envelope3",
-            "sound": "16_french_horns"
+            "sound": "16"
         },
         "inst4": {
             "release_rate": 208,
             "envelope": "envelope4",
-            "sound": "16_french_horns"
+            "sound": "16"
         },
         "inst5": {
             "release_rate": 10,
             "normal_range_lo": 24,
             "envelope": "envelope5",
-            "sound_lo": "0E_hihat_closed",
-            "sound": "0F_hihat_open"
+            "sound_lo": "0E",
+            "sound": "0F"
         },
         "inst6": {
             "release_rate": 208,
             "envelope": "envelope6",
-            "sound": "2F_sleigh_bells"
+            "sound": "2F"
         }
     },
     "instrument_list": [

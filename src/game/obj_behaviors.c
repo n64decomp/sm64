@@ -31,7 +31,6 @@
 #include "save_file.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
-#include "rumble_init.h"
 
 /**
  * @file obj_behaviors.c
@@ -143,7 +142,7 @@ void turn_obj_away_from_surface(f32 velX, f32 velZ, f32 nX, UNUSED f32 nY, f32 n
 /**
  * Finds any wall collisions, applies them, and turns away from the surface.
  */
-s8 obj_find_wall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ) {
+s32 obj_find_wall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ) {
     struct WallCollisionData hitbox;
     f32 wall_nX, wall_nY, wall_nZ, objVelXCopy, objVelZCopy, objYawX, objYawZ;
 
@@ -178,7 +177,7 @@ s8 obj_find_wall(f32 objNewX, f32 objY, f32 objNewZ, f32 objVelX, f32 objVelZ) {
 /**
  * Turns an object away from steep floors, similarly to walls.
  */
-s8 turn_obj_away_from_steep_floor(struct Surface *objFloor, f32 floorY, f32 objVelX, f32 objVelZ) {
+s32 turn_obj_away_from_steep_floor(struct Surface *objFloor, f32 floorY, f32 objVelX, f32 objVelZ) {
     f32 floor_nX, floor_nY, floor_nZ, objVelXCopy, objVelZCopy, objYawX, objYawZ;
 
     if (objFloor == NULL) {
@@ -421,7 +420,7 @@ s16 object_step(void) {
     f32 objZ = o->oPosZ;
 
     f32 floorY;
-    f32 waterY = FLOOR_LOWER_LIMIT_MISC;
+    f32 waterY = -10000.0;
 
     f32 objVelX = o->oForwardVel * sins(o->oMoveAngleYaw);
     f32 objVelZ = o->oForwardVel * coss(o->oMoveAngleYaw);
@@ -494,7 +493,7 @@ void obj_move_xyz_using_fvel_and_yaw(struct Object *obj) {
 /**
  * Checks if a point is within distance from Mario's graphical position. Test is exclusive.
  */
-s8 is_point_within_radius_of_mario(f32 x, f32 y, f32 z, s32 dist) {
+s32 is_point_within_radius_of_mario(f32 x, f32 y, f32 z, s32 dist) {
     f32 mGfxX = gMarioObject->header.gfx.pos[0];
     f32 mGfxY = gMarioObject->header.gfx.pos[1];
     f32 mGfxZ = gMarioObject->header.gfx.pos[2];
@@ -510,7 +509,7 @@ s8 is_point_within_radius_of_mario(f32 x, f32 y, f32 z, s32 dist) {
 /**
  * Checks whether a point is within distance of a given point. Test is exclusive.
  */
-s8 is_point_close_to_object(struct Object *obj, f32 x, f32 y, f32 z, s32 dist) {
+s32 is_point_close_to_object(struct Object *obj, f32 x, f32 y, f32 z, s32 dist) {
     f32 objX = obj->oPosX;
     f32 objY = obj->oPosY;
     f32 objZ = obj->oPosZ;
@@ -541,7 +540,7 @@ void set_object_visibility(struct Object *obj, s32 dist) {
 /**
  * Turns an object towards home if Mario is not near to it.
  */
-s8 obj_return_home_if_safe(struct Object *obj, f32 homeX, f32 y, f32 homeZ, s32 dist) {
+s32 obj_return_home_if_safe(struct Object *obj, f32 homeX, f32 y, f32 homeZ, s32 dist) {
     f32 homeDistX = homeX - obj->oPosX;
     f32 homeDistZ = homeZ - obj->oPosZ;
     s16 angleTowardsHome = atan2s(homeDistZ, homeDistX);
@@ -577,7 +576,7 @@ void obj_return_and_displace_home(struct Object *obj, f32 homeX, UNUSED f32 home
  * A series of checks using sin and cos to see if a given angle is facing in the same direction
  * of a given angle, within a certain range.
  */
-s8 obj_check_if_facing_toward_angle(u32 base, u32 goal, s16 range) {
+s32 obj_check_if_facing_toward_angle(u32 base, u32 goal, s16 range) {
     s16 dAngle = (u16) goal - (u16) base;
 
     if (((f32) sins(-range) < (f32) sins(dAngle)) && ((f32) sins(dAngle) < (f32) sins(range))
@@ -591,7 +590,7 @@ s8 obj_check_if_facing_toward_angle(u32 base, u32 goal, s16 range) {
 /**
  * Finds any wall collisions and returns what the displacement vector would be.
  */
-s8 obj_find_wall_displacement(Vec3f dist, f32 x, f32 y, f32 z, f32 radius) {
+s32 obj_find_wall_displacement(Vec3f dist, f32 x, f32 y, f32 z, f32 radius) {
     struct WallCollisionData hitbox;
     UNUSED u8 filler[0x20];
 
@@ -630,7 +629,7 @@ void obj_spawn_yellow_coins(struct Object *obj, s8 nCoins) {
 /**
  * Controls whether certain objects should flicker/when to despawn.
  */
-s8 obj_flicker_and_disappear(struct Object *obj, s16 lifeSpan) {
+s32 obj_flicker_and_disappear(struct Object *obj, s16 lifeSpan) {
     if (obj->oTimer < lifeSpan) {
         return FALSE;
     }
@@ -729,7 +728,7 @@ void obj_check_floor_death(s16 collisionFlags, struct Surface *floor) {
  * Controls an object dying in lava by creating smoke, sinking the object, playing
  * audio, and eventually despawning it. Returns TRUE when the obj is dead.
  */
-s8 obj_lava_death(void) {
+s32 obj_lava_death(void) {
     struct Object *deathSmoke;
 
     if (o->oTimer >= 31) {
@@ -775,7 +774,7 @@ s8 sDebugTimer = 0;
 /**
  * Unused presumably debug function that tracks for a sequence of inputs.
  */
-s8 UNUSED debug_sequence_tracker(s16 debugInputSequence[]) {
+s32 UNUSED debug_sequence_tracker(s16 debugInputSequence[]) {
     // If end of sequence reached, return true.
     if (debugInputSequence[sDebugSequenceTracker] == 0) {
         sDebugSequenceTracker = 0;

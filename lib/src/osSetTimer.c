@@ -1,5 +1,4 @@
 #include "libultra_internal.h"
-
 extern OSTimer *D_80334830;
 extern u64 __osInsertTimer(OSTimer *);
 

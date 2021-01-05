@@ -7,7 +7,7 @@
 
 // data
 extern struct ObjGroup *gMarioFaceGrp;
-extern struct ObjShape *gSpotShape;
+extern struct ObjShape *D_801A82E4;
 extern struct ObjShape *gShapeRedSpark;
 extern struct ObjShape *gShapeSilverSpark;
 extern struct ObjShape *gShapeRedStar;

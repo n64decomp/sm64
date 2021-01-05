@@ -3,20 +3,9 @@
 .align 0
 sequence_start:
 
-.ifdef VERSION_SH
-  .set VERSION_EU_SH, 1
-.endif
-.ifdef VERSION_EU
-  .set VERSION_EU_SH, 1
-.endif
-
 seq_setmutebhv 0x60
 seq_setmutescale 0
-.ifdef VERSION_SH
-  seq_setvol 100
-.else
-  seq_setvol 127
-.endif
+seq_setvol 127
 seq_settempo 120
 seq_initchannels 0x3ff
 seq_startchannel 0, .channel0
@@ -1373,7 +1362,7 @@ chan_end
 layer_portamento 0x81, 27, 255
 layer_note1 41, 0xb, 127
 layer_somethingon
-layer_transpose -4
+layer_transpose 252
 layer_portamento 0x85, 32, 255
 layer_note1 44, 0x5, 100
 layer_jump .layer_fn_64A
@@ -1805,7 +1794,7 @@ chan_end
 
 .layer_A97:
 layer_setinstr 13
-layer_transpose -12
+layer_transpose 244
 
 .layer_A9B:
 layer_somethingon
@@ -2080,7 +2069,7 @@ chan_setlayer 0, .layer_C3C
 chan_end
 
 .layer_C3C:
-.ifdef VERSION_EU_SH
+.ifdef VERSION_EU
   layer_transpose 2
 .endif
 layer_portamento 0x82, 41, 127
@@ -2094,7 +2083,7 @@ chan_setlayer 0, .layer_C4C
 chan_end
 
 .layer_C4C:
-layer_transpose -2
+layer_transpose 254
 .layer_C4E:
 layer_note1 38, 0x18, 127
 layer_end
@@ -2106,7 +2095,7 @@ chan_setlayer 0, .layer_C5A
 chan_end
 
 .layer_C5A:
-layer_transpose -2
+layer_transpose 254
 .layer_C5C:
 layer_portamento 0x82, 39, 200
 layer_note1 38, 0x24, 120
@@ -2119,7 +2108,7 @@ chan_setlayer 0, .layer_C6C
 chan_end
 
 .layer_C6C:
-.ifdef VERSION_EU_SH
+.ifdef VERSION_EU
   layer_transpose 1
 .endif
 layer_portamento 0x82, 44, 200
@@ -2133,7 +2122,7 @@ chan_setlayer 0, .layer_C7C
 chan_end
 
 .layer_C7C:
-layer_transpose -2
+layer_transpose 254
 layer_somethingon
 layer_portamento 0x85, 39, 255
 layer_note1 42, 0x1e, 110
@@ -2147,7 +2136,7 @@ chan_setlayer 0, .layer_C92
 chan_end
 
 .layer_C92:
-layer_transpose -2
+layer_transpose 254
 layer_portamento 0x81, 41, 255
 layer_note1 38, 0x2b, 115
 layer_end
@@ -2159,7 +2148,7 @@ chan_setlayer 0, .layer_CA4
 chan_end
 
 .layer_CA4:
-layer_transpose -2
+layer_transpose 254
 layer_note1 44, 0x1e, 110
 layer_end
 
@@ -2170,7 +2159,7 @@ chan_setlayer 0, .layer_CB2
 chan_end
 
 .layer_CB2:
-layer_transpose -3
+layer_transpose 253
 layer_note1 39, 0x1c, 127
 layer_end
 
@@ -2181,7 +2170,7 @@ chan_setlayer 0, .layer_CC0
 chan_end
 
 .layer_CC0:
-layer_transpose -2
+layer_transpose 254
 layer_note1 40, 0x30, 110
 layer_end
 
@@ -2192,7 +2181,7 @@ chan_setlayer 0, .layer_CCE
 chan_end
 
 .layer_CCE:
-layer_transpose -2
+layer_transpose 254
 layer_note1 40, 0x44, 105
 layer_end
 
@@ -2203,7 +2192,7 @@ chan_setlayer 0, .layer_CDC
 chan_end
 
 .layer_CDC:
-layer_transpose -2
+layer_transpose 254
 layer_note1 41, 0x30, 120
 layer_end
 
@@ -2214,7 +2203,7 @@ chan_setlayer 0, .layer_CEA
 chan_end
 
 .layer_CEA:
-layer_transpose -2
+layer_transpose 254
 layer_note1 38, 0x30, 127
 layer_end
 
@@ -2236,7 +2225,7 @@ chan_setlayer 0, .layer_D09
 chan_end
 
 .layer_D09:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0x7f, 105
 layer_end
 
@@ -2247,7 +2236,7 @@ chan_setlayer 0, .layer_D17
 chan_end
 
 .layer_D17:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0x60, 64
 layer_end
 
@@ -2258,7 +2247,7 @@ chan_setlayer 0, .layer_D25
 chan_end
 
 .layer_D25:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0x5c, 52
 layer_end
 
@@ -2269,7 +2258,7 @@ chan_setlayer 0, .layer_D33
 chan_end
 
 .layer_D33:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0xaa, 127
 layer_end
 
@@ -2280,7 +2269,7 @@ chan_setlayer 0, .layer_D42
 chan_end
 
 .layer_D42:
-layer_transpose -1
+layer_transpose 255
 layer_note1 39, 0x4d, 120
 layer_end
 
@@ -2291,7 +2280,7 @@ chan_setlayer 0, .layer_D50
 chan_end
 
 .layer_D50:
-layer_transpose -2
+layer_transpose 254
 layer_note1 43, 0x1e, 105
 layer_end
 
@@ -2302,7 +2291,7 @@ chan_setlayer 0, .layer_D5E
 chan_end
 
 .layer_D5E:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0xc8, 127
 layer_end
 
@@ -2313,7 +2302,7 @@ chan_setlayer 0, .layer_D6D
 chan_end
 
 .layer_D6D:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0x8c, 110
 layer_end
 
@@ -2324,7 +2313,7 @@ chan_setlayer 0, .layer_D7C
 chan_end
 
 .layer_D7C:
-layer_transpose -2
+layer_transpose 254
 layer_portamento 0x82, 35, 255
 layer_note1 38, 0x30, 127
 layer_end
@@ -2336,7 +2325,7 @@ chan_setlayer 0, .layer_D8E
 chan_end
 
 .layer_D8E:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0x3c, 100
 layer_end
 
@@ -2347,7 +2336,7 @@ chan_setlayer 0, .layer_D9C
 chan_end
 
 .layer_D9C:
-layer_transpose -2
+layer_transpose 254
 layer_delay 0x4
 layer_note1 38, 0x3c, 100
 layer_end
@@ -2359,7 +2348,7 @@ chan_setlayer 0, .layer_DAC
 chan_end
 
 .layer_DAC:
-layer_transpose -2
+layer_transpose 254
 layer_delay 0x8
 layer_note1 40, 0x3c, 100
 layer_end
@@ -2371,7 +2360,7 @@ chan_setlayer 0, .layer_DBC
 chan_end
 
 .layer_DBC:
-layer_transpose -2
+layer_transpose 254
 layer_note1 39, 0x10, 115
 layer_end
 
@@ -2382,7 +2371,7 @@ chan_setlayer 0, .layer_DCA
 chan_end
 
 .layer_DCA:
-layer_transpose -2
+layer_transpose 254
 layer_portamento 0x81, 38, 255
 layer_note1 41, 0x18, 115
 layer_end
@@ -2394,7 +2383,7 @@ chan_setlayer 0, .layer_DDC
 chan_end
 
 .layer_DDC:
-layer_transpose -2
+layer_transpose 254
 layer_somethingon
 layer_portamento 0x85, 38, 255
 layer_note1 41, 0xc, 115
@@ -2413,7 +2402,7 @@ chan_setlayer 1, .layer_538
 chan_end
 
 .layer_DFE:
-layer_transpose -2
+layer_transpose 254
 layer_jump .layer_C5C
 
 .sound_mario_punch_hoo:
@@ -2428,7 +2417,7 @@ chan_setlayer 1, .layer_548
 chan_end
 
 .layer_E17:
-layer_transpose -2
+layer_transpose 254
 layer_portamento 0x81, 42, 255
 layer_note1 38, 0x30, 115
 layer_end
@@ -2479,7 +2468,7 @@ chan_setlayer 1, .layer_536
 chan_end
 
 .layer_E62:
-layer_transpose -1
+layer_transpose 255
 layer_jump .layer_C4E
 
 .ifndef VERSION_JP
@@ -2699,7 +2688,7 @@ layer_jump .layer_C4E
   layer_end
 .endif
 
-.ifdef VERSION_EU_SH
+.ifdef VERSION_EU
   .chan_unused_F9A_eu:
   chan_setbank 8
   chan_setinstr 0
@@ -3037,7 +3026,7 @@ chan_setlayer 1, .layer_119D
 chan_end
 
 .layer_119D:
-layer_transpose -12
+layer_transpose 244
 
 .layer_fn_119F:
 layer_portamento 0x83, 27, 255
@@ -3408,17 +3397,11 @@ chan_setbank 9
 chan_setinstr 3
 chan_setval 40
 chan_call .set_reverb
-.ifdef VERSION_SH
-  chan_setreverb 40
-.endif
 chan_setlayer 0, .layer_141A
 chan_end
 
 .layer_141A:
 layer_transpose 24
-.ifdef VERSION_SH
-  layer_note1 51, 0xc, 90
-.endif
 layer_note1 39, 0x4, 90
 layer_note1 51, 0xc, 90
 layer_note1 39, 0x4, 50
@@ -3586,7 +3569,7 @@ chan_setlayer 0, .layer_1539
 chan_end
 
 .layer_1537:
-layer_transpose -3
+layer_transpose 253
 
 .layer_1539:
 layer_note1 39, 0x6, 120
@@ -3775,7 +3758,7 @@ layer_end
 
 .layer_1665:
 layer_delay 0x4
-layer_transpose -12
+layer_transpose 244
 
 .layer_1669:
 layer_note1 27, 0x4f, 93
@@ -3808,7 +3791,7 @@ layer_end
 
 .layer_16A6:
 layer_delay 0x4
-layer_transpose -12
+layer_transpose 244
 
 .layer_16AA:
 layer_note1 46, 0xe, 116
@@ -3915,7 +3898,7 @@ chan_end
 
 .layer_1751:
 layer_call .layer_fn_1756
-layer_transpose -4
+layer_transpose 252
 
 .layer_fn_1756:
 layer_note1 27, 0x5, 105
@@ -4056,7 +4039,7 @@ chan_setlayer 0, .layer_1844
 chan_end
 
 .layer_1844:
-layer_transpose -6
+layer_transpose 250
 layer_portamento 0x81, 43, 127
 layer_note1 31, 0xfa, 115
 layer_end
@@ -4161,7 +4144,7 @@ layer_end
   chan_setlayer 1, .layer_1902
   chan_setlayer 2, .layer_1907
 .else
-  .ifdef VERSION_EU_SH
+  .ifdef VERSION_EU
     chan_setbank 9
     chan_setinstr 3
   .else
@@ -4302,7 +4285,7 @@ chan_setinstr 5
 chan_end
 
 .layer_19FE:
-layer_transpose -6
+layer_transpose 250
 
 .layer_1A00:
 layer_note1 15, 0xc, 127
@@ -4357,7 +4340,7 @@ chan_end
 .layer_1A44:
 layer_transpose 7
 layer_call .layer_fn_1A4B
-layer_transpose -2
+layer_transpose 254
 
 .layer_fn_1A4B:
 layer_portamento 0x83, 31, 255
@@ -4577,7 +4560,7 @@ chan_setlayer 1, .layer_1B8C
 chan_end
 
 .layer_1B8A:
-layer_transpose -12
+layer_transpose 244
 
 .layer_1B8C:
 layer_somethingon
@@ -4796,7 +4779,7 @@ chan_setlayer 1, .layer_1D13
 chan_end
 
 .layer_1D11:
-layer_transpose -6
+layer_transpose 250
 
 .layer_1D13:
 layer_somethingon
@@ -4901,7 +4884,7 @@ chan_setlayer 2, .layer_1DE2
 chan_end
 
 .layer_1DD4:
-layer_transpose -12
+layer_transpose 244
 layer_somethingon
 layer_portamento 0x82, 39, 255
 .layer_1DDB:
@@ -5320,7 +5303,7 @@ chan_end
 .layer_2087:
 layer_portamento 0x81, 33, 255
 layer_note1 57, 0x4, 127
-layer_transpose -4
+layer_transpose 252
 layer_portamento 0x81, 57, 255
 layer_note1 33, 0x6, 127
 layer_delay 0x14
@@ -5726,7 +5709,7 @@ chan_setlayer 0, .layer_22F3
 chan_end
 
 .layer_unused_22F1:
-layer_transpose -12
+layer_transpose 244
 
 .layer_22F3:
 layer_somethingon
@@ -5745,7 +5728,7 @@ chan_setlayer 0, .layer_230F
 chan_end
 
 .layer_230F:
-layer_transpose -24
+layer_transpose 232
 layer_somethingon
 layer_portamento 0x85, 25, 255
 layer_note1 3, 0xf, 85
@@ -5762,7 +5745,7 @@ chan_setlayer 0, .layer_232C
 chan_end
 
 .layer_232C:
-layer_transpose -3
+layer_transpose 253
 layer_somethingon
 layer_portamento 0x85, 24, 255
 layer_note1 17, 0xa, 100
@@ -5943,7 +5926,7 @@ chan_setlayer 0, .layer_2449
 chan_end
 
 .layer_2449:
-layer_transpose -8
+layer_transpose 248
 layer_call .layer_fn_244E
 
 .layer_fn_244E:
@@ -5998,13 +5981,13 @@ chan_setlayer 0, .layer_249F
 chan_end
 
 .layer_249F:
-layer_transpose -5
+layer_transpose 251
 layer_call .layer_fn_24AF
 layer_delay 0xb
-layer_transpose -8
+layer_transpose 248
 layer_call .layer_fn_24AF
 layer_delay 0xa
-layer_transpose -10
+layer_transpose 246
 
 .layer_fn_24AF:
 layer_portamento 0x85, 29, 255
@@ -6021,7 +6004,7 @@ chan_setlayer 0, .layer_24C7
 chan_end
 
 .layer_24C7:
-layer_transpose -12
+layer_transpose 244
 layer_portamento 0x85, 25, 255
 layer_note1 39, 0x4, 127
 layer_note1 29, 0x30, 127
@@ -6564,9 +6547,9 @@ layer_setinstr 15
 .layer_2856:
 layer_transpose 6
 layer_call .layer_fn_119F
-layer_transpose -9
+layer_transpose 247
 layer_call .layer_fn_119F
-layer_transpose -20
+layer_transpose 236
 layer_jump .layer_fn_119F
 
 .sound_obj_chuckya_death:
@@ -6639,7 +6622,7 @@ chan_setlayer 0, .layer_28EB
 chan_end
 
 .layer_28EB:
-layer_transpose -2
+layer_transpose 254
 layer_note0 31, 0xa, 127, 70
 layer_note0 30, 0xb, 127, 70
 layer_note0 29, 0xa, 127, 70
@@ -7473,11 +7456,11 @@ chan_setlayer 1, .layer_2E9E
 chan_end
 
 .layer_2E9E:
-layer_transpose -12
+layer_transpose 244
 layer_jump .layer_2EA5
 
 .layer_2EA3:
-layer_transpose -24
+layer_transpose 232
 .layer_2EA5:
 layer_call .layer_fn_2EAB
 layer_call .layer_fn_2EAB
@@ -7506,13 +7489,7 @@ layer_end
 chan_reservenotes 4
 chan_setbank 9
 chan_setinstr 2
-.ifdef VERSION_SH
-  chan_setval 15
-  .set EXIT_PIPE_NOTE_VELOCITY, 106
-.else
-  chan_setval 30
-  .set EXIT_PIPE_NOTE_VELOCITY, 126
-.endif
+chan_setval 30
 chan_call .set_reverb
 chan_setenvelope .envelope_3464
 chan_setdecayrelease 220
@@ -7528,36 +7505,36 @@ layer_jump .layer_2EF6
 layer_transpose 12
 .layer_2EF6:
 layer_portamento 0x85, 15, 128
-layer_note1 15, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 19, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 22, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 27, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 22, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 27, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 31, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 34, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 39, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 34, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 23, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 27, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 30, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 35, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 30, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 35, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 39, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 42, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 47, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 42, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 25, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 29, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 32, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 37, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 32, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 37, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 41, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 44, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 49, 0x3, EXIT_PIPE_NOTE_VELOCITY
-layer_note1 44, 0x3, EXIT_PIPE_NOTE_VELOCITY
+layer_note1 15, 0x3, 126
+layer_note1 19, 0x3, 126
+layer_note1 22, 0x3, 126
+layer_note1 27, 0x3, 126
+layer_note1 22, 0x3, 126
+layer_note1 27, 0x3, 126
+layer_note1 31, 0x3, 126
+layer_note1 34, 0x3, 126
+layer_note1 39, 0x3, 126
+layer_note1 34, 0x3, 126
+layer_note1 23, 0x3, 126
+layer_note1 27, 0x3, 126
+layer_note1 30, 0x3, 126
+layer_note1 35, 0x3, 126
+layer_note1 30, 0x3, 126
+layer_note1 35, 0x3, 126
+layer_note1 39, 0x3, 126
+layer_note1 42, 0x3, 126
+layer_note1 47, 0x3, 126
+layer_note1 42, 0x3, 126
+layer_note1 25, 0x3, 126
+layer_note1 29, 0x3, 126
+layer_note1 32, 0x3, 126
+layer_note1 37, 0x3, 126
+layer_note1 32, 0x3, 126
+layer_note1 37, 0x3, 126
+layer_note1 41, 0x3, 126
+layer_note1 44, 0x3, 126
+layer_note1 49, 0x3, 126
+layer_note1 44, 0x3, 126
 layer_end
 
 .sound_menu_bowser_laugh:
@@ -7587,7 +7564,7 @@ chan_setlayer 0, .layer_2F7C
 chan_end
 
 .layer_2F7C:
-layer_transpose -12
+layer_transpose 244
 layer_portamento 0x83, 3, 255
 layer_note1 15, 0xa, 127
 layer_somethingon
@@ -7621,10 +7598,10 @@ chan_setlayer 1, .layer_2FB9
 chan_end
 
 .layer_2FB9:
-layer_transpose -24
+layer_transpose 232
 layer_setpan 24
 layer_call .layer_fn_300D
-layer_transpose -12
+layer_transpose 244
 layer_setpan 44
 layer_call .layer_fn_300D
 layer_transpose 0
@@ -7674,9 +7651,9 @@ layer_note1 48, 0x2, 20
 layer_end
 
 .layer_3032:
-layer_transpose -24
+layer_transpose 232
 layer_call .layer_fn_3072
-layer_transpose -12
+layer_transpose 244
 layer_call .layer_fn_3072
 layer_transpose 0
 layer_call .layer_fn_3072
@@ -7828,33 +7805,26 @@ chan_end
   .layer_3146:
   layer_delay 0x6
 
-  .ifdef VERSION_SH
-    .set RED_COIN_NOTE_VELOCITY_SUB, 10
-  .else
-    .set RED_COIN_NOTE_VELOCITY_SUB, 0
-  .endif
-
   .layer_3148:
   layer_call .transpose_by_coin_index
-  layer_note0 46, 0xc, 75 - RED_COIN_NOTE_VELOCITY_SUB, 20
-  layer_note0 45, 0xc, 75 - RED_COIN_NOTE_VELOCITY_SUB, 20
-  layer_note0 46, 0xc, 75 - RED_COIN_NOTE_VELOCITY_SUB, 20
-  layer_note0 58, 0x10, 80 - RED_COIN_NOTE_VELOCITY_SUB, 80
-  layer_note0 58, 0x10, 45 - RED_COIN_NOTE_VELOCITY_SUB, 80
-  layer_note0 58, 0x10, 20 - RED_COIN_NOTE_VELOCITY_SUB, 80
-  layer_note0 58, 0x10, 15 - RED_COIN_NOTE_VELOCITY_SUB, 80
-
+  layer_note0 46, 0xc, 75, 20
+  layer_note0 45, 0xc, 75, 20
+  layer_note0 46, 0xc, 75, 20
+  layer_note0 58, 0x10, 80, 80
+  layer_note0 58, 0x10, 45, 80
+  layer_note0 58, 0x10, 20, 80
+  layer_note0 58, 0x10, 15, 80
   layer_end
 
   .layer_3168:
   layer_call .transpose_by_coin_index
-  layer_note0 41, 0xc, 75 - RED_COIN_NOTE_VELOCITY_SUB, 20
-  layer_note0 40, 0xc, 75 - RED_COIN_NOTE_VELOCITY_SUB, 20
-  layer_note0 41, 0xc, 75 - RED_COIN_NOTE_VELOCITY_SUB, 20
-  layer_note0 53, 0x10, 80 - RED_COIN_NOTE_VELOCITY_SUB, 80
-  layer_note0 53, 0x10, 45 - RED_COIN_NOTE_VELOCITY_SUB, 80
-  layer_note0 53, 0x10, 20 - RED_COIN_NOTE_VELOCITY_SUB, 80
-  layer_note0 53, 0x10, 15 - RED_COIN_NOTE_VELOCITY_SUB, 80
+  layer_note0 41, 0xc, 75, 20
+  layer_note0 40, 0xc, 75, 20
+  layer_note0 41, 0xc, 75, 20
+  layer_note0 53, 0x10, 80, 80
+  layer_note0 53, 0x10, 45, 80
+  layer_note0 53, 0x10, 20, 80
+  layer_note0 53, 0x10, 15, 80
   layer_end
 
   .transpose_by_coin_index:
@@ -8150,11 +8120,7 @@ envelope_goto 2
 .envelope_341C:
 envelope_line 25 32760
 envelope_line 60 10000
-.ifdef VERSION_SH
-  envelope_hang
-.else
-  envelope_goto 2
-.endif
+envelope_goto 2
 
 .envelope_3428:
 envelope_line 1 10000

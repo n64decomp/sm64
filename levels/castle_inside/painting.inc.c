@@ -1300,55 +1300,55 @@ static const Gfx inside_castle_seg7_painting_dl_070235B8[] = {
     gsSPBranchList(inside_castle_seg7_painting_dl_07023580),
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235C0[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235C0[] = {
     inside_castle_seg7_texture_0700B800, inside_castle_seg7_texture_0700A800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235C8[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235C8[] = {
     inside_castle_seg7_texture_0700D800, inside_castle_seg7_texture_0700C800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235D0[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235D0[] = {
     inside_castle_seg7_texture_0700F800, inside_castle_seg7_texture_0700E800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235D8[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235D8[] = {
     inside_castle_seg7_texture_07011800, inside_castle_seg7_texture_07010800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235E0[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235E0[] = {
     inside_castle_seg7_texture_07012800, inside_castle_seg7_texture_07013800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235E8[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235E8[] = {
     inside_castle_seg7_texture_07015800, inside_castle_seg7_texture_07014800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235F0[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235F0[] = {
     inside_castle_seg7_texture_07016800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235F4[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235F4[] = {
     inside_castle_seg7_texture_07017000,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_070235F8[] = {
+static const u8 *const inside_castle_seg7_painting_textures_070235F8[] = {
     inside_castle_seg7_texture_07018800, inside_castle_seg7_texture_07017800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_07023600[] = {
+static const u8 *const inside_castle_seg7_painting_textures_07023600[] = {
     inside_castle_seg7_texture_0701A800, inside_castle_seg7_texture_07019800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_07023608[] = {
+static const u8 *const inside_castle_seg7_painting_textures_07023608[] = {
     inside_castle_seg7_texture_0701C800, inside_castle_seg7_texture_0701B800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_07023610[] = {
+static const u8 *const inside_castle_seg7_painting_textures_07023610[] = {
     inside_castle_seg7_texture_0701E800, inside_castle_seg7_texture_0701D800,
 };
 
-ALIGNED8 static const Texture *const inside_castle_seg7_painting_textures_07023618[] = {
+static const u8 *const inside_castle_seg7_painting_textures_07023618[] = {
     inside_castle_seg7_texture_07020800, inside_castle_seg7_texture_0701F800,
 };
 

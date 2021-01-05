@@ -251,7 +251,7 @@ void unload_area(void) {
 }
 
 void load_mario_area(void) {
-    stop_sounds_in_continuous_banks();
+    func_80320890();
     load_area(gMarioSpawnInfo->areaIndex);
 
     if (gCurrentArea->index == gMarioSpawnInfo->areaIndex) {

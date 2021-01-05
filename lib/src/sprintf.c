@@ -1,10 +1,9 @@
+
 #include <stdarg.h>
 #include "libultra_internal.h"
 #include "printf.h"
 #include <string.h>
-
 char *proutSprintf(char *dst, const char *src, size_t count);
-
 int sprintf(char *dst, const char *fmt, ...) {
     s32 written;
     va_list args;

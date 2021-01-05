@@ -13,7 +13,7 @@ void reset_gadgets_in_grp(struct ObjGroup *grp);
 
 // see bad_declarations.h
 #ifndef GD_USE_BAD_DECLARATIONS
-struct ObjLabel *make_label(struct ObjValPtr *ptr, char *str, s32 a2, f32 x, f32 y, f32 z);
+struct ObjLabel *make_label(struct ObjValPtrs *ptr, char *str, s32 a2, f32 x, f32 y, f32 z);
 #endif
 
 #endif // GD_OLD_MENU_H

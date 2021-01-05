@@ -40,17 +40,17 @@
         "inst1": {
             "release_rate": 10,
             "envelope": "envelope1",
-            "sound": "22_boys_choir"
+            "sound": "22"
         },
         "inst2": {
             "release_rate": 90,
             "envelope": "envelope2",
-            "sound": "28_sitar_1"
+            "sound": "28"
         },
         "inst3": {
             "release_rate": 10,
             "envelope": "envelope3",
-            "sound": "39_sitar_2"
+            "sound": "39"
         }
     },
     "instrument_list": [

@@ -1,10 +1,10 @@
 #include "libultra_internal.h"
 
-extern OSMgrArgs __osPiDevMgr;
+extern OSMgrArgs piMgrArgs;
 
 OSMesgQueue *osPiGetCmdQueue(void) {
-    if (!__osPiDevMgr.initialized) {
+    if (!piMgrArgs.initialized) {
         return NULL;
     }
-    return __osPiDevMgr.cmdQueue;
+    return piMgrArgs.unk08;
 }

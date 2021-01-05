@@ -1,11 +1,8 @@
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
-
-#include "geo_commands.h"
-#include "macros.h"
-#include "surface_terrains.h"
+#include <ultra64.h>
 #include "sm64.h"
-#include "types.h"
+#include "surface_terrains.h"
+#include "geo_commands.h"
+
 #include "make_const_nonconst.h"
 
 #include "klepto/model.inc.c"

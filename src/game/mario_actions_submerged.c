@@ -15,7 +15,7 @@
 #include "audio/external.h"
 #include "behavior_data.h"
 #include "level_table.h"
-#include "rumble_init.h"
+#include "thread6.h"
 
 #define MIN_SWIM_STRENGTH 160
 #define MIN_SWIM_SPEED 16.0f

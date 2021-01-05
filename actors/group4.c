@@ -1,10 +1,8 @@
-#include <PR/ultratypes.h>
-#include <PR/gbi.h>
-
-#include "geo_commands.h"
-#include "macros.h"
+#include <ultra64.h>
+#include "sm64.h"
 #include "surface_terrains.h"
-#include "types.h"
+#include "geo_commands.h"
+
 #include "make_const_nonconst.h"
 
 #include "clam_shell/model.inc.c"

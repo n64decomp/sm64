@@ -32,7 +32,7 @@ void bhv_yellow_coin_init(void) {
     cur_obj_update_floor_height();
     if (500.0f < absf(o->oPosY - o->oFloorHeight))
         cur_obj_set_model(MODEL_YELLOW_COIN_NO_SHADOW);
-    if (o->oFloorHeight < FLOOR_LOWER_LIMIT_MISC)
+    if (o->oFloorHeight < -10000.0f)
         obj_mark_for_deletion(o);
 }
 
@@ -75,9 +75,9 @@ void bhv_coin_loop(void) {
         }
     }
     if (o->oTimer == 0)
-#if defined(VERSION_US)
+#ifdef VERSION_US
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_SPURT_2);
-#elif defined(VERSION_EU) || defined(VERSION_SH)
+#elif VERSION_EU
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_SPURT_EU);
 #else
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_SPURT);
@@ -95,7 +95,7 @@ void bhv_coin_loop(void) {
 #ifndef VERSION_JP
     if (o->oMoveFlags & OBJ_MOVE_BOUNCE) {
         if (o->oCoinUnk1B0 < 5)
-            cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
+            cur_obj_play_sound_2(0x30364081);
         o->oCoinUnk1B0++;
     }
 #else
@@ -115,7 +115,7 @@ void bhv_coin_formation_spawn_loop(void) {
         if (o->oCoinUnkF8) {
             o->oPosY += 300.0f;
             cur_obj_update_floor_height();
-            if (o->oPosY < o->oFloorHeight || o->oFloorHeight < FLOOR_LOWER_LIMIT_MISC)
+            if (o->oPosY < o->oFloorHeight || o->oFloorHeight < -10000.0f)
                 obj_mark_for_deletion(o);
             else
                 o->oPosY = o->oFloorHeight;

@@ -12,8 +12,8 @@
 /**
  * @file old_menu.c
  *
- * This file contains remnants of code for rendering what appears to be a GUI
- * that used the IRIX Graphics Library, from when this program was a standalone demo.
+ * This file contains code for rendering what appears to be an old menuing system.
+ * It is hard to tell, as most of the menuing code is stubbed out.
  * It also contains code for creating labels and gadget, which are `GdObj`s that
  * allow for displaying text and memory values on screen. Those `GdObj`s are not
  * created in-game, but there are some functions in `renderer.c` that use
@@ -21,13 +21,13 @@
  */
 
 // bss
-static char sDefSettingsMenuStr[0x100];
+static char sMenuStrBuf[0x100];
 static struct GdVec3f sStaticVec;
 static struct GdVec3f unusedVec;
 static struct ObjGadget *sCurGadgetPtr;
 
 // forward declarations
-static void reset_gadget_default(struct ObjGadget *);
+void func_8018BCB8(struct ObjGadget *);
 
 /* 239EC0 -> 239F78 */
 void get_objvalue(union ObjVarVal *dst, enum ValPtrType type, void *base, size_t offset) {
@@ -58,72 +58,53 @@ void Unknown8018B7A8(void *a0) {
     d_set_world_pos(sp1C.x, sp1C.y, sp1C.z);
 }
 
-/**
- * Unused - called when an item is selected from the "Default Settings" menu.
- *
- * @param itemId  ID of the menu item that was clicked
- */
-static void menu_cb_default_settings(intptr_t itemId) {
-    struct ObjGroup *group = (struct ObjGroup *)itemId;  // Unpack pointer from menu item ID
-    apply_to_obj_types_in_group(OBJ_TYPE_GADGETS, (applyproc_t) reset_gadget_default, group);
-    apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) stub_renderer_6, gGdViewsGroup);
+/* 23A00C -> 23A068 */
+void Proc8018B83C(void *a0) {
+    struct ObjGroup *argGroup = a0;
+    apply_to_obj_types_in_group(OBJ_TYPE_GADGETS, (applyproc_t) func_8018BCB8, argGroup);
+    apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) func_801A43DC, gGdViewsGroup);
 }
 
-/**
- * Unused - appends a menu item for the group to sDefSettingsMenuStr.
- */
-static void add_item_to_default_settings_menu(struct ObjGroup *group) {
-    char buf[0x100];
+/* 23A068 -> 23A0D0; orig name: Unknown8018B898 */
+void cat_grp_name_to_buf(struct ObjGroup *group) {
+    char buf[0x100]; // sp18
 
     if (group->debugPrint == 1) {
-        // Convert pointer to integer and store it as the menu item ID.
-        sprintf(buf, "| %s %%x%d", group->name, (u32) (intptr_t) group);
-        gd_strcat(sDefSettingsMenuStr, buf);
+        sprintf(buf, "| %s %%x%d", group->name, (u32) (uintptr_t) group);
+        gd_strcat(sMenuStrBuf, buf); // gd_strcat?
     }
 }
 
-/**
- * Unused - creates a popup menu that allows the user to control some settings.
- */
-long create_gui_menu(struct ObjGroup *grp) {
-    long dynamicsMenuId;
-    long defaultSettingMenuId;
-    long contTypeMenuId;
+/* 23A0D0 -> 23A190 */
+void *Unknown8018B900(struct ObjGroup *grp) {
+    void *mainMenu;
+    void *defaultSettingMenu;
+    void *controlerMenu;
 
-    gd_strcpy(sDefSettingsMenuStr, "Default Settings %t %F");
-    apply_to_obj_types_in_group(OBJ_TYPE_GROUPS, (applyproc_t) add_item_to_default_settings_menu, grp);
-    defaultSettingMenuId = defpup(sDefSettingsMenuStr, &menu_cb_default_settings);
+    gd_strcpy(sMenuStrBuf, "Default Settings %t %F"); // gd_strcpy?
+    apply_to_obj_types_in_group(OBJ_TYPE_GROUPS, (applyproc_t) cat_grp_name_to_buf, grp);
+    defaultSettingMenu = func_801A43F0(sMenuStrBuf, &Proc8018B83C);
+    controlerMenu = func_801A43F0(
+        "Control Type %t %F| U-64 Analogue Joystick %x1 | Keyboard %x2 | Mouse %x3", &func_801A4410);
+    mainMenu =
+        func_801A43F0("Dynamics %t |\t\t\tReset Positions %f |\t\t\tSet Defaults %m |\t\t\tSet "
+                      "Controller %m |\t\t\tRe-Calibrate Controller %f |\t\t\tQuit %f",
+                      &func_8017E2B8, defaultSettingMenu, controlerMenu, &func_801A4424, &gd_exit);
 
-    contTypeMenuId = defpup(
-        "Control Type %t %F"
-        "| U-64 Analogue Joystick %x1 "
-        "| Keyboard %x2 "
-        "| Mouse %x3",
-        &menu_cb_control_type);
-
-    dynamicsMenuId = defpup(
-        "Dynamics %t "
-        "|\t\t\tReset Positions %f "
-        "|\t\t\tSet Defaults %m "
-        "|\t\t\tSet Controller %m "
-        "|\t\t\tRe-Calibrate Controller %f "
-        "|\t\t\tQuit %f",
-        &menu_cb_reset_positions, defaultSettingMenuId, contTypeMenuId, &menu_cb_recalibrate_controller, &gd_exit);
-
-    return dynamicsMenuId;
+    return mainMenu;
 }
 
 /* 23A190 -> 23A250 */
-struct ObjLabel *make_label(struct ObjValPtr *ptr, char *str, s32 a2, f32 x, f32 y, f32 z) {
+struct ObjLabel *make_label(struct ObjValPtrs *ptr, char *str, s32 a2, f32 x, f32 y, f32 z) {
     struct ObjLabel *label = (struct ObjLabel *) make_object(OBJ_TYPE_LABELS);
     label->valfn = NULL;
     label->valptr = ptr;
     label->fmtstr = str;
     label->unk24 = a2;
     label->unk30 = 4;
-    label->position.x = x;
-    label->position.y = y;
-    label->position.z = z;
+    label->vec14.x = x;
+    label->vec14.y = y;
+    label->vec14.z = z;
 
     return label;
 }
@@ -131,15 +112,15 @@ struct ObjLabel *make_label(struct ObjValPtr *ptr, char *str, s32 a2, f32 x, f32
 /* 23A250 -> 23A32C */
 struct ObjGadget *make_gadget(UNUSED s32 a0, s32 a1) {
     struct ObjGadget *gdgt = (struct ObjGadget *) make_object(OBJ_TYPE_GADGETS);
-    gdgt->valueGrp = NULL;
-    gdgt->rangeMax = 1.0f;
-    gdgt->rangeMin = 0.0f;
+    gdgt->unk4C = NULL;
+    gdgt->unk3C = 1.0f;
+    gdgt->unk38 = 0.0f;
     gdgt->unk20 = a1;
-    gdgt->colourNum = 0;
-    gdgt->sliderPos = 1.0f;
-    gdgt->size.x = 100.0f;
-    gdgt->size.y = 10.0f;
-    gdgt->size.z = 10.0f;  // how is this useful?
+    gdgt->unk5C = 0;
+    gdgt->unk28 = 1.0f;
+    gdgt->unk40.x = 100.0f;
+    gdgt->unk40.y = 10.0f;
+    gdgt->unk40.z = 10.0f;
 
     return gdgt;
 }
@@ -160,7 +141,7 @@ void set_objvalue(union ObjVarVal *src, enum ValPtrType type, void *base, size_t
 }
 
 /* 23A3E4 -> 23A488; orig name: Unknown8018BD54 */
-void set_static_gdgt_value(struct ObjValPtr *vp) {
+void set_static_gdgt_value(struct ObjValPtrs *vp) {
     switch (vp->datatype) {
         case OBJ_VALUE_FLOAT:
             set_objvalue(&sCurGadgetPtr->varval, OBJ_VALUE_FLOAT, vp->obj, vp->offset);
@@ -172,75 +153,74 @@ void set_static_gdgt_value(struct ObjValPtr *vp) {
 }
 
 /* 23A488 -> 23A4D0 */
-static void reset_gadget_default(struct ObjGadget *gdgt) {
+void func_8018BCB8(struct ObjGadget *gdgt) {
     UNUSED u8 pad[4];
 
     sCurGadgetPtr = gdgt;
-    apply_to_obj_types_in_group(OBJ_TYPE_VALPTRS, (applyproc_t) set_static_gdgt_value, gdgt->valueGrp);
+    apply_to_obj_types_in_group(OBJ_TYPE_VALPTRS, (applyproc_t) set_static_gdgt_value, gdgt->unk4C);
 }
 
 /* 23A4D0 -> 23A784 */
 void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
     UNUSED u8 pad[8];
-    f32 range;
-    struct ObjValPtr *vp;
+    f32 sp2C;
+    struct ObjValPtrs *vp;
 
-    if (gdgt->type == 1) {
-        gdgt->sliderPos += a2 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
-    } else if (gdgt->type == 2) {
-        gdgt->sliderPos += a1 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
+    if (gdgt->unk24 == 1) {
+        gdgt->unk28 += a2 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
+    } else if (gdgt->unk24 == 2) {
+        gdgt->unk28 += a1 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
     }
 
-    // slider position must be between 0 and 1 (inclusive)
-    if (gdgt->sliderPos < 0.0f) {
-        gdgt->sliderPos = 0.0f;
-    } else if (gdgt->sliderPos > 1.0f) {
-        gdgt->sliderPos = 1.0f;
+    if (gdgt->unk28 < 0.0f) {
+        gdgt->unk28 = 0.0f;
+    } else if (gdgt->unk28 > 1.0f) {
+        gdgt->unk28 = 1.0f;
     }
 
-    range = gdgt->rangeMax - gdgt->rangeMin;
+    sp2C = gdgt->unk3C - gdgt->unk38;
 
-    if (gdgt->valueGrp != NULL) {
-        vp = (struct ObjValPtr *) gdgt->valueGrp->firstMember->obj;
+    if (gdgt->unk4C != NULL) {
+        vp = (struct ObjValPtrs *) gdgt->unk4C->link1C->obj;
 
         switch (vp->datatype) {
             case OBJ_VALUE_FLOAT:
-                gdgt->varval.f = gdgt->sliderPos * range + gdgt->rangeMin;
+                gdgt->varval.f = gdgt->unk28 * sp2C + gdgt->unk38;
                 break;
             case OBJ_VALUE_INT:
-                gdgt->varval.i = ((s32)(gdgt->sliderPos * range)) + gdgt->rangeMin;
+                gdgt->varval.i = ((s32)(gdgt->unk28 * sp2C)) + gdgt->unk38;
                 break;
             default:
                 fatal_printf("%s: Undefined ValueType", "adjust_gadget");
         }
     }
 
-    reset_gadget_default(gdgt);
+    func_8018BCB8(gdgt);
 }
 
 /* 23A784 -> 23A940; orig name: Unknown8018BFB4 */
 void reset_gadget(struct ObjGadget *gdgt) {
     UNUSED u8 pad[8];
-    f32 range;
-    struct ObjValPtr *vp;
+    f32 sp34;
+    struct ObjValPtrs *vp;
 
-    if (gdgt->rangeMax - gdgt->rangeMin == 0.0f) {
-        fatal_printf("gadget has zero range (%f -> %f)\n", gdgt->rangeMin, gdgt->rangeMax);
+    if (gdgt->unk3C - gdgt->unk38 == 0.0f) {
+        fatal_printf("gadget has zero range (%f -> %f)\n", gdgt->unk38, gdgt->unk3C);
     }
 
-    range = (f32)(1.0 / (gdgt->rangeMax - gdgt->rangeMin));
+    sp34 = (f32)(1.0 / (gdgt->unk3C - gdgt->unk38));
 
-    if (gdgt->valueGrp != NULL) {
-        vp = (struct ObjValPtr *) gdgt->valueGrp->firstMember->obj;
+    if (gdgt->unk4C != NULL) {
+        vp = (struct ObjValPtrs *) gdgt->unk4C->link1C->obj;
 
         switch (vp->datatype) {
             case OBJ_VALUE_FLOAT:
                 get_objvalue(&gdgt->varval, OBJ_VALUE_FLOAT, vp->obj, vp->offset);
-                gdgt->sliderPos = (gdgt->varval.f - gdgt->rangeMin) * range;
+                gdgt->unk28 = (gdgt->varval.f - gdgt->unk38) * sp34;
                 break;
             case OBJ_VALUE_INT:
                 get_objvalue(&gdgt->varval, OBJ_VALUE_INT, vp->obj, vp->offset);
-                gdgt->sliderPos = (gdgt->varval.i - gdgt->rangeMin) * range;
+                gdgt->unk28 = (gdgt->varval.i - gdgt->unk38) * sp34;
                 break;
             default:
                 fatal_printf("%s: Undefined ValueType", "reset_gadget");

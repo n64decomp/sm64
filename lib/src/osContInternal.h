@@ -1,8 +1,6 @@
 #ifndef _ULTRA64_CONTROLLER_INTERNAL_H_
 #define _ULTRA64_CONTROLLER_INTERNAL_H_
-
 #include <types.h>
-
 typedef struct
 {
     u8 padOrEnd;

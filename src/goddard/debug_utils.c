@@ -5,7 +5,6 @@
 #include "gd_types.h"
 #include "macros.h"
 #include "renderer.h"
-#include "draw_objects.h"
 
 // types
 struct UnkBufThing {
@@ -15,18 +14,16 @@ struct UnkBufThing {
 
 // data
 static s32 sNumRoutinesInStack = 0; // @ 801A8280
-static s32 sTimerGadgetColours[7] = {
-    COLOUR_RED,
-    COLOUR_WHITE,
-    COLOUR_GREEN,
-    COLOUR_BLUE,
-    COLOUR_GRAY,
-    COLOUR_YELLOW,
-    COLOUR_PINK
+static s32 D_801A8284[7] = {        // TODO: what is this array?
+    2, 1, 3, 4, 5, 8, 9
 };
 static s32 sNumActiveMemTrackers = 0;   // @ 801A82A0
 static u32 sPrimarySeed = 0x12345678;   // @ 801A82A4
 static u32 sSecondarySeed = 0x58374895; // @ 801A82A8
+static char sHexNumerals[17] = {        // @ 801A82AC
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', '\0'
+};
+static s32 sPadNumPrint = 0; // @ 801A82C0
 
 // bss
 u8 *gGdStreamBuffer;                                        // @ 801BA190
@@ -36,52 +33,33 @@ static struct GdTimer sTimers[GD_NUM_TIMERS];               // @ 801BA2A0
 static struct MemTracker sMemTrackers[GD_NUM_MEM_TRACKERS]; // @ 801BA720
 static struct MemTracker *sActiveMemTrackers[16];           // @ 801BA920
 
-/*
- * Memtrackers
- *
- * These are used to monitor how much heap memory is being used by certain
- * operations.
- * To create a memtracker, call new_memtracker with a unique name.
- * To record the amount of memory used by a certain allocation, call
- * start_memtracker before allocating memory, and call stop_memtracker after
- * allocating memory.
- * The memtracker keeps track of the memory allocated between a single
- * start_memtracker/stop_memtracker pair as well as the total memory allocated
- * of all start_memtracker/stop_memtracker pairs.
- */
-
-/**
- * Creates a new memtracker with the specified name
- */
+/* @ 23A980 -> 23AA34; orig name: func_8018C1B0 */
 struct MemTracker *new_memtracker(const char *name) {
     s32 i;
-    struct MemTracker *tracker = NULL;
+    struct MemTracker *memtrack = NULL;
 
     for (i = 0; i < ARRAY_COUNT(sMemTrackers); i++) {
         if (sMemTrackers[i].name == NULL) {
             sMemTrackers[i].name = name;
-            tracker = &sMemTrackers[i];
+            memtrack = &sMemTrackers[i];
             break;
         }
     }
 
-    if (tracker != NULL) {
-        tracker->total = 0.0f;
+    if (memtrack != NULL) {
+        memtrack->total = 0.0f;
     }
 
-    return tracker;
+    return memtrack;
 }
 
-/**
- * Returns the memtracker with the specified name, or NULL if it
- * does not exist
- */
-struct MemTracker *get_memtracker(const char *name) {
-    s32 i;
+/* @ 23AA34 -> 23AADC; orig name: func_8018C264 */
+struct MemTracker *get_memtracker(const char *tracker) {
+    s32 i; // sp1C
 
     for (i = 0; i < ARRAY_COUNT(sMemTrackers); i++) {
         if (sMemTrackers[i].name != NULL) {
-            if (gd_str_not_equal(sMemTrackers[i].name, name) == FALSE) {
+            if (gd_str_not_equal(sMemTrackers[i].name, tracker) == FALSE) {
                 return &sMemTrackers[i];
             }
         }
@@ -90,13 +68,12 @@ struct MemTracker *get_memtracker(const char *name) {
     return NULL;
 }
 
-/**
- * Records the amount of heap usage before allocating memory.
- */
+/* @ 23AADC -> 23ABE0; orig name: func_8018C30C */
 struct MemTracker *start_memtracker(const char *name) {
-    struct MemTracker *tracker = get_memtracker(name);
+    struct MemTracker *tracker;
 
-    // Create one if it doesn't exist
+    tracker = get_memtracker(name);
+
     if (tracker == NULL) {
         tracker = new_memtracker(name);
         if (tracker == NULL) {
@@ -115,15 +92,13 @@ struct MemTracker *start_memtracker(const char *name) {
 }
 
 /* @ 23ABE0 -> 23AC28; not called; orig name: Unknown8018C410 */
-void print_most_recent_memtracker_name(void) {
+void print_most_recent_memtracker(void) {
     gd_printf("%s\n", sActiveMemTrackers[sNumActiveMemTrackers - 1]->name);
 }
 
-/**
- * Records the amount of heap usage after allocating memory.
- */
+/* @ 23AC28 -> 23AD94; orig name: func_8018C458 */
 u32 stop_memtracker(const char *name) {
-    struct MemTracker *tracker;
+    struct MemTracker *tracker; // sp24
 
     if (sNumActiveMemTrackers-- < 0) {
         fatal_printf("bad mem tracker count");
@@ -134,19 +109,17 @@ u32 stop_memtracker(const char *name) {
         fatal_printf("memtracker '%s' not found", name);
     }
 
-    tracker->end = get_alloc_mem_amt();
+    tracker->end = (f32) get_alloc_mem_amt();
     tracker->total += (tracker->end - tracker->begin);
 
     return (u32) tracker->total;
 }
 
-/**
- * Destroys all memtrackers
- */
+/* @ 23AD94 -> 23AE20; orig name: func_8018C5C4 */
 void remove_all_memtrackers(void) {
     s32 i;
 
-    for (i = 0; i < ARRAY_COUNT(sMemTrackers); i++) {
+    for (i = 0; i < ARRAY_COUNT(sMemTrackers); i++) { // L8018C5CC
         sMemTrackers[i].name = NULL;
         sMemTrackers[i].begin = 0.0f;
         sMemTrackers[i].end = 0.0f;
@@ -158,16 +131,12 @@ void remove_all_memtrackers(void) {
 #endif
 }
 
-/**
- * Returns a memtracker by index rather than name
- */
-struct MemTracker *get_memtracker_by_index(s32 index) {
-    return &sMemTrackers[index];
+/* 23AE20 -> 23AE44; orig name: func_8018C650 */
+struct MemTracker *get_memtracker_by_id(s32 id) {
+    return &sMemTrackers[id];
 }
 
-/**
- * Prints the total memory allocated for each memtracker
- */
+/* 23AE44 -> 23AEFC; orig name: func_8018C674 */
 void print_all_memtrackers(void) {
     s32 i;
 
@@ -177,16 +146,6 @@ void print_all_memtrackers(void) {
         }
     }
 }
-
-/*
- * Timers
- *
- * These are used to profile the code by measuring the time it takes to perform
- * operations.
- * To record elapsed time, call start_timer, perform some operations, then call stop_timer.
- * You can also use restart_timer/split_timer instead of start_timer/stop_timer
- * to keep a running total.
- */
 
 /* 23AEFC -> 23AFB0; orig name: func_8018C72C */
 void print_all_timers(void) {
@@ -211,28 +170,24 @@ void activate_timing(void) {
     sTimingActive = TRUE;
 }
 
-/**
- * Destroys all timers
- */
+/* 23AFE4 -> 23B118; orig name: func_8018C814 */
 void remove_all_timers(void) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(sTimers); i++) {
         sTimers[i].name = NULL;
         sTimers[i].total = 0;
-        sTimers[i].unused0C = 0.0f;
+        sTimers[i].unk0C = 0.0f;
         sTimers[i].scaledTotal = 0.0f;
         sTimers[i].prevScaledTotal = 0.0f;
-        sTimers[i].gadgetColourNum = sTimerGadgetColours[(u32) i % 7];
+        sTimers[i].unk1C = D_801A8284[(u32) i % 7];
         sTimers[i].resetCount = 0;
     }
     activate_timing();
 }
 
-/**
- * Creates a new timer with the specified name
- */
-static struct GdTimer *new_timer(const char *name) {
+/* 23B118 -> 23B1C4; orig name: func_8018C948 */
+struct GdTimer *new_timer(const char *name) {
     s32 i;
     struct GdTimer *timer = NULL;
 
@@ -247,9 +202,7 @@ static struct GdTimer *new_timer(const char *name) {
     return timer;
 }
 
-/**
- * Returns the timer with the specified name, or NULL if it does not exist.
- */
+/* 23B1C4 -> 23B284; orig name: func_8018C9F4 */
 struct GdTimer *get_timer(const char *timerName) {
     s32 i;
 
@@ -264,11 +217,8 @@ struct GdTimer *get_timer(const char *timerName) {
     return NULL;
 }
 
-/**
- * Returns the timer with the specified name, or aborts the program if it does
- * not exist.
- */
-static struct GdTimer *get_timer_checked(const char *timerName) {
+/* 23B284 -> 23B2E4; orig name: func_8018CAB4 */
+struct GdTimer *get_timer_checked(const char *timerName) {
     struct GdTimer *timer;
 
     timer = get_timer(timerName);
@@ -279,15 +229,13 @@ static struct GdTimer *get_timer_checked(const char *timerName) {
     return timer;
 }
 
-/**
- * Returns a timer by index rather than name
- */
-struct GdTimer *get_timernum(s32 index) {
-    if (index >= ARRAY_COUNT(sTimers)) {
-        fatal_printf("get_timernum(): Timer number %d out of range (MAX %d)", index, ARRAY_COUNT(sTimers));
+/* 23B2E4 -> 23B350 */
+struct GdTimer *get_timernum(s32 id) {
+    if (id >= ARRAY_COUNT(sTimers)) {
+        fatal_printf("get_timernum(): Timer number %d out of range (MAX %d)", id, ARRAY_COUNT(sTimers));
     }
 
-    return &sTimers[index];
+    return &sTimers[id];
 }
 
 /* 23B350 -> 23B42C; orig name: func_8018CB80 */
@@ -320,9 +268,7 @@ void split_all_timers(void) {
     }
 }
 
-/**
- * Unused - records the start time for all timers
- */
+/* 23B49C -> 23B530; not called; orig name: Unknown8018CCCC */
 void start_all_timers(void) {
     s32 i;
     struct GdTimer *timer;
@@ -340,9 +286,7 @@ void start_all_timers(void) {
     }
 }
 
-/**
- * Records the current time before performing an operation
- */
+/* 23B530 -> 23B600 */
 void start_timer(const char *name) {
     struct GdTimer *timer;
 
@@ -350,7 +294,6 @@ void start_timer(const char *name) {
         return;
     }
 
-    // Create timer if it does not exist.
     timer = get_timer(name);
     if (timer == NULL) {
         timer = new_timer(name);
@@ -365,9 +308,7 @@ void start_timer(const char *name) {
     timer->resetCount = 1;
 }
 
-/**
- * Records the current time before performing an operation
- */
+/* 23B600 -> 23B6BC */
 void restart_timer(const char *name) {
     struct GdTimer *timer;
 
@@ -375,7 +316,6 @@ void restart_timer(const char *name) {
         return;
     }
 
-    // Create timer if it does not exist.
     timer = get_timer(name);
     if (timer == NULL) {
         timer = new_timer(name);
@@ -388,10 +328,7 @@ void restart_timer(const char *name) {
     timer->resetCount++;
 }
 
-/**
- * Records the current time after performing an operation, adds the elapsed time
- * to the total, then restarts the timer
- */
+/* 23B6BC -> 23B718; orig name: func_8018CEEC */
 void split_timer(const char *name) {
     struct GdTimer *timer;
 
@@ -403,9 +340,7 @@ void split_timer(const char *name) {
     split_timer_ptr(timer);
 }
 
-/**
- * Records the current time after performing an operation
- */
+/* 23B718 -> 23B7F0; orig name: func_8018CF48 */
 void stop_timer(const char *name) {
     struct GdTimer *timer;
 
@@ -423,40 +358,30 @@ void stop_timer(const char *name) {
     timer->scaledTotal = ((f32) timer->total) / get_time_scale();
 }
 
-/**
- * Returns the scaled total for the specified timer
- */
+/* 23B7F0 -> 23B838; orig name: func_8018D020 */
 f32 get_scaled_timer_total(const char *name) {
-    struct GdTimer *timer = get_timer_checked(name);
+    struct GdTimer *timer;
+
+    timer = get_timer_checked(name);
 
     return timer->scaledTotal;
 }
 
-/**
- * Unused - returns the raw total for the specified timer
- */
+/* 23B838 -> 23B888; not called; orig name: Unknown8018D1A8 */
 f32 get_timer_total(const char *name) {
-    struct GdTimer *timer = get_timer_checked(name);
+    struct GdTimer *timer;
+
+    timer = get_timer_checked(name);
 
     return (f32) timer->total;
 }
 
-
-/*
- * Miscellaneous debug functions
- */
-
-
-/**
- * Prints the given string, prints the stack trace, and exits the program
- */
+/* 23B888 -> 23B8B8; orig name: myPrint1 */
 void fatal_print(const char *str) {
     fatal_printf(str);
 }
 
-/**
- * Prints the stack trace registered by callng imin()/imout()
- */
+/* 23B8B8 -> 23B928; orig name: func_8018D0E8 */
 void print_stack_trace(void) {
     s32 i;
 
@@ -465,13 +390,11 @@ void print_stack_trace(void) {
     }
 }
 
-/**
- * Prints the formatted string, prints the stack trace, and exits the program
- */
+/* 23B928 -> 23BBF0; orig name: myPrintf */
 void fatal_printf(const char *fmt, ...) {
-    char cur;
+    char cur; // sp37 (sp34)
     UNUSED u8 pad[4];
-    va_list vl;
+    va_list vl; // sp2C
 
     va_start(vl, fmt);
     while ((cur = *fmt++)) {
@@ -515,23 +438,19 @@ void fatal_printf(const char *fmt, ...) {
     gd_exit(-1);
 }
 
-/**
- * "I'm in"
- * Adds the function name to the stack trace
- */
-void imin(const char *routine) {
+/* 23BBF0 -> 23BC80; orig name: func_8018D420 */
+void add_to_stacktrace(const char *routine) {
+    // Please check array bounds before writing to it
     sRoutineNames[sNumRoutinesInStack++] = routine;
-    sRoutineNames[sNumRoutinesInStack] = NULL;  //! array bounds is checked after writing this.
+    sRoutineNames[sNumRoutinesInStack] = NULL;
 
     if (sNumRoutinesInStack >= ARRAY_COUNT(sRoutineNames)) {
         fatal_printf("You're in too many routines");
     }
 }
 
-/**
- * "I'm out"
- * Removes the function name from the stack trace
- */
+/* 23BC80 -> 23BD30 */
+// remove a routine from the stack trace routine buffer
 void imout(void) {
     s32 i;
 
@@ -548,11 +467,9 @@ void imout(void) {
     }
 }
 
-/**
- * Returns a random floating point number between 0 and 1 (inclusive)
- * TODO: figure out type of rng generator?
- */
-f32 gd_rand_float(void) {
+/* 23BD30 -> 23BE78 */
+// TODO: rename, figure out type of rng generator?
+f32 func_8018D560(void) {
     u32 temp;
     u32 i;
     f32 val;
@@ -578,9 +495,7 @@ f32 gd_rand_float(void) {
     return val;
 }
 
-/**
- * Reimplementation of the standard "atoi" function
- */
+/* 23BE78 -> 23BFD8; orig name: func_8018D6A8 */
 s32 gd_atoi(const char *str) {
     char cur;
     const char *origstr = str;
@@ -591,9 +506,11 @@ s32 gd_atoi(const char *str) {
     while (TRUE) {
         cur = *str++;
 
-        // Each character must be either a digit or a minus sign
-        if ((cur < '0' || cur > '9') && (cur != '-'))
-            fatal_printf("gd_atoi() bad number '%s'", origstr);
+        if (cur < '0' || cur > '9') {
+            if (cur != '-') {
+                fatal_printf("gd_atoi() bad number '%s'", origstr);
+            }
+        }
 
         if (cur == '-') {
             isNegative = TRUE;
@@ -616,17 +533,13 @@ s32 gd_atoi(const char *str) {
     return out;
 }
 
-/**
- * Like the standard "atof" function, but only supports integer values
- */
+/* 23BFD8 -> 23C018; orig name: func_8018D808 */
 f64 gd_lazy_atof(const char *str, UNUSED u32 *unk) {
     return gd_atoi(str);
 }
 
-static char sHexNumerals[] = {"0123456789ABCDEF"};
-
 /* 23C018 -> 23C078; orig name: func_8018D848 */
-char *format_number_hex(char *str, s32 val) {
+char *sprint_num_as_hex(char *str, s32 val) {
     s32 shift;
 
     for (shift = 28; shift > -4; shift -= 4) {
@@ -638,11 +551,9 @@ char *format_number_hex(char *str, s32 val) {
     return str;
 }
 
-static s32 sPadNumPrint = 0; // @ 801A82C0
-
 /* 23C078 -> 23C174; orig name: func_8018D8A8 */
 /* padnum = a decimal number with the max desired output width */
-char *format_number_decimal(char *str, s32 val, s32 padnum) {
+char *sprint_num(char *str, s32 val, s32 padnum) {
     s32 i;
 
     if (val == 0) {
@@ -684,7 +595,7 @@ char *format_number_decimal(char *str, s32 val, s32 padnum) {
 }
 
 /* 23C174 -> 23C1C8; orig name: func_8018D9A4 */
-static s32 int_sci_notation(s32 base, s32 significand) {
+s32 int_sci_notation(s32 base, s32 significand) {
     s32 i;
 
     for (i = 1; i < significand; i++) {
@@ -709,18 +620,18 @@ char *sprint_val_withspecifiers(char *str, union PrintVal val, char *specifiers)
     while ((cur = *specifiers++)) {
         if (cur == 'd') {
             sPadNumPrint = FALSE;
-            str = format_number_decimal(str, val.i, 1000000000);
+            str = sprint_num(str, val.i, 1000000000);
         } else if (cur == 'x') {
             sPadNumPrint = TRUE; /* doesn't affect hex printing, though... */
-            str = format_number_hex(str, val.i);
+            str = sprint_num_as_hex(str, val.i);
         } else if (cur == 'f') {
             intPart = (s32) val.f;
             fracPart = (s32)((val.f - (f32) intPart) * (f32) int_sci_notation(10, fracPrec));
             sPadNumPrint = FALSE;
-            str = format_number_decimal(str, intPart, int_sci_notation(10, intPrec));
+            str = sprint_num(str, intPart, int_sci_notation(10, intPrec));
             *str++ = '.';
             sPadNumPrint = TRUE;
-            str = format_number_decimal(str, fracPart, int_sci_notation(10, fracPrec - 1));
+            str = sprint_num(str, fracPart, int_sci_notation(10, fracPrec - 1));
         } else if (cur >= '0' && cur <= '9') {
             cur = cur - '0';
             intPrec = cur;
@@ -849,7 +760,7 @@ struct GdFile *gd_fopen(const char *filename, const char *mode) {
         for (i = 0; i < sizeof(struct UnkBufThing); i++) {
             *bufbytes++ = gGdStreamBuffer[filecsr++];
         }
-        stub_renderer_13(&buf);
+        func_801A59AC(&buf);
         fileposptr = &gGdStreamBuffer[filecsr];
         filecsr += buf.size;
 

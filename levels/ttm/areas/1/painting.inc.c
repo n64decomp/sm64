@@ -545,7 +545,7 @@ static const Gfx ttm_seg7_painting_dl_07012E98[] = {
 };
 
 // 0x07012EF8 - 0x07012F78
-ALIGNED8 static const Texture *const ttm_seg7_painting_textures_07012EF8[] = {
+static const u8 *const ttm_seg7_painting_textures_07012EF8[] = {
     ttm_seg7_texture_07004000, ttm_seg7_texture_07003000,
 };
 

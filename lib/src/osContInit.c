@@ -32,7 +32,7 @@ s32 osContInit(OSMesgQueue *mq, u8 *bitpattern, OSContStatus *status) {
         osRecvMesg(&timerMesgQueue, &mesg, OS_MESG_BLOCK);
     }
     _osContNumControllers = 4; // TODO: figure out what it means
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#ifdef VERSION_EU
     __osPackRequestData(0);
 #else
     __osPackRequestData(255);
@@ -42,7 +42,7 @@ s32 osContInit(OSMesgQueue *mq, u8 *bitpattern, OSContStatus *status) {
     ret = __osSiRawStartDma(OS_READ, _osContCmdBuf);
     osRecvMesg(mq, &mesg, OS_MESG_BLOCK);
     __osContGetInitData(bitpattern, status);
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#ifdef VERSION_EU
     _osLastSentSiCmd = 0;
 #else
     _osLastSentSiCmd = 255;

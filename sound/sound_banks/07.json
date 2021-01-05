@@ -106,10 +106,10 @@
             "sound": "0C"
         },
         "inst13": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU"],
             "release_rate": 208,
             "envelope": "envelope5",
-            "sound": "0D_chain_chomp_bark"
+            "sound": "0D"
         }
     },
     "instrument_list": [

@@ -1,5 +1,6 @@
 #include "libultra_internal.h"
 
+
 // TODO: document
 OSTimer D_80365D80;
 OSTimer *D_80334830 = &D_80365D80;
@@ -27,7 +28,7 @@ void __osTimerInterrupt(void) {
     if (D_80334830->next == D_80334830) {
         return;
     }
-    while (TRUE) {
+    while (1) {
         sp24 = D_80334830->next;
         if (sp24 == D_80334830) {
             __osSetCompare(0);

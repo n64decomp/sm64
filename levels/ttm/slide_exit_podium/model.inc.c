@@ -17,7 +17,7 @@ static const Lights1 ttm_seg7_lights_0702AD18 = gdSPDefLights1(
 );
 
 // 0x0702AD30 - 0x0702B530
-ALIGNED8 static const Texture ttm_seg7_texture_0702AD30[] = {
+ALIGNED8 static const u8 ttm_seg7_texture_0702AD30[] = {
 #include "levels/ttm/8.rgba16.inc.c"
 };
 

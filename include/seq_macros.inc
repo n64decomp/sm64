@@ -155,19 +155,6 @@
     .byte 0xff
 .endm
 
-.ifdef VERSION_SH
-
-.macro seq_unreservenotes
-    .byte 0xf0
-.endm
-
-.macro seq_reservenotes a
-    .byte 0xf1
-    .byte \a
-.endm
-
-.else
-
 .ifdef VERSION_EU
 
 .macro seq_unreservenotes
@@ -192,9 +179,11 @@
 
 .endif
 
-.endif
-
 # chan commands
+
+.macro chan_testlayerfinished a
+    .byte 0x0 + \a
+.endm
 
 .macro chan_startchannel a, b
     .byte 0x10 + \a
@@ -221,6 +210,19 @@
 
 .macro chan_iowriteval a
     .byte 0x70 + \a
+.endm
+
+.macro chan_ioreadval a
+    .byte 0x80 + \a
+.endm
+
+.macro chan_setlayer a, b
+    .byte 0x90 + \a
+    .byte (\b - sequence_start) >> 8, (\b - sequence_start) & 0xff
+.endm
+
+.macro chan_freelayer a
+    .byte 0xa0 + \a
 .endm
 
 .macro chan_dynsetlayer a
@@ -462,58 +464,6 @@
     var_long \a
 .endm
 
-.ifdef VERSION_SH
-
-.macro chan_setnotepriority a
-    .byte 0xe9
-    .byte \a
-.endm
-
-.macro chan_unreservenotes
-    .byte 0xf0
-.endm
-
-.macro chan_reservenotes a
-    .byte 0xf1
-    .byte \a
-.endm
-
-.macro chan_testlayerfinished a
-    .byte 0x80 + \a
-.endm
-
-.macro chan_setlayer a, b
-    .byte 0x88 + \a
-    .byte (\b - sequence_start) >> 8, (\b - sequence_start) & 0xff
-.endm
-
-.macro chan_ioreadval a
-    .byte 0x60 + \a
-.endm
-
-.macro chan_freelayer a
-    .byte 0x90 + \a
-.endm
-
-.else
-
-.macro chan_testlayerfinished a
-    .byte 0x0 + \a
-.endm
-
-.macro chan_ioreadval a
-    .byte 0x80 + \a
-.endm
-
-.macro chan_setlayer a, b
-    .byte 0x90 + \a
-    .byte (\b - sequence_start) >> 8, (\b - sequence_start) & 0xff
-.endm
-
-.macro chan_freelayer a
-    .byte 0xa0 + \a
-.endm
-
 .ifdef VERSION_EU
 
 .macro chan_setnotepriority a
@@ -544,8 +494,6 @@
     .byte 0xf2
     .byte \a
 .endm
-
-.endif
 
 .endif
 
@@ -666,7 +614,7 @@
     .byte \a >> 8, \a & 0xff
 .endm
 
-.macro envelope_hang a=0
+.macro envelope_hang a
     .byte 0xff, 0xff
     .byte \a >> 8, \a & 0xff
 .endm
@@ -676,7 +624,7 @@
     .byte \a >> 8, \a & 0xff
 .endm
 
-.macro envelope_restart a=0
+.macro envelope_restart a
     .byte 0xff, 0xfd
     .byte \a >> 8, \a & 0xff
 .endm

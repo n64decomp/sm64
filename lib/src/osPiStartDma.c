@@ -1,12 +1,12 @@
 #include "libultra_internal.h"
 
-extern OSMgrArgs __osPiDevMgr;
+extern OSMgrArgs piMgrArgs;
 
 s32 osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction, uintptr_t devAddr, void *vAddr,
                  size_t nbytes, OSMesgQueue *mq) {
     register s32 result;
     register OSMesgQueue *cmdQueue;
-    if (!__osPiDevMgr.initialized) {
+    if (!piMgrArgs.initialized) {
         return -1;
     }
 
@@ -22,7 +22,7 @@ s32 osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction, uintptr_t devAddr, v
     mb->dramAddr = vAddr;
     mb->devAddr = devAddr;
     mb->size = nbytes;
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#ifdef VERSION_EU
     mb->piHandle = NULL;
 #endif
 

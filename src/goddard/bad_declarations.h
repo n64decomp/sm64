@@ -33,7 +33,7 @@ extern struct ObjFace *make_face_with_colour();
 
 /* old_menu.h */
 extern struct ObjLabel *make_label();
-/* should be: make_label(struct ObjValPtr *, char *, s32, f32, f32, f32) */
+/* should be: make_label(struct ObjValPtrs *, char *, s32, f32, f32, f32) */
 
 #endif /* !AVOID_UB */
 

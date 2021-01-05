@@ -373,7 +373,11 @@ static void level_cmd_end_area(void) {
 
 static void level_cmd_load_model_from_dl(void) {
     s16 val1 = CMD_GET(s16, 2) & 0x0FFF;
-    s16 val2 = ((u16)CMD_GET(s16, 2)) >> 12;
+#ifdef VERSION_EU
+    s16 val2 = (CMD_GET(s16, 2) & 0xFFFF) >> 12;
+#else
+    s16 val2 = CMD_GET(u16, 2) >> 12;
+#endif
     void *val3 = CMD_GET(void *, 4);
 
     if (val1 < 256) {
@@ -402,7 +406,11 @@ static void level_cmd_23(void) {
     } arg2;
 
     s16 model = CMD_GET(s16, 2) & 0x0FFF;
-    s16 arg0H = ((u16)CMD_GET(s16, 2)) >> 12;
+#ifdef VERSION_EU
+    s16 arg0H = (CMD_GET(s16, 2) & 0xFFFF) >> 12;
+#else
+    s16 arg0H = CMD_GET(u16, 2) >> 12;
+#endif
     void *arg1 = CMD_GET(void *, 4);
     // load an f32, but using an integer load instruction for some reason (hence the union)
     arg2.i = CMD_GET(s32, 8);
@@ -640,7 +648,7 @@ static void level_cmd_load_area(void) {
     s16 areaIndex = CMD_GET(u8, 2);
     UNUSED void *unused = (u8 *) sCurrentCmd + 4;
 
-    stop_sounds_in_continuous_banks();
+    func_80320890();
     load_area(areaIndex);
 
     sCurrentCmd = CMD_NEXT;
