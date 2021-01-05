@@ -1,5 +1,5 @@
-#ifndef THREAD6_H
-#define THREAD6_H
+#ifndef RUMBLE_INIT_H
+#define RUMBLE_INIT_H
 
 #ifdef VERSION_SH
 
@@ -20,4 +20,4 @@ void rumble_thread_update_vi(void);
 
 #endif // VERSION_SH
 
-#endif // THREAD6_H
+#endif // RUMBLE_INIT_H

@@ -7,22 +7,22 @@ static const Lights1 treasure_chest_seg6_lights_06013F90 = gdSPDefLights1(
 );
 
 // 0x06013FA8
-ALIGNED8 static const u8 treasure_chest_seg6_texture_06013FA8[] = {
+ALIGNED8 static const Texture treasure_chest_seg6_texture_06013FA8[] = {
 #include "actors/treasure_chest/treasure_chest_lock.rgba16.inc.c"
 };
 
 // 0x060147A8
-ALIGNED8 static const u8 treasure_chest_seg6_texture_060147A8[] = {
+ALIGNED8 static const Texture treasure_chest_seg6_texture_060147A8[] = {
 #include "actors/treasure_chest/treasure_chest_side.rgba16.inc.c"
 };
 
 // 0x06014FA8
-ALIGNED8 static const u8 treasure_chest_seg6_texture_06014FA8[] = {
+ALIGNED8 static const Texture treasure_chest_seg6_texture_06014FA8[] = {
 #include "actors/treasure_chest/treasure_chest_lock_top.rgba16.inc.c"
 };
 
 // 0x060157A8
-ALIGNED8 static const u8 treasure_chest_seg6_texture_060157A8[] = {
+ALIGNED8 static const Texture treasure_chest_seg6_texture_060157A8[] = {
 #include "actors/treasure_chest/treasure_chest_front.rgba16.inc.c"
 };
 

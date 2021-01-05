@@ -144,7 +144,6 @@ void chuckya_act_1(void) {
                 if (o->oChuckyaUnkFC-- < 0)
                     if (check_if_moving_over_floor(50.0f, 150.0f) || o->oChuckyaUnkFC < -16) {
                         o->oSubAction++;
-                        ;
                     }
             }
         } else {

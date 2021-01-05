@@ -73,7 +73,7 @@ static const Lights1 hoot_seg5_lights_05000A08 = gdSPDefLights1(
 );
 
 // 0x05000A20
-ALIGNED8 static const u8 hoot_seg5_texture_05000A20[] = {
+ALIGNED8 static const Texture hoot_seg5_texture_05000A20[] = {
 #include "actors/hoot/hoot_eyes.rgba16.inc.c"
 };
 
@@ -351,12 +351,12 @@ static const Lights1 hoot_seg5_lights_05001E38 = gdSPDefLights1(
 );
 
 // 0x05001E50
-ALIGNED8 static const u8 hoot_seg5_texture_05001E50[] = {
+ALIGNED8 static const Texture hoot_seg5_texture_05001E50[] = {
 #include "actors/hoot/hoot_wing.rgba16.inc.c"
 };
 
 // 0x05002650
-ALIGNED8 static const u8 hoot_seg5_texture_05002650[] = {
+ALIGNED8 static const Texture hoot_seg5_texture_05002650[] = {
 #include "actors/hoot/hoot_wing_tip.rgba16.inc.c"
 };
 

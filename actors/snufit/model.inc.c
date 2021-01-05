@@ -1,22 +1,22 @@
 // Snufit
 
 // 0x060070E0
-ALIGNED8 static const u8 snufit_seg6_texture_060070E0[] = {
+ALIGNED8 static const Texture snufit_seg6_texture_060070E0[] = {
 #include "actors/snufit/snufit_body.rgba16.inc.c"
 };
 
 // 0x060078E0
-ALIGNED8 static const u8 snufit_seg6_texture_060078E0[] = {
+ALIGNED8 static const Texture snufit_seg6_texture_060078E0[] = {
 #include "actors/snufit/snufit_eye.rgba16.inc.c"
 };
 
 // 0x060080E0
-ALIGNED8 static const u8 snufit_seg6_texture_060080E0[] = {
+ALIGNED8 static const Texture snufit_seg6_texture_060080E0[] = {
 #include "actors/snufit/snufit_mask_strap.rgba16.inc.c"
 };
 
 // 0x060084E0
-ALIGNED8 static const u8 snufit_seg6_texture_060084E0[] = {
+ALIGNED8 static const Texture snufit_seg6_texture_060084E0[] = {
 #include "actors/snufit/snufit_mouth.rgba16.inc.c"
 };
 

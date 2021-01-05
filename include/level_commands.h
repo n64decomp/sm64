@@ -118,6 +118,7 @@
     CMD_BBH(0x11, 0x08, arg), \
     CMD_PTR(func)
 
+// Calls func in a loop until it returns nonzero
 #define CALL_LOOP(arg, func) \
     CMD_BBH(0x12, 0x08, arg), \
     CMD_PTR(func)

@@ -7,17 +7,17 @@ static const Lights1 bomb_seg6_lights_06057AA8 = gdSPDefLights1(
 );
 
 // 0x06057AC0
-ALIGNED8 static const u8 bomb_seg6_texture_06057AC0[] = {
+ALIGNED8 static const Texture bomb_seg6_texture_06057AC0[] = {
 #include "actors/bomb/bomb_left_side.rgba16.inc.c"
 };
 
 // 0x06058AC0
-ALIGNED8 static const u8 bomb_seg6_texture_06058AC0[] = {
+ALIGNED8 static const Texture bomb_seg6_texture_06058AC0[] = {
 #include "actors/bomb/bomb_right_side.rgba16.inc.c"
 };
 
 // 0x06059AC0
-ALIGNED8 static const u8 bomb_seg6_texture_06059AC0[] = {
+ALIGNED8 static const Texture bomb_seg6_texture_06059AC0[] = {
 #include "actors/bomb/bomb_spike.rgba16.inc.c"
 };
 

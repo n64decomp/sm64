@@ -104,11 +104,7 @@ void bhv_moving_blue_coin_init(void) {
 }
 
 void bhv_moving_blue_coin_loop(void) {
-#ifdef VERSION_EU
-    s32 collisionFlags;
-#else
     s16 collisionFlags;
-#endif
 
     switch (o->oAction) {
         case MOV_BCOIN_ACT_STILL:

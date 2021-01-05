@@ -7,12 +7,12 @@ static const Lights1 tree_seg3_lights_0302DE10 = gdSPDefLights1(
 );
 
 // 0x0302DE28
-ALIGNED8 static const u8 tree_seg3_texture_0302DE28[] = {
+ALIGNED8 static const Texture tree_seg3_texture_0302DE28[] = {
 #include "actors/tree/tree_left_side.rgba16.inc.c"
 };
 
 // 0x0302EE28
-ALIGNED8 static const u8 tree_seg3_texture_0302EE28[] = {
+ALIGNED8 static const Texture tree_seg3_texture_0302EE28[] = {
 #include "actors/tree/tree_right_side.rgba16.inc.c"
 };
 
@@ -70,7 +70,7 @@ const Gfx tree_seg3_dl_0302FEE8[] = {
 };
 
 // 0x0302FF60
-ALIGNED8 static const u8 tree_seg3_texture_0302FF60[] = {
+ALIGNED8 static const Texture tree_seg3_texture_0302FF60[] = {
 #include "actors/tree/pine_tree.rgba16.inc.c"
 };
 
@@ -107,7 +107,7 @@ const Gfx tree_seg3_dl_03030FA0[] = {
 };
 
 // 0x03031048
-ALIGNED8 static const u8 tree_seg3_texture_03031048[] = {
+ALIGNED8 static const Texture tree_seg3_texture_03031048[] = {
 #include "actors/tree/snowy_pine_tree.rgba16.inc.c"
 };
 
@@ -176,7 +176,7 @@ const Gfx tree_seg3_dl_03032170[] = {
 };
 
 // 0x03032218
-ALIGNED8 static const u8 tree_seg3_texture_03032218[] = {
+ALIGNED8 static const Texture tree_seg3_texture_03032218[] = {
 #include "actors/tree/palm_tree.rgba16.inc.c"
 };
 

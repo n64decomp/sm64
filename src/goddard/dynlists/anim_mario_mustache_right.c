@@ -1,10 +1,10 @@
 #include <PR/ultratypes.h>
 
+#include "macros.h"
 #include "animdata.h"
 #include "../gd_types.h"
 
-/* @ 0400AFC0 */
-s16 animdata_mario_mustache_right_1[820][3] = {
+static s16 animdata_mario_mustache_right_1[][3] = {
     { 0, 154, 1506 },   { 0, 154, 1506 },   { 0, 154, 1507 },   { 0, 154, 1508 },   { 0, 154, 1510 },
     { 1, 154, 1511 },   { 1, 154, 1513 },   { 2, 154, 1515 },   { 2, 155, 1517 },   { 3, 155, 1518 },
     { 3, 155, 1520 },   { 3, 155, 1521 },   { 4, 155, 1522 },   { 4, 155, 1522 },   { 4, 155, 1522 },
@@ -171,8 +171,7 @@ s16 animdata_mario_mustache_right_1[820][3] = {
     { 6, 154, 1530 },   { 3, 154, 1521 },   { 1, 154, 1513 },   { 0, 154, 1508 },   { 0, 154, 1506 },
 };
 
-/* @ 0400C2F8 */
-s16 animdata_mario_mustache_right_2[166][3] = {
+static s16 animdata_mario_mustache_right_2[][3] = {
     { 23, 152, 1595 },  { 23, 152, 1595 }, { 23, 152, 1596 }, { 24, 152, 1597 }, { 24, 152, 1598 },
     { 24, 152, 1600 },  { 25, 152, 1602 }, { 25, 152, 1604 }, { 26, 152, 1605 }, { 26, 152, 1607 },
     { 27, 152, 1609 },  { 27, 152, 1610 }, { 28, 152, 1611 }, { 28, 152, 1612 }, { 28, 152, 1613 },
@@ -209,9 +208,8 @@ s16 animdata_mario_mustache_right_2[166][3] = {
     { 0, 154, 1506 },
 };
 
-/* @ 0400C6DC */
 struct AnimDataInfo anim_mario_mustache_right[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_mustache_right_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_mustache_right_2 },
+    { ARRAY_COUNT(animdata_mario_mustache_right_1), GD_ANIM_ROT3S, animdata_mario_mustache_right_1 },
+    { ARRAY_COUNT(animdata_mario_mustache_right_2), GD_ANIM_ROT3S, animdata_mario_mustache_right_2 },
     END_ANIMDATA_INFO_ARR,
 };

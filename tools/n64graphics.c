@@ -238,6 +238,7 @@ int ia2raw(uint8_t *raw, const ia *img, int width, int height, int depth)
 {
    int size = (width * height * depth + 7) / 8;
    INFO("Converting IA%d %dx%d to raw\n", depth, width, height);
+   memset(raw, 0, size);
 
    switch (depth) {
       case 16:
@@ -290,6 +291,7 @@ int i2raw(uint8_t *raw, const ia *img, int width, int height, int depth)
 {
    int size = (width * height * depth + 7) / 8;
    INFO("Converting I%d %dx%d to raw\n", depth, width, height);
+   memset(raw, 0, size);
 
    switch (depth) {
       case 8:
@@ -591,6 +593,7 @@ typedef struct
    char *bin_filename;
    char *pal_filename;
    tool_mode mode;
+   write_encoding encoding;
    unsigned int bin_offset;
    unsigned int pal_offset;
    img_format format;
@@ -607,6 +610,7 @@ static const graphics_config default_config =
    .bin_filename = NULL,
    .pal_filename = NULL,
    .mode = MODE_EXPORT,
+   .encoding = ENCODING_RAW,
    .bin_offset = 0,
    .pal_offset = 0,
    .format = {IMG_FORMAT_RGBA, 16},
@@ -659,6 +663,42 @@ static int parse_format(img_format *format, const char *str)
    return 0;
 }
 
+typedef struct
+{
+   const char *name;
+   write_encoding encoding;
+} scheme_entry;
+
+static const scheme_entry encoding_table[] =
+{
+   {"raw", ENCODING_RAW},
+   {"u8",  ENCODING_U8},
+   {"u16", ENCODING_U16},
+   {"u32", ENCODING_U32},
+   {"u64", ENCODING_U64},
+};
+
+static const char *encoding2str(write_encoding encoding)
+{
+   for (unsigned i = 0; i < DIM(encoding_table); i++) {
+      if (encoding == encoding_table[i].encoding) {
+         return encoding_table[i].name;
+      }
+   }
+   return "unknown";
+}
+
+static int parse_encoding(write_encoding *encoding, const char *str)
+{
+   for (unsigned i = 0; i < DIM(encoding_table); i++) {
+      if (!strcasecmp(str, encoding_table[i].name)) {
+         *encoding = encoding_table[i].encoding;
+         return 1;
+      }
+   }
+   return 0;
+}
+
 static void print_usage(void)
 {
    ERROR("Usage: n64graphics -e/-i BIN_FILE -g IMG_FILE [-p PAL_FILE] [-o BIN_OFFSET] [-P PAL_OFFSET] [-f FORMAT] [-c CI_FORMAT] [-w WIDTH] [-h HEIGHT] [-V]\n"
@@ -672,6 +712,7 @@ static void print_usage(void)
          "Optional arguments:\n"
          " -o BIN_OFFSET starting offset in BIN_FILE (prevents truncation during import)\n"
          " -f FORMAT     texture format: rgba16, rgba32, ia1, ia4, ia8, ia16, i4, i8, ci4, ci8 (default: %s)\n"
+         " -s SCHEME     output scheme: raw, u8 (hex), u64 (hex) (default: %s)\n"
          " -w WIDTH      export texture width (default: %d)\n"
          " -h HEIGHT     export texture height (default: %d)\n"
          "CI arguments:\n"
@@ -682,6 +723,7 @@ static void print_usage(void)
          " -v            verbose logging\n"
          " -V            print version information\n",
          format2str(&default_config.format),
+         encoding2str(default_config.encoding),
          default_config.width,
          default_config.height,
          format2str(&default_config.pal_format));
@@ -745,6 +787,12 @@ static int parse_arguments(int argc, char *argv[], graphics_config *config)
                config->pal_offset = strtoul(argv[i], NULL, 0);
                config->pal_truncate = 0;
                break;
+            case 's':
+               if (++i >= argc) return 0;
+               if (!parse_encoding(&config->encoding, argv[i])) {
+                  return 0;
+               }
+               break;
             case 'v':
                g_verbosity = 1;
                break;
@@ -801,10 +849,14 @@ int main(int argc, char *argv[])
    }
 
    if (config.mode == MODE_IMPORT) {
-      if (config.bin_truncate) {
-         bin_fp = fopen(config.bin_filename, "wb");
+      if (0 == strcmp("-", config.bin_filename)) {
+         bin_fp = stdout;
       } else {
-         bin_fp = fopen(config.bin_filename, "r+b");
+         if (config.bin_truncate) {
+            bin_fp = fopen(config.bin_filename, "wb");
+         } else {
+            bin_fp = fopen(config.bin_filename, "r+b");
+         }
       }
       if (!bin_fp) {
          ERROR("Error opening \"%s\"\n", config.bin_filename);
@@ -843,7 +895,7 @@ int main(int argc, char *argv[])
             break;
          case IMG_FORMAT_CI:
          {
-            palette_t pal;
+            palette_t pal = {0};
             FILE *pal_fp;
             uint8_t *raw16;
             int raw16_size;
@@ -896,17 +948,18 @@ int main(int argc, char *argv[])
                exit(EXIT_FAILURE);
             }
 
+            // pack the bytes
+            uint8_t raw_pal[sizeof(pal.data)];
+            for (int i = 0; i < pal.max; i++) {
+               write_u16_be(&raw_pal[2*i], pal.data[i]);
+            }
             pal_length = pal.max * sizeof(pal.data[0]);
             INFO("Writing 0x%X bytes to offset 0x%X of \"%s\"\n", pal_length, config.pal_offset, config.pal_filename);
-            flength = 0;
-            for (int i = 0; i < pal.max; i++) {
-               uint8_t entry[2];
-               write_u16_be(entry, pal.data[i]);
-               flength += fwrite(entry, 1, sizeof(entry), pal_fp);
-            }
-            if (flength != pal_length) {
+            flength = fprint_write_output(pal_fp, config.encoding, raw_pal, pal_length);
+            if (config.encoding == ENCODING_RAW && flength != pal_length) {
                ERROR("Error writing %d bytes to \"%s\"\n", pal_length, config.pal_filename);
             }
+            INFO("Wrote 0x%X bytes to \"%s\"\n", flength, config.pal_filename);
 
             raw = ci;
             length = ci_length;
@@ -923,11 +976,14 @@ int main(int argc, char *argv[])
          return EXIT_FAILURE;
       }
       INFO("Writing 0x%X bytes to offset 0x%X of \"%s\"\n", length, config.bin_offset, config.bin_filename);
-      flength = fwrite(raw, 1, length, bin_fp);
-      if (flength != length) {
+      flength = fprint_write_output(bin_fp, config.encoding, raw, length);
+      if (config.encoding == ENCODING_RAW && flength != length) {
          ERROR("Error writing %d bytes to \"%s\"\n", length, config.bin_filename);
       }
-      fclose(bin_fp);
+      INFO("Wrote 0x%X bytes to \"%s\"\n", flength, config.bin_filename);
+      if (bin_fp != stdout) {
+         fclose(bin_fp);
+      }
 
    } else {
       if (config.width <= 0 || config.height <= 0 || config.format.depth <= 0) {

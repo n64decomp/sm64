@@ -13,7 +13,7 @@ u32 D_80334A30 = 0;
 u32 D_80334A34 = 0;
 s32 D_80334A38 = 0;
 
-extern u8 D_80365E40[0x1000];
+extern u8 D_80365E40[0x100];
 
 OSThread gInterruptedThread;
 

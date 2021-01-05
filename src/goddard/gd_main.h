@@ -22,7 +22,7 @@
 
 // structs
 struct GdControl { // gGdCtrl
-    /* 0x00 */ s32 unk00;
+    /* 0x00 */ s32 unk00;  // set but never used
     /* 0x04 */ u8  pad04[4];
     /* 0x08 */ s32 dleft; // Dpad-left (mask)
     /* 0x0C */ s32 dright; // Dpad-right (mask)
@@ -47,14 +47,14 @@ struct GdControl { // gGdCtrl
     /* 0x7C */ f32 stickXf;
     /* 0x80 */ f32 stickYf;
     /* 0x84 */ u8  pad84[4];
-    /* 0x88 */ f32 unk88;
+    /* 0x88 */ f32 unk88;  // set but never used
     /* 0x8C */ u8  pad8c[0xA0-0x8C];
-    /* 0xA0 */ f32 unkA0;
+    /* 0xA0 */ f32 unkA0;  // set but never used
     /* 0xA4 */ u8  padA4[0xAC-0xA4];
     /* 0xAC */ f32 unkAC;
     /* 0xB0 */ u8  padB0[0xB8-0xB0];
-    /* 0xB8 */ s32 csrXatApress; // cursor x position when there was a new (A) press?
-    /* 0xBC */ s32 csrYatApress; // cursor y position when there was a new (A) press?
+    /* 0xB8 */ s32 dragStartX; // cursor x position when there was a new (A) press?
+    /* 0xBC */ s32 dragStartY; // cursor y position when there was a new (A) press?
     /* 0xC0 */ s32 stickDeltaX;
     /* 0xC4 */ s32 stickDeltaY;
     /* 0xC8 */ s32 stickX;
@@ -62,16 +62,16 @@ struct GdControl { // gGdCtrl
     /* 0xD0 */ s32 csrX; // bounded by screen view
     /* 0xD4 */ s32 csrY; // bounded by screen view
     /* 0xD8 */ /* hand/cursor state bitfield? */
-        /* b80 */ u8 btnApressed : 1;  // bool (A) pressed
+        /* b80 */ u8 dragging : 1;  // bool (A) pressed
         /* b40 */ u8 unkD8b40 : 1; // set to FALSE and unused
         /* b20 */ u8 unkD8b20 : 1; // set to FALSE and unused
-        /* b10 */ u8 btnAnewPress : 1;  // bool new (A) press
+        /* b10 */ u8 startedDragging : 1;  // bool new (A) press
         /* b08 */ u8 unkD8b08 : 1;
         /* b04 */ u8 unkD8b04 : 1;
         /* b02 */ u8 AbtnPressWait : 1;  // bool 10 frames between (A) presses (cursor cool down?)
-    /* 0xDC */ u32 frameAbtnPressed; // first frame of new a press
+    /* 0xDC */ u32 dragStartFrame; // first frame of new a press
     /* 0xE0 */ u8  padE0[0xE8-0xE0];
-    /* 0xE8 */ u32 frameCount; // frame count?
+    /* 0xE8 */ u32 currFrame; // frame count?
     /* 0xEC */ u8  padEC[0xF0-0xEC];
     /* 0xF0 */ struct GdControl *prevFrame; // previous frame data
 };

@@ -43,32 +43,32 @@ static const Lights1 heave_ho_lights_unused5 = gdSPDefLights1(
 );
 
 // 0x0500E9C8
-ALIGNED8 static const u8 heave_ho_seg5_texture_0500E9C8[] = {
+ALIGNED8 static const Texture heave_ho_seg5_texture_0500E9C8[] = {
 #include "actors/heave_ho/heave-ho_face.rgba16.inc.c"
 };
 
 // 0x0500F1C8
-ALIGNED8 static const u8 heave_ho_seg5_texture_0500F1C8[] = {
+ALIGNED8 static const Texture heave_ho_seg5_texture_0500F1C8[] = {
 #include "actors/heave_ho/heave-ho_platform.rgba16.inc.c"
 };
 
 // 0x0500F9C8
-ALIGNED8 static const u8 heave_ho_seg5_texture_0500F9C8[] = {
+ALIGNED8 static const Texture heave_ho_seg5_texture_0500F9C8[] = {
 #include "actors/heave_ho/heave-ho_logo.rgba16.inc.c"
 };
 
 // 0x050109C8
-ALIGNED8 static const u8 heave_ho_seg5_texture_050109C8[] = {
+ALIGNED8 static const Texture heave_ho_seg5_texture_050109C8[] = {
 #include "actors/heave_ho/heave-ho_arm_ornament.rgba16.inc.c"
 };
 
 // 0x050111C8
-ALIGNED8 static const u8 heave_ho_seg5_texture_050111C8[] = {
+ALIGNED8 static const Texture heave_ho_seg5_texture_050111C8[] = {
 #include "actors/heave_ho/heave-ho_roller.rgba16.inc.c"
 };
 
 // 0x050113C8
-ALIGNED8 static const u8 heave_ho_seg5_texture_050113C8[] = {
+ALIGNED8 static const Texture heave_ho_seg5_texture_050113C8[] = {
 #include "actors/heave_ho/heave-ho_turnkey.rgba16.inc.c"
 };
 

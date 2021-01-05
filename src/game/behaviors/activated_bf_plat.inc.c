@@ -58,7 +58,7 @@ void bhv_activated_back_and_forth_platform_init(void) {
 }
 
 /**
- * Activated back-and-forth platform update function.	
+ * Activated back-and-forth platform update function.
  */
 void bhv_activated_back_and_forth_platform_update(void) {
     UNUSED s32 unused[3];

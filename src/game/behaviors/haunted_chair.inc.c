@@ -26,7 +26,6 @@ void bhv_haunted_chair_init(void) {
 
 void haunted_chair_act_0(void) {
     s16 val0E;
-    f32 val08;
 
     if (o->parentObj != o) {
         if (o->oHauntedChairUnk104 == 0) {
@@ -65,6 +64,8 @@ void haunted_chair_act_0(void) {
         o->oTimer = 0.0f;
     } else {
         if ((o->oTimer & 0x8) != 0) {
+            f32 val08;
+
             if (o->oFaceAnglePitch < 0) {
                 cur_obj_play_sound_2(SOUND_GENERAL_HAUNTED_CHAIR_MOVE);
                 val08 = 4.0f;
@@ -76,7 +77,6 @@ void haunted_chair_act_0(void) {
             o->oHomeZ -= val08;
 
             o->oFaceAnglePitch = o->oFaceAngleRoll = (s32)(50.0f * val08);
-            ;
         } else {
             o->oFaceAnglePitch = o->oFaceAngleRoll = 0;
         }

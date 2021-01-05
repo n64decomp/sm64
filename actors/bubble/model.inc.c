@@ -9,12 +9,12 @@ static const Vtx bubble_seg4_vertex_0401CD20[] = {
 };
 
 // 0x0401CD60
-ALIGNED8 static const u8 bubble_seg4_texture_0401CD60[] = {
+ALIGNED8 static const Texture bubble_seg4_texture_0401CD60[] = {
 #include "actors/bubble/bubble.rgba16.inc.c"
 };
 
 // 0x0401D560
-ALIGNED8 static const u8 bubble_seg4_texture_0401D560[] = {
+ALIGNED8 static const Texture bubble_seg4_texture_0401D560[] = {
 #include "actors/bubble/mr_i_bubble.rgba16.inc.c"
 };
 

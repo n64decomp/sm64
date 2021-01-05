@@ -135,14 +135,14 @@ void envfx_set_lava_bubble_position(s32 index, Vec3s centerPos) {
     floorY =
         find_floor((gEnvFxBuffer + index)->xPos, centerY + 500, (gEnvFxBuffer + index)->zPos, &surface);
     if (surface == NULL) {
-        (gEnvFxBuffer + index)->yPos = -10000;
+        (gEnvFxBuffer + index)->yPos = FLOOR_LOWER_LIMIT_MISC;
         return;
     }
 
     if (surface->type == SURFACE_BURNING) {
         (gEnvFxBuffer + index)->yPos = floorY;
     } else {
-        (gEnvFxBuffer + index)->yPos = -10000;
+        (gEnvFxBuffer + index)->yPos = FLOOR_LOWER_LIMIT_MISC;
     }
 }
 
@@ -174,7 +174,7 @@ void envfx_update_lava(Vec3s centerPos) {
     }
 
     if ((chance = (s32)(random_float() * 16.0f)) == 8) {
-        play_sound(SOUND_GENERAL_QUIET_BUBBLE2, gDefaultSoundArgs);
+        play_sound(SOUND_GENERAL_QUIET_BUBBLE2, gGlobalSoundSource);
     }
 }
 
@@ -347,17 +347,12 @@ s32 envfx_init_bubble(s32 mode) {
     bzero(gEnvFxBuffer, sBubbleParticleCount * sizeof(struct EnvFxParticle));
     bzero(gEnvFxBubbleConfig, sizeof(gEnvFxBubbleConfig));
 
-    if (mode == ENVFX_LAVA_BUBBLES) {
-        //! Dead code
-        if (0) {
-        }
-
-        for (i = 0; i < sBubbleParticleCount; i++) {
-            (gEnvFxBuffer + i)->animFrame = random_float() * 7.0f;
-        }
-
-        if (0) {
-        }
+    switch (mode) {
+        case ENVFX_LAVA_BUBBLES:
+            for (i = 0; i < sBubbleParticleCount; i++) {
+                (gEnvFxBuffer + i)->animFrame = random_float() * 7.0f;
+            }
+            break;
     }
 
     gEnvFxMode = mode;
@@ -405,16 +400,11 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
  * Append 15 vertices to 'gfx', which is enough for 5 bubbles starting at
  * 'index'. The 3 input vertices represent the rotated triangle around (0,0,0)
  * that will be translated to bubble positions to draw the bubble image
- *
- * TODO: (Scrub C)
  */
 void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3,
                                  Vtx *template) {
     s32 i = 0;
     Vtx *vertBuf = alloc_display_list(15 * sizeof(Vtx));
-#ifdef VERSION_EU
-    Vtx *p;
-#endif
 
     if (vertBuf == NULL) {
         return;
@@ -422,43 +412,19 @@ void append_bubble_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s verte
 
     for (i = 0; i < 15; i += 3) {
         vertBuf[i] = template[0];
-#ifdef VERSION_EU
-        p = vertBuf;
-        p += i;
-        p[0].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex1[0];
-        p[0].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex1[1];
-        p[0].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex1[2];
-#else
-        vertBuf[i].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex1[0];
-        vertBuf[i].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex1[1];
-        vertBuf[i].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex1[2];
-#endif
+        (vertBuf + i)->v.ob[0] = (gEnvFxBuffer + (index + i / 3))->xPos + vertex1[0];
+        (vertBuf + i)->v.ob[1] = (gEnvFxBuffer + (index + i / 3))->yPos + vertex1[1];
+        (vertBuf + i)->v.ob[2] = (gEnvFxBuffer + (index + i / 3))->zPos + vertex1[2];
 
         vertBuf[i + 1] = template[1];
-#ifdef VERSION_EU
-        p = vertBuf;
-        p += i;
-        p[1].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex2[0];
-        p[1].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex2[1];
-        p[1].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex2[2];
-#else
-        vertBuf[i + 1].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex2[0];
-        vertBuf[i + 1].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex2[1];
-        vertBuf[i + 1].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex2[2];
-#endif
+        (vertBuf + i + 1)->v.ob[0] = (gEnvFxBuffer + (index + i / 3))->xPos + vertex2[0];
+        (vertBuf + i + 1)->v.ob[1] = (gEnvFxBuffer + (index + i / 3))->yPos + vertex2[1];
+        (vertBuf + i + 1)->v.ob[2] = (gEnvFxBuffer + (index + i / 3))->zPos + vertex2[2];
 
         vertBuf[i + 2] = template[2];
-#ifdef VERSION_EU
-        p = vertBuf;
-        p += i;
-        p[2].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex3[0];
-        p[2].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex3[1];
-        p[2].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex3[2];
-#else
-        vertBuf[i + 2].v.ob[0] = gEnvFxBuffer[index + i / 3].xPos + vertex3[0];
-        vertBuf[i + 2].v.ob[1] = gEnvFxBuffer[index + i / 3].yPos + vertex3[1];
-        vertBuf[i + 2].v.ob[2] = gEnvFxBuffer[index + i / 3].zPos + vertex3[2];
-#endif
+        (vertBuf + i + 2)->v.ob[0] = (gEnvFxBuffer + (index + i / 3))->xPos + vertex3[0];
+        (vertBuf + i + 2)->v.ob[1] = (gEnvFxBuffer + (index + i / 3))->yPos + vertex3[1];
+        (vertBuf + i + 2)->v.ob[2] = (gEnvFxBuffer + (index + i / 3))->zPos + vertex3[2];
     }
 
     gSPVertex(gfx, VIRTUAL_TO_PHYSICAL(vertBuf), 15, 0);

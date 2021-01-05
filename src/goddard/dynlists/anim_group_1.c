@@ -1,10 +1,10 @@
 #include <PR/ultratypes.h>
 
+#include "macros.h"
 #include "animdata.h"
 #include "../gd_types.h"
 
-/* @ 04012400 */
-s16 animdata_mario_eyebrows_equalizer_1[820][3] = {
+static s16 animdata_mario_eyebrows_equalizer_1[][3] = {
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
@@ -144,15 +144,13 @@ s16 animdata_mario_eyebrows_equalizer_1[820][3] = {
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
 };
 
-/* @ 04013738 */
-struct AnimDataInfo anim_mario_eyebrows_equalizer[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_eyebrows_equalizer_1 },
+struct AnimDataInfo anim_mario_eyebrows_equalizer[] = {
+    { ARRAY_COUNT(animdata_mario_eyebrows_equalizer_1), GD_ANIM_ROT3S, animdata_mario_eyebrows_equalizer_1 },
     { 0, GD_ANIM_EMPTY, NULL },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 0401375C */
-s16 animdata_mario_eyebrows_2_1[820][3] = {
+static s16 animdata_mario_eyebrows_2_1[][3] = {
     { 28, 0, 1823 },    { 28, 0, 1823 },    { 28, 0, 1823 },    { 27, 0, 1822 },    { 26, 0, 1821 },
     { 26, 0, 1819 },    { 25, 0, 1818 },    { 24, 0, 1816 },    { 23, 0, 1815 },    { 22, 0, 1814 },
     { 21, 0, 1812 },    { 21, 0, 1811 },    { 20, 0, 1810 },    { 20, 0, 1810 },    { 20, 0, 1810 },
@@ -319,8 +317,7 @@ s16 animdata_mario_eyebrows_2_1[820][3] = {
     { -13, 1, 1821 },   { 3, 0, 1822 },     { 16, 0, 1823 },    { 25, 0, 1823 },    { 28, 0, 1823 },
 };
 
-/* @ 04014A94 */
-s16 animdata_mario_eyebrows_2_2[166][3] = {
+static s16 animdata_mario_eyebrows_2_2[][3] = {
     { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },
     { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },
     { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },  { 28, -5, 1943 },
@@ -357,15 +354,13 @@ s16 animdata_mario_eyebrows_2_2[166][3] = {
     { 28, 0, 1823 },
 };
 
-/* @ 04014E78 */
-struct AnimDataInfo anim_mario_eyebrows_2[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_eyebrows_2_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_eyebrows_2_2 },
+struct AnimDataInfo anim_mario_eyebrows_2[] = {
+    { ARRAY_COUNT(animdata_mario_eyebrows_2_1), GD_ANIM_ROT3S, animdata_mario_eyebrows_2_1 },
+    { ARRAY_COUNT(animdata_mario_eyebrows_2_2), GD_ANIM_ROT3S, animdata_mario_eyebrows_2_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 04014E9C */
-s16 anim_mario_eyebrows_3_1[820][3] = {
+static s16 anim_mario_eyebrows_3_1[][3] = {
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
@@ -505,15 +500,13 @@ s16 anim_mario_eyebrows_3_1[820][3] = {
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },
 };
 
-/* @ 040161D4 */
-struct AnimDataInfo anim_mario_eyebrows_3[3] = {
-    { 820, GD_ANIM_3H_SCALED, anim_mario_eyebrows_3_1 },
+struct AnimDataInfo anim_mario_eyebrows_3[] = {
+    { ARRAY_COUNT(anim_mario_eyebrows_3_1), GD_ANIM_ROT3S, anim_mario_eyebrows_3_1 },
     { 0, GD_ANIM_EMPTY, NULL },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 040161F8 */
-s16 animdata_mario_eyebrows_4_1[820][3] = {
+static s16 animdata_mario_eyebrows_4_1[][3] = {
     { -34, 0, -1777 },  { -34, 0, -1777 },  { -34, 0, -1778 },  { -35, 0, -1780 },  { -36, 0, -1781 },
     { -36, 0, -1784 },  { -37, 0, -1786 },  { -38, -1, -1788 }, { -39, -1, -1790 }, { -40, -1, -1793 },
     { -41, -1, -1795 }, { -42, -1, -1797 }, { -42, -1, -1798 }, { -42, -1, -1799 }, { -43, -1, -1799 },
@@ -680,8 +673,7 @@ s16 animdata_mario_eyebrows_4_1[820][3] = {
     { -7, 0, -1777 },   { -18, 0, -1777 },  { -26, 0, -1777 },  { -32, 0, -1777 },  { -34, 0, -1777 },
 };
 
-/* @ 04017530 */
-s16 animdata_mario_eyebrows_4_2[166][3] = {
+static s16 animdata_mario_eyebrows_4_2[][3] = {
     { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 },
     { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 },
     { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 }, { -34, 0, -1754 },
@@ -718,15 +710,13 @@ s16 animdata_mario_eyebrows_4_2[166][3] = {
     { -34, 0, -1777 },
 };
 
-/* @ 04017914 */
-struct AnimDataInfo anim_mario_eyebrows_4[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_eyebrows_4_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_eyebrows_4_2 },
+struct AnimDataInfo anim_mario_eyebrows_4[] = {
+    { ARRAY_COUNT(animdata_mario_eyebrows_4_1), GD_ANIM_ROT3S, animdata_mario_eyebrows_4_1 },
+    { ARRAY_COUNT(animdata_mario_eyebrows_4_2), GD_ANIM_ROT3S, animdata_mario_eyebrows_4_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 04017938 */
-s16 animdata_mario_eyebrows_5_1[820][3] = {
+static s16 animdata_mario_eyebrows_5_1[][3] = {
     { 108, 0, 1775 },   { 108, 0, 1774 },   { 108, 0, 1774 },   { 107, 0, 1773 },   { 107, 0, 1771 },
     { 106, 0, 1770 },   { 105, 1, 1768 },   { 104, 1, 1766 },   { 103, 1, 1764 },   { 103, 2, 1763 },
     { 102, 2, 1761 },   { 101, 2, 1760 },   { 101, 3, 1759 },   { 100, 3, 1758 },   { 100, 3, 1758 },
@@ -893,15 +883,13 @@ s16 animdata_mario_eyebrows_5_1[820][3] = {
     { 76, 8, 1782 },    { 89, 5, 1779 },    { 99, 2, 1777 },    { 106, 0, 1775 },   { 108, 0, 1775 },
 };
 
-/* @ 04018C70 */
-struct AnimDataInfo anim_mario_eyebrows_5[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_eyebrows_5_1 },
+struct AnimDataInfo anim_mario_eyebrows_5[] = {
+    { ARRAY_COUNT(animdata_mario_eyebrows_5_1), GD_ANIM_ROT3S, animdata_mario_eyebrows_5_1 },
     { 0, GD_ANIM_EMPTY, NULL },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 04018C94 */
-s16 animdata_mario_eye_left_1[820][3] = {
+static s16 animdata_mario_eye_left_1[][3] = {
     { -68, 2, -974 },     { -68, 1, -974 },     { -68, 0, -974 },     { -68, -2, -974 },
     { -68, -6, -973 },    { -68, -10, -973 },   { -68, -15, -972 },   { -68, -20, -972 },
     { -68, -26, -971 },   { -69, -32, -970 },   { -69, -38, -970 },   { -69, -44, -969 },
@@ -1109,8 +1097,7 @@ s16 animdata_mario_eye_left_1[820][3] = {
     { -68, -3, -967 },    { -68, 0, -971 },     { -68, 1, -973 },     { -68, 2, -974 },
 };
 
-/* @ 04019FCC */
-s16 animdata_mario_eye_left_2[166][3] = {
+static s16 animdata_mario_eye_left_2[][3] = {
     { -69, -86, -946 }, { -69, -86, -946 }, { -69, -83, -946 }, { -69, -79, -947 }, { -69, -73, -948 },
     { -69, -67, -949 }, { -69, -59, -950 }, { -69, -50, -951 }, { -69, -41, -952 }, { -69, -31, -953 },
     { -69, -20, -955 }, { -69, -9, -956 },  { -69, 1, -958 },   { -69, 12, -959 },  { -69, 24, -961 },
@@ -1147,15 +1134,13 @@ s16 animdata_mario_eye_left_2[166][3] = {
     { -68, 2, -974 },
 };
 
-/* @ 0401A3B0 */
-struct AnimDataInfo anim_mario_eye_left[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_eye_left_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_eye_left_2 },
+struct AnimDataInfo anim_mario_eye_left[] = {
+    { ARRAY_COUNT(animdata_mario_eye_left_1), GD_ANIM_ROT3S, animdata_mario_eye_left_1 },
+    { ARRAY_COUNT(animdata_mario_eye_left_2), GD_ANIM_ROT3S, animdata_mario_eye_left_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 0401A3D4 */
-s16 animdata_mario_eye_right_1[820][3] = {
+static s16 animdata_mario_eye_right_1[][3] = {
     { 1844, -1788, 824 }, { 1844, -1789, 824 }, { 1844, -1791, 825 }, { 1844, -1794, 825 },
     { 1844, -1797, 826 }, { 1844, -1802, 826 }, { 1844, -1807, 827 }, { 1844, -1813, 828 },
     { 1844, -1819, 829 }, { 1845, -1826, 829 }, { 1845, -1832, 830 }, { 1845, -1839, 831 },
@@ -1363,8 +1348,7 @@ s16 animdata_mario_eye_right_1[820][3] = {
     { 1845, -1794, 829 }, { 1844, -1791, 827 }, { 1844, -1789, 825 }, { 1844, -1788, 824 },
 };
 
-/* @ 0401B70C */
-s16 animdata_mario_eye_right_2[166][3] = {
+static s16 animdata_mario_eye_right_2[][3] = {
     { 1841, -1711, 853 }, { 1841, -1711, 853 }, { 1841, -1711, 853 }, { 1841, -1711, 853 },
     { 1841, -1710, 853 }, { 1841, -1710, 853 }, { 1841, -1709, 853 }, { 1841, -1708, 853 },
     { 1841, -1707, 853 }, { 1841, -1706, 853 }, { 1841, -1705, 853 }, { 1841, -1705, 853 },
@@ -1409,15 +1393,13 @@ s16 animdata_mario_eye_right_2[166][3] = {
     { 1844, -1788, 824 }, { 1844, -1788, 824 },
 };
 
-/* @ 0401BAF0 */
-struct AnimDataInfo anim_mario_eye_right[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_eye_right_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_eye_right_2 },
+struct AnimDataInfo anim_mario_eye_right[] = {
+    { ARRAY_COUNT(animdata_mario_eye_right_1), GD_ANIM_ROT3S, animdata_mario_eye_right_1 },
+    { ARRAY_COUNT(animdata_mario_eye_right_2), GD_ANIM_ROT3S, animdata_mario_eye_right_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 0401BB14 */
-s16 animdata_mario_cap_1[820][3] = {
+static s16 animdata_mario_cap_1[][3] = {
     { 0, 0, 1539 },     { 0, 0, 1539 },     { 0, 0, 1539 },     { 0, 0, 1538 },     { 0, 0, 1538 },
     { 0, 0, 1537 },     { 0, 0, 1537 },     { 0, 0, 1536 },     { 0, 0, 1536 },     { 0, 0, 1535 },
     { 0, 0, 1535 },     { 0, 0, 1534 },     { 0, 0, 1534 },     { 0, 0, 1534 },     { 0, 0, 1534 },
@@ -1584,8 +1566,7 @@ s16 animdata_mario_cap_1[820][3] = {
     { 0, 0, 1543 },     { 0, 0, 1542 },     { 0, 0, 1540 },     { 0, 0, 1539 },     { 0, 0, 1539 },
 };
 
-/* @ 0401CE4C */
-s16 animdata_mario_cap_2[166][3] = {
+static s16 animdata_mario_cap_2[][3] = {
     { 0, 0, 1539 }, { 0, 0, 1539 }, { 0, 0, 1539 }, { 0, 0, 1538 }, { 0, 0, 1538 }, { 0, 0, 1538 },
     { 0, 0, 1537 }, { 0, 0, 1537 }, { 0, 0, 1536 }, { 0, 0, 1536 }, { 0, 0, 1535 }, { 0, 0, 1535 },
     { 0, 0, 1535 }, { 0, 0, 1534 }, { 0, 0, 1534 }, { 0, 0, 1534 }, { 0, 0, 1534 }, { 0, 0, 1534 },
@@ -1616,15 +1597,13 @@ s16 animdata_mario_cap_2[166][3] = {
     { 0, 0, 1539 }, { 0, 0, 1539 }, { 0, 0, 1539 }, { 0, 0, 1539 },
 };
 
-/* @ 0401D230 */
-struct AnimDataInfo anim_mario_cap[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_cap_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_cap_2 },
+struct AnimDataInfo anim_mario_cap[] = {
+    { ARRAY_COUNT(animdata_mario_cap_1), GD_ANIM_ROT3S, animdata_mario_cap_1 },
+    { ARRAY_COUNT(animdata_mario_cap_2), GD_ANIM_ROT3S, animdata_mario_cap_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 0401D254 */
-s16 animdata_mario_lips_3_1[820][3] = {
+static s16 animdata_mario_lips_3_1[][3] = {
     { 0, 0, -665 },       { 0, 0, -664 },       { 0, 0, -662 },       { 0, 0, -660 },
     { -1, 0, -656 },      { -1, 0, -652 },      { -2, 0, -648 },      { -3, 1, -643 },
     { -3, 1, -638 },      { -4, 1, -634 },      { -5, 2, -629 },      { -5, 2, -625 },
@@ -1832,8 +1811,7 @@ s16 animdata_mario_lips_3_1[820][3] = {
     { 0, -31, -670 },     { 0, -14, -667 },     { 0, -3, -665 },      { 0, 0, -665 },
 };
 
-/* @ 0401E58C */
-s16 animdata_mario_lips_3_2[166][3] = {
+static s16 animdata_mario_lips_3_2[][3] = {
     { -269, -128, -669 }, { -269, -128, -669 }, { -269, -128, -669 }, { -269, -128, -669 },
     { -269, -128, -669 }, { -269, -128, -669 }, { -269, -128, -669 }, { -269, -128, -669 },
     { -269, -128, -669 }, { -269, -128, -669 }, { -269, -128, -669 }, { -269, -128, -669 },
@@ -1878,15 +1856,13 @@ s16 animdata_mario_lips_3_2[166][3] = {
     { 0, 0, -665 },       { 0, 0, -665 },
 };
 
-/* @ 0401E970 */
-struct AnimDataInfo anim_mario_lips_3[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_lips_3_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_lips_3_2 },
+struct AnimDataInfo anim_mario_lips_3[] = {
+    { ARRAY_COUNT(animdata_mario_lips_3_1), GD_ANIM_ROT3S, animdata_mario_lips_3_1 },
+    { ARRAY_COUNT(animdata_mario_lips_3_2), GD_ANIM_ROT3S, animdata_mario_lips_3_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 0401E994 */
-s16 animdata_mario_lips_4_1[820][3] = {
+static s16 animdata_mario_lips_4_1[][3] = {
     { 0, 0, -665 },       { 0, 0, -664 },       { 0, 0, -663 },       { 0, 0, -661 },
     { 0, 0, -659 },       { 0, 0, -656 },       { 0, 0, -653 },       { 0, 0, -650 },
     { 0, 0, -647 },       { 0, 0, -644 },       { 0, 0, -641 },       { 0, 0, -638 },
@@ -2094,8 +2070,7 @@ s16 animdata_mario_lips_4_1[820][3] = {
     { 7, 27, -681 },      { 3, 12, -672 },      { 0, 3, -667 },       { 0, 0, -665 },
 };
 
-/* @ 0401FCCC */
-s16 animdata_mario_lips_4_2[166][3] = {
+static s16 animdata_mario_lips_4_2[][3] = {
     { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },
     { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },
     { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },   { 51, 5, -623 },
@@ -2132,15 +2107,13 @@ s16 animdata_mario_lips_4_2[166][3] = {
     { 0, 0, -665 },
 };
 
-/* @ 040200B0 */
-struct AnimDataInfo anim_mario_lips_4[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_lips_4_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_lips_4_2 },
+struct AnimDataInfo anim_mario_lips_4[] = {
+    { ARRAY_COUNT(animdata_mario_lips_4_1), GD_ANIM_ROT3S, animdata_mario_lips_4_1 },
+    { ARRAY_COUNT(animdata_mario_lips_4_2), GD_ANIM_ROT3S, animdata_mario_lips_4_2 },
     END_ANIMDATA_INFO_ARR,
 };
 
-/* @ 040200D4 */
-s16 animdata_mario_ear_left_1[820][3] = {
+static s16 animdata_mario_ear_left_1[][3] = {
     { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 },
     { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 },
     { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 },
@@ -2348,9 +2321,8 @@ s16 animdata_mario_ear_left_1[820][3] = {
     { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 }, { 1800, 1800, -1534 },
 };
 
-/* @ 0402140C */
-struct AnimDataInfo anim_mario_ear_left[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_ear_left_1 },
+struct AnimDataInfo anim_mario_ear_left[] = {
+    { ARRAY_COUNT(animdata_mario_ear_left_1), GD_ANIM_ROT3S, animdata_mario_ear_left_1 },
     { 0, GD_ANIM_EMPTY, NULL },
     END_ANIMDATA_INFO_ARR,
 };

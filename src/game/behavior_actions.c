@@ -42,12 +42,9 @@
 #include "sm64.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 #define o gCurrentObject
-
-// BSS
-s16 D_8035FF10;
 
 struct WFRotatingPlatformData {
     s16 pad;
@@ -192,16 +189,13 @@ Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat
 // not in behavior file
 // n is the number of objects to spawn, r if the rate of change of phase (frequency?)
 void spawn_sparkle_particles(s32 n, s32 a1, s32 a2, s32 r) {
+    static s16 D_8035FF10;
     s32 i;
     s16 separation = 0x10000 / n; // Evenly spread around a circle
     for (i = 0; i < n; i++) {
         spawn_object_relative(0, sins(D_8035FF10 + i * separation) * a1, (i + 1) * a2,
                               coss(D_8035FF10 + i * separation) * a1, o, MODEL_NONE, bhvSparkleSpawn);
     }
-
-  if (1)
-  {
-  }
 
     D_8035FF10 += r * 0x100;
 }

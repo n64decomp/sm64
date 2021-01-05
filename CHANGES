@@ -1,3 +1,49 @@
+Refresh 13 2
+
+- No more nonmatchings remain for all builds including Shindou.
+
+1.) Shindou OK (#1118)
+2.) Match shindou sequence_player_process_sequence (#1117)
+3.) Match func_sh_802f4e50 (#1116)
+
+Refresh 13
+
+- No more nonmatchings remain for US, JP, or EU builds. Three(!!!) remain for Shindou (SH).
+
+*) SHINDOU MATCHING (#1081)
+*) Makefile gcc fixes (#1114)
+
+1.) Update diff.py (#1113)
+2.) Add support for generating C arrays from n64graphics and add Texture typedef (#1032)
+3.) Update README and Dockerfile with recomp info (#1105)
+4.) Support building tools with MSYS2 (#1112)
+5.) Support building tools with clang and macOS (#1106)
+6.) Clean tools directory when running distclean target (#1104)
+7.) Make build output cleaner (#1095)
+8.) Added 2 surface defines to bowser.inc.c (#1111)
+9.) fix fake matchings (#1108)
+10.) Use statically recompiled IDO instead of qemu-irix (#1099)
+11.) Add VERBOSE=1 to Jenkinsfile
+12.) updated intro_geo to use layer defines for geo flags (#1090)
+13.) Fix F3DZEX (#1097)
+14.) layer_transpose should take an s8 (#1093)
+15.) Fix tools/ build (#1082)
+16.) Relabel and document fish.inc.c (#1077)
+17.) Ensure all calls to .py files use $(PYTHON) (#1080)
+18.) Name Mario, Peach, and instrument sound files (#1078)
+19.) Goddard labeling, part 2 (#1076)
+20.) Fix envfx_snow and envfx_bubbles fake matches (#1075)
+21.) Use array subscripts instead of pointer math in 2 files (#1074)
+22.) refactor Makefile a bit (#1068)
+23.) Further improvements on field names (#1059)
+24.) Label and document manta_ray.inc.c (#1073)
+25.) Fix level_script and behavior fake matches (#1072)
+26.) Proper cell defines and more floor lower limit values. (#1065)
+27.) Document and re-label some goddard/intro code (#1069)
+28.) Match remaining functions (#1070)
+29.) match 'spawn_special_objects' (#1071)
+30.) Document parts of external.c and format sound defines (#1067)
+
 Refresh 12
 
 1.) Debug box improvements (#1066)

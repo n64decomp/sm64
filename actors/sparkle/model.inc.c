@@ -9,32 +9,32 @@ static const Vtx sparkles_seg4_vertex_04027450[] = {
 };
 
 // 0x04027490
-ALIGNED8 static const u8 sparkles_seg4_texture_04027490[] = {
+ALIGNED8 static const Texture sparkles_seg4_texture_04027490[] = {
 #include "actors/sparkle/sparkle_0.rgba16.inc.c"
 };
 
 // 0x04027C90
-ALIGNED8 static const u8 sparkles_seg4_texture_04027C90[] = {
+ALIGNED8 static const Texture sparkles_seg4_texture_04027C90[] = {
 #include "actors/sparkle/sparkle_1.rgba16.inc.c"
 };
 
 // 0x04028490
-ALIGNED8 static const u8 sparkles_seg4_texture_04028490[] = {
+ALIGNED8 static const Texture sparkles_seg4_texture_04028490[] = {
 #include "actors/sparkle/sparkle_2.rgba16.inc.c"
 };
 
 // 0x04028C90
-ALIGNED8 static const u8 sparkles_seg4_texture_04028C90[] = {
+ALIGNED8 static const Texture sparkles_seg4_texture_04028C90[] = {
 #include "actors/sparkle/sparkle_3.rgba16.inc.c"
 };
 
 // 0x04029490
-ALIGNED8 static const u8 sparkles_seg4_texture_04029490[] = {
+ALIGNED8 static const Texture sparkles_seg4_texture_04029490[] = {
 #include "actors/sparkle/sparkle_4.rgba16.inc.c"
 };
 
 // 0x04029C90
-ALIGNED8 static const u8 sparkles_seg4_texture_04029C90[] = {
+ALIGNED8 static const Texture sparkles_seg4_texture_04029C90[] = {
 #include "actors/sparkle/sparkle_5.rgba16.inc.c"
 };
 

@@ -7,9 +7,8 @@
 #include "mario.h"
 #include "audio/external.h"
 #include "interaction.h"
-#include "audio_defines.h"
 #include "engine/math_util.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 /**
  * Used by act_punching() to determine Mario's forward velocity during each
@@ -423,7 +422,7 @@ s32 act_releasing_bowser(struct MarioState *m) {
     if (++m->actionTimer == 1) {
         if (m->actionArg == 0) {
 #ifdef VERSION_SH
-            queue_rumble_data(4, 50);
+            queue_rumble_data(5, 50);
 #endif
             mario_throw_held_object(m);
         } else {

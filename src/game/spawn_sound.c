@@ -8,7 +8,7 @@
 #include "object_list_processor.h"
 #include "sm64.h"
 #include "spawn_sound.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 /*
  * execute an object's current sound state with a provided array

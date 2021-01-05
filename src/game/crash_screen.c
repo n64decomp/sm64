@@ -17,17 +17,8 @@ u8 gCrashScreenCharToGlyph[128] = {
     23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, -1, -1, -1, -1, -1,
 };
 
-// really u32, but texture output is u8, so allocate 4x
-u8 gCrashScreenFont[(7 * 9 + 1) * 4] = {
-    #include "textures/crash_screen/crash_font_01234.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_56789.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_ABCDE.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_FGHIJ.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_KLMNO.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_PQRST.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_UVWXY.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_Zsym1.ia1.inc.c"
-    #include "textures/crash_screen/crash_font_sym2.ia1.inc.c"
+u32 gCrashScreenFont[7 * 9 + 1] = {
+    #include "textures/crash_screen/crash_screen_font.ia1.inc.c"
 };
 
 
@@ -93,8 +84,7 @@ void crash_screen_draw_glyph(s32 x, s32 y, s32 glyph) {
     u32 rowMask;
     s32 i, j;
 
-    // TODO: output u32 for these textures and remove this ugly cast
-    data = &((u32*)gCrashScreenFont)[glyph / 5 * 7];
+    data = &gCrashScreenFont[glyph / 5 * 7];
     ptr = gCrashScreen.framebuffer + gCrashScreen.width * y + x;
 
     for (i = 0; i < 7; i++) {
@@ -287,7 +277,7 @@ void thread2_crash_screen(UNUSED void *arg) {
     }
 }
 
-void crash_screen_set_framebuffer(u16 *framebuffer, s16 width, s16 height) {
+void crash_screen_set_framebuffer(u16 *framebuffer, u16 width, u16 height) {
 #ifdef VERSION_EU
     gCrashScreen.framebuffer = framebuffer;
 #else

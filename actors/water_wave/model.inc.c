@@ -9,22 +9,22 @@ static const Vtx water_wave_seg4_vertex_04025318[] = {
 };
 
 // 0x04025358
-ALIGNED8 static const u8 water_wave_seg4_texture_04025358[] = {
+ALIGNED8 static const Texture water_wave_seg4_texture_04025358[] = {
 #include "actors/water_wave/water_wave_0.ia16.inc.c"
 };
 
 // 0x04025B58
-ALIGNED8 static const u8 water_wave_seg4_texture_04025B58[] = {
+ALIGNED8 static const Texture water_wave_seg4_texture_04025B58[] = {
 #include "actors/water_wave/water_wave_1.ia16.inc.c"
 };
 
 // 0x04026358
-ALIGNED8 static const u8 water_wave_seg4_texture_04026358[] = {
+ALIGNED8 static const Texture water_wave_seg4_texture_04026358[] = {
 #include "actors/water_wave/water_wave_2.ia16.inc.c"
 };
 
 // 0x04026B58
-ALIGNED8 static const u8 water_wave_seg4_texture_04026B58[] = {
+ALIGNED8 static const Texture water_wave_seg4_texture_04026B58[] = {
 #include "actors/water_wave/water_wave_3.ia16.inc.c"
 };
 

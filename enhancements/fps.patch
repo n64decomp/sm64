@@ -1,8 +1,8 @@
 diff --git a/src/game/game_init.c b/src/game/game_init.c
-index 0852a141..18c5e8fe 100644
+index b6334688..62ed106c 100644
 --- a/src/game/game_init.c
 +++ b/src/game/game_init.c
-@@ -56,6 +56,47 @@ struct DemoInput *gCurrDemoInput = NULL; // demo input sequence
+@@ -59,6 +59,47 @@ struct DemoInput *gCurrDemoInput = NULL; // demo input sequence
  u16 gDemoInputListID = 0;
  struct DemoInput gRecordedDemoInput = { 0 }; // possibly removed in EU. TODO: Check
  
@@ -50,7 +50,7 @@ index 0852a141..18c5e8fe 100644
  /**
   * Initializes the Reality Display Processor (RDP).
   * This function initializes settings such as texture filtering mode,
-@@ -614,5 +655,7 @@ void thread5_game_loop(UNUSED void *arg) {
+@@ -633,5 +674,7 @@ void thread5_game_loop(UNUSED void *arg) {
              // amount of free space remaining.
              print_text_fmt_int(180, 20, "BUF %d", gGfxPoolEnd - (u8 *) gDisplayListHead);
          }

@@ -13,27 +13,27 @@ static const Lights1 haunted_cage_seg5_lights_0500C270 = gdSPDefLights1(
 );
 
 // 0x0500C288
-ALIGNED8 static const u8 haunted_cage_seg5_texture_0500C288[] = {
+ALIGNED8 static const Texture haunted_cage_seg5_texture_0500C288[] = {
 #include "actors/haunted_cage/bbh_cage_floor.rgba16.inc.c"
 };
 
 // 0x0500CA88
-ALIGNED8 static const u8 haunted_cage_seg5_texture_0500CA88[] = {
+ALIGNED8 static const Texture haunted_cage_seg5_texture_0500CA88[] = {
 #include "actors/haunted_cage/bbh_cage_double_ornament.rgba16.inc.c"
 };
 
 // 0x0500D288
-ALIGNED8 static const u8 haunted_cage_seg5_texture_0500D288[] = {
+ALIGNED8 static const Texture haunted_cage_seg5_texture_0500D288[] = {
 #include "actors/haunted_cage/bbh_cage_ornament.rgba16.inc.c"
 };
 
 // 0x0500D688
-ALIGNED8 static const u8 haunted_cage_seg5_texture_0500D688[] = {
+ALIGNED8 static const Texture haunted_cage_seg5_texture_0500D688[] = {
 #include "actors/haunted_cage/bbh_cage_wooden_base.rgba16.inc.c"
 };
 
 // 0x0500DA88
-ALIGNED8 static const u8 haunted_cage_seg5_texture_0500DA88[] = {
+ALIGNED8 static const Texture haunted_cage_seg5_texture_0500DA88[] = {
 #include "actors/haunted_cage/bbh_cage_bars.rgba16.inc.c"
 };
 
@@ -41,7 +41,7 @@ ALIGNED8 static const u8 haunted_cage_seg5_texture_0500DA88[] = {
 // also could be some sort of shader mask from much earlier in development, considering
 // Big Boo's Haunt was a very very early level.
 // 0x0500E288
-ALIGNED8 static const u8 haunted_cage_seg5_texture_0500E288[] = {
+ALIGNED8 static const Texture haunted_cage_seg5_texture_0500E288[] = {
 #include "actors/haunted_cage/bbh_cage_garbage.rgba16.inc.c"
 };
 

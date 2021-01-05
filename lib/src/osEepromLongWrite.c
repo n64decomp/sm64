@@ -19,6 +19,7 @@ s32 osEepromLongWrite(OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes) {
         if (result != 0) {
             return result;
         }
+
         nbytes -= 8;
         address += 1;
         buffer += 8;

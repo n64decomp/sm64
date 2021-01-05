@@ -1,71 +1,89 @@
 #include "libultra_internal.h"
 #include "hardware.h"
 
+#ifdef VERSION_SH
+extern s32 D_SH_80000300; // Potentially a TV type
+#endif
+
 #ifndef VERSION_JP
 extern u32 osTvType;
 #endif
 
-OSViContext D_803348B0[2] = { 0 };
-OSViContext *D_80334910 = &D_803348B0[0];
-OSViContext *D_80334914 = &D_803348B0[1];
+OSViContext sViContexts[2] = { 0 };
+OSViContext *__osViCurr = &sViContexts[0];
+OSViContext *__osViNext = &sViContexts[1];
 #ifdef VERSION_EU
-u32 D_8033491C = 0x02E6D354;
-u32 D_80334918 = TV_TYPE_PAL;
-#else
-u32 D_80334918 = TV_TYPE_NTSC;
-u32 D_8033491C = 0x02E6D354;
+u32 osViClock = 0x02E6D354; // used for audio frequency calculations
+u32 sTvType = TV_TYPE_PAL;
+#elif !defined(VERSION_SH)
+u32 sTvType = TV_TYPE_NTSC;
+u32 osViClock = 0x02E6D354;
 #endif
 
 extern OSViMode D_80334990;
 extern OSViMode D_803349E0;
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 extern OSViMode D_80302FD0;
 #endif
 
 void __osViInit(void) {
 //#ifdef VERSION_JP
 #ifdef VERSION_US
-    D_80334918 = osTvType;
+    sTvType = osTvType;
 #endif
-    bzero(D_803348B0, sizeof(D_803348B0));
-    D_80334910 = &D_803348B0[0];
-    D_80334914 = &D_803348B0[1];
-    D_80334914->retraceCount = 1;
-    D_80334910->retraceCount = 1;
+    bzero(sViContexts, sizeof(sViContexts));
+    __osViCurr = &sViContexts[0];
+    __osViNext = &sViContexts[1];
+    __osViNext->retraceCount = 1;
+    __osViCurr->retraceCount = 1;
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU)
 
     if (osTvType == TV_TYPE_PAL) {
-        D_80334914->unk08 = &D_80334990;
-        D_8033491C = 0x02F5B2D2;
+        __osViNext->modep = &D_80334990;
+        osViClock = 0x02F5B2D2;
     } else if (osTvType == TV_TYPE_MPAL) {
-        D_80334914->unk08 = &D_803349E0;
-        D_8033491C = 0x02E6025C;
+        __osViNext->modep = &D_803349E0;
+        osViClock = 0x02E6025C;
     } else {
-        D_80334914->unk08 = &D_80302FD0;
-        D_8033491C = 0x02E6D354;
-    } 
+        __osViNext->modep = &D_80302FD0;
+        osViClock = 0x02E6D354;
+    }
+
+#elif defined(VERSION_SH)
+
+    __osViNext->buffer = (void *) 0x80000000;
+    __osViCurr->buffer = (void *) 0x80000000;
+    if (osTvType == TV_TYPE_PAL) {
+        __osViNext->modep = &D_80334990;
+    } else if (osTvType == TV_TYPE_MPAL) {
+        __osViNext->modep = &D_803349E0;
+    } else {
+        __osViNext->modep = &D_80302FD0;
+    }
 
 #else
+
 #ifdef VERSION_JP
-    if (D_80334918 != TV_TYPE_PAL)
+    if (sTvType != TV_TYPE_PAL)
 #else
-    if (D_80334918 == TV_TYPE_NTSC)
+    if (sTvType == TV_TYPE_NTSC)
 #endif
     {
-        D_80334914->unk08 = &D_80334990;
-        D_8033491C = 0x02E6D354;
+        __osViNext->modep = &D_80334990;
+        osViClock = 0x02E6D354;
     } else {
-        D_80334914->unk08 = &D_803349E0;
-#ifdef VERSION_JP
-        D_8033491C = 0x02F5B2D2;
-#else
-        D_8033491C = 0x02E6025C;
+        __osViNext->modep = &D_803349E0;
+#if defined(VERSION_JP)
+        osViClock = 0x02F5B2D2;
+#elif defined(VERSION_US)
+        osViClock = 0x02E6025C;
 #endif
     }
 #endif
-    D_80334914->unk00 = 32;
-    D_80334914->features = D_80334914->unk08->comRegs.ctrl;
+
+    __osViNext->unk00 = 0x20;
+    __osViNext->features = __osViNext->modep->comRegs.ctrl;
 #ifndef VERSION_JP
     while (HW_REG(VI_CURRENT_REG, u32) > 0xa) {
         ;

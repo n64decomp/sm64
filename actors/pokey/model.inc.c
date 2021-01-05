@@ -9,12 +9,12 @@ static const Vtx pokey_seg5_vertex_05011710[] = {
 };
 
 // 0x05011750
-ALIGNED8 static const u8 pokey_seg5_texture_05011750[] = {
+ALIGNED8 static const Texture pokey_seg5_texture_05011750[] = {
 #include "actors/pokey/pokey_face.rgba16.inc.c"
 };
 
 // 0x05011F50
-ALIGNED8 static const u8 pokey_seg5_texture_05011F50[] = {
+ALIGNED8 static const Texture pokey_seg5_texture_05011F50[] = {
 #include "actors/pokey/pokey_face_blink.rgba16.inc.c"
 };
 
@@ -71,7 +71,7 @@ static const Vtx pokey_seg5_vertex_05012838[] = {
 };
 
 // 0x05012878
-ALIGNED8 static const u8 pokey_seg5_texture_05012878[] = {
+ALIGNED8 static const Texture pokey_seg5_texture_05012878[] = {
 #include "actors/pokey/pokey_body.rgba16.inc.c"
 };
 

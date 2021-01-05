@@ -1,15 +1,13 @@
 // flame.inc.c
 
 void bhv_small_piranha_flame_loop(void) {
-    f32 sp2C;
-
     if ((u16)(o->oBehParams >> 16) == 0) {
         if (o->oTimer > 0) {
             obj_mark_for_deletion(o);
         } else {
-            sp2C = random_float() - 0.5f;
-            o->header.gfx.scale[1] = o->header.gfx.scale[2] * (1.0f + 0.7f * sp2C);
-            o->header.gfx.scale[0] = o->header.gfx.scale[2] * (0.9f - 0.5f * sp2C);
+            f32 rnd = random_float() - 0.5f;
+            o->header.gfx.scale[1] = o->header.gfx.scale[2] * (1.0f + 0.7f * rnd);
+            o->header.gfx.scale[0] = o->header.gfx.scale[2] * (0.9f - 0.5f * rnd);
 
             o->oAnimState = random_u16();
         }
@@ -24,17 +22,17 @@ void bhv_small_piranha_flame_loop(void) {
         spawn_object_with_scale(o, o->oSmallPiranhaFlameModel, bhvSmallPiranhaFlame,
                                 0.4f * o->header.gfx.scale[0]);
 
-        if (o->oTimer > o->oSmallPiranhaFlameUnk100) {
+        if (o->oTimer > o->oSmallPiranhaFlameNextFlameTimer) {
             spawn_object_relative_with_scale(1, 0, o->oGraphYOffset, 0, o->header.gfx.scale[0], o,
                                              o->oSmallPiranhaFlameModel, bhvFlyguyFlame);
-            o->oSmallPiranhaFlameUnk100 = random_linear_offset(8, 15);
+            o->oSmallPiranhaFlameNextFlameTimer = random_linear_offset(8, 15);
             o->oTimer = 0;
         }
 
         obj_check_attacks(&sPiranhaPlantFireHitbox, o->oAction);
-        o->oSmallPiranhaFlameUnk104 += o->oSmallPiranhaFlameStartSpeed;
+        o->oSmallPiranhaFlameSpeed += o->oSmallPiranhaFlameStartSpeed;
 
-        if (o->oSmallPiranhaFlameUnk104 > 1500.0f || (o->oMoveFlags & (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER))) {
+        if (o->oSmallPiranhaFlameSpeed > 1500.0f || (o->oMoveFlags & (OBJ_MOVE_HIT_WALL | OBJ_MOVE_MASK_IN_WATER))) {
             obj_die_if_health_non_positive();
         }
     }

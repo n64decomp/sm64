@@ -64,11 +64,11 @@ void water_ring_check_collection(f32 avgScale, struct Object *ringManager) {
                 if (ringSpawner->oWaterRingSpawnerRingsCollected < 6) {
                     spawn_orange_number(ringSpawner->oWaterRingSpawnerRingsCollected, 0, -40, 0);
 #ifdef VERSION_JP
-                    play_sound(SOUND_MENU_STAR_SOUND, gDefaultSoundArgs);
+                    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #else
                     play_sound(SOUND_MENU_COLLECT_SECRET
                                    + (((u8) ringSpawner->oWaterRingSpawnerRingsCollected - 1) << 16),
-                               gDefaultSoundArgs);
+                               gGlobalSoundSource);
 #endif
                 }
 

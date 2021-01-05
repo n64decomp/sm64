@@ -37,12 +37,12 @@ static const Lights1 capswitch_seg5_lights_05001C30 = gdSPDefLights1(
 );
 
 // 0x05001C48
-ALIGNED8 static const u8 capswitch_seg5_texture_05001C48[] = {
+ALIGNED8 static const Texture capswitch_seg5_texture_05001C48[] = {
 #include "actors/capswitch/cap_switch_head.ia16.inc.c"
 };
 
 // 0x05002C48
-ALIGNED8 static const u8 capswitch_seg5_texture_05002C48[] = {
+ALIGNED8 static const Texture capswitch_seg5_texture_05002C48[] = {
 #include "actors/capswitch/cap_switch_base.rgba16.inc.c"
 };
 

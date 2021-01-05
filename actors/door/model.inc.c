@@ -13,72 +13,72 @@ static const Lights1 door_seg3_lights_03009CF8 = gdSPDefLights1(
 );
 
 // 0x03009D10
-ALIGNED8 static const u8 door_seg3_texture_03009D10[] = {
+ALIGNED8 static const Texture door_seg3_texture_03009D10[] = {
 #include "actors/door/polished_wooden_door.rgba16.inc.c"
 };
 
 // 0x0300AD10
-ALIGNED8 static const u8 door_seg3_texture_0300AD10[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300AD10[] = {
 #include "actors/door/polished_wooden_door_overlay.rgba16.inc.c"
 };
 
 // 0x0300BD10
-ALIGNED8 static const u8 door_seg3_texture_0300BD10[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300BD10[] = {
 #include "actors/door/rough_wooden_door.rgba16.inc.c"
 };
 
 // 0x0300CD10
-ALIGNED8 static const u8 door_seg3_texture_0300CD10[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300CD10[] = {
 #include "actors/door/rough_wooden_door_overlay.rgba16.inc.c"
 };
 
 // 0x0300D510
-ALIGNED8 static const u8 door_seg3_texture_0300D510[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300D510[] = {
 #include "actors/door/metal_door.rgba16.inc.c"
 };
 
 // 0x0300E510
-ALIGNED8 static const u8 door_seg3_texture_0300E510[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300E510[] = {
 #include "actors/door/metal_door_overlay.rgba16.inc.c"
 };
 
 // 0x0300ED10
-ALIGNED8 static const u8 door_seg3_texture_0300ED10[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300ED10[] = {
 #include "actors/door/hmc_mural_door.rgba16.inc.c"
 };
 
 // 0x0300FD10
-ALIGNED8 static const u8 door_seg3_texture_0300FD10[] = {
+ALIGNED8 static const Texture door_seg3_texture_0300FD10[] = {
 #include "actors/door/hmc_mural_door_overlay.rgba16.inc.c"
 };
 
 // 0x03010510
-ALIGNED8 static const u8 door_seg3_texture_03010510[] = {
+ALIGNED8 static const Texture door_seg3_texture_03010510[] = {
 #include "actors/door/bbh_door.rgba16.inc.c"
 };
 
 // 0x03011510
-ALIGNED8 static const u8 door_seg3_texture_03011510[] = {
+ALIGNED8 static const Texture door_seg3_texture_03011510[] = {
 #include "actors/door/bbh_door_overlay.rgba16.inc.c"
 };
 
 // 0x03011D10
-ALIGNED8 static const u8 door_seg3_texture_03011D10[] = {
+ALIGNED8 static const Texture door_seg3_texture_03011D10[] = {
 #include "actors/door/zero_star_door_sign.rgba16.inc.c"
 };
 
 // 0x03012510
-ALIGNED8 static const u8 door_seg3_texture_03012510[] = {
+ALIGNED8 static const Texture door_seg3_texture_03012510[] = {
 #include "actors/door/one_star_door_sign.rgba16.inc.c"
 };
 
 // 0x03012D10
-ALIGNED8 static const u8 door_seg3_texture_03012D10[] = {
+ALIGNED8 static const Texture door_seg3_texture_03012D10[] = {
 #include "actors/door/three_star_door_sign.rgba16.inc.c"
 };
 
 // 0x03013510
-ALIGNED8 static const u8 door_seg3_texture_03013510[] = {
+ALIGNED8 static const Texture door_seg3_texture_03013510[] = {
 #include "actors/door/door_lock.rgba16.inc.c"
 };
 

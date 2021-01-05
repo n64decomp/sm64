@@ -1,6 +1,6 @@
 diff --git a/asm/crash.s b/asm/crash.s
 new file mode 100644
-index 00000000..7c272050
+index 00000000..0b2a5574
 --- /dev/null
 +++ b/asm/crash.s
 @@ -0,0 +1,153 @@
@@ -158,10 +158,10 @@ index 00000000..7c272050
 +    jr    $k0 # run the original handler
 +     nop
 diff --git a/lib/asm/__osExceptionPreamble.s b/lib/asm/__osExceptionPreamble.s
-index 865273d9..f9ce7596 100644
+index e14928ce..4d12129e 100644
 --- a/lib/asm/__osExceptionPreamble.s
 +++ b/lib/asm/__osExceptionPreamble.s
-@@ -15,8 +15,8 @@
+@@ -18,8 +18,8 @@
  .endif
  
  glabel __osExceptionPreamble
@@ -173,7 +173,7 @@ index 865273d9..f9ce7596 100644
       nop
  
 diff --git a/sm64.ld b/sm64.ld
-index e6f5c942..c0feb343
+index f80f5b4d..569344bc 100755
 --- a/sm64.ld
 +++ b/sm64.ld
 @@ -116,6 +116,7 @@ SECTIONS

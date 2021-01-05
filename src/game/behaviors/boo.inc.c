@@ -777,7 +777,7 @@ void bhv_merry_go_round_boo_manager_loop(void) {
 #ifndef VERSION_JP
                     play_puzzle_jingle();
 #else
-                    play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gDefaultSoundArgs);
+                    play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
 #endif
                 }
             }

@@ -25,27 +25,27 @@ UNUSED static const Lights1 bookend_lights_unused4 = gdSPDefLights1(
 );
 
 // 0x05000060
-ALIGNED8 static const u8 bookend_seg5_texture_05000060[] = {
+ALIGNED8 static const Texture bookend_seg5_texture_05000060[] = {
 #include "actors/bookend/bookend_spine.rgba16.inc.c"
 };
 
 // 0x05000460
-ALIGNED8 static const u8 bookend_seg5_texture_05000460[] = {
+ALIGNED8 static const Texture bookend_seg5_texture_05000460[] = {
 #include "actors/bookend/bookend_tooth.rgba16.inc.c"
 };
 
 // 0x05000860
-ALIGNED8 static const u8 bookend_seg5_texture_05000860[] = {
+ALIGNED8 static const Texture bookend_seg5_texture_05000860[] = {
 #include "actors/bookend/bookend_mouth.rgba16.inc.c"
 };
 
 // 0x05000C60
-ALIGNED8 static const u8 bookend_seg5_texture_05000C60[] = {
+ALIGNED8 static const Texture bookend_seg5_texture_05000C60[] = {
 #include "actors/bookend/bookend_pages.rgba16.inc.c"
 };
 
 // 0x05001060
-ALIGNED8 static const u8 bookend_seg5_texture_05001060[] = {
+ALIGNED8 static const Texture bookend_seg5_texture_05001060[] = {
 #include "actors/bookend/bookend_cover.rgba16.inc.c"
 };
 

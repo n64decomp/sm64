@@ -19,7 +19,7 @@ static const Lights1 koopa_flag_seg6_lights_06000030 = gdSPDefLights1(
 );
 
 // 0x06000048
-ALIGNED8 static const u8 koopa_flag_seg6_texture_06000048[] = {
+ALIGNED8 static const Texture koopa_flag_seg6_texture_06000048[] = {
 #include "actors/koopa_flag/koopa_flag_banner.rgba16.inc.c"
 };
 

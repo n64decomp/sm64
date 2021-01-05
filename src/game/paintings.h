@@ -93,7 +93,7 @@ struct Painting
     const s16 *const *textureMaps;
 
     // Texture data
-    const u8 *const *textureArray;
+    const Texture *const *textureArray;
     s16 textureWidth;
     s16 textureHeight;
 

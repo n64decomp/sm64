@@ -3,16 +3,28 @@
 
 #include "buffers/buffers.h"
 #include "main.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 #ifdef VERSION_SH
 
-static s8 D_SH_8030CCB4;
-static s32 sUnusedDisableRumble;
-static s32 sRumblePakThreadActive;
-static s32 sRumblePakActive;
-static s32 sRumblePakErrorCount;
-s32 gRumblePakTimer;
+OSThread gRumblePakThread;
+
+s32 gRumblePakPfs; // Actually an OSPfs but we don't have that header yet
+
+s8 D_SH_8031D8F8[0x60];
+
+OSMesg gRumblePakSchedulerMesgBuf[1];
+OSMesgQueue gRumblePakSchedulerMesgQueue;
+OSMesg gRumbleThreadVIMesgBuf[1];
+OSMesgQueue gRumbleThreadVIMesgQueue;
+
+struct RumbleData gRumbleDataQueue[3];
+struct StructSH8031D9B0 gCurrRumbleSettings;
+
+s32 sRumblePakThreadActive = 0;
+s32 sRumblePakActive = 0;
+s32 sRumblePakErrorCount = 0;
+s32 gRumblePakTimer = 0;
 
 // These void* are OSPfs* but we don't have that header
 extern s32 osMotorStop(void *);
@@ -66,7 +78,7 @@ static void stop_rumble(void) {
 }
 
 static void update_rumble_pak(void) {
-    if (D_SH_8030CCB4 > 0) {
+    if (gResetTimer > 0) {
         stop_rumble();
         return;
     }
@@ -98,7 +110,7 @@ static void update_rumble_pak(void) {
 
         if (gCurrRumbleSettings.unk0A >= 5) {
             start_rumble();
-        } else if ((gCurrRumbleSettings.unk0A >= 2) && (gGlobalTimer % gCurrRumbleSettings.unk0C == 0)) {
+        } else if ((gCurrRumbleSettings.unk0A >= 2) && (gNumVblanks % gCurrRumbleSettings.unk0C == 0)) {
             start_rumble();
         } else {
             stop_rumble();
@@ -127,7 +139,7 @@ static void update_rumble_data_queue(void) {
 }
 
 void queue_rumble_data(s16 a0, s16 a1) {
-    if (sUnusedDisableRumble) {
+    if (gCurrDemoInput != NULL) {
         return;
     }
 
@@ -167,7 +179,7 @@ u8 is_rumble_finished_and_queue_empty(void) {
 }
 
 void reset_rumble_timers(void) {
-    if (sUnusedDisableRumble) {
+    if (gCurrDemoInput != NULL) {
         return;
     }
 
@@ -183,7 +195,7 @@ void reset_rumble_timers(void) {
 }
 
 void reset_rumble_timers_2(s32 a0) {
-    if (sUnusedDisableRumble) {
+    if (gCurrDemoInput != NULL) {
         return;
     }
 
@@ -217,7 +229,7 @@ void reset_rumble_timers_2(s32 a0) {
 }
 
 void func_sh_8024CA04(void) {
-    if (sUnusedDisableRumble) {
+    if (gCurrDemoInput != NULL) {
         return;
     }
 
@@ -243,7 +255,7 @@ static void thread6_rumble_loop(UNUSED void *a0) {
             if (sRumblePakErrorCount >= 30) {
                 sRumblePakActive = FALSE;
             }
-        } else if (gGlobalTimer % 60 == 0) {
+        } else if (gNumVblanks % 60 == 0) {
             sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) < 1;
             sRumblePakErrorCount = 0;
         }

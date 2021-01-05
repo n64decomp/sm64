@@ -1,6 +1,6 @@
 // Impact Smoke
 
-// TODO: Are these seperate textures or unified 64x64 ones?
+// TODO: These 64x64 textures are referenced as two different texture addresses in the DLs
 
 // 0x0605AA28
 ALIGNED8 static const u8 impact_smoke_seg6_texture_0605AA28[] = {
@@ -71,7 +71,7 @@ const Gfx impact_smoke_seg6_dl_06062B38[] = {
     gsDPLoadTextureBlock(impact_smoke_seg6_texture_0605AA28, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(impact_smoke_seg6_vertex_06062A28, 8, 0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AD8),
-    gsDPLoadTextureBlock(impact_smoke_seg6_texture_0605AA28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsDPLoadTextureBlock((u8*)impact_smoke_seg6_texture_0605AA28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AF0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062B08),
     gsSPEndDisplayList(),
@@ -83,7 +83,7 @@ const Gfx impact_smoke_seg6_dl_06062BD8[] = {
     gsDPLoadTextureBlock(impact_smoke_seg6_texture_0605CA28, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(impact_smoke_seg6_vertex_06062A28, 8, 0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AD8),
-    gsDPLoadTextureBlock(impact_smoke_seg6_texture_0605CA28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsDPLoadTextureBlock((u8*)impact_smoke_seg6_texture_0605CA28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AF0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062B08),
     gsSPEndDisplayList(),
@@ -95,7 +95,7 @@ const Gfx impact_smoke_seg6_dl_06062C78[] = {
     gsDPLoadTextureBlock(impact_smoke_seg6_texture_0605EA28, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(impact_smoke_seg6_vertex_06062A28, 8, 0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AD8),
-    gsDPLoadTextureBlock(impact_smoke_seg6_texture_0605EA28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsDPLoadTextureBlock((u8*)impact_smoke_seg6_texture_0605EA28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AF0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062B08),
     gsSPEndDisplayList(),
@@ -107,7 +107,7 @@ const Gfx impact_smoke_seg6_dl_06062D18[] = {
     gsDPLoadTextureBlock(impact_smoke_seg6_texture_06060A28, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(impact_smoke_seg6_vertex_06062A28, 8, 0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AD8),
-    gsDPLoadTextureBlock(impact_smoke_seg6_texture_06060A28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsDPLoadTextureBlock((u8*)impact_smoke_seg6_texture_06060A28 + 0x1000, G_IM_FMT_IA, G_IM_SIZ_16b, 64, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPDisplayList(impact_smoke_seg6_dl_06062AF0),
     gsSPDisplayList(impact_smoke_seg6_dl_06062B08),
     gsSPEndDisplayList(),
