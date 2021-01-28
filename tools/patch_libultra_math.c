@@ -79,7 +79,7 @@ struct ar_header {
 #define FLAGS_MIPS3 0x20
 #define FLAGS_O32ABI 0x100000 
 int main(int argc, char **argv) {
-    FILE *f = fopen(argv[1], "r+");
+    FILE *f = fopen(argv[1], "r+b");
 
     if (f == NULL) {
         printf("Failed to open file! %s\n", argv[1]);
