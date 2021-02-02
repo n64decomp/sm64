@@ -486,6 +486,8 @@ s32 act_triple_jump(struct MarioState *m) {
         return set_mario_action(m, ACT_GROUND_POUND, 0);
     }
 
+    set_mario_action(m, ACT_TWIRLING, 0);
+    return FALSE;
 #ifndef VERSION_JP
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
 #else
@@ -917,7 +919,7 @@ s32 act_ground_pound(struct MarioState *m) {
 
     play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
 
-    if (m->actionState == 0) {
+    //if (m->actionState == 0) {
         if (m->actionTimer < 10) {
             yOffset = 20 - 2 * m->actionTimer;
             if (m->pos[1] + yOffset + 160.0f < m->ceilHeight) {
@@ -925,7 +927,7 @@ s32 act_ground_pound(struct MarioState *m) {
                 m->peakHeight = m->pos[1];
                 vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
             }
-        }
+       // }
 
         m->vel[1] = -50.0f;
         mario_set_forward_vel(m, 0.0f);

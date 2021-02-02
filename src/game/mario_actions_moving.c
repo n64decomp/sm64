@@ -1460,7 +1460,7 @@ s32 act_crouch_slide(struct MarioState *m) {
         m->actionTimer++;
         if (m->input & INPUT_A_PRESSED) {
             if (m->forwardVel > 10.0f) {
-                return set_jumping_action(m, ACT_LONG_JUMP, 0);
+                //return set_jumping_action(m, ACT_LONG_JUMP, 0);
             }
         }
     }
@@ -1900,7 +1900,7 @@ s32 act_backflip_land(struct MarioState *m) {
     }
 
     if (common_landing_cancels(m, &sBackflipLandAction, set_jumping_action)) {
-        return TRUE;
+        return FALSE;
     }
 
     if (!(m->input & INPUT_NONZERO_ANALOG)) {

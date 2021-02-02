@@ -935,7 +935,7 @@ s32 update_8_directions_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     sAreaYaw = camYaw;
     calc_y_to_curr_floor(&posY, 1.f, 200.f, &focusY, 0.9f, 200.f);
     focus_on_mario(focus, pos, posY + yOff, focusY + yOff, sLakituDist + baseDist, pitch, camYaw);
-    pan_ahead_of_player(c);
+    //pan_ahead_of_player(c);
     if (gCurrLevelArea == AREA_DDD_SUB) {
         camYaw = clamp_positions_and_find_yaw(pos, focus, 6839.f, 995.f, 5994.f, -3945.f);
     }
@@ -1162,7 +1162,7 @@ void mode_radial_camera(struct Camera *c) {
         pos[1] += 500.f;
     }
     set_camera_height(c, pos[1]);
-    pan_ahead_of_player(c);
+    //pan_ahead_of_player(c);
 }
 
 /**
@@ -1235,7 +1235,7 @@ void mode_outward_radial_camera(struct Camera *c) {
         pos[1] += 500.f;
     }
     set_camera_height(c, pos[1]);
-    pan_ahead_of_player(c);
+    //pan_ahead_of_player(c);
 }
 
 /**
@@ -1739,7 +1739,7 @@ void mode_fixed_camera(struct Camera *c) {
     }
     c->nextYaw = update_fixed_camera(c, c->focus, c->pos);
     c->yaw = c->nextYaw;
-    pan_ahead_of_player(c);
+    //pan_ahead_of_player(c);
     vec3f_set(sCastleEntranceOffset, 0.f, 0.f, 0.f);
 }
 
@@ -1937,7 +1937,7 @@ s32 mode_behind_mario(struct Camera *c) {
         distCamToFocus = 800.f;
         vec3f_set_dist_and_angle(c->focus, c->pos, distCamToFocus, camPitch, camYaw);
     }
-    pan_ahead_of_player(c);
+    //pan_ahead_of_player(c);
 
     return yaw;
 }
@@ -2382,7 +2382,7 @@ s16 update_default_camera(struct Camera *c) {
 void mode_default_camera(struct Camera *c) {
     set_fov_function(CAM_FOV_DEFAULT);
     c->nextYaw = update_default_camera(c);
-    pan_ahead_of_player(c);
+    //pan_ahead_of_player(c);
 }
 
 /**

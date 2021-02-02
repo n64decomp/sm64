@@ -1,136 +1,754 @@
 // Mario
 
+#define	SCALE	4
+#define ShapeColor(r,g,b) gdSPDefLights1(r/4,g/4,b/4,r,g,b,0x28,0x28,0x28)
+#define ShapeColor_mario(R,G,B) {{R/SCALE ,G/SCALE ,B/SCALE ,0 ,R/SCALE ,G/SCALE ,B/SCALE ,0 },{ R, G, B, 0, R, G, B, 0, 0x28, 0x28, 0x28, 0} }
+
+static Lights1 light_mario_near[]={
+	ShapeColor_mario(255,255,255), // white 1 (unused)
+	ShapeColor_mario(255,255,255), // white 2
+	ShapeColor_mario(255,  0,  0), // red
+	ShapeColor_mario(114, 28, 14), // brown 1
+	ShapeColor_mario(  0,  0,255), // blue
+	ShapeColor_mario(204,180,123), // beige
+	ShapeColor_mario(  0,  0,  0), // black
+	ShapeColor_mario(131, 53, 22), // brown 2
+	ShapeColor_mario(255,184,  0), // yellow (unused)
+};
+
+static Lights1 light_mario_head[] = {
+	ShapeColor_mario(254, 22,  2), // red
+	ShapeColor_mario(254,193,121), // beige
+	ShapeColor_mario(108,  6,  0), // brown
+};
+
 // 0x04000000 # solid color blue - butt, left thigh, right thigh - all poly types
-static const Lights1 mario_blue_lights_group = gdSPDefLights1(
-    0x00, 0x00, 0x7f,
-    0x00, 0x00, 0xff, 0x28, 0x28, 0x28
+/*static const Lights1 mario_blue_lights_group = gdSPDefLights1(
+    0x00, 0x00,255/4,
+    0x00, 0x00,  255, 0x28, 0x28, 0x28
 );
 
 // 0x04000018 # solid color red - left & right arm, torso (tshirt part), caps - all poly types
 static const Lights1 mario_red_lights_group = gdSPDefLights1(
-    0x7f, 0x00, 0x00,
-    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+   255/4, 0x00, 0x00,
+     255, 0x00, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x04000030 # solid color white - metal butt & left thigh - normal left & right hand closed & open (with cap too) and all wings - all poly types
 static const Lights1 mario_white_lights_group = gdSPDefLights1(
-    0x7f, 0x7f, 0x7f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+   255/4,255/4,255/4,
+     255,  255,  255, 0x28, 0x28, 0x28
 );
 
 // 0x04000048 # solid color brown 1 - foot - all poly types
 static const Lights1 mario_brown1_lights_group = gdSPDefLights1(
-    0x39, 0x0e, 0x07,
-    0x72, 0x1c, 0x0e, 0x28, 0x28, 0x28
+   114/4, 28/4, 14/4,
+     114,   28,   14, 0x28, 0x28, 0x28
 );
 
 // 0x04000060 # solid color beige skin - face (cap on and off dls) - all poly types
 static const Lights1 mario_beige_lights_group = gdSPDefLights1(
-    0x7f, 0x60, 0x3c,
-    0xfe, 0xc1, 0x79, 0x28, 0x28, 0x28
+   254/4,193/4,121/4,
+     254,  193,  121, 0x28, 0x28, 0x28
 );
 
 // 0x04000078  # solid color brown 2 - hair - all poly types
 static const Lights1 mario_brown2_lights_group = gdSPDefLights1(
-    0x39, 0x03, 0x00,
+   108/4,  6/4,    0,
+     108,    6,    0, 0x28, 0x28, 0x28
+);*/
+
+// Unreferenced light group
+UNUSED static const Lights1 mario_lights_unused1 = gdSPDefLights1(
+    0x3f, 0x30, 0x1e,
+    0xfe, 0xc1, 0x79, 0x28, 0x28, 0x28
+);
+
+// Unreferenced light group
+UNUSED static const Lights1 mario_lights_unused2 = gdSPDefLights1(
+    0x1c, 0x01, 0x00,
     0x73, 0x06, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x04000090
-ALIGNED8 static const Texture mario_texture_metal[] = {
+ALIGNED8 static const u8 mario_texture_metal[] = {
 #include "actors/mario/mario_metal.rgba16.inc.c"
 };
 
+//Buttons
 // 0x04001090
-ALIGNED8 static const Texture mario_texture_yellow_button[] = {
-#include "actors/mario/mario_overalls_button.rgba16.inc.c"
+static unsigned short m_button_txt[] = {
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xfffc,  0xfff0,  0xff81,  0xff41,  0xff41,  0xff41,  0xff41,  0xff01,  0xff41,  0xfff0,  0xfffc,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xff41,  0xff41,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff41,  0xff81,  0xff41,  0xff41,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xfff0,  0xffc1,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff41,  0xff81,  0xfff0,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff41,  0xff41,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xff81,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff01,  0xff41,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff41,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff81,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffc,  0xff41,  0xff41,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff41,  0xff41,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffc,  0xff01,  0xff41,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff41,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfff0,  0xff01,  0xff41,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffc,  0xfec1,  0xfec1,  0xff41,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff41,  0xff43,  0xfffc,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffc,  0xfe41,  0xfe81,  0xff01,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff41,  0xff01,  0xfffc,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffa,  0xfe01,  0xfe01,  0xfec1,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff01,  0xff01,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffa,  0xf581,  0xed41,  0xfe01,  0xff01,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xff01,  0xff01,  0xfffc,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffa,  0xed41,  0xe4c1,  0xe541,  0xfe81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff81,  0xfec1,  0xfec1,  0xfffc,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffc,  0xed41,  0xe4c1,  0xe501,  0xf5c1,  0xff01,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff01,  0xf5c1,  0xfe41,  0xfffc,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffc,  0xf601,  0xe4c1,  0xdcc1,  0xd4c1,  0xe581,  0xff41,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff01,  0xedc1,  0xe541,  0xfe47,  0xfffc,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfff0,  0xed81,  0xe4c1,  0xd481,  0xcc81,  0xe581,  0xff01,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff41,  0xf641,  0xe581,  0xdd01,  0xe581,  0xffe8,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffc,  0xed81,  0xed01,  0xdcc1,  0xcc41,  0xc441,  0xd501,  0xee41,  0xff81,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xfec1,  0xe5c1,  0xd501,  0xd481,  0xdcc1,  0xedc1,  0xfff8,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffc,  0xf601,  0xed01,  0xed01,  0xdcc1,  0xc401,  0xbc01,  0xcc81,  0xdd41,  0xf641,  0xff41,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xffc1,  0xff41,  0xf681,  0xe5c1,  0xdd81,  0xd501,  0xccc1,  0xcc81,  0xd4c1,  0xe501,  0xfe45,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xfe01,  0xed01,  0xed01,  0xdc81,  0xc401,  0xbc01,  0xbc01,  0xc441,  0xccc1,  0xd501,  0xdd41,  0xdd81,  0xdd41,  0xd501,  0xccc1,  0xc441,  0xbc01,  0xbc41,  0xc441,  0xcc81,  0xdcc1,  0xe501,  0xfe01,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xf581,  0xed01,  0xed01,  0xdcc1,  0xcc41,  0xc401,  0xbbc1,  0xb3c1,  0xb3c1,  0xbbc1,  0xbc01,  0xbbc1,  0xbbc1,  0xbc01,  0xbc01,  0xc441,  0xd481,  0xdd01,  0xe501,  0xed41,  0xf581,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xf601,  0xed01,  0xed01,  0xed01,  0xe501,  0xdcc1,  0xd481,  0xcc41,  0xc441,  0xc441,  0xc441,  0xc441,  0xcc81,  0xd4c1,  0xdd01,  0xe541,  0xed41,  0xf541,  0xf541,  0xf501,  0xfe01,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xf601,  0xf581,  0xed01,  0xed01,  0xed01,  0xed01,  0xe501,  0xe501,  0xe501,  0xe501,  0xed41,  0xed41,  0xf581,  0xf581,  0xfd81,  0xfd81,  0xf541,  0xfdc1,  0xfe01,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xfff0,  0xf601,  0xe501,  0xed01,  0xed01,  0xed01,  0xed41,  0xf541,  0xf541,  0xf541,  0xf581,  0xfd81,  0xf541,  0xf541,  0xf541,  0xfe41,  0xfff0,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfff0,  0xf601,  0xed41,  0xed41,  0xed01,  0xed01,  0xed01,  0xed01,  0xed01,  0xed01,  0xf501,  0xf581,  0xf581,  0xfe01,  0xfff0,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xfffc,  0xfff0,  0xf601,  0xed41,  0xf581,  0xf581,  0xf581,  0xf581,  0xfe01,  0xfff0,  0xfffc,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffc,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
 };
 
+//M emblem
 // 0x04001890
-ALIGNED8 static const Texture mario_texture_m_logo[] = {
-#include "actors/mario/mario_logo.rgba16.inc.c"
+static unsigned short m_mark_txt[] = {
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xfef7,  0xfdf1,  0xf52b,  0xffff,  0xffff,  0xffff,  0xfe31,  0xfd6d,  0xfd6b,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xf801,  0xf801,  0xf801,  0xfbe1,  0xffff,  0xff7d,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xfe31,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xfb19,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xf845,  0xf801,  0xf801,  0xf801,  0xf801,  0xf739,  0xf885,  0xf801,  0xf801,  0xf801,  0xf801,  0xfdaf,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfad9,  0xf801,  0xf801,  0xfa11,  0xf9d1,  0xf801,  0xf801,  0xf801,  0xf801,  0xfca7,  0xf801,  0xf801,  0xf801,  0xfb9d,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xf801,  0xf801,  0xf801,  0xfc21,  0xffff,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xfd6b,  0xf801,  0xf801,  0xf801,  0xfe75,  0xffff,  0xf801,  0xf801,  0xf801,  0xfd29,  0xffff,  0xfa95,  0xf801,  0xf801,  0xf801,  0xf94b,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xf887,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xff7d,  0xfce7,  0xfca5,  0xffff,  0xffff,  0xfef7,  0xf801,  0xf801,  0xf801,  0xf801,  0xff39,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xf801,  0xf801,  0xf801,  0xf887,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xf801,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xfa55,  0xf801,  0xf801,  0xf801,  0xfc23,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfa13,  0xf801,  0xf801,  0xf801,  0xf801,  0xfbe1,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xf801,  0xf801,  0xf801,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfeb7,  0xf801,  0xf801,  0xf801,  0xfb9f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffbd,  0xfb9f,  0xf803,  0xf801,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xf801,  0xfa13,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffbf,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
 };
 
+//Sideburns
 // 0x04002090
-ALIGNED8 static const Texture mario_texture_hair_sideburn[] = {
-#include "actors/mario/mario_sideburn.rgba16.inc.c"
+static unsigned short m_momi_txt[] = {
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x9081,  0x9081,  0x8881,  0x8081,  0x7881,  0x7881,  0x7081,  0x80c1,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xc203,  0x98c1,  0x98c1,  0x90c1,  0x8081,  0x7881,  0x7081,  0x6841,  0x6841,  0x6041,  0x5801,  0x6001,  0x6001,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xa0c1,  0xa0c1,  0x98c1,  0x90c1,  0x8081,  0x7881,  0x7081,  0x7041,  0x6841,  0x6841,  0x6041,  0x6001,  0x6841,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x98c1,  0xa0c1,  0x98c1,  0x88c1,  0x8081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6041,  0x5801,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xb141,  0xa0c1,  0x98c1,  0x90c1,  0x8881,  0x7881,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6041,  0x6001,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xb9c3,  0x98c1,  0x98c1,  0x90c1,  0x8881,  0x7881,  0x7881,  0x7081,  0x7081,  0x6841,  0x6841,  0x6041,  0x6001,  0x7881,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xb9c3,  0x98c1,  0x98c1,  0x90c1,  0x88c1,  0x8081,  0x7881,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6041,  0x5801,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x98c1,  0xa101,  0xa101,  0xb141,  0xfffe,  0xb9c3,  0xa0c1,  0x98c1,  0x98c1,  0x90c1,  0x88c1,  0x8081,  0x7881,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xa101,  0x90c1,  0x98c1,  0xa0c1,  0xa0c1,  0xa0c1,  0x98c1,  0x98c1,  0x98c1,  0x98c1,  0x90c1,  0x8881,  0x8081,  0x7881,  0x7081,  0x7081,  0x7081,  0x7041,  0x6841,  0x6841,  0x6041,  0x6001,  0x7881,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xa943,  0x8881,  0x98c1,  0x98c1,  0xa0c1,  0xa0c1,  0xa0c1,  0x98c1,  0x98c1,  0x90c1,  0x88c1,  0x8881,  0x8081,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6041,  0x5801,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x8081,  0x8081,  0x8881,  0x90c1,  0x90c1,  0x90c1,  0x90c1,  0x90c1,  0x88c1,  0x8881,  0x8081,  0x7881,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6841,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x7881,  0x7841,  0x8081,  0x8081,  0x8881,  0x8881,  0x8081,  0x8081,  0x7881,  0x7881,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x5801,  0x7881,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x9103,  0x7041,  0x7081,  0x7881,  0x7881,  0x7881,  0x7881,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x8081,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x6881,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x5801,  0x8881,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0x8081,  0x98c1,  0xa101,  0xa0c1,  0x8881,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x6881,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0x6041,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0x6041,  0x7881,  0x98c1,  0x98c1,  0x98c1,  0x8881,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0x5801,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0x6841,  0x6041,  0x7041,  0x8081,  0x8081,  0x8081,  0x7881,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x7041,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0x5801,  0x7041,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0x6041,  0x6041,  0x6841,  0x6841,  0x6841,  0x7041,  0x7081,  0x7081,  0x7081,  0x7081,  0x7081,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0x6041,  0x5801,  0x6841,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0x6841,  0x6041,  0x6041,  0x6041,  0x6041,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6001,  0x6041,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0x5801,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6841,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x5801,  0x6041,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0x6041,  0x5801,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6001,  0x5801,  0x8883,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0x7041,  0x5001,  0x5841,  0x5841,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6041,  0x6001,  0x5801,  0x6841,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x88c3,  0x6041,  0x5001,  0x5801,  0x5801,  0x6001,  0x6001,  0x6001,  0x6001,  0x5801,  0x5801,  0x5801,  0x6841,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x88c3,  0x7081,  0x6041,  0x6841,  0x6841,  0x6841,  0x8083,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
 };
 
+//Moustache
 // 0x04002890
-ALIGNED8 static const Texture mario_texture_mustache[] = {
-#include "actors/mario/mario_mustache.rgba16.inc.c"
+static unsigned short m_hige_txt[] = {
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0001,  0x0001,  0x0001,  0x0001,  0x0001,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
+    0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  0x0000,  
 };
 
 // 0x04003090
-ALIGNED8 static const Texture mario_texture_eyes_front[] = {
-#include "actors/mario/mario_eyes_center.rgba16.inc.c"
+static unsigned short meye1_txt[] = {
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0x0802,  0x0802,  0x0802,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0x0802,  0x0802,  0x0802,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0x0802,  0x0802,  0x1887,  0x0001,  0x0803,  0x0801,  0x1043,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0x0843,  0x0801,  0x0803,  0x0001,  0x1887,  0x0802,  0x0802,  0xfffe,  0xfffe,  
+    0xfffe,  0x0802,  0x0802,  0x0843,  0x0803,  0x0803,  0x0803,  0x0803,  0x0843,  0x0803,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0x0801,  0x0843,  0x0801,  0x0803,  0x0801,  0x0803,  0x1045,  0x0802,  0x0802,  0xfffe,  
+    0xfffe,  0x0802,  0x294b,  0x0001,  0x41cf,  0x0802,  0x0802,  0x0802,  0x318d,  0x0001,  0x20c9,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x1885,  0x0801,  0x398f,  0x0802,  0x0802,  0x0802,  0x41cf,  0x0001,  0x398f,  0x0802,  0xfffe,  
+    0xfffe,  0x0802,  0x0803,  0x0802,  0x0802,  0x0802,  0xfffe,  0x0802,  0x0802,  0x0802,  0x0803,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x20c7,  0x0802,  0x0802,  0x0802,  0xfffe,  0x0802,  0x0802,  0x0802,  0x1887,  0x0802,  0xfffe,  
+    0xfffe,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x0802,  0x0802,  0x0802,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xf7ff,  0xf7bf,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xefbf,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xbeff,  0x3c3d,  0x33fb,  0xae7f,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xd73e,  0x447d,  0x2bfb,  0x95ff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xcf3f,  0x2bbb,  0x1b79,  0x1b7b,  0x23bb,  0xc6fe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xefbe,  0x447d,  0x1b7b,  0x1b7b,  0x1339,  0x9e3f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0x5cff,  0x1b39,  0x23bb,  0x2337,  0x12f7,  0x4cbf,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x85bf,  0x12f7,  0x1b35,  0x23bb,  0x1b7b,  0x33fb,  0xe7bf,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xdf7f,  0x2bbb,  0x23bb,  0x1af5,  0x0093,  0x0053,  0x1ab1,  0xd73e,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xf7fe,  0x3bf7,  0x00d9,  0x004b,  0x126d,  0x23bb,  0x1b79,  0xae7f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0x9e3f,  0x1b7b,  0x23bb,  0x091d,  0x0001,  0x0001,  0x000b,  0x8dbf,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xc6fe,  0x011d,  0x0001,  0x0001,  0x004f,  0x1b37,  0x1b7b,  0x6d3f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0x7d7f,  0x1b7b,  0x1b35,  0x0005,  0x0001,  0x0001,  0x0001,  0x5c35,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x95bd,  0x0001,  0x0001,  0x0001,  0x0001,  0x122b,  0x23bb,  0x447d,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0x653f,  0x1b7b,  0x122d,  0x0001,  0x0001,  0x008d,  0x0001,  0x32e9,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x6cb5,  0x0001,  0x008f,  0x0001,  0x0001,  0x0963,  0x237b,  0x33fd,  0xf7ff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0x54bd,  0x1b7b,  0x11e9,  0x0001,  0x21dd,  0xd6ff,  0x6c31,  0x19e1,  0xf7fe,  0xfffe,  0xfffe,  0xfffe,  0x53ef,  0x3261,  0xd6ff,  0x53ab,  0x0001,  0x091d,  0x237b,  0x2bbb,  0xe77f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0x447d,  0x237b,  0x09e7,  0x0001,  0x5bed,  0xffff,  0xbe7f,  0x119f,  0xf7be,  0xfffe,  0xfffe,  0xfffe,  0x432b,  0x7471,  0xffff,  0xa5fb,  0x0001,  0x00d9,  0x2379,  0x2bbb,  0xdf7f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0x54bf,  0x1b7b,  0x11e9,  0x0001,  0x199b,  0xbe7f,  0x5bed,  0x19e1,  0xf7fe,  0xfffe,  0xfffe,  0xfffe,  0x4baf,  0x2a1f,  0xbe7f,  0x4b69,  0x0001,  0x011d,  0x2379,  0x2bfb,  0xefbf,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0x6d3f,  0x1b7b,  0x122b,  0x0001,  0x0001,  0x0001,  0x0001,  0x2aa9,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x6475,  0x0001,  0x0005,  0x0001,  0x0001,  0x0961,  0x237b,  0x33fd,  0xf7ff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0x7d7f,  0x1b7b,  0x1af3,  0x0005,  0x0001,  0x0001,  0x0001,  0x53f3,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x8d7d,  0x0001,  0x0001,  0x0001,  0x0001,  0x1229,  0x1bbb,  0x4c7d,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  
+    0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xa67f,  0x1b7b,  0x2379,  0x00d9,  0x0001,  0x0001,  0x0001,  0x85bd,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xbebe,  0x00d9,  0x0001,  0x0001,  0x0005,  0x1af5,  0x1b7b,  0x757f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xe77f,  0x2bbb,  0x23bb,  0x126f,  0x0001,  0x0001,  0x11e9,  0xcf3e,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xf7fe,  0x2b75,  0x000b,  0x0001,  0x09e7,  0x23bb,  0x1b7b,  0xb6bf,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0x6d3f,  0x1b39,  0x23bb,  0x1ab3,  0x1271,  0x4c7d,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0x7d7f,  0x0a73,  0x12af,  0x2379,  0x1b7b,  0x3c3d,  0xefbf,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xdf7f,  0x2bbb,  0x1339,  0x1b7b,  0x237b,  0xb6be,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xe77e,  0x3c3d,  0x137b,  0x1b7b,  0x1339,  0xa67f,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xc6ff,  0x54bf,  0x4cbd,  0xb6bf,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xcf3f,  0x5cff,  0x4c7d,  0xa67f,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xffff,  0xffff,  0xffff,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
+    0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  0xfffe,  
 };
 
 // 0x04003890
-ALIGNED8 static const Texture mario_texture_eyes_half_closed[] = {
+ALIGNED8 static const u8 mario_texture_eyes_half_closed[] = {
 #include "actors/mario/mario_eyes_half_closed.rgba16.inc.c"
 };
 
 // 0x04004090
-ALIGNED8 static const Texture mario_texture_eyes_closed[] = {
+ALIGNED8 static const u8 mario_texture_eyes_closed[] = {
 #include "actors/mario/mario_eyes_closed.rgba16.inc.c"
 };
 
 // Unreferenced
 // 0x04004890
-ALIGNED8 static const Texture mario_texture_eyes_closed_unused1[] = {
+ALIGNED8 static const u8 mario_texture_eyes_closed_unused1[] = {
 #include "actors/mario/mario_eyes_closed_unused_0.rgba16.inc.c"
 };
 
 // Unreferenced
 // 0x04005090
-ALIGNED8 static const Texture mario_texture_eyes_closed_unused2[] = {
+ALIGNED8 static const u8 mario_texture_eyes_closed_unused2[] = {
 #include "actors/mario/mario_eyes_closed_unused_1.rgba16.inc.c"
 };
 
 // 0x04005890
-ALIGNED8 static const Texture mario_texture_eyes_right[] = {
+ALIGNED8 static const u8 mario_texture_eyes_right[] = {
 #include "actors/mario/mario_eyes_left_unused.rgba16.inc.c"
 };
 
 // 0x04006090
-ALIGNED8 static const Texture mario_texture_eyes_left[] = {
+ALIGNED8 static const u8 mario_texture_eyes_left[] = {
 #include "actors/mario/mario_eyes_right_unused.rgba16.inc.c"
 };
 
 // 0x04006890
-ALIGNED8 static const Texture mario_texture_eyes_up[] = {
+ALIGNED8 static const u8 mario_texture_eyes_up[] = {
 #include "actors/mario/mario_eyes_up_unused.rgba16.inc.c"
 };
 
 // 0x04007090
-ALIGNED8 static const Texture mario_texture_eyes_down[] = {
+ALIGNED8 static const u8 mario_texture_eyes_down[] = {
 #include "actors/mario/mario_eyes_down_unused.rgba16.inc.c"
 };
 
 // 0x04007890
-ALIGNED8 static const Texture mario_texture_eyes_dead[] = {
+ALIGNED8 static const u8 mario_texture_eyes_dead[] = {
 #include "actors/mario/mario_eyes_dead.rgba16.inc.c"
 };
 
 // 0x04008090
-ALIGNED8 static const Texture mario_texture_wings_half_1[] = {
+ALIGNED8 static const u8 mario_texture_wings_half_1[] = {
 #include "actors/mario/mario_wing.rgba16.inc.c"
 };
 
 // 0x04009090
-ALIGNED8 static const Texture mario_texture_wings_half_2[] = {
+ALIGNED8 static const u8 mario_texture_wings_half_2[] = {
 #include "actors/mario/mario_wing_tip.rgba16.inc.c"
 };
 
 // 0x0400A090
-ALIGNED8 static const Texture mario_texture_metal_wings_half_1[] = {
+ALIGNED8 static const u8 mario_texture_metal_wings_half_1[] = {
 #include "actors/mario/mario_metal_wing_unused.rgba16.inc.c"
 };
 
 // 0x0400B090
-ALIGNED8 static const Texture mario_texture_metal_wings_half_2[] = {
+ALIGNED8 static const u8 mario_texture_metal_wings_half_2[] = {
 #include "actors/mario/mario_metal_wing_tip_unused.rgba16.inc.c"
+};
+
+static Vtx vtx_mario_head_near[] = {
+	{{{   195,     93,     32},     0, {   762,   728},  {  79,   85,   48,  255}}}, 
+	{{{   153,     32,     95},     0, {  1312,  1068},  {   1,   66,  108,  255}}}, 
+	{{{   252,     62,     70},     0, {  1066,   104},  {  57,   74,   85,  255}}}, 
+	{{{   272,     85,      0},     0, {   462,   -64},  {  95,   84,    0,  255}}}, 
+	{{{   195,     93,    -31},     0, {   212,   742},  {  79,   85,  208,  255}}}, 
+	{{{   252,     62,    -69},     0, {  -128,   136},  {  57,   74,  171,  255}}}, 
+	{{{   153,     32,    -94},     0, {  -312,  1112},  {   1,   65,  148,  255}}}, 
+	{{{   145,    103,      0},     0, {   482,   494},  {  18,  125,    0,  255}}}, 
+	{{{   108,    105,      0},     0, {   482,   898},  { 100,   77,    0,  255}}}, 
+	{{{    99,    102,     25},     0, {   716,   976},  {  61,   94,   59,  255}}}, 
+	{{{    99,    102,    -24},     0, {   246,   978},  {  61,   93,  197,  255}}}, 
+	{{{   175,     91,    -32},     0, {   176,   136},  { 202,  111,  228,  255}}}, 
+	{{{   144,     83,    -66},     0, {  -146,   420},  {  29,   92,  174,  255}}}, 
+	{{{   104,     87,    -69},     0, {  -168,   864},  {  48,   92,  184,  255}}}, 
+	{{{   153,     32,    -94},     0, {  -404,   116},  {   1,   65,  148,  255}}}, 
+	{{{   175,     91,     33},     0, {   788,   134},  { 202,  111,   28,  255}}}, 
+	{{{   104,     87,     70},     0, {  1134,   858},  {  48,   92,   72,  255}}}, 
+	{{{   144,     83,     67},     0, {  1110,   414},  {  29,   92,   82,  255}}}, 
+	{{{   153,     32,     95},     0, {  1368,   106},  {   1,   66,  108,  255}}}, 
+	{{{   103,     -8,   -101},     0, {   902,   556},  {  16,   58,  145,  255}}}, 
+	{{{    96,     49,    -93},     0, {   -68,   748},  {  22,   36,  137,  255}}}, 
+	{{{   126,    -12,   -100},     0, {   932,   230},  { 242,   32,  135,  255}}}, 
+	{{{   153,     32,    -94},     0, {   118,   -98},  {   1,   65,  148,  255}}}, 
+	{{{    44,     44,    -96},     0, {   110,  1498},  { 224,   34,  139,  255}}}, 
+	{{{   153,     32,     95},     0, {   164,  -128},  {   1,   66,  108,  255}}}, 
+	{{{    96,     49,     94},     0, {   -54,   686},  {  21,   36,  119,  255}}}, 
+	{{{   126,    -11,    102},     0, {   902,   246},  { 241,   33,  121,  255}}}, 
+	{{{   103,     -8,    102},     0, {   876,   566},  {  14,   58,  111,  255}}}, 
+	{{{    44,     44,     97},     0, {    78,  1430},  { 224,   34,  117,  255}}}, 
+	{{{    92,     88,     84},     0, {   904,    22},  {  30,   92,   81,  255}}}, 
+	{{{    73,    106,     34},     0, {   318,   398},  {  16,   49,  115,  255}}}, 
+	{{{    48,     94,     71},     0, {   774,   638},  { 216,   96,   71,  255}}}, 
+	{{{    52,    111,     33},     0, {   306,   674},  { 174,   54,   79,  255}}}, 
+	{{{    99,    102,     25},     0, {   228,    52},  {  61,   94,   59,  255}}}, 
+	{{{    27,    100,     30},     0, {   346,   978},  { 177,   96,   24,  255}}}, 
+	{{{    41,    109,      0},     0, {   -18,   852},  { 149,   67,    0,  255}}}, 
+	{{{    44,     44,     97},     0, {  1280,   496},  { 224,   34,  117,  255}}}, 
+	{{{     3,     54,     52},     0, {   808,  1100},  { 150,   32,   61,  255}}}, 
+	{{{    52,    111,    -32},     0, {   342,   700},  { 174,   54,  176,  255}}}, 
+	{{{    48,     94,    -70},     0, {   826,   608},  { 216,   96,  185,  255}}}, 
+	{{{    27,    100,    -29},     0, {   402,   968},  { 177,   96,  232,  255}}}, 
+	{{{     3,     54,    -51},     0, {   892,  1018},  { 151,   32,  194,  255}}}, 
+	{{{    92,     88,    -83},     0, {   924,    36},  {  30,   92,  175,  255}}}, 
+	{{{    44,     44,    -96},     0, {  1344,   414},  { 224,   34,  139,  255}}}, 
+	{{{    41,    109,      0},     0, {    16,   902},  { 149,   67,    0,  255}}}, 
+	{{{    48,     94,    -70},     0, {   826,   608},  { 216,   96,  185,  255}}}, 
+	{{{    52,    111,    -32},     0, {   342,   700},  { 174,   54,  176,  255}}}, 
+	{{{    73,    106,    -33},     0, {   336,   450},  {  16,   49,  141,  255}}}, 
+	{{{    99,    102,    -24},     0, {   222,   152},  {  61,   93,  197,  255}}}, 
+	{{{    92,     88,    -83},     0, {   924,    36},  {  30,   92,  175,  255}}}, 
+	{{{   175,     91,    -32},     0, {     0,     0},  { 202,  111,  228,  255}}}, 
+	{{{   173,    125,    -65},     0, {     0,     0},  { 219,   91,  177,  255}}}, 
+	{{{   153,     32,    -94},     0, {     0,     0},  {   1,   65,  148,  255}}}, 
+	{{{   195,     93,    -31},     0, {     0,     0},  {  79,   85,  208,  255}}}, 
+	{{{   252,     62,    -69},     0, {     0,     0},  {  57,   74,  171,  255}}}, 
+	{{{   187,     -6,   -133},     0, {     0,     0},  {  24,    6,  132,  255}}}, 
+	{{{   126,    -12,   -100},     0, {     0,     0},  { 242,   32,  135,  255}}}, 
+	{{{   271,      0,    -41},     0, {     0,     0},  { 111,  207,  219,  255}}}, 
+	{{{   131,    -56,   -123},     0, {     0,     0},  { 218,  223,  140,  255}}}, 
+	{{{   167,    -87,    -74},     0, {     0,     0},  {  82,  170,  213,  255}}}, 
+	{{{    91,    -54,    -85},     0, {     0,     0},  { 240,  179,  158,  255}}}, 
+	{{{   187,     -6,    134},     0, {     0,     0},  {  24,    6,  124,  255}}}, 
+	{{{   252,     62,     70},     0, {     0,     0},  {  57,   74,   85,  255}}}, 
+	{{{   153,     32,     95},     0, {     0,     0},  {   1,   66,  108,  255}}}, 
+	{{{   126,    -11,    102},     0, {     0,     0},  { 241,   33,  121,  255}}}, 
+	{{{   131,    -56,    124},     0, {     0,     0},  { 219,  222,  116,  255}}}, 
+	{{{   153,     32,     95},     0, {     0,     0},  {   1,   66,  108,  255}}}, 
+	{{{   173,    125,     66},     0, {     0,     0},  { 219,   91,   79,  255}}}, 
+	{{{   175,     91,     33},     0, {     0,     0},  { 202,  111,   28,  255}}}, 
+	{{{   195,     93,     32},     0, {     0,     0},  {  79,   85,   48,  255}}}, 
+	{{{    91,    -54,     86},     0, {     0,     0},  { 240,  178,   98,  255}}}, 
+	{{{   131,    -56,    124},     0, {     0,     0},  { 219,  222,  116,  255}}}, 
+	{{{   126,    -11,    102},     0, {     0,     0},  { 241,   33,  121,  255}}}, 
+	{{{   181,    148,      0},     0, {     0,     0},  { 234,  124,    0,  255}}}, 
+	{{{   175,     91,    -32},     0, {     0,     0},  { 202,  111,  228,  255}}}, 
+	{{{   195,     93,    -31},     0, {     0,     0},  {  79,   85,  208,  255}}}, 
+	{{{   173,    125,    -65},     0, {     0,     0},  { 219,   91,  177,  255}}}, 
+	{{{   271,      0,    -41},     0, {     0,     0},  { 111,  207,  219,  255}}}, 
+	{{{   272,     85,      0},     0, {     0,     0},  {  95,   84,    0,  255}}}, 
+	{{{   271,      0,     42},     0, {     0,     0},  { 113,  220,   43,  255}}}, 
+	{{{   167,    -87,     75},     0, {     0,     0},  {  79,  167,   43,  255}}}, 
+	{{{   187,     -6,    134},     0, {     0,     0},  {  24,    6,  124,  255}}}, 
+	{{{   167,    -87,    -74},     0, {     0,     0},  {  82,  170,  213,  255}}}, 
+	{{{   271,      0,    -41},     0, {     0,     0},  { 111,  207,  219,  255}}}, 
+	{{{   167,    -87,     75},     0, {     0,     0},  {  79,  167,   43,  255}}}, 
+	{{{   271,      0,     42},     0, {     0,     0},  { 113,  220,   43,  255}}}, 
+	{{{   272,     85,      0},     0, {     0,     0},  {  95,   84,    0,  255}}}, 
+	{{{   252,     62,     70},     0, {     0,     0},  {  57,   74,   85,  255}}}, 
+	{{{   187,     -6,    134},     0, {     0,     0},  {  24,    6,  124,  255}}}, 
+	{{{   115,   -149,     49},     0, {     0,     0},  {  29,  144,   50,  255}}}, 
+	{{{   131,    -56,    124},     0, {     0,     0},  { 219,  222,  116,  255}}}, 
+	{{{   115,   -149,    -48},     0, {     0,     0},  { 236,  142,  207,  255}}}, 
+	{{{    67,   -106,     52},     0, {     0,     0},  { 223,  152,   63,  255}}}, 
+	{{{    67,   -106,    -51},     0, {     0,     0},  { 235,  155,  184,  255}}}, 
+	{{{   131,    -56,   -123},     0, {     0,     0},  { 218,  223,  140,  255}}}, 
+	{{{   252,     62,    -69},     0, {     0,     0},  {  57,   74,  171,  255}}}, 
+	{{{    91,    -54,     86},     0, {     0,     0},  { 240,  178,   98,  255}}}, 
+	{{{    91,    -54,    -85},     0, {     0,     0},  { 240,  179,  158,  255}}}, 
+	{{{    41,    109,      0},     0, {     0,     0},  { 149,   67,    0,  255}}}, 
+	{{{    27,    100,    -29},     0, {     0,     0},  { 177,   96,  232,  255}}}, 
+	{{{    27,    100,     30},     0, {     0,     0},  { 177,   96,   24,  255}}}, 
+	{{{    -7,     62,      0},     0, {     0,     0},  { 134,   33,    0,  255}}}, 
+	{{{     3,     54,     52},     0, {     0,     0},  { 150,   32,   61,  255}}}, 
+	{{{     3,     54,    -51},     0, {     0,     0},  { 151,   32,  194,  255}}}, 
+	{{{    12,    -74,    -39},     0, {     0,     0},  { 138,  224,  223,  255}}}, 
+	{{{    12,    -74,     40},     0, {     0,     0},  { 138,  224,   33,  255}}}, 
+	{{{    44,     44,     97},     0, {     0,     0},  { 224,   34,  117,  255}}}, 
+	{{{    42,      0,    103},     0, {     0,     0},  { 180,   15,   99,  255}}}, 
+	{{{    42,      0,   -102},     0, {     0,     0},  { 180,   15,  157,  255}}}, 
+	{{{    44,     44,    -96},     0, {     0,     0},  { 224,   34,  139,  255}}}, 
+	{{{    91,    -54,     86},     0, {     0,     0},  { 240,  178,   98,  255}}}, 
+	{{{   126,    -11,    102},     0, {     0,     0},  { 241,   33,  121,  255}}}, 
+	{{{    97,    -41,    136},     0, {     0,     0},  {  44,  214,  110,  255}}}, 
+	{{{    39,    -64,    -78},     0, {     0,     0},  { 208,  195,  156,  255}}}, 
+	{{{   126,    -11,    102},     0, {     0,     0},  { 241,   33,  121,  255}}}, 
+	{{{   103,     -8,    102},     0, {     0,     0},  {  14,   58,  111,  255}}}, 
+	{{{    97,    -41,    136},     0, {     0,     0},  {  44,  214,  110,  255}}}, 
+	{{{    69,    -26,    135},     0, {     0,     0},  { 220,   30,  117,  255}}}, 
+	{{{    39,    -64,     79},     0, {     0,     0},  { 208,  195,  100,  255}}}, 
+	{{{    91,    -54,     86},     0, {     0,     0},  { 240,  178,   98,  255}}}, 
+	{{{    91,    -54,    -85},     0, {     0,     0},  { 240,  179,  158,  255}}}, 
+	{{{    39,    -64,    -78},     0, {     0,     0},  { 208,  195,  156,  255}}}, 
+	{{{    97,    -41,   -135},     0, {     0,     0},  {  46,  213,  147,  255}}}, 
+	{{{   126,    -12,   -100},     0, {     0,     0},  { 242,   32,  135,  255}}}, 
+	{{{    69,    -26,   -134},     0, {     0,     0},  { 220,   30,  139,  255}}}, 
+	{{{    42,      0,   -102},     0, {     0,     0},  { 180,   15,  157,  255}}}, 
+	{{{    52,    111,     33},     0, {     0,     0},  { 174,   54,   79,  255}}}, 
+	{{{    50,    131,     41},     0, {     0,     0},  { 195,  239,  109,  255}}}, 
+	{{{    32,    132,      0},     0, {     0,     0},  { 132,  235,  247,  255}}}, 
+	{{{   103,     -8,   -101},     0, {     0,     0},  {  16,   58,  145,  255}}}, 
+	{{{    12,    -74,     40},     0, {     0,     0},  { 138,  224,   33,  255}}}, 
+	{{{    39,    -64,     79},     0, {     0,     0},  { 208,  195,  100,  255}}}, 
+	{{{    42,      0,    103},     0, {     0,     0},  { 180,   15,   99,  255}}}, 
+	{{{    69,    -26,    135},     0, {     0,     0},  { 220,   30,  117,  255}}}, 
+	{{{   103,     -8,    102},     0, {     0,     0},  {  14,   58,  111,  255}}}, 
+	{{{    44,     44,     97},     0, {     0,     0},  { 224,   34,  117,  255}}}, 
+	{{{   103,     -8,   -101},     0, {     0,     0},  {  16,   58,  145,  255}}}, 
+	{{{    42,      0,   -102},     0, {     0,     0},  { 180,   15,  157,  255}}}, 
+	{{{    44,     44,    -96},     0, {     0,     0},  { 224,   34,  139,  255}}}, 
+	{{{    69,    -26,   -134},     0, {     0,     0},  { 220,   30,  139,  255}}}, 
+	{{{    32,    132,      0},     0, {     0,     0},  { 132,  235,  247,  255}}}, 
+	{{{    50,    131,     41},     0, {     0,     0},  { 195,  239,  109,  255}}}, 
+	{{{    33,    165,      0},     0, {     0,     0},  { 141,   51,   11,  255}}}, 
+	{{{    41,    109,      0},     0, {     0,     0},  { 149,   67,    0,  255}}}, 
+	{{{    52,    111,     33},     0, {     0,     0},  { 174,   54,   79,  255}}}, 
+	{{{    52,    111,    -32},     0, {     0,     0},  { 174,   54,  176,  255}}}, 
+	{{{    50,    131,     41},     0, {     0,     0},  { 195,  239,  109,  255}}}, 
+	{{{    52,    111,     33},     0, {     0,     0},  { 174,   54,   79,  255}}}, 
+	{{{    73,    106,     34},     0, {     0,     0},  {  16,   49,  115,  255}}}, 
+	{{{   102,    129,     41},     0, {     0,     0},  {  64,  223,  103,  255}}}, 
+	{{{   103,    162,     41},     0, {     0,     0},  {  76,   42,   91,  255}}}, 
+	{{{   100,    179,      0},     0, {     0,     0},  {  39,  120,    0,  255}}}, 
+	{{{   116,    161,      0},     0, {     0,     0},  { 122,   32,  248,  255}}}, 
+	{{{   114,    128,      0},     0, {     0,     0},  { 124,  234,    5,  255}}}, 
+	{{{    52,    164,     41},     0, {     0,     0},  { 212,   87,   80,  255}}}, 
+	{{{    33,    165,      0},     0, {     0,     0},  { 141,   51,   11,  255}}}, 
+	{{{    56,    181,      0},     0, {     0,     0},  { 220,  121,    0,  255}}}, 
+	{{{    52,    164,    -40},     0, {     0,     0},  { 201,   65,  162,  255}}}, 
+	{{{   103,    162,    -40},     0, {     0,     0},  {  72,   65,  175,  255}}}, 
+	{{{    99,    102,     25},     0, {     0,     0},  {  61,   94,   59,  255}}}, 
+	{{{    92,     88,     84},     0, {     0,     0},  {  30,   92,   81,  255}}}, 
+	{{{   104,     87,     70},     0, {     0,     0},  {  48,   92,   72,  255}}}, 
+	{{{    99,    102,     25},     0, {     0,     0},  {  61,   94,   59,  255}}}, 
+	{{{   108,    105,      0},     0, {     0,     0},  { 100,   77,    0,  255}}}, 
+	{{{   114,    128,      0},     0, {     0,     0},  { 124,  234,    5,  255}}}, 
+	{{{   104,     87,     70},     0, {     0,     0},  {  48,   92,   72,  255}}}, 
+	{{{    92,     88,     84},     0, {     0,     0},  {  30,   92,   81,  255}}}, 
+	{{{    96,     49,     94},     0, {     0,     0},  {  21,   36,  119,  255}}}, 
+	{{{    33,    165,      0},     0, {     0,     0},  { 141,   51,   11,  255}}}, 
+	{{{    52,    164,    -40},     0, {     0,     0},  { 201,   65,  162,  255}}}, 
+	{{{    32,    132,      0},     0, {     0,     0},  { 132,  235,  247,  255}}}, 
+	{{{    99,    102,    -24},     0, {     0,     0},  {  61,   93,  197,  255}}}, 
+	{{{   102,    129,    -40},     0, {     0,     0},  {  67,  231,  152,  255}}}, 
+	{{{   116,    161,      0},     0, {     0,     0},  { 122,   32,  248,  255}}}, 
+	{{{   153,     32,     95},     0, {     0,     0},  {   1,   66,  108,  255}}}, 
+	{{{   144,     83,     67},     0, {     0,     0},  {  29,   92,   82,  255}}}, 
+	{{{   104,     87,    -69},     0, {     0,     0},  {  48,   92,  184,  255}}}, 
+	{{{    92,     88,    -83},     0, {     0,     0},  {  30,   92,  175,  255}}}, 
+	{{{    44,     44,     97},     0, {     0,     0},  { 224,   34,  117,  255}}}, 
+	{{{    96,     49,     94},     0, {     0,     0},  {  21,   36,  119,  255}}}, 
+	{{{    92,     88,     84},     0, {     0,     0},  {  30,   92,   81,  255}}}, 
+	{{{    12,    -74,    -39},     0, {     0,     0},  { 138,  224,  223,  255}}}, 
+	{{{    37,   -104,      0},     0, {     0,     0},  { 209,  139,    0,  255}}}, 
+	{{{    12,    -74,     40},     0, {     0,     0},  { 138,  224,   33,  255}}}, 
+	{{{    96,     49,    -93},     0, {     0,     0},  {  22,   36,  137,  255}}}, 
+	{{{    92,     88,    -83},     0, {     0,     0},  {  30,   92,  175,  255}}}, 
+	{{{   104,     87,    -69},     0, {     0,     0},  {  48,   92,  184,  255}}}, 
+	{{{   144,     83,    -66},     0, {     0,     0},  {  29,   92,  174,  255}}}, 
+	{{{   153,     32,    -94},     0, {     0,     0},  {   1,   65,  148,  255}}}, 
+	{{{    44,     44,    -96},     0, {     0,     0},  { 224,   34,  139,  255}}}, 
+	{{{    52,    164,    -40},     0, {     0,     0},  { 201,   65,  162,  255}}}, 
+	{{{   103,    162,    -40},     0, {     0,     0},  {  72,   65,  175,  255}}}, 
+	{{{   102,    129,    -40},     0, {     0,     0},  {  67,  231,  152,  255}}}, 
+	{{{    52,    164,    -40},     0, {     0,     0},  { 201,   65,  162,  255}}}, 
+	{{{    50,    131,    -40},     0, {     0,     0},  { 198,  231,  146,  255}}}, 
+	{{{    32,    132,      0},     0, {     0,     0},  { 132,  235,  247,  255}}}, 
+	{{{   102,    129,    -40},     0, {     0,     0},  {  67,  231,  152,  255}}}, 
+	{{{    73,    106,    -33},     0, {     0,     0},  {  16,   49,  141,  255}}}, 
+	{{{    52,    111,    -32},     0, {     0,     0},  { 174,   54,  176,  255}}}, 
+	{{{   103,    162,    -40},     0, {     0,     0},  {  72,   65,  175,  255}}}, 
+	{{{   116,    161,      0},     0, {     0,     0},  { 122,   32,  248,  255}}}, 
+	{{{    99,    102,    -24},     0, {     0,     0},  {  61,   93,  197,  255}}}, 
+	{{{    36,   -125,     77},     0, {     0,     0},  { 211,  157,   64,  255}}}, 
+	{{{    39,    -64,     79},     0, {     0,     0},  { 208,  195,  100,  255}}}, 
+	{{{    12,    -74,     40},     0, {     0,     0},  { 138,  224,   33,  255}}}, 
+	{{{    37,   -104,      0},     0, {     0,     0},  { 209,  139,    0,  255}}}, 
+	{{{    67,   -106,     52},     0, {     0,     0},  { 223,  152,   63,  255}}}, 
+	{{{    12,    -74,    -39},     0, {     0,     0},  { 138,  224,  223,  255}}}, 
+	{{{    36,   -125,    -76},     0, {     0,     0},  { 210,  157,  193,  255}}}, 
+	{{{    67,   -106,    -51},     0, {     0,     0},  { 235,  155,  184,  255}}}, 
+	{{{    39,    -64,    -78},     0, {     0,     0},  { 208,  195,  156,  255}}}, 
+	{{{    91,    -54,    -85},     0, {     0,     0},  { 240,  179,  158,  255}}}, 
+	{{{    91,    -54,     86},     0, {     0,     0},  { 240,  178,   98,  255}}}, 
+};
+
+static Gfx gfx_mario_head_near_0[] = {
+	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),//gs_Tani_LoadTextureImage2(m_mark_txt, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, 7),
+	gsSPVertex(&vtx_mario_head_near[0],  7, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 4, 0, 0),
+	gsSP1Triangle( 3, 5, 4, 0),
+	gsSP1Triangle( 2, 3, 0, 0),
+	gsSP1Triangle( 5, 6, 4, 0),
+	gsSPEndDisplayList() 
+};
+
+static Gfx gfx_mario_head_near_1[] = {
+	gsSPLight((&light_mario_head[1].l[0]),1 ),
+	gsSPLight((&light_mario_head[1].a   ),2 ),
+	gsSPVertex(&vtx_mario_head_near[7], 12, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 0, 4, 0),
+	gsSP1Triangle( 3, 4, 5, 0),
+	gsSP1Triangle( 3, 1, 0, 0),
+	gsSP1Triangle( 6, 3, 5, 0),
+	gsSP1Triangle( 5, 4, 7, 0),
+	gsSP1Triangle( 4, 0, 8, 0),
+	gsSP1Triangle( 2, 9,10, 0),
+	gsSP1Triangle(10, 8, 2, 0),
+	gsSP1Triangle(11, 8,10, 0),
+	gsSP1Triangle( 8, 0, 2, 0),
+	gsSPEndDisplayList() 
+};
+
+static Gfx gfx_mario_head_near_2[] = {
+	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),//gs_Tani_LoadTextureImage2(m_momi_txt, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, 7),
+	gsSPVertex(&vtx_mario_head_near[19], 10, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 2, 1, 3, 0),
+	gsSP1Triangle( 4, 1, 0, 0),
+	gsSP1Triangle( 5, 6, 7, 0),
+	gsSP1Triangle( 8, 6, 9, 0),
+	gsSP1Triangle( 8, 7, 6, 0),
+	gsSPEndDisplayList() 
+};
+
+static Gfx gfx_mario_head_near_3[] = {
+	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),//gs_Tani_LoadTextureImage2(m_hige_txt, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, 7),
+	gsSPVertex(&vtx_mario_head_near[29], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 1, 3, 2, 0),
+	gsSP1Triangle( 0, 4, 1, 0),
+	gsSP1Triangle( 5, 2, 3, 0),
+	gsSP1Triangle( 5, 3, 6, 0),
+	gsSP1Triangle( 2, 7, 0, 0),
+	gsSP1Triangle( 8, 2, 5, 0),
+	gsSP1Triangle( 7, 2, 8, 0),
+	gsSP1Triangle( 9,10,11, 0),
+	gsSP1Triangle(11,10,12, 0),
+	gsSP1Triangle(13,14,10, 0),
+	gsSP1Triangle(12,10,14, 0),
+	gsSP1Triangle(15, 9,11, 0),
+	gsSPVertex(&vtx_mario_head_near[45],  5, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 2, 3, 4, 0),
+	gsSP1Triangle( 0, 2, 4, 0),
+	gsSPEndDisplayList() 
+};
+
+static Gfx gfx_mario_head_near_4[] = {
+	gsSPLight((&light_mario_head[0].l[0]),1 ),
+	gsSPLight((&light_mario_head[0].a   ),2 ),
+	gsSPVertex(&vtx_mario_head_near[50], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 1, 3, 2, 0),
+	gsSP1Triangle( 2, 4, 5, 0),
+	gsSP1Triangle( 2, 5, 6, 0),
+	gsSP1Triangle( 7, 5, 4, 0),
+	gsSP1Triangle( 5, 8, 6, 0),
+	gsSP1Triangle( 9, 5, 7, 0),
+	gsSP1Triangle( 5, 9, 8, 0),
+	gsSP1Triangle( 6, 8,10, 0),
+	gsSP1Triangle(11,12,13, 0),
+	gsSP1Triangle(11,13,14, 0),
+	gsSP1Triangle(14,15,11, 0),
+	gsSPVertex(&vtx_mario_head_near[66], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 1, 0, 0),
+	gsSP1Triangle( 4, 5, 6, 0),
+	gsSP1Triangle( 3, 7, 1, 0),
+	gsSP1Triangle( 1, 7, 2, 0),
+	gsSP1Triangle( 8, 2, 7, 0),
+	gsSP1Triangle( 9, 7, 3, 0),
+	gsSP1Triangle( 8, 7,10, 0),
+	gsSP1Triangle(10, 7, 9, 0),
+	gsSP1Triangle(11,12,13, 0),
+	gsSP1Triangle( 5,14,15, 0),
+	gsSP1Triangle(13,15,14, 0),
+	gsSPVertex(&vtx_mario_head_near[82], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 1, 3, 2, 0),
+	gsSP1Triangle( 3, 4, 5, 0),
+	gsSP1Triangle( 5, 6, 3, 0),
+	gsSP1Triangle( 0, 2, 7, 0),
+	gsSP1Triangle( 8, 7, 2, 0),
+	gsSP1Triangle( 9, 7,10, 0),
+	gsSP1Triangle( 7, 9, 0, 0),
+	gsSP1Triangle(11, 9,10, 0),
+	gsSP1Triangle( 0, 9,12, 0),
+	gsSP1Triangle(12, 9,11, 0),
+	gsSP1Triangle(10, 7, 8, 0),
+	gsSP1Triangle(13, 4, 1, 0),
+	gsSP1Triangle(10, 8,14, 0),
+	gsSP1Triangle(15,12,11, 0),
+	gsSPLight((&light_mario_head[1].l[0]),1 ),
+	gsSPLight((&light_mario_head[1].a   ),2 ),
+	gsSPVertex(&vtx_mario_head_near[98], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 2, 1, 3, 0),
+	gsSP1Triangle( 3, 4, 2, 0),
+	gsSP1Triangle( 1, 5, 3, 0),
+	gsSP1Triangle( 6, 3, 5, 0),
+	gsSP1Triangle( 7, 4, 3, 0),
+	gsSP1Triangle( 6, 7, 3, 0),
+	gsSP1Triangle( 8, 4, 9, 0),
+	gsSP1Triangle( 4, 7, 9, 0),
+	gsSP1Triangle(10, 6, 5, 0),
+	gsSP1Triangle(10, 5,11, 0),
+	gsSP1Triangle(12,13,14, 0),
+	gsSP1Triangle(10,15, 6, 0),
+	gsSPVertex(&vtx_mario_head_near[114], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 2, 1, 0),
+	gsSP1Triangle( 4, 2, 3, 0),
+	gsSP1Triangle( 4, 5, 2, 0),
+	gsSP1Triangle( 6, 7, 8, 0),
+	gsSP1Triangle( 8, 9, 6, 0),
+	gsSP1Triangle(10, 8, 7, 0),
+	gsSP1Triangle(11,10, 7, 0),
+	gsSP1Triangle(12,13,14, 0),
+	gsSP1Triangle( 8,15, 9, 0),
+	gsSP1Triangle(15, 8,10, 0),
+	gsSPVertex(&vtx_mario_head_near[130], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 2, 1, 0),
+	gsSP1Triangle( 2, 3, 4, 0),
+	gsSP1Triangle( 5, 2, 4, 0),
+	gsSP1Triangle( 6, 7, 8, 0),
+	gsSP1Triangle( 6, 9, 7, 0),
+	gsSP1Triangle(10,11,12, 0),
+	gsSP1Triangle(10,13,14, 0),
+	gsSP1Triangle(15,13,10, 0),
+	gsSPVertex(&vtx_mario_head_near[146], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 4, 0, 0),
+	gsSP1Triangle( 5, 4, 6, 0),
+	gsSP1Triangle( 6, 4, 7, 0),
+	gsSP1Triangle( 4, 5, 8, 0),
+	gsSP1Triangle( 4, 3, 7, 0),
+	gsSP1Triangle( 4, 8, 0, 0),
+	gsSP1Triangle( 9, 8,10, 0),
+	gsSP1Triangle( 0, 8, 9, 0),
+	gsSP1Triangle( 5,10, 8, 0),
+	gsSP1Triangle( 3, 0, 2, 0),
+	gsSP1Triangle(11,10, 5, 0),
+	gsSP1Triangle( 5, 6,12, 0),
+	gsSP1Triangle(11, 5,12, 0),
+	gsSP1Triangle( 9,10,11, 0),
+	gsSP1Triangle( 2,13, 3, 0),
+	gsSP1Triangle( 7, 3,13, 0),
+	gsSP1Triangle(13,14,15, 0),
+	gsSPVertex(&vtx_mario_head_near[162], 16, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 4, 5, 0),
+	gsSP1Triangle( 6, 7, 8, 0),
+	gsSP1Triangle( 2, 1, 9, 0),
+	gsSP1Triangle( 2,10,11, 0),
+	gsSP1Triangle( 9,10, 2, 0),
+	gsSP1Triangle( 5,12,13, 0),
+	gsSP1Triangle(13, 3, 5, 0),
+	gsSP1Triangle(14,15, 9, 0),
+	gsSPVertex(&vtx_mario_head_near[178], 15, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 4, 5, 0),
+	gsSP1Triangle( 6, 7, 8, 0),
+	gsSP1Triangle( 9,10, 6, 0),
+	gsSP1Triangle( 7, 6,11, 0),
+	gsSP1Triangle( 6, 8, 9, 0),
+	gsSP1Triangle(12,13,14, 0),
+	gsSPVertex(&vtx_mario_head_near[193],  9, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 1, 0, 3, 0),
+	gsSP1Triangle( 4, 5, 1, 0),
+	gsSP1Triangle( 2, 1, 5, 0),
+	gsSP1Triangle( 1, 3, 4, 0),
+	gsSP1Triangle( 3, 6, 7, 0),
+	gsSP1Triangle( 3, 8, 4, 0),
+	gsSPLight((&light_mario_near[3].l[0]),1 ),
+	gsSPLight((&light_mario_near[3].a   ),2 ),
+	gsSPVertex(&vtx_mario_head_near[202], 11, 0), 
+	gsSP1Triangle( 0, 1, 2, 0),
+	gsSP1Triangle( 3, 0, 2, 0),
+	gsSP1Triangle( 4, 0, 3, 0),
+	gsSP1Triangle( 5, 6, 3, 0),
+	gsSP1Triangle( 3, 6, 7, 0),
+	gsSP1Triangle( 3, 7, 4, 0),
+	gsSP1Triangle( 7, 6, 8, 0),
+	gsSP1Triangle( 5, 8, 6, 0),
+	gsSP1Triangle( 8, 9, 7, 0),
+	gsSP1Triangle( 4,10, 1, 0),
+	gsSP1Triangle( 1, 0, 4, 0),
+	gsSPEndDisplayList() 
 };
 
 // 0x0400C090
@@ -381,8 +999,8 @@ const Gfx mario_butt_dl[] = {
 const Gfx mario_butt[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_butt_dl),
     gsSPEndDisplayList(),
 };
@@ -394,8 +1012,8 @@ const Gfx mario_metal_butt[] = {
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_DECALFADE),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_butt_dl),
     gsSPEndDisplayList(),
 };
@@ -499,8 +1117,8 @@ const Gfx mario_left_arm_shared_dl[] = {
 
 // 0x0400D1D8 - 0x0400D1F8
 const Gfx mario_left_arm[] = {
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_left_arm_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -651,8 +1269,8 @@ const Gfx mario_left_hand_closed_shared_dl[] = {
 
 // 0x0400D8F0 - 0x0400D910
 const Gfx mario_left_hand_closed[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_left_hand_closed_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -760,8 +1378,8 @@ const Gfx mario_right_arm_shared_dl[] = {
 
 // 0x0400DDE8 - 0x0400DE08
 const Gfx mario_right_arm[] = {
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_right_arm_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -897,8 +1515,8 @@ const Gfx mario_right_hand_closed_dl[] = {
 
 // 0x0400E458 - 0x0400E478
 const Gfx mario_right_hand_closed[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_right_hand_closed_dl),
     gsSPEndDisplayList(),
 };
@@ -979,8 +1597,8 @@ const Gfx mario_left_thigh_dl[] = {
 const Gfx mario_left_thigh[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_left_thigh_dl),
     gsSPEndDisplayList(),
 };
@@ -992,8 +1610,8 @@ const Gfx mario_metal_left_thigh[] = {
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_DECALFADE),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_left_thigh_dl),
     gsSPEndDisplayList(),
 };
@@ -1091,8 +1709,8 @@ const Gfx mario_left_foot_shared_dl[] = {
 
 // 0x0400ECA0 - 0x0400ECC0
 const Gfx mario_left_foot[] = {
-    gsSPLight(&mario_brown1_lights_group.l, 1),
-    gsSPLight(&mario_brown1_lights_group.a, 2),
+    gsSPLight(&light_mario_near[3].l, 1),
+    gsSPLight(&light_mario_near[3].a, 2),
     gsSPDisplayList(mario_left_foot_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -1160,8 +1778,8 @@ const Gfx mario_right_thigh_shared_dl[] = {
 
 // 0x0400EFB8 - 0x0400EFD8
 const Gfx mario_right_thigh[] = {
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_right_thigh_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -1276,8 +1894,8 @@ const Gfx mario_right_foot_dl[] = {
 
 // 0x0400F4E8 - 0x0400F528
 const Gfx mario_right_foot[] = {
-    gsSPLight(&mario_brown1_lights_group.l, 1),
-    gsSPLight(&mario_brown1_lights_group.a, 2),
+    gsSPLight(&light_mario_near[3].l, 1),
+    gsSPLight(&light_mario_near[3].a, 2),
     gsSPDisplayList(mario_right_foot_dl),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -1589,8 +2207,8 @@ const Gfx mario_tshirt_shared_dl[] = {
 // 0x04010348 - 0x04010370
 const Gfx mario_torso_dl[] = {
     gsSPDisplayList(mario_pants_overalls_shared_dl),
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_tshirt_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -1604,7 +2222,7 @@ const Gfx mario_torso[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_yellow_button),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_button_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_yellow_button_dl),
@@ -2079,13 +2697,18 @@ const Gfx mario_face_back_hair_cap_on_dl[] = {
 
 // 0x04011960 - 0x040119A0
 const Gfx mario_face_cap_on_dl[] = {
-    gsSPDisplayList(mario_face_part_cap_on_dl),
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+	gsSPDisplayList(gfx_mario_head_near_0),
+	gsSPDisplayList(gfx_mario_head_near_1),
+	gsSPDisplayList(gfx_mario_head_near_2),
+	gsSPDisplayList(gfx_mario_head_near_3),
+	gsSPDisplayList(gfx_mario_head_near_4),
+    /*gsSPDisplayList(mario_face_part_cap_on_dl),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_face_cap_dl),
-    gsSPLight(&mario_brown2_lights_group.l, 1),
-    gsSPLight(&mario_brown2_lights_group.a, 2),
-    gsSPDisplayList(mario_face_back_hair_cap_on_dl),
+    gsSPLight(&light_mario_head[2].l, 1),
+    gsSPLight(&light_mario_head[2].a, 2),
+    gsSPDisplayList(mario_face_back_hair_cap_on_dl),*/
     gsSPEndDisplayList(),
 };
 
@@ -2098,28 +2721,28 @@ const Gfx mario_cap_on_eyes_front[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_m_logo_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_front),
+    gsSPDisplayList(gfx_mario_head_near_0),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, meye1_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
-    gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
+    gsSPDisplayList(gfx_mario_head_near_1),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsSPDisplayList(gfx_mario_head_near_2),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_mustache_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_3),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPDisplayList(mario_face_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_4),
     gsSPEndDisplayList(),
 };
 
@@ -2132,28 +2755,28 @@ const Gfx mario_cap_on_eyes_half_closed[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_m_logo_dl),
+    gsSPDisplayList(gfx_mario_head_near_0),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_half_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
-    gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
+    gsSPDisplayList(gfx_mario_head_near_1),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsSPDisplayList(gfx_mario_head_near_2),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_mustache_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_3),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPDisplayList(mario_face_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_4),
     gsSPEndDisplayList(),
 };
 
@@ -2166,28 +2789,28 @@ const Gfx mario_cap_on_eyes_closed[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_m_logo_dl),
+    gsSPDisplayList(gfx_mario_head_near_0),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
-    gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
+    gsSPDisplayList(gfx_mario_head_near_1),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsSPDisplayList(gfx_mario_head_near_2),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_mustache_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_3),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPDisplayList(mario_face_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_4),
     gsSPEndDisplayList(),
 };
 
@@ -2200,21 +2823,21 @@ const Gfx mario_cap_on_eyes_right[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_right),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_on_dl),
@@ -2234,21 +2857,21 @@ const Gfx mario_cap_on_eyes_left[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_left),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_on_dl),
@@ -2268,21 +2891,21 @@ const Gfx mario_cap_on_eyes_up[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_up),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_on_dl),
@@ -2302,21 +2925,21 @@ const Gfx mario_cap_on_eyes_down[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_down),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_on_dl),
@@ -2336,54 +2959,42 @@ const Gfx mario_cap_on_eyes_dead[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_m_logo_dl),
+    gsSPDisplayList(gfx_mario_head_near_0),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_dead),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
-    gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
+    gsSPDisplayList(gfx_mario_head_near_1),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsSPDisplayList(gfx_mario_head_near_2),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPDisplayList(mario_mustache_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_3),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPDisplayList(mario_face_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_4),
     gsSPEndDisplayList(),
 };
 
 // 0x04012120 - 0x04012160
 const Gfx mario_metal_cap_on_shared_dl[] = {
-    gsSPDisplayList(mario_m_logo_dl),
-    gsSPDisplayList(mario_eyes_cap_on_dl),
-    gsSPDisplayList(mario_hair_sideburn_cap_on_dl),
-    gsSPDisplayList(mario_mustache_cap_on_dl),
-    gsSPDisplayList(mario_face_part_cap_on_dl),
-    gsSPDisplayList(mario_face_cap_dl),
-    gsSPDisplayList(mario_face_back_hair_cap_on_dl),
+    gsSPDisplayList(gfx_mario_head_near_0),
+    gsSPDisplayList(gfx_mario_head_near_1),
+    gsSPDisplayList(gfx_mario_head_near_2),
+    gsSPDisplayList(gfx_mario_head_near_3),
+    gsSPDisplayList(gfx_mario_head_near_4),
+    //gsSPDisplayList(mario_face_cap_dl),
+    //gsSPDisplayList(mario_face_back_hair_cap_on_dl),
     gsSPEndDisplayList(),
 };
-
-// Unreferenced light group
-UNUSED static const Lights1 mario_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x30, 0x1e,
-    0xfe, 0xc1, 0x79, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 mario_lights_unused2 = gdSPDefLights1(
-    0x1c, 0x01, 0x00,
-    0x73, 0x06, 0x00, 0x28, 0x28, 0x28
-);
 
 // 0x04012190
 static const Vtx mario_eyes_cap_off_dl_vertex[] = {
@@ -2892,8 +3503,8 @@ const Gfx mario_face_hair_cap_off_dl[] = {
 // 0x040139C0 - 0x040139E8
 const Gfx mario_face_cap_off_dl[] = {
     gsSPDisplayList(mario_face_part_cap_off_dl),
-    gsSPLight(&mario_brown2_lights_group.l, 1),
-    gsSPLight(&mario_brown2_lights_group.a, 2),
+    gsSPLight(&light_mario_head[2].l, 1),
+    gsSPLight(&light_mario_head[2].a, 2),
     gsSPDisplayList(mario_face_hair_cap_off_dl),
     gsSPEndDisplayList(),
 };
@@ -2907,17 +3518,17 @@ const Gfx mario_cap_off_eyes_front[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_front),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, meye1_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -2940,14 +3551,14 @@ const Gfx mario_cap_off_eyes_half_closed[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_half_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -2970,14 +3581,14 @@ const Gfx mario_cap_off_eyes_closed[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -3000,14 +3611,14 @@ const Gfx mario_cap_off_eyes_right[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_right),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -3030,14 +3641,14 @@ const Gfx mario_cap_off_eyes_left[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_left),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -3060,14 +3671,14 @@ const Gfx mario_cap_off_eyes_up[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_up),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -3090,14 +3701,14 @@ const Gfx mario_cap_off_eyes_down[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_down),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -3120,14 +3731,14 @@ const Gfx mario_cap_off_eyes_dead[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_dead),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_mustache_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_hair_sideburn),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_momi_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_hair_sideburn_cap_off_dl),
@@ -3270,8 +3881,8 @@ const Gfx mario_medium_poly_butt_dl[] = {
 const Gfx mario_medium_poly_butt[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_medium_poly_butt_dl),
     gsSPEndDisplayList(),
 };
@@ -3283,8 +3894,8 @@ const Gfx mario_metal_medium_poly_butt[] = {
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_DECALFADE),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_medium_poly_butt_dl),
     gsSPEndDisplayList(),
 };
@@ -3322,8 +3933,8 @@ const Gfx mario_medium_poly_left_arm_shared_dl[] = {
 
 // 0x04014840 - 0x04014860
 const Gfx mario_medium_poly_left_arm[] = {
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_medium_poly_left_arm_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -3444,8 +4055,8 @@ const Gfx mario_medium_poly_left_hand_closed_shared_dl[] = {
 
 // 0x04014DC0 - 0x04014DE0
 const Gfx mario_medium_poly_left_hand_closed[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_medium_poly_left_hand_closed_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -3483,8 +4094,8 @@ const Gfx mario_medium_poly_right_arm_shared_dl[] = {
 
 // 0x04014F40 - 0x04014F60
 const Gfx mario_medium_poly_right_arm[] = {
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_medium_poly_right_arm_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -3606,8 +4217,8 @@ const Gfx mario_medium_poly_right_hand_closed_dl[] = {
 
 // 0x040154E0 - 0x04015500
 const Gfx mario_medium_poly_right_hand_closed[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_medium_poly_right_hand_closed_dl),
     gsSPEndDisplayList(),
 };
@@ -3659,8 +4270,8 @@ const Gfx mario_medium_poly_left_thigh_dl[] = {
 const Gfx mario_medium_poly_left_thigh[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_medium_poly_left_thigh_dl),
     gsSPEndDisplayList(),
 };
@@ -3672,8 +4283,8 @@ const Gfx mario_metal_medium_poly_left_thigh[] = {
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_DECALFADE),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_medium_poly_left_thigh_dl),
     gsSPEndDisplayList(),
 };
@@ -3767,8 +4378,8 @@ const Gfx mario_medium_poly_left_foot_shared_dl[] = {
 
 // 0x04015B60 - 0x04015B80
 const Gfx mario_medium_poly_left_foot[] = {
-    gsSPLight(&mario_brown1_lights_group.l, 1),
-    gsSPLight(&mario_brown1_lights_group.a, 2),
+    gsSPLight(&light_mario_near[3].l, 1),
+    gsSPLight(&light_mario_near[3].a, 2),
     gsSPDisplayList(mario_medium_poly_left_foot_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -3808,8 +4419,8 @@ const Gfx mario_medium_poly_right_thigh_shared_dl[] = {
 
 // 0x04015D00 - 0x04015D20
 const Gfx mario_medium_poly_right_thigh[] = {
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_medium_poly_right_thigh_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -3897,8 +4508,8 @@ const Gfx mario_medium_poly_right_foot_dl[] = {
 
 // 0x040160C8 - 0x04016108
 const Gfx mario_medium_poly_right_foot[] = {
-    gsSPLight(&mario_brown1_lights_group.l, 1),
-    gsSPLight(&mario_brown1_lights_group.a, 2),
+    gsSPLight(&light_mario_near[3].l, 1),
+    gsSPLight(&light_mario_near[3].a, 2),
     gsSPDisplayList(mario_medium_poly_right_foot_dl),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -4081,8 +4692,8 @@ const Gfx mario_medium_poly_tshirt_shared_dl[] = {
 // 0x040168A0 - 0x040168C8
 const Gfx mario_medium_poly_torso_dl[] = {
     gsSPDisplayList(mario_medium_poly_pants_overalls_shared_dl),
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_medium_poly_tshirt_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4096,7 +4707,7 @@ const Gfx mario_medium_poly_torso[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_yellow_button),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_button_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_medium_poly_yellow_button_dl),
@@ -4149,8 +4760,8 @@ const Gfx mario_low_poly_butt_dl[] = {
 const Gfx mario_low_poly_butt[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_low_poly_butt_dl),
     gsSPEndDisplayList(),
 };
@@ -4162,8 +4773,8 @@ const Gfx mario_metal_low_poly_butt[] = {
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_DECALFADE),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_low_poly_butt_dl),
     gsSPEndDisplayList(),
 };
@@ -4196,8 +4807,8 @@ const Gfx mario_low_poly_left_arm_shared_dl[] = {
 
 // 0x04016C70 - 0x04016C90
 const Gfx mario_low_poly_left_arm[] = {
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_low_poly_left_arm_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4253,8 +4864,8 @@ const Gfx mario_low_poly_left_hand_closed_shared_dl[] = {
 
 // 0x04016E80 - 0x04016EA0
 const Gfx mario_low_poly_left_hand_closed[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_low_poly_left_hand_closed_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4287,8 +4898,8 @@ const Gfx mario_low_poly_right_arm_shared_dl[] = {
 
 // 0x04016FB0 - 0x04016FD0
 const Gfx mario_low_poly_right_arm[] = {
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_low_poly_right_arm_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4344,8 +4955,8 @@ const Gfx mario_low_poly_right_hand_closed_dl[] = {
 
 // 0x040171C0 - 0x040171E0
 const Gfx mario_low_poly_right_hand_closed[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_low_poly_right_hand_closed_dl),
     gsSPEndDisplayList(),
 };
@@ -4394,8 +5005,8 @@ const Gfx mario_low_poly_left_thigh_dl[] = {
 const Gfx mario_low_poly_left_thigh[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_low_poly_left_thigh_dl),
     gsSPEndDisplayList(),
 };
@@ -4407,8 +5018,8 @@ const Gfx mario_metal_low_poly_left_thigh[] = {
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_DECALFADE),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_low_poly_left_thigh_dl),
     gsSPEndDisplayList(),
 };
@@ -4475,8 +5086,8 @@ const Gfx mario_low_poly_left_foot_shared_dl[] = {
 
 // 0x040176A8 - 0x040176C8
 const Gfx mario_low_poly_left_foot[] = {
-    gsSPLight(&mario_brown1_lights_group.l, 1),
-    gsSPLight(&mario_brown1_lights_group.a, 2),
+    gsSPLight(&light_mario_near[3].l, 1),
+    gsSPLight(&light_mario_near[3].a, 2),
     gsSPDisplayList(mario_low_poly_left_foot_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4513,8 +5124,8 @@ const Gfx mario_low_poly_right_thigh_shared_dl[] = {
 
 // 0x04017818 - 0x04017838
 const Gfx mario_low_poly_right_thigh[] = {
-    gsSPLight(&mario_blue_lights_group.l, 1),
-    gsSPLight(&mario_blue_lights_group.a, 2),
+    gsSPLight(&light_mario_near[4].l, 1),
+    gsSPLight(&light_mario_near[4].a, 2),
     gsSPDisplayList(mario_low_poly_right_thigh_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4581,8 +5192,8 @@ const Gfx mario_low_poly_right_foot_dl[] = {
 
 // 0x04017AD8 - 0x04017B18
 const Gfx mario_low_poly_right_foot[] = {
-    gsSPLight(&mario_brown1_lights_group.l, 1),
-    gsSPLight(&mario_brown1_lights_group.a, 2),
+    gsSPLight(&light_mario_near[3].l, 1),
+    gsSPLight(&light_mario_near[3].a, 2),
     gsSPDisplayList(mario_low_poly_right_foot_dl),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -4684,8 +5295,8 @@ const Gfx mario_low_poly_tshirt_shared_dl[] = {
 // 0x04017E78 - 0x04017EA0
 const Gfx mario_low_poly_torso_dl[] = {
     gsSPDisplayList(mario_low_poly_pants_overalls_shared_dl),
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_low_poly_tshirt_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -4699,7 +5310,7 @@ const Gfx mario_low_poly_torso[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_yellow_button),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_button_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_yellow_button_dl),
@@ -4854,11 +5465,11 @@ const Gfx mario_low_poly_face_back_hair_cap_on_dl[] = {
 // 0x04018420 - 0x04018460
 const Gfx mario_low_poly_face_cap_on_dl[] = {
     gsSPDisplayList(mario_low_poly_face_part_cap_on_dl),
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_low_poly_face_cap_dl),
-    gsSPLight(&mario_brown2_lights_group.l, 1),
-    gsSPLight(&mario_brown2_lights_group.a, 2),
+    gsSPLight(&light_mario_head[2].l, 1),
+    gsSPLight(&light_mario_head[2].a, 2),
     gsSPDisplayList(mario_low_poly_face_back_hair_cap_on_dl),
     gsSPEndDisplayList(),
 };
@@ -4872,17 +5483,17 @@ const Gfx mario_low_poly_cap_on_eyes_front[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_front),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, meye1_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -4902,17 +5513,17 @@ const Gfx mario_low_poly_cap_on_eyes_half_closed[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_half_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -4932,17 +5543,17 @@ const Gfx mario_low_poly_cap_on_eyes_closed[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -4962,17 +5573,17 @@ const Gfx mario_low_poly_cap_on_eyes_right[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_right),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -4992,17 +5603,17 @@ const Gfx mario_low_poly_cap_on_eyes_left[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_left),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -5022,17 +5633,17 @@ const Gfx mario_low_poly_cap_on_eyes_up[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_up),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -5052,17 +5663,17 @@ const Gfx mario_low_poly_cap_on_eyes_down[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_down),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -5082,17 +5693,17 @@ const Gfx mario_low_poly_cap_on_eyes_dead[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mario_m_logo_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_dead),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_eyes_cap_on_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_on_dl),
@@ -5223,8 +5834,8 @@ const Gfx mario_low_poly_face_hair_cap_off_dl[] = {
 // 0x04018F68 - 0x04018F90
 const Gfx mario_low_poly_face_cap_off_dl[] = {
     gsSPDisplayList(mario_low_poly_face_part_cap_off_dl),
-    gsSPLight(&mario_brown2_lights_group.l, 1),
-    gsSPLight(&mario_brown2_lights_group.a, 2),
+    gsSPLight(&light_mario_head[2].l, 1),
+    gsSPLight(&light_mario_head[2].a, 2),
     gsSPDisplayList(mario_low_poly_face_hair_cap_off_dl),
     gsSPEndDisplayList(),
 };
@@ -5238,13 +5849,13 @@ const Gfx mario_low_poly_cap_off_eyes_front[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_front),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, meye1_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5267,10 +5878,10 @@ const Gfx mario_low_poly_cap_off_eyes_half_closed[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_half_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5293,10 +5904,10 @@ const Gfx mario_low_poly_cap_off_eyes_closed[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_closed),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5319,10 +5930,10 @@ const Gfx mario_low_poly_cap_off_eyes_right[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_right),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5345,10 +5956,10 @@ const Gfx mario_low_poly_cap_off_eyes_left[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_left),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5371,10 +5982,10 @@ const Gfx mario_low_poly_cap_off_eyes_up[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_up),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5397,10 +6008,10 @@ const Gfx mario_low_poly_cap_off_eyes_down[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_down),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5423,10 +6034,10 @@ const Gfx mario_low_poly_cap_off_eyes_dead[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_eyes_dead),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_beige_lights_group.l, 1),
-    gsSPLight(&mario_beige_lights_group.a, 2),
+    gsSPLight(&light_mario_head[1].l, 1),
+    gsSPLight(&light_mario_head[1].a, 2),
     gsSPDisplayList(mario_low_poly_mario_eyes_cap_off_dl),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_mustache),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_hige_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_low_poly_mustache_cap_off_dl),
@@ -5599,8 +6210,8 @@ const Gfx mario_left_hand_open_shared_dl[] = {
 
 // 0x04019CA0 - 0x04019CC0
 const Gfx mario_left_hand_open[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_left_hand_open_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -5758,8 +6369,8 @@ const Gfx mario_right_hand_open_dl[] = {
 
 // 0x0401A428 - 0x0401A448
 const Gfx mario_right_hand_open[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_right_hand_open_dl),
     gsSPEndDisplayList(),
 };
@@ -6008,11 +6619,11 @@ const Gfx mario_right_hand_cap_bottom_dl[] = {
 // 0x0401AF20 - 0x0401AF60
 const Gfx mario_right_hand_cap_dl[] = {
     gsSPDisplayList(mario_right_hand_cap_top_dl),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_right_hand_cap_hand_position_dl),
-    gsSPLight(&mario_brown2_lights_group.l, 1),
-    gsSPLight(&mario_brown2_lights_group.a, 2),
+    gsSPLight(&light_mario_head[2].l, 1),
+    gsSPLight(&light_mario_head[2].a, 2),
     gsSPDisplayList(mario_right_hand_cap_bottom_dl),
     gsSPEndDisplayList(),
 };
@@ -6066,8 +6677,8 @@ const Gfx mario_right_hand_cap_wings_intial_dl[] = {
     gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 6, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (64 - 1) << G_TEXTURE_IMAGE_FRAC),
@@ -6091,7 +6702,7 @@ const Gfx mario_right_hand_cap[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(mario_right_hand_cap_m_logo_dl),
@@ -6401,8 +7012,8 @@ const Gfx mario_right_hand_peace_shared_dl[] = {
 
 // 0x0401BF30 - 0x0401BF50
 const Gfx mario_right_hand_peace[] = {
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_right_hand_peace_shared_dl),
     gsSPEndDisplayList(),
 };
@@ -6539,8 +7150,8 @@ const Gfx mario_cap_unused_base_bottom_dl[] = {
 // 0x0401C510 - 0x0401C538
 const Gfx mario_cap_unused_base_dl[] = {
     gsSPDisplayList(mario_cap_unused_base_top_dl),
-    gsSPLight(&mario_brown2_lights_group.l, 1),
-    gsSPLight(&mario_brown2_lights_group.a, 2),
+    gsSPLight(&light_mario_head[2].l, 1),
+    gsSPLight(&light_mario_head[2].a, 2),
     gsSPDisplayList(mario_cap_unused_base_bottom_dl),
     gsSPEndDisplayList(),
 };
@@ -6599,8 +7210,8 @@ const Gfx mario_cap_wings_unused_intial_dl[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 6, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (64 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPEndDisplayList(),
 };
 
@@ -6622,11 +7233,11 @@ const Gfx mario_cap_unused_dl[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_m_logo),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, m_mark_txt),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPLight(&mario_red_lights_group.l, 1),
-    gsSPLight(&mario_red_lights_group.a, 2),
+    gsSPLight(&light_mario_head[0].l, 1),
+    gsSPLight(&light_mario_head[0].a, 2),
     gsSPDisplayList(mario_cap_unused_m_logo_dl),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
@@ -6642,8 +7253,8 @@ const Gfx mario_metal_cap_unused_dl[] = {
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsDPLoadTextureBlock(mario_texture_metal, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 6, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsSPDisplayList(mario_cap_unused_m_logo_dl),
     gsSPDisplayList(mario_cap_unused_base_top_dl),
     gsSPDisplayList(mario_cap_unused_base_bottom_dl),
@@ -6724,8 +7335,8 @@ const Gfx mario_cap_wings[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 6, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (64 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -6751,8 +7362,8 @@ const Gfx mario_cap_wings_transparent[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 6, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (64 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -6778,8 +7389,8 @@ const Gfx mario_metal_cap_wings[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 6, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (64 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPLight(&mario_white_lights_group.l, 1),
-    gsSPLight(&mario_white_lights_group.a, 2),
+    gsSPLight(&light_mario_near[1].l, 1),
+    gsSPLight(&light_mario_near[1].a, 2),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_metal_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),

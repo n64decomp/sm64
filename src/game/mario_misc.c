@@ -388,9 +388,9 @@ Gfx *geo_mario_tilt_torso(s32 callContext, struct GraphNode *node, UNUSED Mat4 *
             && action != ACT_RIDING_SHELL_GROUND) {
             vec3s_copy(bodyState->torsoAngle, gVec3sZero);
         }
-        rotNode->rotation[0] = bodyState->torsoAngle[1];
-        rotNode->rotation[1] = bodyState->torsoAngle[2];
-        rotNode->rotation[2] = bodyState->torsoAngle[0];
+        //rotNode->rotation[0] = bodyState->torsoAngle[1];
+        //rotNode->rotation[1] = bodyState->torsoAngle[2];
+        //rotNode->rotation[2] = bodyState->torsoAngle[0];
     }
     return NULL;
 }

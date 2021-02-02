@@ -835,7 +835,7 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             break;
 
         case ACT_SIDE_FLIP:
-            set_mario_y_vel_based_on_fspeed(m, 62.0f, 0.0f);
+            set_mario_y_vel_based_on_fspeed(m, 42.0f, 0.0f);
             m->forwardVel = 8.0f;
             m->faceAngle[1] = m->intendedYaw;
             break;
