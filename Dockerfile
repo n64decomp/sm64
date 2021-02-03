@@ -6,6 +6,9 @@ RUN apt-get update && \
         bsdmainutils \
         build-essential \
         libaudiofile-dev \
+        libsdl2-dev \
+        libusb-1.0 \
+        libx11-dev \
         python3 \
         wget
 
