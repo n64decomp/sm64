@@ -35,6 +35,7 @@ s32 audio_shut_down_and_reset_step(void);
 void func_802ad7ec(u32);
 
 struct SPTask *create_next_audio_frame_task(void) {
+#ifdef TARGET_N64
     u32 samplesRemainingInAI;
     s32 writtenCmds;
     s32 index;
@@ -129,6 +130,9 @@ struct SPTask *create_next_audio_frame_task(void) {
     task->yield_data_ptr = NULL;
     task->yield_data_size = 0;
     return gAudioTask;
+#else
+    return NULL;
+#endif
 }
 
 void eu_process_audio_cmd(struct EuAudioCmd *cmd) {

@@ -16,8 +16,9 @@ DEFINES :=
 # 'make clean' may be required first.
 
 # Build for the N64 (turn this off for ports)
-TARGET_N64 ?= 1
-
+TARGET_N64 ?= 0
+# Build for Nintendo DS
+TARGET_NDS ?= 1
 
 # COMPILER - selects the C compiler to use
 #   ido - uses the SGI IRIS Development Option compiler, which is used to build
@@ -55,6 +56,11 @@ else ifeq ($(VERSION),sh)
   OPT_FLAGS := -O2
   GRUCODE   ?= f3d_new
   VERSION_JP_US  ?= false
+endif
+
+ifeq ($(TARGET_NDS),1)
+  OPT_FLAGS := -O2
+  GRUCODE := f3dex2
 endif
 
 TARGET := sm64.$(VERSION)
@@ -202,8 +208,13 @@ endif
 
 BUILD_DIR_BASE := build
 # BUILD_DIR is the location where all build artifacts are placed
+ifeq ($(TARGET_NDS),1)
+BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)_nds
+ROM            := $(BUILD_DIR)/$(TARGET).nds
+else
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)
 ROM            := $(BUILD_DIR)/$(TARGET).z64
+endif
 ELF            := $(BUILD_DIR)/$(TARGET).elf
 LIBULTRA       := $(BUILD_DIR)/libultra.a
 LD_SCRIPT      := sm64.ld
@@ -214,11 +225,18 @@ ACTOR_DIR      := actors
 LEVEL_DIRS     := $(patsubst levels/%,%,$(dir $(wildcard levels/*/header.h)))
 
 # Directories containing source files
-SRC_DIRS := src src/engine src/game src/audio src/menu src/buffers actors levels bin data assets asm lib sound
+SRC_DIRS := src src/engine src/game src/audio src/menu src/buffers actors levels bin data assets lib sound
 BIN_DIRS := bin bin/$(VERSION)
 
-ULTRA_SRC_DIRS := lib/src lib/src/math lib/asm lib/data
+ULTRA_SRC_DIRS := lib/src lib/src/math lib/data
 ULTRA_BIN_DIRS := lib/bin
+
+ifeq ($(TARGET_NDS),1)
+  SRC_DIRS += src/nds
+else
+  SRC_DIRS += asm
+  ULTRA_SRC_DIRS += lib/asm
+endif
 
 GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 
@@ -232,7 +250,23 @@ S_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.s))
 ULTRA_C_FILES     := $(foreach dir,$(ULTRA_SRC_DIRS),$(wildcard $(dir)/*.c))
 GODDARD_C_FILES   := $(foreach dir,$(GODDARD_SRC_DIRS),$(wildcard $(dir)/*.c))
 ULTRA_S_FILES     := $(foreach dir,$(ULTRA_SRC_DIRS),$(wildcard $(dir)/*.s))
-GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c
+GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c \
+  $(addprefix $(BUILD_DIR)/bin/,$(addsuffix _skybox.c,$(notdir $(basename $(wildcard textures/skyboxes/*.png)))))
+
+ifeq ($(TARGET_NDS),1)
+  C_FILES := $(filter-out src/game/main.c,$(C_FILES))
+  ULTRA_C_FILES := \
+    alBnkfNew.c \
+    guLookAtRef.c \
+    guMtxF2L.c \
+    guNormalize.c \
+    guOrthoF.c \
+    guPerspectiveF.c \
+    guRotateF.c \
+    guScaleF.c \
+    guTranslateF.c
+  ULTRA_C_FILES := $(addprefix lib/src/,$(ULTRA_C_FILES))
+endif
 
 # Sound files
 SOUND_BANK_FILES    := $(wildcard sound/sound_banks/*.json)
@@ -277,6 +311,16 @@ endif
 # Compiler Options                                                             #
 #==============================================================================#
 
+ifeq ($(TARGET_NDS),1)
+AS        := $(DEVKITARM)/bin/arm-none-eabi-as
+CC        := $(DEVKITARM)/bin/arm-none-eabi-gcc
+CPP       := $(DEVKITARM)/bin/arm-none-eabi-cpp -P
+CXX       := $(DEVKITARM)/bin/arm-none-eabi-g++
+LD        := $(CXX)
+OBJDUMP   := $(DEVKITARM)/bin/arm-none-eabi-objdump
+OBJCOPY   := $(DEVKITARM)/bin/arm-none-eabi-objcopy
+else
+
 # detect prefix for MIPS toolchain
 ifneq      ($(call find-command,mips-linux-gnu-ld),)
   CROSS := mips-linux-gnu-
@@ -315,6 +359,8 @@ AR        := $(CROSS)ar
 OBJDUMP   := $(CROSS)objdump
 OBJCOPY   := $(CROSS)objcopy
 
+endif
+
 ifeq ($(TARGET_N64),1)
   TARGET_CFLAGS := -nostdinc -DTARGET_N64 -D_LANGUAGE_C
   CC_CFLAGS := -fno-builtin
@@ -327,6 +373,21 @@ endif
 
 C_DEFINES := $(foreach d,$(DEFINES),-D$(d))
 DEF_INC_CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(C_DEFINES)
+
+ifeq ($(TARGET_NDS),1)
+
+LIBDIRS := $(DEVKITPRO)/libnds
+TARGET_CFLAGS := -march=armv5te -mtune=arm946e-s -fomit-frame-pointer -ffast-math $(foreach dir,$(LIBDIRS),-I$(dir)/include) -DTARGET_NDS -DARM9 -D_LANGUAGE_C -DNO_SEGMENTED_MEMORY -DLIBFAT
+TARGET_LDFLAGS := -lfat -lnds9 -specs=dsi_arm9.specs -g -mthumb -mthumb-interwork $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+CC_CHECK := $(CC)
+CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -Wall -Wextra -Wno-format-security -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS)
+
+ASFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
+CFLAGS := -fno-strict-aliasing -fwrapv $(OPT_FLAGS) $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
+LDFLAGS := $(TARGET_LDFLAGS)
+
+else
 
 # Check code syntax with host compiler
 CC_CHECK := gcc
@@ -356,6 +417,8 @@ endif
 
 # Prevent a crash with -sopt
 export LANG := C
+
+endif
 
 #==============================================================================#
 # Miscellaneous Tools                                                          #
@@ -509,6 +572,7 @@ $(BUILD_DIR)/%.ci4: %.ci4.png
 # Compressed Segment Generation                                                #
 #==============================================================================#
 
+ifeq ($(TARGET_N64),1)
 # Link segment file to resolve external labels
 # TODO: ideally this would be `-Trodata-segment=0x07000000` but that doesn't set the address
 $(BUILD_DIR)/%.elf: $(BUILD_DIR)/%.o
@@ -537,6 +601,7 @@ $(BUILD_DIR)/%.mio0: $(BUILD_DIR)/%.bin
 $(BUILD_DIR)/%.mio0.o: $(BUILD_DIR)/%.mio0
 	$(call print,Converting MIO0 to ELF:,$<,$@)
 	$(V)printf ".section .data\n\n.incbin \"$<\"\n" | $(AS) $(ASFLAGS) -o $@
+endif
 
 
 #==============================================================================#
@@ -727,6 +792,13 @@ $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
 	$(call print,Assembling:,$<,$@)
 	$(V)$(RSPASM) -sym $@.sym $(RSPASMFLAGS) -strequ CODE_FILE $(BUILD_DIR)/rsp/$*.bin -strequ DATA_FILE $(BUILD_DIR)/rsp/$*_data.bin $<
 
+# Build NDS ROM
+ifeq ($(TARGET_NDS),1)
+$(ROM): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
+	$(LD) -L $(BUILD_DIR) -o $@.elf $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
+	ndstool -c $@ -9 $@.elf
+else
+
 # Run linker script through the C preprocessor
 $(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT)
 	$(call print,Preprocessing linker script:,$<,$@)
@@ -757,6 +829,7 @@ $(ROM): $(ELF)
 $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@
 
+endif
 
 
 .PHONY: all clean distclean default diff test load libultra

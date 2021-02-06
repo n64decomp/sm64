@@ -1,4 +1,7 @@
 #include <PR/ultratypes.h>
+#ifndef TARGET_N64
+#include <string.h>
+#endif
 
 #include "sm64.h"
 
@@ -244,6 +247,7 @@ u32 main_pool_pop_state(void) {
  * function blocks until completion.
  */
 static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
+#ifdef TARGET_N64
     u32 size = ALIGN16(srcEnd - srcStart);
 
     osInvalDCache(dest, size);
@@ -258,6 +262,9 @@ static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
         srcStart += copySize;
         size -= copySize;
     }
+#else
+    memcpy(dest, srcStart, srcEnd - srcStart);
+#endif
 }
 
 /**

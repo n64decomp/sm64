@@ -712,6 +712,7 @@ void func_eu_802e9bec(s32 player, s32 channel, s32 arg2) {
  * Called from threads: thread4_sound
  */
 struct SPTask *create_next_audio_frame_task(void) {
+#ifdef TARGET_N64
     u32 samplesRemainingInAI;
     s32 writtenCmds;
     s32 index;
@@ -813,6 +814,9 @@ struct SPTask *create_next_audio_frame_task(void) {
 
     decrease_sample_dma_ttls();
     return gAudioTask;
+#else
+    return NULL;
+#endif
 }
 #endif
 
