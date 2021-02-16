@@ -1,17 +1,9 @@
-FROM ubuntu:18.04 as build
+FROM devkitpro/devkitarm:latest as build
 
-RUN apt-get update && \
-    apt-get install -y \
-        binutils-mips-linux-gnu \
-        bsdmainutils \
-        build-essential \
-        libcapstone-dev \
-        pkgconf \
-        python3
-
+RUN apt update
+RUN apt -y install build-essential bsdmainutils
 RUN mkdir /sm64
 WORKDIR /sm64
-ENV PATH="/sm64/tools:${PATH}"
 
-CMD echo 'usage: docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 sm64 make VERSION=us -j4\n' \
-         'see https://github.com/n64decomp/sm64/blob/master/README.md for advanced usage'
+CMD echo 'usage: docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 sm64dsi make VERSION=us COMPILER=gcc -j4\n' \
+         'see https://github.com/Hydr8gon/sm64/blob/nds/README.md for advanced usage'

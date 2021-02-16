@@ -6,13 +6,19 @@
 This repo does not include all assets necessary for compiling the ROMs.
 A prior copy of the game is required to extract the assets.
 
-## Installation
+## Windows installation
+ * Download the latest source from [here](https://github.com/Hydr8gon/sm64/archive/nds.zip), extract it somewhere
+ * Install Docker Desktop from [the Docker website](https://www.docker.com/get-started), and reboot when the installer prompts you
+ * Place a Super Mario 64 ROM as baserom.us.z64 in the directory you extracted the zip to
+ * Run `build_docker.bat`
+ * Once the build is complete, the game will be in `build/us_nds/`.
+
+## Linux installation
  * First follow [the guide for installing devkitPro packages](https://devkitpro.org/wiki/Getting_Started), also installing the `nds-dev` group as mentioned
  * Install the needed tools
    * Debian/Ubuntu: `sudo apt install -y build-essential git python`
-   * Fedora: `sudo dnf install make git python`
+   * Fedora: `sudo dnf install gcc make git python`
    * Arch/derivatives like Manjaro: `sudo pacman -S base-devel git python`
-   * Windows with MSYS2: `pacman -S make git python`
  * Clone this repository and change to its directory
    ```
    git clone https://github.com/Hydr8gon/sm64.git
@@ -21,6 +27,32 @@ A prior copy of the game is required to extract the assets.
  * Place a copy of the USA version of Super Mario 64 in this directory, named `baserom.us.z64`, it should be in the same directory as `Makefile`.
  * Run `make -j$(nproc)` to build the game
  * If the build succeeded, the game will be in `build/us_nds`, named `sm64.us.nds`
+
+## Docker Installation
+
+### Create Docker image
+
+After installing and starting Docker, create the docker image. This only needs to be done once.
+```
+docker build -t sm64dsi .
+```
+
+#### Build
+
+To build, mount the local filesystem into the Docker container and build the ROM with `docker run sm64 make`.
+
+##### macOS example for (U):
+```
+docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 sm64dsi make VERSION=us -j4
+```
+
+##### Linux example for (U):
+For a Linux host, Docker needs to be instructed which user should own the output files:
+```
+docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 --user $UID:$GID sm64dsi make VERSION=us -j4
+```
+
+Resulting artifacts can be found in the `build` directory.
 
 ## Project Structure
 	

@@ -61,6 +61,9 @@ endif
 ifeq ($(TARGET_NDS),1)
   OPT_FLAGS := -O2
   GRUCODE := f3dex2
+  COMPILER := gcc
+  DEVKITPRO ?= /opt/devkitpro
+  DEVKITARM ?= $(DEVKITPRO)/devkitARM
 endif
 
 TARGET := sm64.$(VERSION)
