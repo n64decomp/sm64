@@ -973,7 +973,7 @@ void draw_frame(Gfx *display_list) {
 
     // Process and draw a frame
     execute(display_list);
-    glFlush(0);
+    glFlush(GL_TRANS_MANUALSORT);
 
     // Limit to 30FPS by waiting for up to 2 frames, depending on how long it took the current frame to render
     for (int i = frame_count; i < 2; i++) {
