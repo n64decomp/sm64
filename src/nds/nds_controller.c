@@ -53,4 +53,10 @@ void osContGetReadData(OSContPad *pad) {
     if (keys & KEY_RIGHT) {
         pad->stick_x = 80;
     }
+
+    if (keys & KEY_TOUCH) {
+        touchPosition pos;
+        touchRead(&pos);
+        pad->button |= (pos.px < 128) ? L_CBUTTONS : R_CBUTTONS;
+    }
 }
