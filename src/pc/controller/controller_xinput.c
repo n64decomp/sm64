@@ -33,8 +33,10 @@ static void xinput_read(OSContPad *pad) {
 
             uint32_t magnitude_sq = (uint32_t)(gp->sThumbLX * gp->sThumbLX) + (uint32_t)(gp->sThumbLY * gp->sThumbLY);
             if (magnitude_sq > (uint32_t)(DEADZONE * DEADZONE)) {
-                pad->stick_x = gp->sThumbLX / 0x100;
-                pad->stick_y = gp->sThumbLY / 0x100;
+                // Game expects stick coordinates within -80..80
+                // 32768 / 409 = ~80
+                pad->stick_x = gp->sThumbLX / 409;
+                pad->stick_y = gp->sThumbLY / 409;
             }
             break;
         }

@@ -88,9 +88,10 @@ static void controller_sdl_read(OSContPad *pad) {
 
     uint32_t magnitude_sq = (uint32_t)(leftx * leftx) + (uint32_t)(lefty * lefty);
     if (magnitude_sq > (uint32_t)(DEADZONE * DEADZONE)) {
-        pad->stick_x = leftx / 0x100;
-        int stick_y = -lefty / 0x100;
-        pad->stick_y = stick_y == 128 ? 127 : stick_y;
+        // Game expects stick coordinates within -80..80
+        // 32768 / 409 = ~80
+        pad->stick_x = leftx / 409;
+        pad->stick_y = -lefty / 409;
     }
 }
 
