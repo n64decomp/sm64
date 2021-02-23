@@ -165,6 +165,31 @@ def parse_aifc(data, name, fname):
     loop = parse_aifc_loop(vadpcm_loops) if vadpcm_loops is not None else None
     return Aifc(name, fname, audio_data, sample_rate, book, loop)
 
+def parse_ima(data, name, fname, bank_name):
+    sample_rate = None
+    loop = None
+
+    with open("sound/samples/" + bank_name + "/" + name + ".aiff", "rb") as aiff:
+        aiff_data = aiff.read()
+        i = 12
+        sections = []
+        while i < len(aiff_data):
+            tp = aiff_data[i : i + 4]
+            (le,) = struct.unpack(">I", aiff_data[i + 4 : i + 8])
+            i += 8
+            sections.append((tp, aiff_data[i : i + le]))
+            i = align(i + le, 2)
+
+        for (tp, aiff_data) in sections:
+            if tp == b"COMM":
+                sample_rate = parse_f80(aiff_data[8:18])
+            elif tp == b"MARK":
+                start = (struct.unpack('>I', aiff_data[4:8])[0] >> 1) + 4
+                end = (struct.unpack('>I', aiff_data[16:20])[0] >> 1) + 4
+                loop = Loop(start, end, 1, None)
+
+    return Aifc(name, fname, b"\0\0\0\0" + data, sample_rate, None, loop)
+
 
 class ReserveSerializer:
     def __init__(self):
@@ -566,22 +591,31 @@ def serialize_ctl(bank, base_ser, is_shindou):
 
         # Book
         book_addr_buf.append(pack("P", ser.size))
-        ser.add(pack("ii", aifc.book.order, aifc.book.npredictors))
-        for x in aifc.book.table:
-            ser.add(pack("h", x))
+        if aifc.book is None:
+            ser.add(pack("ii", 0, 0))
+        else:
+            ser.add(pack("ii", aifc.book.order, aifc.book.npredictors))
+            for x in aifc.book.table:
+                ser.add(pack("h", x))
         ser.align(16)
 
         # Loop
         loop_addr_buf.append(pack("P", ser.size))
-        if aifc.loop is None:
-            assert sample_len % 9 in [0, 1]
-            end = sample_len // 9 * 16 + (sample_len % 2) + (sample_len % 9)
-            ser.add(pack("IIiI", 0, end, 0, 0))
+        if aifc.fname.endswith(".ima"):
+            if aifc.loop is None:
+                ser.add(pack("IIiI", 0, sample_len, 0, 0))
+            else:
+                ser.add(pack("IIiI", aifc.loop.start, aifc.loop.end, aifc.loop.count, 0))
         else:
-            ser.add(pack("IIiI", aifc.loop.start, aifc.loop.end, aifc.loop.count, 0))
-            assert aifc.loop.count != 0
-            for x in aifc.loop.state:
-                ser.add(pack("h", x))
+            if aifc.loop is None:
+                assert sample_len % 9 in [0, 1]
+                end = sample_len // 9 * 16 + (sample_len % 2) + (sample_len % 9)
+                ser.add(pack("IIiI", 0, end, 0, 0))
+            else:
+                ser.add(pack("IIiI", aifc.loop.start, aifc.loop.end, aifc.loop.count, 0))
+                assert aifc.loop.count != 0
+                for x in aifc.loop.state:
+                    ser.add(pack("h", x))
         ser.align(16)
 
     env_name_to_addr = {}
@@ -992,14 +1026,15 @@ def main():
         entries = []
         for f in sorted(os.listdir(dir)):
             fname = os.path.join(dir, f)
-            if not f.endswith(".aifc"):
-                continue
             try:
                 with open(fname, "rb") as inf:
                     data = inf.read()
-                    entries.append(parse_aifc(data, f[:-5], fname))
+                    if f.endswith(".aifc"):
+                        entries.append(parse_aifc(data, f[:-5], fname))
+                    elif f.endswith(".ima"):
+                        entries.append(parse_ima(data, f[:-4], fname, name))
             except Exception as e:
-                fail("malformed AIFC file " + fname + ": " + str(e))
+                fail("malformed audio file " + fname + ": " + str(e))
         if entries:
             sample_bank = SampleBank(name, entries)
             sample_banks.append(sample_bank)

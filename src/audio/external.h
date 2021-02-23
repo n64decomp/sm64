@@ -32,6 +32,7 @@ struct SPTask *func_sh_802f5a80(void);
 #endif
 void play_sound(s32 soundBits, f32 *pos);
 void audio_signal_game_loop_tick(void);
+void update_game_sound(void);
 void seq_player_fade_out(u8 player, u16 fadeDuration);
 void fade_volume_scale(u8 player, u8 targetScale, u16 fadeDuration);
 void seq_player_lower_volume(u8 player, u16 fadeDuration, u8 percentage);

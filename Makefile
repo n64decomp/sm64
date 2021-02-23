@@ -236,6 +236,7 @@ ULTRA_BIN_DIRS := lib/bin
 
 ifeq ($(TARGET_NDS),1)
   SRC_DIRS += src/nds
+  ARM7_SRC_DIRS := src/nds/arm7
 else
   SRC_DIRS += asm
   ULTRA_SRC_DIRS += lib/asm
@@ -269,14 +270,21 @@ ifeq ($(TARGET_NDS),1)
     guScaleF.c \
     guTranslateF.c
   ULTRA_C_FILES := $(addprefix lib/src/,$(ULTRA_C_FILES))
+
+  ARM7_C_FILES := $(foreach dir,$(ARM7_SRC_DIRS),$(wildcard $(dir)/*.c))
+  ARM7_O_FILES := $(foreach file,$(ARM7_C_FILES),$(BUILD_DIR)/arm7/$(file:.c=.o))
 endif
 
 # Sound files
 SOUND_BANK_FILES    := $(wildcard sound/sound_banks/*.json)
 SOUND_SAMPLE_DIRS   := $(wildcard sound/samples/*)
 SOUND_SAMPLE_AIFFS  := $(foreach dir,$(SOUND_SAMPLE_DIRS),$(wildcard $(dir)/*.aiff))
+ifdef TARGET_NDS
+SOUND_SAMPLE_AIFCS  := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.ima))
+else
 SOUND_SAMPLE_TABLES := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.table))
 SOUND_SAMPLE_AIFCS  := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.aifc))
+endif
 SOUND_SEQUENCE_DIRS := sound/sequences sound/sequences/$(VERSION)
 # all .m64 files in SOUND_SEQUENCE_DIRS, plus all .m64 files that are generated from .s files in SOUND_SEQUENCE_DIRS
 SOUND_SEQUENCE_FILES := \
@@ -297,6 +305,10 @@ GODDARD_O_FILES := $(foreach file,$(GODDARD_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 
 # Automatic dependency files
 DEP_FILES := $(O_FILES:.o=.d) $(ULTRA_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
+
+ifeq ($(TARGET_NDS),1)
+  DEP_FILES += $(ARM7_O_FILES:.o=.d)
+endif
 
 # Files with GLOBAL_ASM blocks
 ifeq ($(NON_MATCHING),0)
@@ -381,14 +393,18 @@ ifeq ($(TARGET_NDS),1)
 
 LIBDIRS := $(DEVKITPRO)/libnds
 TARGET_CFLAGS := -march=armv5te -mtune=arm946e-s -fomit-frame-pointer -ffast-math $(foreach dir,$(LIBDIRS),-I$(dir)/include) -DTARGET_NDS -DARM9 -D_LANGUAGE_C -DNO_SEGMENTED_MEMORY -DLIBFAT
-TARGET_LDFLAGS := -lfat -lnds9 -specs=dsi_arm9.specs -g -mthumb -mthumb-interwork $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+ARM7_TARGET_CFLAGS := -mcpu=arm7tdmi -mtune=arm7tdmi -fomit-frame-pointer -ffast-math $(foreach dir,$(LIBDIRS),-I$(dir)/include) -DTARGET_NDS -DARM7
 
 CC_CHECK := $(CC)
 CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -Wall -Wextra -Wno-format-security -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS)
+ARM7_CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(ARM7_TARGET_CFLAGS) -Wall -Wextra -Wno-format-security $(DEF_INC_CFLAGS)
 
 ASFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
 CFLAGS := -fno-strict-aliasing -fwrapv $(OPT_FLAGS) $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
-LDFLAGS := $(TARGET_LDFLAGS)
+LDFLAGS := -lfat -lnds9 -specs=dsi_arm9.specs -g -mthumb -mthumb-interwork $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+ARM7_CFLAGS := -fno-strict-aliasing -fwrapv $(OPT_FLAGS) $(ARM7_TARGET_CFLAGS) $(DEF_INC_CFLAGS)
+ARM7_LDFLAGS := -lnds7 -specs=ds_arm7.specs -g -mthumb-interwork $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 else
 
@@ -537,6 +553,10 @@ endif
 
 ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(GODDARD_SRC_DIRS) $(ULTRA_SRC_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) rsp include) $(MIO0_DIR) $(addprefix $(MIO0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION)
 
+ifeq ($(TARGET_NDS),1)
+  ALL_DIRS += $(addprefix $(BUILD_DIR)/arm7/,$(ARM7_SRC_DIRS))
+endif
+
 # Make sure build directory exists before compiling anything
 DUMMY != mkdir -p $(ALL_DIRS)
 
@@ -611,6 +631,11 @@ endif
 # Sound File Generation                                                        #
 #==============================================================================#
 
+ifdef TARGET_NDS
+$(BUILD_DIR)/%.ima: %.aiff
+	$(call print,Encoding IMA:,$<,$@)
+	$(V)sox $^ $@
+else
 $(BUILD_DIR)/%.table: %.aiff
 	$(call print,Extracting codebook:,$<,$@)
 	$(V)$(AIFF_EXTRACT_CODEBOOK) $< >$@
@@ -618,6 +643,7 @@ $(BUILD_DIR)/%.table: %.aiff
 $(BUILD_DIR)/%.aifc: $(BUILD_DIR)/%.table %.aiff
 	$(call print,Encoding VADPCM:,$<,$@)
 	$(V)$(VADPCM_ENC) -c $^ $@
+endif
 
 $(ENDIAN_BITWIDTH): $(TOOLS_DIR)/determine-endian-bitwidth.c
 	@$(PRINT) "$(GREEN)Generating endian-bitwidth $(NO_COL)\n"
@@ -720,6 +746,13 @@ $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
 	@$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
 	$(V)$(CC) -c $(CFLAGS) -o $@ $<
 
+ifeq ($(TARGET_NDS),1)
+$(BUILD_DIR)/arm7/%.o: %.c
+	$(call print,Compiling:,$<,$@)
+	@$(CC_CHECK) $(ARM7_CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/arm7/$*.d $<
+	$(V)$(CC) -c $(ARM7_CFLAGS) -o $@ $<
+endif
+
 # Alternate compiler flags needed for matching
 ifeq ($(COMPILER),ido)
   $(BUILD_DIR)/levels/%/leveldata.o: OPT_FLAGS := -g
@@ -797,9 +830,10 @@ $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
 
 # Build NDS ROM
 ifeq ($(TARGET_NDS),1)
-$(ROM): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
-	$(LD) -L $(BUILD_DIR) -o $@.elf $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
-	ndstool -c $@ -9 $@.elf
+$(ROM): $(O_FILES) $(ARM7_O_FILES) $(MIO0_FILES:.mio0=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
+	$(LD) -L $(BUILD_DIR) -o $@.arm9.elf $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
+	$(LD) -L $(BUILD_DIR) -o $@.arm7.elf $(ARM7_O_FILES) $(ARM7_LDFLAGS)
+	ndstool -c $@ -9 $@.arm9.elf -7 $@.arm7.elf
 else
 
 # Run linker script through the C preprocessor

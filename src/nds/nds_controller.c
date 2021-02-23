@@ -2,6 +2,8 @@
 
 #include "lib/src/osContInternal.h"
 
+extern u8 audio_state;
+
 s32 osContInit(UNUSED OSMesgQueue *mq, u8 *controllerBits, UNUSED OSContStatus *status) {
     *controllerBits = 1;
     return 0;
@@ -58,5 +60,9 @@ void osContGetReadData(OSContPad *pad) {
         touchPosition pos;
         touchRead(&pos);
         pad->button |= (pos.px < 128) ? L_CBUTTONS : R_CBUTTONS;
+    }
+
+    if (keysDown() & KEY_SELECT) {
+        audio_state = !audio_state;
     }
 }

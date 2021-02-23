@@ -16,9 +16,9 @@ A prior copy of the game is required to extract the assets.
 ## Linux installation
  * First follow [the guide for installing devkitPro packages](https://devkitpro.org/wiki/Getting_Started), also installing the `nds-dev` group as mentioned
  * Install the needed tools
-   * Debian/Ubuntu: `sudo apt install -y build-essential git python`
-   * Fedora: `sudo dnf install gcc make git python`
-   * Arch/derivatives like Manjaro: `sudo pacman -S base-devel git python`
+   * Debian/Ubuntu: `sudo apt install -y build-essential git python sox`
+   * Fedora: `sudo dnf install gcc make git python sox`
+   * Arch/derivatives like Manjaro: `sudo pacman -S base-devel git python sox`
  * Clone this repository and change to its directory
    ```
    git clone https://github.com/Hydr8gon/sm64.git

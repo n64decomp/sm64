@@ -2750,7 +2750,7 @@ void process_sequences(UNUSED s32 iterationsRemaining) {
 #endif
         }
     }
-#if defined(VERSION_JP) || defined(VERSION_US)
+#if (defined(VERSION_JP) || defined(VERSION_US)) && !defined(TARGET_NDS)
     reclaim_notes();
 #endif
     process_notes();
