@@ -1,0 +1,197 @@
+diff --git a/extraout.py b/extraout.py
+new file mode 100755
+index 0000000..f7633b1
+--- /dev/null
++++ b/extraout.py
+@@ -0,0 +1,71 @@
++#! /usr/bin/env python3
++from pypresence import Presence
++import time
++import json
++
++course_name_map = {
++    0:  "Castle Grounds",
++    1:  "Bob Omb Battlefield",
++    2:  "Whomp's Fortress",
++    3:  "Jolly Rodger's Bay",
++    4:  "Cool Cool Mountain",
++    5:  "Big Boo's Haunt",
++    6:  "Hazy Maze Cave",
++    7:  "Lethal Lava Land",
++    8:  "Shifting Sand Land",
++    9:  "Dire Dire Docks",
++    10: "Snowman's Land",
++    11: "Wet Dry World",
++    12: "Tall Tall Mountain",
++    13: "Tiny Huge Island",
++    14: "Tick Tock Clock",
++    15: "Rainbow Ride",
++    16: "Bowser in the Dark World",
++    17: "Bowser in the Fire Sea",
++    18: "Bowser in the Sky",
++    19: "Princess's Secret Slide",
++    20: "Cavern of the Metal Cap",
++    21: "Tower of the Wing Cap",
++    22: "Vanish Cap Under the Moat",
++    23: "Winged Mario over the Rainbow",
++    24: "Secret Aquarium",
++    25: "The End"
++}
++
++client_id = '813771660048990250'
++RPC = Presence(client_id, pipe=0)
++RPC.connect()
++
++readhere = False
++buffer = ""
++olddata = {}
++while True:
++    line = input()
++    if line == "---":
++        if readhere:
++            readhere = False
++            
++            buffer = json.loads(buffer)
++            del buffer["position"]
++            if buffer == olddata:
++                buffer = ""
++                continue
++            olddata = buffer
++            RPC.update(
++                details=f"In course {buffer['courseNum']} ({course_name_map[buffer['courseNum']]})",
++                state=f"Mission: {buffer['courseActNum']}\n"
++                      f"Stars: {buffer['stars']}\n"
++                      +(f"Coins: {buffer['coins']}\n" if buffer["courseNum"] != 0 else "")+
++                      f"Health: {buffer['health']}\n"
++                      f"Lives: {buffer['lives']}",
++                large_image=f"c{buffer['courseNum']}",
++                large_text=course_name_map[buffer["courseNum"]]
++            )
++            
++            buffer = ""
++        else:
++            readhere = True
++        continue
++    if (readhere):
++        buffer += line
++
+diff --git a/src/game/extraout.c b/src/game/extraout.c
+new file mode 100644
+index 0000000..f16327a
+--- /dev/null
++++ b/src/game/extraout.c
+@@ -0,0 +1,87 @@
++#if defined(TARGET_LINUX) || defined(TARGET_WINDOWS) || defined(TARGET_MACOS)
++#define TARGET_PC
++#endif
++
++#ifdef TARGET_PC
++#include <stdio.h>
++#else
++#include "libc/stdio.h"
++#endif
++
++#include "sm64.h"
++#include "print.h"
++#include "area.h"
++#include "PR/gbi.h"
++#include "goddard/renderer.h"
++#include "segment2.h"
++#include "game_init.h"
++#include "hud.h"
++#include "ingame_menu.h"
++#include "level_update.h"
++
++static int show_hud =
++#ifdef TARGET_PC
++    0;
++#else
++    1;
++#endif
++static char *message = NULL;
++static char messagear[30];
++static int debugOutRefresh = 0;
++void extraout(void) {
++    // Update message every 30 frames
++    if (debugOutRefresh-- == 0) {
++        debugOutRefresh = 30;
++
++        // Get message
++        if (gHudDisplay.wedges == 0) {
++            message = "RIP Mario";
++        } else if (gHudDisplay.coins == 100) {
++            message = "Rich Mario";
++        } else {
++            // Format string
++            sprintf(messagear, "+*%d  H*%d  -*%d  ,*%d", gHudDisplay.coins, gHudDisplay.wedges,
++                    gHudDisplay.stars, gHudDisplay.lives);
++            message = messagear;
++        }
++
++#ifdef TARGET_PC
++        // Write to file
++        remove("message.txt");
++        FILE *ffile = fopen("message.txt", "w");
++        fputs(message, ffile);
++        fclose(ffile);
++
++        // JSON output
++        float *pos = (gMarioStates[0].marioObj->header.gfx.pos);
++        setvbuf(stdout, NULL, _IONBF, 0);
++        printf("---\n"
++               "{\n"
++               "    \"message\": \"%s\",\n"
++               "    \"courseNum\": %d,\n"
++               "    \"courseActNum\": %d,\n"
++               "    \"position\": [%f, %f, %f],\n"
++               "    \"health\": %i,\n"
++               "    \"lives\": %i,\n"
++               "    \"stars\": %i,\n"
++               "    \"coins\": %i,\n"
++               "    \"hudFlags\": %i\n"
++               "}\n"
++               "---\n",
++               message, gCurrCourseNum, gDialogCourseActNum, pos[0], pos[1], pos[2], gHudDisplay.wedges,
++               gHudDisplay.lives, gHudDisplay.stars, gHudDisplay.coins, gHudDisplay.flags);
++#endif
++    }
++
++    // Print message every frame
++    if (message != NULL && show_hud) {
++        print_text(5, 5, message);
++    }
++
++    // Check if L was pressed in pause menu
++    if (sCurrPlayMode == 2) {
++        if (gPlayer1Controller->buttonPressed & R_TRIG) {
++            show_hud ^= 1;
++        }
++    }
++}
+diff --git a/src/game/extraout.h b/src/game/extraout.h
+new file mode 100644
+index 0000000..9481bf4
+--- /dev/null
++++ b/src/game/extraout.h
+@@ -0,0 +1 @@
++void extraout(void);
+diff --git a/src/game/hud.c b/src/game/hud.c
+index 8d4daa5..3c8c8e0 100644
+--- a/src/game/hud.c
++++ b/src/game/hud.c
+@@ -13,6 +13,7 @@
+ #include "area.h"
+ #include "save_file.h"
+ #include "print.h"
++#include "extraout.h"
+ 
+ /* @file hud.c
+  * This file implements HUD rendering and power meter animations.
+@@ -475,5 +476,7 @@ void render_hud(void) {
+         if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
+             render_hud_timer();
+         }
++        
++        extraout();
+     }
+ }
