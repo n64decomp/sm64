@@ -17,8 +17,7 @@ struct Vertex {
 };
 
 struct Texture {
-    uint8_t *original;
-    uint8_t *converted;
+    uint8_t *address;
     int name;
     uint8_t type;
     uint8_t size_x;
@@ -82,14 +81,14 @@ static int frame_count;
 static void load_texture() {
     // Look up the current texture using a simple hash calculated from its address
     uint32_t index = ((uint32_t)texture_address >> 5) & 0x7FF;
-    while (texture_map[index].original != texture_address && texture_map[index].original != NULL) {
+    while (texture_map[index].address != texture_address && texture_map[index].address != NULL) {
         index = (index + 1) & 0x7FF;
     }
 
     struct Texture *cur = &texture_map[index];
 
     // Load the texture if it was found
-    if (cur->original != NULL) {
+    if (cur->address != NULL) {
         if (cur->name) {
             glBindTexture(GL_TEXTURE_2D, cur->name);
             return;
@@ -98,7 +97,7 @@ static void load_texture() {
         // Copy the texture back into VRAM if it was pushed out, pushing out other textures if necessary
         glGenTextures(1, &cur->name);
         glBindTexture(GL_TEXTURE_2D, cur->name);
-        while (!glTexImage2D(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->converted)) {
+        while (!glTexImage2D(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->address)) {
             glDeleteTextures(1, &texture_map[texture_fifo[texture_fifo_end]].name);
             texture_map[texture_fifo[texture_fifo_end]].name = 0;
             texture_fifo_end = (texture_fifo_end + 1) & 0x7FF;
@@ -108,100 +107,12 @@ static void load_texture() {
         return;
     }
 
-    cur->original = texture_address;
+    cur->address = texture_address;
 
-    // The DS only supports texture sizes of 8 << x, but the N64 is less restricted
-    // If a size is unsupported, the next size up is used and the texture is repeated to fill extra space
-
-    // Determine the width of the new texture
-    const int width = texture_row_size << (4 - texture_bit_width);
-    for (cur->size_x = 0; (width - 1) >> (cur->size_x + 3) != 0; cur->size_x++);
-    const int conv_width = 8 << cur->size_x;
-
-    // Determine the height of the new texture
-    const int height = ((texture_size << 1) >> texture_bit_width) / width;
-    for (cur->size_y = 0; (height - 1) >> (cur->size_y + 3) != 0; cur->size_y++);
-    const int conv_height = 8 << cur->size_y;
-
-    // Convert the texture to a format the DS understands
+    // Set the texture format; textures are converted to DS formats at compile time
     switch (texture_format) {
-        case G_IM_FMT_RGBA:
-            switch (texture_bit_width) {
-                case G_IM_SIZ_16b:
-                    cur->converted = (uint8_t*)malloc(conv_width * conv_height * 2);
-                    for (int y = 0; y < conv_height; y++) {
-                        for (int x = 0; x < conv_width; x++) {
-                            const int index = ((y % height) * width + (x % width)) * 2;
-                            const uint16_t color = (texture_address[index] << 8) | texture_address[index + 1];
-                            const uint8_t r = ((color >> 11) & 0x1F);
-                            const uint8_t g = ((color >>  6) & 0x1F);
-                            const uint8_t b = ((color >>  1) & 0x1F);
-                            const uint8_t a = ((color >>  0) & 0x01);
-                            ((uint16_t*)cur->converted)[y * conv_width + x] = (a << 15) | (b << 10) | (g << 5) | r;
-                        }
-                    }
-                    DC_FlushRange(cur->converted, conv_width * conv_height * 2);
-                    cur->type = GL_RGBA;
-                    break;
-
-                default:
-                    //printf("Unsupported RGBA texture bit width: %d\n", texture_bit_width);
-                    glBindTexture(GL_TEXTURE_2D, cur->name = no_texture);
-                    return;
-            }
-            break;
-
-        case G_IM_FMT_IA:
-            switch (texture_bit_width) {
-                case G_IM_SIZ_4b:
-                    cur->converted = (uint8_t*)malloc(conv_width * conv_height);
-                    for (int y = 0; y < conv_height; y++) {
-                        for (int x = 0; x < conv_width; x++) {
-                            const int index = (y % height) * width + (x % width);
-                            const uint8_t color = (texture_address[index / 2] >> ((index & 1) ? 0 : 4)) & 0x0F;
-                            const uint8_t i = ((color >> 1) & 0x07);
-                            const uint8_t a = ((color >> 0) & 0x01) ? 31 : 0;
-                            cur->converted[y * conv_width + x] = (a << 3) | i;
-                        }
-                    }
-                    DC_FlushRange(cur->converted, conv_width * conv_height);
-                    cur->type = GL_RGB8_A5;
-                    break;
-
-                case G_IM_SIZ_8b:
-                    cur->converted = (uint8_t*)malloc(conv_width * conv_height);
-                    for (int y = 0; y < conv_height; y++) {
-                        for (int x = 0; x < conv_width; x++) {
-                            const uint8_t color = texture_address[(y % height) * width + (x % width)];
-                            const uint8_t i = ((color >> 4) & 0x0F) *  7 / 15;
-                            const uint8_t a = ((color >> 0) & 0x0F) * 31 / 15;
-                            cur->converted[y * conv_width + x] = (a << 3) | i;
-                        }
-                    }
-                    DC_FlushRange(cur->converted, conv_width * conv_height);
-                    cur->type = GL_RGB8_A5;
-                    break;
-
-                case G_IM_SIZ_16b:
-                    cur->converted = (uint8_t*)malloc(conv_width * conv_height);
-                    for (int y = 0; y < conv_height; y++) {
-                        for (int x = 0; x < conv_width; x++) {
-                            const int index = ((y % height) * width + (x % width)) * 2;
-                            const uint8_t i = texture_address[index + 0] *  7 / 255;
-                            const uint8_t a = texture_address[index + 1] * 31 / 255;
-                            cur->converted[y * conv_width + x] = (a << 3) | i;
-                        }
-                    }
-                    DC_FlushRange(cur->converted, conv_width * conv_height);
-                    cur->type = GL_RGB8_A5;
-                    break;
-
-                default:
-                    //printf("Unsupported IA texture bit width: %d\n", texture_bit_width);
-                    glBindTexture(GL_TEXTURE_2D, cur->name = no_texture);
-                    return;
-            }
-            break;
+        case G_IM_FMT_RGBA: cur->type = GL_RGBA;    break;
+        case G_IM_FMT_IA:   cur->type = GL_RGB8_A5; break;
 
         default:
             //printf("Unsupported texture format: %d\n", texture_format);
@@ -209,10 +120,16 @@ static void load_texture() {
             return;
     }
 
+    // Determine the texture size in terms of 8 << x; textures are fitted to these constraints at compile time
+    const int width = texture_row_size << (4 - texture_bit_width);
+    const int height = ((texture_size << 1) >> texture_bit_width) / width;
+    for (cur->size_x = 0; (width  - 1) >> (cur->size_x + 3) != 0; cur->size_x++);
+    for (cur->size_y = 0; (height - 1) >> (cur->size_y + 3) != 0; cur->size_y++);
+
     // Copy the texture into VRAM, pushing out other textures if necessary
     glGenTextures(1, &cur->name);
     glBindTexture(GL_TEXTURE_2D, cur->name);
-    while (!glTexImage2D(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->converted)) {
+    while (!glTexImage2D(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->address)) {
         glDeleteTextures(1, &texture_map[texture_fifo[texture_fifo_end]].name);
         texture_map[texture_fifo[texture_fifo_end]].name = 0;
         texture_fifo_end = (texture_fifo_end + 1) & 0x7FF;

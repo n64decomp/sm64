@@ -77,6 +77,7 @@ char *writeDir;
 char skyboxName[256];
 bool expanded = false;
 bool writeTiles;
+bool ndsFormat;
 
 static void allocate_tiles() {
     const ImageProps props = IMAGE_PROPERTIES[type][true];
@@ -267,8 +268,21 @@ static unsigned int get_index(TextureTile *t, unsigned int i) {
 
 static void print_raw_data(FILE *cFile, TextureTile *tile) {
     ImageProps props = IMAGE_PROPERTIES[type][true];
-    uint8_t *raw = malloc(props.tileWidth * props.tileHeight * 2);
-    int size = rgba2raw(raw, tile->px, props.tileWidth, props.tileHeight, 16);
+    uint8_t *raw;
+    int size;
+    if (ndsFormat) {
+        // The DS only supports texture sizes of 8 << x; use the smallest size big enough to hold the texture
+        int size_x, size_y;
+        for (size_x = 0; (props.tileWidth  - 1) >> (size_x + 3) != 0; size_x++);
+        for (size_y = 0; (props.tileHeight - 1) >> (size_y + 3) != 0; size_y++);
+        const int nds_width  = 8 << size_x;
+        const int nds_height = 8 << size_y;
+        raw = malloc(nds_width * nds_height * 2);
+        size = rgba2nds(raw, tile->px, props.tileWidth, props.tileHeight, 16, nds_width, nds_height);
+    } else {
+        raw = malloc(props.tileWidth * props.tileHeight * 2);
+        size = rgba2raw(raw, tile->px, props.tileWidth, props.tileHeight, 16);
+    }
     fprint_write_output(cFile, SKYCONV_ENCODING, raw, size);
     free(raw);
 }
@@ -479,7 +493,8 @@ static void usage() {
             "Usage: %s --type sky|cake|cake_eu {--combine INPUT OUTPUT | --split INPUT OUTPUT}\n"
             "\n"
             "Optional arguments:\n"
-            " --write-tiles OUTDIR      Also create the individual tiles' PNG files\n", programName);
+            " --write-tiles OUTDIR      Also create the individual tiles' PNG files\n"
+            " -d                        export binary files in NDS format\n", programName);
 }
 
 // Modified from n64split
@@ -535,6 +550,10 @@ static int parse_arguments(int argc, char *argv[]) {
 
             writeTiles = true;
             writeDir = argv[i];
+        }
+
+        if (strcmp(argv[i], "-d") == 0) {
+            ndsFormat = true;
         }
     }
 

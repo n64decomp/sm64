@@ -53,6 +53,17 @@ int ia2raw(uint8_t *raw, const ia *img, int width, int height, int depth);
 // intermediate IA -> N64 raw I4/I8
 int i2raw(uint8_t *raw, const ia *img, int width, int height, int depth);
 
+//---------------------------------------------------------
+// intermediate RGBA/IA -> NDS RGBA/IA
+// returns length written to 'raw' used or -1 on error
+//---------------------------------------------------------
+
+// intermediate RGBA -> NDS raw RGBA16/RGBA32
+int rgba2nds(uint8_t *raw, const rgba *img, int width, int height, int depth, int nds_width, int nds_height);
+
+// intermediate IA -> NDS raw IA1/IA4/IA8/IA16
+int ia2nds(uint8_t *raw, const ia *img, int width, int height, int depth, int nds_width, int nds_height);
+
 
 //---------------------------------------------------------
 // N64 CI <-> N64 RGBA16/IA16

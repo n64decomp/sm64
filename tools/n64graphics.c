@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
@@ -321,6 +322,78 @@ int i2raw(uint8_t *raw, const ia *img, int width, int height, int depth)
 
 
 //---------------------------------------------------------
+// internal RGBA/IA -> NDS RGBA/IA
+// returns length written to 'raw' used or -1 on error
+//---------------------------------------------------------
+
+int rgba2nds(uint8_t *raw, const rgba *img, int width, int height, int depth, int nds_width, int nds_height)
+{
+   int size = (nds_width * nds_height * 16 + 7) / 8;
+   INFO("Converting RGBA%d %dx%d to NDS raw\n", depth, width, height);
+
+   switch (depth) {
+      case 16: case 32:
+         for (int y = 0; y < nds_height; y++) {
+            for (int x = 0; x < nds_width; x++) {
+               int i = (y % height) * width + (x % width);
+               int j = y * nds_width + x;
+               uint8_t r = SCALE_8_5(img[i].red);
+               uint8_t g = SCALE_8_5(img[i].green);
+               uint8_t b = SCALE_8_5(img[i].blue);
+               uint8_t a = img[i].alpha ? 0x1 : 0x0;
+               raw[j*2]   = ((g & 0x7) << 5) | r;
+               raw[j*2+1] = (a << 7) | (b << 2) | (g >> 3);
+            }
+         }
+         break;
+      default:
+         ERROR("Error invalid depth %d\n", depth);
+         size = -1;
+         break;
+   }
+
+   return size;
+}
+
+int ia2nds(uint8_t *raw, const ia *img, int width, int height, int depth, int nds_width, int nds_height)
+{
+   int size = (nds_width * nds_height * 8 + 7) / 8;
+   INFO("Converting IA%d %dx%d to NDS raw\n", depth, width, height);
+
+   switch (depth) {
+      case 1:
+         for (int y = 0; y < nds_height; y++) {
+            for (int x = 0; x < nds_width; x++) {
+               int i = (y % height) * width + (x % width);
+               int j = y * nds_width + x;
+               uint8_t val = img[i].intensity ? 0x7 : 0x0;
+               uint8_t alpha = img[i].intensity ? 0x1F : 0x00;
+               raw[j] = (alpha << 3) | val;
+            }
+         }
+         break;
+      case 4: case 8: case 16:
+         for (int y = 0; y < nds_height; y++) {
+            for (int x = 0; x < nds_width; x++) {
+               int i = (y % height) * width + (x % width);
+               int j = y * nds_width + x;
+               uint8_t val = SCALE_8_3(img[i].intensity);
+               uint8_t alpha = SCALE_8_5(img[i].alpha);
+               raw[j] = (alpha << 3) | val;
+            }
+         }
+         break;
+      default:
+         ERROR("Error invalid depth %d\n", depth);
+         size = -1;
+         break;
+   }
+
+   return size;
+}
+
+
+//---------------------------------------------------------
 // internal RGBA/IA -> PNG
 //---------------------------------------------------------
 
@@ -602,6 +675,7 @@ typedef struct
    int height;
    int bin_truncate;
    int pal_truncate;
+   bool nds_format;
 } graphics_config;
 
 static const graphics_config default_config =
@@ -619,6 +693,7 @@ static const graphics_config default_config =
    .height = 32,
    .bin_truncate = 1,
    .pal_truncate = 1,
+   .nds_format = false,
 };
 
 typedef struct
@@ -701,7 +776,7 @@ static int parse_encoding(write_encoding *encoding, const char *str)
 
 static void print_usage(void)
 {
-   ERROR("Usage: n64graphics -e/-i BIN_FILE -g IMG_FILE [-p PAL_FILE] [-o BIN_OFFSET] [-P PAL_OFFSET] [-f FORMAT] [-c CI_FORMAT] [-w WIDTH] [-h HEIGHT] [-V]\n"
+   ERROR("Usage: n64graphics -e/-i BIN_FILE -g IMG_FILE [-p PAL_FILE] [-o BIN_OFFSET] [-P PAL_OFFSET] [-f FORMAT] [-c CI_FORMAT] [-w WIDTH] [-h HEIGHT] [-V] [-d]\n"
          "\n"
          "n64graphics v" N64GRAPHICS_VERSION ": N64 graphics manipulator\n"
          "\n"
@@ -721,7 +796,8 @@ static void print_usage(void)
          " -P PAL_OFFSET starting offset in PAL_FILE (prevents truncation during import)\n"
          "Other arguments:\n"
          " -v            verbose logging\n"
-         " -V            print version information\n",
+         " -V            print version information\n"
+         " -d            export binary files in NDS format\n",
          format2str(&default_config.format),
          encoding2str(default_config.encoding),
          default_config.width,
@@ -748,6 +824,9 @@ static int parse_arguments(int argc, char *argv[], graphics_config *config)
                if (!parse_format(&config->pal_format, argv[i])) {
                   return 0;
                }
+               break;
+            case 'd':
+               config->nds_format = true;
                break;
             case 'e':
                if (++i >= argc) return 0;
@@ -868,23 +947,56 @@ int main(int argc, char *argv[])
       switch (config.format.format) {
          case IMG_FORMAT_RGBA:
             imgr = png2rgba(config.img_filename, &config.width, &config.height);
-            raw_size = (config.width * config.height * config.format.depth + 7) / 8;
-            raw = malloc(raw_size);
-            if (!raw) {
-               ERROR("Error allocating %u bytes\n", raw_size);
+            if (config.nds_format) {
+               // The DS only supports texture sizes of 8 << x; use the smallest size big enough to hold the texture
+               int size_x, size_y;
+               for (size_x = 0; (config.width  - 1) >> (size_x + 3) != 0; size_x++);
+               for (size_y = 0; (config.height - 1) >> (size_y + 3) != 0; size_y++);
+               const int nds_width  = 8 << size_x;
+               const int nds_height = 8 << size_y;
+               raw_size = (nds_width * nds_height * 16 + 7) / 8;
+               raw = malloc(raw_size);
+               if (!raw) {
+                  ERROR("Error allocating %u bytes\n", raw_size);
+               }
+               length = rgba2nds(raw, imgr, config.width, config.height, config.format.depth, nds_width, nds_height);
+            } else {
+               raw_size = (config.width * config.height * config.format.depth + 7) / 8;
+               raw = malloc(raw_size);
+               if (!raw) {
+                  ERROR("Error allocating %u bytes\n", raw_size);
+               }
+               length = rgba2raw(raw, imgr, config.width, config.height, config.format.depth);
             }
-            length = rgba2raw(raw, imgr, config.width, config.height, config.format.depth);
             break;
          case IMG_FORMAT_IA:
             imgi = png2ia(config.img_filename, &config.width, &config.height);
-            raw_size = (config.width * config.height * config.format.depth + 7) / 8;
-            raw = malloc(raw_size);
-            if (!raw) {
-               ERROR("Error allocating %u bytes\n", raw_size);
+            if (config.nds_format) {
+               // The DS only supports texture sizes of 8 << x; use the smallest size big enough to hold the texture
+               int size_x, size_y;
+               for (size_x = 0; (config.width  - 1) >> (size_x + 3) != 0; size_x++);
+               for (size_y = 0; (config.height - 1) >> (size_y + 3) != 0; size_y++);
+               const int nds_width  = 8 << size_x;
+               const int nds_height = 8 << size_y;
+               raw_size = (nds_width * nds_height * 8 + 7) / 8;
+               raw = malloc(raw_size);
+               if (!raw) {
+                  ERROR("Error allocating %u bytes\n", raw_size);
+               }
+               length = ia2nds(raw, imgi, config.width, config.height, config.format.depth, nds_width, nds_height);
+            } else {
+               raw_size = (config.width * config.height * config.format.depth + 7) / 8;
+               raw = malloc(raw_size);
+               if (!raw) {
+                  ERROR("Error allocating %u bytes\n", raw_size);
+               }
+               length = ia2raw(raw, imgi, config.width, config.height, config.format.depth);
             }
-            length = ia2raw(raw, imgi, config.width, config.height, config.format.depth);
             break;
          case IMG_FORMAT_I:
+            if (config.nds_format) {
+               ERROR("I texture conversion to NDS format is unimplemented\n");
+            }
             imgi = png2ia(config.img_filename, &config.width, &config.height);
             raw_size = (config.width * config.height * config.format.depth + 7) / 8;
             raw = malloc(raw_size);
@@ -905,6 +1017,9 @@ int main(int argc, char *argv[])
             int pal_success;
             int pal_length;
 
+            if (config.nds_format) {
+               ERROR("CI texture conversion to NDS format is unimplemented\n");
+            }
             if (config.pal_truncate) {
                pal_fp = fopen(config.pal_filename, "wb");
             } else {
