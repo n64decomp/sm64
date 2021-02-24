@@ -453,6 +453,7 @@ AIFF_EXTRACT_CODEBOOK := $(TOOLS_DIR)/aiff_extract_codebook
 VADPCM_ENC            := $(TOOLS_DIR)/vadpcm_enc
 EXTRACT_DATA_FOR_MIO  := $(TOOLS_DIR)/extract_data_for_mio
 SKYCONV               := $(TOOLS_DIR)/skyconv
+ADPCM_XQ              := $(TOOLS_DIR)/adpcm_xq
 # Use the system installed armips if available. Otherwise use the one provided with this repository.
 ifneq (,$(call find-command,armips))
   RSPASM              := armips
@@ -632,9 +633,14 @@ endif
 #==============================================================================#
 
 ifdef TARGET_NDS
-$(BUILD_DIR)/%.ima: %.aiff
-	$(call print,Encoding IMA:,$<,$@)
+$(BUILD_DIR)/%.wav: %.aiff
+	$(call print,Converting AIFF:,$<,$@)
 	$(V)sox $^ $@
+
+$(BUILD_DIR)/%.ima: $(BUILD_DIR)/%.wav
+	$(call print,Encoding IMA:,$<,$@)
+	$(V)$(ADPCM_XQ) -q -r -b15 $^ $@
+
 else
 $(BUILD_DIR)/%.table: %.aiff
 	$(call print,Extracting codebook:,$<,$@)

@@ -188,7 +188,7 @@ def parse_ima(data, name, fname, bank_name):
                 end = (struct.unpack('>I', aiff_data[16:20])[0] >> 1) + 4
                 loop = Loop(start, end, 1, None)
 
-    return Aifc(name, fname, b"\0\0\0\0" + data, sample_rate, None, loop)
+    return Aifc(name, fname, data, sample_rate, None, loop)
 
 
 class ReserveSerializer:
