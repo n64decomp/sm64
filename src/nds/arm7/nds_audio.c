@@ -2,11 +2,19 @@
 
 #include "nds_audio.h"
 
-static u32 calculate_vol_pan(struct Note *note) {
+static u16 calculate_freq(const struct Note *note) {
+    // Calculate the DS frequency for a note
+    // Some frequencies are too high, but clipping at least lets them get as close as possible
+    u32 freq = note->frequency * 32768;
+    if (freq > 0xFFFF) freq = 0xFFFF;
+    return SOUND_FREQ((u16)freq);
+}
+
+static u32 calculate_vol_pan(const struct Note *note) {
     // Calculate the DS volume and pan values for a note
-    u32 vol = (note->targetVolLeft + note->targetVolRight) / 2;
-    u32 pan = (vol << 14) / note->targetVolLeft;
-    vol >>= 7;
+    u32 vol = note->targetVolLeft + note->targetVolRight;
+    u32 pan = (vol << 13) / note->targetVolLeft;
+    vol >>= 8;
     pan >>= 8;
     if (vol > 127) vol = 127;
     if (pan > 127) pan = 127;
@@ -31,13 +39,13 @@ void play_notes(struct Note *notes) {
                 SCHANNEL_SOURCE(i) = (u32)sample->sampleAddr;
                 SCHANNEL_REPEAT_POINT(i) = sample->loop->start / sizeof(u32);
                 SCHANNEL_LENGTH(i) = (sample->loop->end - sample->loop->start) / sizeof(u32);
-                SCHANNEL_TIMER(i) = SOUND_FREQ((u16)(note->frequency * 32768));
+                SCHANNEL_TIMER(i) = calculate_freq(note);
                 SCHANNEL_CR(i) = SCHANNEL_ENABLE | SOUND_FORMAT_ADPCM | calculate_vol_pan(note) | loop;
 
                 note->needsInit = false;
             } else if (SCHANNEL_CR(i) & SCHANNEL_ENABLE) {
                 // Update the parameters of a currently playing note
-                SCHANNEL_TIMER(i) = SOUND_FREQ((u16)(note->frequency * 32768));
+                SCHANNEL_TIMER(i) = calculate_freq(note);
                 SCHANNEL_CR(i) = (SCHANNEL_CR(i) & ~(SOUND_VOL(127) | SOUND_PAN(127))) | calculate_vol_pan(note);
             }
         } else {
