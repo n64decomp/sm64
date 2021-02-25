@@ -179,10 +179,45 @@ static void draw_vertices(const struct Vertex **v, int count) {
         }
 
         // Send the vertices to the 3D engine
-        for (int i = 0; i < count; i++) {
-            if (use_color) glColor3b(v[i]->color.r, v[i]->color.g, v[i]->color.b);
-            if (use_texture) glTexCoord2t16(v[i]->s, v[i]->t);
-            glVertex3v16(v[i]->x, v[i]->y, v[i]->z);
+        if ((other_mode_l & ZMODE_DEC) == ZMODE_DEC) {
+            for (int i = 0; i < count; i++) {
+                // Send the vertex attributes to the 3D engine
+                if (use_color) glColor3b(v[i]->color.r, v[i]->color.g, v[i]->color.b);
+                if (use_texture) glTexCoord2t16(v[i]->s, v[i]->t);
+
+                // Use position test to project the vertex so the result can be hijacked before sending it for real
+                PosTest(v[i]->x, v[i]->y, v[i]->z);
+
+                // Push the current matrices to the stack, and load an identity matrix so the outgoing vertex won't be affected
+                glMatrixMode(GL_MODELVIEW);
+                glPushMatrix();
+                glLoadIdentity();
+                glMatrixMode(GL_PROJECTION);
+                glPushMatrix();
+
+                // Reduce the Z value for decal mode to reduce Z-fighting
+                // Since the W value can't be set directly, use a scaling matrix with a vertex of 1s to send the coordinates
+                const m4x4 vertex = {{
+                    PosTestXresult(), 0, 0, 0,
+                    0, PosTestYresult(), 0, 0,
+                    0, 0, PosTestZresult() - 3, 0,
+                    0, 0, 0, PosTestWresult()
+                }};
+                glLoadMatrix4x4(&vertex);
+                glVertex3v16(1 << 12, 1 << 12, 1 << 12);
+
+                // Restore the original matrices
+                glPopMatrix(1);
+                glMatrixMode(GL_MODELVIEW);
+                glPopMatrix(1);
+            }
+        } else {
+            // Send the vertices normally
+            for (int i = 0; i < count; i++) {
+                if (use_color) glColor3b(v[i]->color.r, v[i]->color.g, v[i]->color.b);
+                if (use_texture) glTexCoord2t16(v[i]->s, v[i]->t);
+                glVertex3v16(v[i]->x, v[i]->y, v[i]->z);
+            }
         }
 
         // As part of the depth hack, move the hijacked Z value to the front once normal polygons start being sent
