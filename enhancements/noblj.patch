@@ -1,0 +1,19 @@
+diff --git a/src/game/mario_actions_moving.c b/src/game/mario_actions_moving.c
+index 8b8e8e1..c110581 100644
+--- a/src/game/mario_actions_moving.c
++++ b/src/game/mario_actions_moving.c
+@@ -1845,12 +1845,10 @@ s32 act_hold_freefall_land(struct MarioState *m) {
+ }
+ 
+ s32 act_long_jump_land(struct MarioState *m) {
+-#ifdef VERSION_SH
+-    // BLJ (Backwards Long Jump) speed build up fix, crushing SimpleFlips's dreams since July 1997
++    // BLJ (Backwards Long Jump) fix
+     if (m->forwardVel < 0.0f) {
+-        m->forwardVel = 0.0f;
++       m->input = 0;
+     }
+-#endif
+ 
+     if (!(m->input & INPUT_Z_DOWN)) {
+         m->input &= ~INPUT_A_PRESSED;
