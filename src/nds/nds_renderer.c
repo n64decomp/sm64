@@ -200,7 +200,7 @@ static void draw_vertices(const struct Vertex **v, int count) {
                 const m4x4 vertex = {{
                     PosTestXresult(), 0, 0, 0,
                     0, PosTestYresult(), 0, 0,
-                    0, 0, PosTestZresult() - 3, 0,
+                    0, 0, PosTestZresult() - (3 << 4), 0,
                     0, 0, 0, PosTestWresult()
                 }};
                 glLoadMatrix4x4(&vertex);
@@ -259,7 +259,7 @@ static void draw_vertices(const struct Vertex **v, int count) {
             const m4x4 vertex = {{
                 PosTestXresult(), 0, 0, 0,
                 0, PosTestYresult(), 0, 0,
-                0, 0, (--z_depth) / 6, 0,
+                0, 0, ((--z_depth) / 6) << 4, 0,
                 0, 0, 0, PosTestWresult()
             }};
             glLoadMatrix4x4(&vertex);
@@ -440,12 +440,12 @@ static void g_geometrymode(Gwords *words) {
 }
 
 static void g_mtx(Gwords *words) {
-    // Load a matrix, shifting the elements so they have 12-bit fractionals for the DS
+    // Load a matrix with 16-bit fractionals
     m4x4 matrix;
     for (int i = 0; i < 16; i += 2) {
         const uint32_t *data = &((uint32_t*)words->w1)[i / 2];
-        matrix.m[i + 0] = ((int32_t)((data[0] & 0xFFFF0000) | (data[8] >> 16)) + 8) >> 4;
-        matrix.m[i + 1] = ((int32_t)((data[0] << 16) | (data[8] & 0x0000FFFF)) + 8) >> 4;
+        matrix.m[i + 0] = (int32_t)((data[0] & 0xFFFF0000) | (data[8] >> 16));
+        matrix.m[i + 1] = (int32_t)((data[0] << 16) | (data[8] & 0x0000FFFF));
     }
 
     // Perform a matrix operation
@@ -457,6 +457,16 @@ static void g_mtx(Gwords *words) {
         if (params & G_MTX_LOAD) {
             glLoadMatrix4x4(&matrix);
         } else {
+            // To preserve some precision, the projection matrix isn't shifted to have 12-bit fractionals
+            // Multiplication still needs to work though, so scale the matrix before multiplying it
+            const m4x4 shrink = {{
+                1 << 8, 0, 0, 0,
+                0, 1 << 8, 0, 0,
+                0, 0, 1 << 8, 0,
+                0, 0, 0, 1 << 8
+            }};
+            glMultMatrix4x4(&shrink);
+
             glMultMatrix4x4(&matrix);
         }
     } else {
@@ -465,6 +475,11 @@ static void g_mtx(Gwords *words) {
         // Push the current modelview matrix to the stack if requested
         if (params & G_MTX_PUSH) {
             glPushMatrix();
+        }
+
+        // Shift the matrix elements so they have 12-bit fractionals for the DS
+        for (int i = 0; i < 16; i++) {
+            matrix.m[i] >>= 4;
         }
 
         // Load or multiply the modelview matrix
