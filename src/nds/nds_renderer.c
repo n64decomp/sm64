@@ -10,12 +10,6 @@ struct Color {
     uint8_t r, g, b, a;
 };
 
-struct Vertex {
-    int16_t x, y, z;
-    int16_t s, t;
-    struct Color color;
-};
-
 struct Texture {
     uint8_t *address;
     int name;
@@ -27,13 +21,13 @@ struct Texture {
 struct Light {
     int16_t nx, ny, nz;
     int8_t x, y, z;
-    struct Color color;
+    uint8_t r, g, b;
 };
 
 static struct Color env_color;
 static struct Color fill_color;
 
-static struct Vertex vertex_buffer[16];
+static Vtx vertex_buffer[16];
 static struct Texture texture_map[2048];
 static struct Light lights[5];
 
@@ -138,14 +132,20 @@ static void load_texture() {
     texture_fifo_start = (texture_fifo_start + 1) & 0x7FF;
 }
 
-static void draw_vertices(const struct Vertex **v, int count) {
+static void draw_vertices(const Vtx_t **v, int count) {
     // Get the alpha value and return early if it's 0 (alpha 0 is wireframe on the DS)
     // Since the DS only supports one alpha value per polygon, just use the one from first vertex
-    const int alpha = ((other_mode_l & (G_BL_A_MEM << 18)) ? 31 : (v[0]->color.a >> 3));
+    const int alpha = ((other_mode_l & (G_BL_A_MEM << 18)) ? 31 : ((use_env_alpha ? env_color.a : v[0]->cn[3]) >> 3));
     if (alpha == 0) return;
 
-    // Clear the vertex color if it shoudn't be used
-    if (!use_color) {
+    // Round texture coodinates (by adding 0.5) if linear filtering is enabled
+    // The DS can't actually do linear filtering, but this still keeps textures from being slightly misplaced
+    const uint8_t tex_ofs = ((other_mode_h & (3 << G_MDSFT_TEXTFILT)) == G_TF_POINT) ? 0 : (1 << 4);
+
+    // Handle special vertex color settings
+    if (use_env_color) {
+        glColor3b(env_color.r, env_color.g, env_color.b);
+    } else if (!use_color) {
         glColor3b(0xFF, 0xFF, 0xFF);
     }
 
@@ -182,11 +182,11 @@ static void draw_vertices(const struct Vertex **v, int count) {
         if ((other_mode_l & ZMODE_DEC) == ZMODE_DEC) {
             for (int i = 0; i < count; i++) {
                 // Send the vertex attributes to the 3D engine
-                if (use_color) glColor3b(v[i]->color.r, v[i]->color.g, v[i]->color.b);
-                if (use_texture) glTexCoord2t16(v[i]->s, v[i]->t);
+                if (use_color) glColor3b(v[i]->cn[0], v[i]->cn[1], v[i]->cn[2]);
+                if (use_texture) glTexCoord2t16(((v[i]->tc[0] * texture_scale_s) >> 17) + tex_ofs, ((v[i]->tc[1] * texture_scale_t) >> 17) + tex_ofs);
 
                 // Use position test to project the vertex so the result can be hijacked before sending it for real
-                PosTest(v[i]->x, v[i]->y, v[i]->z);
+                PosTest(v[i]->ob[0], v[i]->ob[1], v[i]->ob[2]);
 
                 // Push the current matrices to the stack, and load an identity matrix so the outgoing vertex won't be affected
                 glMatrixMode(GL_MODELVIEW);
@@ -214,9 +214,9 @@ static void draw_vertices(const struct Vertex **v, int count) {
         } else {
             // Send the vertices normally
             for (int i = 0; i < count; i++) {
-                if (use_color) glColor3b(v[i]->color.r, v[i]->color.g, v[i]->color.b);
-                if (use_texture) glTexCoord2t16(v[i]->s, v[i]->t);
-                glVertex3v16(v[i]->x, v[i]->y, v[i]->z);
+                if (use_color) glColor3b(v[i]->cn[0], v[i]->cn[1], v[i]->cn[2]);
+                if (use_texture) glTexCoord2t16(((v[i]->tc[0] * texture_scale_s) >> 17) + tex_ofs, ((v[i]->tc[1] * texture_scale_t) >> 17) + tex_ofs);
+                glVertex3v16(v[i]->ob[0], v[i]->ob[1], v[i]->ob[2]);
             }
         }
 
@@ -241,11 +241,11 @@ static void draw_vertices(const struct Vertex **v, int count) {
 
         for (int i = 0; i < count; i++) {
             // Send the vertex attributes to the 3D engine
-            if (use_color) glColor3b(v[i]->color.r, v[i]->color.g, v[i]->color.b);
-            if (use_texture) glTexCoord2t16(v[i]->s, v[i]->t);
+            if (use_color) glColor3b(v[i]->cn[0], v[i]->cn[1], v[i]->cn[2]);
+            if (use_texture) glTexCoord2t16(((v[i]->tc[0] * texture_scale_s) >> 17) + tex_ofs, ((v[i]->tc[1] * texture_scale_t) >> 17) + tex_ofs);
 
             // Use position test to project the vertex so the result can be hijacked before sending it for real
-            PosTest(v[i]->x, v[i]->y, v[i]->z);
+            PosTest(v[i]->ob[0], v[i]->ob[1], v[i]->ob[2]);
 
             // Push the current matrices to the stack, and load an identity matrix so the outgoing vertex won't be affected
             glPushMatrix();
@@ -298,117 +298,87 @@ static void g_vtx(Gwords *words) {
     const Vtx *vertices = (const Vtx*)words->w1;
 
     // Store vertices in the vertex buffer
-    for (uint8_t i = index - count; i < index; i++) {
-        const Vtx_t  *v = &vertices[i].v;
-        const Vtx_tn *n = &vertices[i].n;
+    memcpy(&vertex_buffer[index - count], vertices, count * sizeof(Vtx));
 
-        // Set the vertex coordinates
-        vertex_buffer[i].x = v->ob[0];
-        vertex_buffer[i].y = v->ob[1];
-        vertex_buffer[i].z = v->ob[2];
+    if (geometry_mode & G_LIGHTING) {
+        // Recalculate transformed light vectors if the lights or modelview matrix changed
+        if (lights_dirty) {
+            // Read the current modelview matrix from hardware
+            int m[12];
+            glGetFixed(GL_GET_MATRIX_VECTOR, m);
 
-        // Scale the texture coordinates, and shift out an additional bit to get 4-bit fractionals for the DS
-        vertex_buffer[i].s = (v->tc[0] * texture_scale_s) >> 17;
-        vertex_buffer[i].t = (v->tc[1] * texture_scale_t) >> 17;
+            for (int i = 0; i < num_lights; i++) {
+                // Multiply the light vector with the modelview matrix
+                lights[i].nx = (lights[i].x * m[0] + lights[i].y * m[1] + lights[i].z * m[2]) >> 7;
+                lights[i].ny = (lights[i].x * m[3] + lights[i].y * m[4] + lights[i].z * m[5]) >> 7;
+                lights[i].nz = (lights[i].x * m[6] + lights[i].y * m[7] + lights[i].z * m[8]) >> 7;
 
-        // Calulate vertex colors for lighting in software
-        // The DS can *almost* do this in hardware, but the vectors need to be normalized after being transformed
-        if (geometry_mode & G_LIGHTING) {
-            // Use the last light as ambient light (or emission, in DS terms)
-            uint32_t r = lights[num_lights].color.r;
-            uint32_t g = lights[num_lights].color.g;
-            uint32_t b = lights[num_lights].color.b;
-
-            // Recalculate transformed light vectors if the lights or modelview matrix changed
-            if (lights_dirty) {
-                // Read the current modelview matrix from hardware
-                int m[12];
-                glGetFixed(GL_GET_MATRIX_VECTOR, m);
-
-                for (int i = 0; i < num_lights; i++) {
-                    // Multiply the light vector with the modelview matrix
-                    lights[i].nx = (lights[i].x * m[0] + lights[i].y * m[1] + lights[i].z * m[2]) >> 7;
-                    lights[i].ny = (lights[i].x * m[3] + lights[i].y * m[4] + lights[i].z * m[5]) >> 7;
-                    lights[i].nz = (lights[i].x * m[6] + lights[i].y * m[7] + lights[i].z * m[8]) >> 7;
-
-                    // Normalize the result
-                    int s = (lights[i].nx * lights[i].nx + lights[i].ny * lights[i].ny + lights[i].nz * lights[i].nz) >> 8;
-                    if (s > 0) {
-                        s = sqrt_fixed(s);
-                        lights[i].nx = (lights[i].nx << 16) / s;
-                        lights[i].ny = (lights[i].ny << 16) / s;
-                        lights[i].nz = (lights[i].nz << 16) / s;
-                    }
+                // Normalize the result
+                int s = (lights[i].nx * lights[i].nx + lights[i].ny * lights[i].ny + lights[i].nz * lights[i].nz) >> 8;
+                if (s > 0) {
+                    s = sqrt_fixed(s);
+                    lights[i].nx = (lights[i].nx << 16) / s;
+                    lights[i].ny = (lights[i].ny << 16) / s;
+                    lights[i].nz = (lights[i].nz << 16) / s;
                 }
-
-                lights_dirty = false;
             }
+
+            lights_dirty = false;
+        }
+
+        // Calulate vertex colors for lighting in software, since hardware doesn't normalize the light vectors
+        for (int i = index - count; i < index; i++) {
+            Vtx_t  *v = &vertex_buffer[i].v;
+            Vtx_tn *n = &vertex_buffer[i].n;
+
+            // Use the last light as ambient light (or emission, in DS terms)
+            uint32_t r = lights[num_lights].r;
+            uint32_t g = lights[num_lights].g;
+            uint32_t b = lights[num_lights].b;
 
             // Multiply the light vertices with the vertex's normal to calculate light intensity
             for (int i = 2; i < num_lights; i++) {
                 int intensity = (lights[i].nx * n->n[0] + lights[i].ny * n->n[1] + lights[i].nz * n->n[2]) >> 7;
                 if (intensity > 0) {
-                    r += (intensity * lights[i].color.r) >> 12;
-                    g += (intensity * lights[i].color.g) >> 12;
-                    b += (intensity * lights[i].color.b) >> 12;
+                    r += (intensity * lights[i].r) >> 12;
+                    g += (intensity * lights[i].g) >> 12;
+                    b += (intensity * lights[i].b) >> 12;
                 }
             }
 
-            // Set the calulated vertex color
-            vertex_buffer[i].color.r = (r > 0xFF) ? 0xFF : r;
-            vertex_buffer[i].color.g = (g > 0xFF) ? 0xFF : g;
-            vertex_buffer[i].color.b = (b > 0xFF) ? 0xFF : b;
-
-            // Generate spherical texture coordinates by multiplying the vertex's normal with the lookat vectors
+            // Generate spherical texture coordinates by multiplying the lookat vectors with the vertex's normal
             if (geometry_mode & G_TEXTURE_GEN) {
-                const int dot_y = (lights[0].nx * n->n[0] + lights[0].ny * n->n[1] + lights[0].nz * n->n[2]) >> 7;
-                const int dot_x = (lights[1].nx * n->n[0] + lights[1].ny * n->n[1] + lights[1].nz * n->n[2]) >> 7;
-                vertex_buffer[i].s = ((dot_x + (1 << 12)) * texture_scale_s) >> 15;
-                vertex_buffer[i].t = ((dot_y + (1 << 12)) * texture_scale_t) >> 15;
+                v->tc[0] = ((lights[1].nx * n->n[0] + lights[1].ny * n->n[1] + lights[1].nz * n->n[2]) >> 5) + (1 << 14);
+                v->tc[1] = ((lights[0].nx * n->n[0] + lights[0].ny * n->n[1] + lights[0].nz * n->n[2]) >> 5) + (1 << 14);
             }
-        } else if (use_env_color) {
-            // Use the environment color as the vertex color if enabled
-            vertex_buffer[i].color.r = env_color.r;
-            vertex_buffer[i].color.g = env_color.g;
-            vertex_buffer[i].color.b = env_color.b;
-        } else {
-            // Set the vertex color normally
-            vertex_buffer[i].color.r = v->cn[0];
-            vertex_buffer[i].color.g = v->cn[1];
-            vertex_buffer[i].color.b = v->cn[2];
-        }
 
-        // Set the vertex alpha, using the environment alpha if enabled
-        vertex_buffer[i].color.a = (use_env_alpha ? env_color.a : v->cn[3]);
-
-        // Round texture coodinates (by adding 0.5) if linear filtering is enabled
-        // The DS can't actually do linear filtering, but this still keeps textures from being slightly misplaced
-        if ((other_mode_h & (3 << G_MDSFT_TEXTFILT)) != G_TF_POINT) {
-            vertex_buffer[i].s += 1 << 4;
-            vertex_buffer[i].t += 1 << 4;
+            // Set the calulated vertex color
+            v->cn[0] = (r > 0xFF) ? 0xFF : r;
+            v->cn[1] = (g > 0xFF) ? 0xFF : g;
+            v->cn[2] = (b > 0xFF) ? 0xFF : b;
         }
     }
 }
 
 static void g_tri1(Gwords *words) {
     // Draw a triangle
-    const struct Vertex *v[] = {
-        &vertex_buffer[((words->w0 >> 16) & 0xFF) >> 1],
-        &vertex_buffer[((words->w0 >>  8) & 0xFF) >> 1],
-        &vertex_buffer[((words->w0 >>  0) & 0xFF) >> 1]
+    const Vtx_t *v[] = {
+        &vertex_buffer[((words->w0 >> 16) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w0 >>  8) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w0 >>  0) & 0xFF) >> 1].v
     };
     draw_vertices(v, 3);
 }
 
 static void g_tri2(Gwords *words) {
     // Draw two triangles at once
-    const struct Vertex *v[] = {
-        &vertex_buffer[((words->w0 >> 16) & 0xFF) >> 1],
-        &vertex_buffer[((words->w0 >>  8) & 0xFF) >> 1],
-        &vertex_buffer[((words->w0 >>  0) & 0xFF) >> 1],
-        &vertex_buffer[((words->w1 >> 16) & 0xFF) >> 1],
-        &vertex_buffer[((words->w1 >>  8) & 0xFF) >> 1],
-        &vertex_buffer[((words->w1 >>  0) & 0xFF) >> 1]
+    const Vtx_t *v[] = {
+        &vertex_buffer[((words->w0 >> 16) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w0 >>  8) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w0 >>  0) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w1 >> 16) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w1 >>  8) & 0xFF) >> 1].v,
+        &vertex_buffer[((words->w1 >>  0) & 0xFF) >> 1].v
     };
     draw_vertices(v, 6);
 }
@@ -542,17 +512,20 @@ static void g_movemem(Gwords *words) {
 
         case G_MV_LIGHT: {
             // Set light parameters
-            const int index = ((words->w0 >> 8) & 0xFF) / 3;
-            const Light_t *light = (Light_t*)words->w1;
+            const uint8_t index = ((words->w0 >> 8) & 0xFF) / 3;
+            const Light_t *src = (Light_t*)words->w1;
+            struct Light *dst = &lights[index];
             if (index >= 2) { // Not lookat vectors
-                lights[index].color.r = light->col[0];
-                lights[index].color.g = light->col[1];
-                lights[index].color.b = light->col[2];
+                dst->r = src->col[0];
+                dst->g = src->col[1];
+                dst->b = src->col[2];
             }
-            if (index < num_lights) { // Not ambient light
-                lights[index].x = light->dir[0];
-                lights[index].y = light->dir[1];
-                lights[index].z = light->dir[2];
+            if (index < num_lights && // Not ambient light
+                // The game likes to rewrite the same light vectors, so avoid making the lights dirty if possible
+                (dst->x != src->dir[0] || dst->y != src->dir[1] || dst->z != src->dir[2])) {
+                dst->x = src->dir[0];
+                dst->y = src->dir[1];
+                dst->z = src->dir[2];
                 lights_dirty = true;
             }
             break;
@@ -785,7 +758,7 @@ static void g_setcombine(Gwords *words) {
 
     use_env_color = (c_color == G_CCMUX_ENVIRONMENT || d_color == G_CCMUX_ENVIRONMENT);
     use_env_alpha = (c_alpha == G_CCMUX_ENVIRONMENT || d_alpha == G_CCMUX_ENVIRONMENT);
-    use_color = use_env_color || (a_color == G_CCMUX_SHADE || b_color == G_CCMUX_SHADE || c_color == G_CCMUX_SHADE || d_color == G_CCMUX_SHADE);
+    use_color = !use_env_color && (a_color == G_CCMUX_SHADE || b_color == G_CCMUX_SHADE || c_color == G_CCMUX_SHADE || d_color == G_CCMUX_SHADE);
     use_texture = (a_color == G_CCMUX_TEXEL0 || b_color == G_CCMUX_TEXEL0 || c_color == G_CCMUX_TEXEL0 || d_color == G_CCMUX_TEXEL0);
 
     if (b_color == d_color) {
