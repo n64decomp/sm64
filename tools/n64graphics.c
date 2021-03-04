@@ -392,6 +392,29 @@ int ia2nds(uint8_t *raw, const ia *img, int width, int height, int depth, int nd
    return size;
 }
 
+int smoke2nds(uint8_t *raw, const ia *img, int width, int height, int nds_width, int nds_height)
+{
+   int size = (nds_width * nds_height * 16 + 7) / 8;
+   INFO("Converting smoke %dx%d to NDS raw\n", width, height);
+
+   // The smoke texture is IA but loaded as RGBA; special conversion to get the right results on NDS
+   for (int y = 0; y < nds_height; y++) {
+      for (int x = 0; x < nds_width; x++) {
+         int i = (y % height) * width + (x % width);
+         int j = y * nds_width + x;
+         uint16_t ia = (img[i].intensity << 8) | img[i].alpha;
+         uint8_t r = ((ia >> 11) & 0x1F);
+         uint8_t g = ((ia >>  6) & 0x1F);
+         uint8_t b = ((ia >>  1) & 0x1F);
+         uint8_t a = ((ia >>  0) & 0x01);
+         raw[j*2]   = ((g & 0x7) << 5) | r;
+         raw[j*2+1] = (a << 7) | (b << 2) | (g >> 3);
+      }
+   }
+
+   return size;
+}
+
 
 //---------------------------------------------------------
 // internal RGBA/IA -> PNG
@@ -978,12 +1001,21 @@ int main(int argc, char *argv[])
                for (size_y = 0; (config.height - 1) >> (size_y + 3) != 0; size_y++);
                const int nds_width  = 8 << size_x;
                const int nds_height = 8 << size_y;
-               raw_size = (nds_width * nds_height * 8 + 7) / 8;
-               raw = malloc(raw_size);
-               if (!raw) {
-                  ERROR("Error allocating %u bytes\n", raw_size);
+               if (strcmp(config.img_filename, "actors/burn_smoke/burn_smoke.ia16.png") == 0) {
+                  raw_size = (nds_width * nds_height * 16 + 7) / 8;
+                  raw = malloc(raw_size);
+                  if (!raw) {
+                     ERROR("Error allocating %u bytes\n", raw_size);
+                  }
+                  length = smoke2nds(raw, imgi, config.width, config.height, nds_width, nds_height);
+               } else {
+                  raw_size = (nds_width * nds_height * 8 + 7) / 8;
+                  raw = malloc(raw_size);
+                  if (!raw) {
+                     ERROR("Error allocating %u bytes\n", raw_size);
+                  }
+                  length = ia2nds(raw, imgi, config.width, config.height, config.format.depth, nds_width, nds_height);
                }
-               length = ia2nds(raw, imgi, config.width, config.height, config.format.depth, nds_width, nds_height);
             } else {
                raw_size = (config.width * config.height * config.format.depth + 7) / 8;
                raw = malloc(raw_size);
