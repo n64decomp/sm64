@@ -2,10 +2,14 @@
 
 #include "nds_audio.h"
 
+// Better frequency calculation
+#undef SOUND_FREQ
+#define SOUND_FREQ(n) (-(BUS_CLOCK >> 1) / (n))
+
 static u16 calculate_freq(const struct Note *note) {
     // Calculate the DS frequency for a note
     // Some frequencies are too high, but clipping at least lets them get as close as possible
-    u32 freq = note->frequency * 32768;
+    u32 freq = note->frequency * 32000;
     if (freq > 0xFFFF) freq = 0xFFFF;
     return SOUND_FREQ((u16)freq);
 }
