@@ -282,7 +282,8 @@ SOUND_BANK_FILES    := $(wildcard sound/sound_banks/*.json)
 SOUND_SAMPLE_DIRS   := $(wildcard sound/samples/*)
 SOUND_SAMPLE_AIFFS  := $(foreach dir,$(SOUND_SAMPLE_DIRS),$(wildcard $(dir)/*.aiff))
 ifdef TARGET_NDS
-SOUND_SAMPLE_AIFCS  := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.ima))
+SOUND_SAMPLE_HALFS  := $(wildcard sound/samples/instruments/*.aiff) sound/samples/sfx_9/03.aiff
+SOUND_SAMPLE_AIFCS  := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.ima)) $(foreach file,$(SOUND_SAMPLE_HALFS),$(BUILD_DIR)/$(file:.aiff=.half.ima))
 else
 SOUND_SAMPLE_TABLES := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.table))
 SOUND_SAMPLE_AIFCS  := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.aifc))
@@ -639,6 +640,10 @@ endif
 #==============================================================================#
 
 ifdef TARGET_NDS
+$(BUILD_DIR)/%.half.wav: %.aiff
+	$(call print,Converting AIFF:,$<,$@)
+	$(V)sox $^ -r $(shell echo $(shell sox --i -r $^) / 2 | bc) $@
+
 $(BUILD_DIR)/%.wav: %.aiff
 	$(call print,Converting AIFF:,$<,$@)
 	$(V)sox $^ $@

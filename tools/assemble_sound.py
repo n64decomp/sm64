@@ -184,8 +184,8 @@ def parse_ima(data, name, fname, bank_name):
             if tp == b"COMM":
                 sample_rate = parse_f80(aiff_data[8:18])
             elif tp == b"MARK":
-                start = (struct.unpack('>I', aiff_data[4:8])[0] >> 1) + 4
-                end = (struct.unpack('>I', aiff_data[16:20])[0] >> 1) + 4
+                start = struct.unpack('>I', aiff_data[4:8])[0] >> 1
+                end = struct.unpack('>I', aiff_data[16:20])[0] >> 1
                 loop = Loop(start, end, 1, None)
 
     return Aifc(name, fname, data, sample_rate, None, loop)
@@ -705,7 +705,17 @@ def serialize_tbl(sample_bank, ser, is_shindou):
             continue
         ser.align(16)
         aifc.offset = ser.size - base_addr
-        ser.add(aifc.data)
+        if aifc.fname.endswith(".ima"):
+            if os.path.exists(aifc.fname[:-4] + ".half.ima"):
+                ser.add(len(aifc.data).to_bytes(4, 'little'))
+                ser.add(aifc.data)
+                with open(aifc.fname[:-4] + ".half.ima", "rb") as half:
+                    ser.add(half.read())
+            else:
+                ser.add(b"\0\0\0\0")
+                ser.add(aifc.data)
+        else:
+            ser.add(aifc.data)
     ser.align(2)
     if is_shindou and sample_bank.index not in [4, 10]:
         ser.align(16)
@@ -1031,7 +1041,7 @@ def main():
                     data = inf.read()
                     if f.endswith(".aifc"):
                         entries.append(parse_aifc(data, f[:-5], fname))
-                    elif f.endswith(".ima"):
+                    elif not f.endswith(".half.ima") and f.endswith(".ima"):
                         entries.append(parse_ima(data, f[:-4], fname, name))
             except Exception as e:
                 fail("malformed audio file " + fname + ": " + str(e))

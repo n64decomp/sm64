@@ -6,10 +6,11 @@
 #undef SOUND_FREQ
 #define SOUND_FREQ(n) (-(BUS_CLOCK >> 1) / (n))
 
-static u16 calculate_freq(const struct Note *note) {
+static u16 high_freqs;
+
+static u16 calculate_freq(f32 frequency) {
     // Calculate the DS frequency for a note
-    // Some frequencies are too high, but clipping at least lets them get as close as possible
-    u32 freq = note->frequency * 32000;
+    u32 freq = frequency * 32000;
     if (freq > 0xFFFF) freq = 0xFFFF;
     return SOUND_FREQ((u16)freq);
 }
@@ -39,17 +40,29 @@ void play_notes(struct Note *notes) {
                 // Ensure the channel is properly reset
                 SCHANNEL_CR(i) &= ~SCHANNEL_ENABLE;
 
-                // Start playing a note on the current channel
-                SCHANNEL_SOURCE(i) = (u32)sample->sampleAddr;
-                SCHANNEL_REPEAT_POINT(i) = sample->loop->start / sizeof(u32);
-                SCHANNEL_LENGTH(i) = (sample->loop->end - sample->loop->start) / sizeof(u32);
-                SCHANNEL_TIMER(i) = calculate_freq(note);
+                if (note->frequency >= 2.0f && *(u32*)sample->sampleAddr != 0) {
+                    // If the frequency is too high, play the downsampled version at half frequency
+                    SCHANNEL_SOURCE(i) = (u32)sample->sampleAddr + *(u32*)sample->sampleAddr + 4;
+                    SCHANNEL_REPEAT_POINT(i) = sample->loop->start / 2 / sizeof(u32) + 1;
+                    SCHANNEL_LENGTH(i) = (sample->loop->end - sample->loop->start) / 2 / sizeof(u32) + 1;
+                    SCHANNEL_TIMER(i) = calculate_freq(note->frequency / 2);
+                    high_freqs |= BIT(i);
+                } else {
+                    // Play the normal version at full frequency
+                    SCHANNEL_SOURCE(i) = (u32)sample->sampleAddr + 4;
+                    SCHANNEL_REPEAT_POINT(i) = sample->loop->start / sizeof(u32) + 1;
+                    SCHANNEL_LENGTH(i) = (sample->loop->end - sample->loop->start) / sizeof(u32) + 1;
+                    SCHANNEL_TIMER(i) = calculate_freq(note->frequency);
+                    high_freqs &= ~BIT(i);
+                }
+
+                // Start the channel
                 SCHANNEL_CR(i) = SCHANNEL_ENABLE | SOUND_FORMAT_ADPCM | calculate_vol_pan(note) | loop;
 
                 note->needsInit = false;
             } else if (SCHANNEL_CR(i) & SCHANNEL_ENABLE) {
                 // Update the parameters of a currently playing note
-                SCHANNEL_TIMER(i) = calculate_freq(note);
+                SCHANNEL_TIMER(i) = calculate_freq(note->frequency / ((high_freqs & BIT(i)) ? 2 : 1));
                 SCHANNEL_CR(i) = (SCHANNEL_CR(i) & ~(SOUND_VOL(127) | SOUND_PAN(127))) | calculate_vol_pan(note);
             }
         } else {
