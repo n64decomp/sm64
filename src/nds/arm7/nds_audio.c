@@ -33,7 +33,7 @@ void play_notes(struct Note *notes) {
         struct Note *note = &notes[i];
 
         if (note->enabled && note->sound != NULL) {
-            if (note->needsInit) {
+            if (note->needsInit || ((SCHANNEL_CR(i) & SCHANNEL_ENABLE) && (note->frequency >= 2.0f) != (bool)(high_freqs & BIT(i)))) {
                 const struct AudioBankSample *sample = note->sound->sample;
                 const u32 loop = (sample->loop->count ? SOUND_REPEAT : SOUND_ONE_SHOT);
 
