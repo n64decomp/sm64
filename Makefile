@@ -184,6 +184,7 @@ TOOLS_DIR := tools
 # in the makefile that we want should cover assets.)
 
 PYTHON := python3
+SOX    := sox
 
 ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
 
@@ -642,11 +643,11 @@ endif
 ifdef TARGET_NDS
 $(BUILD_DIR)/%.half.wav: %.aiff
 	$(call print,Converting AIFF:,$<,$@)
-	$(V)sox $^ -r $(shell echo $(shell sox --i -r $^) / 2 | bc) $@
+	$(V)$(SOX) $^ -r $(shell $(PYTHON) -c "print($(shell $(SOX) --i -r $^) / 2)") $@
 
 $(BUILD_DIR)/%.wav: %.aiff
 	$(call print,Converting AIFF:,$<,$@)
-	$(V)sox $^ $@
+	$(V)$(SOX) $^ $@
 
 $(BUILD_DIR)/%.ima: $(BUILD_DIR)/%.wav
 	$(call print,Encoding IMA:,$<,$@)
