@@ -15,7 +15,7 @@ A prior copy of the game is required to extract the assets.
 
 ## Quick Start (for Ubuntu)
 
-1. Install prerequisites: `sudo apt install -y build-essential git binutils-mips-linux-gnu python3`
+1. Install prerequisites: `sudo apt install -y build-essential git binutils-mips-linux-gnu libcapstone-dev python3`
 2. Clone the repo from within Linux: `git clone https://github.com/n64decomp/sm64.git`
 3. Place a Super Mario 64 ROM called `baserom.<VERSION>.z64` into the project folder for asset extraction, where `VERSION` can be `us`, `jp`, or `eu`.
 4. Run `make` to build. Qualify the version through `make VERSION=<VERSION>`. Add `-j4` to improve build speed (hardware dependent).
