@@ -1,3 +1,9 @@
+# Tradução PT-BR
+* feito por _BMatSantos_ e _Kosmus_
+* part. de _Vihh_Art_ como Peach
+* testado por _Nathan_ e _JinjoGuy_
+
+Seguem instruções originais em inglês:
 # Super Mario 64
 
 - This repo contains a full decompilation of Super Mario 64 (J), (U), (E), and (SH).
