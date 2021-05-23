@@ -62,35 +62,36 @@ enum DialogMark { DIALOG_MARK_NONE = 0, DIALOG_MARK_DAKUTEN = 1, DIALOG_MARK_HAN
 #define DEFAULT_DIALOG_BOX_SCALE 19.0f
 
 #if defined(VERSION_US) || defined(VERSION_EU)
-u8 gDialogCharWidths[256] = { // TODO: Is there a way to auto generate this?
-    7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  6,  6,  6,  6,  6,  6,
-    6,  6,  5,  6,  6,  5,  8,  8,  6,  6,  6,  6,  6,  5,  6,  6,
-    8,  7,  6,  6,  6,  5,  5,  6,  5,  5,  6,  5,  4,  5,  5,  3,
-    7,  5,  5,  5,  6,  5,  5,  5,  5,  5,  7,  7,  5,  5,  4,  4,
-    8,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    8,  8,  8,  8,  7,  7,  6,  7,  7,  0,  0,  0,  0,  0,  0,  0,
+u8 gDialogCharWidths[256] = { /* TODO: Is there a way to auto generate this?
+0x *0, *1, *2, *3, *4, *5, *6, *7, *8, *9, *A, *B, *C, *D, *E, *F  */
+    7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  6,  6,  6,  6,  6,  6, // 0x0*
+    6,  6,  5,  6,  6,  5,  8,  8,  6,  6,  6,  6,  6,  5,  6,  6, // 0x1*
+    8,  7,  6,  6,  6,  5,  5,  6,  5,  5,  6,  5,  4,  5,  5,  3, // 0x2*
+    7,  5,  5,  5,  6,  5,  5,  5,  5,  5,  7,  7,  5,  5,  4,  4, // 0x3*
+    8,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0x4*
+    8,  8,  8,  8,  7,  7,  6,  7,  7,  0,  0,  0,  0,  0,  0,  0, // 0x5*
 #ifdef VERSION_EU
-    6,  6,  6,  0,  6,  6,  6,  0,  0,  0,  0,  0,  0,  0,  0,  4,
-    5,  5,  5,  5,  6,  6,  6,  6,  0,  0,  0,  0,  0,  0,  0,  0,
-    5,  5,  5,  0,  6,  6,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  5,  5,  0,  0,  6,  6,  0,  0,  0,  0,  0,  0,  0,  5,  6,
-    0,  4,  4,  0,  0,  5,  5,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-#else
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  5,  6,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    6,  6,  6,  0,  6,  6,  6,  0,  0,  0,  0,  0,  0,  0,  0,  4, // 0x6* EU
+    5,  5,  5,  5,  6,  6,  6,  6,  0,  0,  0,  0,  0,  0,  0,  0, // 0x7* EU
+    5,  5,  5,  0,  6,  6,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0x8* EU
+    0,  5,  5,  0,  0,  6,  6,  0,  0,  0,  0,  0,  0,  0,  5,  6, // 0x9* EU
+    0,  4,  4,  0,  0,  5,  5,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0xA* EU
+#else //[BR] Accented letter widths
+    6,  6,  0,  6,  6,  6,  0,  6,  6,  6,  0,  0,  0,  0,  0,  4, // 0x6* US
+    0,  5,  0,  5,  0,  6,  0,  6,  0,  0,  0,  0,  0,  0,  0,  0, // 0x7* US
+    0,  0,  0,  5,  0,  0,  0,  6,  0,  0,  0,  0,  0,  0,  0,  0, // 0x8* US
+    0,  5,  0,  5,  5,  6,  0,  6,  6,  0,  0,  0,  0,  0,  5,  6, // 0x9* US
+    0,  0,  0,  4,  5,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0xA* US
 #endif
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0xB*
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0xC*
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 0xD*
 #ifdef VERSION_EU
-    7,  5, 10,  5,  9,  8,  4,  0,  0,  0,  0,  5,  5,  6,  5,  0,
-#else
-    7,  5, 10,  5,  9,  8,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    7,  5, 10,  5,  9,  8,  4,  0,  0,  0,  0,  5,  5,  6,  5,  0, // 0xE* EU
+#else //[BR] Accented letter widths
+    7,  5, 10,  5,  9,  8,  4,  0,  0,  0,  0,  5,  0,  6,  5,  0, // 0xE* US
 #endif
-    0,  0,  5,  7,  7,  6,  6,  8,  0,  8, 10,  6,  4, 10,  0,  0
+    0,  0,  5,  7,  7,  6,  6,  8,  0,  8, 10,  6,  4, 10,  0,  0  // 0xF*
 };
 #endif
 
@@ -313,21 +314,61 @@ void render_uppercase_diacritic(s16 *xPos, s16 *yPos, u8 letter, u8 diacritic) {
 }
 #endif // VERSION_EU
 
+//[BR] Rendering the main font accents
+#ifdef VERSION_US
+void render_generic_low_accent(u8 c) {
+    void **fontLUT;
+    void *packedTexture;
+
+    fontLUT = segmented_to_virtual(main_font_lut);
+    packedTexture = segmented_to_virtual(fontLUT[c]);
+
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, VIRTUAL_TO_PHYSICAL(packedTexture));
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_low_accent_settings); //The dl that makes the difference
+}
+
+void render_generic_upper_accent(u8 c) {
+    void **fontLUT;
+    void *packedTexture;
+
+    fontLUT = segmented_to_virtual(main_font_lut);
+    packedTexture = segmented_to_virtual(fontLUT[c]);
+
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, VIRTUAL_TO_PHYSICAL(packedTexture));
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_up_accent_settings); //The dl that makes the difference
+}
+
+void render_accent_and_lowercase(u8 letter, u8 diacritic){
+    render_generic_char(letter); //Render actual letter
+    render_generic_low_accent(diacritic); //Render accent at a lower position
+}
+
+void render_accent_and_uppercase(u8 letter, u8 diacritic){
+    render_generic_char(letter);
+    render_generic_upper_accent(diacritic); //Render accent at a higher position
+}
+#endif
+
 #if !defined(VERSION_JP) && !defined(VERSION_SH)
 struct MultiTextEntry {
     u8 length;
     u8 str[4];
 };
 
-#define TEXT_THE_RAW ASCII_TO_DIALOG('t'), ASCII_TO_DIALOG('h'), ASCII_TO_DIALOG('e'), 0x00
-#define TEXT_YOU_RAW ASCII_TO_DIALOG('y'), ASCII_TO_DIALOG('o'), ASCII_TO_DIALOG('u'), 0x00
+//[BR] Multi-text strings
+#define TEXT_THE_RAW ASCII_TO_DIALOG('d'), ASCII_TO_DIALOG('e'), 0x00
+#define TEXT_YOU_RAW ASCII_TO_DIALOG('d'), ASCII_TO_DIALOG('o'), 0x00
+#define TEXT_AS_RAW  ASCII_TO_DIALOG('a'), ASCII_TO_DIALOG('s'), 0x00
 
-enum MultiStringIDs { STRING_THE, STRING_YOU };
+enum MultiStringIDs { STRING_THE, STRING_YOU, STRING_AS }; //[BR]
 
 /*
  * Place the multi-text string according to the ID passed. (US, EU)
- * 0: 'the'
- * 1: 'you'
+ * 0: 'de' (previously 'the')
+ * 1: 'do' (previously 'you')
+ * 2: 'as' [BR]
  */
 #ifdef VERSION_US
 void render_multi_text_string(s8 multiTextID)
@@ -336,9 +377,10 @@ void render_multi_text_string(s16 *xPos, s16 *yPos, s8 multiTextID)
 #endif
 {
     s8 i;
-    struct MultiTextEntry textLengths[2] = {
-        { 3, { TEXT_THE_RAW } },
-        { 3, { TEXT_YOU_RAW } },
+    struct MultiTextEntry textLengths[3] = { //[BR] All lengths edited
+        { 2, { TEXT_THE_RAW } },
+        { 2, { TEXT_YOU_RAW } },
+        { 2, { TEXT_AS_RAW } },
     };
 
     for (i = 0; i < textLengths[multiTextID].length; i++) {
@@ -378,6 +420,98 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
 
     while (str[strPos] != DIALOG_CHAR_TERMINATOR) {
         switch (str[strPos]) {
+#ifdef VERSION_US //[BR] Accents
+            //á
+            case DIALOG_CHAR_LOWER_A_ACUTE:
+                render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_LOWER_A_CIRCUMFLEX: //â
+                render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_CIRCUMFLEX);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_LOWER_A_GRAVE: //à
+                render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_GRAVE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_LOWER_A_TILDE: //ã
+                render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_TILDE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_A_ACUTE: //Á
+                render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_A_CIRCUMFLEX: //Â
+                render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_CIRCUMFLEX);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_A_GRAVE: //À
+                render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_GRAVE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_A_TILDE: //Ã
+                render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_TILDE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            //é
+            case DIALOG_CHAR_LOWER_E_ACUTE: 
+                render_accent_and_lowercase(ASCII_TO_DIALOG('e'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_LOWER_E_CIRCUMFLEX: //ê
+                render_accent_and_lowercase(ASCII_TO_DIALOG('e'), GLYPH_TEXT_CIRCUMFLEX);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_E_ACUTE: //É
+                render_accent_and_uppercase(ASCII_TO_DIALOG('E'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_E_CIRCUMFLEX: //Ê
+                render_accent_and_uppercase(ASCII_TO_DIALOG('E'), GLYPH_TEXT_CIRCUMFLEX);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            //í
+            case DIALOG_CHAR_LOWER_I_ACUTE:
+                render_accent_and_lowercase(DIALOG_CHAR_I_NO_DIA, GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_I_ACUTE: //Í
+                render_accent_and_uppercase(ASCII_TO_DIALOG('I'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            //ó
+            case DIALOG_CHAR_LOWER_O_ACUTE:
+                render_accent_and_lowercase(ASCII_TO_DIALOG('o'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_LOWER_O_CIRCUMFLEX: //ô
+                render_accent_and_lowercase(ASCII_TO_DIALOG('o'), GLYPH_TEXT_CIRCUMFLEX);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_LOWER_O_TILDE: //õ
+                render_accent_and_lowercase(ASCII_TO_DIALOG('o'), GLYPH_TEXT_TILDE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_O_ACUTE: //Ó
+                render_accent_and_uppercase(ASCII_TO_DIALOG('O'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_O_TILDE: //Õ
+                render_accent_and_uppercase(ASCII_TO_DIALOG('O'), GLYPH_TEXT_TILDE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            //ú
+            case DIALOG_CHAR_LOWER_U_ACUTE:
+                render_accent_and_lowercase(ASCII_TO_DIALOG('u'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+            case DIALOG_CHAR_UPPER_U_ACUTE: //Ú
+                render_accent_and_uppercase(ASCII_TO_DIALOG('U'), GLYPH_TEXT_ACUTE);
+                create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[str[strPos]]), 0.0f, 0.0f);
+                break;
+#endif
+
 #ifdef VERSION_EU
             case DIALOG_CHAR_SPACE:
                 xCoord += 5;
@@ -467,6 +601,12 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
 #endif
                 break;
 #endif
+//[BR] New multi-text case
+#ifdef VERSION_US
+            case DIALOG_CHAR_MULTI_AS:
+                render_multi_text_string(STRING_AS);
+                break;
+#endif
 #ifndef VERSION_EU
             case DIALOG_CHAR_SPACE:
 #if defined(VERSION_JP) || defined(VERSION_SH)
@@ -521,6 +661,19 @@ void print_hud_char_umlaut(s16 x, s16 y, u8 chr) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_load_tex_block);
     gSPTextureRectangle(gDisplayListHead++, x << 2, (y - 4) << 2, (x + 16) << 2, (y + 12) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
 }
+#elif defined(VERSION_US) //[BR] Print HUD accent function
+void print_hud_char_accent(s16 x, s16 y, u8 chr, u8 acnt) {
+    void **fontLUT = segmented_to_virtual(main_hud_lut);
+
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, fontLUT[chr]);
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_load_tex_block);
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 16) << 2, (y + 16) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, fontLUT[acnt]);
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_load_tex_block);
+    gSPTextureRectangle(gDisplayListHead++, x << 2, (y - 4) << 2, (x + 16) << 2, (y + 12) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+}
 #endif
 
 /**
@@ -568,6 +721,20 @@ void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) {
             case GLOBAL_CHAR_SPACE:
                 curX += 8;
                 break;
+#ifdef VERSION_US //[BR] HUD Accent
+            case HUD_CHAR_E_ACUTE: //[BR] É
+                print_hud_char_accent(curX, curY, ASCII_TO_DIALOG('E'), GLYPH_HUD_ACUTE);
+                curX += xStride;
+                break;
+            case HUD_CHAR_EXCLAMATION: //[BR] !
+                gDPPipeSync(gDisplayListHead++);
+                gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hudLUT2[GLYPH_EXCLAMATION_PNT]);
+                gSPDisplayList(gDisplayListHead++, dl_rgba16_load_tex_block);
+                gSPTextureRectangle(gDisplayListHead++, curX << 2, curY << 2, (curX + 16) << 2,
+                                (curY + 16) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+                curX += 5;
+                break;
+#endif
 #endif
             default:
 #endif
@@ -607,6 +774,27 @@ void print_menu_char_umlaut(s16 x, s16 y, u8 chr) {
     gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
     gSPTextureRectangle(gDisplayListHead++, x << 2, (y - 4) << 2, (x + 8) << 2, (y + 4) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
 }
+#elif defined(VERSION_US) //[BR] Print small font accent function
+void print_menu_char_accent(s16 x, s16 y, u8 chr, u8 acnt) {
+    void **fontLUT = segmented_to_virtual(menu_font_lut);
+    u32 accentY;
+
+    //Make it print the cedilla below the C
+    if (acnt == GLYPH_MENU_CEDILLA)
+        accentY = y + 8;
+    else
+        accentY = y - 4;
+
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[chr]);
+    gDPLoadSync(gDisplayListHead++);
+    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 8) << 2, (y + 8) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[acnt]);
+    gDPLoadSync(gDisplayListHead++);
+    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
+    gSPTextureRectangle(gDisplayListHead++, x << 2, accentY << 2, (x + 8) << 2, (accentY + 8) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+}
 #endif
 
 void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
@@ -618,6 +806,53 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
 
     while (str[strPos] != DIALOG_CHAR_TERMINATOR) {
         switch (str[strPos]) {
+//[BR] Small font accents
+#ifdef VERSION_US
+            case DIALOG_CHAR_UPPER_A_ACUTE:      //Á
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_TEXT_ACUTE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_A_CIRCUMFLEX: //Â
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_TEXT_CIRCUMFLEX);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_A_TILDE:      //Ã
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_TEXT_TILDE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_A_GRAVE:      //À
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_TEXT_GRAVE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_CEDILLA:      //Ç
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('C'), GLYPH_MENU_CEDILLA);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_E_ACUTE:      //É
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('E'), GLYPH_TEXT_ACUTE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_E_CIRCUMFLEX: //Ê
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('E'), GLYPH_TEXT_CIRCUMFLEX);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_I_ACUTE:      //Í
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('I'), GLYPH_TEXT_ACUTE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_O_ACUTE:      //Ó
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('O'), GLYPH_TEXT_ACUTE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_O_TILDE:      //Õ
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('O'), GLYPH_TEXT_TILDE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+            case DIALOG_CHAR_UPPER_U_ACUTE:      //Ú
+                print_menu_char_accent(curX, curY, ASCII_TO_DIALOG('U'), GLYPH_TEXT_ACUTE);
+                curX += gDialogCharWidths[str[strPos]];
+                break;
+#endif
 #ifdef VERSION_EU
             case DIALOG_CHAR_UPPER_A_UMLAUT:
                 print_menu_char_umlaut(curX, curY, ASCII_TO_DIALOG('A'));
@@ -670,6 +905,34 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
     }
 }
 
+//[BR]
+void print_credits_accent(s16 x, s16 y, u8 chr, u8 acnt) {
+    void **fontLUT = segmented_to_virtual(main_credits_font_lut);
+    u32 accentY;
+
+    //Make it print the cedilla below the C
+    if (acnt == GLYPH_CRD_CEDILLA)
+        accentY = y + 8;
+    else
+        accentY = y - 8;
+
+    //Print letter
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, fontLUT[chr]);
+    gDPLoadSync(gDisplayListHead++);
+    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_16b_BYTES));
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 8) << 2, (y + 8) << 2,
+                            G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+
+    //Print accent
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, fontLUT[acnt]);
+    gDPLoadSync(gDisplayListHead++);
+    gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_16b_BYTES));
+    gSPTextureRectangle(gDisplayListHead++, x << 2, accentY << 2, (x + 8) << 2, (accentY + 8) << 2,
+                            G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+}
+
 void print_credits_string(s16 x, s16 y, const u8 *str) {
     s32 strPos = 0;
     void **fontLUT = segmented_to_virtual(main_credits_font_lut);
@@ -687,6 +950,41 @@ void print_credits_string(s16 x, s16 y, const u8 *str) {
         switch (str[strPos]) {
             case GLOBAL_CHAR_SPACE:
                 curX += 4;
+                break;
+            //[BR] Credits accents
+            case DIALOG_CHAR_UPPER_A_ACUTE: //Á
+                print_credits_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_CRD_ACUTE);
+                curX += 7;
+                break;
+            case DIALOG_CHAR_UPPER_A_CIRCUMFLEX: //Â
+                print_credits_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_CRD_CIRCUMFLEX);
+                curX += 7;
+                break;
+            case DIALOG_CHAR_UPPER_A_TILDE: //Ã
+                print_credits_accent(curX, curY, ASCII_TO_DIALOG('A'), GLYPH_CRD_TILDE);
+                curX += 7;
+                break;
+            case 0xED: //Ç
+                print_credits_accent(curX, curY, ASCII_TO_DIALOG('C'), GLYPH_CRD_CEDILLA);
+                curX += 7;
+                break;
+            case DIALOG_CHAR_UPPER_E_ACUTE: //É
+                print_credits_accent(curX, curY, ASCII_TO_DIALOG('E'), GLYPH_CRD_ACUTE);
+                curX += 7;
+                break;
+            case DIALOG_CHAR_UPPER_O_TILDE: //Õ
+                print_credits_accent(curX, curY, ASCII_TO_DIALOG('O'), GLYPH_CRD_TILDE);
+                curX += 7;
+                break;
+            case 0xEF: // _
+                //Dash texture but 4px lower, as underlines do
+                gDPPipeSync(gDisplayListHead++);
+                gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, fontLUT[0x29]);
+                gDPLoadSync(gDisplayListHead++);
+                gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_16b_BYTES));
+                gSPTextureRectangle(gDisplayListHead++, curX << 2, (curY+4) << 2, (curX + 8) << 2,
+                                    (curY+4 + 8) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+                curX += 7;
                 break;
             default:
                 gDPPipeSync(gDisplayListHead++);
@@ -772,7 +1070,7 @@ s16 get_str_x_pos_from_center(s16 centerPos, u8 *str, UNUSED f32 scale) {
 }
 #endif
 
-#if defined(VERSION_JP) || defined(VERSION_EU) || defined(VERSION_SH)
+// [BR] Adding this in US version out of centralizing frustation
 s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale) {
     s16 strPos = 0;
     f32 charsWidth = 0.0f;
@@ -792,7 +1090,6 @@ s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale) {
     // length from the position of the provided center.
     return (f32) centerPos - (scale * (charsWidth / 2.0)) - ((scale / 2.0) * (spacesWidth / 2.0));
 }
-#endif
 
 #if !defined(VERSION_JP) && !defined(VERSION_SH)
 s16 get_string_width(u8 *str) {
@@ -1135,9 +1432,10 @@ void render_multi_text_string_lines(s8 multiTextId, s8 lineNum, s16 *linePos, s8
 #endif
 {
     s8 i;
-    struct MultiTextEntry textLengths[2] = {
-        { 3, { TEXT_THE_RAW } },
-        { 3, { TEXT_YOU_RAW } },
+    struct MultiTextEntry textLengths[3] = { // [BR] All lengths edited
+        { 2, { TEXT_THE_RAW } },
+        { 2, { TEXT_YOU_RAW } },
+        { 2, { TEXT_AS_RAW } }, //[BR]
     };
 
     if (lineNum >= lowerBound && lineNum <= (lowerBound + linesPerBox)) {
@@ -1309,6 +1607,286 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
                 render_dialog_lowercase_diacritic(dialog, DIALOG_CHAR_I_NO_DIA, strChar & 0xF);
                 break;
 #else
+#ifdef VERSION_US //[BR] Dialog box accents
+            //á
+            case DIALOG_CHAR_LOWER_A_ACUTE:
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_LOWER_A_CIRCUMFLEX: //â
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_CIRCUMFLEX);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_LOWER_A_GRAVE: //à
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_GRAVE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_LOWER_A_TILDE: //ã
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('a'), GLYPH_TEXT_TILDE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_A_ACUTE: //Á
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_A_CIRCUMFLEX: //Â
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_CIRCUMFLEX);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_A_GRAVE: //À
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_GRAVE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_A_TILDE: //Ã
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('A'), GLYPH_TEXT_TILDE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            //é
+            case DIALOG_CHAR_LOWER_E_ACUTE:
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('e'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_LOWER_E_CIRCUMFLEX: //ê
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('e'), GLYPH_TEXT_CIRCUMFLEX);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_E_ACUTE: //É
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('E'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_E_CIRCUMFLEX: //Ê
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('E'), GLYPH_TEXT_CIRCUMFLEX);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            //í
+            case DIALOG_CHAR_LOWER_I_ACUTE:
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(DIALOG_CHAR_I_NO_DIA, GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_I_ACUTE: //Í
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('I'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            //ó
+            case DIALOG_CHAR_LOWER_O_ACUTE:                
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('o'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_LOWER_O_CIRCUMFLEX: //ô
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('o'), GLYPH_TEXT_CIRCUMFLEX);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_LOWER_O_TILDE: //õ
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('o'), GLYPH_TEXT_TILDE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_O_ACUTE: //Ó
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('O'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_O_TILDE: //Õ
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('O'), GLYPH_TEXT_TILDE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            //ú
+            case DIALOG_CHAR_LOWER_U_ACUTE:
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_lowercase(ASCII_TO_DIALOG('u'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+            case DIALOG_CHAR_UPPER_U_ACUTE: //Ú
+                if (lineNum >= lowerBound && lineNum <= lowerBound + linesPerBox) {
+                    if (linePos || xMatrix != 1) {
+                        create_dl_translation_matrix(
+                            MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
+                    }
+
+                    render_accent_and_uppercase(ASCII_TO_DIALOG('U'), GLYPH_TEXT_ACUTE);
+                    create_dl_translation_matrix(MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    xMatrix = 1;
+                    linePos++;
+                }
+                break;
+#endif
             case DIALOG_CHAR_DAKUTEN:
                 mark = DIALOG_MARK_DAKUTEN;
                 break;
@@ -1358,6 +1936,12 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
 #else
                 render_multi_text_string_lines(STRING_YOU, lineNum, &linePos, linesPerBox, xMatrix, lowerBound);
 #endif
+                xMatrix = 1;
+                break;
+#endif
+#ifdef VERSION_US  //[BR] New multi-text case
+            case DIALOG_CHAR_MULTI_AS:
+                render_multi_text_string_lines(STRING_AS, lineNum, &linePos, linesPerBox, xMatrix, lowerBound);
                 xMatrix = 1;
                 break;
 #endif
@@ -1870,15 +2454,16 @@ u8 ascii_to_credits_char(u8 c) {
         return (c - ('A' - 0xA));
     }
 
-    if (c >= 'a' && c <= 'z') { // remap lower to upper case
+    //[BR] Need the lowercase spaces for the credits accents
+    /*if (c >= 'a' && c <= 'z') { // remap lower to upper case
         return (c - ('a' - 0xA));
-    }
+    }*/
 
     if (c == ' ') {
         return GLOBAL_CHAR_SPACE;
     }
     if (c == '.') {
-        return 0x24;
+        return 0x24; // Credits' '.'
     }
     if (c == '3') {
         return ASCII_TO_DIALOG('3');
@@ -1888,6 +2473,31 @@ u8 ascii_to_credits_char(u8 c) {
     }
     if (c == '6') {
         return ASCII_TO_DIALOG('6');
+    }
+    //[BR]
+    if (c == '-') {
+        return 0x29; // Credits' '-'
+    }
+    if (c == '_') {
+        return 0xEF; // Credits' '_'
+    }
+    if (c == 'h') {
+        return DIALOG_CHAR_UPPER_A_ACUTE; //Á
+    }
+    if (c == 'd') {
+        return DIALOG_CHAR_UPPER_A_CIRCUMFLEX; //Â
+    }
+    if (c == 'a') {
+        return DIALOG_CHAR_UPPER_A_TILDE; //Ã
+    }
+    if (c == 'c') {
+        return 0xED; //Ç
+    }
+    if (c == 'e') {
+        return DIALOG_CHAR_UPPER_E_ACUTE; //É
+    }
+    if (c == 'o') {
+        return DIALOG_CHAR_UPPER_O_TILDE; //Õ
     }
 
     return GLOBAL_CHAR_SPACE;
@@ -2171,16 +2781,24 @@ u8 gTextCourseArr[][7] = {
 };
 #endif
 
+//[BR] Mostly a X and Y adjustments section
 #if defined(VERSION_JP) || defined(VERSION_SH)
 #define CRS_NUM_X1 93
-#else
+#elif defined(VERSION_EU)
 #define CRS_NUM_X1 100
+#else
+#define CRS_NUM_X1 91
 #endif
 #ifdef VERSION_EU
 #define TXT_STAR_X 89
 #define ACT_NAME_X 107
 #define LVL_NAME_X 108
 #define MYSCORE_X  48
+#elif defined(VERSION_US)
+#define TXT_STAR_X 93
+#define ACT_NAME_X 110
+#define LVL_NAME_X 111
+#define MYSCORE_X  62
 #else
 #define TXT_STAR_X 98
 #define ACT_NAME_X 116
@@ -2239,9 +2857,9 @@ void render_pause_my_score_coins(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
-    if (courseIndex < COURSE_STAGES_COUNT) {
-        print_hud_my_score_coins(1, gCurrSaveFileNum - 1, courseIndex, 178, 103);
-        print_hud_my_score_stars(gCurrSaveFileNum - 1, courseIndex, 118, 103);
+    if (courseIndex < COURSE_STAGES_COUNT) { //[BR] plus 4
+        print_hud_my_score_coins(1, gCurrSaveFileNum - 1, courseIndex, 182, 103);
+        print_hud_my_score_stars(gCurrSaveFileNum - 1, courseIndex, 122, 103);
     }
 
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
@@ -2300,7 +2918,7 @@ void render_pause_my_score_coins(void) {
 #define Y_VAL7 0
 #else
 #define TXT1_X 3
-#define TXT2_X 119
+#define TXT2_X 118 //[BR] minus 1
 #define Y_VAL7 2
 #endif
 
@@ -2409,20 +3027,24 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     }
 }
 
+//Pause screen's level list BG [BR]
 void render_pause_castle_menu_box(s16 x, s16 y) {
-    create_dl_translation_matrix(MENU_MTX_PUSH, x - 78, y - 32, 0);
-    create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.2f, 0.8f, 1.0f);
+    create_dl_translation_matrix(MENU_MTX_PUSH, x - 85, y - 32, 0); // X plus 7
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.3f, 0.8f, 1.0f); //Larger BG (X plus 0.1f)
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 105);
     gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-    create_dl_translation_matrix(MENU_MTX_PUSH, x + 6, y - 28, 0);
+    //Turns out the arrows were a bit misaligned.
+    //Up arrow
+    create_dl_translation_matrix(MENU_MTX_PUSH, x + 8, y - 28, 0); //X plus 2
     create_dl_rotation_matrix(MENU_MTX_NOPUSH, DEFAULT_DIALOG_BOX_ANGLE, 0, 0, 1.0f);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-    create_dl_translation_matrix(MENU_MTX_PUSH, x - 9, y - 101, 0);
+    //Down arrow
+    create_dl_translation_matrix(MENU_MTX_PUSH, x - 8, y - 101, 0); //X minus 1
     create_dl_rotation_matrix(MENU_MTX_NOPUSH, 270.0f, 0, 0, 1.0f);
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -2450,7 +3072,7 @@ void print_hud_pause_colorful_str(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_US) //[BR]
     print_hud_lut_string(HUD_LUT_GLOBAL, get_str_x_pos_from_center_scale(
                          SCREEN_WIDTH / 2, textPause, 12.0f), 81, textPause);
 #else
@@ -2512,6 +3134,7 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     u8 textX[] = { TEXT_VARIABLE_X };
 #else
     u8 textCoin[] = { TEXT_COIN_X };
+    s16 courseX; // [BR]
 #endif
 
     void *courseName;
@@ -2563,6 +3186,9 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
 
     if (gDialogLineNum < COURSE_STAGES_COUNT) {
         courseName = segmented_to_virtual(courseNameTbl[gDialogLineNum]);
+#ifndef VERSION_EU
+        courseX = x - 20;
+#endif
         render_pause_castle_course_stars(x, y, gCurrSaveFileNum - 1, gDialogLineNum);
         print_generic_string(x + 34, y - 5, textCoin);
 #ifdef VERSION_EU
@@ -2575,6 +3201,9 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
 #endif
     } else {
         u8 textStarX[] = { TEXT_STAR_X };
+#ifndef VERSION_EU
+        courseX = x - 15;
+#endif
         courseName = segmented_to_virtual(courseNameTbl[COURSE_MAX]);
         print_generic_string(x + 40, y + 13, textStarX);
         int_to_str(save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_BONUS_STAGES - 1, COURSE_MAX - 1), strVal);
@@ -2585,7 +3214,7 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     }
 
 #ifndef VERSION_EU
-    print_generic_string(x - 9, y + 30, courseName);
+    print_generic_string(courseX, y + 30, courseName);
 #endif
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
@@ -2725,6 +3354,8 @@ void print_hud_course_complete_string(s8 str) {
 #ifdef VERSION_EU
         print_hud_lut_string(HUD_LUT_GLOBAL, get_str_x_pos_from_center_scale(160, textHiScore[gInGameLanguage], 12.0f),
                   36, textHiScore[gInGameLanguage]);
+#elif defined(VERSION_US) //[BR]
+        print_hud_lut_string(HUD_LUT_GLOBAL, get_str_x_pos_from_center_scale(SCREEN_WIDTH / 2, textHiScore, 12.0f), TXT_HISCORE_Y, textHiScore);
 #else
         print_hud_lut_string(HUD_LUT_GLOBAL, TXT_HISCORE_X, TXT_HISCORE_Y, textHiScore);
 #endif
@@ -2794,14 +3425,20 @@ void play_star_fanfare_and_flash_hud(s32 arg, u8 starNum) {
 #define TXT_NAME_X1 71
 #define TXT_NAME_X2 69
 #endif
+
 #if defined(VERSION_JP) || defined(VERSION_SH)
 #define CRS_NUM_X2 95
 #define CRS_NUM_X3 93
 #define TXT_CLEAR_X1 205
 #define TXT_CLEAR_X2 203
 #else
+#ifdef VERSION_EU
 #define CRS_NUM_X2 104
 #define CRS_NUM_X3 102
+#else //[BR]
+#define CRS_NUM_X2 93
+#define CRS_NUM_X3 91
+#endif
 #define TXT_CLEAR_X1 get_string_width(name) + 81
 #define TXT_CLEAR_X2 get_string_width(name) + 79
 #endif

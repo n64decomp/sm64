@@ -316,6 +316,8 @@ void print_act_selector_strings(void) {
     if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0) {
 #ifdef VERSION_EU
         print_generic_string(95, 118, myScore[language]);
+#elif defined(VERSION_US) //[BR]
+        print_generic_string(96, 118, myScore);
 #else
         print_generic_string(102, 118, myScore);
 #endif
@@ -346,7 +348,11 @@ void print_act_selector_strings(void) {
         print_menu_generic_string(get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f), 81, selectedActName);
 #else
         actNameX = get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f);
+#ifdef VERSION_US // [BR]
+        print_menu_generic_string(actNameX, 82, selectedActName);
+#else
         print_menu_generic_string(actNameX, 81, selectedActName);
+#endif
 #endif
     }
 

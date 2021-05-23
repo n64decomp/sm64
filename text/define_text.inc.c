@@ -1,8 +1,9 @@
 // == debug table ==
 
-#ifndef VERSION_EU
+#if defined(VERSION_JP) || defined(VERSION_SH)
 
 // (this wasn't translated for US, and was removed in EU)
+// [BR] and I decided to remove it in the translation
 
 static const u8 Debug0[] = {
     _("ＳＴＡＧＥ　ＳＥＬＥＣＴ\n"

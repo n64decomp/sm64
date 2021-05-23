@@ -1,2102 +1,2164 @@
 // Parameters: dialog enum ID, (unused), lines per box, left offset, width
 
-#ifdef VERSION_EU
-#define COMRADES "friends"
-#define PLASTERED "splattered"
-#define SCAM_ME "cheat!\n"
-#define SCRAM "get lost"
-#define YOU_CANT_SWIM_IN_IT "Its too heavy to swim\nwith."
-#define GIVE_UP "give up"
-#else
-#define COMRADES "comrades"
-#define PLASTERED "plastered"
-#define SCAM_ME "scam\nME. "
-#define SCRAM "scram--"
-#define YOU_CANT_SWIM_IN_IT "You can't swim in it."
-#define GIVE_UP "give"
-#endif
+//[BR] American/British parameters deleted by lack of necessity
 
 DEFINE_DIALOG(DIALOG_000, 1, 6, 30, 200, _("\
-Wow! You're smack in the\n\
-middle of the battlefield.\n\
-You'll find the Power\n\
-Stars that Bowser stole\n\
-inside the painting\n\
-worlds.\n\
-First, talk to the\n\
-Bob-omb Buddy. (Press [B]\n\
-to talk.) He'll certainly\n\
-help you out, and so will\n\
-his " COMRADES " in other\n\
-areas.\n\
-To read signs, stop, face\n\
-them and press [B]. Press [A]\n\
-or [B] to scroll ahead. You\n\
-can talk to some other\n\
-characters by facing them\n\
-and pressing [B]."))
+Uau! Você parou no meio\n\
+de uma zona de combate.\n\
+Você encontrará outras\n\
+Hiperestrelas roubadas\n\
+pelo Bowser dentro dos\n\
+mundos das pinturas.\n\
+\
+Fale primeiro com as\n\
+Rubro-Bombas ([A] ou [B]).\n\
+Com certeza elas vão\n\
+ajudar, assim como suas\n\
+companheiras em outras\n\
+áreas.\n\
+\
+Para ler as placas, pare\n\
+na frente delas e aperte\n\
+[A] ou [B].\n\
+Use [A] ou [B] também\n\
+para passar as falas."))
 
 DEFINE_DIALOG(DIALOG_001, 1, 4, 95, 200, _("\
-Watch out! If you wander\n\
-around here, you're liable\n\
-to be " PLASTERED " by a\n\
-water bomb!\n\
-Those enemy Bob-ombs love\n\
-to fight, and they're\n\
-always finding ways to\n\
-attack.\n\
-This meadow has become\n\
-a battlefield ever since\n\
-the Big Bob-omb got his\n\
-paws on the Power Star.\n\
-Can you recover the Star\n\
-for us? Cross the bridge\n\
-and go left up the path\n\
-to find the Big Bob-omb.\n\
-Please come back to see\n\
-me after you've retrieved\n\
-the Power Star!"))
+Toma cuidado! Se você\n\
+ficar perambulando por\n\
+aqui, vai se machucar\n\
+com uma bomba d'água!\n\
+\
+Essas Bob-bombas\n\
+inimigas amam brigar e\n\
+sempre dão um jeito de\n\
+nos atacar.\n\
+\
+Este campo virou uma zona\n\
+de guerra desde quando o\n\
+Rei Bob-bomba pôs as\n\
+patas numa Hiperestrela.\n\
+\
+Pode recuperar ela pra\n\
+gente? É só cruzar a\n\
+ponte e seguir à esquerda\n\
+pra encontrar o Rei.\n\
+\
+E volte aqui pra falar\n\
+comigo depois de pegar a\n\
+Hiperestrela, por favor!"))
 
 DEFINE_DIALOG(DIALOG_002, 1, 4, 95, 200, _("\
-Hey, you! It's dangerous\n\
-ahead, so listen up! Take\n\
-my advice.\n\
-\n\
-Cross the two\n\
-bridges ahead, then\n\
-watch for falling\n\
-water bombs.\n\
-The Big Bob-omb at the\n\
-top of the mountain is\n\
-very powerful--don't let\n\
-him grab you!\n\
-We're Bob-omb Buddies,\n\
-and we're on your side.\n\
-You can talk to us\n\
-whenever you'd like to!"))
+Ei, você! Está muito\n\
+perigoso mais à frente,\n\
+então escuta bem o meu\n\
+aviso!\n\
+\
+Quando atravessar as\n\
+pontes adiante, cuidado\n\
+pra não ser atingido por\n\
+uma bomba d'água.\n\
+\
+Além disso, o Rei\n\
+Bob-bomba na montanha é\n\
+bem poderoso, então não\n\
+deixe ele te agarrar!\n\
+\
+Nós Rubro-Bombas\n\
+estamos todas do seu\n\
+lado. Pode falar com a\n\
+gente quando quiser!"))
 
 DEFINE_DIALOG(DIALOG_003, 1, 5, 95, 200, _("\
-Thank you, Mario! The Big\n\
-Bob-omb is nothing but a\n\
-big dud now! But the\n\
-battle for the castle has\n\
-just begun.\n\
-Other enemies are holding\n\
-the other Power Stars. If\n\
-you recover more Stars,\n\
-you can open new doors\n\
-that lead to new worlds!\n\
-My Bob-omb Buddies are\n\
-waiting for you. Be sure\n\
-to talk to them--they'll\n\
-set up cannons for you."))
+Valeu mesmo, Mario! O Rei\n\
+Bob-bomba agora não é\n\
+nada além de um Bobalhão!\n\
+Mas a guerra pelo castelo\n\
+tá só começando.\n\
+\
+Outros inimigos estão\n\
+com as outras Estrelas.\n\
+Com certeza elas devem\n\
+abrir cada vez mais\n\
+portas pra novos mundos!\n\
+\
+Mais Rubro-Bombas te\n\
+esperam pra te ajudar.\n\
+Fale com uma quando\n\
+vê-la! Elas vão adorar\n\
+armar um canhão pra você."))
 
 DEFINE_DIALOG(DIALOG_004, 1, 3, 95, 200, _("\
-We're peace-loving\n\
-Bob-ombs, so we don't use\n\
-cannons.\n\
-But if you'd like\n\
-to blast off, we don't\n\
-mind. Help yourself.\n\
-We'll prepare all of the\n\
-cannons in this course for\n\
-you to use. Bon Voyage!"))
+Somos Bob-bombas de\n\
+paz e amor, nem usamos\n\
+canhões direito.\n\
+\
+Então se quiser dar uma\n\
+de homem-bala, fique à\n\
+vontade!\n\
+\
+Vamos preparar todos os\n\
+canhões da área pra você.\n\
+Bon Voyage!"))
 
 DEFINE_DIALOG(DIALOG_005, 1, 3, 30, 200, _("\
-Hey, Mario! Is it true\n\
-that you beat the Big\n\
-Bob-omb? Cool!\n\
-You must be strong. And\n\
-pretty fast. So, how fast\n\
-are you, anyway?\n\
-Fast enough to beat me...\n\
-Koopa the Quick? I don't\n\
-think so. Just try me.\n\
-How about a race to the\n\
-mountaintop, where the\n\
-Big Bob-omb was?\n\
-Whaddya say? When I say\n\
-『Go,』 let the race begin!\n\
+E aí, Mario! Você venceu\n\
+mesmo o Rei Bob-bomba?\n\
+Que da hora!\n\
+\
+Você deve ser forte, hein?\n\
+E bem rápido. Me diz,\n\
+qual é a sua velocidade?\n\
+\
+Será que é o bastante pra\n\
+vencer a mim... o Kopa\n\
+Veloso? Eu pago pra ver.\n\
+\
+Que tal uma corrida até\n\
+onde o Rei ficava, no\n\
+cume da montanha?\n\
+\
+E então? Quando falar\n\
+『já』, é pernas pra que\n\
+te quero!\n\
+\
+Preparar... Apontar...\n\
 \n\
-Ready....\n\
-\n\
-//Go!////Don't Go"))
+//Já!////Não, não"))
 
 DEFINE_DIALOG(DIALOG_006, 1, 3, 30, 200, _("\
-Hey!!! Don't try to " SCAM_ME
-"You've gotta run\n\
-the whole course.\n\
-Later. Look me up when\n\
-you want to race for\n\
-real."))
+Epa, epa, epa!!! Trapaça\n\
+comigo não! Você tem que\n\
+correr pela trilha inteira.\n\
+\
+Até mais. Me procure\n\
+quando quiser correr\n\
+DE VERDADE."))
 
 DEFINE_DIALOG(DIALOG_007, 1, 5, 30, 200, _("\
-Hufff...fff...pufff...\n\
-Whoa! You...really...are...\n\
-fast! A human blur!\n\
-Here you go--you've won\n\
-it, fair and square!"))
+Ufff... fff... pufff...\n\
+Mano! Você... corre...\n\
+muito! É como uma lebre\n\
+humana! Toma aqui!\n\
+É sua merecidamente!"))
 
-DEFINE_DIALOG(DIALOG_008, 1, 4, 30, 200, _("\
-BEWARE OF CHAIN CHOMP\n\
-Extreme Danger!\n\
-Get close and press [C]^\n\
-for a better look.\n\
-Scary, huh?\n\
-See the Red Coin on top\n\
-of the stake?\n\
+DEFINE_DIALOG(DIALOG_008, 1, 5, 30, 200, _("\
+CUIDADO COM O CHOMP\n\
 \n\
-When you collect eight of\n\
-them, a Power Star will\n\
-appear in the meadow\n\
-across the bridge."))
+Aproxime-se e aperte [C]^\n\
+para vê-lo melhor.\n\
+Assustador, não?\n\
+\
+Viu a moeda vermelha no\n\
+topo da estaca dele?\n\
+Colete 8 delas e uma\n\
+Hiperestrela aparecerá\n\
+na planície após a ponte."))
 
 DEFINE_DIALOG(DIALOG_009, 1, 5, 30, 200, _("\
-Long time, no see! Wow,\n\
-have you gotten fast!\n\
-Have you been training\n\
-on the sly, or is it the\n\
-power of the Stars?\n\
-I've been feeling down\n\
-about losing the last\n\
-race. This is my home\n\
-course--how about a\n\
-rematch?\n\
-The goal is in\n\
-Windswept Valley.\n\
-Ready?\n\
+Mario, há quanto tempo!\n\
+Nossa, como você corre!\n\
+Tem treinando escondido\n\
+ou são as Estrelas\n\
+hiperajudando?\n\
+\
+Essa é minha terra natal.\n\
+Eu tenho andando meio pra\n\
+baixo desde a derrota da\n\
+última corrida.\n\
+Aí, que tal uma revanche?\n\
+\
+A chegada é no\n\
+Vale Varrevento.\n\
+Preparado?\n\
 \n\
-//Go//// Don't Go"))
+//Já!////Não, não"))
 
 DEFINE_DIALOG(DIALOG_010, 1, 4, 30, 200, _("\
-You've stepped on the\n\
-Wing Cap Switch. Wearing\n\
-the Wing Cap, you can\n\
-soar through the sky.\n\
-Now Wing Caps will pop\n\
-out of all the red blocks\n\
-you find.\n\
+Você acaba de ativar o\n\
+Botão do Boné Alado!\n\
+Use um deles para voar\n\
+e revoar pelos céus.\n\
+\
+Agora Bonés Alados\n\
+saltarão de qualquer\n\
+bloco vermelho que você\n\
+abrir.\n\
+\
+Gostaria de salvar?\n\
 \n\
-Would you like to Save?\n\
-\n\
-//Yes////No"))
+//Sim////Não"))
 
 DEFINE_DIALOG(DIALOG_011, 1, 4, 30, 200, _("\
-You've just stepped on\n\
-the Metal Cap Switch!\n\
-The Metal Cap makes\n\
-Mario invincible.\n\
-Now Metal Caps will\n\
-pop out of all of the\n\
-green blocks you find.\n\
+Você ativou o Botão do\n\
+Boné Metálico! Use um\n\
+para ficar invencível\n\
+e andar embaixo d'água.\n\
+\
+Agora Bonés Metálicos\n\
+irão sair de qualquer\n\
+bloco verde que você\n\
+abrir.\n\
+\
+Gostaria de salvar?\n\
 \n\
-Would you like to Save?\n\
-\n\
-//Yes////No"))
+//Sim////Não"))
 
 DEFINE_DIALOG(DIALOG_012, 1, 4, 30, 200, _("\
-You've just stepped on\n\
-the Vanish Cap Switch.\n\
-The Vanish Cap makes\n\
-Mario disappear.\n\
-Now Vanish Caps will pop\n\
-from all of the blue\n\
-blocks you find.\n\
+Você ativou o Botão do\n\
+Boné Transparente!\n\
+Use-o para desaparecer\n\
+na frente de todos.\n\
+\
+Agora Bonés Transparentes\n\
+surgirão de qualquer\n\
+bloco azul que você abrir.\n\
 \n\
-Would you like to Save?\n\
+Gostaria de salvar?\n\
 \n\
-//Yes////No"))
+//Sim////Não"))
 
 DEFINE_DIALOG(DIALOG_013, 1, 5, 30, 200, _("\
-You've collected 100\n\
-coins! Mario gains more\n\
-power from the castle.\n\
-Do you want to Save?\n\
-//Yes////No"))
+Você coletou 100 moedas!\n\
+Mario ganha mais força\n\
+com o poder do castelo.\n\
+Você quer salvar?\n\
+//Sim////Não"))
 
 DEFINE_DIALOG(DIALOG_014, 1, 4, 30, 200, _("\
-Wow! Another Power Star!\n\
-Mario gains more courage\n\
-from the power of the\n\
-castle.\n\
-Do you want to Save?\n\
+Uau!\n\
+Mais uma Hiperestrela!\n\
+Mario ganha mais força\n\
+com o poder do castelo.\n\
+\
+Você quer salvar?\n\
 \n\
-//You Bet//Not Now"))
+//Pode\n\
+//apostar/  Agora não"))
 
-DEFINE_DIALOG(DIALOG_015, 1, 4, 30, 200, _("\
-You can punch enemies to\n\
-knock them down. Press [A]\n\
-to jump, [B] to punch.\n\
-Press [A] then [B] to Kick.\n\
-To pick something up,\n\
-press [B], too. To throw\n\
-something you're holding,\n\
-press [B] again."))
+DEFINE_DIALOG(DIALOG_015, 1, 5, 30, 200, _("\
+Aperte [B] para dar socos\n\
+e derrubar os inimigos.\n\
+Você também pode pular\n\
+neles com [A]. Aperte [A]\n\
+e depois [B] para chutar.\n\
+\
+Aperte [B] para apanhar\n\
+algo e, para arremessar\n\
+o que está segurando,\n\
+[B] outra vez."))
 
 DEFINE_DIALOG(DIALOG_016, 1, 3, 30, 200, _("\
-Hop on the shiny shell and\n\
-ride wherever you want to\n\
-go! Shred those enemies!"))
+Suba no casco verde e\n\
+ande por onde quiser!\n\
+Acabe com eles!"))
 
 DEFINE_DIALOG(DIALOG_017, 1, 4, 30, 200, _("\
-I'm the Big Bob-omb, lord\n\
-of all blasting matter,\n\
-king of ka-booms the\n\
-world over!\n\
-How dare you scale my\n\
-mountain? By what right\n\
-do you set foot on my\n\
-imperial mountaintop?\n\
-You may have eluded my\n\
-guards, but you'll never\n\
-escape my grasp...\n\
-\n\
-...and you'll never take\n\
-away my Power Star. I\n\
-hereby challenge you,\n\
-Mario!\n\
-If you want the Star I\n\
-hold, you must prove\n\
-yourself in battle.\n\
-\n\
-Can you pick me up from\n\
-the back and hurl me to\n\
-this royal turf? I think\n\
-that you cannot!"))
+Eu sou o Rei Bob-bomba,\n\
+o senhor de todos os\n\
+explosivos e explosões\n\
+do mundo!\n\
+\
+Que direito tem você\n\
+de escalar a montanha\n\
+imperial?\n\
+Como se atreve?\n\
+\
+Pode até ter ludibriado\n\
+meus guardas, mas nunca\n\
+escapará de minhas mãos,\n\
+ou levará minha Estrela.\n\
+\
+Se quiser tanto a\n\
+Hiperestrela que eu\n\
+possuo, prove o seu valor\n\
+numa batalha contra mim!\n\
+\
+Alguém como você\n\
+nunca conseguirá me\n\
+agarrar por trás e me\n\
+arremessar!"))
 
 DEFINE_DIALOG(DIALOG_018, 1, 4, 30, 200, _("\
-I'm sleeping because...\n\
-...I'm sleepy. I don't\n\
-like being disturbed.\n\
-Please walk quietly."))
+Eu tô dormindo porque...\n\
+eu tô com sono.\n\
+Não gosto que pertubem.\n\
+Favor andar em silêncio."))
 
 DEFINE_DIALOG(DIALOG_019, 1, 2, 30, 200, _("\
-Shhh! Please walk\n\
-quietly in the hallway!"))
+Shhh! Por favor,\n\
+silêncio no corredor!"))
 
 DEFINE_DIALOG(DIALOG_020, 1, 6, 95, 150, _("\
-Dear Mario:\n\
-Please come to the\n\
-castle. I've baked\n\
-a cake for you.\n\
-Yours truly--\n\
-Princess Toadstool"))
+Querido Mario:\n\
+Venha ao meu castelo.\n\
+Fiz um bolo para você.\n\
+\n\
+Com amor,\n\
+- Princesa Cogumelo"))
 
 DEFINE_DIALOG(DIALOG_021, 1, 5, 95, 200, _("\
-Welcome.\n\
-No one's home!\n\
-Now " SCRAM "\n\
-and don't come back!\n\
-Gwa ha ha!"))
+Bem-vindo...\n\
+mas não tem ninguém!\n\
+Então dê o fora e não\n\
+volte mais!\n\
+Guá ha ha ha!"))
 
 DEFINE_DIALOG(DIALOG_022, 1, 2, 95, 200, _("\
-You need a key to open\n\
-this door."))
+Você precisa de uma chave\n\
+para abrir esta porta."))
 
-DEFINE_DIALOG(DIALOG_023, 1, 3, 95, 200, _("\
-This key doesn't fit!\n\
-Maybe it's for the\n\
-basement..."))
+DEFINE_DIALOG(DIALOG_023, 1, 2, 95, 200, _("\
+A chave não encaixa!\n\
+Talvez seja a do porão..."))
 
 DEFINE_DIALOG(DIALOG_024, 1, 5, 95, 200, _("\
-You need Star power to\n\
-open this door. Recover a\n\
-Power Star from an enemy\n\
-inside one of the castle's\n\
-paintings."))
+Você precisa de poder\n\
+estelar para abrir esta\n\
+porta. Recupere uma\n\
+Estrela dentro de uma\n\
+das pinturas do castelo."))
 
-DEFINE_DIALOG(DIALOG_025, 1, 4, 95, 200, _("\
-It takes the power of\n\
-3 Stars to open this\n\
-door. You need [%] more\n\
-Stars."))
+DEFINE_DIALOG(DIALOG_025, 1, 3, 95, 200, _("\
+Só o poder de 3 Estrelas\n\
+pode abrir esta porta.\n\
+Você precisa de mais [%]."))
 
-DEFINE_DIALOG(DIALOG_026, 1, 4, 95, 200, _("\
-It takes the power of\n\
-8 Stars to open this\n\
-door. You need [%] more\n\
-Stars."))
+DEFINE_DIALOG(DIALOG_026, 1, 3, 95, 200, _("\
+Só o poder de 8 Estrelas\n\
+pode abrir esta porta.\n\
+Você precisa de mais [%]."))
 
-DEFINE_DIALOG(DIALOG_027, 1, 4, 95, 200, _("\
-It takes the power of\n\
-30 Stars to open this\n\
-door. You need [%] more\n\
-Stars."))
+DEFINE_DIALOG(DIALOG_027, 1, 3, 95, 200, _("\
+Só o poder de 30 Estrelas\n\
+pode abrir esta porta.\n\
+Você precisa de mais [%]."))
 
-DEFINE_DIALOG(DIALOG_028, 1, 4, 95, 200, _("\
-It takes the power of\n\
-50 Stars to open this\n\
-door. You need [%] more\n\
-Stars."))
+DEFINE_DIALOG(DIALOG_028, 1, 3, 95, 200, _("\
+Só o poder de 50 Estrelas\n\
+pode abrir esta porta.\n\
+Você precisa de mais [%]."))
 
 DEFINE_DIALOG(DIALOG_029, 1, 5, 95, 200, _("\
-To open the door that\n\
-leads to the 『endless』\n\
-stairs, you need 70\n\
-Stars.\n\
-Bwa ha ha!"))
+Pra resolver o mistério da\n\
+escada 『infinita』, você\n\
+precisa de 70 Estrelas!\n\
+Cadê as outras [%],\n\
+hein? GUÁ HA HA!"))
 
-DEFINE_DIALOG(DIALOG_030, 1, 6, 30, 200, _("\
-Hello! The Lakitu Bros.,\n\
-cutting in with a live\n\
-update on Mario's\n\
-progress. He's about to\n\
-learn a technique for\n\
-sneaking up on enemies.\n\
-The trick is this: He has\n\
-to walk very slowly in\n\
-order to walk quietly.\n\
+DEFINE_DIALOG(DIALOG_030, 1, 5, 30, 200, _("\
+Boa tarde! Este é o\n\
+plantão dos Irmãos Lakitu.\n\
+A dica da vez é: para\n\
+andar sem fazer barulho,\n\
+caminhe beeem devagar.\n\
+\
+E um último adendo:\n\
+se você gosta de assistir\n\
+à distância, apertar\n\
+[C]| é uma ótima pedida.\n\
 \n\
+\
+Lembrando que qualquer\n\
+ângulo impossível de ser\n\
+filmado será avisado com\n\
+um 『Bzzz!』.\n\
 \n\
+\
 \n\
-And wrapping up filming\n\
-techniques reported on\n\
-earlier, you can take a\n\
-look around using [C]> and\n\
-[C]<. Press [C]| to view the\n\
-action from a distance.\n\
-When you can't move the\n\
-camera any farther, the\n\
-buzzer will sound. This is\n\
-the Lakitu Bros.,\n\
-signing off."))
+Este foi o plantão\n\
+dos Irmãos Lakitu.\n\
+Até a próxima!"))
 
 DEFINE_DIALOG(DIALOG_031, 1, 5, 30, 200, _("\
-No way! You beat me...\n\
-again!! And I just spent\n\
-my entire savings on\n\
-these new Koopa\n\
-Mach 1 Sprint shoes!\n\
-Here, I guess I have to\n\
-hand over this Star to\n\
-the winner of the race.\n\
-Congrats, Mario!"))
+Não acredito, você me\n\
+venceu... de novo!!!\n\
+Eu torrei meu dinheiro\n\
+nesses tênis da Rapididas\n\
+pra nada!\n\
+\
+Mas você foi incrível\n\
+mesmo, Mario! Parabéns!\n\
+Toma aqui essa Estrela\n\
+como prêmio!"))
 
-DEFINE_DIALOG(DIALOG_032, 1, 5, 30, 200, _("\
-If you get the Wing Cap,\n\
-you can fly! Put the cap\n\
-on, then do a Triple\n\
-Jump--jump three times\n\
-in a row--to take off.\n\
-You can fly even higher\n\
-if you blast out of a\n\
-cannon wearing the\n\
-Wing Cap!\n\
-\n\
-Use the [C] Buttons to look\n\
-around while flying, and\n\
-press [Z] to land."))
+DEFINE_DIALOG(DIALOG_032, 1, 6, 30, 200, _("\
+Com o Boné Alado, você\n\
+pode voar, voar, subir,\n\
+subir e ir aonde for!\n\
+Depois de vestir o boné,\n\
+dê um Salto Triplo para\n\
+decolar.\n\
+\
+Também pode atirar-se\n\
+de um canhão para voar\n\
+mais alto! Use os botões\n\
+[C] para olhar ao redor\n\
+enquanto voa, e aperte [Z]\n\
+para aterrissar."))
 
 DEFINE_DIALOG(DIALOG_033, 1, 6, 30, 200, _("\
-Ciao! You've reached\n\
-Princess Toadstool's\n\
-castle via a warp pipe.\n\
-Using the controller is a\n\
-piece of cake. Press [A] to\n\
-jump and [B] to attack.\n\
-Press [B] to read signs,\n\
-too. Use the Control Stick\n\
-in the center of the\n\
-controller to move Mario\n\
-around. Now, head for\n\
-the castle."))
+Ciao! Por meio de um\n\
+Cano Transporte, você\n\
+chegou ao castelo da\n\
+Princesa Peach.\n\
+Usar o controle é\n\
+mamão com açúcar:\n\
+\
+[A] salta! [B] ataca!\n\
+[A] e [B] podem ler placas,\n\
+e o Analógico no centro\n\
+controla o Mario.\n\
+Agora, o melhor é você\n\
+ir até o castelo."))
 
 DEFINE_DIALOG(DIALOG_034, 1, 6, 30, 200, _("\
-Good afternoon. The\n\
-Lakitu Bros., here,\n\
-reporting live from just\n\
-outside the Princess's\n\
-castle.\n\
+Boa tarde! Nós somos os\n\
+Irmãos Lakitu, repórteres\n\
+cinematográficos.\n\
+Daqui em diante, iremos\n\
+transmitir esta jornada\n\
+ao vivo.\n\
+\
+Vamos filmar nos ângulos\n\
+recomendados, mas você\n\
+pode mudar a gente de\n\
+lugar com os botões [C].\n\
+Se não pudermos na hora,\n\
+daremos um aviso sonoro.\n\
+\
+Se quiser parar para\n\
+olhar os arredores, é só\n\
+apertar [C]^.\n\
+Quando terminar, aperte\n\
+[A] para continuar.\n\
 \n\
-Mario has just arrived\n\
-on the scene, and we'll\n\
-be filming the action live\n\
-as he enters the castle\n\
-and pursues the missing\n\
-Power Stars.\n\
-As seasoned cameramen,\n\
-we'll be shooting from the\n\
-recommended angle, but\n\
-you can change the\n\
-camera angle by pressing\n\
-the [C] Buttons.\n\
-If we can't adjust the\n\
-view any further, we'll\n\
-buzz. To take a look at\n\
-the surroundings, stop\n\
-and press [C]^.\n\
-\n\
-Press [A] to resume play.\n\
-Switch camera modes with\n\
-the [R] Button. Signs along\n\
-the way will review these\n\
-instructions.\n\
-\n\
-For now, reporting live,\n\
-this has been the\n\
-Lakitu Bros."))
+\
+Use o botão [R] para\n\
+mudar a câmera.\n\
+Algumas placas pelo\n\
+caminho vão te ajudar\n\
+a lembrar desses\n\
+comandos.\n\
+\
+Muito bem! Este foi nosso\n\
+plantão para você.\n\
+De volta à programação\n\
+normal!"))
 
 DEFINE_DIALOG(DIALOG_035, 1, 5, 30, 200, _("\
-There are four camera, or\n\
-『[C],』 Buttons. Press [C]^\n\
-to look around using the\n\
-Control Stick.\n\
+Há quatro botões câmera,\n\
+ou botões 『[C]』. Aperte [C]^\n\
+para olhar tudo ao redor\n\
+usando o Analógico.\n\
 \n\
-You'll usually see Mario\n\
-through Lakitu's camera.\n\
-It is the camera\n\
-recommended for normal\n\
-play.\n\
-You can change angles by\n\
-pressing [C]>. If you press\n\
-[R], the view switches to\n\
-Mario's camera, which\n\
-is directly behind him.\n\
-Press [R] again to return\n\
-to Lakitu's camera. Press\n\
-[C]| to see Mario from\n\
-afar, using either\n\
-Lakitu's or Mario's view."))
+\
+Geralmente, você verá\n\
+tudo pela câmera do\n\
+Lakitu. Esta é a câmera\n\
+padrão, que tem os\n\
+ângulos recomendados.\n\
+\
+Você pode mudar de ângulo\n\
+com [C]< ou [C]>. Se apertar\n\
+[R], a vista é trocada para\n\
+a câmera do Mario, que\n\
+sempre fica atrás dele.\n\
+\
+Aperte [R] outra vez para\n\
+voltar à câmera do\n\
+Lakitu, e [C]| para manter\n\
+a câmera ativa longe de\n\
+Mario."))
 
 DEFINE_DIALOG(DIALOG_036, 1, 5, 30, 200, _("\
-OBSERVATION PLATFORM\n\
-Press [C]^ to take a look\n\
-around. Don't miss\n\
-anything!\n\
+Plataforma de Observação\n\
 \n\
-Press [R] to switch to\n\
-Mario's camera. It\n\
-always follows Mario.\n\
-Press [R] again to switch\n\
-to Lakitu's camera.\n\
-Pause the game and\n\
-switch the mode to 『fix』\n\
-the camera in place while\n\
-holding [R]. Give it a try!"))
+Aperte [C]^ para observar.\n\
+Não deixe nada passar\n\
+despercebido!\n\
+\
+Aperte [R] para trocar\n\
+entre as câmeras do\n\
+Mario e de Lakitu.\n\
+A do Mario sempre irá\n\
+segui-lo por trás dele.\n\
+\
+Se pausar o jogo e\n\
+ajustar a câmera como\n\
+『fixa』, você pode\n\
+mantê-la no lugar ao\n\
+segurar [R]. Experimente!"))
 
-DEFINE_DIALOG(DIALOG_037, 1, 2, 30, 200, _("\
-I win! You lose!\n\
+DEFINE_DIALOG(DIALOG_037, 1, 3, 30, 200, _("\
+Eu ganhei!\n\
+Eu ganhei!!!\n\
 Ha ha ha ha!\n\
-You're no slouch, but I'm\n\
-a better sledder!\n\
-Better luck next time!"))
+\
+Cê não é nada mal, mas eu\n\
+sou o mais veloz que há!\n\
+Mais sorte na próxima!"))
 
 DEFINE_DIALOG(DIALOG_038, 1, 3, 95, 200, _("\
-Reacting to the Star\n\
-power, the door slowly\n\
-opens."))
+Reagindo ao poder\n\
+hiperestelar, a porta\n\
+lentamente abre."))
 
 DEFINE_DIALOG(DIALOG_039, 1, 4, 30, 200, _("\
-No visitors allowed,\n\
-by decree of\n\
-the Big Bob-omb\n\
+-Visitantes Proibidos-\n\
 \n\
-I shall never surrender my\n\
-Stars, for they hold the\n\
-power of the castle in\n\
-their glow.\n\
-They were a gift from\n\
-Bowser, the Koopa King\n\
-himself, and they lie well\n\
-hidden within my realm.\n\
-Not a whisper of their\n\
-whereabouts shall leave\n\
-my lips. Oh, all right,\n\
-perhaps one hint:\n\
-Heed the Star names at\n\
-the beginning of the\n\
-course.\n\
-//--The Big Bob-omb"))
+Decreto do Rei Bob-bomba\n\
+\n\
+\
+Eu nunca entregarei\n\
+minhas Estrelas, pois elas\n\
+contém o poder do castelo\n\
+com todo o seu resplendor.\n\
+\
+Elas foram um presente do\n\
+próprio Rei Bowser Kupa,\n\
+e estão muito bem ocultas\n\
+em meu domínio.\n\
+\
+De minha boca não sairá\n\
+nada sobre o paradeiro\n\
+delas. Se alguém quiser\n\
+tanto encontrá-las...\n\
+\
+que verifiquem o nome das\n\
+Estrelas no início da\n\
+fase!\n\
+// - O Rei Bob-bomba"))
 
-DEFINE_DIALOG(DIALOG_040, 1, 3, 30, 200, _("\
-Warning!\n\
-Cold, Cold Crevasse\n\
-Below!"))
+DEFINE_DIALOG(DIALOG_040, 1, 2, 30, 200, _("\
+Aviso!\n\
+Fria fenda fria abaixo!"))
 
 DEFINE_DIALOG(DIALOG_041, 1, 3, 30, 200, _("\
-I win! You lose!\n\
-Ha ha ha!\n\
-\n\
-That's what you get for\n\
-messin' with Koopa the\n\
-Quick.\n\
-Better luck next time!"))
+Você perdeu!\n\
+Eu ganhei!\n\
+Ha ha ha ha!\n\
+\
+Vem mexer com o Kopa\n\
+Veloso que dá nisso.\n\
+Mais sorte na próxima!"))
 
 DEFINE_DIALOG(DIALOG_042, 1, 4, 30, 200, _("\
-Caution! Narrow Bridge!\n\
-Cross slowly!\n\
+Cuidado! Ponte estreita!\n\
 \n\
+Atravesse lentamente!\n\
 \n\
-You can jump to the edge\n\
-of the cliff and hang on,\n\
-and you can climb off the\n\
-edge if you move slowly.\n\
-When you want to let go,\n\
-either press [Z] or press\n\
-the Control Stick in the\n\
-direction of Mario's back.\n\
-To climb up, press Up on\n\
-the Control Stick. To\n\
-scurry up quickly, press\n\
-the [A] Button."))
+\
+Você pode se segurar\n\
+numa beirada andando\n\
+até ela devagar ou\n\
+pulando por baixo dela.\n\
+\
+Quando quiser se soltar,\n\
+aperte [Z] ou mova o\n\
+Analógico para trás.\n\
+\n\
+\
+Para subir a beirada,\n\
+mova o Analógico para\n\
+frente. Use [A] para\n\
+subir mais rápido."))
 
 DEFINE_DIALOG(DIALOG_043, 1, 5, 30, 200, _("\
-If you jump and hold the\n\
-[A] Button, you can hang on\n\
-to some objects overhead.\n\
-It's the same as grabbing\n\
-a flying bird!"))
+Se pular e segurar [A],\n\
+você pode se pendurar em\n\
+alguns objetos ao alto.\n\
+É como agarrar-se num\n\
+pássaro voando!"))
 
 DEFINE_DIALOG(DIALOG_044, 1, 5, 95, 200, _("\
-Whooo's there? Whooo\n\
-woke me up? It's still\n\
-daylight--I should be\n\
-sleeping!\n\
+Uuuu que você quer?\n\
+Eu devia estar dormindo\n\
+agora, ainda tá de dia!\n\
+Bom, já que já acordei...\n\
+Quer vir voar comigo?\n\
+\
+Presta atenção na minha\n\
+sombra, segura [A] pra me\n\
+agarrar e solte-o pra...\n\
+bem, se soltar.\n\
 \n\
-Hey, as long as I'm\n\
-awake, why not take a\n\
-short flight with me?\n\
-Press and hold [A] to grab\n\
-on. Release [A] to let go.\n\
-I'll take you wherever\n\
-you want to go, as long\n\
-as my wings hold out.\n\
-Watch my shadow, and\n\
-grab on."))
+\
+Eu te levo pra onde\n\
+quiser. Pelo menos até\n\
+onde as minhas asas\n\
+aguentarem."))
 
 DEFINE_DIALOG(DIALOG_045, 1, 6, 95, 200, _("\
-Whew! I'm just about\n\
-flapped out. You should\n\
-lay off the pasta, Mario!\n\
-That's it for now. Press\n\
-[A] to let go. Okay,\n\
-bye byyyyyyeeee!"))
+Uuuufa! Cansei bonito.\n\
+Tá precisando maneirar\n\
+no espaguete, Mario!\n\
+Por enquanto é só,\n\
+aperta [A] pra soltar, aí.\n\
+Tchau, tchauuuu!"))
 
-DEFINE_DIALOG(DIALOG_046, 1, 5, 30, 200, _("\
-You have to master three\n\
-important jumping\n\
-techniques.\n\
-First try the Triple Jump.\n\
-\n\
-Run fast, then jump three\n\
-times, one, two, three.\n\
-If you time the jumps\n\
-right, you'll hop, skip,\n\
-then jump really high.\n\
-Next, go for distance\n\
-with the Long Jump. Run,\n\
-press [Z] to crouch then [A]\n\
-to jump really far.\n\
-\n\
-To do the Wall Kick, press\n\
-[A] to jump at a wall, then\n\
-jump again when you hit\n\
-the wall.\n\
-\n\
-Got that? Triple Jump,\n\
-Long Jump, Wall Kick.\n\
-Practice, practice,\n\
-practice. You don't stand\n\
-a chance without them."))
+DEFINE_DIALOG(DIALOG_046, 1, 4, 30, 200, _("\
+Há três manobras de\n\
+salto importantes para\n\
+dominar. Primeiramente,\n\
+o Salto Triplo.\n\
+\
+Corra e pule ([A]) uma,\n\
+duas, três vezes. Salte\n\
+na hora certa e fará um\n\
+pulo mais alto que o outro.\n\
+\
+Depois, ganhe distância\n\
+com o Salto Longo. Corra,\n\
+agache ([Z]) e pule ([A]),\n\
+e você irá muito longe.\n\
+\
+E para realizar um Salto\n\
+Escalada, pule em direção\n\
+a uma parede e pule de\n\
+novo assim que tocar nela.\n\
+\
+Compreendeu? Salto Triplo,\n\
+Salto Longo,\n\
+Salto Escalada.\n\
+Pratique-as sempre."))
 
 DEFINE_DIALOG(DIALOG_047, 1, 2, 95, 200, _("\
-Hi! I'll prepare the\n\
-cannon for you!"))
+Oi! Eu preparo o\n\
+canhão pra você!"))
 
 DEFINE_DIALOG(DIALOG_048, 1, 4, 30, 200, _("\
-Snow Mountain Summit\n\
-Watch for slippery\n\
-conditions! Please enter\n\
-the cottage first."))
+-Pico da Fria Montanha-\n\
+Cuidado, piso deslizante!\n\
+Favor entrar no chalé\n\
+primeiro."))
 
 DEFINE_DIALOG(DIALOG_049, 1, 5, 30, 200, _("\
-Remember that tricky Wall\n\
-Kick jump? It's a\n\
-technique you'll have to\n\
-master in order to reach\n\
-high places.\n\
-Use it to jump from wall\n\
-to wall. Press the\n\
-Control Stick in the\n\
-direction you want to\n\
-bounce to gain momentum.\n\
-Practice makes perfect!"))
+Conhece o Salto Escalada?\n\
+É uma técnica que você\n\
+precisa dominar para\n\
+poder chegar a lugares\n\
+mais altos.\n\
+\
+Use-o para saltar de\n\
+parede em parede. Mova o\n\
+Analógico para onde quer\n\
+ir para ganhar impluso. A\n\
+prática leva à perfeição!"))
 
 DEFINE_DIALOG(DIALOG_050, 1, 4, 30, 200, _("\
-Hold [Z] to crouch and\n\
-slide down a slope.\n\
-Or press [Z] while in the\n\
-air to Pound the Ground!\n\
-If you stop, crouch, then\n\
-jump, you'll do a\n\
-Backward Somersault!\n\
-Got that?\n\
-There's more. Crouch and\n\
-then jump to do a\n\
-Long Jump! Or crouch and\n\
-walk to...never mind."))
+Use [Z] para se agachar e\n\
+escorregar numa rampa.\n\
+Ou então aperte [Z] no ar\n\
+para dar um Salto Bomba!\n\
+\
+Se você parar, agachar e\n\
+saltar, você fará um\n\
+Salto Mortal! Entendeu?\n\
+E tem mais!\n\
+\
+Agache após correr e pule\n\
+para dar um Salto Longo!\n\
+Ou agache e então caminhe \n\
+para... Deixa para lá."))
 
 DEFINE_DIALOG(DIALOG_051, 1, 6, 30, 200, _("\
-Climbing's easy! When you\n\
-jump at trees, poles or\n\
-pillars, you'll grab them\n\
-automatically. Press [A] to\n\
-jump off backward.\n\
-\n\
-To rotate around the\n\
-object, press Right or\n\
-Left on the Control Stick.\n\
-When you reach the top,\n\
-press Up to do a\n\
-handstand!\n\
-Jump off from the\n\
-handstand for a high,\n\
-stylin' dismount."))
+Escalar é fácil! Quando\n\
+pular em árvores, mastros\n\
+ou pilares, você agarrará\n\
+neles sozinho. \n\
+Aperte [A] para saltar\n\
+para trás.\n\
+\
+Gire em torno do objeto\n\
+movendo o Analógico para\n\
+esquerda ou direita.\n\
+Ao alcançar o topo,\n\
+mova-o para cima para\n\
+ficar de ponta-cabeça.\n\
+\
+Pule nesse instante e faça\n\
+um salto estilosíssimo\n\
+para frente!"))
 
 DEFINE_DIALOG(DIALOG_052, 1, 5, 30, 200, _("\
-Stop and press [Z] to\n\
-crouch, then press [A]\n\
-to do a high, Backward\n\
-Somersault!\n\
+Pare, agache ([Z]) e\n\
+aperte [A] para fazer um\n\
+Salto Mortal bem alto.\n\
 \n\
-To perform a Side\n\
-Somersault, run, do a\n\
-sharp U-turn and jump.\n\
-You can catch lots of\n\
-air with both jumps."))
+\n\
+\
+Já para fazer um Salto\n\
+Lateral, corra, dê meia-\n\
+-volta e pule! Ambos os\n\
+pulos cobrem uma boa\n\
+altura."))
 
 DEFINE_DIALOG(DIALOG_053, 1, 5, 30, 200, _("\
-Sometimes, if you pass\n\
-through a coin ring or\n\
-find a secret point in a\n\
-course, a red number will\n\
-appear.\n\
-If you trigger five red\n\
-numbers, a secret Star\n\
-will show up."))
+Um número vermelho às\n\
+vezes aparece quando\n\
+se passa por um anel de\n\
+moedas ou por um ponto\n\
+secreto de uma fase. \n\
+\
+Se acionar 5 números,\n\
+uma Estrela escondida\n\
+irá aparecer."))
 
-DEFINE_DIALOG(DIALOG_054, 1, 5, 30, 200, _("\
-Welcome to the snow\n\
-slide! Hop on! To speed\n\
-up, press forward on the\n\
-Control Stick. To slow\n\
-down, pull back."))
+DEFINE_DIALOG(DIALOG_054, 1, 6, 30, 200, _("\
+Boas-vindas ao escorrega\n\
+de gelo! Pode subir! Você\n\
+pode mover o Analógico\n\
+para frente para acelerar,\n\
+e para trás para reduzir\n\
+a velocidade."))
 
 DEFINE_DIALOG(DIALOG_055, 1, 4, 30, 200, _("\
-Hey-ey, Mario, buddy,\n\
-howzit goin'? Step right\n\
-up. You look like a fast\n\
-sleddin' kind of guy.\n\
-I know speed when I see\n\
-it, yes siree--I'm the\n\
-world champion sledder,\n\
-you know. Whaddya say?\n\
-How about a race?\n\
-Ready...\n\
+Eeee aê, Mario, como vai,\n\
+mano? Aê, cê tem cara\n\
+de ser mais rápido que um\n\
+esqui, né não?\n\
+\
+Eu conheço rapidez\n\
+esqui-valente quando vejo.\n\
+Afinal, eu sou o campeão\n\
+mundial de esquibarriga.\n\
+\
+O que me diz, bora\n\
+correr? Preparar...\n\
 \n\
-//Go//// Don't Go"))
+//Já!////Não, não"))
 
-DEFINE_DIALOG(DIALOG_056, 1, 6, 30, 200, _("\
-You brrrr-oke my record!\n\
-Unbelievable! I knew\n\
-that you were the coolest.\n\
-Now you've proven\n\
-that you're also the\n\
-fastest!\n\
-I can't award you a gold\n\
-medal, but here, take this\n\
-Star instead. You've\n\
-earned it!"))
+DEFINE_DIALOG(DIALOG_056, 1, 3, 30, 200, _("\
+C-Cara, cê quebrrrou meu\n\
+recorde! Incrível, cara!\n\
+É o melhor que eu já vi!\n\
+\
+Não tô com uma medalha\n\
+agora, mas toma aqui!\n\
+Cê merece!"))
 
 DEFINE_DIALOG(DIALOG_057, 1, 4, 30, 200, _("\
-Egad! My baby!! Have you\n\
-seen my baby??? She's\n\
-the most precious baby in\n\
-the whole wide world.\n\
-(They say she has my\n\
-beak...) I just can't\n\
-remember where I left\n\
-her.\n\
-Let's see...I stopped\n\
-for herring and ice cubes,\n\
-then I...oohh! I just\n\
-don't know!"))
+Minha nossa! Cadê minha\n\
+bebê?! Você viu ela???\n\
+Ela é a coisa mais\n\
+preciosa do mundo todo!\n\
+\
+Eu não consigo me lembrar\n\
+onde eu deixei ela, mas...\n\
+Todo mundo diz que ela é\n\
+o bico da mãe!\n\
+\
+Deixa eu ver, eu parei pra\n\
+pegar cubo de gelo e...\n\
+Ahhh, eu NÃO LEMBRO!!!\n\
+MINHA BEBÊ!"))
 
 DEFINE_DIALOG(DIALOG_058, 1, 4, 30, 200, _("\
-You found my precious,\n\
-precious baby! Where\n\
-have you been? How can\n\
-I ever thank you, Mario?\n\
-Oh, I do have this...\n\
-...Star. Here, take it\n\
-with my eternal\n\
-gratitude."))
+Mario, você achou a minha\n\
+preciosa, minha bebê!!!\n\
+Ah, como eu vou poder\n\
+te agradecer, Mario?\n\
+\
+Ah, eu tenho uma tal de...\n\
+『estrela』 aqui. Tome,\n\
+fique com isso e com\n\
+minha eterna gratidão."))
 
 DEFINE_DIALOG(DIALOG_059, 1, 4, 30, 200, _("\
-That's not my baby! She\n\
-looks nothing like me!\n\
-Her parents must be\n\
-worried sick!"))
+Essa não é a minha bebê!\n\
+Ela nem parece comigo!!!\n\
+Os pais dela devem estar\n\
+morrendo de preocupação!"))
 
-DEFINE_DIALOG(DIALOG_060, 1, 4, 30, 200, _("\
-ATTENTION!\n\
-Read Before Diving In!\n\
+DEFINE_DIALOG(DIALOG_060, 1, 6, 30, 200, _("\
+\n\
+ATENÇÃO!\n\
 \n\
 \n\
-If you stay under the\n\
-water for too long, you'll\n\
-run out of oxygen.\n\
+Leia antes de mergulhar!\n\
 \n\
-Return to the surface for\n\
-air or find an air bubble\n\
-or coins to breathe while\n\
-underwater.\n\
-Press [A] to swim. Hold [A]\n\
-to swim slow and steady.\n\
-Tap [A] with smooth timing\n\
-to gain speed.\n\
-Press Up on the\n\
-Control Stick and press [A]\n\
-to dive.\n\
+\
+Se ficar embaixo d'água\n\
+por tempo demais, ficará\n\
+sem oxigênio. Volte à\n\
+superfície para respirar,\n\
+ou procure moedas ou uma\n\
+bolha para continuar vivo.\n\
+\
+Aperte [A] para nadar\n\
+e segure [A] para nadar\n\
+mais devagar.\n\
+Aperte-o repetida e\n\
+sincronizadamente para\n\
+ganhar velocidade.\n\
+\
+Mova o Analógico para\n\
+baixo enquanto nada para\n\
+mergulhar, ou para cima\n\
+para ir à superfície.\n\
 \n\
-Press Down on the Control\n\
-Stick and press [A] to\n\
-return to the surface.\n\
 \n\
-Hold Down and press [A]\n\
-while on the surface near\n\
-the edge of the water to\n\
-jump out."))
+\
+Mantenha-o para baixo e\n\
+aperte [A] na superfície\n\
+para pular para fora\n\
+d'água.\n\
+Lembre-se sempre!"))
 
 DEFINE_DIALOG(DIALOG_061, 1, 4, 30, 200, _("\
-BRRR! Frostbite Danger!\n\
-Do not swim here.\n\
-I'm serious.\n\
-/--The Penguin"))
+BRRR! Perigo de Geladura!\n\
+\n\
+Não nade aqui. É sério.\n\
+// - O Pinguim"))
 
 DEFINE_DIALOG(DIALOG_062, 1, 3, 30, 200, _("\
-Hidden inside the green\n\
-block is the amazing\n\
-Metal Cap.\n\
-Wearing it, you won't\n\
-catch fire or be hurt\n\
-by enemy attacks.\n\
-You don't even have to\n\
-breathe while wearing it.\n\
-\n\
-The only problem:\n"
-YOU_CANT_SWIM_IN_IT))
+Escondido nos Blocos-!\n\
+verdes está o incrível\n\
+Boné Metálico.\n\
+\
+Use-o, e você não irá se\n\
+queimar, nem ser ferido\n\
+pelos inimigos.\n\
+\
+Você nem precisa respirar\n\
+enquanto o usa. Porém,\n\
+não conseguirá nadar."))
 
-DEFINE_DIALOG(DIALOG_063, 1, 5, 30, 200, _("\
-The Vanish Cap is inside\n\
-the blue block. Mr. I.\n\
-will be surprised, since\n\
-you'll be invisible when\n\
-you wear it!\n\
-Even the Big Boo will be\n\
-fooled--and you can walk\n\
-through secret walls, too."))
+DEFINE_DIALOG(DIALOG_063, 1, 4, 30, 200, _("\
+O Boné Transparente vem\n\
+dos blocos azuis. Ele te\n\
+permite atravessar\n\
+paredes ocas.\n\
+\
+Como você ficará invisível\n\
+a olho nu, Srs. Ó - e até\n\
+o Grande Bu - serão pegos\n\
+de surpresa com ele!"))
 
 DEFINE_DIALOG(DIALOG_064, 1, 5, 30, 200, _("\
-When you put on the Wing\n\
-Cap that comes from a\n\
-red block, do the Triple\n\
-Jump to soar high into\n\
-the sky.\n\
-Use the Control Stick to\n\
-guide Mario. Pull back to\n\
-to fly up, press forward\n\
-to nose down, and press [Z]\n\
-to land."))
+Bonés Alados estão dentro\n\
+dos Blocos-! vermelhos.\n\
+Vista um e dê um Salto\n\
+Triplo para começar a\n\
+voar.\n\
+\
+Use o Analógico para\n\
+guiar Mario. Puxe-o para\n\
+trás para subir, e para\n\
+frente para descer.\n\
+Aterrisse com [Z]."))
 
-DEFINE_DIALOG(DIALOG_065, 1, 6, 30, 200, _("\
-Swimming Lessons!\n\
-Tap [A] to do the breast\n\
-stroke. If you time the\n\
-taps right, you'll swim\n\
-fast.\n\
-\n\
-Press and hold [A] to do a\n\
-slow, steady flutter kick.\n\
-Press Up on the Control\n\
-Stick to dive, and pull\n\
-back on the stick to head\n\
-for the surface.\n\
-To jump out of the water,\n\
-hold Down on the Control\n\
-Stick, then press [A].\n\
-Easy as pie, right?\n\
-\n\
-\n\
-But remember:\n\
-Mario can't breathe under\n\
-the water! Return to the\n\
-surface for air when the\n\
-Power Meter runs low.\n\
-\n\
-And one last thing: You\n\
-can't open doors that\n\
-are underwater."))
+DEFINE_DIALOG(DIALOG_065, 1, 5, 30, 200, _("\
+-Lições de Natação!-\n\
+Aperte [A] repetidamente\n\
+para fazer braçadas.\n\
+Apertando num bom ritmo,\n\
+você nadará mais rápido.\n\
+\
+Aperte e segure [A] para\n\
+bater as pernas devagar.\n\
+Mova o Analógico para\n\
+cima para mergulhar, e\n\
+para baixo para subir.\n\
+\
+Salte para fora da água\n\
+segurando o Analógico\n\
+para baixo e apertando [A].\n\
+Simples, não é?\n\
+Mas lembre-se:\n\
+\
+Mario não pode respirar\n\
+embaixo d'água!\n\
+Volte à superfície para\n\
+respirar quando o Medidor\n\
+de Energia estiver baixo.\n\
+\
+E mais uma coisa!\n\
+Não é possível abrir\n\
+portas submersas."))
 
-DEFINE_DIALOG(DIALOG_066, 1, 5, 30, 200, _("\
-Mario, it's Peach!\n\
-Please be careful! Bowser\n\
-is so wicked! He will try\n\
-to burn you with his\n\
-horrible flame breath.\n\
-Run around behind and\n\
-grab him by the tail with\n\
-the [B] Button. Once you\n\
-grab hold, swing him\n\
-around in great circles.\n\
-Rotate the Control Stick\n\
-to go faster and faster.\n\
-The faster you swing him,\n\
-the farther he'll fly.\n\
-\n\
-Use the [C] Buttons to look\n\
-around, Mario. You have\n\
-to throw Bowser into one\n\
-of the bombs in the four\n\
-corners.\n\
-Aim well, then press [B]\n\
-again to launch Bowser.\n\
-Good luck, Mario! Our\n\
-fate is in your hands."))
+DEFINE_DIALOG(DIALOG_066, 1, 6, 30, 200, _("\
+Mario! Sou eu, Peach!\n\
+Tome cuidado, por favor!\n\
+Bowser é tão perverso,\n\
+que tentará te queimar\n\
+com seu cuspe de fogo\n\
+horrível!\n\
+\
+Vá até a traseira dele e\n\
+agarre-o pela cauda ([B]).\n\
+Ao fazer isto, gire-o\n\
+(Analógico) rapidamente!\n\
+Quanto mais rápido girar,\n\
+mais longe ele voará.\n\
+\
+Dê uma boa olhada ao seu\n\
+redor ([C]), mire em uma\n\
+das bombas nos cantos e\n\
+arremesse-o ([B])!\n\
+Boa sorte! Nosso destino\n\
+está em suas mãos."))
 
 DEFINE_DIALOG(DIALOG_067, 1, 5, 30, 200, _("\
-Tough luck, Mario!\n\
-Princess Toadstool isn't\n\
-here...Gwa ha ha!! Go\n\
-ahead--just try to grab\n\
-me by the tail!\n\
-You'll never be able to\n\
-swing ME around! A wimp\n\
-like you won't throw me\n\
-out of here! Never! Ha!"))
+Que peninha, Mario!\n\
+A Princesa Cogumelo não\n\
+está aqui... Guá ha ha!\n\
+Vá em frente, quero ver\n\
+pegar na minha cauda!\n\
+\
+Não tem como um fracote\n\
+como você girar e jogar\n\
+um cara como EU!\n\
+Sem chance!\n\
+Guá ha ha ha!!!"))
 
-DEFINE_DIALOG(DIALOG_068, 1, 5, 30, 200, _("\
-It's Lethal Lava Land!\n\
-If you catch fire or fall\n\
-into a pool of flames,\n\
-you'll be hopping mad, but\n\
-don't lose your cool.\n\
-You can still control\n\
-Mario--just try to keep\n\
-calm!"))
+DEFINE_DIALOG(DIALOG_068, 1, 6, 30, 200, _("\
+Ah, o Lago de Lava Letal!\n\
+Se pegar fogo ou cair na\n\
+lava, não esquente a\n\
+cabeça. Você ainda pode\n\
+controlar o Mario, só\n\
+tente se acalmar!"))
 
 DEFINE_DIALOG(DIALOG_069, 1, 6, 30, 200, _("\
-Sometimes you'll bump into\n\
-invisible walls at the\n\
-edges of the painting\n\
-worlds. If you hit a wall\n\
-while flying, you'll bounce\n\
-back."))
+De vez em quando, você\n\
+irá bater em paredes\n\
+invisíveis nas bordas dos\n\
+mundos. Mesmo se colidir\n\
+com elas enquanto voa,\n\
+você irá só ricochetear."))
 
-DEFINE_DIALOG(DIALOG_070, 1, 5, 30, 200, _("\
-You can return to the\n\
-castle's main hall at any\n\
-time from the painting\n\
-worlds where the enemies\n\
-live.\n\
-Just stop, stand still,\n\
-press Start to pause the\n\
-game, then select\n\
-『Exit Course.』\n\
-\n\
-You don't have to collect\n\
-all Power Stars in one\n\
-course before going on to\n\
-the next.\n\
-\n\
-Return later, when you're\n\
-more experienced, to pick\n\
-up difficult ones.\n\
-\n\
-\n\
-Whenever you find a Star,\n\
-a hint for finding the\n\
-next one will appear on\n\
-the course's start screen.\n\
-\n\
-You can, however, collect\n\
-any of the remaining\n\
-Stars next. You don't\n\
-have to recover the one\n\
-described by the hint."))
+DEFINE_DIALOG(DIALOG_070, 1, 6, 30, 200, _("\
+Você pode voltar ao salão\n\
+principal do castelo a\n\
+qualquer hora dentro\n\
+de uma fase. É só ficar\n\
+parado, apertar START e\n\
+escolher 『Sair da Fase』.\n\
+\
+Você não precisa coletar\n\
+todas as Hiperestrelas em\n\
+uma fase antes de seguir\n\
+para a próxima.\n\
+Volte mais tarde, quando\n\
+tiver mais experiência.\n\
+\
+Ao coletar uma Estrela,\n\
+sempre haverá uma dica\n\
+para a próxima nas telas\n\
+de seleção. Mas não há\n\
+problema em obter outra\n\
+diferente dela."))
 
-DEFINE_DIALOG(DIALOG_071, 1, 3, 30, 200, _("\
-Danger Ahead!\n\
-Beware of the strange\n\
-cloud! Don't inhale!\n\
-If you feel faint, run for\n\
-higher ground and fresh\n\
-air!\n\
-Circle: Shelter\n\
-Arrow: Entrance-Exit"))
+DEFINE_DIALOG(DIALOG_071, 1, 5, 30, 200, _("\
+Perigo à Frente!\n\
+\n\
+Cuidado com a fumaça\n\
+estranha! Não inalar!\n\
+\n\
+\
+Se estiver passando mal,\n\
+procure um chão mais alto\n\
+e ar fresco!\n\
+CÍRCULO: Abrigo\n\
+SETAS: Entrada & Saída"))
 
 DEFINE_DIALOG(DIALOG_072, 1, 5, 30, 200, _("\
-High winds ahead!\n\
-Pull your Cap down tight.\n\
-If it blows off, you'll\n\
-have to find it on this\n\
-mountain."))
+Alerta de ventania!\n\
+Segure firme o seu boné.\n\
+Se ele for soprado, você\n\
+terá que encontrá-lo\n\
+nesta montanha."))
 
 DEFINE_DIALOG(DIALOG_073, 1, 4, 95, 200, _("\
-Aarrgh! Ahoy, matey. I\n\
-have sunken treasure,\n\
-here, I do.\n\
+Arrr! Olá, marujo. \n\
+Meus tesouros estão\n\
+aqui a naufragar.\n\
 \n\
-But to pluck the plunder,\n\
-you must open the\n\
-Treasure Chests in the\n\
-right order.\n\
-What order is that,\n\
-ye say?\n\
+\
+Mas pra arrancá-los\n\
+daqui, você terá que\n\
+abrir os baús na ordem\n\
+correta.\n\
+\
+E que ordem é essa?\n\
+Eu nunca direi!\n\
 \n\
-\n\
-I'll never tell!\n\
-\n\
-//--The Cap'n"))
+// - Capitão"))
 
 DEFINE_DIALOG(DIALOG_074, 1, 5, 30, 200, _("\
-You can grab on to the\n\
-edge of a cliff or ledge\n\
-with your fingertips and\n\
-hang down from it.\n\
-\n\
-To drop from the edge,\n\
-either press the Control\n\
-Stick in the direction of\n\
-Mario's back or press the\n\
-[Z] Button.\n\
-To get up onto the ledge,\n\
-either press Up on the\n\
-Control Stick or press [A]\n\
-as soon as you grab the\n\
-ledge to climb up quickly."))
+Você pode se segurar na\n\
+borda de um piso com as\n\
+mãos. Para soltar, puxe o\n\
+Analógico na direção\n\
+traseira ou aperte [Z].\n\
+\
+Para subir a beirada,\n\
+puxe o Analógico para \n\
+frente. Ou aperte [A] assim\n\
+que se segurar na borda\n\
+para subir mais rápido."))
 
-DEFINE_DIALOG(DIALOG_075, 1, 5, 30, 200, _("\
-Mario!! My castle is in\n\
-great peril. I know that\n\
-Bowser is the cause...and\n\
-I know that only you can\n\
-stop him!\n\
-The doors in the castle\n\
-that have been sealed by\n\
-Bowser can be opened only\n\
-with Star Power.\n\
-\n\
-But there are secret\n\
-paths in the castle,\n\
-paths that Bowser hasn't\n\
-found.\n\
-\n\
-One of those paths is in\n\
-this room, and it holds\n\
-one of the castle's Secret\n\
-Stars!\n\
-\n\
-Find that Secret Star,\n\
-Mario! It will help you\n\
-on your quest. Please,\n\
-Mario, you have to\n\
-help us!\n\
-Retrieve all of the\n\
-Power Stars in the castle\n\
-and free us from this\n\
-awful prison!\n\
-Please!"))
+DEFINE_DIALOG(DIALOG_075, 1, 4, 30, 200, _("\
+Mario!!! Meu castelo está\n\
+em grande perigo. Eu sei\n\
+que Bowser é o motivo... e\n\
+só você pode impedi-lo!\n\
+\
+As portas do castelo\n\
+seladas pelo Bowser só\n\
+podem ser abertas com o\n\
+poder das Hiperestrelas.\n\
+\
+Mas há alguns caminhos\n\
+secretos no castelo, dos\n\
+quais Bowser nunca teve\n\
+conhecimento.\n\
+\
+Um deles está nesta sala,\n\
+e guarda ao menos uma\n\
+das Estrelas secretas!\n\
+Ache-a, Mario, por favor! \n\
+\
+Sei que ela te ajudará.\n\
+Por favor, pegue todas as \n\
+Hiperestrelas e salve-nos\n\
+desta prisão terrível!"))
 
 DEFINE_DIALOG(DIALOG_076, 1, 6, 30, 200, _("\
-Thanks to the power of\n\
-the Stars, life is\n\
-returning to the castle.\n\
-Please, Mario, you have\n\
-to give Bowser the boot!\n\
-\n\
-Here, let me tell you a\n\
-little something about the\n\
-castle. In the room with\n\
-the mirrors, look carefully\n\
-for anything that's not\n\
-reflected in the mirror.\n\
-And when you go to the\n\
-water town, you can flood\n\
-it with a high jump into\n\
-the painting. Oh, by the\n\
-way, look what I found!"))
+Graças ao poder das\n\
+Estrelas, a vida está\n\
+voltando ao castelo!\n\
+Por favor, Mario, você\n\
+precisa dar um pontapé\n\
+no Bowser!\n\
+\
+Deixa eu lhe falar uma\n\
+coisa sobre o castelo.\n\
+Na sala do espelhão,\n\
+olhe bem e procure tudo\n\
+que não tenha o reflexo\n\
+certo.\n\
+\
+E quando entrar naquela\n\
+cidade alagada, um salto\n\
+mais alto na pintura vai\n\
+aumentar o nível da água.\n\
+... Ah é, olha só o que\n\
+eu achei!"))
 
-DEFINE_DIALOG(DIALOG_077, 1, 2, 150, 200, _("\
-It is decreed that one\n\
-shall pound the pillars."))
+DEFINE_DIALOG(DIALOG_077, 1, 3, 150, 200, _("\
+Decretou-se que alguém\n\
+deve saltar e bombar os\n\
+pilares."))
 
-DEFINE_DIALOG(DIALOG_078, 1, 5, 30, 200, _("\
-Break open the Blue Coin\n\
-Block by Pounding the\n\
-Ground with the [Z] Button.\n\
-One Blue Coin is worth\n\
-five Yellow Coins.\n\
-But you have to hurry!\n\
-The coins will disappear\n\
-if you're not quick to\n\
-collect them! Too bad."))
+DEFINE_DIALOG(DIALOG_078, 1, 4, 30, 200, _("\
+Ative o Bloco de Moeda\n\
+Azul com um Salto Bomba\n\
+([Z]). Uma moeda azul\n\
+vale cinco amarelas.\n\
+\
+Mas corra, porque as\n\
+moedas vão desaparecer\n\
+se você não coletá-las!\n\
+Que pena."))
 
 DEFINE_DIALOG(DIALOG_079, 1, 4, 30, 200, _("\
-Owwwuu! Let me go!\n\
-Uukee-kee! I was only\n\
-teasing! Can't you take\n\
-a joke?\n\
-I'll tell you what, let's\n\
-trade. If you let me go,\n\
-I'll give you something\n\
-really good.\n\
-So, how about it?\n\
+Auuuu, ô! Me solta!\n\
+Urru u-rá!\n\
+Era só uma brincadeira!\n\
+Não sabe brincar não?\n\
+\
+Tá, vamos fazer assim:\n\
+se você me soltar, eu\n\
+te dou um negócio muito\n\
+maneiro.\n\
+\
+E aí, que tal?\n\
 \n\
-//Free him/ Hold on"))
+//Soltá-lo/ Nem vem!"))
 
 DEFINE_DIALOG(DIALOG_080, 1, 1, 30, 200, _("\
-Eeeh hee hee hee!"))
+Iiih, hi hi hi!"))
 
-DEFINE_DIALOG(DIALOG_081, 1, 4, 30, 200, _("\
-The mystery is of Wet\n\
-or Dry.\n\
-And where does the\n\
-solution lie?\n\
-The city welcomes visitors\n\
-with the depth they bring\n\
-as they enter."))
+DEFINE_DIALOG(DIALOG_081, 1, 3, 30, 200, _("\
+O mistério do Seca\n\
+ou Molha.\n\
+Onde estará a resposta?\n\
+\
+A cidade acolhe vistantes\n\
+com qualquer nível d'água\n\
+que possam trazer."))
 
 DEFINE_DIALOG(DIALOG_082, 1, 4, 30, 200, _("\
-Hold on to your hat! If\n\
-you lose it, you'll be\n\
-injured easily.\n\
+Segura o boné! Amarra o\n\
+boné! Se você perder ele,\n\
+vai ficar muito mais\n\
+fácil de se machucar.\n\
+\
+E aí você vai ter que\n\
+procurá-lo no mesmo\n\
+mundo que o perdeu.\n\
 \n\
-If you do lose your Cap,\n\
-you'll have to find it in\n\
-the course where you\n\
-lost it.\n\
-Oh, boy, it's not looking\n\
-good for Peach. She's\n\
-still trapped somewhere\n\
-inside the walls.\n\
-Please, Mario, you have\n\
-to help her! Did you know\n\
-that there are enemy\n\
-worlds inside the walls?\n\
-Yup. It's true. Bowser's\n\
-troops are there, too.\n\
-Oh, here, take this. I've\n\
-been keeping it for you."))
+\
+Ai, a coisa tá feia pra\n\
+princesa. Ela ainda tá\n\
+presa numa parede daqui.\n\
+Ajuda ela, por favor!\n\
+\
+Aliás, sabia que também\n\
+tem mundos em paredes?\n\
+Pois é, e as tropas do\n\
+Bowser já estão neles.\n\
+\
+Ah sim, toma isso!\n\
+Eu tava guardando pra\n\
+te dar."))
 
 DEFINE_DIALOG(DIALOG_083, 1, 6, 30, 200, _("\
-There's something strange\n\
-about that clock. As you\n\
-jump inside, watch the\n\
-position of the big hand.\n\
-Oh, look what I found!\n\
-Here, Mario, catch!"))
+Esse relógio é bem\n\
+estranho. Se você entrar\n\
+nele, presta atenção na\n\
+posição do ponteiro maior.\n\
+Ah, eu peguei isso de\n\
+volta, Mario! Toma!"))
 
-DEFINE_DIALOG(DIALOG_084, 1, 3, 30, 200, _("\
-Yeeoww! Unhand me,\n\
-brute! I'm late, so late,\n\
-I must make haste!\n\
-This shiny thing? Mine!\n\
-It's mine. Finders,\n\
-keepers, losers...\n\
-Late, late, late...\n\
-Ouch! Take it then! A\n\
-gift from Bowser, it was.\n\
-Now let me be! I have a\n\
-date! I cannot be late\n\
-for tea!"))
+DEFINE_DIALOG(DIALOG_084, 1, 4, 30, 200, _("\
+Aiai! Tira a mão, brutão!\n\
+Quer levar uma coelhada?\n\
+... O que, esse treco\n\
+brilhante aqui?\n\
+\
+Mas eu nem sabia que\n\
+era seu! Isso foi um\n\
+presente de um tal de\n\
+Bowser lá!\n\
+\
+Tá bom, se quer tanto de\n\
+volta, pega aí.\n\
+Só larga da minha pata,\n\
+chato!"))
 
 DEFINE_DIALOG(DIALOG_085, 1, 5, 30, 200, _("\
-You don't stand a ghost\n\
-of a chance in this house.\n\
-If you walk out of here,\n\
-you deserve...\n\
-...a Ghoul Medal..."))
+Que tal uma brincadeira...?\n\
+Quero ver se você sairá\n\
+desta casa...\n\
+\n\
+... Morto ou Vivo..."))
 
 DEFINE_DIALOG(DIALOG_086, 1, 3, 30, 200, _("\
-Running around in circles\n\
-makes some bad guys roll\n\
-their eyes."))
+Correr em círculos fazem\n\
+certos inimigos revirarem\n\
+os olhos."))
 
 DEFINE_DIALOG(DIALOG_087, 1, 4, 30, 200, _("\
-Santa Claus isn't the only\n\
-one who can go down a\n\
-chimney! Come on in!\n\
-/--Cabin Proprietor"))
+Papai Noel não é o único\n\
+que pode descer uma\n\
+chaminé! Entra aí!\n\
+// - Dona do Chalé"))
 
 DEFINE_DIALOG(DIALOG_088, 1, 5, 30, 200, _("\
-Work Elevator\n\
-For those who get off\n\
-here: Grab the pole to the\n\
-left and slide carefully\n\
-down."))
+-Elevador de Serviço-\n\
+As pessoas que desejam\n\
+sair devem agarrar o\n\
+mastro à esquerda e\n\
+deslizar com cuidado."))
 
 DEFINE_DIALOG(DIALOG_089, 1, 5, 95, 200, _("\
-Both ways fraught with\n\
-danger! Watch your feet!\n\
-Those who can't do the\n\
-Long Jump, tsk, tsk. Make\n\
-your way to the right.\n\
-Right: Work Elevator\n\
-/// Cloudy Maze\n\
-Left: Black Hole\n\
-///Underground Lake\n\
+As duas trilhas estão\n\
+repletas de perigos! Olhe\n\
+por onde anda! Incapaz\n\
+de um Salto Longo...? Tsc,\n\
+tsc, dirija-se à direita.\n\
+\
+DIR.: Elevador de Serviço\n\
+///Labirinto Tóxico\n\
 \n\
-Red Circle: Elevator 2\n\
-//// Underground Lake\n\
-Arrow: You are here"))
+ESQ.: Cratera Negra\n\
+///Lago Subterrâneo\n\
+\
+PONTO\n\
+VERMELHO: Elevador 2\n\
+///// L. Subterrâneo\n\
+\n\
+SETA: Você está aqui"))
 
-DEFINE_DIALOG(DIALOG_090, 1, 6, 30, 200, _("\
-Bwa ha ha ha!\n\
-You've stepped right into\n\
-my trap, just as I knew\n\
-you would! I warn you,\n\
-『Friend,』 watch your\n\
-step!"))
+DEFINE_DIALOG(DIALOG_090, 1, 5, 30, 200, _("\
+Bá ha ha ha!\n\
+Você caiu na minha\n\
+armadilha, bem como eu\n\
+previ! Fique ligado por\n\
+onde pisa, 『chapa』!"))
 
-DEFINE_DIALOG(DIALOG_091, 2, 2, 30, 200, _("\
-Danger!\n\
-Strong Gusts!\n\
-But the wind makes a\n\
-comfy ride."))
+DEFINE_DIALOG(DIALOG_091, 2, 4, 30, 200, _("\
+AVISO!\n\
+Fortes rajadas de ar!\n\
+Mas o vento é até\n\
+confortável de andar."))
 
-DEFINE_DIALOG(DIALOG_092, 1, 5, 30, 200, _("\
-Pestering me again, are\n\
-you, Mario? Can't you see\n\
-that I'm having a merry\n\
-little time, making\n\
-mischief with my minions?\n\
-Now, return those Stars!\n\
-My troops in the walls\n\
-need them! Bwa ha ha!"))
+DEFINE_DIALOG(DIALOG_092, 1, 4, 30, 200, _("\
+Haja paciência, Mario!\n\
+Eu aqui me divertindo com\n\
+meus lacaios, e você me\n\
+atrapalhando como sempre!\n\
+\
+Agora devolva essas\n\
+Estrelas! Minhas tropas\n\
+das pinturas precisam\n\
+delas! Bá ha ha ha!"))
 
 DEFINE_DIALOG(DIALOG_093, 1, 5, 30, 200, _("\
-Mario! You again! Well\n\
-that's just fine--I've\n\
-been looking for something\n\
-to fry with my fire\n\
-breath!\n\
-Your Star Power is\n\
-useless against me!\n\
-Your friends are all\n\
-trapped within the\n\
-walls...\n\
-And you'll never see the\n\
-Princess again!\n\
-Bwa ha ha ha!"))
+Mario! Quando foi que\n\
+chegou aqui?! Hmmmm,\n\
+tudo bem, tava na hora\n\
+mesmo d'eu fritar alguma\n\
+coisa com o meu fogo!\n\
+\
+Não me interessa\n\
+quantas Estrelas você\n\
+tem! Seu poder estelar\n\
+é inútil contra mim!\n\
+\n\
+\
+Seus amigos estão presos\n\
+dentro do castelo, e você\n\
+nunca mais vai ver a\n\
+Princesa!\n\
+BÁ HA HA HA!"))
 
-DEFINE_DIALOG(DIALOG_094, 1, 4, 30, 200, _("\
-Get a good run up the\n\
-slope! Do you remember\n\
-the Long Jump? Run, press\n\
-[Z], then jump!"))
+DEFINE_DIALOG(DIALOG_094, 1, 5, 30, 200, _("\
+Corra uma boa distância\n\
+antes de subir uma rampa!\n\
+Lembra do Salto Longo?\n\
+Correr, apertar [Z],\n\
+saltar!"))
 
 DEFINE_DIALOG(DIALOG_095, 1, 4, 30, 200, _("\
-To read a sign, stand in\n\
-front of it and press [B],\n\
-like you did just now.\n\
-\n\
-When you want to talk to\n\
-a Koopa Troopa or other\n\
-animal, stand right in\n\
-front of it.\n\
-Please recover the Stars\n\
-that were stolen by\n\
-Bowser in this course."))
+Leia uma placa ficando na\n\
+frente dela e apertando\n\
+[A] ou [B]. ... Assim como\n\
+você fez agora.\n\
+\
+Faça o mesmo quando\n\
+quiser falar com um Kopa\n\
+ou com qualquer outra\n\
+criatura.\n\
+\
+Por favor, recupere as\n\
+Estrelas roubadas pelo\n\
+Bowser nesta fase."))
 
 DEFINE_DIALOG(DIALOG_096, 1, 4, 30, 200, _("\
-The path is narrow here.\n\
-Easy does it! No one is\n\
-allowed on top of the\n\
-mountain!\n\
-And if you know what's\n\
-good for you, you won't\n\
-wake anyone who's\n\
-sleeping!\n\
-Move slowly,\n\
-tread lightly."))
+O caminho é estreito aqui.\n\
+Devagar aí! Ninguém\n\
+pode chegar ao topo da\n\
+montanha, he he!\n\
+\
+Se você sabe o que é bom\n\
+para tosse, não acorde\n\
+ninguém dormindo! Mova\n\
+devagar e sempre, he he."))
 
 DEFINE_DIALOG(DIALOG_097, 1, 5, 30, 200, _("\
-Don't be a pushover!\n\
-If anyone tries to shove\n\
-you around, push back!\n\
-It's one-on-one, with a\n\
-fiery finish for the loser!"))
+Não fique empurrando com\n\
+a barriga! Se alguém\n\
+tentar te empurrar, \n\
+empurre de volta! Aqui é\n\
+queimar ou ser queimado!"))
 
 DEFINE_DIALOG(DIALOG_098, 1, 2, 95, 200, _("\
-Come on in here...\n\
-...heh, heh, heh..."))
+Entre, fique à vontade...\n\
+... He, he, he..."))
 
 // unused
 DEFINE_DIALOG(DIALOG_099, 1, 5, 95, 200, _("\
-Eh he he...\n\
-You're mine, now, hee hee!\n\
-I'll pass right through\n\
-this wall. Can you do\n\
-that? Heh, heh, heh!"))
+HUE HUE HUE HUE, boa."))
 
 DEFINE_DIALOG(DIALOG_100, 1, 3, 95, 200, _("\
-Ukkiki...Wakkiki...kee kee!\n\
-Ha! I snagged it!\n\
-It's mine! Heeheeheeee!"))
+Uh, Urru uh... u-rá rá, hi!\n\
+Ha! Peguei!!!\n\
+Agora é meu! Hihihihuhuhu!"))
 
-DEFINE_DIALOG(DIALOG_101, 1, 3, 95, 200, _("\
-Ackk! Let...go...\n\
-You're...choking...me...\n\
-Cough...I've been framed!\n\
-This Cap? Oh, all right,\n\
-take it. It's a cool Cap,\n\
-but I'll give it back.\n\
-I think it looks better on\n\
-me than it does on you,\n\
-though! Eeeee! Kee keee!"))
+DEFINE_DIALOG(DIALOG_101, 1, 4, 95, 200, _("\
+Aghh!\n\
+Você me pegou!\n\
+Uuuh hi hi hi!\n\
+Toma aqui o seu boné.\n\
+\
+Até que eu curti!\n\
+Acho que ficou melhor\n\
+em mim do que em você!\n\
+Urru-rá, hi hi!"))
 
 DEFINE_DIALOG(DIALOG_102, 1, 5, 30, 200, _("\
-Pssst! The Boos are super\n\
-shy. If you look them\n\
-in the eyes, they fade\n\
-away, but if you turn\n\
-your back, they reappear.\n\
-It's no use trying to hit\n\
-them when they're fading\n\
-away. Instead, sneak up\n\
-behind them and punch."))
+Psst!\n\
+Os Bus são bem tímidos.\n\
+Eles somem se olhar nos\n\
+olhos, e aparecem se der\n\
+as costas.\n\
+\
+Tentar socá-los é inútil\n\
+quando eles estão\n\
+escondidos. Em vez disso,\n\
+chegue por trás de fininho\n\
+para atacar."))
 
 DEFINE_DIALOG(DIALOG_103, 1, 4, 95, 200, _("\
-Upon four towers\n\
-one must alight...\n\
-Then at the peak\n\
-shall shine the light..."))
+Pr'aquele que em todos\n\
+os pilares pisar,\n\
+no pico do mundo\n\
+a luz brilhará..."))
 
-DEFINE_DIALOG(DIALOG_104, 1, 5, 30, 200, _("\
-The shadowy star in front\n\
-of you is a 『Star\n\
-Marker.』 When you collect\n\
-all 8 Red Coins, the Star\n\
-will appear here."))
+DEFINE_DIALOG(DIALOG_104, 1, 6, 30, 200, _("\
+Esta estrela escura\n\
+em sua frente é um\n\
+Marca-Estrelas.\n\
+Quando coletar as moedas\n\
+vermelhas, a Hiperestrela\n\
+surgirá aqui."))
 
 DEFINE_DIALOG(DIALOG_105, 1, 3, 95, 200, _("\
-Ready for blastoff! Come\n\
-on, hop into the cannon!\n\
+Pronto pra disparar!\n\
+É só pular no canhão!\n\
 \n\
-You can reach the Star on\n\
-the floating island by\n\
-using the four cannons.\n\
-Use the Control Stick to\n\
-aim, then press [A] to fire.\n\
+\
+Dá pra alcançar a Estrela\n\
+na ilha flutuante usando\n\
+um dos quatro canhões.\n\
+\
+Mire com o Analógico e\n\
+aperte [A] pra disparar.\n\
 \n\
-If you're handy, you can\n\
-grab on to trees or poles\n\
-to land."))
+\
+Pode mirar em árvores\n\
+ou mastros pra aterrissar\n\
+agarrando neles."))
 
 DEFINE_DIALOG(DIALOG_106, 1, 2, 95, 200, _("\
-Ready for blastoff! Come\n\
-on, hop into the cannon!"))
+Pronto pra disparar!\n\
+É só pular no canhão!"))
 
 DEFINE_DIALOG(DIALOG_107, 1, 3, 95, 200, _("\
-Ghosts...\n\
-...don't...\n\
-...DIE!\n\
-Heh, heh, heh!\n\
-Can you get out of here...\n\
-...alive?"))
+Fantasmas...\n\
+... não\n\
+/MORREM!\n\
+\
+He, he, he...\n\
+Será que você achará\n\
+a saída?"))
 
 DEFINE_DIALOG(DIALOG_108, 1, 2, 95, 200, _("\
-Boooooo-m! Here comes\n\
-the master of mischief,\n\
-the tower of terror,\n\
-the Big Boo!\n\
-Ka ha ha ha..."))
+Buuuuuum! Lá vem o mestre\n\
+do terror, o Grande Bu!\n\
+Ká, ha, ha..."))
 
 DEFINE_DIALOG(DIALOG_109, 1, 4, 95, 200, _("\
-Ooooo Nooooo!\n\
-Talk about out-of-body\n\
-experiences--my body\n\
-has melted away!\n\
-Have you run in to any\n\
-headhunters lately??\n\
-I could sure use a new\n\
-body!\n\
-Brrr! My face might\n\
-freeze like this!"))
+Aaaah nãããoo!\n\
+Fui tirar meu corpo fora\n\
+e ele acabou derretendo!\n\
+\n\
+\
+Você viu alguém caçando\n\
+uma cabeça esses dias?\n\
+Um corpo novo me viria\n\
+bem a calhar agora!\n\
+\
+Brrr! Desse jeito o meu\n\
+rosto vai congelar!"))
 
-DEFINE_DIALOG(DIALOG_110, 1, 5, 95, 200, _("\
-I need a good head on my\n\
-shoulders. Do you know of\n\
-anybody in need of a good\n\
-body? Please! I'll follow\n\
-you if you do!"))
+DEFINE_DIALOG(DIALOG_110, 1, 6, 95, 200, _("\
+Eu perdi a cabeça esses\n\
+dias, e preciso de uma\n\
+nova. Você conhece alguém\n\
+precisando de um corpo\n\
+novo? Se souber, eu te\n\
+sigo até lá! Por favor!!!"))
 
 DEFINE_DIALOG(DIALOG_111, 1, 4, 95, 200, _("\
-Perfect! What a great\n\
-new body! Here--this is a\n\
-present for you. It's sure\n\
-to warm you up."))
+Perfeito! Um corpo ideal!\n\
+Tome este presente de\n\
+corpo e alma. Com certeza\n\
+ele vai te aquecer."))
 
-DEFINE_DIALOG(DIALOG_112, 1, 4, 30, 200, _("\
-Collect as many coins as\n\
-possible! They'll refill\n\
-your Power Meter.\n\
-\n\
-You can check to see how\n\
-many coins you've\n\
-collected in each of the\n\
-15 enemy worlds.\n\
-You can also recover\n\
-power by touching the\n\
-Spinning Heart.\n\
-\n\
-The faster you run\n\
-through the heart, the\n\
-more power you'll recover."))
+DEFINE_DIALOG(DIALOG_112, 1, 6, 30, 200, _("\
+Colete o máximo de\n\
+moedas que puder! Elas\n\
+ajudam a recuperar sua\n\
+energia. Preste sempre\n\
+atenção no contador de\n\
+moedas em cada fase.\n\
+\
+Você também pode\n\
+recuperar energia\n\
+passando por um Coração\n\
+Giratório. Quanto mais\n\
+rápido atravessá-lo,\n\
+mais energia irá ganhar."))
 
-DEFINE_DIALOG(DIALOG_113, 1, 6, 30, 200, _("\
-There are special Caps in\n\
-the red, green and blue\n\
-blocks. Step on the\n\
-switches in the hidden\n\
-courses to activate the\n\
-Cap Blocks."))
+DEFINE_DIALOG(DIALOG_113, 1, 5, 30, 200, _("\
+Existem bonés especiais\n\
+nos blocos vermelhos,\n\
+azuis e verdes. Encontre\n\
+e pise nos Botões-! para\n\
+ativar os blocos."))
 
 DEFINE_DIALOG(DIALOG_114, 1, 5, 95, 200, _("\
-It makes me so mad! We\n\
-build your houses, your\n\
-castles. We pave your\n\
-roads, and still you\n\
-walk all over us.\n\
-Do you ever say thank\n\
-you? No! Well, you're not\n\
-going to wipe your feet\n\
-on me! I think I'll crush\n\
-you just for fun!\n\
-Do you have a problem\n\
-with that? Just try to\n\
-pound me, wimp! Ha!"))
+Isso é de enfurecer! Nós\n\
+que construímos as suas\n\
+casas, os seus castelos,\n\
+as suas estradas, e vocês\n\
+ainda nos pisoteiam!\n\
+\
+E vocês nos agradecem?\n\
+Não! Pois você não vai\n\
+arrastar o pé em mim!\n\
+Eu vou te esmagar só\n\
+pra me divertir!\n\
+\
+Algum problema?! Ha!\n\
+Então vem me mostrar o\n\
+seu Salto Bomba, nanico!"))
 
-DEFINE_DIALOG(DIALOG_115, 1, 5, 95, 200, _("\
-No! Crushed again!\n\
-I'm just a stepping stone,\n\
-after all. I won't gravel,\n\
-er, grovel. Here, you win.\n\
-Take this with you!"))
+DEFINE_DIALOG(DIALOG_115, 1, 6, 95, 200, _("\
+Não! Esmagado de novo!\n\
+Bem, acho que sou só uma\n\
+pedra no caminho, afinal.\n\
+Mas não vou pedregulho,\n\
+digo, perder o orgulho.\n\
+Pegue logo isto e v-vá..."))
 
 DEFINE_DIALOG(DIALOG_116, 1, 5, 95, 200, _("\
-Whaaa....Whaaat?\n\
-Can it be that a\n\
-pipsqueak like you has\n\
-defused the Bob-omb\n\
-king????\n\
-You might be fast enough\n\
-to ground me, but you'll\n\
-have to pick up the pace\n\
-if you want to take King\n\
-Bowser by the tail.\n\
-Methinks my troops could\n\
-learn a lesson from you!\n\
-Here is your Star, as I\n\
-promised, Mario.\n\
+O... quêêê?!\n\
+Não acredito que você\n\
+conseguiu danificar o\n\
+Rei das Bob-bombas!!!\n\
 \n\
-If you want to see me\n\
-again, select this Star\n\
-from the menu. For now,\n\
-farewell."))
+\
+Você até que é bem durão,\n\
+e seria uma ótima adição\n\
+à minha tropa! Mas está\n\
+longe de conseguir pegar\n\
+o Rei Bowser pela cauda.\n\
+\
+Eis aqui a Estrela, como\n\
+prometido. Se quiser me\n\
+ver outra vez, apenas\n\
+escolha esta Estrela no\n\
+menu. Adeus, por ora."))
 
 DEFINE_DIALOG(DIALOG_117, 1, 1, 95, 200, _("\
-Who...walk...here?\n\
-Who...break...seal?\n\
-Wake..ancient..ones?\n\
-We no like light...\n\
-Rrrrummbbble...\n\
-We no like...intruders!\n\
-Now battle...\n\
-...hand...\n\
-...to...\n\
-...hand!"))
+Intruso...?\n\
+Tu... chegas... aqui...\n\
+Tu... abres... tumba...\n\
+Tu... nos... acordas...!\n\
+Rrrrrrrrr...\n\
+Intruso... deve... pagar!\n\
+Deves lutar...\n\
+... mano...\n\
+... a...\n\
+... mano!"))
 
-DEFINE_DIALOG(DIALOG_118, 1, 6, 95, 200, _("\
-Grrrrumbbble!\n\
-What...happen?\n\
-We...crushed like pebble.\n\
-You so strong!\n\
-You rule ancient pyramid!\n\
-For today...\n\
-Now, take Star of Power.\n\
-We...sleep...darkness."))
+DEFINE_DIALOG(DIALOG_118, 1, 4, 95, 200, _("\
+Grrrargh!\n\
+\n\
+Nós... amassados como\n\
+cascalho.\n\
+\
+Tu... és bem forte...\n\
+e chato!\n\
+Vindo com quatro...\n\
+pedras na mão!\n\
+\
+Pega Estrela Híper.\n\
+É... tua agora.\n\
+\n\
+Nós... teremos... trevas."))
 
 DEFINE_DIALOG(DIALOG_119, 1, 6, 30, 200, _("\
-Grrr! I was a bit\n\
-careless. This is not as I\n\
-had planned...but I still\n\
-hold the power of the\n\
-Stars, and I still have\n\
-Peach.\n\
-Bwa ha ha! You'll get no\n\
-more Stars from me! I'm\n\
-not finished with you yet,\n\
-but I'll let you go for\n\
-now. You'll pay for this...\n\
-later!"))
+Argh!\n\
+Eu não tomei cuidado.\n\
+Não foi como planejei...\n\
+Mas eu ainda tenho as\n\
+Hiperestrelas e a Peach!\n\
+Bá ha ha!\n\
+\
+Você não vai pegar\n\
+nenhuma Estrela minha!\n\
+Ainda não acabei contigo,\n\
+mas eu te deixo ir por\n\
+enquanto. Você me paga...\n\
+mais tarde!"))
 
 DEFINE_DIALOG(DIALOG_120, 1, 4, 30, 200, _("\
-Ooowaah! Can it be that\n\
-I've lost??? The power of\n\
-the Stars has failed me...\n\
-this time.\n\
-Consider this a draw.\n\
-Next time, I'll be in\n\
-perfect condition.\n\
-\n\
-Now, if you want to see\n\
-your precious Princess,\n\
-come to the top of the\n\
-tower.\n\
-I'll be waiting!\n\
-Gwa ha ha ha!"))
+Aaauargh! Não é possível\n\
+que eu perdi! É o poder\n\
+das Estrelas que tá te\n\
+ajudando?\n\
+\
+Considere isso um empate.\n\
+Na próxima, eu vou\n\
+acabar com a sua\n\
+trapaça.\n\
+\
+Se quer ver tanto a sua\n\
+querida princesa, venha\n\
+pra torre do castelo. Te\n\
+espero lá! Guá ha ha ha!"))
 
-DEFINE_DIALOG(DIALOG_121, 1, 5, 30, 200, _("\
-Nooo! It can't be!\n\
-You've really beaten me,\n\
-Mario?!! I gave those\n\
-troops power, but now\n\
-it's fading away!\n\
-Arrgghh! I can see peace\n\
-returning to the world! I\n\
-can't stand it! Hmmm...\n\
-It's not over yet...\n\
-\n\
-C'mon troops! Let's watch\n\
-the ending together!\n\
-Bwa ha ha!"))
+DEFINE_DIALOG(DIALOG_121, 1, 4, 30, 200, _("\
+Nããão! Impossível!\n\
+Você me venceu, Mario?!\n\
+Eu não suporto perder\n\
+pra você!\n\
+\
+Todo o poder que eu dei\n\
+pras minhas tropas está\n\
+desaparecendo!\n\
+Arrgghh!\n\
+\
+Já sinto a paz voltando\n\
+ao mundo! Que ódio!\n\
+... Hmmm... Isso\n\
+ainda não acabou...\n\
+\
+Vamos, tropa!\n\
+Vamos ver o final juntos!\n\
+Bá ha ha ha!"))
 
 DEFINE_DIALOG(DIALOG_122, 1, 4, 30, 200, _("\
-The Black Hole\n\
-Right: Work Elevator\n\
-/// Cloudy Maze\n\
-Left: Underground Lake"))
+-A Cratera Negra-\n\
+DIR.: Elevador de Serviço\n\
+///Labirinto Tóxico\n\
+ESQ.: Lago Subterrâneo"))
 
 DEFINE_DIALOG(DIALOG_123, 1, 4, 30, 200, _("\
-Metal Cavern\n\
-Right: To Waterfall\n\
-Left: Metal Cap Switch"))
+-Caverna Metálica-\n\
+\n\
+DIR.: Cachoeira\n\
+ESQ.: Botão do Metal"))
 
 DEFINE_DIALOG(DIALOG_124, 1, 4, 30, 200, _("\
-Work Elevator\n\
-Danger!!\n\
-Read instructions\n\
-thoroughly!\n\
-Elevator continues in the\n\
-direction of the arrow\n\
-activated."))
+-Elevador de Serviço-\n\
+Perigo!!!\n\
+Leia as instruções por\n\
+completo!\n\
+\
+O elevador andará na\n\
+direção da seta ativada.\n\
+Se cair dele, ele voltará\n\
+à posição original."))
 
-DEFINE_DIALOG(DIALOG_125, 1, 3, 30, 200, _("\
-Hazy Maze-Exit\n\
-Danger! Closed.\n\
-Turn back now."))
+DEFINE_DIALOG(DIALOG_125, 1, 4, 30, 200, _("\
+Saída do Labirinto Tóxico\n\
+\n\
+Perigo! Saída fechada.\n\
+Recue agora."))
 
 DEFINE_DIALOG(DIALOG_126, 2, 3, 30, 200, _("\
-Up: Black Hole\n\
-Right: Work Elevator\n\
-/// Hazy Maze"))
+CIMA: Cratera Negra\n\
+DIR.: Elevador de Serviço\n\
+///Labirinto Tóxico"))
 
-DEFINE_DIALOG(DIALOG_127, 3, 4, 30, 200, _("\
-Underground Lake\n\
-Right: Metal Cave\n\
-Left: Abandoned Mine\n\
-///(Closed)\n\
-A gentle sea dragon lives\n\
-here. Pound on his back to\n\
-make him lower his head.\n\
-Don't become his lunch."))
+DEFINE_DIALOG(DIALOG_127, 3, 5, 30, 200, _("\
+-Lago Subterrâneo-\n\
+\n\
+DIR.: Caverna Metálica\n\
+ESQ.: Mina Abandonada\n\
+////////(Fechada)\n\
+\
+Um dócil dragão marinho\n\
+vive aqui. Ele abaixará\n\
+a cabeça se der um Salto\n\
+Bomba em suas costas.\n\
+Não vire seu lanche!"))
 
 DEFINE_DIALOG(DIALOG_128, 1, 4, 95, 200, _("\
-You must fight with\n\
-honor! It is against the\n\
-royal rules to throw the\n\
-king out of the ring!"))
+Você deve lutar com\n\
+honra! É contra as\n\
+regras arremessar o\n\
+rei para fora da arena!"))
 
 DEFINE_DIALOG(DIALOG_129, 1, 5, 30, 200, _("\
-Welcome to the Vanish\n\
-Cap Switch Course! All of\n\
-the blue blocks you find\n\
-will become solid once you\n\
-step on the Cap Switch.\n\
-You'll disappear when you\n\
-put on the Vanish Cap, so\n\
-you'll be able to elude\n\
-enemies and walk through\n\
-many things. Try it out!"))
+Bem-vindo ao Fosso do\n\
+Botão da Transparência!\n\
+Quando pisar no Botão-!,\n\
+todos os blocos azuis\n\
+ficarão sólidos.\n\
+\
+Vista o Boné Transparente\n\
+para desaparecer. Assim\n\
+poderá iludir inimigos e\n\
+atravessar várias coisas.\n\
+Experimente!"))
 
 DEFINE_DIALOG(DIALOG_130, 1, 5, 30, 200, _("\
-Welcome to the Metal Cap\n\
-Switch Course! Once you\n\
-step on the Cap Switch,\n\
-the green blocks will\n\
-become solid.\n\
-When you turn your body\n\
-into metal with the Metal\n\
-Cap, you can walk\n\
-underwater! Try it!"))
+Bem-vindo à Cachoeira\n\
+do Botão do Metal!\n\
+Quando pisar no Botão-!,\n\
+todos os blocos verdes\n\
+ficarão sólidos.\n\
+\
+Transforme seu corpo\n\
+em metal com o Boné\n\
+Metálico, e poderá\n\
+andar embaixo d'água.\n\
+Experimente!"))
 
 DEFINE_DIALOG(DIALOG_131, 1, 5, 30, 200, _("\
-Welcome to the Wing Cap\n\
-Course! Step on the red\n\
-switch at the top of the\n\
-tower, in the center of\n\
-the rainbow ring.\n\
-When you trigger the\n\
-switch, all of the red\n\
-blocks you find will\n\
-become solid.\n\
+Bem-vindo à Torre do\n\
+Botão das Asas! Pise no\n\
+botão vermelho da torre,\n\
+no centro, para ativar\n\
+os blocos vermelhos.\n\
+\
+Experimente o Boné Alado!\n\
+Dê um Salto Triplo para\n\
+decolar e um Salto Bomba\n\
+([Z]) para aterrissar.\n\
 \n\
-Try out the Wing Cap! Do\n\
-the Triple Jump to take\n\
-off and press [Z] to land.\n\
-\n\
-\n\
-Pull back on the Control\n\
-Stick to go up and push\n\
-forward to nose down,\n\
-just as you would when\n\
-flying an airplane."))
+\
+Puxe o Analógico para\n\
+trás para subir, e para\n\
+frente para descer.\n\
+Voe como um avião!"))
 
 DEFINE_DIALOG(DIALOG_132, 1, 4, 30, 200, _("\
-Whoa, Mario, pal, you\n\
-aren't trying to cheat,\n\
-are you? Shortcuts aren't\n\
-allowed.\n\
-Now, I know that you\n\
-know better. You're\n\
-disqualified! Next time,\n\
-play fair!"))
+Opa, Mario, que que é\n\
+isso? Cê não tá tentando\n\
+trapacear não, né?\n\
+É proibido usar atalhos.\n\
+\
+Está desclassificado!\n\
+Da próxima vez, venha\n\
+jogar limpo!"))
 
 DEFINE_DIALOG(DIALOG_133, 1, 6, 30, 200, _("\
-Am I glad to see you! The\n\
-Princess...and I...and,\n\
-well, everybody...we're all\n\
-trapped inside the castle\n\
-walls.\n\
+Mario, ainda bem que\n\
+você veio! A princesa...\n\
+e eu... bem, todo mundo...\n\
+Todos nós estamos presos\n\
+dentro do castelo!\n\
 \n\
-Bowser has stolen the\n\
-castle's Stars, and he's\n\
-using their power to\n\
-create his own world in\n\
-the paintings and walls.\n\
-\n\
-Please recover the Power\n\
-Stars! As you find them,\n\
-you can use their power\n\
-to open the doors that\n\
-Bowser has sealed.\n\
-\n\
-There are four rooms on\n\
-the first floor. Start in\n\
-the one with the painting\n\
-of Bob-omb inside. It's\n\
-the only room that Bowser\n\
-hasn't sealed.\n\
-When you collect eight\n\
-Power Stars, you'll be\n\
-able to open the door\n\
-with the big star. The\n\
-Princess must be inside!"))
+\
+O Bowser roubou as nossas\n\
+Estrelas, e está usando\n\
+o poder delas pra criar\n\
+seus próprios mundos\n\
+nas pinturas e nas\n\
+paredes.\n\
+\
+Por favor, recupera as\n\
+Hiperestrelas! Comece\n\
+pela sala com a pintura\n\
+das Bob-bombas. É a\n\
+única sala que o Bowser\n\
+não conseguiu trancar.\n\
+\
+Pegue Estrelas o bastante\n\
+para abrir a Grande\n\
+Porta Estelar.\n\
+A princesa deve estar lá,\n\
+eu tenho certeza!"))
 
-DEFINE_DIALOG(DIALOG_134, 1, 5, 30, 200, _("\
-The names of the Stars\n\
-are also hints for\n\
-finding them. They are\n\
-displayed at the beginning\n\
-of each course.\n\
-You can collect the Stars\n\
-in any order. You won't\n\
-find some Stars, enemies\n\
-or items unless you select\n\
-a specific Star.\n\
-After you collect some\n\
-Stars, you can try\n\
-another course.\n\
-We're all waiting for\n\
-your help!"))
+DEFINE_DIALOG(DIALOG_134, 1, 6, 30, 200, _("\
+Os nomes das Estrelas\n\
+também são dicas para\n\
+encontrá-las.\n\
+Eles são exibidos no\n\
+início de cada fase.\n\
+\n\
+\
+Você pode pegá-las\n\
+em qualquer ordem, mas\n\
+certos inimigos, itens ou\n\
+até Estrelas não vão\n\
+aparecer até escolher\n\
+uma missão específica.\n\
+\
+Depois de coletar\n\
+algumas Estrelas, você\n\
+pode tentar outra fase.\n\
+Estamos todos contando\n\
+com a sua ajuda!"))
 
 DEFINE_DIALOG(DIALOG_135, 1, 5, 30, 200, _("\
-It was Bowser who stole\n\
-the Stars. I saw him with\n\
-my own eyes!\n\
-\n\
-\n\
-He's hidden six Stars in\n\
-each course, but you\n\
-won't find all of them in\n\
-some courses until you\n\
-press the Cap Switches.\n\
-The Stars you've found\n\
-will show on each course's\n\
-starting screen.\n\
-\n\
-\n\
-If you want to see some\n\
-of the enemies you've\n\
-already defeated, select\n\
-the Stars you recovered\n\
-from them."))
+Foi o Bowser quem roubou\n\
+as Estrelas. Eu vi ele\n\
+quando me escondi aqui!\n\
+Ele escondeu umas seis ou\n\
+sete Estrelas por mundo.\n\
+\
+Mas você não vai achar\n\
+todas elas sem ativar\n\
+os Botões-!.\n\
+Aí você vai ter que ir\n\
+pra outra fase.\n\
+\
+As Estrelas que você já\n\
+tem vão aparecer na\n\
+tela inicial das fases.\n\
+Se quer ver alguma delas,\n\
+é só escolhê-las!"))
 
 DEFINE_DIALOG(DIALOG_136, 1, 6, 30, 200, _("\
-Wow! You've already\n\
-recovered that many\n\
-Stars? Way to go, Mario!\n\
-I'll bet you'll have us out\n\
-of here in no time!\n\
+Uau! Você já recuperou\n\
+tudo isso de Estrelas?\n\
+Muito bom, Mario!\n\
+Já vi que você vai tirar\n\
+a gente daqui rapidinho!\n\
 \n\
-Be careful, though.\n\
-Bowser and his band\n\
-wrote the book on 『bad.』\n\
-Take my advice: When you\n\
-need to recover from\n\
-injuries, collect coins.\n\
-Yellow Coins refill one\n\
-piece of the Power Meter,\n\
-Red Coins refill two\n\
-pieces, and Blue Coins\n\
-refill five.\n\
-\n\
-To make Blue Coins\n\
-appear, pound on Blue\n\
-Coin Blocks.\n\
-\n\
-\n\
-\n\
-Also, if you fall from\n\
-high places, you'll\n\
-minimize damage if you\n\
-Pound the Ground as you\n\
-land."))
+\
+Mas ó, toma cuidado.\n\
+Bowser e sua tropa não\n\
+são Ave Maria, mas são\n\
+cheios de graça.\n\
+Use as moedas pra se\n\
+curar de feridas.\n\
+\
+As moedas amarelas\n\
+recuperam uma parte do\n\
+Medidor de Energia.\n\
+Já as vermelhas\n\
+recuperam duas, e as\n\
+azuis, cinco.\n\
+\
+Faça moedas azuis\n\
+aparecerem ativando\n\
+um Bloco de Moeda Azul.\n\
+E se cair de um lugar\n\
+alto, use um Salto Bomba\n\
+pra não se machucar."))
 
 DEFINE_DIALOG(DIALOG_137, 1, 6, 30, 200, _("\
-Thanks, Mario! The castle\n\
-is recovering its energy\n\
-as you retrieve Power\n\
-Stars, and you've chased\n\
-Bowser right out of here,\n\
-on to some area ahead.\n\
-Oh, by the by, are you\n\
-collecting coins? Special\n\
-Stars appear when you\n\
-collect 100 coins in each\n\
-of the 15 courses!"))
+Obrigado, Mario!\n\
+O castelo está ganhando\n\
+seu poder de volta graças\n\
+às Estrelas recuperadas,\n\
+e você conseguiu afastar\n\
+o Bowser pra longe daqui.\n\
+\
+Aliás, você tá coletando\n\
+moedas? Tem Estrelas\n\
+especiais que aparecerem\n\
+quando você coleta 100\n\
+moedas nas 15 fases!"))
 
-DEFINE_DIALOG(DIALOG_138, 1, 3, 30, 200, _("\
-Down: Underground Lake\n\
-Left: Black Hole\n\
-Right: Hazy Maze (Closed)"))
+DEFINE_DIALOG(DIALOG_138, 1, 4, 30, 200, _("\
+BAIXO: Lago Subterrâneo\n\
+ESQ.: Cratera Negra\n\
+DIR.: Labirinto Tóxico\n\
+//////// (Fechado)"))
 
 DEFINE_DIALOG(DIALOG_139, 1, 6, 30, 200, _("\
-Above: Automatic Elevator\n\
-Elevator begins\n\
-automatically and follows\n\
-pre-set course.\n\
-It disappears\n\
-automatically, too."))
+ACIMA: Elev. Automático\n\
+Elevador começa a andar\n\
+automaticamente e segue\n\
+curso pré-determinado.\n\
+Também desaparece\n\
+automaticamente."))
 
 DEFINE_DIALOG(DIALOG_140, 1, 6, 30, 200, _("\
-Elevator Area\n\
-Right: Hazy Maze\n\
-/// Entrance\n\
-Left: Black Hole\n\
-///Elevator 1\n\
-Arrow: You are here"))
+-Elevador de Serviço-\n\
+DIR.: Labirinto Tóxico\n\
+/// Entrada\n\
+ESQ.: Cratera Negra\n\
+/// Elevador 1\n\
+SETA: Você está aqui"))
 
 DEFINE_DIALOG(DIALOG_141, 1, 5, 150, 200, _("\
-You've recovered one of\n\
-the stolen Power Stars!\n\
-Now you can open some of\n\
-the sealed doors in the\n\
-castle.\n\
-Try the Princess's room\n\
-on the second floor and\n\
-the room with the\n\
-painting of Whomp's\n\
-Fortress on Floor 1.\n\
-Bowser's troops are still\n\
-gaining power, so you\n\
-can't give up. Save us,\n\
-Mario! Keep searching for\n\
-Stars!"))
+Você recuperou uma das\n\
+Hiperestrelas roubadas!\n\
+Agora você pode abrir\n\
+algumas das portas\n\
+seladas no castelo.\n\
+\
+Experimente a sala da\n\
+Princesa Peach no segundo\n\
+andar e a sala com a\n\
+pintura da Fortaleza\n\
+Esmagão no térreo.\n\
+\
+As tropas do Bowser ainda\n\
+estão ganhando poder,\n\
+então você não pode\n\
+desistir. Vamos, Mario!\n\
+Procure pelas Estrelas!"))
 
 DEFINE_DIALOG(DIALOG_142, 1, 5, 150, 200, _("\
-You've recovered three\n\
-Power Stars! Now you can\n\
-open any door with a 3\n\
-on its star.\n\
+Você recuperou três\n\
+Hiperestrelas! Agora você\n\
+poderá abrir qualquer\n\
+porta marcada com um 3.\n\
 \n\
-You can come and go from\n\
-the open courses as you\n\
-please. The enemies ahead\n\
-are even meaner, so be\n\
-careful!"))
+\
+Você pode entrar e sair\n\
+das fases abertas como\n\
+quiser. Os inimigos à\n\
+frente são ainda piores,\n\
+portanto tome cuidado!"))
 
 DEFINE_DIALOG(DIALOG_143, 1, 6, 150, 200, _("\
-You've recovered eight of\n\
-the Power Stars! Now you\n\
-can open the door with\n\
-the big Star! But Bowser\n\
-is just ahead...can you\n\
-hear the Princess calling?"))
+Você recuperou oito\n\
+Hiperestrelas! Agora você\n\
+pode abrir a porta com a\n\
+grande Estrela! O Bowser\n\
+pode estar por perto... \n\
+Essa foi a voz da Peach?"))
 
 DEFINE_DIALOG(DIALOG_144, 1, 6, 150, 200, _("\
-You've recovered 30\n\
-Power Stars! Now you can\n\
-open the door with the\n\
-big Star! But before you\n\
-move on, how's it going\n\
-otherwise?\n\
-Did you pound the two\n\
-columns down? You didn't\n\
-lose your hat, did you?\n\
-If you did, you'll have to\n\
-stomp on the condor to\n\
-get it back!\n\
-They say that Bowser has\n\
-sneaked out of the sea\n\
-and into the underground.\n\
-Have you finally\n\
-cornered him?"))
+Você recuperou trinta\n\
+Hiperestrelas! Agora você\n\
+pode abrir a porta com a\n\
+grande Estrela!\n\
+Mas antes de ir, como\n\
+tem passado?\n\
+\
+Você já tentou um Salto\n\
+Bomba naqueles dois\n\
+pilares? Você não perdeu\n\
+o boné, não é? Se perdeu,\n\
+você terá que pegar de\n\
+volta do abutre Klepto!\n\
+\
+Há rumores de que\n\
+Bowser fugiu do mar em\n\
+direção ao subterrâneo.\n\
+Talvez você finalmente\n\
+o encurralou?"))
 
-DEFINE_DIALOG(DIALOG_145, 1, 6, 150, 200, _("\
-You've recovered 50\n\
-Power Stars! Now you can\n\
-open the Star Door on the\n\
-third floor. Bowser's\n\
-there, you know.\n\
+DEFINE_DIALOG(DIALOG_145, 1, 5, 150, 200, _("\
+Você recuperou cinquenta\n\
+Hiperestrelas! Agora\n\
+você pode abrir a Grande\n\
+Porta Estelar do\n\
+terceiro andar. \n\
+\
+Bowser deve estar lá,\n\
+com certeza!\n\
+Aliás, você ativou todos\n\
+os Botões-!, certo?\n\
 \n\
-Oh! You've found all of\n\
-the Cap Switches, haven't\n\
-you? Red, green and blue?\n\
-The Caps you get from the\n\
-colored blocks are really\n\
-helpful.\n\
-Hurry along, now. The\n\
-third floor is just ahead."))
+\
+Os bonés que vêm dos\n\
+blocos vermelhos, azuis\n\
+e verdes ajudam muito.\n\
+Siga andando, por ora. O\n\
+quarto andar lhe espera."))
 
 DEFINE_DIALOG(DIALOG_146, 1, 6, 150, 200, _("\
-You've found 70 Power\n\
-Stars! The mystery of the\n\
-endless stairs is solved,\n\
-thanks to you--and is\n\
-Bowser ever upset! Now,\n\
-on to the final bout!"))
+Você recuperou setenta\n\
+Hiperestrelas! O mistério\n\
+da escadaria infinita foi\n\
+resolvido! E Bowser está\n\
+mais irado do que nunca!\n\
+Hora do confronto final!"))
 
 DEFINE_DIALOG(DIALOG_147, 1, 5, 30, 200, _("\
-Are you using the Cap\n\
-Blocks? You really should,\n\
-you know.\n\
-\n\
-\n\
-To make them solid so you\n\
-can break them, you have\n\
-to press the colored Cap\n\
-Switches in the castle's\n\
-hidden courses.\n\
-You'll find the hidden\n\
-courses only after\n\
-regaining some of the\n\
-Power Stars.\n\
-\n\
-The Cap Blocks are a big\n\
-help! Red for the Wing\n\
-Cap, green for the Metal\n\
-Cap, blue for the Vanish\n\
-Cap."))
+Tem usado os Blocos-! ou\n\
+não? Só após recuperar\n\
+algumas das Estrelas,\n\
+você achará as fases\n\
+secretas dos botões.\n\
+\
+Aperte o Botão-! colorido\n\
+nessas fases escondidas\n\
+para deixar os blocos\n\
+sólidos e, assim, poder\n\
+usá-los.\n\
+\
+Vermelho é do Boné Alado,\n\
+verde é do Boné Metálico\n\
+e o azul é do Boné\n\
+Transparente.\n\
+Eles são de grande ajuda!"))
 
-DEFINE_DIALOG(DIALOG_148, 1, 6, 30, 200, _("\
-Snowman Mountain ahead.\n\
-Keep out! And don't try\n\
-the Triple Jump over the\n\
-ice block shooter.\n\
-\n\
-\n\
-If you fall into the\n\
-freezing pond, your power\n\
-decreases quickly, and\n\
-you won't recover\n\
-automatically.\n\
-//--The Snowman"))
+DEFINE_DIALOG(DIALOG_148, 1, 5, 30, 200, _("\
+Montanha do Boneco de\n\
+Neve à frente. Afaste-se!\n\
+E nem tente qualquer\n\
+Salto Triplo sobre o\n\
+atirador de gelo.\n\
+\
+Se você cair no lago\n\
+congelante, sua energia\n\
+cairá rápido, e não vai se\n\
+recuperar na superfície.\n\
+// - O Boneco de Neve"))
 
-DEFINE_DIALOG(DIALOG_149, 1, 3, 30, 200, _("\
-Welcome to\n\
-Princess Toadstool's\n\
-secret slide!\n\
-There's a Star hidden\n\
-here that Bowser couldn't\n\
-find.\n\
-When you slide, press\n\
-forward to speed up,\n\
-pull back to slow down.\n\
-If you slide really\n\
-fast, you'll win the Star!"))
+DEFINE_DIALOG(DIALOG_149, 1, 6, 30, 200, _("\
+Boas-vindas ao escorrega\n\
+escondido da Princesa\n\
+Cogumelo!\n\
+Por aqui há uma\n\
+Hiperestrela secreta que\n\
+Bowser não encontrou.\n\
+\
+Ao escorregar, acelere\n\
+puxando o Analógico para\n\
+frente, e vá mais devagar\n\
+puxando-o para trás.\n\
+Se escorregar bem rápido,\n\
+você ganhará a Estrela!"))
 
-DEFINE_DIALOG(DIALOG_150, 1, 5, 30, 200, _("\
-Waaaa! You've flooded my\n\
-house! Wh-why?? Look at\n\
-this mess! What am I\n\
-going to do now?\n\
-\n\
-The ceiling's ruined, the\n\
-floor is soaked...what to\n\
-do, what to do? Huff...\n\
-huff...it makes me so...\n\
-MAD!!!\n\
-Everything's been going\n\
-wrong ever since I got\n\
-this Star...It's so shiny,\n\
-but it makes me feel...\n\
-strange..."))
+DEFINE_DIALOG(DIALOG_150, 1, 4, 30, 200, _("\
+Uáááá! Quem é você?!\n\
+Pra que inundar a minha\n\
+casa? E a MIM?! E olha\n\
+só esse buraco no teto!\n\
+\
+Grrrrr!\n\
+Eu vou fazer você\n\
+arrumar isso tudo agora!"))
 
-DEFINE_DIALOG(DIALOG_151, 1, 4, 30, 200, _("\
-I can't take this\n\
-anymore! First you get\n\
-me all wet, then you\n\
-stomp on me!\n\
-Now I'm really, really,\n\
-REALLY mad!\n\
-Waaaaaaaaaaaaaaaaa!!!"))
+DEFINE_DIALOG(DIALOG_151, 1, 5, 30, 200, _("\
+Não tô acreditando!\n\
+Primeiro você me molha,\n\
+depois você pisa em mim!\n\
+Argh, mas que RAIVA!\n\
+Uááááááááááááááááá!!!"))
 
-DEFINE_DIALOG(DIALOG_152, 1, 3, 30, 200, _("\
-Owwch! Uncle! Uncle!\n\
-Okay, I " GIVE_UP ". Take this\n\
-Star!\n\
-Whew! I feel better now.\n\
-I don't really need it\n\
-anymore, anyway--\n\
-I can see the stars\n\
-through my ceiling at\n\
-night.\n\
-They make me feel...\n\
-...peaceful. Please, come\n\
-back and visit anytime."))
+DEFINE_DIALOG(DIALOG_152, 1, 5, 30, 200, _("\
+AIII! Tá bom, tá bom, seu\n\
+brutamontes, eu me rendo!\n\
+Toma essa estrela!\n\
+... Uff! Eu... me sinto\n\
+melhor agora... Mais zen.\n\
+\
+Nem sei por que eu me\n\
+irritei com isso. Agora\n\
+eu posso ver as estrelas\n\
+no céu de noite! Ah, volte\n\
+sempre que quiser, ok?"))
 
 DEFINE_DIALOG(DIALOG_153, 1, 4, 30, 200, _("\
-Hey! Who's there?\n\
-What's climbing on me?\n\
-Is it an ice ant?\n\
-A snow flea?\n\
-Whatever it is, it's\n\
-bugging me! I think I'll\n\
-blow it away!"))
+Ei! Quem está aí? Quem\n\
+tá subindo na minha mão?\n\
+É uma formiguinha? Eu\n\
+nem fui comprar melão!\n\
+\
+Isso tá me incomodando!\n\
+Eu vou sacudir, sacudir\n\
+e soprar muito, pra ver\n\
+se para de subir!"))
 
-DEFINE_DIALOG(DIALOG_154, 1, 5, 30, 200, _("\
-Hold on to your hat! If\n\
-you lose it, you'll be\n\
-easily injured. If you\n\
-lose it, look for it in the\n\
-course where you lost it.\n\
-Speaking of lost, the\n\
-Princess is still stuck in\n\
-the walls somewhere.\n\
-Please help, Mario!\n\
+DEFINE_DIALOG(DIALOG_154, 1, 4, 30, 200, _("\
+Segura o boné! Amarra o\n\
+boné! Se você perder ele,\n\
+vai ficar muito mais\n\
+fácil de se machucar.\n\
+\
+E aí você vai ter que\n\
+procurá-lo no mesmo\n\
+mundo que o perdeu.\n\
 \n\
-Oh, you know that there\n\
-are secret worlds in the\n\
-walls as well as in the\n\
-paintings, right?"))
+\
+Ai, a coisa tá feia pra\n\
+princesa. Ela ainda tá\n\
+presa numa parede daqui.\n\
+Ajuda ela, por favor!\n\
+\
+Aliás, sabia que também\n\
+tem mundos em paredes?\n\
+Pois é, e as tropas do\n\
+Bowser já estão neles."))
 
 DEFINE_DIALOG(DIALOG_155, 1, 6, 30, 200, _("\
-Thanks to the power of\n\
-the Stars, life is\n\
-returning to the castle.\n\
-Please, Mario, you have\n\
-to give Bowser the boot!\n\
-\n\
-Here, let me tell you a\n\
-little something about the\n\
-castle. In the room with\n\
-the mirrors, look carefully\n\
-for anything that's not\n\
-reflected in the mirror.\n\
-And when you go to the\n\
-water town, you can flood\n\
-it with a high jump into\n\
-the painting."))
+Graças ao poder das\n\
+Estrelas, a vida está\n\
+voltando ao castelo!\n\
+Por favor, Mario, você\n\
+precisa dar um pontapé\n\
+no Bowser!\n\
+\
+Deixa eu lhe falar uma\n\
+coisa sobre o castelo.\n\
+Na sala do espelhão,\n\
+olhe bem e procure tudo\n\
+que não tenha o reflexo\n\
+certo.\n\
+\
+E quando entrar naquela\n\
+cidade alagada, um salto\n\
+mais alto na pintura vai\n\
+aumentar o nível da água."))
 
-DEFINE_DIALOG(DIALOG_156, 1, 5, 30, 200, _("\
-The world inside the\n\
-clock is so strange!\n\
-When you jump inside,\n\
-watch the position of\n\
-the big hand!"))
+DEFINE_DIALOG(DIALOG_156, 1, 4, 30, 200, _("\
+Esse relógio é muito\n\
+estranho! Se você entrar\n\
+nele, presta atenção na\n\
+posição do ponteiro maior."))
 
 DEFINE_DIALOG(DIALOG_157, 1, 5, 30, 200, _("\
-Watch out! Don't let\n\
-yourself be swallowed by\n\
-quicksand.\n\
-\n\
-\n\
-If you sink into the sand,\n\
-you won't be able to\n\
-jump, and if your head\n\
-goes under, you'll be\n\
-smothered.\n\
-The dark areas are\n\
-bottomless pits."))
+Cuidado!\n\
+Não deixe a areia\n\
+movediça te engolir!\n\
+Se você cair nela, não\n\
+conseguirá pular.\n\
+\
+Se sua cabeça ficar por\n\
+baixo da areia, você irá\n\
+se sufocar.\n\
+Os poços escuros irão\n\
+te engolir num instante!"))
 
 DEFINE_DIALOG(DIALOG_158, 1, 6, 30, 200, _("\
-1. If you jump repeatedly\n\
-and time it right, you'll\n\
-jump higher and higher.\n\
-If you run really fast and\n\
-time three jumps right,\n\
-you can do a Triple Jump.\n\
-2. Jump into a solid wall,\n\
-then jump again when you\n\
-hit the wall. You can\n\
-bounce to a higher level\n\
-using this Wall Kick."))
+1. Se pular seguidamente\n\
+e na hora certa, você\n\
+pulará cada vez mais\n\
+alto. Corra e pule três\n\
+vezes direito, e fará\n\
+um Salto Triplo.\n\
+\
+2. Pule em direção à uma\n\
+parede e salte outra vez\n\
+assim que tocá-la. Este\n\
+será um Salto Escalada,\n\
+que lhe permite alcançar\n\
+lugares mais altos."))
 
 DEFINE_DIALOG(DIALOG_159, 1, 6, 30, 200, _("\
-3. If you stop, press [Z]\n\
-to crouch, then jump, you\n\
-can perform a Backward\n\
-Somersault. To do a Long\n\
-Jump, run fast, press [Z],\n\
-then jump."))
+3. Se você parar, segurar\n\
+[Z] para se agachar e\n\
+pular, você realizará um\n\
+Salto Mortal. Já um Salto\n\
+Longo se faz correndo,\n\
+apertando [Z] e pulando."))
 
 DEFINE_DIALOG(DIALOG_160, 1, 4, 30, 200, _("\
-Press [B] while running\n\
-fast to do a Body Slide\n\
-attack. To stand while\n\
-sliding, press [A] or [B]."))
-
-#ifdef VERSION_EU
-#define KEEP_ON_PLAYING ".."
-#else
-#define KEEP_ON_PLAYING "\n\
-We want you to keep on\n\
-playing, so we have a\n\
-little something for you.\n\
-We hope that you like it!\n\
-Enjoy!!!"
-#endif
+Aperte [B] enquanto corre\n\
+para Saltar de Cabeça.\n\
+Após o deslize, fique de\n\
+pé apertando [A] ou [B]."))
 
 DEFINE_DIALOG(DIALOG_161, 1, 4, 30, 200, _("\
 Mario!!!\n\
-It that really you???\n\
-It has been so long since\n\
-our last adventure!\n\
-They told me that I might\n\
-see you if I waited here,\n\
-but I'd just about given\n\
-up hope!\n\
-Is it true? Have you\n\
-really beaten Bowser? And\n\
-restored the Stars to the\n\
-castle?\n\
-And saved the Princess?\n\
-I knew you could do it!\n\
-Now I have a very special\n\
-message for you.\n\
-『Thanks for playing Super\n\
-Mario 64! This is the\n\
-end of the game, but not\n\
-the end of the fun." \
-KEEP_ON_PLAYING "』\n\
-\n\
-The Super Mario 64 Team"))
+É você mesmo?!\n\
+Já faz tanto tempo\n\
+desde a nossa aventura!\n\
+\
+Me disseram que eu podia\n\
+te ver se eu esperasse\n\
+aqui, mas eu já tava\n\
+perdendo a esperança!\n\
+\
+Então você venceu mesmo\n\
+o Bowser? E restaurou\n\
+as Estrelas do castelo?\n\
+E salvou a princesa?\n\
+\
+Eu sabia que conseguiria!\n\
+Ah, eu tenho uma carta\n\
+aqui pra você.\n\
+Vejamos. Ram-ham...\n\
+\
+『Agradecemos por jogar\n\
+Super Mario 64! É o fim\n\
+da aventura, mas para\n\
+que continue jogando...\n\
+\
+temos um último bônus\n\
+especial para você.\n\
+Aproveite!\n\
+// - Equipe Mario 64』"))
 
 DEFINE_DIALOG(DIALOG_162, 1, 4, 30, 200, _("\
-No, no, no! Not you\n\
-again! I'm in a great\n\
-hurry, can't you see?\n\
-\n\
-I've no time to squabble\n\
-over Stars. Here, have it.\n\
-I never meant to hide it\n\
-from you...\n\
-It's just that I'm in such\n\
-a rush. That's it, that's\n\
-all. Now, I must be off.\n\
-Owww! Let me go!"))
+Ah não, você de novo não!\n\
+Você não veio dar nó\n\
+na minha orelha, veio?!\n\
+... Ah, essa Estrela?\n\
+\
+Eu não tenho tempo pra\n\
+brigar por causa de\n\
+Estrelas! Eu nem queria\n\
+esconder essa de você!\n\
+\
+Pode ficar com ela se\n\
+você me deixar ir.\n\
+É a última vez que vai me\n\
+ver aprontando, eu juro!"))
 
-DEFINE_DIALOG(DIALOG_163, 1, 5, 30, 200, _("\
-Noooo! You've really\n\
-beaten me this time,\n\
-Mario! I can't stand\n\
-losing to you!\n\
-\n\
-My troops...worthless!\n\
-They've turned over all\n\
-the Power Stars! What?!\n\
-There are 120 in all???\n\
-\n\
-Amazing! There were some\n\
-in the castle that I\n\
-missed??!!\n\
-\n\
-\n\
-Now I see peace\n\
-returning to the world...\n\
-Oooo! I really hate that!\n\
-I can't watch--\n\
-I'm outta here!\n\
-Just you wait until next\n\
-time. Until then, keep\n\
-that Control Stick\n\
-smokin'!\n\
-Buwaa ha ha!"))
+DEFINE_DIALOG(DIALOG_163, 1, 4, 30, 200, _("\
+Nããão! Impossível!\n\
+Você me venceu, Mario?!\n\
+Eu não suporto perder\n\
+pra você!\n\
+\
+Minhas tropas...\n\
+imprestáveis! Deram\n\
+de mão beijada todas\n\
+as Hiperestrelas!\n\
+\
+... Peraí, 120 Estrelas?!\n\
+Então tinha algumas no\n\
+castelo que eu deixei\n\
+passar!\n\
+\
+Já posso sentir a paz\n\
+voltando ao mundo! Que\n\
+ódio! Não vou ficar vendo\n\
+isso, eu vou cair fora!\n\
+\
+Na próxima, eu não vou\n\
+deixar barato! Até lá,\n\
+é bom ir aquecendo esse\n\
+Analógico! Bááh ha ha!"))
 
 DEFINE_DIALOG(DIALOG_164, 1, 4, 30, 200, _("\
-Mario! What's up, pal?\n\
-I haven't been on the\n\
-slide lately, so I'm out\n\
-of shape.\n\
-Still, I'm always up for a\n\
-good race, especially\n\
-against an old sleddin'\n\
-buddy.\n\
-Whaddya say?\n\
-Ready...set...\n\
+Mario! E aí, chapa? Eu tô\n\
+um pouco fora de forma,\n\
+não tenho escorregado\n\
+muito ultimamente.\n\
+\
+Mesmo assim, tô sempre\n\
+afim de uma boa corrida,\n\
+ainda mais contra um\n\
+parceiro de esquibarriga.\n\
+\
+E então? Bora correr!\n\
+Preparar...\n\
 \n\
-//Go//// Don't Go"))
+//Já!////Não, não"))
 
-DEFINE_DIALOG(DIALOG_165, 1, 5, 30, 200, _("\
-I take no responsibility\n\
-whatsoever for those who\n\
-get dizzy and pass out\n\
-from running around\n\
-this post."))
+DEFINE_DIALOG(DIALOG_165, 1, 4, 30, 200, _("\
+Não me responsabilizo\n\
+por aqueles que ficarem\n\
+tontos de tanto girarem\n\
+ao redor desta estaca."))
 
 DEFINE_DIALOG(DIALOG_166, 1, 4, 30, 200, _("\
-I'll be back soon.\n\
-I'm out training now,\n\
-so come back later.\n\
-//--Koopa the Quick"))
+Volto logo. No momento,\n\
+estou treinando. Se quiser\n\
+correr, volte mais tarde.\n\
+// - Kopa Veloso"))
 
-DEFINE_DIALOG(DIALOG_167, 1, 4, 30, 200, _("\
-Princess Toadstool's\n\
-castle is just ahead.\n\
-\n\
-\n\
-Press [A] to jump, [Z] to\n\
-crouch, and [B] to punch,\n\
-read a sign, or grab\n\
-something.\n\
-Press [B] again to throw\n\
-something you're holding."))
+DEFINE_DIALOG(DIALOG_167, 1, 3, 30, 200, _("\
+O castelo da Princesa\n\
+Peach Cogumelo está\n\
+logo à frente.\n\
+\
+Aperte:\n\
+[A] para saltar,\n\
+[Z] para agachar-se,\n\
+\
+[B] para atacar, pegar\n\
+um objeto ou jogá-lo, e\n\
+[A] ou [B] para ler placas."))
 
 DEFINE_DIALOG(DIALOG_168, 1, 5, 30, 200, _("\
-Hey! Knock it off! That's\n\
-the second time you've\n\
-nailed me. Now you're\n\
-asking for it, linguine\n\
-breath!"))
+Ei! Para com isso!\n\
+Já é a segunda vez que\n\
+você me acerta! Já está\n\
+irritando essa Floragarta\n\
+aqui, ô bafo de pizza!"))
 
 DEFINE_DIALOG(DIALOG_169, 1, 4, 30, 200, _("\
-Keep out!\n\
-That means you!\n\
-Arrgghh!\n\
+Ei, você!\n\
 \n\
-Anyone entering this cave\n\
-without permission will\n\
-meet certain disaster."))
+Afaste-se desta caverna!\n\
+Arrrrrr!\n\
+\
+Um mal certo recairá\n\
+sobre qualquer um que\n\
+entrar sem permissão!\n\
+// - O Capitão"))

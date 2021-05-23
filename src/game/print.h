@@ -25,6 +25,18 @@
 #define GLYPH_DOUBLE_QUOTE    57
 #define GLYPH_UMLAUT          58
 
+//[BR] Accent texture indexes
+#define GLYPH_HUD_ACUTE       37
+#define GLYPH_TEXT_ACUTE      231
+#define GLYPH_TEXT_CIRCUMFLEX 232
+#define GLYPH_TEXT_TILDE      233
+#define GLYPH_TEXT_GRAVE      234
+#define GLYPH_MENU_CEDILLA    237
+#define GLYPH_CRD_ACUTE       37
+#define GLYPH_CRD_CIRCUMFLEX  38
+#define GLYPH_CRD_TILDE       39
+#define GLYPH_CRD_CEDILLA     40
+
 void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n);
 void print_text(s32 x, s32 y, const char *str);
 void print_text_centered(s32 x, s32 y, const char *str);

@@ -112,14 +112,14 @@ void print_intro_text(void) {
         if (gControllerBits == 0) {
 #ifdef VERSION_EU
             print_text_centered(SCREEN_WIDTH / 2, 20, gNoControllerMsg[language]);
-#else
-            print_text_centered(SCREEN_WIDTH / 2, 20, "NO CONTROLLER");
+#else //[BR] "NO CONTROLLER"
+            print_text_centered(SCREEN_WIDTH / 2, 20, "CONTROLE DESCONECTADO");
 #endif
         } else {
 #ifdef VERSION_EU
             print_text(20, 20, "START");
-#else
-            print_text_centered(60, 38, "PRESS");
+#else //[BR] "PRESS START"
+            print_text_centered(60, 38, "APERTE");
             print_text_centered(60, 20, "START");
 #endif
         }

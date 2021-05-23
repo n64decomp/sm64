@@ -47,6 +47,8 @@ extern Gfx dl_hud_img_begin[];
 extern Gfx dl_hud_img_end[];
 extern void *main_font_lut[];
 extern Gfx dl_ia_text_tex_settings[];
+extern Gfx dl_ia_text_low_accent_settings[]; //[BR] for the new accents
+extern Gfx dl_ia_text_up_accent_settings[];
 extern Gfx dl_rgba16_load_tex_block[];
 extern void *main_credits_font_lut[];
 extern u8* main_hud_camera_lut[6];

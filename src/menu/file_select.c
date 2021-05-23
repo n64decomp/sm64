@@ -1792,10 +1792,10 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     #define MARIOTEXT_X1 92
     #define MARIOTEXT_X2 207
 #elif defined(VERSION_US)
-    #define SELECT_FILE_X 93
-    #define SCORE_X 52
-    #define COPY_X 117
-    #define ERASE_X 177
+    #define SELECT_FILE_X centeredX //[BR] Made it always centered just like in EU
+    #define SCORE_X 49
+    #define COPY_X 112
+    #define ERASE_X 173
     #define SOUNDMODE_X1 sSoundTextX
     #define SAVEFILE_X1 92
     #define SAVEFILE_X2 209
@@ -1816,6 +1816,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
  * Same rule applies for score, copy and erase strings.
  */
 void print_main_menu_strings(void) {
+    static s16 centeredX; //[BR]
 #ifdef VERSION_SH
     // The current sound mode is automatically centered on US and Shindou.
     static s16 sSoundTextX; // TODO: There should be a way to make this match on both US and Shindou.
@@ -1824,6 +1825,7 @@ void print_main_menu_strings(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
 #ifndef VERSION_EU
+    centeredX = get_str_x_pos_from_center_scale(SCREEN_WIDTH / 2, textSelectFile, 12.0f);
     print_hud_lut_string(HUD_LUT_DIFF, SELECT_FILE_X, 35, textSelectFile);
 #endif
     // Print file star counts
@@ -1895,28 +1897,35 @@ void print_main_lang_strings(void) {
 #define CHECK_FILE_X 90
 #define NOSAVE_DATA_X1 90
 #else
-#define CHECK_FILE_X 95
-#define NOSAVE_DATA_X1 99
+#define CHECK_FILE_X centeredX //[BR]
+#define NOSAVE_DATA_X1 centeredX
 #endif
 
 /**
  * Defines IDs for the top message of the score menu and displays it if the ID is called in messageID.
  */
+//[BR] There are mostly centralizing stuff here.
 void score_menu_display_message(s8 messageID) {
 #ifdef VERSION_EU
     s16 checkFileX, noSaveDataX;
+#elif defined(VERSION_US)
+    s16 centeredX;
 #endif
 
     switch (messageID) {
         case SCORE_MSG_CHECK_FILE:
 #ifdef VERSION_EU
             checkFileX = get_str_x_pos_from_center_scale(160, LANGUAGE_ARRAY(textCheckFile), 12.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center_scale(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textCheckFile), 12.0f);
 #endif
             print_hud_lut_string_fade(HUD_LUT_DIFF, CHECK_FILE_X, 35, LANGUAGE_ARRAY(textCheckFile));
             break;
         case SCORE_MSG_NOSAVE_DATA:
 #ifdef VERSION_EU
             noSaveDataX = get_str_x_pos_from_center(160, LANGUAGE_ARRAY(textNoSavedDataExists), 10.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textNoSavedDataExists), 10.0f);        
 #endif
             print_generic_string_fade(NOSAVE_DATA_X1, 190, LANGUAGE_ARRAY(textNoSavedDataExists));
             break;
@@ -1931,10 +1940,10 @@ void score_menu_display_message(s8 messageID) {
     #define RETURN_X     centeredX
     #define COPYFILE_X1  centeredX
     #define ERASEFILE_X1 centeredX
-#else
-    #define RETURN_X     44
-    #define COPYFILE_X1  135
-    #define ERASEFILE_X1 231
+#else // [BR]
+    #define RETURN_X     45
+    #define COPYFILE_X1  143
+    #define ERASEFILE_X1 240
 #endif
 
 #ifdef VERSION_EU
@@ -2014,27 +2023,21 @@ void print_score_menu_strings(void) {
     #define NOSAVE_DATA_X2 90
     #define COPYCOMPLETE_X 90
     #define SAVE_EXISTS_X1 90
-#elif defined(VERSION_EU)
+#else //[BR] EU but is also US now
     #define NOFILE_COPY_X  centeredX
     #define COPY_FILE_X    centeredX
     #define COPYIT_WHERE_X centeredX
     #define NOSAVE_DATA_X2 centeredX
     #define COPYCOMPLETE_X centeredX
     #define SAVE_EXISTS_X1 centeredX
-#else
-    #define NOFILE_COPY_X  119
-    #define COPY_FILE_X    104
-    #define COPYIT_WHERE_X 109
-    #define NOSAVE_DATA_X2 101
-    #define COPYCOMPLETE_X 110
-    #define SAVE_EXISTS_X1 110
 #endif
 
 /**
  * Defines IDs for the top message of the copy menu and displays it if the ID is called in messageID.
+ * [BR] - More centralizing stuff
  */
 void copy_menu_display_message(s8 messageID) {
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_US)
     s16 centeredX;
 #endif
 
@@ -2043,11 +2046,15 @@ void copy_menu_display_message(s8 messageID) {
             if (sAllFilesExist == TRUE) {
 #ifdef VERSION_EU
                 centeredX = get_str_x_pos_from_center(160, textNoFileToCopyFrom[sLanguageMode], 10.0f);
+#elif defined(VERSION_US)
+                centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textNoFileToCopyFrom), 10.0f);
 #endif
                 print_generic_string_fade(NOFILE_COPY_X, 190, LANGUAGE_ARRAY(textNoFileToCopyFrom));
             } else {
 #ifdef VERSION_EU
                 centeredX = get_str_x_pos_from_center_scale(160, textCopyFile[sLanguageMode], 12.0f);
+#elif defined(VERSION_US)
+                centeredX = get_str_x_pos_from_center_scale(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textCopyFile), 12.0f);
 #endif
                 print_hud_lut_string_fade(HUD_LUT_DIFF, COPY_FILE_X, 35, LANGUAGE_ARRAY(textCopyFile));
             }
@@ -2055,6 +2062,8 @@ void copy_menu_display_message(s8 messageID) {
         case COPY_MSG_COPY_WHERE:
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center(160, textCopyItToWhere[sLanguageMode], 10.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textCopyItToWhere), 10.0f);
 #endif
             print_generic_string_fade(COPYIT_WHERE_X, 190, LANGUAGE_ARRAY(textCopyItToWhere));
             break;
@@ -2063,18 +2072,23 @@ void copy_menu_display_message(s8 messageID) {
             centeredX = get_str_x_pos_from_center(160, textNoSavedDataExists[sLanguageMode], 10.0f);
             print_generic_string_fade(NOSAVE_DATA_X2, 190, textNoSavedDataExists[sLanguageMode]);
 #else
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, textNoSavedDataExistsCopy, 10.0f);
             print_generic_string_fade(NOSAVE_DATA_X2, 190, textNoSavedDataExistsCopy);
 #endif
             break;
         case COPY_MSG_COPY_COMPLETE:
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center(160, textCopyCompleted[sLanguageMode], 10.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textCopyCompleted), 10.0f);
 #endif
             print_generic_string_fade(COPYCOMPLETE_X, 190, LANGUAGE_ARRAY(textCopyCompleted));
             break;
         case COPY_MSG_SAVE_EXISTS:
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center(160, textSavedDataExists[sLanguageMode], 10.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textSavedDataExists), 10.0f);
 #endif
             print_generic_string_fade(SAVE_EXISTS_X1, 190, LANGUAGE_ARRAY(textSavedDataExists));
             break;
@@ -2135,9 +2149,9 @@ void copy_menu_update_message(void) {
 #elif defined(VERSION_EU)
     #define VIEWSCORE_X1 centeredX
     #define ERASEFILE_X2 centeredX
-#else
-    #define VIEWSCORE_X1 128
-    #define ERASEFILE_X2 230
+#else //[BR]
+    #define VIEWSCORE_X1 130
+    #define ERASEFILE_X2 240
 #endif
 
 /**
@@ -2211,6 +2225,9 @@ void print_copy_menu_strings(void) {
 #ifdef VERSION_SH
     #define MENU_ERASE_NO_MIN_X 194
     #define MENU_ERASE_NO_MAX_X 213
+#elif defined(VERSION_US) //[BR]
+    #define MENU_ERASE_NO_MIN_X 189
+    #define MENU_ERASE_NO_MAX_X 218
 #else
     #define MENU_ERASE_NO_MIN_X 189
     #define MENU_ERASE_NO_MAX_X 218
@@ -2298,25 +2315,20 @@ void print_erase_menu_prompt(s16 x, s16 y) {
     #define MARIO_ERASED_VAR 3
     #define MARIO_ERASED_X   90
     #define SAVE_EXISTS_X2   90
-#elif defined(VERSION_EU)
+#else //[BR] EU but is also US now
     #define ERASE_FILE_X     centeredX
     #define NOSAVE_DATA_X3   centeredX
     #define MARIO_ERASED_VAR 6
     #define MARIO_ERASED_X   centeredX
     #define SAVE_EXISTS_X2   centeredX
-#else
-    #define ERASE_FILE_X     98
-    #define NOSAVE_DATA_X3   100
-    #define MARIO_ERASED_VAR 6
-    #define MARIO_ERASED_X   100
-    #define SAVE_EXISTS_X2   100
 #endif
 
 /**
  * Defines IDs for the top message of the erase menu and displays it if the ID is called in messageID.
+ [BR] Another centralizing
  */
 void erase_menu_display_message(s8 messageID) {
-#ifdef VERSION_EU
+#if defined(VERSION_US) || defined(VERSION_EU)
     s16 centeredX;
 #endif
 
@@ -2332,16 +2344,20 @@ void erase_menu_display_message(s8 messageID) {
         case ERASE_MSG_MAIN_TEXT:
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center_scale(160, textEraseFile[sLanguageMode], 12.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center_scale(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textEraseFile), 12.0f);
 #endif
             print_hud_lut_string_fade(HUD_LUT_DIFF, ERASE_FILE_X, 35, LANGUAGE_ARRAY(textEraseFile));
             break;
         case ERASE_MSG_PROMPT:
-            print_generic_string_fade(90, 190, LANGUAGE_ARRAY(textSure));
+            print_generic_string_fade(42, 190, LANGUAGE_ARRAY(textSure));
             print_erase_menu_prompt(90, 190); // YES NO, has functions for it too
             break;
         case ERASE_MSG_NOSAVE_EXISTS:
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center(160, textNoSavedDataExists[sLanguageMode], 10.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textNoSavedDataExists), 10.0f);
 #endif
             print_generic_string_fade(NOSAVE_DATA_X3, 190, LANGUAGE_ARRAY(textNoSavedDataExists));
             break;
@@ -2349,6 +2365,8 @@ void erase_menu_display_message(s8 messageID) {
             LANGUAGE_ARRAY(textMarioAJustErased)[MARIO_ERASED_VAR] = sSelectedFileIndex + 10;
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center(160, textMarioAJustErased[sLanguageMode], 10.0f);
+#elif defined(VERSION_US)
+            centeredX = get_str_x_pos_from_center(SCREEN_WIDTH / 2, LANGUAGE_ARRAY(textMarioAJustErased), 10.0f);
 #endif
             print_generic_string_fade(MARIO_ERASED_X, 190, LANGUAGE_ARRAY(textMarioAJustErased));
             break;
@@ -2406,9 +2424,12 @@ void erase_menu_update_message(void) {
 #if defined(VERSION_JP) || defined(VERSION_SH)
 #define VIEWSCORE_X2 133
 #define COPYFILE_X2 223
-#else
+#elif defined(VERSION_EU)
 #define VIEWSCORE_X2 127
 #define COPYFILE_X2 233
+#else //[BR]
+#define VIEWSCORE_X2 130
+#define COPYFILE_X2 240
 #endif
 
 /**
@@ -2470,8 +2491,8 @@ void print_erase_menu_strings(void) {
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
     #define SOUND_HUD_X 96
-#elif defined(VERSION_US)
-    #define SOUND_HUD_X 88
+#elif defined(VERSION_US) //[BR]
+    #define SOUND_HUD_X 98
 #endif
 
 /**
@@ -2540,8 +2561,8 @@ void print_sound_mode_menu_strings(void) {
             gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
         }
         #ifndef VERSION_JP
-            // Mode names are centered correctly on US and Shindou
-            textX = get_str_x_pos_from_center(mode * 74 + 87, textSoundModes[mode], 10.0f);
+            // Mode names are centered correctly on US and Shindou ([BR] minus 1)
+            textX = get_str_x_pos_from_center(mode * 74 + 86, textSoundModes[mode], 10.0f);
             print_generic_string(textX, 87, textSoundModes[mode]);
         #else
             print_generic_string(mode * 74 + 67, 87, textSoundModes[mode]);
@@ -2580,10 +2601,14 @@ void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) {
     #define HISCORE_COIN_ICON_X  0
     #define HISCORE_COIN_TEXT_X  16
     #define HISCORE_COIN_NAMES_X 45
-#else
+#elif defined(VERSION_EU)
     #define HISCORE_COIN_ICON_X  18
     #define HISCORE_COIN_TEXT_X  34
     #define HISCORE_COIN_NAMES_X 60
+#else // [BR]
+    #define HISCORE_COIN_ICON_X  26
+    #define HISCORE_COIN_TEXT_X  41
+    #define HISCORE_COIN_NAMES_X 65
 #endif
 
 /**
@@ -2604,16 +2629,16 @@ void print_score_file_course_coin_score(s8 fileIndex, s16 courseIndex, s16 x, s1
         { TEXT_SCORE_MARIO_A }, { TEXT_SCORE_MARIO_B }, { TEXT_SCORE_MARIO_C }, { TEXT_SCORE_MARIO_D },
     };
 #undef LENGTH
-    // MYSCORE
+    // MYSCORE [BR]
     if (sScoreFileCoinScoreMode == 0) {
         // Print "[coin] x"
-        print_menu_generic_string(x + 25, y, textCoinX);
+        print_menu_generic_string(x + 28, y, textCoinX);
         // Print coin score
         int_to_str(save_file_get_course_coin_score(fileIndex, courseIndex), coinScoreText);
-        print_menu_generic_string(x + 41, y, coinScoreText);
+        print_menu_generic_string(x + 43, y, coinScoreText);
         // If collected, print 100 coin star
         if (stars & (1 << 6)) {
-            print_menu_generic_string(x + 70, y, textStar);
+            print_menu_generic_string(x + 75, y, textStar);
         }
     }
     // HISCORE
@@ -2669,10 +2694,17 @@ void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
     #define FILE_LETTER_X 95
     #define LEVEL_NUM_PAD 3
     #define SECRET_STARS_PAD 6
+#ifdef VERSION_EU
     #define LEVEL_NAME_X 23
     #define STAR_SCORE_X 171
     #define MYSCORE_X 238
     #define HISCORE_X 231
+#else //[BR]
+    #define LEVEL_NAME_X 25
+    #define STAR_SCORE_X 178
+    #define MYSCORE_X 241
+    #define HISCORE_X 239
+#endif
 #endif
 
 #ifdef VERSION_EU

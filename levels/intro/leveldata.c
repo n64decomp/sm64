@@ -3317,12 +3317,23 @@ const Gfx intro_seg7_dl_0700B3A0[] = {
     gsSPEndDisplayList(),
 };
 
-// 0x0700B420 - 0x0700B460
+// 0x0700B420 - 0x0700B460 (Nintendo's Blue Copyright)
+/* [BR] X and inverted Y values were edited in
+ * order to accomodate the new translation credits
+ */
 static const Vtx intro_seg7_vertex_0700B420[] = {
+#ifndef VERSION_US
+    //      X, inv. Y,      Z    
     {{{    96,     42,     -1}, 0, {     0,    512}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   224,     42,     -1}, 0, {  4096,    512}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   224,     58,     -1}, 0, {  4096,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{    96,     58,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
+#else
+    {{{    72,     50,     -1}, 0, {     0,    512}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   200,     50,     -1}, 0, {  4096,    512}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   200,     66,     -1}, 0, {  4096,      0}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{    72,     66,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
+#endif
 };
 
 // 0x0700B460 - 0x0700B4A0
@@ -3332,6 +3343,27 @@ static const Vtx intro_seg7_vertex_0700B460[] = {
     {{{   284,    196,     -1}, 0, {   544,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   268,    196,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
 };
+
+// [BR] New vertexes for translation credits
+#ifdef VERSION_US
+//Part 1
+static const Vtx intro_seg7_vertex_ptbr_2020[] = {
+    //      X, inv. Y,      Z
+    {{{    72,     31,     -1}, 0, {     0,    512}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   200,     31,     -1}, 0, {  4096,    512}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   200,     47,     -1}, 0, {  4096,      0}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{    72,     47,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
+};
+
+//Part 2
+static const Vtx intro_seg7_vertex_k[] = {
+    //      X, inv. Y,      Z
+    {{{   199,     31,     -1}, 0, {     0,    512}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   263,     31,     -1}, 0, {  2048,    512}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   263,     47,     -1}, 0, {  2048,      0}, {0xff, 0xff, 0xff, 0xff}}},
+    {{{   199,     47,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
+};
+#endif
 
 #if defined(VERSION_EU) || defined(VERSION_SH)
 // 0x0700B4A0 - 0x0700B4A2
@@ -3362,6 +3394,18 @@ ALIGNED8 static const Texture intro_seg7_texture_0700C4A0[] = {
 };
 #endif
 
+//[BR] Translation credit textures
+#if defined(VERSION_US)
+//Part 1
+ALIGNED8 static const Texture intro_seg7_texture_ptbr_2020[] = {
+#include "levels/intro/4_ptbr_2020.rgba16.inc.c"
+};
+//Part 2
+ALIGNED8 static const Texture intro_seg7_texture_ptbr_k[] = {
+#include "levels/intro/4_ptbr_k.rgba16.inc.c"
+};
+#endif
+
 // 0x0700C6A0 - 0x0700C790
 const Gfx intro_seg7_dl_0700C6A0[] = {
     gsDPPipeSync(),
@@ -3372,6 +3416,18 @@ const Gfx intro_seg7_dl_0700C6A0[] = {
     gsSPVertex(intro_seg7_vertex_0700B420, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
 
+    //[BR]Translation credit draw
+#ifdef VERSION_US
+    //Part 1
+    gsDPLoadTextureBlock(intro_seg7_texture_ptbr_2020, G_IM_FMT_RGBA, G_IM_SIZ_16b, 128, 16, 0, G_TX_CLAMP, G_TX_CLAMP, 7, 4, G_TX_NOLOD, G_TX_NOLOD),
+    gsSPVertex(intro_seg7_vertex_ptbr_2020, 4, 0),
+    gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
+    //Part 2
+    gsDPLoadTextureBlock(intro_seg7_texture_ptbr_k, G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, 16, 0, G_TX_CLAMP, G_TX_CLAMP, 7, 4, G_TX_NOLOD, G_TX_NOLOD),
+    gsSPVertex(intro_seg7_vertex_k, 4, 0),
+    gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
+#endif
+    
     gsDPLoadTextureBlock(intro_seg7_texture_0700C4A0, G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 16, 0, G_TX_CLAMP, G_TX_CLAMP, 4, 4, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(intro_seg7_vertex_0700B460, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),

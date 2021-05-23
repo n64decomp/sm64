@@ -141,7 +141,7 @@ void print_displaying_credits_entry(void) {
                 print_credits_str_ascii(CREDIT_TEXT_X_LEFT, strY + 16, *currStrPtr++);
                 numLines = 3;
                 break;
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_US) //[BR] Adding in to US version
             case 6:
                 print_credits_str_ascii(CREDIT_TEXT_X_LEFT, strY + 32, *currStrPtr++);
                 numLines = 3;
@@ -2247,7 +2247,7 @@ static void end_peach_cutscene_dialog_1(struct MarioState *m) {
 #else
         case 290:
 #endif
-            set_cutscene_message(160, 227, 1, 60);
+            set_cutscene_message(160, 227, 1, 75); //[BR] Timing adjustment
 #ifndef VERSION_JP
             play_sound(SOUND_PEACH_POWER_OF_THE_STARS, sEndPeachObj->header.gfx.cameraToObject);
 #endif
@@ -2313,7 +2313,7 @@ static void end_peach_cutscene_dialog_2(struct MarioState *m) {
             break;
 
         case TIMER_SOMETHING_SPECIAL:
-            set_cutscene_message(160, 227, 4, 40);
+            set_cutscene_message(160, 227, 4, 60); //[BR] Timing adjustment
 #ifndef VERSION_JP
             play_sound(SOUND_PEACH_SOMETHING_SPECIAL, sEndPeachObj->header.gfx.cameraToObject);
 #endif
@@ -2444,14 +2444,14 @@ static void end_peach_cutscene_dialog_3(struct MarioState *m) {
             sEndToadAnims[0] = 0;
             sEndToadAnims[1] = 2;
             D_8032CBE8 = 1;
-            set_cutscene_message(160, 227, 5, 30);
+            set_cutscene_message(160, 227, 5, 25); //[BR] Timing adjustments
 #ifndef VERSION_JP
             play_sound(SOUND_PEACH_BAKE_A_CAKE, sEndPeachObj->header.gfx.cameraToObject);
 #endif
             break;
 
-        case 55:
-            set_cutscene_message(160, 227, 6, 40);
+        case 40:
+            set_cutscene_message(160, 227, 6, 55);
             break;
 
         case 130:

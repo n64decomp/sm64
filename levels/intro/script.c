@@ -59,7 +59,7 @@ const LevelScript level_intro_mario_head_regular[] = {
     SLEEP(/*frames*/ 2),
     BLACKOUT(/*active*/ FALSE),
     LOAD_AREA(/*area*/ 1),
-    SET_MENU_MUSIC(/*seq*/ 0x0002),
+    SET_MENU_MUSIC(/*seq*/ SEQ_MENU_TITLE_SCREEN),
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 20),
     CALL_LOOP(/*arg*/ 1, /*func*/ lvl_intro_update),

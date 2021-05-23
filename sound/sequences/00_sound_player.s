@@ -2073,6 +2073,7 @@ sound_ref .sound_mario_wah2
   sound_ref .sound_peach_mario2
 .endif
 
+# [BR] various Mario sounds had their pitch adjusted
 .sound_mario_jump_hoo:
 chan_setbank 8
 chan_setinstr 0
@@ -2083,8 +2084,8 @@ chan_end
 .ifdef VERSION_EU_SH
   layer_transpose 2
 .endif
-layer_portamento 0x82, 41, 127
-layer_note1 37, 0x14, 127
+#layer_portamento 0x82, 41, 127
+layer_note1 39, 0x14, 127
 layer_end
 
 .sound_mario_jump_wah:
@@ -2096,7 +2097,7 @@ chan_end
 .layer_C4C:
 layer_transpose -2
 .layer_C4E:
-layer_note1 38, 0x18, 127
+layer_note1 39, 0x18, 127
 layer_end
 
 .sound_mario_jump_yah:
@@ -2109,7 +2110,7 @@ chan_end
 layer_transpose -2
 .layer_C5C:
 layer_portamento 0x82, 39, 200
-layer_note1 38, 0x24, 120
+layer_note1 39, 0x24, 127
 layer_end
 
 .sound_mario_hoohoo:
@@ -2122,8 +2123,8 @@ chan_end
 .ifdef VERSION_EU_SH
   layer_transpose 1
 .endif
-layer_portamento 0x82, 44, 200
-layer_note1 39, 0x30, 127
+#layer_portamento 0x82, 39, 200
+layer_note1 39, 0x4e, 127
 layer_end
 
 .sound_mario_yahoo:
@@ -2136,8 +2137,8 @@ chan_end
 layer_transpose -2
 layer_somethingon
 layer_portamento 0x85, 39, 255
-layer_note1 42, 0x1e, 110
-layer_note1 39, 0x41, 110
+layer_note1 41, 0x1e, 127
+layer_note1 38, 0x41, 120
 layer_end
 
 .sound_mario_uh:
@@ -2149,7 +2150,7 @@ chan_end
 .layer_C92:
 layer_transpose -2
 layer_portamento 0x81, 41, 255
-layer_note1 38, 0x2b, 115
+layer_note1 39, 0x2b, 120
 layer_end
 
 .sound_mario_hrmm:
@@ -2160,7 +2161,7 @@ chan_end
 
 .layer_CA4:
 layer_transpose -2
-layer_note1 44, 0x1e, 110
+layer_note1 39, 0x1e, 110
 layer_end
 
 .sound_mario_wah2:
@@ -2181,8 +2182,7 @@ chan_setlayer 0, .layer_CC0
 chan_end
 
 .layer_CC0:
-layer_transpose -2
-layer_note1 40, 0x30, 110
+layer_note1 39, 0x38, 110
 layer_end
 
 .sound_mario_eeuh:
@@ -2192,8 +2192,7 @@ chan_setlayer 0, .layer_CCE
 chan_end
 
 .layer_CCE:
-layer_transpose -2
-layer_note1 40, 0x44, 105
+layer_note1 39, 0x60, 127
 layer_end
 
 .sound_mario_attacked:
@@ -2203,8 +2202,8 @@ chan_setlayer 0, .layer_CDC
 chan_end
 
 .layer_CDC:
-layer_transpose -2
-layer_note1 41, 0x30, 120
+layer_transpose -3
+layer_note1 42, 0x48, 127
 layer_end
 
 .sound_mario_ooof:
@@ -2214,8 +2213,8 @@ chan_setlayer 0, .layer_CEA
 chan_end
 
 .layer_CEA:
-layer_transpose -2
-layer_note1 38, 0x30, 127
+layer_transpose -4
+layer_note1 41, 0x48, 127
 layer_end
 
 .sound_mario_here_we_go:
@@ -2225,8 +2224,8 @@ chan_setlayer 0, .layer_CF8
 chan_end
 
 .layer_CF8:
-layer_portamento 0x81, 38, 200
-layer_note1 41, 0x85, 127
+#layer_portamento 0x81, 38, 200
+layer_note1 39, 0x85, 127
 layer_end
 
 .sound_mario_yawning:
@@ -2237,7 +2236,7 @@ chan_end
 
 .layer_D09:
 layer_transpose -2
-layer_note1 39, 0x7f, 105
+layer_note1 39, 0xa4, 105
 layer_end
 
 .sound_mario_snoring1:
@@ -2270,7 +2269,7 @@ chan_end
 
 .layer_D33:
 layer_transpose -2
-layer_note1 39, 0xaa, 127
+layer_note1 39, 0xd0, 127
 layer_end
 
 .sound_mario_haha:
@@ -2280,8 +2279,8 @@ chan_setlayer 0, .layer_D42
 chan_end
 
 .layer_D42:
-layer_transpose -1
-layer_note1 39, 0x4d, 120
+#layer_transpose -1
+layer_note1 39, 0x4d, 127
 layer_end
 
 .sound_mario_uh2:
@@ -2292,7 +2291,7 @@ chan_end
 
 .layer_D50:
 layer_transpose -2
-layer_note1 43, 0x1e, 105
+layer_note1 40, 0x1e, 110
 layer_end
 
 .sound_mario_on_fire:
@@ -2302,7 +2301,7 @@ chan_setlayer 0, .layer_D5E
 chan_end
 
 .layer_D5E:
-layer_transpose -2
+#layer_transpose -2
 layer_note1 39, 0xc8, 127
 layer_end
 
@@ -2313,8 +2312,8 @@ chan_setlayer 0, .layer_D6D
 chan_end
 
 .layer_D6D:
-layer_transpose -2
-layer_note1 39, 0x8c, 110
+layer_transpose 5
+layer_note1 34, 0xa4, 127
 layer_end
 
 .sound_mario_panting_cold:
@@ -2430,7 +2429,7 @@ chan_end
 .layer_E17:
 layer_transpose -2
 layer_portamento 0x81, 42, 255
-layer_note1 38, 0x30, 115
+layer_note1 39, 0x5f, 127
 layer_end
 
 .sound_mario_mama_mia:
@@ -2441,7 +2440,7 @@ chan_end
 
 .layer_E29:
 layer_portamento 0x81, 38, 255
-layer_note1 36, 0x8c, 115
+layer_note1 39, 0x8c, 115
 layer_end
 
 .sound_mario_okey_dokey:
@@ -2510,7 +2509,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_E88:
-  layer_note1 39, 0x5a, 97
+  layer_note1 39, 0x5a, 127
   layer_end
 
   .sound_mario_doh:
@@ -2520,7 +2519,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_E94:
-  layer_note1 41, 0x46, 127
+  layer_note1 39, 0x46, 127
   layer_end
 
   .sound_mario_game_over:
@@ -2560,7 +2559,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_EC5:
-  layer_note1 39, 0x30, 127
+  layer_note1 39, 0x50, 127
   layer_end
 
   .sound_mario_snoring3:
@@ -2594,7 +2593,7 @@ layer_jump .layer_C4E
   chan_end
 
   .layer_EF7:
-  layer_portamento 0x82, 42, 200
+  layer_portamento 0x82, 40, 200
   layer_note1 39, 0xc8, 110
   layer_end
 
