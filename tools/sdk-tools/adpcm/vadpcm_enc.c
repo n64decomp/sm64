@@ -56,7 +56,6 @@ int main(int argc, char **argv)
     ALADPCMloop *aloops;
     Marker *markers;
     CodeChunk cChunk;
-    char filename[1024];
     FILE *fhandle;
     FILE *ifile;
     FILE *ofile;
@@ -72,19 +71,17 @@ int main(int argc, char **argv)
         switch (c)
         {
         case 'c':
-            if (sscanf(optarg, "%s", filename) == 1)
+            if ((fhandle = fopen(optarg, "r")) == NULL)
             {
-                if ((fhandle = fopen(filename, "r")) == NULL)
-                {
-                    fprintf(stderr, "Codebook file %s could not be opened\n", filename);
-                    exit(1);
-                }
-                if (readcodebook(fhandle, &coefTable, &order, &npredictors) != 0)
-                {
-                    fprintf(stderr, "Error reading codebook\n");
-                    exit(1);
-                }
+                fprintf(stderr, "Codebook file %s could not be opened\n", optarg);
+                exit(1);
             }
+            if (readcodebook(fhandle, &coefTable, &order, &npredictors) != 0)
+            {
+                fprintf(stderr, "Error reading codebook\n");
+                exit(1);
+            }
+            fclose(fhandle);
             break;
 
         case 't':
