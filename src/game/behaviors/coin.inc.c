@@ -12,7 +12,7 @@ struct ObjectHitbox sYellowCoinHitbox = {
     /* hurtboxHeight: */ 0,
 };
 
-s16 D_8032F2A4[][2] = { { 0, -150 },  { 0, -50 },   { 0, 50 },   { 0, 150 },
+s16 sCoinArrowPositions[][2] = { { 0, -150 },  { 0, -50 },   { 0, 50 },   { 0, 150 },
                         { -50, 100 }, { -100, 50 }, { 50, 100 }, { 100, 50 } };
 
 s32 bhv_coin_sparkles_init(void) {
@@ -161,8 +161,8 @@ void spawn_coin_in_formation(s32 sp50, s32 sp54) {
             sp40[1] = sins(sp50 << 13) * 200.0f + 200.0f;
             break;
         case 4:
-            sp40[0] = D_8032F2A4[sp50][0];
-            sp40[2] = D_8032F2A4[sp50][1];
+            sp40[0] = sCoinArrowPositions[sp50][0];
+            sp40[2] = sCoinArrowPositions[sp50][1];
             break;
     }
     if (sp54 & 0x10)

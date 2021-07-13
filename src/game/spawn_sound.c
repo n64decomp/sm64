@@ -68,7 +68,7 @@ void cur_obj_play_sound_1(s32 soundMagic) {
 void cur_obj_play_sound_2(s32 soundMagic) {
     if (gCurrentObject->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
         play_sound(soundMagic, gCurrentObject->header.gfx.cameraToObject);
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
         if (soundMagic == SOUND_OBJ_BOWSER_WALK) {
             queue_rumble_data(3, 60);
         }

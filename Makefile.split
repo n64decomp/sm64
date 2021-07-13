@@ -161,8 +161,8 @@ endef
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),distclean)
 $(BUILD_DIR)/level_rules.mk: levels/level_rules.mk levels/level_defines.h
-	@$(PRINT) "$(GREEN)Preprocessing level make rules: $(BLUE)$@ $(NO_COL)\n"
-	@$(CPP) $(VERSION_CFLAGS) -I . -o $@ $<
+	$(call print,Preprocessing level make rules:,$<,$@)
+	$(V)$(CPP) $(CPPFLAGS) $(VERSION_CFLAGS) -I . -o $@ $<
 include $(BUILD_DIR)/level_rules.mk
 endif
 endif
@@ -179,11 +179,11 @@ $(eval $(call level_rules,menu,generic)) # Menu (File Select)
 
 # Ending cake textures are generated in a special way
 $(BUILD_DIR)/levels/ending/cake_eu.inc.c: levels/ending/cake_eu.png
-	@$(PRINT) "$(GREEN)Splitting $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
-	@$(SKYCONV) --type cake-eu --split $^ $(BUILD_DIR)/levels/ending
+	$(call print,Splitting:,$<,$@)
+	$(V)$(SKYCONV) --type cake-eu --split $^ $(BUILD_DIR)/levels/ending
 $(BUILD_DIR)/levels/ending/cake.inc.c: levels/ending/cake.png
-	@$(PRINT) "$(GREEN)Splitting $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
-	@$(SKYCONV) --type cake --split $^ $(BUILD_DIR)/levels/ending
+	$(call print,Splitting:,$<,$@)
+	$(V)$(SKYCONV) --type cake --split $^ $(BUILD_DIR)/levels/ending
 
 # --------------------------------------
 # Texture Bin Rules
@@ -250,8 +250,8 @@ $(BUILD_DIR)/bin/eu/translation_fr.elf:  SEGMENT_ADDRESS := 0x19000000
 # --------------------------------------
 
 $(BUILD_DIR)/bin/%_skybox.c: textures/skyboxes/%.png
-	@$(PRINT) "$(GREEN)Splitting $(YELLOW)$< $(GREEN)to:  $(BLUE)$@ $(NO_COL)\n"
-	@$(SKYCONV) --type sky --split $^ $(BUILD_DIR)/bin
+	$(call print,Splitting:,$<,$@)
+	$(V)$(SKYCONV) --type sky --split $^ $(BUILD_DIR)/bin
 
 $(BUILD_DIR)/bin/%_skybox.elf: SEGMENT_ADDRESS := 0x0A000000
 

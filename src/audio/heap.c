@@ -206,8 +206,6 @@ void discard_bank(s32 bankId) {
 
 #if defined(VERSION_EU)
         if (note->noteSubEu.bankId == bankId) {
-#elif defined(VERSION_SH)
-        if (note->unkSH33 == bankId) {
 #else
         if (note->bankId == bankId) {
 #endif
@@ -384,7 +382,7 @@ void temporary_pools_init(struct PoolSplit *a) {
 #undef SOUND_ALLOC_FUNC
 
 #if defined(VERSION_JP) || defined(VERSION_US)
-static void unused_803163D4(void) {
+UNUSED static void unused_803163D4(void) {
 }
 #endif
 
@@ -512,7 +510,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
         if (poolIdx == 1) {
             if (firstVal == SOUND_LOAD_STATUS_4) {
                 for (i = 0; i < gMaxSimultaneousNotes; i++) {
-                    if (gNotes[i].unkSH33 == tp->entries[0].id && gNotes[i].noteSubEu.enabled) {
+                    if (gNotes[i].bankId == tp->entries[0].id && gNotes[i].noteSubEu.enabled) {
                         break;
                     }
                 }
@@ -525,7 +523,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
             }
             if (secondVal == SOUND_LOAD_STATUS_4) {
                 for (i = 0; i < gMaxSimultaneousNotes; i++) {
-                    if (gNotes[i].unkSH33 == tp->entries[1].id && gNotes[i].noteSubEu.enabled) {
+                    if (gNotes[i].bankId == tp->entries[1].id && gNotes[i].noteSubEu.enabled) {
                         break;
                     }
                 }
@@ -591,7 +589,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
                 } else if (poolIdx == 1) {
                     if (firstVal == SOUND_LOAD_STATUS_COMPLETE) {
                         for (i = 0; i < gMaxSimultaneousNotes; i++) {
-                            if (gNotes[i].unkSH33 == tp->entries[0].id && gNotes[i].noteSubEu.enabled) {
+                            if (gNotes[i].bankId == tp->entries[0].id && gNotes[i].noteSubEu.enabled) {
                                 break;
                             }
                         }
@@ -602,7 +600,7 @@ void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg
                     }
                     if (secondVal == SOUND_LOAD_STATUS_COMPLETE) {
                         for (i = 0; i < gMaxSimultaneousNotes; i++) {
-                            if (gNotes[i].unkSH33 == tp->entries[1].id && gNotes[i].noteSubEu.enabled) {
+                            if (gNotes[i].bankId == tp->entries[1].id && gNotes[i].noteSubEu.enabled) {
                                 break;
                             }
                         }
@@ -1681,7 +1679,7 @@ void func_sh_802f23ec(void) {
     s32 i;
     s32 idx;
     s32 seqCount;
-    u32 bankId1; // non symmetric fake match? can also change 0xff to 0xffU for same effect
+    s32 bankId1;
     s32 bankId2;
     s32 instId;
     s32 drumId;
@@ -1694,7 +1692,7 @@ void func_sh_802f23ec(void) {
     for (idx = 0; idx < seqCount; idx++) {
         bankId1 = gCtlEntries[idx].bankId1;
         bankId2 = gCtlEntries[idx].bankId2;
-        if ((bankId1 != 0xff && entry->bankId == bankId1) || (bankId2 != 0xff && entry->bankId == bankId2) || entry->bankId == 0) {
+        if ((bankId1 != 0xffu && entry->bankId == bankId1) || (bankId2 != 0xff && entry->bankId == bankId2) || entry->bankId == 0) {
             if (get_bank_or_seq(1, 3, idx) != NULL) {
                 if (IS_BANK_LOAD_COMPLETE(idx) != FALSE) {
                     for (i = 0; i < gUnkPool2.numEntries; i++) {

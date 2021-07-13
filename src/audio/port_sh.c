@@ -1,4 +1,5 @@
 #ifdef VERSION_SH
+// TODO: merge this with port_eu.c?
 
 #include <ultra64.h>
 
@@ -7,6 +8,7 @@
 #include "load.h"
 #include "synthesis.h"
 #include "internal.h"
+#include "seqplayer.h"
 
 #define EXTRA_BUFFERED_AI_SAMPLES_TARGET 0x80
 #define SAMPLES_TO_OVERPRODUCE 0x10
@@ -15,12 +17,13 @@ extern s32 D_SH_80314FC8;
 extern struct SPTask *D_SH_80314FCC;
 extern u8 D_SH_80315098;
 extern u8 D_SH_8031509C;
+extern OSMesgQueue *D_SH_80350F68;
 
-void func_sh_802f62e0(s32 playerIndex, s32 numFrames);
-void func_sh_802f6288(s32 arg0, s32 numFrames);
-void func_sh_802f6554(u32 arg0);
+void func_8031D690(s32 playerIndex, s32 numFrames);
+void seq_player_fade_to_zero_volume(s32 arg0, s32 numFrames);
+void func_802ad7ec(u32 arg0);
 
-struct SPTask *func_sh_802f5a80(void) {
+struct SPTask *create_next_audio_frame_task(void) {
     u32 samplesRemainingInAI;
     s32 writtenCmds;
     s32 index;
@@ -59,7 +62,7 @@ struct SPTask *func_sh_802f5a80(void) {
     gCurrAudioFrameDmaCount = 0;
 
     decrease_sample_dma_ttls();
-    func_802f41e4(gAudioResetStatus);
+    func_sh_802f41e4(gAudioResetStatus);
     if (osRecvMesg(D_SH_80350F88, (OSMesg *) &sp38, OS_MESG_NOBLOCK) != -1) {
         if (gAudioResetStatus == 0) {
             gAudioResetStatus = 5;
@@ -99,7 +102,7 @@ struct SPTask *func_sh_802f5a80(void) {
 
     if (osRecvMesg(D_SH_80350F68, (OSMesg *) &sp34, 0) != -1) {
         do {
-            func_sh_802f6554(sp34);
+            func_802ad7ec(sp34);
         } while (osRecvMesg(D_SH_80350F68, (OSMesg *) &sp34, 0) != -1);
     }
 
@@ -143,7 +146,7 @@ struct SPTask *func_sh_802f5a80(void) {
     }
 }
 
-void func_sh_802f5fb8(struct EuAudioCmd *cmd) {
+void eu_process_audio_cmd(struct EuAudioCmd *cmd) {
     s32 i;
     struct Note *note;
     struct NoteSubEu *sub;
@@ -155,8 +158,8 @@ void func_sh_802f5fb8(struct EuAudioCmd *cmd) {
 
     case 0x82:
     case 0x88:
-        func_sh_802F3410(cmd->u.s.arg1, cmd->u.s.arg2, cmd->u.s.arg3);
-        func_sh_802f62e0(cmd->u.s.arg1, cmd->u2.as_s32);
+        load_sequence(cmd->u.s.arg1, cmd->u.s.arg2, cmd->u.s.arg3);
+        func_8031D690(cmd->u.s.arg1, cmd->u2.as_s32);
         break;
 
     case 0x83:
@@ -165,7 +168,7 @@ void func_sh_802f5fb8(struct EuAudioCmd *cmd) {
                 sequence_player_disable(&gSequencePlayers[cmd->u.s.arg1]);
             }
             else {
-                func_sh_802f6288(cmd->u.s.arg1, cmd->u2.as_s32);
+                seq_player_fade_to_zero_volume(cmd->u.s.arg1, cmd->u2.as_s32);
             }
         }
         break;
@@ -220,32 +223,32 @@ void func_sh_802f5fb8(struct EuAudioCmd *cmd) {
     }
 }
 
-void func_sh_802f6288(s32 arg0, s32 numFrames) {
+void seq_player_fade_to_zero_volume(s32 arg0, s32 fadeOutTime) {
     struct SequencePlayer *player;
 
-    if (numFrames == 0) {
-        numFrames = 1;
+    if (fadeOutTime == 0) {
+        fadeOutTime = 1;
     }
     player = &gSequencePlayers[arg0];
     player->state = 2;
-    player->fadeRemainingFrames = numFrames;
-    player->fadeVelocity = -(player->fadeVolume / (f32) numFrames);
+    player->fadeRemainingFrames = fadeOutTime;
+    player->fadeVelocity = -(player->fadeVolume / (f32) fadeOutTime);
 }
 
-void func_sh_802f62e0(s32 playerIndex, s32 numFrames) {
+void func_8031D690(s32 playerIndex, s32 fadeInTime) {
     struct SequencePlayer *player;
 
-    if (numFrames != 0) {
+    if (fadeInTime != 0) {
         player = &gSequencePlayers[playerIndex];
         player->state = 1;
-        player->fadeTimerUnkEu = numFrames;
-        player->fadeRemainingFrames = numFrames;
+        player->fadeTimerUnkEu = fadeInTime;
+        player->fadeRemainingFrames = fadeInTime;
         player->fadeVolume = 0.0f;
         player->fadeVelocity = 0.0f;
     }
 }
 
-void func_sh_802f6330(void) {
+void port_eu_init_queues(void) {
     D_SH_80350F18 = 0;
     D_SH_80350F19 = 0;
     D_SH_80350F38 = &D_SH_80350F20;
@@ -258,8 +261,8 @@ void func_sh_802f6330(void) {
     osCreateMesgQueue(D_SH_80350FA8, D_SH_80350F8C, 1);
 }
 
-extern struct EuAudioCmd sAudioCmd[0x100]; // sAudioCmd, maybe?
-void func_802ad6f0(s32 arg0, s32 *arg1) { // func_sh_802f63f8
+extern struct EuAudioCmd sAudioCmd[0x100];
+void func_802ad6f0(s32 arg0, s32 *arg1) {
     struct EuAudioCmd *cmd = &sAudioCmd[D_SH_80350F18 & 0xff];
     cmd->u.first = arg0;
     cmd->u2.as_u32 = *arg1;
@@ -269,34 +272,30 @@ void func_802ad6f0(s32 arg0, s32 *arg1) { // func_sh_802f63f8
     }
 }
 
-void func_802ad728(u32 arg0, f32 arg1) { // func_sh_802f6450
+void func_802ad728(u32 arg0, f32 arg1) {
     func_802ad6f0(arg0, (s32 *) &arg1);
 }
 
-void func_802ad74c(u32 arg0, u32 arg1) { // func_sh_802f6474
+void func_802ad74c(u32 arg0, u32 arg1) {
     func_802ad6f0(arg0, (s32 *) &arg1);
 }
 
-void func_802ad770(u32 arg0, s8 arg1) { // func_sh_802f6498
+void func_802ad770(u32 arg0, s8 arg1) {
     s32 sp1C = arg1 << 24;
     func_802ad6f0(arg0, &sp1C);
 }
 
 char shindouDebugPrint133[] = "AudioSend: %d -> %d (%d)\n";
 
-extern OSMesgQueue *D_SH_80350F68;
 void func_sh_802F64C8(void) {
     static s32 D_SH_8031503C = 0;
-    s32 a0 = (D_SH_80350F18 - D_SH_80350F19 + 0x100) & 0xff;
-    s32 a1;
+    s32 mesg;
 
-    if (D_SH_8031503C < a0) {
-        D_SH_8031503C = a0;
+    if (((D_SH_80350F18 - D_SH_80350F19 + 0x100) & 0xff) > D_SH_8031503C) {
+        D_SH_8031503C = (D_SH_80350F18 - D_SH_80350F19 + 0x100) & 0xff;
     }
-    a0 = ((D_SH_80350F19 & 0xff) << 8) | (D_SH_80350F18 & 0xFF);
-    a1 = a0;
-    a0 = D_SH_80350F68;
-    osSendMesg(a0, a1, 0);
+    mesg = ((D_SH_80350F19 & 0xff) << 8) | (D_SH_80350F18 & 0xff);
+    osSendMesg(D_SH_80350F68, (OSMesg)mesg, OS_MESG_NOBLOCK);
     D_SH_80350F19 = D_SH_80350F18;
 }
 
@@ -304,16 +303,16 @@ void func_sh_802f6540(void) {
     D_SH_80350F19 = D_SH_80350F18;
 }
 
-void func_sh_802f6554(u32 arg0) {
+void func_802ad7ec(u32 arg0) {
     struct EuAudioCmd *cmd;
     struct SequencePlayer *seqPlayer;
     struct SequenceChannel *chan;
-    u8 a0;
+    u8 end;
 
-    static char shindouDebugPrint134[] = "Continue Port\n";
-    static char shindouDebugPrint135[] = "%d -> %d\n";
-    static char shindouDebugPrint136[] = "Sync-Frame  Break. (Remain %d)\n";
-    static char shindouDebugPrint137[] = "Undefined Port Command %d\n";
+    UNUSED static char shindouDebugPrint134[] = "Continue Port\n";
+    UNUSED static char shindouDebugPrint135[] = "%d -> %d\n";
+    UNUSED static char shindouDebugPrint136[] = "Sync-Frame  Break. (Remain %d)\n";
+    UNUSED static char shindouDebugPrint137[] = "Undefined Port Command %d\n";
 
     static u8 D_SH_80315098 = 0;
     static u8 D_SH_8031509C = 0;
@@ -322,10 +321,10 @@ void func_sh_802f6554(u32 arg0) {
         D_SH_80315098 = (arg0 >> 8) & 0xff;
     }
 
-    a0 = arg0 & 0xff;
+    end = arg0 & 0xff;
 
     for (;;) {
-        if (D_SH_80315098 == a0) {
+        if (D_SH_80315098 == end) {
             D_SH_8031509C = 0;
             break;
         }
@@ -336,12 +335,12 @@ void func_sh_802f6554(u32 arg0) {
             break;
         }
         else if ((cmd->u.s.op & 0xf0) == 0xf0) {
-            func_sh_802f5fb8(cmd);
+            eu_process_audio_cmd(cmd);
         }
         else if (cmd->u.s.arg1 < SEQUENCE_PLAYERS) {
             seqPlayer = &gSequencePlayers[cmd->u.s.arg1];
             if ((cmd->u.s.op & 0x80) != 0) {
-                func_sh_802f5fb8(cmd);
+                eu_process_audio_cmd(cmd);
             }
             else if ((cmd->u.s.op & 0x40) != 0) {
                 switch (cmd->u.s.op) {
@@ -399,8 +398,9 @@ void func_sh_802f6554(u32 arg0) {
                         }
                         break;
                     case 5:
-                        if (chan->reverb != cmd->u2.as_s8) {
-                            chan->reverb = cmd->u2.as_s8;
+                        //! @bug u8 s8 comparison (but harmless)
+                        if (chan->reverbVol != cmd->u2.as_s8) {
+                            chan->reverbVol = cmd->u2.as_s8;
                         }
                         break;
                     case 6:
@@ -489,9 +489,8 @@ s8 func_sh_802f6a6c(s32 playerIndex, s32 index) {
     return gSequencePlayers[playerIndex].seqVariationEu[index];
 }
 
-void func_sh_802f6a9c(void) {
-    // creates a bunch of os message queues
-    func_sh_802f6330();
+void port_eu_init(void) {
+    port_eu_init_queues();
 }
 
 char shindouDebugPrint138[] = "specchg conjunction error (Msg:%d Cur:%d)\n";
@@ -525,9 +524,13 @@ char shindouDebugPrint164[] = "Audio: C-Alloc : lowerPrio is NULL\n";
 char shindouDebugPrint165[] = "Intterupt UseStop %d (Kill %d)\n";
 char shindouDebugPrint166[] = "Intterupt RelWait %d (Kill %d)\n";
 char shindouDebugPrint167[] = "Drop Voice (Prio %x)\n";
-s32 D_SH_803154CC = 0; // Either an unused variable or a file boundary.
+s32 D_SH_803154CC = 0; // file boundary
+
+// effects.c
 char shindouDebugPrint168[] = "Audio:Envp: overflow  %f\n";
-s32 D_SH_803154EC = 0; // Either an unused variable or a file boundary.
+s32 D_SH_803154EC = 0; // file boundary
+
+// seqplayer.c
 char shindouDebugPrint169[] = "Audio:Track:Warning: No Free Notetrack\n";
 char shindouDebugPrint170[] = "SUBTRACK DIM\n";
 char shindouDebugPrint171[] = "Audio:Track: Warning :SUBTRACK had been stolen by other Group.\n";

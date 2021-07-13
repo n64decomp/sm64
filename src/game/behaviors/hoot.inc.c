@@ -225,7 +225,7 @@ void hoot_turn_to_home(void) {
 }
 
 void hoot_awake_loop(void) {
-    if (o->oInteractStatus == INT_STATUS_HOOT_GRABBED_BY_MARIO) {
+    if (o->oInteractStatus == TRUE) { //! Note: Not a flag, treated as a TRUE/FALSE statement
         hoot_action_loop();
         cur_obj_init_animation(1);
     } else {
@@ -254,8 +254,9 @@ void bhv_hoot_loop(void) {
         case HOOT_AVAIL_WANTS_TO_TALK:
             hoot_awake_loop();
 
-            if (set_mario_npc_dialog(2) == 2 && cutscene_object_with_dialog(CUTSCENE_DIALOG, o, DIALOG_044)) {
-                set_mario_npc_dialog(0);
+            if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK 
+                && cutscene_object_with_dialog(CUTSCENE_DIALOG, o, DIALOG_044)) {
+                set_mario_npc_dialog(MARIO_DIALOG_STOP);
 
                 cur_obj_become_tangible();
 

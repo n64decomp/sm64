@@ -62,7 +62,7 @@ def main():
         structdef.append("u8 " + item["name"] + "[" + str(len(demobytes)) + "];")
         structobj.append("{" + ",".join(hex(x) for x in demobytes) + "},")
 
-    print("#include \"types.h\"")
+    print("#include \"game/memory.h\"")
     print("#include <stddef.h>")
     print("")
 

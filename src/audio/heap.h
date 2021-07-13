@@ -131,12 +131,14 @@ void audio_reset_session(void);
 #else
 void audio_reset_session(struct AudioSessionSettings *preset);
 #endif
+void discard_bank(s32 bankId);
 
 #ifdef VERSION_SH
 void fill_filter(s16 filter[8], s32 arg1, s32 arg2);
 u8 *func_sh_802f1d40(u32 size, s32 bank, u8 *arg2, s8 medium);
 u8 *func_sh_802f1d90(u32 size, s32 bank, u8 *arg2, s8 medium);
 void *unk_pool1_lookup(s32 poolIdx, s32 id);
+void *unk_pool1_alloc(s32 poolIndex, s32 arg1, u32 size);
 #endif
 
 #endif // AUDIO_HEAP_H

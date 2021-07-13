@@ -59,7 +59,7 @@
 #define INPUT_A_DOWN                 0x0080
 #define INPUT_IN_POISON_GAS          0x0100
 #define INPUT_IN_WATER               0x0200
-#define INPUT_UNKNOWN_10             0x0400
+#define INPUT_STOMPED                0x0400
 #define INPUT_INTERACT_OBJ_GRABBABLE 0x0800
 #define INPUT_UNKNOWN_12             0x1000
 #define INPUT_B_PRESSED              0x2000

@@ -41,6 +41,11 @@
 
 #define TATUMS_PER_BEAT 48
 
+// abi.h contains more details about the ADPCM and S8 codecs, "skip" skips codec processing
+#define CODEC_ADPCM 0
+#define CODEC_S8 1
+#define CODEC_SKIP 2
+
 #ifdef VERSION_JP
 #define TEMPO_SCALE 1
 #else
@@ -373,8 +378,8 @@ union ReverbBits {
     /* 0x00 */ u8 asByte;
 };
 struct ReverbInfo {
-    u8 reverb;
-    u8 bankId;
+    u8 reverbVol;
+    u8 synthesisVolume; // UQ4.4, although 0 <= x < 1 is rounded up to 1
     u8 pan;
     union ReverbBits reverbBits;
     f32 freqScale;
@@ -385,9 +390,9 @@ struct ReverbInfo {
 
 struct NoteAttributes
 {
-    u8 reverb;
+    u8 reverbVol;
 #ifdef VERSION_SH
-    u8 unk1;
+    u8 synthesisVolume; // UQ4.4, although 0 <= x < 1 is rounded up to 1
 #endif
 #if defined(VERSION_EU) || defined(VERSION_SH)
     u8 pan;
@@ -430,7 +435,7 @@ struct SequenceChannel
 #endif
     /*0x01, 0x02*/ u8 noteAllocPolicy;
     /*0x02, 0x03, 0x03*/ u8 muteBehavior;
-    /*0x03, 0x04, 0x04*/ u8 reverb; // or dry/wet mix
+    /*0x03, 0x04, 0x04*/ u8 reverbVol; // until EU: Q1.7, after EU: UQ0.8
     /*0x04, ????*/ u8 notePriority; // 0-3
 #ifdef VERSION_SH
                    u8 unkSH06; // some priority
@@ -445,7 +450,7 @@ struct SequenceChannel
     /*0x06,     */ u8 updatesPerFrameUnused;
 #endif
 #ifdef VERSION_SH
-    /*            0x0C*/ u8 unkSH0C; // bankId
+    /*            0x0C*/ u8 synthesisVolume; // UQ4.4, although 0 <= x < 1 is rounded up to 1
 #endif
     /*0x08, 0x0C, 0x0E*/ u16 vibratoRateStart; // initially 0x800
     /*0x0A, 0x0E, 0x10*/ u16 vibratoExtentStart;
@@ -521,7 +526,7 @@ struct SequenceChannelLayer
     // 0..0x3f; this makes 0x40..0x7f accessible as well)
     /*0x20, 0x24, 0x24*/ f32 freqScale;
 #ifdef VERSION_SH
-    /*            0x28*/ f32 unkSH28;
+    /*            0x28*/ f32 freqScaleMultiplier;
 #endif
     /*0x24, 0x28, 0x2C*/ f32 velocitySquare;
 #if defined(VERSION_JP) || defined(VERSION_US)
@@ -562,8 +567,8 @@ struct NoteSynthesisState
     /*0x04, 0x06*/ u16 samplePosFrac;
     /*0x08*/ s32 samplePosInt;
     /*0x0C*/ struct NoteSynthesisBuffers *synthesisBuffers;
-    /*0x10*/ s16 curVolLeft;
-    /*0x12*/ s16 curVolRight;
+    /*0x10*/ s16 curVolLeft; // UQ0.16 (EU Q1.15)
+    /*0x12*/ s16 curVolRight; // UQ0.16 (EU Q1.15)
 };
 struct NotePlaybackState
 {
@@ -572,7 +577,7 @@ struct NotePlaybackState
     /*      0x01, 0x01*/ u8 waveId;
     /*      0x02, 0x02*/ u8 sampleCountIndex;
 #ifdef VERSION_SH
-    /*            0x03*/ u8 unkSH33; // bankId?
+    /*            0x03*/ u8 bankId;
     /*            0x04*/ u8 unkSH34;
 #endif
     /*0x08, 0x04, 0x06*/ s16 adsrVolScale;
@@ -600,12 +605,16 @@ struct NoteSubEu
     /*0x01*/ u8 bookOffset : 3;
     /*0x01*/ u8 isSyntheticWave : 1;
     /*0x01*/ u8 hasTwoAdpcmParts : 1;
+#ifdef VERSION_EU
     /*0x02*/ u8 bankId;
+#else
+    /*0x02*/ u8 synthesisVolume; // UQ4.4, although 0 <= x < 1 is rounded up to 1
+#endif
     /*0x03*/ u8 headsetPanRight;
     /*0x04*/ u8 headsetPanLeft;
-    /*0x05*/ u8 reverbVol;
-    /*0x06*/ u16 targetVolLeft;
-    /*0x08*/ u16 targetVolRight;
+    /*0x05*/ u8 reverbVol; // UQ0.7 (EU Q1.7)
+    /*0x06*/ u16 targetVolLeft; // UQ0.12 (EU UQ0.10)
+    /*0x08*/ u16 targetVolRight; // UQ0.12 (EU UQ0.10)
     /*0x0A*/ u16 resamplingRateFixedPoint; // stored as signed but loaded as u16
     /*0x0C*/ union {
         s16 *samples;
@@ -633,7 +642,7 @@ struct Note
     /*      0x31, 0x31*/ u8 waveId;
     /*      0x32, 0x32*/ u8 sampleCountIndex;
 #ifdef VERSION_SH
-    /*            0x33*/ u8 unkSH33; // bankId?
+    /*            0x33*/ u8 bankId;
     /*            0x34*/ u8 unkSH34;
 #endif
     /*0x08, 0x34, 0x36*/ s16 adsrVolScale;
@@ -691,17 +700,17 @@ struct Note
     /*0x30, 0x48*/ struct SequenceChannelLayer *wantedParentLayer;
     /*0x34*/ struct NoteSynthesisBuffers *synthesisBuffers;
     /*0x38*/ f32 frequency;
-    /*0x3C*/ u16 targetVolLeft;
-    /*0x3E*/ u16 targetVolRight;
-    /*0x40*/ u8 reverb;
+    /*0x3C*/ u16 targetVolLeft; // Q1.15, but will always be non-negative
+    /*0x3E*/ u16 targetVolRight; // Q1.15, but will always be non-negative
+    /*0x40*/ u8 reverbVol; // Q1.7
     /*0x41*/ u8 unused1; // never read, set to 0x3f
     /*0x44*/ struct NoteAttributes attributes;
     /*0x54, 0x58*/ struct AdsrState adsr;
     /*0x74, 0x7C*/ struct Portamento portamento;
     /*0x84, 0x8C*/ struct VibratoState vibratoState;
-    /*0x9C*/ s16 curVolLeft;
-    /*0x9E*/ s16 curVolRight;
-    /*0xA0*/ s16 reverbVol;
+    /*0x9C*/ s16 curVolLeft; // Q1.15, but will always be non-negative
+    /*0x9E*/ s16 curVolRight; // Q1.15, but will always be non-negative
+    /*0xA0*/ s16 reverbVolShifted; // Q1.15
     /*0xA2*/ s16 unused2; // never read, set to 0
     /*0xA4, 0x00*/ struct AudioListItem listItem;
     /*          */ u8 pad2[0xc];

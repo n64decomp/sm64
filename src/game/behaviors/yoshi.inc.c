@@ -76,7 +76,7 @@ void yoshi_idle_loop(void) {
 void yoshi_talk_loop(void) {
     if ((s16) o->oMoveAngleYaw == (s16) o->oAngleToMario) {
         cur_obj_init_animation(0);
-        if (set_mario_npc_dialog(1) == 2) {
+        if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_FRONT) == MARIO_DIALOG_STATUS_SPEAK) {
             o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
             if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, DIALOG_161)) {
                 o->activeFlags &= ~ACTIVE_FLAG_INITIATED_TIME_STOP;
@@ -123,7 +123,7 @@ void yoshi_finish_jumping_and_despawn_loop(void) {
     obj_move_xyz_using_fvel_and_yaw(o);
     o->oVelY -= 2.0;
     if (o->oPosY < 2100.0f) {
-        set_mario_npc_dialog(0);
+        set_mario_npc_dialog(MARIO_DIALOG_STOP);
         gObjCutsceneDone = TRUE;
         sYoshiDead = TRUE;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;

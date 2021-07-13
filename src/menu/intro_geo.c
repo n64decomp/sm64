@@ -348,7 +348,7 @@ u16 *intro_sample_frame_buffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH)
     s32 xOffset = 120;
     s32 yOffset = 80;
 
-    fb = sFrameBuffers[frameBufferIndex];
+    fb = sFrameBuffers[sRenderingFrameBuffer];
     image = alloc_display_list(imageW * imageH * sizeof(u16));
 
     if (image == NULL) {
@@ -439,6 +439,10 @@ Gfx *geo_intro_rumble_pak_graphic(s32 state, struct GraphNode *node, UNUSED void
     Gfx *dl;
     s32 introContext;
     s8 backgroundTileSix;
+#ifdef AVOID_UB
+    dl = NULL;
+    backgroundTileSix = 0;
+#endif
 
     if (state != 1) {
         dl = NULL;

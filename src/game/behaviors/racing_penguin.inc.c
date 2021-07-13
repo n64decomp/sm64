@@ -27,7 +27,7 @@ static void racing_penguin_act_wait_for_mario(void) {
 static void racing_penguin_act_show_init_text(void) {
     s32 response = obj_update_race_proposition_dialog(sRacingPenguinData[o->oBehParams2ndByte].text);
 
-    if (response == 1) {
+    if (response == DIALOG_RESPONSE_YES) {
         struct Object *child;
 
         child = cur_obj_nearest_object_with_behavior(bhvPenguinRaceFinishLine);
@@ -42,7 +42,7 @@ static void racing_penguin_act_show_init_text(void) {
 
         o->oAction = RACING_PENGUIN_ACT_PREPARE_FOR_RACE;
         o->oVelY = 60.0f;
-    } else if (response == 2) {
+    } else if (response == DIALOG_RESPONSE_NO) {
         o->oAction = RACING_PENGUIN_ACT_WAIT_FOR_MARIO;
         o->oRacingPenguinInitTextCooldown = 60;
     }
@@ -143,7 +143,8 @@ static void racing_penguin_act_show_final_text(void) {
             o->oForwardVel = 4.0f;
         }
     } else if (o->oRacingPenguinFinalTextbox > 0) {
-        if ((textResult = cur_obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, o->oRacingPenguinFinalTextbox)) != 0) {
+        if ((textResult = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+            DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, o->oRacingPenguinFinalTextbox))) {
             o->oRacingPenguinFinalTextbox = -1;
             o->oTimer = 0;
         }

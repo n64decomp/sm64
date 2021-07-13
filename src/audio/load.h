@@ -89,18 +89,25 @@ void patch_audio_bank(s32 bankId, struct AudioBank *mem, struct PatchStruct *pat
 #else
 void patch_audio_bank(struct AudioBank *mem, u8 *offset, u32 numInstruments, u32 numDrums);
 #endif
-#ifndef VERSION_SH
+#ifdef VERSION_SH
+void preload_sequence(u32 seqId, s32 preloadMask);
+#else
 void preload_sequence(u32 seqId, u8 preloadMask);
 #endif
 void load_sequence(u32 player, u32 seqId, s32 loadAsync);
 
 #ifdef VERSION_SH
-void func_sh_802f3158(s32 index, s32 arg1, s32 arg2, OSMesgQueue *retQueue);
-u8 *func_sh_802f3220(u32 index, u32 *a1);
+void func_sh_802f3158(s32 seqId, s32 arg1, s32 arg2, OSMesgQueue *retQueue);
+u8 *func_sh_802f3220(u32 seqId, u32 *a1);
 struct AudioBankSample *func_sh_802f4978(s32 bankId, s32 idx);
-void *func_802f3f08(s32 poolIdx, s32 arg1, s32 arg2, s32 arg3, OSMesgQueue *retQueue);
-s32 func_sh_802f3368(s32 arg0);
+s32 func_sh_802f47c8(s32 bankId, u8 idx, s8 *io);
+void *func_sh_802f3f08(s32 poolIdx, s32 arg1, s32 arg2, s32 arg3, OSMesgQueue *retQueue);
+void func_sh_802f41e4(s32 audioResetStatus);
+BAD_RETURN(s32) func_sh_802f3368(s32 bankId);
 void *func_sh_802f3764(s32 arg0, s32 idx, s32 *arg2);
+s32 func_sh_802f3024(s32 bankId, s32 instId, s32 arg2);
+void func_sh_802f30f4(s32 arg0, s32 arg1, s32 arg2, OSMesgQueue *arg3);
+void func_sh_802f3288(s32 idx);
 
 #endif
 

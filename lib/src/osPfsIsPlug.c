@@ -1,8 +1,7 @@
 #include "PR/os_pi.h"
+#include "libultra_internal.h"
 #include "controller.h"
-//#include "siint.h"
 
-#ifdef VERSION_SH
 OSPifRam __osPfsPifRam;
 
 s32 osPfsIsPlug(OSMesgQueue *queue, u8 *pattern) {
@@ -94,4 +93,3 @@ void __osPfsGetInitData(u8 *pattern, OSContStatus *data) {
     }
     *pattern = bits;
 }
-#endif

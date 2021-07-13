@@ -55,6 +55,11 @@ ALIGNED8 static const Texture king_bobomb_seg5_texture_05004878[] = {
 #include "actors/king_bobomb/king_bob-omb_eyes.rgba16.inc.c"
 };
 
+// 0x05005078 - Unused
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05005078[] = {
+#include "actors/king_bobomb/king_bob-omb_eyes_blink.rgba16.inc.c"
+};
+
 // 0x05005878
 ALIGNED8 static const Texture king_bobomb_seg5_texture_05005878[] = {
 #include "actors/king_bobomb/king_bob-omb_hand.rgba16.inc.c"

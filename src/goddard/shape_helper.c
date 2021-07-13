@@ -35,24 +35,24 @@ static struct GdAnimTransform unusedAnimData1[] = {
     { {1.0, 1.0, 1.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0} },
 };
 
-static struct AnimDataInfo unusedAnim1 = { ARRAY_COUNT(unusedAnimData1), GD_ANIM_SCALE3F_ROT3F_POS3F_2, unusedAnimData1 };
+UNUSED static struct AnimDataInfo unusedAnim1 = { ARRAY_COUNT(unusedAnimData1), GD_ANIM_SCALE3F_ROT3F_POS3F_2, unusedAnimData1 };
 
 static struct GdAnimTransform unusedAnimData2[] = {
     { {1.0, 1.0, 1.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0} },
 };
 
-static struct AnimDataInfo unusedAnim2 = { ARRAY_COUNT(unusedAnimData2), GD_ANIM_SCALE3F_ROT3F_POS3F_2, unusedAnimData2 };
+UNUSED static struct AnimDataInfo unusedAnim2 = { ARRAY_COUNT(unusedAnimData2), GD_ANIM_SCALE3F_ROT3F_POS3F_2, unusedAnimData2 };
 
 static struct GdAnimTransform unusedAnimData3[] = {
     { {1.0, 1.0, 1.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0} },
 };
 
-static struct AnimDataInfo unusedAnim3 = { ARRAY_COUNT(unusedAnimData3), GD_ANIM_SCALE3F_ROT3F_POS3F_2, unusedAnimData3 };
+UNUSED static struct AnimDataInfo unusedAnim3 = { ARRAY_COUNT(unusedAnimData3), GD_ANIM_SCALE3F_ROT3F_POS3F_2, unusedAnimData3 };
 
-static s32 sUnref801A838C[6] = { 0 };
+UNUSED static s32 sUnref801A838C[6] = { 0 };
 struct ObjShape *sSimpleShape = NULL;
-static s32 sUnref801A83A8[31] = { 0 };
-static struct DynList sSimpleDylist[8] = {  // unused
+UNUSED static s32 sUnref801A83A8[31] = { 0 };
+UNUSED static struct DynList sSimpleDylist[8] = {  // unused
     BeginList(),
     StartGroup("simpleg"),
     MakeDynObj(D_NET, "simple"),
@@ -67,17 +67,17 @@ static struct DynList sDynlist801A84E4[3] = {
     SetFlag(0x1800),
     EndList(),
 };
-static struct DynList sDynlist801A85B3[5] = {
+UNUSED static struct DynList sDynlist801A85B3[5] = {
     BeginList(), CallList(sDynlist801A84E4), SetFlag(0x400), SetFriction(0.04, 0.01, 0.01),
     EndList(),
 };
-static struct DynList sDynlist801A85A4[4] = {
+UNUSED static struct DynList sDynlist801A85A4[4] = {
     BeginList(),
     CallList(sDynlist801A84E4),
     SetFriction(0.04, 0.01, 0.01),
     EndList(),
 };
-static struct DynList sDynlist801A8604[4] = {
+UNUSED static struct DynList sDynlist801A8604[4] = {
     BeginList(),
     CallList(sDynlist801A84E4),
     SetFriction(0.005, 0.005, 0.005),
@@ -86,35 +86,35 @@ static struct DynList sDynlist801A8604[4] = {
 static f64 D_801A8668 = 0.0;
 
 // bss
-static u8 sUnrefSpaceB00[0x2C];           // @ 801BAB00
+UNUSED static u8 sUnrefSpaceB00[0x2C];    // @ 801BAB00
 static struct ObjGroup *sCubeShapeGroup;  // @ 801BAB2C
-static u8 sUnrefSpaceB30[0xC];            // @ 801BAB30
+UNUSED static u8 sUnrefSpaceB30[0xC];     // @ 801BAB30
 static struct ObjShape *sCubeShape;       // @ 801BAB3C
-static u8 sUnrefSpaceB40[0x8];            // @ 801BAB40
+UNUSED static u8 sUnrefSpaceB40[0x8];     // @ 801BAB40
 static char sGdLineBuf[0x100];            // @ 801BAB48
 static s32 sGdLineBufCsr;                 // @ 801BAC48
 static struct GdFile *sGdShapeFile;       // @ 801BAC4C
 static struct ObjShape *sGdShapeListHead; // @ 801BAC50
 static u32 sGdShapeCount;                 // @ 801BAC54
-static u8 sUnrefSpaceC58[0x8];            // @ 801BAC58
+UNUSED static u8 sUnrefSpaceC58[0x8];     // @ 801BAC58
 static struct GdVec3f D_801BAC60;
-static u32 sUnrefSpaceC6C; // @ 801BAC6C
-static u32 sUnrefSpaceC70; // @ 801BAC70
+UNUSED static u32 sUnrefSpaceC6C;         // @ 801BAC6C
+UNUSED static u32 sUnrefSpaceC70;         // @ 801BAC70
 static struct ObjPlane *D_801BAC74;
 static struct ObjPlane *D_801BAC78; // sShapeNetHead?
-static u8 sUnrefSpaceC80[0x1C];     // @ 801BAC80
+UNUSED static u8 sUnrefSpaceC80[0x1C];    // @ 801BAC80
 static struct ObjFace *D_801BAC9C;
 static struct ObjFace *D_801BACA0;
-static u8 sUnrefSpaceCA8[0x10]; // @ 801BACA8
+UNUSED static u8 sUnrefSpaceCA8[0x10];    // @ 801BACA8
 /// factor for scaling vertices in an `ObjShape` when calling `scale_verts_in_shape()`
 static struct GdVec3f sVertexScaleFactor;
 /// factor for translating vertices in an `ObjShape` when calling `translate_verts_in_shape()`
 static struct GdVec3f sVertexTranslateOffset;
-static u8 sUnrefSpaceCD8[0x30];     // @ 801BACD8
+UNUSED static u8 sUnrefSpaceCD8[0x30];    // @ 801BACD8
 static struct ObjGroup *D_801BAD08; // group of planes from make_netfromshape
-static u8 sUnrefSpaceD10[0x20];     // @ 801BAD10
+UNUSED static u8 sUnrefSpaceD10[0x20];    // @ 801BAD10
 static struct GdVec3f sShapeCenter;   // printed with "c="
-static u8 sUnrefSpaceD40[0x120];    // @ 801BAD40
+UNUSED static u8 sUnrefSpaceD40[0x120];   // @ 801BAD40
 
 // Forward Declarations
 struct ObjMaterial *find_or_add_new_mtl(struct ObjGroup *, s32, f32, f32, f32);

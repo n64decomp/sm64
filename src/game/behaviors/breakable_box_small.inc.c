@@ -43,7 +43,7 @@ void small_breakable_box_act_move(void) {
 
     if (sp1E & 2) {
         spawn_mist_particles();
-        spawn_triangle_break_particles(20, 138, 0.7f, 3);
+        spawn_triangle_break_particles(20, MODEL_DIRT_ANIMATION, 0.7f, 3);
         obj_spawn_yellow_coins(o, 3);
         create_sound_spawner(SOUND_GENERAL_BREAK_BOX);
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;

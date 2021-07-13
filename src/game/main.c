@@ -26,7 +26,7 @@ OSThread gGameLoopThread;
 OSThread gSoundThread;
 
 OSIoMesg gDmaIoMesg;
-OSMesg D_80339BEC;
+OSMesg gMainReceivedMesg;
 
 OSMesgQueue gDmaMesgQueue;
 OSMesgQueue gSIEventMesgQueue;
@@ -50,7 +50,7 @@ struct SPTask *sNextDisplaySPTask = NULL;
 s8 sAudioEnabled = TRUE;
 u32 gNumVblanks = 0;
 s8 gResetTimer = 0;
-s8 D_8032C648 = 0;
+s8 gNmiResetBarsTimer = 0;
 s8 gDebugLevelSelect = FALSE;
 s8 D_8032C650 = 0;
 
@@ -89,6 +89,10 @@ void unknown_main_func(void) {
     // uninitialized
     OSTime time;
     u32 b;
+#ifdef AVOID_UB
+    time = 0;
+    b = 0;
+#endif
 
     osSetTime(time);
     osMapTLB(0, b, NULL, 0, 0, 0);
@@ -143,7 +147,7 @@ extern void func_sh_802f69cc(void);
 
 void handle_nmi_request(void) {
     gResetTimer = 1;
-    D_8032C648 = 0;
+    gNmiResetBarsTimer = 0;
     stop_sounds_in_continuous_banks();
     sound_banks_disable(SEQ_PLAYER_SFX, SOUND_BANKS_BACKGROUND);
     fadeout_music(90);
@@ -253,7 +257,7 @@ void handle_vblank(void) {
             start_sptask(M_GFXTASK);
         }
     }
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
     rumble_thread_update_vi();
 #endif
 
@@ -386,7 +390,7 @@ void dispatch_audio_sptask(struct SPTask *spTask) {
     }
 }
 
-void send_display_list(struct SPTask *spTask) {
+void exec_display_list(struct SPTask *spTask) {
     if (spTask != NULL) {
         osWritebackDCacheAll();
         spTask->state = SPTASK_STATE_NOT_STARTED;

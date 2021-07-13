@@ -6,6 +6,17 @@
 #include "macros.h"
 #include "types.h"
 
+// set_mario_npc_dialog
+// actionArg
+#define MARIO_DIALOG_STOP       0
+#define MARIO_DIALOG_LOOK_FRONT 1 // no head turn
+#define MARIO_DIALOG_LOOK_UP    2
+#define MARIO_DIALOG_LOOK_DOWN  3
+// dialogState
+#define MARIO_DIALOG_STATUS_NONE  0
+#define MARIO_DIALOG_STATUS_START 1
+#define MARIO_DIALOG_STATUS_SPEAK 2
+
 void print_displaying_credits_entry(void);
 void bhv_end_peach_loop(void);
 void bhv_end_toad_loop(void);

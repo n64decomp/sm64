@@ -197,8 +197,8 @@ static void boo_move_during_hit(s32 roll, f32 fVel) {
     o->oMoveAngleYaw = o->oBooMoveYawDuringHit;
 
     if (roll != FALSE) {
-        o->oFaceAngleYaw  += D_8032F0CC[o->oTimer];
-        o->oFaceAngleRoll += D_8032F0CC[o->oTimer];
+        o->oFaceAngleYaw  += sBooHitRotations[o->oTimer];
+        o->oFaceAngleRoll += sBooHitRotations[o->oTimer];
     }
 }
 
@@ -223,7 +223,7 @@ static s32 boo_update_after_bounced_on(f32 a0) {
     }
 
     if (o->oTimer < 32) {
-        boo_move_during_hit(FALSE, D_8032F0CC[o->oTimer]/5000.0f * a0);
+        boo_move_during_hit(FALSE, sBooHitRotations[o->oTimer]/5000.0f * a0);
     } else {
         cur_obj_become_tangible();
         boo_reset_after_hit();
@@ -243,7 +243,7 @@ static s32 big_boo_update_during_nonlethal_hit(f32 a0) {
     }
 
     if (o->oTimer < 32) {
-        boo_move_during_hit(TRUE, D_8032F0CC[o->oTimer]/5000.0f * a0);
+        boo_move_during_hit(TRUE, sBooHitRotations[o->oTimer]/5000.0f * a0);
     } else if (o->oTimer < 48) {
         big_boo_shake_after_hit();
     } else {
@@ -464,7 +464,7 @@ static void boo_act_4(void) {
         dialogID = DIALOG_107;
     }
 
-    if (cur_obj_update_dialog(2, 2, dialogID, 0)) {
+    if (cur_obj_update_dialog(MARIO_DIALOG_LOOK_UP, DIALOG_FLAG_TEXT_DEFAULT, dialogID, 0)) {
         create_sound_spawner(SOUND_OBJ_DYING_ENEMY1);
         obj_mark_for_deletion(o);
 
@@ -644,9 +644,9 @@ static void big_boo_act_4(void) {
         if (o->oTimer > 60 && o->oDistanceToMario < 600.0f) {
             obj_set_pos(o,  973, 0, 717);
 
-            spawn_object_relative(0, 0, 0,    0, o, MODEL_BBH_STAIRCASE_STEP, bhvBooBossSpawnedBridge);
-            spawn_object_relative(1, 0, 0, -200, o, MODEL_BBH_STAIRCASE_STEP, bhvBooBossSpawnedBridge);
-            spawn_object_relative(2, 0, 0,  200, o, MODEL_BBH_STAIRCASE_STEP, bhvBooBossSpawnedBridge);
+            spawn_object_relative(0, 0, 0,    0, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
+            spawn_object_relative(1, 0, 0, -200, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
+            spawn_object_relative(2, 0, 0,  200, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
 
             obj_mark_for_deletion(o);
         }
@@ -863,7 +863,7 @@ void bhv_boo_in_castle_loop(void) {
     cur_obj_move_using_fvel_and_gravity();
 }
 
-void bhv_boo_boss_spawned_bridge_loop(void) {
+void bhv_boo_staircase(void) {
     f32 targetY;
 
     switch (o->oBehParams2ndByte) {
@@ -898,7 +898,7 @@ void bhv_boo_boss_spawned_bridge_loop(void) {
                 cur_obj_play_sound_2(SOUND_GENERAL_UNKNOWN4_LOWPRIO);
             }
 
-            if (cur_obj_move_up_and_down(o->oTimer)) {
+            if (jiggle_bbh_stair(o->oTimer)) {
                 o->oAction++;
             }
 

@@ -7,7 +7,7 @@ void bhv_1up_interact(void) {
         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
         gMarioState->numLives++;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
     }

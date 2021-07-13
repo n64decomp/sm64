@@ -659,7 +659,7 @@ def serialize_ctl(bank, base_ser, is_shindou):
     base_ser.add(ser.finish())
 
     return pack(
-        "BBBB", bank.sample_bank.index, 0xFF, len(json["instrument_list"]), len(drums)
+        "hh", (bank.sample_bank.index << 8) | 0xFF, (len(json["instrument_list"]) << 8) | len(drums)
     )
 
 
@@ -704,7 +704,8 @@ def serialize_seqfile(
         ser = ReserveSerializer()
         ser.add(pack("H", len(entries)))
         ser.align(16)
-        sh_magic = 0x0204 if magic == TYPE_TBL else 0x0203
+        medium = 0x02 # cartridge
+        sh_magic = 0x04 if magic == TYPE_TBL else 0x03
 
         # Ignore entry_list and loop over all entries instead. This makes a
         # difference for sample banks, where US/JP/EU doesn't use a normal
@@ -712,9 +713,9 @@ def serialize_seqfile(
         # sample bank offset/length. Shindou uses a normal header and makes the
         # mapping part of the sound bank header instead (part of entry_meta).
         for i in range(len(entries)):
-            ser.add(pack("PIH", entry_offsets[i], entry_lens[i], sh_magic))
+            ser.add(pack("PIbb", entry_offsets[i], entry_lens[i], medium, sh_magic))
             ser.add(entry_meta[i] or b"\0\0\0\0")
-            ser.align(16)
+            ser.align(WORD_BYTES)
 
         if out_header_filename:
             with open(out_header_filename, "wb") as f:

@@ -54,7 +54,7 @@ void hidden_breakable_box_actions(void) {
             o->oAction = 0;
         if (cur_obj_was_attacked_or_ground_pounded()) {
             spawn_mist_particles();
-            spawn_triangle_break_particles(30, 138, 3.0f, 4);
+            spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, 4);
             o->oAction++;
             cur_obj_play_sound_2(SOUND_GENERAL_BREAK_BOX);
         }

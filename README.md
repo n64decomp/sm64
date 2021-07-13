@@ -95,10 +95,10 @@ Resulting artifacts can be found in the `build` directory.
 
 The full list of configurable variables are listed below, with the default being the first listed:
 
-* ``VERSION``: ``us``, ``jp``, ``eu``, ``sh`` (WIP)
+* ``VERSION``: ``us``, ``jp``, ``eu``, ``sh``
 * ``GRUCODE``: ``f3d_old``, ``f3d_new``, ``f3dex``, ``f3dex2``, ``f3dzex``
 * ``COMPARE``: ``1`` (compare ROM hash), ``0`` (do not compare ROM hash)
-* ``NON_MATCHING``: Use functionally equivalent C implementations for non-matchings (Currently there aren't any non-matchings, but this will apply to Shindou and iQue). Also will avoid instances of undefined behavior.
+* ``NON_MATCHING``: Use functionally equivalent C implementations for non-matchings (Currently there aren't any non-matchings, but this will apply to iQue). Also will avoid instances of undefined behavior.
 * ``CROSS``: Cross-compiler tool prefix (Example: ``mips64-elf-``).
 
 ### macOS
@@ -111,7 +111,7 @@ With macOS, you may either use Homebrew or [Docker](#docker-installation).
 Install [Homebrew](https://brew.sh) and the following dependencies:
 ```
 brew update
-brew install capstone coreutils gcc make pkg-config tehzz/n64-dev/mips64-elf-binutils
+brew install capstone coreutils make pkg-config tehzz/n64-dev/mips64-elf-binutils
 ```
 
 #### Step 2: Copy baserom(s) for asset extraction

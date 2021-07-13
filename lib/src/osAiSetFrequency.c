@@ -1,6 +1,7 @@
 #include "libultra_internal.h"
 #include "osAi.h"
 #include "hardware.h"
+#include "macros.h"
 
 extern s32 osViClock;
 
@@ -29,9 +30,9 @@ s32 osAiSetFrequency(u32 freq) {
 
 #ifndef VERSION_SH
 // put some extra jr $ra's down there please
-static void filler1(void) {
+UNUSED static void filler1(void) {
 }
 
-static void filler2(void) {
+UNUSED static void filler2(void) {
 }
 #endif

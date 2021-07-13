@@ -177,13 +177,13 @@ static char bin_dir[PATH_MAX + 1];
 #endif
 static int g_file_max = 3;
 
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(__APPLE__)
 static size_t g_Pagesize;
 #endif
 
 static uint8_t *memory_map(size_t length)
 {
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(__APPLE__)
     uint8_t *mem = mmap(0, length, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
     g_Pagesize = sysconf(_SC_PAGESIZE);
     assert(((uintptr_t)mem & (g_Pagesize-1)) == 0);
@@ -201,7 +201,7 @@ static void memory_allocate(uint8_t *mem, uint32_t start, uint32_t end)
 {
     assert(start >= MEM_REGION_START);
     assert(end <= MEM_REGION_START + MEM_REGION_SIZE);
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(__APPLE__)
     uintptr_t _start = ((uintptr_t)mem + start) & ~(g_Pagesize-1);
     uintptr_t _end = ((uintptr_t)mem + end + (g_Pagesize-1)) & ~(g_Pagesize-1);
 

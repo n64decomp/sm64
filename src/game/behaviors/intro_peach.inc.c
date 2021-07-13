@@ -40,7 +40,7 @@ void bhv_intro_peach_loop(void) {
         case 2:
             intro_peach_set_pos_and_opacity(gCurrentObject, 255.f, 3.f);
 
-            if ((gCurrentObject->oTimer > 100) && (get_dialog_id() == -1))
+            if ((gCurrentObject->oTimer > 100) && (get_dialog_id() == DIALOG_NONE))
                 gCurrentObject->oAction += 1;
             break;
         case 3:

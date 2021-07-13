@@ -17,7 +17,7 @@ void tox_box_move(f32 forwardVel, f32 a1, s16 deltaPitch, s16 deltaRoll)
 {
     o->oPosY = 99.41124 * sins((f32)(o->oTimer + 1) / 8 * 0x8000) + o->oHomeY + 3.0f;
     o->oForwardVel = forwardVel;
-    o->oUnkC0 = a1;
+    o->oUpVel = a1;
     o->oFaceAnglePitch += deltaPitch;
     if ((s16) o->oFaceAnglePitch < 0)
         deltaRoll = -deltaRoll;

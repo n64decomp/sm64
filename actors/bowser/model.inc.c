@@ -1184,7 +1184,7 @@ const Gfx bowser_seg6_dl_0603B8D0[] = {
     gsSPEndDisplayList(),
 };
 
-#ifndef VERSION_JP
+#if BUGFIX_BOWSER_FADING_OUT
 // 0x0603B948 - 0x0603B9C8
 const Gfx bowser_seg6_dl_0603B948[] = {
     gsDPPipeSync(),
@@ -2870,7 +2870,7 @@ const Gfx bowser_seg6_dl_06040210[] = {
     gsSPEndDisplayList(),
 };
 
-#ifndef VERSION_JP
+#if BUGFIX_BOWSER_FADING_OUT
 // 0x06040358 - 0x06040428
 const Gfx bowser_seg6_dl_06040358[] = {
     gsDPPipeSync(),

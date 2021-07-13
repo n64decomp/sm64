@@ -4,6 +4,7 @@
 #include <string.h>
 #include <inttypes.h>
 
+#include <algorithm>
 #include <map>
 #include <set>
 #include <vector>
@@ -20,9 +21,6 @@
 #endif
 
 #define LABELS_64_BIT 1
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 #define u32be(x) (uint32_t)(((x & 0xff) << 24) + ((x & 0xff00) << 8) + ((x & 0xff0000) >> 8) + ((uint32_t)(x) >> 24))
 #define u16be(x) (uint16_t)(((x & 0xff) << 8) + ((x & 0xff00) >> 8))
@@ -280,24 +278,31 @@ static const struct {
 static void disassemble(void) {
     csh handle;
     cs_insn *disasm;
-    static size_t disasm_size;
+    size_t disasm_size = 0;
     assert(cs_open(CS_ARCH_MIPS, (cs_mode)(CS_MODE_MIPS64 | CS_MODE_BIG_ENDIAN), &handle) == CS_ERR_OK);
     cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
-    disasm_size = cs_disasm(handle, text_section, text_section_len, text_vaddr, 0, &disasm);
-    for (size_t i = 0; i < disasm_size; i++) {
-        insns.push_back(Insn());
-        Insn& insn = insns.back();
-        insn.id = disasm[i].id;
-        insn.mnemonic = disasm[i].mnemonic;
-        insn.op_str = disasm[i].op_str;
-        if (disasm[i].detail != nullptr && disasm[i].detail->mips.op_count > 0) {
-            insn.op_count = disasm[i].detail->mips.op_count;
-            memcpy(insn.operands, disasm[i].detail->mips.operands, sizeof(insn.operands));
+    insns.reserve(1 + text_section_len / sizeof(uint32_t)); // +1 for dummy instruction
+    while (text_section_len > disasm_size * sizeof(uint32_t)) {
+        size_t disasm_len = disasm_size * sizeof(uint32_t);
+        size_t remaining = text_section_len - disasm_len;
+        size_t current_len = std::min<size_t>(remaining, 1024);
+        size_t cur_disasm_size = cs_disasm(handle, &text_section[disasm_len], current_len, text_vaddr + disasm_len, 0, &disasm);
+        disasm_size += cur_disasm_size;
+        for (size_t i = 0; i < cur_disasm_size; i++) {
+            insns.push_back(Insn());
+            Insn& insn = insns.back();
+            insn.id = disasm[i].id;
+            insn.mnemonic = disasm[i].mnemonic;
+            insn.op_str = disasm[i].op_str;
+            if (disasm[i].detail != nullptr && disasm[i].detail->mips.op_count > 0) {
+                insn.op_count = disasm[i].detail->mips.op_count;
+                memcpy(insn.operands, disasm[i].detail->mips.operands, sizeof(insn.operands));
+            }
+            insn.is_jump = cs_insn_group(handle, &disasm[i], MIPS_GRP_JUMP) || insn.id == MIPS_INS_JAL || insn.id == MIPS_INS_BAL || insn.id == MIPS_INS_JALR;
+            insn.linked_insn = -1;
         }
-        insn.is_jump = cs_insn_group(handle, &disasm[i], MIPS_GRP_JUMP) || insn.id == MIPS_INS_JAL || insn.id == MIPS_INS_BAL || insn.id == MIPS_INS_JALR;
-        insn.linked_insn = -1;
+        cs_free(disasm, cur_disasm_size);
     }
-    cs_free(disasm, disasm_size);
     cs_close(&handle);
 
     {
@@ -334,7 +339,7 @@ static void link_with_lui(int offset, uint32_t reg, int mem_imm)
 #define MAX_LOOKBACK 128
     // don't attempt to compute addresses for zero offset
     // end search after some sane max number of instructions
-    int end_search = MAX(0, offset - MAX_LOOKBACK);
+    int end_search = std::max(0, offset - MAX_LOOKBACK);
     for (int search = offset - 1; search >= end_search; search--) {
         // use an `if` instead of `case` block to allow breaking out of the `for` loop
         if (insns[search].id == MIPS_INS_LUI) {
@@ -421,7 +426,7 @@ static void link_with_lui(int offset, uint32_t reg, int mem_imm)
 static void link_with_jalr(int offset)
 {
     // end search after some sane max number of instructions
-    int end_search = MAX(0, offset - MAX_LOOKBACK);
+    int end_search = std::max(0, offset - MAX_LOOKBACK);
     for (int search = offset - 1; search >= end_search; search--) {
         if (insns[search].operands[0].reg == MIPS_REG_T9) {
             if (insns[search].id == MIPS_INS_LW || insns[search].id == MIPS_INS_LI) {
@@ -2332,16 +2337,16 @@ static void dump_c(void) {
     uint32_t max_addr = 0;
 
     if (data_section_len > 0) {
-        min_addr = MIN(min_addr, data_vaddr);
-        max_addr = MAX(max_addr, data_vaddr + data_section_len);
+        min_addr = std::min(min_addr, data_vaddr);
+        max_addr = std::max(max_addr, data_vaddr + data_section_len);
     }
     if (rodata_section_len > 0) {
-        min_addr = MIN(min_addr, rodata_vaddr);
-        max_addr = MAX(max_addr, rodata_vaddr + rodata_section_len);
+        min_addr = std::min(min_addr, rodata_vaddr);
+        max_addr = std::max(max_addr, rodata_vaddr + rodata_section_len);
     }
     if (bss_section_len) {
-        min_addr = MIN(min_addr, bss_vaddr);
-        max_addr = MAX(max_addr, bss_vaddr + bss_section_len);
+        min_addr = std::min(min_addr, bss_vaddr);
+        max_addr = std::max(max_addr, bss_vaddr + bss_section_len);
     }
 
     min_addr = min_addr & ~0xfff;

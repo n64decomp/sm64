@@ -1,5 +1,17 @@
 // chuckya.c.inc
 
+struct UnusedChuckyaData {
+    u8 unk0;
+    f32 unk4;
+    f32 unk8;
+};
+
+struct UnusedChuckyaData sUnusedChuckyaData[] = { { 2, 0.f,  1.f },
+                                                  { 2, 10.f, 1.f }, 
+                                                  { 2, 20.f, 1.f }, 
+                                                  { 2, 20.f, 1.f }, 
+                                                  { 8, 10.f, 1.f }};
+
 void common_anchor_mario_behavior(f32 sp28, f32 sp2C, s32 sp30) {
     switch (o->parentObj->oChuckyaUnk88) {
         case 0:
@@ -72,6 +84,9 @@ s32 approach_forward_vel(f32 *arr, f32 spC, f32 sp10) {
 
 void chuckya_act_0(void) {
     s32 sp3C;
+#ifdef AVOID_UB
+    sp3C = 0;
+#endif
     UNUSED u8 pad[16];
     s32 sp28;
     if (o->oTimer == 0)
@@ -197,7 +212,7 @@ void bhv_chuckya_loop(void) {
             chuckya_move();
             break;
         case HELD_HELD:
-            cur_obj_unrender_and_reset_state(2, 0);
+            cur_obj_unrender_set_action_and_anim(2, 0);
             break;
         case HELD_THROWN:
         case HELD_DROPPED:

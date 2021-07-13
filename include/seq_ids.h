@@ -6,6 +6,8 @@
 #define SEQ_BASE_ID 0x7f
 #define SEQ_VARIATION 0x80
 
+#define SEQ_MENU_GAME_OVER (SEQ_MENU_TITLE_SCREEN | SEQ_VARIATION)
+
 enum SeqId {
     SEQ_SOUND_PLAYER,                 // 0x00
     SEQ_EVENT_CUTSCENE_COLLECT_STAR,  // 0x01

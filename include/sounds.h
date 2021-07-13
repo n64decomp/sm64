@@ -386,7 +386,7 @@
 #define SOUND_ENV_UNK12                          /* 0x40120000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x12, 0x00, 0) // unverified, unused
 #define SOUND_ENV_SLIDING                        /* 0x40130000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x13, 0x00, 0) // unverified
 #define SOUND_ENV_STAR                           /* 0x40140010 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x14, 0x00, SOUND_LOWER_BACKGROUND_MUSIC) // unverified
-#define SOUND_ENV_UNKNOWN4                       /* 0x41150000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x15, 0x00, SOUND_NO_VOLUME_LOSS) // unverified
+#define SOUND_ENV_MOVING_BIG_PLATFORM            /* 0x41150000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x15, 0x00, SOUND_NO_VOLUME_LOSS) // unverified
 #define SOUND_ENV_WATER_DRAIN                    /* 0x41160000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x16, 0x00, SOUND_NO_VOLUME_LOSS) // unverified
 #define SOUND_ENV_METAL_BOX_PUSH                 /* 0x40178000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x17, 0x80, 0) // unverified
 #define SOUND_ENV_SINK_QUICKSAND                 /* 0x40188000 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x18, 0x80, 0) // unverified

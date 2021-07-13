@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdint.h>
 
+#define ARMAG  "!<arch>\n"
+#define SARMAG 8
+
 /* from elf.h */
 
 /* Type for a 16-bit quantity.  */
@@ -78,13 +81,36 @@ struct ar_header {
 //These constants found by inspecting output of objdump
 #define FLAGS_MIPS3 0x20
 #define FLAGS_O32ABI 0x100000 
-int main(int argc, char **argv) {
-    FILE *f = fopen(argv[1], "r+");
 
-    if (f == NULL) {
-        printf("Failed to open file! %s\n", argv[1]);
+int fix_mips_elf(FILE *f, size_t filesize)
+{
+    Elf32_Ehdr hdr;
+    if (filesize < sizeof(hdr) || (1 != fread(&hdr, sizeof(hdr), 1, f))) {
+        printf("Failed to read ELF header\n");
         return -1;
     }
+
+    if (strncmp((const char *) hdr.e_ident, ELFMAG, SELFMAG) == 0) {
+        // found an ELF file.
+        if (hdr.e_ident[EI_CLASS] != ELFCLASS32 || hdr.e_ident[EI_DATA] != ELFDATA2MSB) {
+            printf("Expected 32bit big endian object files\n");
+            return -1;
+        }
+
+        if ((hdr.e_flags & 0xFF) == FLAGS_MIPS3 && (hdr.e_flags & FLAGS_O32ABI) == 0) {
+            hdr.e_flags |= FLAGS_O32ABI;
+            fseek(f, -(long)sizeof(hdr), SEEK_CUR);
+            if (1 != fwrite(&hdr, sizeof(hdr), 1, f)) {
+                printf("Failed to write back ELF header after patching.\n");
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+
+int fix_mips_ar(FILE *f)
+{
     struct ar_header current_header;
     fseek(f, 0x8, SEEK_SET); // skip header, this is safe enough given that we check to make sure the
                              // file header is valid
@@ -95,32 +121,41 @@ int main(int argc, char **argv) {
             return -1;
         }
         size_t filesize = atoi(current_header.file_size_in_bytes);
-        Elf32_Ehdr hdr;
-        if (filesize < sizeof(hdr) || (1 != fread(&hdr, sizeof(hdr), 1, f))) {
-            printf("Failed to read ELF header\n");
+        if (fix_mips_elf(f, filesize)) {
             return -1;
-        }
-
-        if (strncmp((const char *) hdr.e_ident, ELFMAG, SELFMAG) == 0) {
-            // found an ELF file.
-            if (hdr.e_ident[EI_CLASS] != ELFCLASS32 || hdr.e_ident[EI_DATA] != ELFDATA2MSB) {
-                printf("Expected 32bit big endian object files\n");
-                return -1;
-            }
-
-            if ((hdr.e_flags & 0xFF) == FLAGS_MIPS3 && (hdr.e_flags & FLAGS_O32ABI) == 0) {
-                hdr.e_flags |= FLAGS_O32ABI;
-                fseek(f, -sizeof(hdr), SEEK_CUR);
-                if (1 != fwrite(&hdr, sizeof(hdr), 1, f)) {
-                    printf("Failed to write back ELF header after patching.\n");
-                    return -1;
-                }
-            }
         }
         if (filesize % 2 == 1)
             filesize++;
-        fseek(f, filesize - sizeof(hdr), SEEK_CUR);
+        fseek(f, filesize - sizeof(Elf32_Ehdr), SEEK_CUR);
+    }
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    FILE *f = fopen(argv[1], "r+b");
+    uint8_t magic[8];
+    int status = 0;
+
+    if (f == NULL) {
+        printf("Failed to open file! %s\n", argv[1]);
+        return -1;
+    }
+    if (1 != fread(&magic, sizeof(magic), 1, f)) {
+        printf("Failed to read file magic\n");
+        return -1;
+    }
+    rewind(f);
+    if (!memcmp(ARMAG, magic, SARMAG)) {
+        status = fix_mips_ar(f);
+    } else if (!memcmp(ELFMAG, magic, SELFMAG)) {
+        fseek(f, 0, SEEK_END);
+        size_t filesize = ftell(f);
+        rewind(f);
+        status = fix_mips_elf(f, filesize);
+    } else {
+        printf("Unknown file magic: %02x%02x%02X%02X\n", magic[0], magic[1], magic[2], magic[3]);
+        status = -1;
     }
     fclose(f);
-    return 0;
+    return status;
 }

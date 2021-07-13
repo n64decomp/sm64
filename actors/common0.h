@@ -4,24 +4,12 @@
 #include "types.h"
 
 // amp
-extern const GeoLayout amp_geo[];
-extern const Gfx amp_seg8_dl_08002B68[];
-extern const Gfx amp_seg8_dl_08002BA0[];
-extern const Gfx amp_seg8_dl_08002C50[];
-extern const Gfx amp_seg8_dl_08002C88[];
-extern const Gfx amp_seg8_dl_08002D38[];
-extern const Gfx amp_seg8_dl_08002D70[];
-extern const Gfx amp_seg8_dl_08002E20[];
-extern const Gfx amp_seg8_dl_08002E58[];
-extern const Gfx amp_seg8_dl_08003910[];
-extern const Gfx amp_seg8_dl_08003940[];
-extern const Gfx amp_seg8_dl_08003970[];
-extern const Gfx amp_seg8_dl_080039A0[];
-extern const Gfx amp_seg8_dl_080039D0[];
-extern const Gfx amp_seg8_dl_08003DA8[];
-extern const Gfx amp_seg8_dl_08003DD8[];
-extern const Gfx amp_seg8_dl_08003E00[];
-extern const struct Animation *const amp_seg8_anims_08004034[];
+extern const GeoLayout dAmpGeo[];
+extern const Gfx dAmpElectricityDl[];
+extern const Gfx dAmpEyeDl[];
+extern const Gfx dAmpMouthDl[];
+extern const Gfx dAmpBodyDl[];
+extern const struct Animation *const dAmpAnimsList[];
 
 // blue_coin_switch
 extern const GeoLayout blue_coin_switch_geo[];

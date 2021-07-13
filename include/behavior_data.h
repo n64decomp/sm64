@@ -261,7 +261,7 @@ extern const BehaviorScript bhvBoo[];
 extern const BehaviorScript bhvMerryGoRoundBoo[];
 extern const BehaviorScript bhvGhostHuntBoo[];
 extern const BehaviorScript bhvHiddenStaircaseStep[];
-extern const BehaviorScript bhvBooBossSpawnedBridge[];
+extern const BehaviorScript bhvBooStaircase[];
 extern const BehaviorScript bhvBbhTiltingTrapPlatform[];
 extern const BehaviorScript bhvHauntedBookshelf[];
 extern const BehaviorScript bhvMeshElevator[];

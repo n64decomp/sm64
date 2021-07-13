@@ -7,7 +7,7 @@
 extern OSPiHandle *__osPiTable;
 extern OSPiHandle DriveRomHandle;
 
-OSPiHandle *osDriveRomInit() { // Why is this compiled with -g???
+OSPiHandle *osDriveRomInit(void) { // Why is this compiled with -g???
     UNUSED s32 sp1c = 0;
     u32 saveMask;
 
@@ -32,4 +32,3 @@ OSPiHandle *osDriveRomInit() { // Why is this compiled with -g???
 
     return &DriveRomHandle;
 }
-

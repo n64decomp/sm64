@@ -54,7 +54,8 @@ void tuxies_mother_act_1(void) {
                     dialogID = DIALOG_058;
                 else
                     dialogID = DIALOG_059;
-                if (cur_obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, dialogID)) {
+                if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+                        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, dialogID)) {
                     if (dialogID == DIALOG_058)
                         o->oSubAction = 1;
                     else
@@ -117,7 +118,8 @@ void tuxies_mother_act_0(void) {
                         o->oSubAction++;
                 break;
             case 1:
-                if (cur_obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, DIALOG_057))
+                if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+                    DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_057))
                     o->oSubAction++;
                 break;
             case 2:
@@ -260,7 +262,7 @@ void bhv_small_penguin_loop(void) {
             small_penguin_free_actions();
             break;
         case HELD_HELD:
-            cur_obj_unrender_and_reset_state(0, 0);
+            cur_obj_unrender_set_action_and_anim(0, 0);
             if (cur_obj_has_behavior(bhvPenguinBaby))
                 obj_set_behavior(o, bhvSmallPenguin);
             obj_copy_pos(o, gMarioObject);

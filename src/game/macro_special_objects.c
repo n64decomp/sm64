@@ -79,7 +79,7 @@ void spawn_macro_abs_special(s32 model, const BehaviorScript *behavior, s16 x, s
     newObj->oMacroUnk110 = (f32) unkC;
 }
 
-static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
+UNUSED static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
     struct Object *sp3C;
     s16 model;
 
@@ -203,7 +203,7 @@ void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList) {
         // However, BBH doesn't use this function so this might just be an early test?
         switch (macroObjPreset) {
             case 0:
-                spawn_macro_abs_yrot_2params(MODEL_NONE, bhvBooBossSpawnedBridge, macroObjX, macroObjY,
+                spawn_macro_abs_yrot_2params(MODEL_NONE, bhvBooStaircase, macroObjX, macroObjY,
                                              macroObjZ, macroObjRY, 0);
                 break;
             case 1:

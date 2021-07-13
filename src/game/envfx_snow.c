@@ -1,6 +1,7 @@
 #include <ultra64.h>
 
 #include "sm64.h"
+#include "dialog_ids.h"
 #include "game_init.h"
 #include "memory.h"
 #include "ingame_menu.h"
@@ -272,7 +273,7 @@ void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCy
  *  find it. The radius of 3000 units is quite large for that though, covering
  *  more than half of the mirror room.
  */
-static s32 is_in_mystery_snow_area(s32 x, UNUSED s32 y, s32 z) {
+UNUSED static s32 is_in_mystery_snow_area(s32 x, UNUSED s32 y, s32 z) {
     if (sqr(x - 3380) + sqr(z + 520) < sqr(3000)) {
         return 1;
     }
@@ -463,7 +464,7 @@ Gfx *envfx_update_snow(s32 snowMode, Vec3s marioPos, Vec3s camFrom, Vec3s camTo)
 Gfx *envfx_update_particles(s32 mode, Vec3s marioPos, Vec3s camTo, Vec3s camFrom) {
     Gfx *gfx;
 
-    if (get_dialog_id() != -1) {
+    if (get_dialog_id() != DIALOG_NONE) {
         return NULL;
     }
 

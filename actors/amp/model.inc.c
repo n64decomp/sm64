@@ -1,27 +1,22 @@
 // Amp
 
-// 0x08000F18
-ALIGNED8 static const Texture amp_seg8_texture_08000F18[] = {
+ALIGNED8 static const Texture dAmpElectricityTexture[] = {
 #include "actors/amp/amp_electricity.rgba16.inc.c"
 };
 
-// 0x08001318
-ALIGNED8 static const Texture amp_seg8_texture_08001318[] = {
+ALIGNED8 static const Texture dAmpEyesTexture[] = {
 #include "actors/amp/amp_eyes.rgba16.inc.c"
 };
 
-// 0x08001B18
-ALIGNED8 static const Texture amp_seg8_texture_08001B18[] = {
+ALIGNED8 static const Texture dAmpBodyTexture[] = {
 #include "actors/amp/amp_body.rgba16.inc.c"
 };
 
-// 0x08002318
-ALIGNED8 static const Texture amp_seg8_texture_08002318[] = {
+ALIGNED8 static const Texture dAmpMouthTexture[] = {
 #include "actors/amp/amp_mouth.rgba16.inc.c"
 };
 
-// 0x08002B18
-static const Vtx amp_seg8_vertex_08002B18[] = {
+static const Vtx dAmpElectricityVertices[] = {
     {{{   224,      0,    -89}, 0, {     0,    480}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   187,    149,      0}, 0, {   223,   1078}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   224,      0,     90}, 0, {   479,    478}, {0xff, 0xff, 0xff, 0xff}}},
@@ -29,18 +24,16 @@ static const Vtx amp_seg8_vertex_08002B18[] = {
     {{{   224,      0,    -89}, 0, {     0,    478}, {0xff, 0xff, 0xff, 0xff}}},
 };
 
-// 0x08002B68 - 0x08002BA0
-const Gfx amp_seg8_dl_08002B68[] = {
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, amp_seg8_texture_08000F18),
+const Gfx dAmpElectricitySubDl[] = {
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, dAmpElectricityTexture),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 16 * 32 - 1, CALC_DXT(16, G_IM_SIZ_16b_BYTES)),
-    gsSPVertex(amp_seg8_vertex_08002B18, 5, 0),
+    gsSPVertex(dAmpElectricityVertices, 5, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  2,  3,  4, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08002BA0 - 0x08002C10
-const Gfx amp_seg8_dl_08002BA0[] = {
+const Gfx dAmpElectricityDl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
     gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
@@ -49,7 +42,7 @@ const Gfx amp_seg8_dl_08002BA0[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 4, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (16 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPDisplayList(amp_seg8_dl_08002B68),
+    gsSPDisplayList(dAmpElectricitySubDl),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -57,26 +50,23 @@ const Gfx amp_seg8_dl_08002BA0[] = {
     gsSPEndDisplayList(),
 };
 
-// 0x08002C10
-static const Vtx amp_seg8_vertex_08002C10[] = {
+static const Vtx dAmpEyeVertices[] = {
     {{{    68,     72,    158}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   -27,    -71,    164}, 0, {   990,    990}, {0xff, 0xff, 0xff, 0xff}}},
     {{{    68,    -71,    158}, 0, {   990,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   -27,     72,    164}, 0, {     0,    990}, {0xff, 0xff, 0xff, 0xff}}},
 };
 
-// 0x08002C50 - 0x08002C88
-const Gfx amp_seg8_dl_08002C50[] = {
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, amp_seg8_texture_08001318),
+const Gfx dAmpEyeSubDl[] = {
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, dAmpEyesTexture),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPVertex(amp_seg8_vertex_08002C10, 4, 0),
+    gsSPVertex(dAmpEyeVertices, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08002C88 - 0x08002CF8
-const Gfx amp_seg8_dl_08002C88[] = {
+const Gfx dAmpEyeDl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
     gsSPClearGeometryMode(G_LIGHTING),
@@ -85,7 +75,7 @@ const Gfx amp_seg8_dl_08002C88[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPDisplayList(amp_seg8_dl_08002C50),
+    gsSPDisplayList(dAmpEyeSubDl),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -93,26 +83,23 @@ const Gfx amp_seg8_dl_08002C88[] = {
     gsSPEndDisplayList(),
 };
 
-// 0x08002CF8
-static const Vtx amp_seg8_vertex_08002CF8[] = {
+static const Vtx dAmpMouthVertices[] = {
     {{{   -29,     72,    164}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{  -124,    -71,    121}, 0, {   990,    990}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   -29,    -71,    164}, 0, {   990,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{  -124,     72,    121}, 0, {     0,    990}, {0xff, 0xff, 0xff, 0xff}}},
 };
 
-// 0x08002D38 - 0x08002D70
-const Gfx amp_seg8_dl_08002D38[] = {
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, amp_seg8_texture_08002318),
+const Gfx dAmpMouthSubDl[] = {
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, dAmpMouthTexture),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPVertex(amp_seg8_vertex_08002CF8, 4, 0),
+    gsSPVertex(dAmpMouthVertices, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08002D70 - 0x08002DE0
-const Gfx amp_seg8_dl_08002D70[] = {
+const Gfx dAmpMouthDl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
     gsSPClearGeometryMode(G_LIGHTING),
@@ -121,7 +108,7 @@ const Gfx amp_seg8_dl_08002D70[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPDisplayList(amp_seg8_dl_08002D38),
+    gsSPDisplayList(dAmpMouthSubDl),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -129,26 +116,23 @@ const Gfx amp_seg8_dl_08002D70[] = {
     gsSPEndDisplayList(),
 };
 
-// 0x08002DE0
-static const Vtx amp_seg8_vertex_08002DE0[] = {
+static const Vtx dAmpBodyVertices[] = {
     {{{   -39,    -39,      0}, 0, {     0,    990}, {0xff, 0xff, 0xff, 0xff}}},
     {{{    40,     40,      0}, 0, {   990,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   -39,     40,      0}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{    40,    -39,      0}, 0, {   990,    990}, {0xff, 0xff, 0xff, 0xff}}},
 };
 
-// 0x08002E20 - 0x08002E58
-const Gfx amp_seg8_dl_08002E20[] = {
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, amp_seg8_texture_08001B18),
+const Gfx dAmpBodySubDl[] = {
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, dAmpBodyTexture),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-    gsSPVertex(amp_seg8_vertex_08002DE0, 4, 0),
+    gsSPVertex(dAmpBodyVertices, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  3,  1, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08002E58 - 0x08002EC8
-const Gfx amp_seg8_dl_08002E58[] = {
+const Gfx dAmpBodyDl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
     gsSPClearGeometryMode(G_LIGHTING),
@@ -157,7 +141,7 @@ const Gfx amp_seg8_dl_08002E58[] = {
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 5, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
     gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (32 - 1) << G_TEXTURE_IMAGE_FRAC),
-    gsSPDisplayList(amp_seg8_dl_08002E20),
+    gsSPDisplayList(dAmpBodySubDl),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
@@ -165,15 +149,18 @@ const Gfx amp_seg8_dl_08002E58[] = {
     gsSPEndDisplayList(),
 };
 
-// 0x08002EC8
-static const Lights1 amp_seg8_lights_08002EC8 = gdSPDefLights1(
+/**
+ * Everything beyond this point is unused, and seems to be an attempt at a 3D modelled
+ * amp. The model and attempt are overall slightly buggy, with misread lights and a slightly
+ * broken model.
+ */
+
+UNUSED static const Lights1 dAmpUnused3DLights = gdSPDefLights1(
     0x33, 0x3f, 0x00,
     0xcf, 0xff, 0x00, 0x28, 0x28, 0x28
 );
 
-// //! Another malformed entry: Vertex interpreted as light
-// 0x08002EE0
-static const Vtx amp_seg8_vertex_08002EE0[] = {
+UNUSED static const Vtx dAmpUnused3DVtx01[] = {
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
     {{{   240,   -160,      0}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
     {{{   280,      0,    -35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
@@ -182,8 +169,7 @@ static const Vtx amp_seg8_vertex_08002EE0[] = {
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0x1e, 0x00, 0xff}}},
 };
 
-// 0x08002F40
-static const Vtx amp_seg8_vertex_08002F40[] = {
+UNUSED static const Vtx dAmpUnused3DVtx02[] = {
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
     {{{   240,   -160,      0}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
     {{{   280,      0,    -35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
@@ -192,8 +178,7 @@ static const Vtx amp_seg8_vertex_08002F40[] = {
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0x1e, 0x00, 0xff}}},
 };
 
-// 0x08002FA0
-static const Vtx amp_seg8_vertex_08002FA0[] = {
+UNUSED static const Vtx dAmpUnused3DVtx03[] = {
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
     {{{   240,   -160,      0}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
     {{{   280,      0,    -35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0x00}}},
@@ -202,8 +187,7 @@ static const Vtx amp_seg8_vertex_08002FA0[] = {
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0x1e, 0x00, 0xff}}},
 };
 
-// 0x08003000
-static const Vtx amp_seg8_vertex_08003000[] = {
+UNUSED static const Vtx dAmpUnused3DVtx04[] = {
     {{{   280,      0,    -35}, 0, {     0,      0}, {0x7b, 0x1e, 0x00, 0x00}}},
     {{{   240,    160,      0}, 0, {     0,      0}, {0x7b, 0x1e, 0x00, 0x00}}},
     {{{   280,      0,     35}, 0, {     0,      0}, {0x7b, 0x1e, 0x00, 0x00}}},
@@ -212,8 +196,7 @@ static const Vtx amp_seg8_vertex_08003000[] = {
     {{{   280,      0,    -35}, 0, {     0,      0}, {0x7b, 0xe2, 0x00, 0xff}}},
 };
 
-// 0x08003060
-static const Vtx amp_seg8_vertex_08003060[] = {
+UNUSED static const Vtx dAmpUnused3DVtx05[] = {
     {{{  -184,    -54,    -54}, 0, {     0,      0}, {0x8b, 0xde, 0xde, 0x00}}},
     {{{  -184,    -76,      0}, 0, {     0,      0}, {0x8b, 0xd0, 0x00, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -232,8 +215,7 @@ static const Vtx amp_seg8_vertex_08003060[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003160
-static const Vtx amp_seg8_vertex_08003160[] = {
+UNUSED static const Vtx dAmpUnused3DVtx06[] = {
     {{{  -184,      0,    -76}, 0, {     0,      0}, {0x8b, 0x00, 0xd0, 0xff}}},
     {{{  -184,    -54,    -54}, 0, {     0,      0}, {0x8b, 0xde, 0xde, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -252,8 +234,7 @@ static const Vtx amp_seg8_vertex_08003160[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003260
-static const Vtx amp_seg8_vertex_08003260[] = {
+UNUSED static const Vtx dAmpUnused3DVtx07[] = {
     {{{  -184,     54,    -54}, 0, {     0,      0}, {0x8b, 0x22, 0xde, 0xff}}},
     {{{  -184,      0,    -76}, 0, {     0,      0}, {0x8b, 0x00, 0xd0, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -272,8 +253,7 @@ static const Vtx amp_seg8_vertex_08003260[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003360
-static const Vtx amp_seg8_vertex_08003360[] = {
+UNUSED static const Vtx dAmpUnused3DVtx08[] = {
     {{{  -184,     76,      0}, 0, {     0,      0}, {0x8b, 0x30, 0x00, 0xff}}},
     {{{  -184,     54,    -54}, 0, {     0,      0}, {0x8b, 0x22, 0xde, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -292,8 +272,7 @@ static const Vtx amp_seg8_vertex_08003360[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003460
-static const Vtx amp_seg8_vertex_08003460[] = {
+UNUSED static const Vtx dAmpUnused3DVtx09[] = {
     {{{  -184,     54,     54}, 0, {     0,      0}, {0x8b, 0x22, 0x22, 0xff}}},
     {{{  -184,     76,      0}, 0, {     0,      0}, {0x8b, 0x30, 0x00, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -312,8 +291,7 @@ static const Vtx amp_seg8_vertex_08003460[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003560
-static const Vtx amp_seg8_vertex_08003560[] = {
+UNUSED static const Vtx dAmpUnused3DVtx10[] = {
     {{{  -184,      0,     76}, 0, {     0,      0}, {0x8b, 0x00, 0x30, 0xff}}},
     {{{  -184,     54,     54}, 0, {     0,      0}, {0x8b, 0x22, 0x22, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -332,8 +310,7 @@ static const Vtx amp_seg8_vertex_08003560[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003660
-static const Vtx amp_seg8_vertex_08003660[] = {
+UNUSED static const Vtx dAmpUnused3DVtx11[] = {
     {{{  -184,    -54,     54}, 0, {     0,      0}, {0x8b, 0xde, 0x22, 0xff}}},
     {{{  -184,      0,     76}, 0, {     0,      0}, {0x8b, 0x00, 0x30, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -352,8 +329,7 @@ static const Vtx amp_seg8_vertex_08003660[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003760
-static const Vtx amp_seg8_vertex_08003760[] = {
+UNUSED static const Vtx dAmpUnused3DVtx12[] = {
     {{{  -184,    -76,      0}, 0, {     0,      0}, {0x8b, 0xd0, 0x00, 0xff}}},
     {{{  -184,    -54,     54}, 0, {     0,      0}, {0x8b, 0xde, 0x22, 0x00}}},
     {{{  -200,      0,      0}, 0, {     0,      0}, {0x81, 0x00, 0x00, 0x00}}},
@@ -372,70 +348,63 @@ static const Vtx amp_seg8_vertex_08003760[] = {
     {{{   200,      0,      0}, 0, {     0,      0}, {0x7f, 0x00, 0x00, 0xff}}},
 };
 
-// 0x08003860
-static const Vtx amp_seg8_vertex_08003860[] = {
+UNUSED static const Vtx dAmpUnused3DVtx13[] = {
     {{{   -37,     90,    205}, 0, {     0,      0}, {0xcc, 0x00, 0x73, 0x00}}},
     {{{  -129,     90,    163}, 0, {     0,      0}, {0xcc, 0x00, 0x73, 0x00}}},
     {{{  -129,    -90,    163}, 0, {     0,      0}, {0xcc, 0x00, 0x73, 0x00}}},
     {{{   -37,    -90,    205}, 0, {     0,      0}, {0xcc, 0x00, 0x73, 0xff}}},
 };
 
-// 0x080038A0
-static const Vtx amp_seg8_vertex_080038A0[] = {
+UNUSED static const Vtx dAmpUnused3DVtx14[] = {
     {{{   112,     -7,    182}, 0, {     0,      0}, {0x4c, 0xd8, 0x5c, 0x00}}},
     {{{    66,   -139,    162}, 0, {     0,      0}, {0x4c, 0xd8, 0x5c, 0x00}}},
     {{{   175,    -77,     98}, 0, {     0,      0}, {0x4c, 0xd8, 0x5c, 0x00}}},
 };
 
-// 0x080038D0
-static const Vtx amp_seg8_vertex_080038D0[] = {
+UNUSED static const Vtx dAmpUnused3DVtx15[] = {
     {{{    63,     90,    198}, 0, {     0,      0}, {0x08, 0x00, 0x7e, 0x00}}},
     {{{   -35,     90,    205}, 0, {     0,      0}, {0x08, 0x00, 0x7e, 0x00}}},
     {{{   -35,    -90,    205}, 0, {     0,      0}, {0x08, 0x00, 0x7e, 0x00}}},
     {{{    63,    -90,    198}, 0, {     0,      0}, {0x08, 0x00, 0x7e, 0xff}}},
 };
 
-// 0x08003910 - 0x08003940
-const Gfx amp_seg8_dl_08003910[] = {
-    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
-    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
-    gsSPVertex(amp_seg8_vertex_08002EE0, 6, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl1[] = {
+    gsSPLight(&dAmpUnused3DLights.l, 1),
+    gsSPLight(&dAmpUnused3DLights.a, 2),
+    gsSPVertex(dAmpUnused3DVtx01, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08003940 - 0x08003970
-const Gfx amp_seg8_dl_08003940[] = {
-    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
-    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
-    gsSPVertex(amp_seg8_vertex_08002F40, 6, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl2[] = {
+    gsSPLight(&dAmpUnused3DLights.l, 1),
+    gsSPLight(&dAmpUnused3DLights.a, 2),
+    gsSPVertex(dAmpUnused3DVtx02, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08003970 - 0x080039A0
-const Gfx amp_seg8_dl_08003970[] = {
-    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
-    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
-    gsSPVertex(amp_seg8_vertex_08002FA0, 6, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl3[] = {
+    gsSPLight(&dAmpUnused3DLights.l, 1),
+    gsSPLight(&dAmpUnused3DLights.a, 2),
+    gsSPVertex(dAmpUnused3DVtx03, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x080039A0 - 0x080039D0
-const Gfx amp_seg8_dl_080039A0[] = {
-    gsSPLight(&amp_seg8_lights_08002EC8.l, 1),
-    gsSPLight(&amp_seg8_lights_08002EC8.a, 2),
-    gsSPVertex(amp_seg8_vertex_08003000, 6, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl4[] = {
+    gsSPLight(&dAmpUnused3DLights.l, 1),
+    gsSPLight(&dAmpUnused3DLights.a, 2),
+    gsSPVertex(dAmpUnused3DVtx04, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  5, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x080039D0 - 0x08003DA8
-const Gfx amp_seg8_dl_080039D0[] = {
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0 + 0x8, 1),
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0, 2),
-    gsSPVertex(amp_seg8_vertex_08003060, 16, 0),
+UNUSED const Gfx dAmpUnused3DModelDl[] = {
+    //! Vertex interpreted as light
+    gsSPLight((const u8*)dAmpUnused3DVtx01 + 0x8, 1),
+    gsSPLight((const u8*)dAmpUnused3DVtx01, 2),
+    gsSPVertex(dAmpUnused3DVtx05, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -443,7 +412,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003160, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx06, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -451,7 +420,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003260, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx07, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -459,7 +428,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003360, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx08, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -467,7 +436,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003460, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx09, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -475,7 +444,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003560, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx10, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -483,7 +452,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003660, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx11, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -491,7 +460,7 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSP2Triangles( 8,  9, 10, 0x0, 10,  9, 11, 0x0),
     gsSP2Triangles(10, 11, 12, 0x0, 12, 11, 13, 0x0),
     gsSP2Triangles(12, 13, 14, 0x0, 14, 13, 15, 0x0),
-    gsSPVertex(amp_seg8_vertex_08003760, 16, 0),
+    gsSPVertex(dAmpUnused3DVtx12, 16, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  1,  0,  3, 0x0),
     gsSP2Triangles( 1,  3,  4, 0x0,  4,  3,  5, 0x0),
     gsSP2Triangles( 4,  5,  6, 0x0,  6,  5,  7, 0x0),
@@ -502,29 +471,29 @@ const Gfx amp_seg8_dl_080039D0[] = {
     gsSPEndDisplayList(),
 };
 
-// 0x08003DA8 - 0x08003DD8
-const Gfx amp_seg8_dl_08003DA8[] = {
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0 + 0x8, 1),
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0, 2),
-    gsSPVertex(amp_seg8_vertex_08003860, 4, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl5[] = {
+    //! Vertex interpreted as light
+    gsSPLight((const u8*)dAmpUnused3DVtx01 + 0x8, 1),
+    gsSPLight((const u8*)dAmpUnused3DVtx01, 2),
+    gsSPVertex(dAmpUnused3DVtx13, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08003DD8 - 0x08003E00
-const Gfx amp_seg8_dl_08003DD8[] = {
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0 + 0x8, 1),
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0, 2),
-    gsSPVertex(amp_seg8_vertex_080038A0, 3, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl6[] = {
+    //! Vertex interpreted as light
+    gsSPLight((const u8*)dAmpUnused3DVtx01 + 0x8, 1),
+    gsSPLight((const u8*)dAmpUnused3DVtx01, 2),
+    gsSPVertex(dAmpUnused3DVtx14, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPEndDisplayList(),
 };
 
-// 0x08003E00 - 0x08003E30
-const Gfx amp_seg8_dl_08003E00[] = {
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0 + 0x8, 1),
-    gsSPLight((const u8*)amp_seg8_vertex_08002EE0, 2),
-    gsSPVertex(amp_seg8_vertex_080038D0, 4, 0),
+UNUSED const Gfx dAmpUnused3DElectricDl7[] = {
+    //! Vertex interpreted as light
+    gsSPLight((const u8*)dAmpUnused3DVtx01 + 0x8, 1),
+    gsSPLight((const u8*)dAmpUnused3DVtx01, 2),
+    gsSPVertex(dAmpUnused3DVtx15, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPEndDisplayList(),
 };

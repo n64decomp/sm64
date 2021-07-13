@@ -1,5 +1,4 @@
-// 0x08003E30
-static const s16 amp_seg8_animvalue_08003E30[] = {
+static const s16 dAmpAnimValue[] = {
     0x0000, 0x0000, 0x0D79, 0x1AF2, 0x286B, 0x35E4, 0x435D, 0x50D6,
     0x5E50, 0x6BC9, 0x7942, 0x86BE, 0x9437, 0xA1B0, 0xAF2A, 0xBCA3,
     0xCA1C, 0xD795, 0xE50E, 0xF287, 0x1872, 0x0000, 0x1AF2, 0x35E4,
@@ -23,8 +22,7 @@ static const s16 amp_seg8_animvalue_08003E30[] = {
     0xC001, 0x3FFF,
 };
 
-// 0x08003F74
-static const u16 amp_seg8_animindex_08003F74[] = {
+static const u16 dAmpAnimIndex[] = {
     0x0001, 0x0000, 0x0001, 0x0000, 0x0001, 0x0000, 0x0001, 0x0000, 0x0001, 0x0000, 0x0001, 0x0000,
     0x0001, 0x0000, 0x0001, 0x0000, 0x0001, 0x00A1,
     0x0001, 0x0000, 0x0013, 0x008D, 0x0001, 0x00A0,
@@ -40,15 +38,14 @@ static const u16 amp_seg8_animindex_08003F74[] = {
     0x0001, 0x0000, 0x0001, 0x0000, 0x0001, 0x004E,
 };
 
-// 0x0800401C
-static const struct Animation amp_seg8_anim_0800401C = {
+static const struct Animation dAmpAnimation = {
     0,
     0,
     0,
     0,
     0x13,
-    ANIMINDEX_NUMPARTS(amp_seg8_animindex_08003F74),
-    amp_seg8_animvalue_08003E30,
-    amp_seg8_animindex_08003F74,
+    ANIMINDEX_NUMPARTS(dAmpAnimIndex),
+    dAmpAnimValue,
+    dAmpAnimIndex,
     0,
 };

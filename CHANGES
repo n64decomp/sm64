@@ -1,3 +1,49 @@
+Refresh 14
+
+1.) Label whomp and some object fields (#1174)
+2.) Generate MIO0 object files using binutils `ld` instead of `as` (#1173)
+3.) Bowser documentation (#1166)
+4.) Fix comment syntax in 00_sound_player.0 (#1172)
+5.) Rename in-game menu variables (#1163)
+6.) Document double red coin sound and JP sound glitch (#1170)
+7.) Document different bug in external.c (#1168)
+8.) updated names/types of octagonal platform data (#1164)
+9.) Label a number of unnamed variables. (#1169)
+10.) Document JP PU sound glitch (#1167)
+11.) Set model ids to spawn_triangle_break_particles (#1165)
+12.) Fix borders in clear_frame_buffer (#1162)
+13.) Fix seq header files for 64-bit (#1161)
+14.) Game_init.c remaining doc (#1158)
+15.) Label a couple static variables in sound_init.c (#1159)
+16.) Properly define dialog values (status, flags, cutscenes) (#1153)
+17.) Label all of amp's assets. (#1018)
+18.) Split audio/synthesis.c into Shindou/non-Shindou files (#1144)
+19.) Avoid CC_CHECK warnings when using gcc (#1157)
+20.) level_select_menu.c => title_screen.c (#1152)
+21.) Use C preprocessor on assembly files (#1126)
+22.) Replace output_level_headers.py with sed equivalent (#1109)
+23.) Fix CC_CHECK warnings related to unused symbols and UB (#1155)
+24.) Define remaining floor lower limit values (#1147)
+25.) use r+b mode for libultra.a patch tool (#1148)
+26.) Use proper values for gPrevFrameObjectCount ifs (#1146)
+27.) Some minor bowser.inc.c labelling. (#1150)
+28.) fix king bob-omb texture pointers (#1145)
+29.) Split audio/load.c into Shindou/non-Shindou files (#1143)
+30.) Small Shindou audio cleanups (#1142)
+31.) Fix endians in ALSeqData (#1141)
+32.) Document S8 decoder rsp operation and some more (#1139)
+33.) Fix Shindou synthesis_process_note fake match (#1140)
+34.) More audio documentation, for the new rsp code and other fixes (#1138)
+35.) Build fixes for macOS: cpp, clang, recomp, aiff_extract_codebook (#1135)
+36.) Add ENABLE_RUMBLE to config.h (#1122)
+37.) Reduce recomp memory consumption by using smaller disassembly blocks (#1128)
+38.) Makefile fixes (#1123)
+39.) Update README.md
+40.) Update README.md
+41.) Reflect current decompilation status
+42.) Allow both archives and ELF objects to be patched (#1127)
+43.) Remove WIP mention in README for sh version.
+
 Refresh 13 2
 
 - No more nonmatchings remain for all builds including Shindou.

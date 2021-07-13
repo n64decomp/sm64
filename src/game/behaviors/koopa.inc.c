@@ -482,7 +482,7 @@ s32 obj_begin_race(s32 noTimer) {
         }
 
         // Unfreeze mario and disable time stop to begin the race
-        set_mario_npc_dialog(0);
+        set_mario_npc_dialog(MARIO_DIALOG_STOP);
         disable_time_stop_including_mario();
     } else if (o->oTimer > 50) {
         return TRUE;
@@ -518,7 +518,7 @@ static void koopa_the_quick_act_show_init_text(void) {
     s32 response = obj_update_race_proposition_dialog(
         sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].initText);
 
-    if (response == 1) {
+    if (response == DIALOG_RESPONSE_YES) {
         UNUSED s32 unused;
 
         gMarioShotFromCannon = FALSE;
@@ -531,7 +531,7 @@ static void koopa_the_quick_act_show_init_text(void) {
 
         o->oKoopaTurningAwayFromWall = FALSE;
         o->oFlags |= OBJ_FLAG_ACTIVE_FROM_AFAR;
-    } else if (response == 2) {
+    } else if (response == DIALOG_RESPONSE_NO) {
         o->oAction = KOOPA_THE_QUICK_ACT_WAIT_BEFORE_RACE;
         o->oKoopaTheQuickInitTextboxCooldown = 60;
     }
@@ -707,7 +707,7 @@ static void koopa_the_quick_act_stop(void) {
 static void koopa_the_quick_act_after_race(void) {
     cur_obj_init_animation_with_sound(7);
 
-    if (o->parentObj->oKoopaRaceEndpointUnk100 == 0) {
+    if (o->parentObj->oKoopaRaceEndpointDialog == 0) {
         if (cur_obj_can_mario_activate_textbox_2(400.0f, 400.0f)) {
             stop_background_music(SEQUENCE_ARGS(4, SEQ_LEVEL_SLIDE));
 
@@ -717,23 +717,24 @@ static void koopa_the_quick_act_after_race(void) {
                 if (o->parentObj->oKoopaRaceEndpointRaceStatus < 0) {
                     // Mario cheated
                     o->parentObj->oKoopaRaceEndpointRaceStatus = 0;
-                    o->parentObj->oKoopaRaceEndpointUnk100 = DIALOG_006;
+                    o->parentObj->oKoopaRaceEndpointDialog = DIALOG_006;
                 } else {
                     // Mario won
-                    o->parentObj->oKoopaRaceEndpointUnk100 =
+                    o->parentObj->oKoopaRaceEndpointDialog =
                         sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].winText;
                 }
             } else {
                 // KtQ won
-                o->parentObj->oKoopaRaceEndpointUnk100 = DIALOG_041;
+                o->parentObj->oKoopaRaceEndpointDialog = DIALOG_041;
             }
 
             o->oFlags &= ~OBJ_FLAG_ACTIVE_FROM_AFAR;
         }
-    } else if (o->parentObj->oKoopaRaceEndpointUnk100 > 0) {
-        s32 dialogResponse = cur_obj_update_dialog_with_cutscene(2, 1, CUTSCENE_DIALOG, o->parentObj->oKoopaRaceEndpointUnk100);
+    } else if (o->parentObj->oKoopaRaceEndpointDialog > 0) {
+        s32 dialogResponse = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+            DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, o->parentObj->oKoopaRaceEndpointDialog);
         if (dialogResponse != 0) {
-            o->parentObj->oKoopaRaceEndpointUnk100 = -1;
+            o->parentObj->oKoopaRaceEndpointDialog = DIALOG_NONE;
             o->oTimer = 0;
         }
     } else if (o->parentObj->oKoopaRaceEndpointRaceStatus != 0) {

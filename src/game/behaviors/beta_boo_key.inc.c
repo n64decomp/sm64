@@ -87,14 +87,14 @@ static void beta_boo_key_dropped_loop(void) {
         if (obj_check_if_collided_with_object(o, gMarioObject)) {
             // This interaction status is 0x01, the first interaction status flag.
             // It was only used for Hoot in the final game, but it seems it could've
-            // done something else or held some special meaning in beta.
+            // treated as a TRUE/FALSE statement or held some special meaning in beta.
             // Earlier, in beta_boo_key_drop (called when the parent boo is killed),
             // o->parentObj is set to the parent boo's parentObj. This means that
             // here, the parentObj is actually the parent of the old parent boo.
             // One theory about this code is that there was a boo spawner, which
             // spawned "false" boos and one "true" boo with the key, and the player
             // was intended to find the one with the key to progress.
-            o->parentObj->oInteractStatus = INT_STATUS_HOOT_GRABBED_BY_MARIO;
+            o->parentObj->oInteractStatus = TRUE;
 
             // Delete the object and spawn sparkles
             obj_mark_for_deletion(o);

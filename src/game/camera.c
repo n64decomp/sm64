@@ -390,9 +390,13 @@ struct CameraStoredInfo sCameraStoreCutscene;
 // first iteration of data
 u32 unused8032CFC0 = 0;
 struct Object *gCutsceneFocus = NULL;
-// other camera focuses?
+
 u32 unused8032CFC8 = 0;
 u32 unused8032CFCC = 0;
+
+/**
+ * The information of a second focus camera used by some objects
+ */
 struct Object *gSecondCameraFocus = NULL;
 
 /**
@@ -431,7 +435,7 @@ u8 sFramesSinceCutsceneEnded = 0;
  * 2 = No
  * 3 = Dialog doesn't have a response
  */
-u8 sCutsceneDialogResponse = 0;
+u8 sCutsceneDialogResponse = DIALOG_RESPONSE_NONE;
 struct PlayerCameraState *sMarioCamState = &gPlayerCameraState[0];
 struct PlayerCameraState *sLuigiCamState = &gPlayerCameraState[1];
 u32 unused8032D008 = 0;
@@ -1703,9 +1707,12 @@ struct ParallelTrackingPoint sBBHLibraryParTrackPath[] = {
 };
 
 s32 unused_update_mode_5_camera(UNUSED struct Camera *c, UNUSED Vec3f focus, UNUSED Vec3f pos) {
+#ifdef AVOID_UB
+   return 0;
+#endif
 }
 
-static void stub_camera_1(UNUSED s32 unused) {
+UNUSED static void stub_camera_1(UNUSED s32 unused) {
 }
 
 void mode_boss_fight_camera(struct Camera *c) {
@@ -2028,6 +2035,9 @@ void mode_behind_mario_camera(struct Camera *c) {
 }
 
 s32 nop_update_water_camera(UNUSED struct Camera *c, UNUSED Vec3f focus, UNUSED Vec3f pos) {
+#ifdef AVOID_UB
+   return 0;
+#endif
 }
 
 /**
@@ -2226,7 +2236,7 @@ s16 update_default_camera(struct Camera *c) {
         if ((closeToMario & 1) && avoidStatus != 0) {
             yawVel = 0;
         }
-        if (yawVel != 0 && get_dialog_id() == -1) {
+        if (yawVel != 0 && get_dialog_id() == DIALOG_NONE) {
             camera_approach_s16_symmetric_bool(&yaw, yawGoal, yawVel);
         }
     }
@@ -3327,12 +3337,18 @@ void init_camera(struct Camera *c) {
 
     // Set the camera's starting position or start a cutscene for certain levels
     switch (gCurrLevelNum) {
+        // Calls the initial cutscene when you enter Bowser battle levels
+        // Note: This replaced an "old" way to call these cutscenes using
+        // a camEvent value: CAM_EVENT_BOWSER_INIT
         case LEVEL_BOWSER_1:
 #ifndef VERSION_JP
+            // Since Bowser 1 has a demo entry, check for it
+            // If it is, then set CamAct to the end to directly activate Bowser
+            // If it isn't, then start cutscene
             if (gCurrDemoInput == NULL) {
                 start_cutscene(c, CUTSCENE_ENTER_BOWSER_ARENA);
             } else if (gSecondCameraFocus != NULL) {
-                gSecondCameraFocus->oBowserUnk88 = 2;
+                gSecondCameraFocus->oBowserCamAct = BOWSER_CAM_ACT_END;
             }
 #else
             start_cutscene(c, CUTSCENE_ENTER_BOWSER_ARENA);
@@ -4848,6 +4864,9 @@ void play_sound_if_cam_switched_to_lakitu_or_mario(void) {
  */
 s32 radial_camera_input(struct Camera *c, UNUSED f32 unused) {
     s16 dummy;
+#ifdef AVOID_UB
+    dummy = 0;
+#endif
 
     if ((gCameraMovementFlags & CAM_MOVE_ENTERED_ROTATE_SURFACE) || !(gCameraMovementFlags & CAM_MOVE_ROTATE)) {
 
@@ -5315,7 +5334,7 @@ void set_focus_rel_mario(struct Camera *c, f32 leftRight, f32 yOff, f32 forwBack
  * @param forwBack offset to Mario's front/back, relative to his faceAngle
  * @param yawOff offset to Mario's faceAngle, changes the direction of `leftRight` and `forwBack`
  */
-static void unused_set_pos_rel_mario(struct Camera *c, f32 leftRight, f32 yOff, f32 forwBack, s16 yawOff) {
+UNUSED static void unused_set_pos_rel_mario(struct Camera *c, f32 leftRight, f32 yOff, f32 forwBack, s16 yawOff) {
     u16 yaw = sMarioCamState->faceAngle[1] + yawOff;
 
     c->pos[0] = sMarioCamState->pos[0] + forwBack * sins(yaw) + leftRight * coss(yaw);
@@ -5364,7 +5383,7 @@ void determine_pushing_or_pulling_door(s16 *rotation) {
     if (sMarioCamState->action == ACT_PULLING_DOOR) {
         *rotation = 0;
     } else {
-        *rotation = DEGREES(180);
+        *rotation = DEGREES(-180);
     }
 }
 
@@ -6863,31 +6882,31 @@ void start_object_cutscene(u8 cutscene, struct Object *o) {
  */
 u8 start_object_cutscene_without_focus(u8 cutscene) {
     sObjectCutscene = cutscene;
-    sCutsceneDialogResponse = 0;
+    sCutsceneDialogResponse = DIALOG_RESPONSE_NONE;
     return 0;
 }
 
-s32 unused_dialog_cutscene_response(u8 cutscene) {
+s16 unused_dialog_cutscene_response(u8 cutscene) {
     // if not in a cutscene, start this one
     if ((gCamera->cutscene == 0) && (sObjectCutscene == 0)) {
         sObjectCutscene = cutscene;
     }
 
     // if playing this cutscene and Mario responded, return the response
-    if ((gCamera->cutscene == cutscene) && (sCutsceneDialogResponse != 0)) {
-        return (s16) sCutsceneDialogResponse;
+    if ((gCamera->cutscene == cutscene) && (sCutsceneDialogResponse)) {
+        return sCutsceneDialogResponse;
     } else {
         return 0;
     }
 }
 
 s16 cutscene_object_with_dialog(u8 cutscene, struct Object *o, s16 dialogID) {
-    s16 response = 0;
+    s16 response = DIALOG_RESPONSE_NONE;
 
     if ((gCamera->cutscene == 0) && (sObjectCutscene == 0)) {
         if (gRecentCutscene != cutscene) {
             start_object_cutscene(cutscene, o);
-            if (dialogID != -1) {
+            if (dialogID != DIALOG_NONE) {
                 sCutsceneDialogID = dialogID;
             } else {
                 sCutsceneDialogID = DIALOG_001;
@@ -6902,7 +6921,7 @@ s16 cutscene_object_with_dialog(u8 cutscene, struct Object *o, s16 dialogID) {
 }
 
 s16 cutscene_object_without_dialog(u8 cutscene, struct Object *o) {
-    s16 response = cutscene_object_with_dialog(cutscene, o, -1);
+    s16 response = cutscene_object_with_dialog(cutscene, o, DIALOG_NONE);
     return response;
 }
 
@@ -6987,7 +7006,7 @@ void copy_spline_segment(struct CutsceneSplinePoint dst[], struct CutsceneSpline
 s16 cutscene_common_set_dialog_state(s32 state) {
     s16 timer = gCutsceneTimer;
     // If the dialog ended, return CUTSCENE_LOOP, which would end the cutscene shot
-    if (set_mario_npc_dialog(state) == 2) {
+    if (set_mario_npc_dialog(state) == MARIO_DIALOG_STATUS_SPEAK) {
         timer = CUTSCENE_LOOP;
     }
     return timer;
@@ -6995,19 +7014,19 @@ s16 cutscene_common_set_dialog_state(s32 state) {
 
 /// Unused SSL cutscene?
 static UNUSED void unused_cutscene_mario_dialog_looking_down(UNUSED struct Camera *c) {
-    gCutsceneTimer = cutscene_common_set_dialog_state(3);
+    gCutsceneTimer = cutscene_common_set_dialog_state(MARIO_DIALOG_LOOK_DOWN);
 }
 
 /**
  * Cause Mario to enter the normal dialog state.
  */
 static BAD_RETURN(s32) cutscene_mario_dialog(UNUSED struct Camera *c) {
-    gCutsceneTimer = cutscene_common_set_dialog_state(1);
+    gCutsceneTimer = cutscene_common_set_dialog_state(MARIO_DIALOG_LOOK_FRONT);
 }
 
 /// Unused SSL cutscene?
 static UNUSED void unused_cutscene_mario_dialog_looking_up(UNUSED struct Camera *c) {
-    gCutsceneTimer = cutscene_common_set_dialog_state(2);
+    gCutsceneTimer = cutscene_common_set_dialog_state(MARIO_DIALOG_LOOK_UP);
 }
 
 /**
@@ -7196,7 +7215,7 @@ void cutscene_unsoften_music(UNUSED struct Camera *c) {
     seq_player_unlower_volume(SEQ_PLAYER_LEVEL, 60);
 }
 
-static void stub_camera_5(UNUSED struct Camera *c) {
+UNUSED static void stub_camera_5(UNUSED struct Camera *c) {
 }
 
 BAD_RETURN(s32) cutscene_unused_start(UNUSED struct Camera *c) {
@@ -7682,7 +7701,7 @@ BAD_RETURN(s32) cutscene_dance_rotate_move_towards_mario(struct Camera *c) {
 /**
  * Speculated to be dance-related due to its proximity to the other dance functions
  */
-static BAD_RETURN(s32) cutscene_dance_unused(UNUSED struct Camera *c) {
+UNUSED static BAD_RETURN(s32) cutscene_dance_unused(UNUSED struct Camera *c) {
 }
 
 /**
@@ -8033,10 +8052,10 @@ BAD_RETURN(s32) cutscene_bowser_area_shake_fov(UNUSED struct Camera *c) {
 }
 
 /**
- * Set oBowserUnk88 to 1, which causes bowser to start walking.
+ * Set oBowserCamAct to 1, which causes bowser to start walking.
  */
 BAD_RETURN(s32) cutscene_bowser_area_start_bowser_walking(UNUSED struct Camera *c) {
-    gSecondCameraFocus->oBowserUnk88 = 1;
+    gSecondCameraFocus->oBowserCamAct = BOWSER_CAM_ACT_WALK;
 }
 
 /**
@@ -8093,11 +8112,11 @@ BAD_RETURN(s32) cutscene_bowser_arena_pan_left(UNUSED struct Camera *c) {
  * Duplicate of cutscene_mario_dialog().
  */
 BAD_RETURN(s32) cutscene_bowser_arena_mario_dialog(UNUSED struct Camera *c) {
-    cutscene_common_set_dialog_state(1);
+    cutscene_common_set_dialog_state(MARIO_DIALOG_LOOK_FRONT);
 }
 
 void cutscene_stop_dialog(UNUSED struct Camera *c) {
-    cutscene_common_set_dialog_state(0);
+    cutscene_common_set_dialog_state(MARIO_DIALOG_STOP);
 }
 
 /**
@@ -8138,7 +8157,7 @@ BAD_RETURN(s32) bowser_fight_intro_dialog(UNUSED struct Camera *c) {
         case LEVEL_BOWSER_2:
             dialog = DIALOG_092;
             break;
-        default:
+        default: // LEVEL_BOWSER_3
             dialog = DIALOG_093;
     }
 
@@ -8151,7 +8170,7 @@ BAD_RETURN(s32) bowser_fight_intro_dialog(UNUSED struct Camera *c) {
 BAD_RETURN(s32) cutscene_bowser_arena_dialog(struct Camera *c) {
     cutscene_event(bowser_fight_intro_dialog, c, 0, 0);
 
-    if (get_dialog_id() == -1) {
+    if (get_dialog_id() == DIALOG_NONE) {
         gCutsceneTimer = CUTSCENE_LOOP;
     }
 }
@@ -8165,7 +8184,7 @@ BAD_RETURN(s32) cutscene_bowser_arena_end(struct Camera *c) {
     transition_next_state(c, 20);
     sStatusFlags |= CAM_FLAG_UNUSED_CUTSCENE_ACTIVE;
     sModeOffsetYaw = sMarioCamState->faceAngle[1] + DEGREES(90);
-    gSecondCameraFocus->oBowserUnk88 = 2;
+    gSecondCameraFocus->oBowserCamAct = BOWSER_CAM_ACT_END;
 }
 
 /**
@@ -8595,7 +8614,7 @@ BAD_RETURN(s32) cutscene_death_stomach_goto_mario(struct Camera *c) {
 /**
  * Ah, yes
  */
-static void unused_water_death_move_to_side_of_mario(struct Camera *c) {
+UNUSED static void unused_water_death_move_to_side_of_mario(struct Camera *c) {
     water_death_move_to_mario_side(c);
 }
 
@@ -8869,7 +8888,7 @@ BAD_RETURN(s32) cutscene_enter_pyramid_top(struct Camera *c) {
     }
 }
 
-static void unused_cutscene_goto_cvar(struct Camera *c) {
+UNUSED static void unused_cutscene_goto_cvar(struct Camera *c) {
     f32 dist;
 
     dist = calc_abs_dist(sCutsceneVars[3].point, sMarioCamState->pos);
@@ -8967,7 +8986,7 @@ BAD_RETURN(s32) cutscene_dialog_create_dialog_box(struct Camera *c) {
     }
 
     //! Unused. This may have been used before sCutsceneDialogResponse was implemented.
-    sCutsceneVars[8].angle[0] = 3;
+    sCutsceneVars[8].angle[0] = DIALOG_RESPONSE_NOT_DEFINED;
 }
 
 /**
@@ -8979,13 +8998,13 @@ BAD_RETURN(s32) cutscene_dialog(struct Camera *c) {
     cutscene_event(cutscene_dialog_create_dialog_box, c, 10, 10);
     sStatusFlags |= CAM_FLAG_SMOOTH_MOVEMENT;
 
-    if (gDialogResponse != 0) {
+    if (gDialogResponse != DIALOG_RESPONSE_NONE) {
         sCutsceneDialogResponse = gDialogResponse;
     }
 
-    if ((get_dialog_id() == -1) && (sCutsceneVars[8].angle[0] != 0)) {
+    if ((get_dialog_id() == DIALOG_NONE) && (sCutsceneVars[8].angle[0] != 0)) {
         if (c->cutscene != CUTSCENE_RACE_DIALOG) {
-            sCutsceneDialogResponse = 3;
+            sCutsceneDialogResponse = DIALOG_RESPONSE_NOT_DEFINED;
         }
 
         gCutsceneTimer = CUTSCENE_LOOP;
@@ -9030,7 +9049,7 @@ BAD_RETURN(s32) cutscene_read_message_start(struct Camera *c) {
     sCutsceneVars[0].angle[0] = 0;
 }
 
-static void unused_cam_to_mario(struct Camera *c) {
+UNUSED static void unused_cam_to_mario(struct Camera *c) {
     Vec3s dir;
 
     vec3s_set(dir, 0, sMarioCamState->faceAngle[1], 0);
@@ -9050,7 +9069,7 @@ BAD_RETURN(s32) cutscene_read_message(struct Camera *c) {
     switch (sCutsceneVars[0].angle[0]) {
         // Do nothing until message is gone.
         case 0:
-            if (get_dialog_id() != -1) {
+            if (get_dialog_id() != DIALOG_NONE) {
                 sCutsceneVars[0].angle[0] += 1;
                 set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_DIALOG);
             }
@@ -9062,7 +9081,7 @@ BAD_RETURN(s32) cutscene_read_message(struct Camera *c) {
 
             // This could cause softlocks. If a message starts one frame after another one closes, the
             // cutscene will never end.
-            if (get_dialog_id() == -1) {
+            if (get_dialog_id() == DIALOG_NONE) {
                 gCutsceneTimer = CUTSCENE_LOOP;
                 retrieve_info_star(c);
                 transition_next_state(c, 15);
@@ -9395,11 +9414,11 @@ BAD_RETURN(s32) cutscene_cap_switch_press(struct Camera *c) {
     cutscene_event(cutscene_cap_switch_press_create_dialog, c, 10, 10);
     vec3f_get_dist_and_angle(sMarioCamState->pos, c->pos, &dist, &pitch, &yaw);
 
-    if (gDialogResponse != 0) {
+    if (gDialogResponse != DIALOG_RESPONSE_NONE) {
         sCutsceneVars[4].angle[0] = gDialogResponse;
     }
 
-    if ((get_dialog_id() == -1) && (sCutsceneVars[4].angle[0] != 0)) {
+    if ((get_dialog_id() == DIALOG_NONE) && (sCutsceneVars[4].angle[0] != 0)) {
         sCutsceneDialogResponse = sCutsceneVars[4].angle[0];
         if (sCutsceneVars[4].angle[0] == 1) {
             cap_switch_save(gCutsceneFocus->oBehParams2ndByte);
@@ -9493,8 +9512,8 @@ s32 intro_peach_move_camera_start_to_pipe(struct Camera *c, struct CutsceneSplin
 
     // The two splines used by this function are reflected in the horizontal plane for some reason,
     // so they are rotated every frame. Why do this, Nintendo?
-    rotate_in_xz(c->focus, c->focus, DEGREES(180));
-    rotate_in_xz(c->pos, c->pos, DEGREES(180));
+    rotate_in_xz(c->focus, c->focus, DEGREES(-180));
+    rotate_in_xz(c->pos, c->pos, DEGREES(-180));
 
     vec3f_set(offset, -1328.f, 260.f, 4664.f);
     vec3f_add(c->focus, offset);
@@ -9532,7 +9551,7 @@ BAD_RETURN(s32) cutscene_intro_peach_start_to_pipe_spline(struct Camera *c) {
  * Loop the cutscene until Mario exits the dialog.
  */
 BAD_RETURN(s32) cutscene_intro_peach_dialog(struct Camera *c) {
-    if (get_dialog_id() == -1) {
+    if (get_dialog_id() == DIALOG_NONE) {
         vec3f_copy(gLakituState.goalPos, c->pos);
         vec3f_copy(gLakituState.goalFocus, c->focus);
         sStatusFlags |= (CAM_FLAG_SMOOTH_MOVEMENT | CAM_FLAG_UNUSED_CUTSCENE_ACTIVE);
@@ -9654,7 +9673,7 @@ BAD_RETURN(s32) cutscene_intro_peach_letter(struct Camera *c) {
     cutscene_event(play_sound_peach_reading_letter, c, 83, 83);
 #endif
 
-    if ((gCutsceneTimer > 120) && (get_dialog_id() == -1)) {
+    if ((gCutsceneTimer > 120) && (get_dialog_id() == DIALOG_NONE)) {
         // Start the next scene
         gCutsceneTimer = CUTSCENE_LOOP;
     }

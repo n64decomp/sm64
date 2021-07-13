@@ -27,7 +27,7 @@ struct Connection {
 };
 
 // data
-static void *sUnused801A81D0 = NULL;
+UNUSED static void *sUnused801A81D0 = NULL;
 static s32 D_801A81D4[25] = {
     /*  ID?    X    Y    Z */
     9,  3,  12,  -14, 25, 5,  16,  -25, 42, 4,  15, -39, 55,

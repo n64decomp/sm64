@@ -111,7 +111,7 @@ void bhv_heave_ho_loop(void) {
             heave_ho_move();
             break;
         case HELD_HELD:
-            cur_obj_unrender_and_reset_state(0, 0);
+            cur_obj_unrender_set_action_and_anim(0, 0);
             break;
         case HELD_THROWN:
             cur_obj_get_dropped();

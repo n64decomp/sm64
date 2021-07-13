@@ -18,7 +18,7 @@ void bhv_unused_poundable_platform(void) {
     if (o->oAction == 0) {
         if (cur_obj_is_mario_ground_pounding_platform()) {
             spawn_mist_particles();
-            spawn_triangle_break_particles(20, 56, 3.0f, 0);
+            spawn_triangle_break_particles(20, MODEL_SL_CRACKED_ICE_CHUNK, 3.0f, 0);
             o->oAction++;
         }
     } else if (o->oTimer > 7) {

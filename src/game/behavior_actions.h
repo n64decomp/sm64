@@ -231,7 +231,7 @@ void bhv_big_boo_loop(void);
 void bhv_courtyard_boo_triplet_init(void);
 void obj_set_secondary_camera_focus(void);
 void bhv_boo_loop(void);
-void bhv_boo_boss_spawned_bridge_loop(void);
+void bhv_boo_staircase(void);
 void bhv_bbh_tilting_trap_platform_loop(void);
 void bhv_haunted_bookshelf_loop(void);
 void bhv_merry_go_round_loop(void);

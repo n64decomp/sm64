@@ -2,9 +2,9 @@
 #include "PR/R4300.h"
 #include "PR/rcp.h"
 #include "PR/os_pi.h"
-#include "os.h"
+#include "PR/os.h"
+#include "libultra_internal.h"
 
-#ifdef VERSION_SH
 OSPiHandle CartRomHandle;
 
 OSPiHandle *osCartRomInit(void) {
@@ -36,4 +36,3 @@ OSPiHandle *osCartRomInit(void) {
 
     return &CartRomHandle;
 }
-#endif

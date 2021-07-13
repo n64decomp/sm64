@@ -52,7 +52,7 @@ void bhv_jumping_box_loop(void) {
         case HELD_HELD:
             obj_copy_pos(o, gMarioObject);
             cur_obj_set_model(MODEL_BREAKABLE_BOX_SMALL);
-            cur_obj_unrender_and_reset_state(-1, 0);
+            cur_obj_unrender_set_action_and_anim(-1, 0);
             break;
         case HELD_THROWN:
             cur_obj_get_thrown_or_placed(40.0f, 20.0f, 1);

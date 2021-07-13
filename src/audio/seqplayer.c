@@ -55,9 +55,9 @@ void sequence_channel_init(struct SequenceChannel *seqChannel) {
     seqChannel->panChannelWeight = 1.0f;
     seqChannel->noteUnused = NULL;
 #endif
-    seqChannel->reverb = 0;
+    seqChannel->reverbVol = 0;
 #ifdef VERSION_SH
-    seqChannel->unkSH0C = 0;
+    seqChannel->synthesisVolume = 0;
 #endif
     seqChannel->notePriority = NOTE_PRIORITY_DEFAULT;
 #ifdef VERSION_SH
@@ -142,7 +142,7 @@ s32 seq_channel_set_layer(struct SequenceChannel *seqChannel, s32 layerIndex) {
     layer->freqScale = 1.0f;
     layer->velocitySquare = 0.0f;
 #ifdef VERSION_SH
-    layer->unkSH28 = 1.0f;
+    layer->freqScaleMultiplier = 1.0f;
 #endif
     layer->instOrWave = 0xff;
 #else
@@ -989,7 +989,7 @@ void seq_channel_layer_process_script_part1(struct SequenceChannelLayer *layer) 
 }
 
 s32 seq_channel_layer_process_script_part5(struct SequenceChannelLayer *layer, s32 cmd) {
-    if (!layer->stopSomething && layer->sound != NULL && layer->sound->sample->codec == 2 &&
+    if (!layer->stopSomething && layer->sound != NULL && layer->sound->sample->codec == CODEC_SKIP &&
         layer->sound->sample->medium != 0) {
         layer->stopSomething = TRUE;
         return -1;
@@ -1176,7 +1176,7 @@ s32 seq_channel_layer_process_script_part2(struct SequenceChannelLayer *layer) {
 
             case 0xce:
                 cmd = m64_read_u8(state) + 0x80;
-                layer->unkSH28 = unk_sh_data_1[cmd];
+                layer->freqScaleMultiplier = unk_sh_data_1[cmd];
                 // missing break :)
 
             default:
@@ -1320,7 +1320,7 @@ s32 seq_channel_layer_process_script_part4(struct SequenceChannelLayer *layer, s
         }
     }
     layer->delayUnused = layer->delay;
-    layer->freqScale *= layer->unkSH28;
+    layer->freqScale *= layer->freqScaleMultiplier;
     return sameSound;
 }
 
@@ -1828,7 +1828,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 #endif
 
                     case 0xd4: // chan_setreverb
-                        seqChannel->reverb = m64_read_u8(state);
+                        seqChannel->reverbVol = m64_read_u8(state);
                         break;
 
                     case 0xc6: // chan_setbank; switch bank within set
@@ -1972,8 +1972,8 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                         seqChannel->transposition = (s8) *seqData++;
                         seqChannel->newPan = *seqData++;
                         seqChannel->panChannelWeight = *seqData++;
-                        seqChannel->reverb = *seqData++;
-                        seqChannel->reverbIndex = *seqData++; // reverb index?
+                        seqChannel->reverbVol = *seqData++;
+                        seqChannel->reverbIndex = *seqData++;
                         seqChannel->changes.as_bitfields.pan = TRUE;
                         break;
 
@@ -1984,7 +1984,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                         seqChannel->transposition = (s8) m64_read_u8(state);
                         seqChannel->newPan = m64_read_u8(state);
                         seqChannel->panChannelWeight = m64_read_u8(state);
-                        seqChannel->reverb = m64_read_u8(state);
+                        seqChannel->reverbVol = m64_read_u8(state);
                         seqChannel->reverbIndex = m64_read_u8(state);
                         seqChannel->changes.as_bitfields.pan = TRUE;
                         break;
@@ -2016,7 +2016,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 #endif
 #ifdef VERSION_SH
                     case 0xed:
-                        seqChannel->unkSH0C = m64_read_u8(state);
+                        seqChannel->synthesisVolume = m64_read_u8(state);
                         break;
 
                     case 0xef:
@@ -2112,7 +2112,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 
                     case 0x10:
                         seqChannel->soundScriptIO[loBits] = -1;
-                        if (func_802f47c8(seqChannel->bankId, (u8)value, &seqChannel->soundScriptIO[loBits]) == -1) {
+                        if (func_sh_802f47c8(seqChannel->bankId, (u8)value, &seqChannel->soundScriptIO[loBits]) == -1) {
                         }
                         break;
 #else

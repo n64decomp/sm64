@@ -104,9 +104,6 @@ void tumbling_bridge_act_0(void) {
 void (*sTumblingBridgeActions[])(void) = { tumbling_bridge_act_0, tumbling_bridge_act_1,
                                            tumbling_bridge_act_2, tumbling_bridge_act_3 };
 
-s16 D_8032F38C[] = { -51, 0,     0, -461, 0,   0, -512, 0,   0,    -2611, 0,
-                     0,   -2360, 0, 0,    214, 0, 0,    -50, 1945, 1,     0 };
-
 void bhv_tumbling_bridge_loop(void) {
     cur_obj_call_action_function(sTumblingBridgeActions);
 }

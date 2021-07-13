@@ -2,7 +2,6 @@
 #include "PR/rcp.h"
 #include "controller.h"
 
-#ifdef VERSION_SH
 extern s32 func_8030A5C0(OSMesgQueue *, s32);
 void __osPackRamReadData(int channel, u16 address);
 
@@ -87,4 +86,3 @@ void __osPackRamReadData(int channel, u16 address) {
     ptr += sizeof(__OSContRamReadFormat);
     ptr[0] = CONT_CMD_END;
 }
-#endif
