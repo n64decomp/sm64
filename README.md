@@ -1,4 +1,6 @@
 # Super Mario 64
+[![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/n64decomp/sm64)](https://www.tickgit.com/browse?repo=github.com/n64decomp/sm64)
+
 
 - This repo contains a full decompilation of Super Mario 64 (J), (U), (E), and (SH).
 - Naming and documentation of the source code and data structures are in progress.
