@@ -582,6 +582,13 @@
 #define /*0x104*/ oHorizontalMovementUnk104 OBJECT_FIELD_S32(0x1F)
 #define /*0x108*/ oHorizontalMovementUnk108 OBJECT_FIELD_F32(0x20)
 
+/* LLL Octagonal Rotating Mesh */
+#define /*0x0F4*/ oLllOctmeshWaveTimer    OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oLllOctmeshActionOffset OBJECT_FIELD_S32(0x1C)
+#define /*0x100*/ oLllOctmeshWaveOffset1  OBJECT_FIELD_F32(0x1E)
+#define /*0x104*/ oLllOctmeshStandTimer   OBJECT_FIELD_S32(0x1F)
+#define /*0x108*/ oLllOctmeshWaveOffset2  OBJECT_FIELD_F32(0x20)
+
 /* Kickable Board */
 #define /*0x0F4*/ oKickableBoardF4 OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oKickableBoardF8 OBJECT_FIELD_S32(0x1C)
