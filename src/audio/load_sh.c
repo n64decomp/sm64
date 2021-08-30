@@ -1,6 +1,5 @@
 #ifdef VERSION_SH
 #include <ultra64.h>
-#include <PR/os.h>
 
 #include "data.h"
 #include "external.h"
