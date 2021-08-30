@@ -32,7 +32,7 @@ s32 osJamMesg(UNUSED OSMesgQueue *mq, UNUSED OSMesg msg, UNUSED s32 flag) {
     return 0;
 }
 s32 osSendMesg(UNUSED OSMesgQueue *mq, UNUSED OSMesg msg, UNUSED s32 flag) {
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
     s32 index;
     if (mq->validCount >= mq->msgCount) {
         return -1;
@@ -44,7 +44,7 @@ s32 osSendMesg(UNUSED OSMesgQueue *mq, UNUSED OSMesg msg, UNUSED s32 flag) {
     return 0;
 }
 s32 osRecvMesg(UNUSED OSMesgQueue *mq, UNUSED OSMesg *msg, UNUSED s32 flag) {
-#if VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
     if (mq->validCount == 0) {
         return -1;
     }
@@ -184,4 +184,33 @@ s32 osEepromLongWrite(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes
     fclose(fp);
 #endif
     return ret;
+}
+
+s32 gNumVblanks;
+
+s32 osMotorInit(UNUSED OSMesgQueue *mq, UNUSED void *pfs, UNUSED int channel) {
+    return 0;
+}
+
+s32 osMotorStart(UNUSED void *pfs) {
+    return 0;
+}
+
+s32 osMotorStop(UNUSED void *pfs) {
+    return 0;
+}
+
+OSPiHandle *osCartRomInit(void) {
+    static OSPiHandle handle;
+    return &handle;
+}
+
+OSPiHandle *osDriveRomInit(void) {
+    static OSPiHandle handle;
+    return &handle;
+}
+
+s32 osEPiStartDma(UNUSED OSPiHandle *pihandle, OSIoMesg *mb, UNUSED s32 direction) {
+    memcpy(mb->dramAddr, (const void *) mb->devAddr, mb->size);
+    osSendMesg(mb->hdr.retQueue, mb, OS_MESG_NOBLOCK);
 }

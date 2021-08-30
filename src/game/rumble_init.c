@@ -238,6 +238,7 @@ void func_sh_8024CA04(void) {
     gCurrRumbleSettings.unk0C = 4;
 }
 
+#ifdef TARGET_N64
 static void thread6_rumble_loop(UNUSED void *a0) {
     OSMesg msg;
 
@@ -266,6 +267,7 @@ static void thread6_rumble_loop(UNUSED void *a0) {
         }
     }
 }
+#endif
 
 void cancel_rumble(void) {
     sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) < 1;
@@ -285,9 +287,11 @@ void cancel_rumble(void) {
 }
 
 void create_thread_6(void) {
+#ifdef TARGET_N64
     osCreateMesgQueue(&gRumbleThreadVIMesgQueue, gRumbleThreadVIMesgBuf, 1);
     osCreateThread(&gRumblePakThread, 6, thread6_rumble_loop, NULL, gThread6Stack + 0x2000, 30);
     osStartThread(&gRumblePakThread);
+#endif
 }
 
 void rumble_thread_update_vi(void) {
