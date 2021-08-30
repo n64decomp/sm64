@@ -411,6 +411,8 @@ static void gfx_glx_get_dimensions(uint32_t *width, uint32_t *height) {
 }
 
 static void gfx_glx_handle_events(void) {
+    Atom wm_delete_window = XInternAtom(glx.dpy, "WM_DELETE_WINDOW", 0);
+    XSetWMProtocols(glx.dpy, glx.win, & wm_delete_window, 1);
     while (XPending(glx.dpy)) {
         XEvent xev;
         XNextEvent(glx.dpy, &xev);
@@ -436,6 +438,11 @@ static void gfx_glx_handle_events(void) {
                         }
                     }
                 }
+            }
+        }
+        if (xev.type == ClientMessage) {
+            if (xev.xclient.data.l[0] == wm_delete_window) {
+                exit(0);
             }
         }
     }
