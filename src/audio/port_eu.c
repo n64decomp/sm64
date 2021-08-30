@@ -140,7 +140,7 @@ void create_next_audio_buffer(s16 *samples, u32 num_samples) {
     gAudioFrameCount++;
     decrease_sample_dma_ttls();
     if (osRecvMesg(OSMesgQueues[2], &msg, 0) != -1) {
-        gAudioResetPresetIdToLoad = (u8) (s32) msg;
+        gAudioResetPresetIdToLoad = (u8) (intptr_t) msg;
         gAudioResetStatus = 5;
     }
 

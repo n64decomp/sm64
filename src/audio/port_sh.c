@@ -23,6 +23,7 @@ void func_8031D690(s32 playerIndex, s32 numFrames);
 void seq_player_fade_to_zero_volume(s32 arg0, s32 numFrames);
 void func_802ad7ec(u32 arg0);
 
+#ifdef TARGET_N64
 struct SPTask *create_next_audio_frame_task(void) {
     u32 samplesRemainingInAI;
     s32 writtenCmds;
@@ -145,6 +146,35 @@ struct SPTask *create_next_audio_frame_task(void) {
         return NULL;
     }
 }
+#else
+struct SPTask *create_next_audio_frame_task(void) {
+    return NULL;
+}
+void create_next_audio_buffer(s16 *samples, u32 num_samples) {
+    s32 writtenCmds;
+    OSMesg msg;
+    gAudioFrameCount++;
+    decrease_sample_dma_ttls();
+    if (osRecvMesg(D_SH_80350F88, &msg, 0) != -1) {
+        gAudioResetPresetIdToLoad = (u8) (intptr_t) msg;
+        if (gAudioResetStatus == 0) {
+            gAudioResetStatus = 5;
+        }
+    }
+
+    if (gAudioResetStatus != 0) {
+        audio_reset_session();
+        gAudioResetStatus = 0;
+    }
+    while (osRecvMesg(D_SH_80350F68, &msg, OS_MESG_NOBLOCK) != -1) {
+        func_802ad7ec((u32) msg);
+    }
+    synthesis_execute(gAudioCmdBuffers[0], &writtenCmds, samples, num_samples);
+    gAudioRandom = ((gAudioRandom + gAudioFrameCount) * gAudioFrameCount);
+    gAudioRandom = gAudioRandom + writtenCmds / 8;
+    gCurrAudioFrameDmaCount = 0;
+}
+#endif
 
 void eu_process_audio_cmd(struct EuAudioCmd *cmd) {
     s32 i;
