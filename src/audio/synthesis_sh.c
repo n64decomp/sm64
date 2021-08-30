@@ -9,6 +9,10 @@
 #include "internal.h"
 #include "external.h"
 
+#ifndef TARGET_N64
+#include "../pc/mixer.h"
+#endif
+
 
 #define DMEM_ADDR_TEMP 0x450
 #define DMEM_ADDR_RESAMPLED 0x470
