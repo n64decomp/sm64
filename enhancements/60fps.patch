@@ -1,8 +1,8 @@
 diff --git a/include/types.h b/include/types.h
-index 5132a4ed..f5a441df 100644
+index 5b092bb0..2edadf8a 100644
 --- a/include/types.h
 +++ b/include/types.h
-@@ -117,6 +117,10 @@ struct AnimInfo
+@@ -119,6 +119,10 @@ struct AnimInfo
      /*0x0A 0x42*/ u16 animTimer;
      /*0x0C 0x44*/ s32 animFrameAccelAssist;
      /*0x10 0x48*/ s32 animAccel;
@@ -13,7 +13,7 @@ index 5132a4ed..f5a441df 100644
  };
  
  struct GraphNodeObject
-@@ -127,11 +131,22 @@ struct GraphNodeObject
+@@ -129,11 +133,22 @@ struct GraphNodeObject
      /*0x19*/ s8 activeAreaIndex;
      /*0x1A*/ Vec3s angle;
      /*0x20*/ Vec3f pos;
@@ -36,7 +36,7 @@ index 5132a4ed..f5a441df 100644
  };
  
  struct ObjectNode
-@@ -242,6 +257,10 @@ struct Surface
+@@ -244,6 +259,10 @@ struct Surface
      } normal;
      /*0x28*/ f32 originOffset;
      /*0x2C*/ struct Object *object;
@@ -48,7 +48,7 @@ index 5132a4ed..f5a441df 100644
  
  struct MarioBodyState
 diff --git a/src/engine/graph_node.h b/src/engine/graph_node.h
-index 22ab70ce..cf566a1c 100644
+index e20064c3..e2c32523 100644
 --- a/src/engine/graph_node.h
 +++ b/src/engine/graph_node.h
 @@ -109,6 +109,8 @@ struct GraphNodePerspective
@@ -112,7 +112,7 @@ index 22ab70ce..cf566a1c 100644
  
  /** A node that allows an object to specify a different culling radius than the
 diff --git a/src/engine/surface_collision.c b/src/engine/surface_collision.c
-index 69f40c9c..9118d885 100644
+index 318a8043..ce57cf1c 100644
 --- a/src/engine/surface_collision.c
 +++ b/src/engine/surface_collision.c
 @@ -7,6 +7,7 @@
@@ -232,7 +232,7 @@ index 69f40c9c..9118d885 100644
          break;
      }
 diff --git a/src/engine/surface_load.c b/src/engine/surface_load.c
-index b447dc24..005cbd0f 100644
+index 9a5f1777..8c004012 100644
 --- a/src/engine/surface_load.c
 +++ b/src/engine/surface_load.c
 @@ -14,6 +14,7 @@
@@ -256,7 +256,7 @@ index b447dc24..005cbd0f 100644
      surface->vertex2[0] = x2;
      surface->vertex3[0] = x3;
 diff --git a/src/game/camera.c b/src/game/camera.c
-index 8082ef5e..fb569826 100644
+index 97c48dc1..b1453e44 100644
 --- a/src/game/camera.c
 +++ b/src/game/camera.c
 @@ -483,6 +483,10 @@ CameraTransition sModeTransitions[] = {
@@ -270,7 +270,7 @@ index 8082ef5e..fb569826 100644
  /**
   * Starts a camera shake triggered by an interaction
   */
-@@ -5502,6 +5506,7 @@ s32 set_camera_mode_fixed(struct Camera *c, s16 x, s16 y, s16 z) {
+@@ -5511,6 +5515,7 @@ s32 set_camera_mode_fixed(struct Camera *c, s16 x, s16 y, s16 z) {
          c->mode = CAMERA_MODE_FIXED;
          vec3f_set(c->pos, sFixedModeBasePosition[0], sMarioCamState->pos[1],
                    sFixedModeBasePosition[2]);
@@ -278,7 +278,7 @@ index 8082ef5e..fb569826 100644
      }
      return basePosSet;
  }
-@@ -5652,6 +5657,7 @@ BAD_RETURN(s32) cam_rr_enter_building_side(struct Camera *c) {
+@@ -5661,6 +5666,7 @@ BAD_RETURN(s32) cam_rr_enter_building_side(struct Camera *c) {
      if (c->mode != CAMERA_MODE_FIXED) {
          sStatusFlags &= ~CAM_FLAG_SMOOTH_MOVEMENT;
          c->mode = CAMERA_MODE_FIXED;
@@ -286,7 +286,7 @@ index 8082ef5e..fb569826 100644
      }
  }
  
-@@ -5847,6 +5853,7 @@ BAD_RETURN(s32) cam_castle_enter_lobby(struct Camera *c) {
+@@ -5856,6 +5862,7 @@ BAD_RETURN(s32) cam_castle_enter_lobby(struct Camera *c) {
          sStatusFlags &= ~CAM_FLAG_SMOOTH_MOVEMENT;
          set_fixed_cam_axis_sa_lobby(c->mode);
          c->mode = CAMERA_MODE_FIXED;
@@ -294,7 +294,7 @@ index 8082ef5e..fb569826 100644
      }
  }
  
-@@ -7214,6 +7221,7 @@ BAD_RETURN(s32) cutscene_unused_loop(UNUSED struct Camera *c) {
+@@ -7220,6 +7227,7 @@ BAD_RETURN(s32) cutscene_unused_loop(UNUSED struct Camera *c) {
  BAD_RETURN(s32) cutscene_ending_mario_fall_start(struct Camera *c) {
      vec3f_set(c->focus, -26.f, 0.f, -137.f);
      vec3f_set(c->pos, 165.f, 4725.f, 324.f);
@@ -302,7 +302,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -7246,6 +7254,7 @@ BAD_RETURN(s32) cutscene_ending_mario_fall(struct Camera *c) {
+@@ -7252,6 +7260,7 @@ BAD_RETURN(s32) cutscene_ending_mario_fall(struct Camera *c) {
  BAD_RETURN(s32) cutscene_ending_mario_land_closeup(struct Camera *c) {
      vec3f_set(c->focus, 85.f, 826.f, 250.f);
      vec3f_set(c->pos, -51.f, 988.f, -202.f);
@@ -310,7 +310,7 @@ index 8082ef5e..fb569826 100644
      player2_rotate_cam(c, -0x2000, 0x2000, -0x2000, 0x2000);
  }
  
-@@ -7255,6 +7264,7 @@ BAD_RETURN(s32) cutscene_ending_mario_land_closeup(struct Camera *c) {
+@@ -7261,6 +7270,7 @@ BAD_RETURN(s32) cutscene_ending_mario_land_closeup(struct Camera *c) {
  BAD_RETURN(s32) cutscene_ending_reset_spline(UNUSED struct Camera *c) {
      sCutsceneVars[9].point[0] = 0.f;
      cutscene_reset_spline();
@@ -318,7 +318,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -7290,6 +7300,7 @@ BAD_RETURN(s32) cutscene_ending_peach_appear_closeup(struct Camera *c) {
+@@ -7296,6 +7306,7 @@ BAD_RETURN(s32) cutscene_ending_peach_appear_closeup(struct Camera *c) {
      vec3f_set(c->pos, 179.f, 2463.f, -1216.f);
      c->pos[1] = gCutsceneFocus->oPosY + 35.f;
      vec3f_set(c->focus, gCutsceneFocus->oPosX, gCutsceneFocus->oPosY + 125.f, gCutsceneFocus->oPosZ);
@@ -326,7 +326,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -7308,6 +7319,7 @@ BAD_RETURN(s32) cutscene_ending_peach_appears(struct Camera *c) {
+@@ -7314,6 +7325,7 @@ BAD_RETURN(s32) cutscene_ending_peach_appears(struct Camera *c) {
  BAD_RETURN(s32) cutscene_ending_peach_descends_start(UNUSED struct Camera *c) {
      cutscene_reset_spline();
      sCutsceneVars[2].point[1] = 150.f;
@@ -334,7 +334,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -7394,6 +7406,7 @@ BAD_RETURN(s32) cutscene_ending_peach_wakeup(struct Camera *c) {
+@@ -7400,6 +7412,7 @@ BAD_RETURN(s32) cutscene_ending_peach_wakeup(struct Camera *c) {
  BAD_RETURN(s32) cutscene_ending_dialog(struct Camera *c) {
      vec3f_set(c->focus, 11.f, 983.f, -1273.f);
      vec3f_set(c->pos, -473.f, 970.f, -1152.f);
@@ -342,7 +342,7 @@ index 8082ef5e..fb569826 100644
      player2_rotate_cam(c, -0x800, 0x2000, -0x2000, 0x2000);
  }
  
-@@ -7404,6 +7417,7 @@ BAD_RETURN(s32) cutscene_ending_kiss_closeup(struct Camera *c) {
+@@ -7410,6 +7423,7 @@ BAD_RETURN(s32) cutscene_ending_kiss_closeup(struct Camera *c) {
      set_fov_function(CAM_FOV_SET_29);
      vec3f_set(c->focus, 350.f, 1034.f, -1216.f);
      vec3f_set(c->pos, -149.f, 1021.f, -1216.f);
@@ -350,7 +350,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -7439,6 +7453,7 @@ BAD_RETURN(s32) cutscene_ending_kiss(struct Camera *c) {
+@@ -7445,6 +7459,7 @@ BAD_RETURN(s32) cutscene_ending_kiss(struct Camera *c) {
  BAD_RETURN(s32) cutscene_ending_look_at_sky(struct Camera *c) {
      move_point_along_spline(c->focus, sEndingLookAtSkyFocus, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
      vec3f_set(c->pos, 699.f, 1680.f, -703.f);
@@ -358,7 +358,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -10260,6 +10275,7 @@ BAD_RETURN(s32) cutscene_door_start(struct Camera *c) {
+@@ -10266,6 +10281,7 @@ BAD_RETURN(s32) cutscene_door_start(struct Camera *c) {
  BAD_RETURN(s32) cutscene_door_fix_cam(struct Camera *c) {
      vec3f_copy(c->pos, sCutsceneVars[0].point);
      vec3f_copy(c->focus, sCutsceneVars[1].point);
@@ -366,7 +366,7 @@ index 8082ef5e..fb569826 100644
  }
  
  /**
-@@ -10293,6 +10309,7 @@ BAD_RETURN(s32) cutscene_door_move_behind_mario(struct Camera *c) {
+@@ -10299,6 +10315,7 @@ BAD_RETURN(s32) cutscene_door_move_behind_mario(struct Camera *c) {
      }
  
      offset_rotated(c->pos, sMarioCamState->pos, camOffset, sCutsceneVars[0].angle);
@@ -388,7 +388,7 @@ index f56ed027..2b682ed0 100644
  
  // bss order hack to not affect BSS order. if possible, remove me, but it will be hard to match otherwise
 diff --git a/src/game/envfx_bubbles.c b/src/game/envfx_bubbles.c
-index 16a92720..ee1b029d 100644
+index 9bc0e6e9..721ce968 100644
 --- a/src/game/envfx_bubbles.c
 +++ b/src/game/envfx_bubbles.c
 @@ -35,6 +35,20 @@ Vtx_t gBubbleTempVtx[3] = {
@@ -428,7 +428,7 @@ index 16a92720..ee1b029d 100644
          } else {
              (gEnvFxBuffer + i)->angleAndDist[1] += 10;
              (gEnvFxBuffer + i)->xPos += sins((gEnvFxBuffer + i)->angleAndDist[0]) * 10.0f;
-@@ -506,6 +522,12 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
+@@ -472,6 +488,12 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
      Vec3s vertex1;
      Vec3s vertex2;
      Vec3s vertex3;
@@ -441,7 +441,7 @@ index 16a92720..ee1b029d 100644
  
      Gfx *gfxStart;
  
-@@ -521,18 +543,52 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
+@@ -487,18 +509,52 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
      envfx_bubbles_update_switch(mode, camTo, vertex1, vertex2, vertex3);
      rotate_triangle_vertices(vertex1, vertex2, vertex3, pitch, yaw);
  
@@ -496,10 +496,10 @@ index 16a92720..ee1b029d 100644
      gSPDisplayList(sGfxCursor++, &tiny_bubble_dl_0B006AB0);
      gSPEndDisplayList(sGfxCursor++);
 diff --git a/src/game/envfx_snow.c b/src/game/envfx_snow.c
-index c3c14a5c..d2212ef6 100644
+index 5686da78..360f7b5d 100644
 --- a/src/game/envfx_snow.c
 +++ b/src/game/envfx_snow.c
-@@ -54,6 +54,26 @@ extern void *tiny_bubble_dl_0B006AB0;
+@@ -55,6 +55,26 @@ extern void *tiny_bubble_dl_0B006AB0;
  extern void *tiny_bubble_dl_0B006A50;
  extern void *tiny_bubble_dl_0B006CD8;
  
@@ -526,7 +526,7 @@ index c3c14a5c..d2212ef6 100644
  /**
   * Initialize snow particles by allocating a buffer for storing their state
   * and setting a start amount.
-@@ -217,6 +237,7 @@ void envfx_update_snow_normal(s32 snowCylinderX, s32 snowCylinderY, s32 snowCyli
+@@ -218,6 +238,7 @@ void envfx_update_snow_normal(s32 snowCylinderX, s32 snowCylinderY, s32 snowCyli
                  400.0f * random_float() - 200.0f + snowCylinderZ + (s16)(deltaZ * 2);
              (gEnvFxBuffer + i)->yPos = 200.0f * random_float() + snowCylinderY;
              (gEnvFxBuffer + i)->isAlive = 1;
@@ -534,7 +534,7 @@ index c3c14a5c..d2212ef6 100644
          } else {
              (gEnvFxBuffer + i)->xPos += random_float() * 2 - 1.0f + (s16)(deltaX / 1.2);
              (gEnvFxBuffer + i)->yPos -= 2 -(s16)(deltaY * 0.8);
-@@ -251,6 +272,7 @@ void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCy
+@@ -252,6 +273,7 @@ void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCy
                  400.0f * random_float() - 200.0f + snowCylinderZ + (s16)(deltaZ * 2);
              (gEnvFxBuffer + i)->yPos = 400.0f * random_float() - 200.0f + snowCylinderY;
              (gEnvFxBuffer + i)->isAlive = 1;
@@ -542,7 +542,7 @@ index c3c14a5c..d2212ef6 100644
          } else {
              (gEnvFxBuffer + i)->xPos += random_float() * 2 - 1.0f + (s16)(deltaX / 1.2) + 20.0f;
              (gEnvFxBuffer + i)->yPos -= 5 -(s16)(deltaY * 0.8);
-@@ -294,6 +316,7 @@ void envfx_update_snow_water(s32 snowCylinderX, s32 snowCylinderY, s32 snowCylin
+@@ -295,6 +317,7 @@ void envfx_update_snow_water(s32 snowCylinderX, s32 snowCylinderY, s32 snowCylin
              (gEnvFxBuffer + i)->zPos = 400.0f * random_float() - 200.0f + snowCylinderZ;
              (gEnvFxBuffer + i)->yPos = 400.0f * random_float() - 200.0f + snowCylinderY;
              (gEnvFxBuffer + i)->isAlive = 1;
@@ -550,17 +550,17 @@ index c3c14a5c..d2212ef6 100644
          }
      }
  }
-@@ -346,6 +369,8 @@ void rotate_triangle_vertices(Vec3s vertex1, Vec3s vertex2, Vec3s vertex3, s16 p
+@@ -345,6 +368,8 @@ void rotate_triangle_vertices(Vec3s vertex1, Vec3s vertex2, Vec3s vertex3, s16 p
  void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s vertex2, Vec3s vertex3) {
      s32 i = 0;
      Vtx *vertBuf = (Vtx *) alloc_display_list(15 * sizeof(Vtx));
 +    Vtx *vertBufInterpolated = (Vtx *) alloc_display_list(15 * sizeof(Vtx));
 +    Vtx *v;
- #ifdef VERSION_EU
-     Vtx *p;
- #endif
-@@ -395,7 +420,23 @@ void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s ve
- #endif
+ 
+     if (vertBuf == NULL) {
+         return;
+@@ -367,7 +392,23 @@ void append_snowflake_vertex_buffer(Gfx *gfx, s32 index, Vec3s vertex1, Vec3s ve
+         (vertBuf + i + 2)->v.ob[2] = (gEnvFxBuffer + (index + i / 3))->zPos + vertex3[2];
      }
  
 -    gSPVertex(gfx, VIRTUAL_TO_PHYSICAL(vertBuf), 15, 0);
@@ -584,7 +584,7 @@ index c3c14a5c..d2212ef6 100644
  }
  
  /**
-@@ -479,6 +520,8 @@ Gfx *envfx_update_snow(s32 snowMode, Vec3s marioPos, Vec3s camFrom, Vec3s camTo)
+@@ -451,6 +492,8 @@ Gfx *envfx_update_snow(s32 snowMode, Vec3s marioPos, Vec3s camFrom, Vec3s camTo)
          gSP1Triangle(gfx++, 9, 10, 11, 0);
          gSP1Triangle(gfx++, 12, 13, 14, 0);
      }
@@ -608,10 +608,10 @@ index 7a83b536..f4acc2de 100644
  
  extern s8 gEnvFxMode;
 diff --git a/src/game/hud.c b/src/game/hud.c
-index 8d4daa54..7ce2b222 100644
+index 8c7de524..f6b74748 100644
 --- a/src/game/hud.c
 +++ b/src/game/hud.c
-@@ -57,6 +57,20 @@ static struct UnusedHUDStruct sUnusedHUDValues = { 0x00, 0x0A, 0x00 };
+@@ -57,6 +57,20 @@ UNUSED static struct UnusedHUDStruct sUnusedHUDValues = { 0x00, 0x0A, 0x00 };
  
  static struct CameraHUD sCameraHUD = { CAM_STATUS_NONE };
  
@@ -658,12 +658,12 @@ index 8d4daa54..7ce2b222 100644
      gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
                G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
 diff --git a/src/game/ingame_menu.c b/src/game/ingame_menu.c
-index 35df1cf9..7b82744a 100644
+index a77b55b0..ab2f11db 100644
 --- a/src/game/ingame_menu.c
 +++ b/src/game/ingame_menu.c
 @@ -111,6 +111,41 @@ u8 gMenuHoldKeyIndex = 0;
  u8 gMenuHoldKeyTimer = 0;
- s32 gDialogResponse = 0;
+ s32 gDialogResponse = DIALOG_RESPONSE_NONE;
  
 +static Gfx *sInterpolatedDialogOffsetPos;
 +static f32 sInterpolatedDialogOffset;
@@ -703,7 +703,7 @@ index 35df1cf9..7b82744a 100644
  
  void create_dl_identity_matrix(void) {
      Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
-@@ -947,6 +982,14 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
+@@ -945,6 +980,14 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
      switch (gDialogBoxType) {
          case DIALOG_TYPE_ROTATE: // Renders a dialog black box with zoom and rotation
              if (gDialogBoxState == DIALOG_STATE_OPENING || gDialogBoxState == DIALOG_STATE_CLOSING) {
@@ -718,7 +718,7 @@ index 35df1cf9..7b82744a 100644
                  create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.0 / gDialogBoxScale, 1.0 / gDialogBoxScale, 1.0f);
                  // convert the speed into angle
                  create_dl_rotation_matrix(MENU_MTX_NOPUSH, gDialogBoxOpenTimer * 4.0f, 0, 0, 1.0f);
-@@ -955,6 +998,12 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
+@@ -953,6 +996,12 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
              break;
          case DIALOG_TYPE_ZOOM: // Renders a dialog white box with zoom
              if (gDialogBoxState == DIALOG_STATE_OPENING || gDialogBoxState == DIALOG_STATE_CLOSING) {
@@ -731,7 +731,7 @@ index 35df1cf9..7b82744a 100644
                  create_dl_translation_matrix(MENU_MTX_NOPUSH, 65.0 - (65.0 / gDialogBoxScale),
                                                (40.0 / gDialogBoxScale) - 40, 0);
                  create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.0 / gDialogBoxScale, 1.0 / gDialogBoxScale, 1.0f);
-@@ -1237,6 +1286,8 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
+@@ -1235,6 +1284,8 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
  #ifdef VERSION_EU
          gDialogY -= gDialogScrollOffsetY;
  #else
@@ -762,7 +762,7 @@ index 1fc4b88e..088a679d 100644
              }
              SET_HIGH_U16_OF_32(*params, gAreaUpdateCounter);
 diff --git a/src/game/object_helpers.c b/src/game/object_helpers.c
-index 9b5e4795..8468483d 100644
+index 60d987f6..334a3722 100644
 --- a/src/game/object_helpers.c
 +++ b/src/game/object_helpers.c
 @@ -1549,6 +1549,7 @@ void cur_obj_set_pos_to_home(void) {
@@ -774,7 +774,7 @@ index 9b5e4795..8468483d 100644
  
  void cur_obj_set_pos_to_home_and_stop(void) {
 diff --git a/src/game/paintings.c b/src/game/paintings.c
-index 83bd2ce9..f39836d4 100644
+index d98ea9aa..0d115329 100644
 --- a/src/game/paintings.c
 +++ b/src/game/paintings.c
 @@ -189,6 +189,32 @@ struct Painting **sPaintingGroups[] = {
@@ -810,7 +810,7 @@ index 83bd2ce9..f39836d4 100644
  /**
   * Stop paintings in paintingGroup from rippling if their id is different from *idptr.
   */
-@@ -890,6 +916,23 @@ Gfx *render_painting(u8 *img, s16 tWidth, s16 tHeight, s16 *textureMap, s16 mapV
+@@ -899,6 +925,23 @@ Gfx *render_painting(u8 *img, s16 tWidth, s16 tHeight, s16 *textureMap, s16 mapV
          gSP1Triangle(gfx++, group * 3, group * 3 + 1, group * 3 + 2, 0);
      }
  
@@ -834,7 +834,7 @@ index 83bd2ce9..f39836d4 100644
      gSPEndDisplayList(gfx);
      return dlist;
  }
-@@ -954,6 +997,7 @@ Gfx *painting_ripple_image(struct Painting *painting) {
+@@ -963,6 +1006,7 @@ Gfx *painting_ripple_image(struct Painting *painting) {
          meshTris = textureMap[meshVerts * 3 + 1];
          gSPDisplayList(gfx++, render_painting(textures[i], tWidth, tHeight, textureMap, meshVerts, meshTris, painting->alpha));
      }
@@ -842,7 +842,7 @@ index 83bd2ce9..f39836d4 100644
  
      // Update the ripple, may automatically reset the painting's state.
      painting_update_ripple_state(painting);
-@@ -991,6 +1035,7 @@ Gfx *painting_ripple_env_mapped(struct Painting *painting) {
+@@ -1000,6 +1044,7 @@ Gfx *painting_ripple_env_mapped(struct Painting *painting) {
      meshVerts = textureMap[0];
      meshTris = textureMap[meshVerts * 3 + 1];
      gSPDisplayList(gfx++, render_painting(tArray[0], tWidth, tHeight, textureMap, meshVerts, meshTris, painting->alpha));
@@ -1686,7 +1686,7 @@ index 1f94b564..b2a711d7 100644
                    G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
          gCurGraphNodeRoot = node;
 diff --git a/src/game/screen_transition.c b/src/game/screen_transition.c
-index 5d36905c..36e9c92e 100644
+index b9fa99b5..e85bac4f 100644
 --- a/src/game/screen_transition.c
 +++ b/src/game/screen_transition.c
 @@ -16,6 +16,19 @@
@@ -1709,7 +1709,7 @@ index 5d36905c..36e9c92e 100644
  s32 set_and_reset_transition_fade_timer(s8 fadeTimer, u8 transTime) {
      s32 reset = FALSE;
  
-@@ -85,14 +98,29 @@ s32 render_fade_transition_into_color(s8 fadeTimer, u8 transTime, struct WarpTra
+@@ -85,6 +98,8 @@ s32 render_fade_transition_into_color(s8 fadeTimer, u8 transTime, struct WarpTra
      return dl_transition_color(fadeTimer, transTime, transData, alpha);
  }
  
@@ -1718,12 +1718,10 @@ index 5d36905c..36e9c92e 100644
  s16 calc_tex_transition_radius(s8 fadeTimer, s8 transTime, struct WarpTransitionData *transData) {
      f32 texRadius = transData->endTexRadius - transData->startTexRadius;
      f32 radiusTime = sTransitionColorFadeCount[fadeTimer] * texRadius / (f32)(transTime - 1);
-     f32 result = transData->startTexRadius + radiusTime;
+@@ -93,6 +108,19 @@ s16 calc_tex_transition_radius(s8 fadeTimer, s8 transTime, struct WarpTransition
+     return (s16)(result + 0.5);
+ }
  
--    return (s16)(result + 0.5);;
-+    return (s16)(result + 0.5);
-+}
-+
 +#else
 +
 +s16 calc_tex_transition_radius(s8 fadeTimer, f32 interpolationFraction, s8 transTime, struct WarpTransitionData *transData) {
@@ -1733,8 +1731,8 @@ index 5d36905c..36e9c92e 100644
 +    f32 result = transData->startTexRadius + radiusTime;
 +
 +    return (s16)(result + 0.5);
- }
- 
++}
++
 +#endif
 +
  f32 calc_tex_transition_time(s8 fadeTimer, s8 transTime, struct WarpTransitionData *transData) {
@@ -1807,7 +1805,7 @@ index 5d36905c..36e9c92e 100644
      switch (transType) {
          case WARP_TRANSITION_FADE_FROM_COLOR:
 diff --git a/src/menu/intro_geo.c b/src/menu/intro_geo.c
-index 2d49d062..31cb72fe 100644
+index 48d53f8b..98c578ed 100644
 --- a/src/menu/intro_geo.c
 +++ b/src/menu/intro_geo.c
 @@ -1,5 +1,6 @@
@@ -1817,9 +1815,9 @@ index 2d49d062..31cb72fe 100644
  #include "game/memory.h"
  #include "game/segment2.h"
  #include "game/segment7.h"
-@@ -68,6 +69,18 @@ s8 gameOverBackgroundTable[] = {
- s8 gameOverBackgroundFlipOrder[] = { 0x00, 0x01, 0x02, 0x03, 0x07, 0x0B,
-                                      0x0a, 0x09, 0x08, 0x04, 0x05, 0x06 };
+@@ -36,6 +37,18 @@ static s32 sGameOverTableIndex;
+ static s16 sIntroFrameCounter;
+ static s32 sTmCopyrightAlpha;
  
 +static Gfx *sIntroScalePos;
 +static Vec3f sIntroScale;
@@ -1833,31 +1831,32 @@ index 2d49d062..31cb72fe 100644
 +    }
 +}
 +
- Gfx *geo_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) {
-     struct GraphNode *graphNode; // sp4c
-     Gfx *displayList;            // sp48
-@@ -78,6 +91,8 @@ Gfx *geo_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) {
-     f32 scaleX;                  // sp34
-     f32 scaleY;                  // sp30
-     f32 scaleZ;                  // sp2c
+ /**
+  * Geo callback to render the "Super Mario 64" logo on the title screen
+  */
+@@ -49,6 +62,8 @@ Gfx *geo_intro_super_mario_64_logo(s32 state, struct GraphNode *node, UNUSED voi
+     f32 scaleX;
+     f32 scaleY;
+     f32 scaleZ;
 +    Vec3f scale;
 +    Vec3f scaleInterpolated;
-     graphNode = sp54;
-     displayList = NULL;
-     displayListIter = NULL;
-@@ -108,7 +123,11 @@ Gfx *geo_title_screen(s32 sp50, struct GraphNode *sp54, UNUSED void *context) {
+ 
+     if (state != 1) {
+         sIntroFrameCounter = 0;
+@@ -80,7 +95,12 @@ Gfx *geo_intro_super_mario_64_logo(s32 state, struct GraphNode *node, UNUSED voi
              scaleY = 0.0f;
              scaleZ = 0.0f;
          }
 -        guScale(scaleMat, scaleX, scaleY, scaleZ);
++
 +        vec3f_set(scale, scaleX, scaleY, scaleZ);
 +        interpolate_vectors(scaleInterpolated, sIntroScale, scale);
 +        vec3f_set(sIntroScale, scaleX, scaleY, scaleZ);
 +        guScale(scaleMat, scaleInterpolated[0], scaleInterpolated[1], scaleInterpolated[2]);
-+        sIntroScalePos = displayListIter;
-         gSPMatrix(displayListIter++, scaleMat, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-         gSPDisplayList(displayListIter++, &intro_seg7_dl_0700B3A0);
-         gSPPopMatrix(displayListIter++, G_MTX_MODELVIEW);
++        sIntroScalePos = dlIter;
+ 
+         gSPMatrix(dlIter++, scaleMat, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+         gSPDisplayList(dlIter++, &intro_seg7_dl_0700B3A0);  // draw model
 diff --git a/src/pc/gfx/gfx_dxgi.cpp b/src/pc/gfx/gfx_dxgi.cpp
 index 02cdd811..c036e0b7 100644
 --- a/src/pc/gfx/gfx_dxgi.cpp
@@ -1931,10 +1930,10 @@ index 05f1a5ad..bb8ea052 100644
      Uint32 elapsed = SDL_GetTicks() - last_time;
  
 diff --git a/src/pc/pc_main.c b/src/pc/pc_main.c
-index f4467a11..ccc048b7 100644
+index 000a7f4d..df91b012 100644
 --- a/src/pc/pc_main.c
 +++ b/src/pc/pc_main.c
-@@ -76,6 +76,25 @@ void send_display_list(struct SPTask *spTask) {
+@@ -76,6 +76,25 @@ void exec_display_list(struct SPTask *spTask) {
  #define SAMPLES_LOW 528
  #endif
  
@@ -1962,13 +1961,14 @@ index f4467a11..ccc048b7 100644
      game_loop_one_iteration();
 @@ -95,6 +114,11 @@ void produce_one_frame(void) {
      audio_api->play((u8 *)audio_buffer, 2 * num_audio_samples * 4);
-     
+ 
      gfx_end_frame();
 +    
 +    gfx_start_frame();
 +    patch_interpolations();
-+    send_display_list(gGfxSPTask);
++    exec_display_list(gGfxSPTask);
 +    gfx_end_frame();
  }
  
  #ifdef TARGET_WEB
+ 
