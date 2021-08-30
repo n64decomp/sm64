@@ -28,18 +28,15 @@ static struct ObjectHitbox sChainChompHitbox = {
  * Update function for chain chomp part / pivot.
  */
 void bhv_chain_chomp_chain_part_update(void) {
-    struct ChainSegment *segment;
-
     if (o->parentObj->oAction == CHAIN_CHOMP_ACT_UNLOAD_CHAIN) {
         obj_mark_for_deletion(o);
     } else if (o->oBehParams2ndByte != CHAIN_CHOMP_CHAIN_PART_BP_PIVOT) {
-        segment = &o->parentObj->oChainChompSegments[o->oBehParams2ndByte];
+        struct ChainSegment *segment = &o->parentObj->oChainChompSegments[o->oBehParams2ndByte];
 
         // Set position relative to the pivot
         o->oPosX = o->parentObj->parentObj->oPosX + segment->posX;
         o->oPosY = o->parentObj->parentObj->oPosY + segment->posY;
         o->oPosZ = o->parentObj->parentObj->oPosZ + segment->posZ;
-        ;
     } else if (o->parentObj->oChainChompReleaseStatus != CHAIN_CHOMP_NOT_RELEASED) {
         cur_obj_update_floor_and_walls();
         cur_obj_move_standard(78);
@@ -210,11 +207,11 @@ static void chain_chomp_sub_act_turn(void) {
 }
 
 static void chain_chomp_sub_act_lunge(void) {
-    f32 val04;
-
     obj_face_pitch_approach(o->oChainChompTargetPitch, 0x400);
 
     if (o->oForwardVel != 0.0f) {
+        f32 val04;
+
         if (o->oChainChompRestrictedByChain == TRUE) {
             o->oForwardVel = o->oVelY = 0.0f;
             o->oChainChompUnk104 = 30.0f;
@@ -228,7 +225,6 @@ static void chain_chomp_sub_act_lunge(void) {
         o->oChainChompMaxDistBetweenChainParts =
             val04 / 220.0f * o->oChainChompMaxDistFromPivotPerChainPart;
         o->oTimer = 0;
-        ;
     } else {
         // Turn toward pivot
         cur_obj_rotate_yaw_toward(atan2s(o->oChainChompSegments[0].posZ, o->oChainChompSegments[0].posX),
@@ -260,8 +256,8 @@ static void chain_chomp_released_trigger_cutscene(void) {
 
     //! Can delay this if we get into a cutscene-unfriendly action after the
     //  last post ground pound and before this
-    if (set_mario_npc_dialog(2) == 2 && (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND)
-        && cutscene_object(CUTSCENE_STAR_SPAWN, o) == 1) {
+    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK 
+        && (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) && cutscene_object(CUTSCENE_STAR_SPAWN, o) == 1) {
         o->oChainChompReleaseStatus = CHAIN_CHOMP_RELEASED_LUNGE_AROUND;
         o->oTimer = 0;
     }
@@ -346,7 +342,7 @@ static void chain_chomp_released_jump_away(void) {
  */
 static void chain_chomp_released_end_cutscene(void) {
     if (cutscene_object(CUTSCENE_STAR_SPAWN, o) == -1) {
-        set_mario_npc_dialog(0);
+        set_mario_npc_dialog(MARIO_DIALOG_STOP);
         o->oAction = CHAIN_CHOMP_ACT_UNLOAD_CHAIN;
     }
 }
@@ -540,7 +536,7 @@ void bhv_chain_chomp_gate_update(void) {
         spawn_mist_particles_with_sound(SOUND_GENERAL_WALL_EXPLOSION);
         set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
         spawn_mist_particles_variable(0, 0x7F, 200.0f);
-        spawn_triangle_break_particles(30, 0x8A, 3.0f, 4);
+        spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, 4);
         obj_mark_for_deletion(o);
     }
 }

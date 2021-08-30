@@ -30,12 +30,17 @@ struct Note *alloc_note(struct SequenceChannelLayer *seqLayer);
 void reclaim_notes(void);
 void note_init_all(void);
 
-#ifdef VERSION_EU
+#if defined(VERSION_SH)
+void note_set_vel_pan_reverb(struct Note *note, struct ReverbInfo *reverbInfo);
+#elif defined(VERSION_EU)
+void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverbVol);
+#endif
+
+#if defined(VERSION_EU) || defined(VERSION_SH)
 struct AudioBankSound *instrument_get_audio_bank_sound(struct Instrument *instrument, s32 semitone);
 struct Instrument *get_instrument_inner(s32 bankId, s32 instId);
 struct Drum *get_drum(s32 bankId, s32 drumId);
 void note_init_volume(struct Note *note);
-void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb);
 void note_set_frequency(struct Note *note, f32 frequency);
 void note_enable(struct Note *note);
 void note_disable(struct Note *note);

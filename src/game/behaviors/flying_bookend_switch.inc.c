@@ -269,13 +269,13 @@ void bhv_book_switch_loop(void) {
             if (approach_f32_ptr(&o->oBookSwitchUnkF4, 0.0f, 20.0f)) {
                 if (o->oAction != 0) {
                     if (o->parentObj->oBookSwitchManagerUnkF4 == o->oBehParams2ndByte) {
-                        play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gDefaultSoundArgs);
+                        play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
                         o->parentObj->oBookSwitchManagerUnkF4 += 1;
                     } else {
                         sp36 = random_u16() & 0x1;
                         sp34 = gMarioObject->oPosZ + 1.5f * gMarioStates[0].vel[2];
 
-                        play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                        play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
                         if (sp34 > 0) {
                             sp34 = 0;
                         }

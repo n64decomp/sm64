@@ -1,5 +1,6 @@
 #ifndef _ULTRA64_OS_INTERNAL_H_
 #define _ULTRA64_OS_INTERNAL_H_
+#include "PR/os_message.h"
 
 /* Internal functions used by the operating system */
 /* Do not include this header in application code */

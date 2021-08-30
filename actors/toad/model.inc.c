@@ -7,12 +7,12 @@ static const Lights1 toad_seg6_lights_06005908 = gdSPDefLights1(
 );
 
 // 0x06005920
-ALIGNED8 static const u8 toad_seg6_texture_06005920[] = {
+ALIGNED8 static const Texture toad_seg6_texture_06005920[] = {
 #include "actors/toad/toad_face.rgba16.inc.c"
 };
 
 // 0x06006120
-ALIGNED8 static const u8 toad_seg6_texture_06006120[] = {
+ALIGNED8 static const Texture toad_seg6_texture_06006120[] = {
 #include "actors/toad/toad_head.rgba16.inc.c"
 };
 

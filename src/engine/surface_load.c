@@ -272,8 +272,8 @@ static s16 upper_cell_index(s16 coord) {
         index += 1;
     }
 
-    if (index > (NUM_CELLS - 1)) {
-        index = (NUM_CELLS - 1);
+    if (index > NUM_CELLS_INDEX) {
+        index = NUM_CELLS_INDEX;
     }
 
     // Potentially < 0, but since lower index is >= 0, not exploitable
@@ -315,7 +315,7 @@ static void add_surface(struct Surface *surface, s32 dynamic) {
     }
 }
 
-static void stub_surface_load_1(void) {
+UNUSED static void stub_surface_load_1(void) {
 }
 
 /**
@@ -708,7 +708,7 @@ void clear_dynamic_surfaces(void) {
     }
 }
 
-static void unused_80383604(void) {
+UNUSED static void unused_80383604(void) {
 }
 
 /**

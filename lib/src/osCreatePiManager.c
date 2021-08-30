@@ -2,9 +2,17 @@
 
 #define OS_PI_MGR_MESG_BUFF_SIZE 1
 
-OSMgrArgs piMgrArgs = { 0 };
+#ifdef VERSION_SH // TODO: In libreultra this is in an include
+extern OSPiHandle *CartRomHandle;
+extern OSPiHandle *LeoDiskHandle;
+#endif
+
+OSMgrArgs __osPiDevMgr = { 0 };
 #if defined(VERSION_EU) || defined(VERSION_SH)
-OSPiHandle *D_80302DFC = NULL;
+OSPiHandle *__osPiTable = NULL;
+#endif
+#ifdef VERSION_SH
+OSPiHandle **__osCurrentHandle[2] = { &CartRomHandle, &LeoDiskHandle };
 #endif
 OSThread piMgrThread;
 u32 piMgrStack[0x400]; // stack bottom
@@ -20,7 +28,7 @@ void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf, s32 cmdMsgC
     OSPri newPri;
     OSPri currentPri;
 
-    if (!piMgrArgs.initialized) {
+    if (!__osPiDevMgr.initialized) {
         osCreateMesgQueue(cmdQ, cmdBuf, cmdMsgCnt);
         osCreateMesgQueue(&__osPiMesgQueue, &piMgrMesgBuff[0], OS_PI_MGR_MESG_BUFF_SIZE);
         if (!gOsPiAccessQueueCreated) {
@@ -34,16 +42,16 @@ void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf, s32 cmdMsgC
             osSetThreadPri(NULL, pri);
         }
         int_disabled = __osDisableInt();
-        piMgrArgs.initialized = TRUE;
-        piMgrArgs.mgrThread = &piMgrThread;
-        piMgrArgs.unk08 = cmdQ;
-        piMgrArgs.unk0c = &__osPiMesgQueue;
-        piMgrArgs.unk10 = &gOsPiMessageQueue;
-        piMgrArgs.dma_func = osPiRawStartDma;
-#ifdef VERSION_EU
-        piMgrArgs.edma_func = osEPiRawStartDma;
+        __osPiDevMgr.initialized = TRUE;
+        __osPiDevMgr.mgrThread = &piMgrThread;
+        __osPiDevMgr.cmdQueue = cmdQ;
+        __osPiDevMgr.eventQueue = &__osPiMesgQueue;
+        __osPiDevMgr.accessQueue = &gOsPiMessageQueue;
+        __osPiDevMgr.dma_func = osPiRawStartDma;
+#if defined(VERSION_EU) || defined(VERSION_SH)
+        __osPiDevMgr.edma_func = osEPiRawStartDma;
 #endif
-        osCreateThread(&piMgrThread, 0, __osDevMgrMain, (void *) &piMgrArgs, &piMgrStack[0x400], pri);
+        osCreateThread(&piMgrThread, 0, __osDevMgrMain, (void *) &__osPiDevMgr, &piMgrStack[0x400], pri);
         osStartThread(&piMgrThread);
         __osRestoreInt(int_disabled);
         if (newPri != -1) {

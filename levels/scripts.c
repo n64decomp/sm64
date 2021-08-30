@@ -46,8 +46,8 @@ static const LevelScript script_exec_level_table[2
 
 static const LevelScript script_L1[4];
 static const LevelScript script_L2[4];
-static const LevelScript script_L3[4];
-static const LevelScript script_L4[4];
+static const LevelScript goto_mario_head_regular[4];
+static const LevelScript goto_mario_head_dizzy[4];
 static const LevelScript script_L5[4];
 
 #define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8)
@@ -120,26 +120,26 @@ const LevelScript level_main_scripts_entry[] = {
         SLEEP(/*frames*/ 1),
     LOOP_UNTIL(/*op*/ OP_LT, /*arg*/ 0),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ -1, script_L2),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ -2, script_L3),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ -3, script_L4),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ -2, goto_mario_head_regular),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ -3, goto_mario_head_dizzy),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ -8, script_L1),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ -9, script_L5),
 };
 
 static const LevelScript script_L1[] = {
-    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_1),
+    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_splash_screen),
 };
 
 static const LevelScript script_L2[] = {
     EXIT_AND_EXECUTE(/*seg*/ 0x0E, _endingSegmentRomStart, _endingSegmentRomEnd, level_ending_entry),
 };
 
-static const LevelScript script_L3[] = {
-    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_2),
+static const LevelScript goto_mario_head_regular[] = {
+    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_regular),
 };
 
-static const LevelScript script_L4[] = {
-    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_3),
+static const LevelScript goto_mario_head_dizzy[] = {
+    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_dizzy),
 };
 
 static const LevelScript script_L5[] = {
@@ -171,7 +171,7 @@ static const LevelScript script_exec_ ## folder [] = { \
 
 const LevelScript script_func_global_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BLUE_COIN_SWITCH,        blue_coin_switch_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_AMP,                     amp_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_AMP,                     dAmpGeo),
     LOAD_MODEL_FROM_GEO(MODEL_PURPLE_SWITCH,           purple_switch_geo),
     LOAD_MODEL_FROM_GEO(MODEL_CHECKERBOARD_PLATFORM,   checkerboard_platform_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BREAKABLE_BOX,           breakable_box_geo),
@@ -297,7 +297,7 @@ const LevelScript script_func_global_13[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_SMOKE,            bowser_impact_smoke_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_FLAMES,           bowser_flames_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_WAVE,             invisible_bowser_accessory_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_BOWSER2,                 bowser2_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_BOWSER_NO_SHADOW,        bowser_geo_no_shadow),
     RETURN(),
 };
 

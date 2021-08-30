@@ -23,6 +23,7 @@
 #include "level_table.h"
 #include "level_update.h"
 #include "levels/bob/header.h"
+#include "levels/bowser_3/header.h"
 #include "levels/castle_inside/header.h"
 #include "levels/hmc/header.h"
 #include "main.h"
@@ -42,12 +43,9 @@
 #include "sm64.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 #define o gCurrentObject
-
-// BSS
-s16 D_8035FF10;
 
 struct WFRotatingPlatformData {
     s16 pad;
@@ -62,14 +60,6 @@ struct Struct8032F34C {
     s16 platformWidth;
     s16 model;
     const void *segAddr;
-};
-
-struct Struct8032F698 {
-    void *unk0;
-    s16 unk1;
-    s16 unk2;
-    s16 unk3;
-    s16 unk4;
 };
 
 struct Struct802C0DF0 {
@@ -92,10 +82,10 @@ struct OpenableGrill {
     const Collision *collision;
 };
 
-s32 D_8032F0C0[] = { SAVE_FLAG_HAVE_WING_CAP, SAVE_FLAG_HAVE_METAL_CAP, SAVE_FLAG_HAVE_VANISH_CAP };
+static s32 sCapSaveFlags[] = { SAVE_FLAG_HAVE_WING_CAP, SAVE_FLAG_HAVE_METAL_CAP, SAVE_FLAG_HAVE_VANISH_CAP };
 
 // Boo Roll
-s16 D_8032F0CC[] = { 6047, 5664, 5292, 4934, 4587, 4254, 3933, 3624, 3329, 3046, 2775,
+static s16 sBooHitRotations[] = { 6047, 5664, 5292, 4934, 4587, 4254, 3933, 3624, 3329, 3046, 2775,
                      2517, 2271, 2039, 1818, 1611, 1416, 1233, 1063, 906,  761,  629,
                      509,  402,  308,  226,  157,  100,  56,   25,   4,    0 };
 
@@ -118,21 +108,21 @@ s16 D_8032F0CC[] = { 6047, 5664, 5292, 4934, 4587, 4254, 3933, 3624, 3329, 3046,
 #include "behaviors/white_puff_explode.inc.c"
 
 // not in behavior file
-struct SpawnParticlesInfo D_8032F270 = { 2, 20, MODEL_MIST, 0, 40, 5, 30, 20, 252, 30, 330.0f, 10.0f };
+struct SpawnParticlesInfo sMistParticles = { 2, 20, MODEL_MIST, 0, 40, 5, 30, 20, 252, 30, 330.0f, 10.0f };
 
 // generate_wind_puffs/dust (something like that)
 void spawn_mist_particles_variable(s32 count, s32 offsetY, f32 size) {
-    D_8032F270.sizeBase = size;
-    D_8032F270.sizeRange = size / 20.0;
-    D_8032F270.offsetY = offsetY;
+    sMistParticles.sizeBase = size;
+    sMistParticles.sizeRange = size / 20.0;
+    sMistParticles.offsetY = offsetY;
     if (count == 0) {
-        D_8032F270.count = 20;
+        sMistParticles.count = 20;
     } else if (count > 20) {
-        D_8032F270.count = count;
+        sMistParticles.count = count;
     } else {
-        D_8032F270.count = 4;
+        sMistParticles.count = 4;
     }
-    cur_obj_spawn_particles(&D_8032F270);
+    cur_obj_spawn_particles(&sMistParticles);
 }
 
 #include "behaviors/sparkle_spawn_star.inc.c"
@@ -192,16 +182,13 @@ Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat
 // not in behavior file
 // n is the number of objects to spawn, r if the rate of change of phase (frequency?)
 void spawn_sparkle_particles(s32 n, s32 a1, s32 a2, s32 r) {
+    static s16 D_8035FF10;
     s32 i;
     s16 separation = 0x10000 / n; // Evenly spread around a circle
     for (i = 0; i < n; i++) {
         spawn_object_relative(0, sins(D_8035FF10 + i * separation) * a1, (i + 1) * a2,
                               coss(D_8035FF10 + i * separation) * a1, o, MODEL_NONE, bhvSparkleSpawn);
     }
-
-  if (1)
-  {
-  }
 
     D_8035FF10 += r * 0x100;
 }
@@ -211,6 +198,8 @@ void spawn_sparkle_particles(s32 n, s32 a1, s32 a2, s32 r) {
 #include "behaviors/bowser_key.inc.c"
 #include "behaviors/bullet_bill.inc.c"
 #include "behaviors/bowser.inc.c"
+#include "behaviors/bowser_falling_platform.inc.c"
+#include "behaviors/bowser_flame.inc.c"
 #include "behaviors/blue_fish.inc.c"
 
 // Not in behavior file, duplicate of vec3f_copy except without bad return.

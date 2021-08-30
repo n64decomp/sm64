@@ -1,25 +1,38 @@
 // shock_wave.c.inc
 
-f32 D_8032F420[] = { 1.9f, 2.4f, 4.0f, 4.8f };
+/**
+ * Shockwave scale distance hit points
+ */
+f32 sBowserShockwaveHitPoints[] = { 1.9f, 2.4f, 4.0f, 4.8f };
 
+/**
+ * Bowser's shockwave attack main loop
+ */
 void bhv_bowser_shock_wave_loop(void) {
-    f32 sp2C, sp28, sp24, sp20;
-    s16 sp1E = 70;
-    o->oBowserShockWaveUnkF4 = o->oTimer * 10;
-    cur_obj_scale(o->oBowserShockWaveUnkF4);
+    f32 distMin1, distMax1, distMin2, distMax2;
+    s16 fadeFrames = 70;
+    // Scale shockwave as the timer goes on
+    o->oBowserShockWaveScale = o->oTimer * 10;
+    cur_obj_scale(o->oBowserShockWaveScale);
+    // Slightly reduce opacity each 3 frames
     if (gGlobalTimer % 3)
         o->oOpacity -= 1;
-    if (o->oTimer > sp1E)
+    // Reduce opacity faster after 70 frames have passed
+    if (o->oTimer > fadeFrames)
         o->oOpacity -= 5;
+    // Delete object when it's fully transparent
     if (o->oOpacity <= 0)
         obj_mark_for_deletion(o);
-    if (o->oTimer < sp1E && mario_is_in_air_action() == 0) {
-        sp2C = o->oBowserShockWaveUnkF4 * D_8032F420[0];
-        sp28 = o->oBowserShockWaveUnkF4 * D_8032F420[1];
-        sp24 = o->oBowserShockWaveUnkF4 * D_8032F420[2];
-        sp20 = o->oBowserShockWaveUnkF4 * D_8032F420[3];
-        if ((sp2C < o->oDistanceToMario && o->oDistanceToMario < sp28)
-            || (sp24 < o->oDistanceToMario && o->oDistanceToMario < sp20))
-            gMarioObject->oInteractStatus |= INT_STATUS_HIT_BY_SHOCKWAVE;
+    // If object times is less than 70 frame and Mario is not in the air...
+    if (o->oTimer < fadeFrames && mario_is_in_air_action() == 0) {
+        // ..define distance values depending of the scale multiplied by hit points
+        distMin1 = o->oBowserShockWaveScale * sBowserShockwaveHitPoints[0];
+        distMax1 = o->oBowserShockWaveScale * sBowserShockwaveHitPoints[1];
+        distMin2 = o->oBowserShockWaveScale * sBowserShockwaveHitPoints[2];
+        distMax2 = o->oBowserShockWaveScale * sBowserShockwaveHitPoints[3];
+        // If Mario is in between distMin and distMax values, shock him
+        if ((distMin1 < o->oDistanceToMario && o->oDistanceToMario < distMax1)
+            || (distMin2 < o->oDistanceToMario && o->oDistanceToMario < distMax2))
+            gMarioObject->oInteractStatus |= INT_STATUS_MARIO_SHOCKWAVE;
     }
 }

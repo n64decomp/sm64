@@ -20,6 +20,8 @@ def read_local_asset_list(f):
 
 
 def asset_needs_update(asset, version):
+    if version <= 6 and asset in ["actors/king_bobomb/king_bob-omb_eyes.rgba16.png", "actors/king_bobomb/king_bob-omb_hand.rgba16.png"]:
+        return True
     if version <= 5 and asset == "textures/spooky/bbh_textures.00800.rgba16.png":
         return True
     if version <= 4 and asset in ["textures/mountain/ttm_textures.01800.rgba16.png", "textures/mountain/ttm_textures.05800.rgba16.png"]:
@@ -59,7 +61,7 @@ def clean_assets(local_asset_file):
 def main():
     # In case we ever need to change formats of generated files, we keep a
     # revision ID in the local asset file.
-    new_version = 6
+    new_version = 7
 
     try:
         local_asset_file = open(".assets-local.txt")
@@ -172,32 +174,28 @@ def main():
         assets = todo[key]
         lang, mio0 = key
         if mio0 == "@sound":
-            with tempfile.NamedTemporaryFile(prefix="ctl", delete=False) as ctl_file:
-                with tempfile.NamedTemporaryFile(prefix="tbl", delete=False) as tbl_file:
-                    rom = roms[lang]
-                    size, locs = asset_map["@sound ctl " + lang]
-                    offset = locs[lang][0]
-                    ctl_file.write(rom[offset : offset + size])
-                    ctl_file.close()
-                    size, locs = asset_map["@sound tbl " + lang]
-                    offset = locs[lang][0]
-                    tbl_file.write(rom[offset : offset + size])
-                    tbl_file.close()
-                    args = [
-                        "python3",
-                        "tools/disassemble_sound.py",
-                        ctl_file.name,
-                        tbl_file.name,
-                        "--only-samples",
-                    ]
-                    for (asset, pos, size, meta) in assets:
-                        print("extracting", asset)
-                        args.append(asset + ":" + str(pos))
-                    try:
-                        subprocess.run(args, check=True)
-                    finally:
-                        os.unlink(ctl_file.name)
-                        os.unlink(tbl_file.name)
+            rom = roms[lang]
+            args = [
+                "python3",
+                "tools/disassemble_sound.py",
+                "baserom." + lang + ".z64",
+            ]
+            def append_args(key):
+                size, locs = asset_map["@sound " + key + " " + lang]
+                offset = locs[lang][0]
+                args.append(str(offset))
+                args.append(str(size))
+            append_args("ctl")
+            append_args("tbl")
+            if lang == "sh":
+                args.append("--shindou-headers")
+                append_args("ctl header")
+                append_args("tbl header")
+            args.append("--only-samples")
+            for (asset, pos, size, meta) in assets:
+                print("extracting", asset)
+                args.append(asset + ":" + str(pos))
+            subprocess.run(args, check=True)
             continue
 
         if mio0 is not None:

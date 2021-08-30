@@ -7,12 +7,12 @@ static const Lights1 purple_switch_seg8_lights_0800C090 = gdSPDefLights1(
 );
 
 // 0x0800C0A8
-ALIGNED8 static const u8 purple_switch_seg8_texture_0800C0A8[] = {
+ALIGNED8 static const Texture purple_switch_seg8_texture_0800C0A8[] = {
 #include "actors/purple_switch/purple_switch_base.rgba16.inc.c"
 };
 
 // 0x0800C128
-ALIGNED8 static const u8 purple_switch_seg8_texture_0800C128[] = {
+ALIGNED8 static const Texture purple_switch_seg8_texture_0800C128[] = {
 #include "actors/purple_switch/purple_switch_exclamation_point.rgba16.inc.c"
 };
 

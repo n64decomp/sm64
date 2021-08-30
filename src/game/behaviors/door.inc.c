@@ -6,11 +6,11 @@ struct DoorAction
     s32 action;
 };
 
-struct DoorAction D_8032F300[] = { { 0x40000, 3 }, { 0x80000, 4 }, { 0x10000, 1 }, { 0x20000, 2 }, { -1, 0 }, };
+static struct DoorAction sDoorActions[] = { { 0x40000, 3 }, { 0x80000, 4 }, { 0x10000, 1 }, { 0x20000, 2 }, { -1, 0 }, };
 
-s32 D_8032F328[] = { SOUND_GENERAL_OPEN_WOOD_DOOR, SOUND_GENERAL_OPEN_IRON_DOOR };
+static s32 sDoorOpenSounds[] = { SOUND_GENERAL_OPEN_WOOD_DOOR, SOUND_GENERAL_OPEN_IRON_DOOR };
 
-s32 D_8032F330[] = { SOUND_GENERAL_CLOSE_WOOD_DOOR, SOUND_GENERAL_CLOSE_IRON_DOOR };
+static s32 sDoorCloseSounds[] = { SOUND_GENERAL_CLOSE_WOOD_DOOR, SOUND_GENERAL_CLOSE_IRON_DOOR };
 
 void door_animation_and_reset(s32 sp18) {
     cur_obj_init_animation_with_sound(sp18);
@@ -29,27 +29,27 @@ void set_door_camera_event(void) {
 void play_door_open_noise(void) {
     s32 sp1C = cur_obj_has_model(MODEL_HMC_METAL_DOOR);
     if (o->oTimer == 0) {
-        cur_obj_play_sound_2(D_8032F328[sp1C]);
+        cur_obj_play_sound_2(sDoorOpenSounds[sp1C]);
         gTimeStopState |= TIME_STOP_MARIO_OPENED_DOOR;
     }
     if (o->oTimer == 70) {
-        cur_obj_play_sound_2(D_8032F330[sp1C]);
+        cur_obj_play_sound_2(sDoorCloseSounds[sp1C]);
     }
 }
 
 void play_warp_door_open_noise(void) {
     s32 sp1C = cur_obj_has_model(MODEL_HMC_METAL_DOOR);
     if (o->oTimer == 30)
-        cur_obj_play_sound_2(D_8032F330[sp1C]);
+        cur_obj_play_sound_2(sDoorCloseSounds[sp1C]);
 }
 
 void bhv_door_loop(void) {
     s32 sp1C = 0;
     
-    while (D_8032F300[sp1C].flag != (u32)~0) {
-        if (cur_obj_clear_interact_status_flag(D_8032F300[sp1C].flag)) {
+    while (sDoorActions[sp1C].flag != (u32)~0) {
+        if (cur_obj_clear_interact_status_flag(sDoorActions[sp1C].flag)) {
             set_door_camera_event();
-            cur_obj_change_action(D_8032F300[sp1C].action);
+            cur_obj_change_action(sDoorActions[sp1C].action);
         }
         sp1C++;
     }

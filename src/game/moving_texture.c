@@ -444,14 +444,13 @@ Gfx *movtex_gen_from_quad(s16 y, struct MovtexQuad *quad) {
 
     // Only add commands to change the texture when necessary
     if (textureId != gMovetexLastTextureId) {
-        if (textureId == TEXTURE_MIST) { // an ia16 texture
-            if (0) {
-            }
-            gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_IA, gMovtexIdToTexture[textureId]);
-        } else { // any rgba16 texture
-            gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_RGBA, gMovtexIdToTexture[textureId]);
-            if (0) {
-            }
+        switch (textureId) {
+            case TEXTURE_MIST: // an ia16 texture
+                gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_IA, gMovtexIdToTexture[textureId]);
+                break;
+            default: // any rgba16 texture
+                gLoadBlockTexture(gfx++, 32, 32, G_IM_FMT_RGBA, gMovtexIdToTexture[textureId]);
+                break;
         }
         gMovetexLastTextureId = textureId;
     }

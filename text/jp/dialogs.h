@@ -1,5 +1,21 @@
 // Parameters: dialog enum ID, (unused), lines per box, left offset, width
 
+#ifdef VERSION_JP
+#define HOW_TO_READ_SIGNS_1 "\
+カンバンを　よむときも\n\
+たちどまって　Ｂボタン！\n\
+ＡかＢボタンですすめる！\n\
+まえにたつだけで　はなし\n\
+かける、どうぶつもいます。"
+#else
+#define HOW_TO_READ_SIGNS_1 "\
+カンバンは　まえにたって\n\
+ＡかＢボタンでよめます。\n\
+まえにたつだけで　はなし\n\
+かけてくれる　どうぶつも\n\
+います。"
+#endif
+
 DEFINE_DIALOG(DIALOG_000, 1, 5, 30, 200, _("\
 おおっと、ここはキケンな\n\
 せんじょうの　どまんなか。\n\
@@ -10,12 +26,8 @@ DEFINE_DIALOG(DIALOG_000, 1, 5, 30, 200, _("\
 はなしかけてみるといい！\n\
 Ｂボタンではなしができる。\n\
 きっと、ちからになって\n\
-くれるはずだ。\n\
-カンバンを　よむときも\n\
-たちどまって　Ｂボタン！\n\
-ＡかＢボタンですすめる！\n\
-まえにたつだけで　はなし\n\
-かける、どうぶつもいます。"))
+くれるはずだ。\n"\
+HOW_TO_READ_SIGNS_1))
 
 DEFINE_DIALOG(DIALOG_001, 1, 4, 95, 200, _("\
 あぶない　あぶない！！\n\
@@ -1077,9 +1089,15 @@ DEFINE_DIALOG(DIALOG_094, 1, 3, 30, 200, _("\
 はしりながら　Ｚボタンで\n\
 しゃがんで　ジャンプだ！"))
 
+#ifdef VERSION_JP
+#define HOW_TO_READ_SIGNS_2 "　Ｂボタンをおすと"
+#else
+#define HOW_TO_READ_SIGNS_2 "ＡかＢボタンをおし"
+#endif
+
 DEFINE_DIALOG(DIALOG_095, 1, 3, 30, 200, _("\
 このように　カンバンの\n\
-まえで　Ｂボタンをおすと\n\
+まえで" HOW_TO_READ_SIGNS_2 "\n\
 よむことができます。\n\
 ノコノコや　どうぶつたち\n\
 と　はなすときは、まえに\n\
@@ -1863,15 +1881,32 @@ DEFINE_DIALOG(DIALOG_166, 1, 6, 30, 200, _("\
 くるといいッス！\n\
 　　　　　　　ノコノコ"))
 
-DEFINE_DIALOG(DIALOG_167, 1, 4, 30, 200, _("\
-『ピーチの　おしろ』\n\
-　　　　　すぐそこ\n\
-Ａボタン『ジャンプ』\n\
-Ｚボタン『しゃがむ』\n\
+#ifdef VERSION_JP
+#define A_BUTTON_ACT "\
+Ａボタン『ジャンプ』\n"
+#define B_BUTTON_ACT "\
 Ｂボタン『カンバンよむ』\n\
 　　　　『パンチ』\n\
 　　　　『ものをもつ』\n\
-もういちどおす『なげる』"))
+もういちどおす『なげる』"
+#else
+#define A_BUTTON_ACT "\
+Ａボタン『ジャンプ』\n\
+　　　　『カンバンよむ』\n"
+#define B_BUTTON_ACT "\
+Ｂボタン『パンチ』\n\
+　　　　『カンバンよむ』\n\
+　　　　『ものをもつ』\n\
+　もういちどおすと\n\
+　　　　『なげる』"
+#endif
+
+DEFINE_DIALOG(DIALOG_167, 1, 4, 30, 200, _("\
+『ピーチの　おしろ』\n\
+　　　　　すぐそこ\n"\
+A_BUTTON_ACT \
+"Ｚボタン『しゃがむ』\n"\
+B_BUTTON_ACT))
 
 DEFINE_DIALOG(DIALOG_168, 1, 4, 30, 200, _("\
 アーン、またまた　\n\

@@ -69,7 +69,7 @@ void bhv_treasure_chest_bottom_loop(void) {
                 if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 150)) {
                     if (!o->parentObj->oTreasureChestUnkF8) {
                         if (o->parentObj->oTreasureChestUnkF4 == o->oBehParams2ndByte) {
-                            play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gDefaultSoundArgs);
+                            play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
                             o->parentObj->oTreasureChestUnkF4++;
                             o->oAction = 1;
                         } else {
@@ -77,7 +77,7 @@ void bhv_treasure_chest_bottom_loop(void) {
                             o->parentObj->oTreasureChestUnkF8 = 1;
                             o->oAction = 2;
                             cur_obj_become_tangible();
-                            play_sound(SOUND_MENU_CAMERA_BUZZ, gDefaultSoundArgs);
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
                         }
                     }
                 }
@@ -130,12 +130,15 @@ void bhv_treasure_chest_ship_loop(void) {
         case 1:
             if (gEnvironmentRegions != NULL) {
                 gEnvironmentRegions[6] += -5;
-                play_sound(SOUND_ENV_WATER_DRAIN, gDefaultSoundArgs);
+                play_sound(SOUND_ENV_WATER_DRAIN, gGlobalSoundSource);
                 set_environmental_camera_shake(SHAKE_ENV_JRB_SHIP_DRAIN);
                 if (gEnvironmentRegions[6] < -335) {
                     gEnvironmentRegions[6] = -335;
                     o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
                 }
+#if ENABLE_RUMBLE
+                reset_rumble_timers_2(2);
+#endif
             }
             break;
     }

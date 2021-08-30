@@ -31,52 +31,57 @@ UNUSED static const Lights1 king_bobomb_lights_unused5 = gdSPDefLights1(
 );
 
 // 0x05000078
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05000078[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05000078[] = {
 #include "actors/king_bobomb/bob-omb_buddy_left_side_unused.rgba16.inc.c"
 };
 
 // 0x05001078
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05001078[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05001078[] = {
 #include "actors/king_bobomb/bob-omb_buddy_right_side_unused.rgba16.inc.c"
 };
 
 // 0x05002078
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05002078[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05002078[] = {
 #include "actors/king_bobomb/king_bob-omb_arm.rgba16.inc.c"
 };
 
 // 0x05002878
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05002878[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05002878[] = {
 #include "actors/king_bobomb/king_bob-omb_body_unused.rgba16.inc.c"
 };
 
 // 0x05004878
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05004878[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05004878[] = {
 #include "actors/king_bobomb/king_bob-omb_eyes.rgba16.inc.c"
 };
 
+// 0x05005078 - Unused
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05005078[] = {
+#include "actors/king_bobomb/king_bob-omb_eyes_blink.rgba16.inc.c"
+};
+
 // 0x05005878
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05005878[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05005878[] = {
 #include "actors/king_bobomb/king_bob-omb_hand.rgba16.inc.c"
 };
 
 // 0x05006078
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05006078[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05006078[] = {
 #include "actors/king_bobomb/king_bob-omb_crown_rim.rgba16.inc.c"
 };
 
 // 0x05006478
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05006478[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05006478[] = {
 #include "actors/king_bobomb/bob-omb_buddy_body_unused.rgba16.inc.c"
 };
 
 // 0x05008478
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05008478[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05008478[] = {
 #include "actors/king_bobomb/king_bob-omb_left_side.rgba16.inc.c"
 };
 
 // 0x05009478
-ALIGNED8 static const u8 king_bobomb_seg5_texture_05009478[] = {
+ALIGNED8 static const Texture king_bobomb_seg5_texture_05009478[] = {
 #include "actors/king_bobomb/king_bob-omb_right_side.rgba16.inc.c"
 };
 

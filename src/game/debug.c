@@ -337,7 +337,7 @@ void reset_debug_objectinfo(void) {
  * C Right) and then toggles the debug flags from FF to 2; 2 is unused,
  * despite so this has no effect, being called. (unused)
  */
-static void check_debug_button_seq(void) {
+UNUSED static void check_debug_button_seq(void) {
     s16 *buttonArr;
     s16 cButtonMask;
 
@@ -367,7 +367,7 @@ static void check_debug_button_seq(void) {
  * Poll the debug info flags and controller for appropriate presses that
  * control sDebugPage's range. (unused)
  */
-static void try_change_debug_page(void) {
+UNUSED static void try_change_debug_page(void) {
     if (gDebugInfoFlags & DEBUG_INFO_FLAG_DPRINT) {
         if ((gPlayer1Controller->buttonPressed & L_JPAD)
             && (gPlayer1Controller->buttonDown & (L_TRIG | R_TRIG))) {
@@ -392,8 +392,8 @@ static void try_change_debug_page(void) {
  * sDebugSysCursor. This is used to adjust enemy and effect behaviors
  * on the fly. (unused)
  */
-#ifndef VERSION_SH
-static
+#ifdef VERSION_EU
+UNUSED static
 #endif
 void try_modify_debug_controls(void) {
     s32 sp4;
@@ -525,9 +525,6 @@ void try_do_mario_debug_object_spawn(void) {
 }
 
 // TODO: figure out what this is
-#ifndef VERSION_SH
-static
-#endif
 void debug_print_obj_move_flags(void) {
 #ifndef VERSION_EU // TODO: Is there a better way to diff this? static EU doesn't seem to work.
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED) {

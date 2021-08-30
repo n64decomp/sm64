@@ -43,7 +43,7 @@ s16 convert_rotation(s16 inRotation) {
  * parameters filling up the upper 2 bytes of newObj->oBehParams.
  * The object will not spawn if 'behavior' is NULL.
  */
-void spawn_macro_abs_yrot_2params(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params) {
+void spawn_macro_abs_yrot_2params(s32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params) {
     if (behavior != NULL) {
         struct Object *newObj = spawn_object_abs_with_rot(
             &gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, convert_rotation(ry), 0);
@@ -56,7 +56,7 @@ void spawn_macro_abs_yrot_2params(u32 model, const BehaviorScript *behavior, s16
  * a single parameter filling up the upper byte of newObj->oBehParams.
  * The object will not spawn if 'behavior' is NULL.
  */
-void spawn_macro_abs_yrot_param1(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 param) {
+void spawn_macro_abs_yrot_param1(s32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 param) {
     if (behavior != NULL) {
         struct Object *newObj = spawn_object_abs_with_rot(
             &gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, convert_rotation(ry), 0);
@@ -68,7 +68,7 @@ void spawn_macro_abs_yrot_param1(u32 model, const BehaviorScript *behavior, s16 
  * Spawns an object at an absolute location with currently 3 unknown variables that get converted to
  * floats. Oddly enough, this function doesn't care if 'behavior' is NULL or not.
  */
-void spawn_macro_abs_special(u32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 unkA, s16 unkB,
+void spawn_macro_abs_special(s32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 unkA, s16 unkB,
                              s16 unkC) {
     struct Object *newObj =
         spawn_object_abs_with_rot(&gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, 0, 0);
@@ -79,7 +79,7 @@ void spawn_macro_abs_special(u32 model, const BehaviorScript *behavior, s16 x, s
     newObj->oMacroUnk110 = (f32) unkC;
 }
 
-static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
+UNUSED static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
     struct Object *sp3C;
     s16 model;
 
@@ -203,7 +203,7 @@ void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList) {
         // However, BBH doesn't use this function so this might just be an early test?
         switch (macroObjPreset) {
             case 0:
-                spawn_macro_abs_yrot_2params(MODEL_NONE, bhvBooBossSpawnedBridge, macroObjX, macroObjY,
+                spawn_macro_abs_yrot_2params(MODEL_NONE, bhvBooStaircase, macroObjX, macroObjY,
                                              macroObjZ, macroObjRY, 0);
                 break;
             case 1:
@@ -245,11 +245,7 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
     s16 y;
     s16 z;
     s16 extraParams[4];
-#ifdef VERSION_EU
-    s16 model;
-#else
     u8 model;
-#endif
     u8 type;
     u8 presetID;
     u8 defaultParam;
@@ -262,7 +258,7 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
     gMacroObjectDefaultParent.header.gfx.activeAreaIndex = areaIndex;
 
     for (i = 0; i < numOfSpecialObjects; i++) {
-        presetID = (u8) * *specialObjList;
+        presetID = (u8) **specialObjList;
         (*specialObjList)++;
         x = **specialObjList;
         (*specialObjList)++;

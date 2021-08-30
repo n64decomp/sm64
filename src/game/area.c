@@ -21,6 +21,7 @@
 #include "engine/geo_layout.h"
 #include "save_file.h"
 #include "level_table.h"
+#include "dialog_ids.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[0x100];
@@ -32,7 +33,7 @@ s16 gCurrCourseNum;
 s16 gCurrActNum;
 s16 gCurrAreaIndex;
 s16 gSavedCourseNum;
-s16 gPauseScreenMode;
+s16 gMenuOptSelectIndex;
 s16 gSaveOptSelectIndex;
 
 struct SpawnInfo *gMarioSpawnInfo = &gPlayerSpawnInfos[0];
@@ -201,8 +202,8 @@ void clear_areas(void) {
         gAreaData[i].unused28 = NULL;
         gAreaData[i].whirlpools[0] = NULL;
         gAreaData[i].whirlpools[1] = NULL;
-        gAreaData[i].dialog[0] = 255;
-        gAreaData[i].dialog[1] = 255;
+        gAreaData[i].dialog[0] = DIALOG_NONE;
+        gAreaData[i].dialog[1] = DIALOG_NONE;
         gAreaData[i].musicParam = 0;
         gAreaData[i].musicParam2 = 0;
     }
@@ -256,7 +257,7 @@ void unload_area(void) {
 }
 
 void load_mario_area(void) {
-    func_80320890();
+    stop_sounds_in_continuous_banks();
     load_area(gMarioSpawnInfo->areaIndex);
 
     if (gCurrentArea->index == gMarioSpawnInfo->areaIndex) {
@@ -378,19 +379,20 @@ void render_game(void) {
         render_text_labels();
         do_cutscene_handler();
         print_displaying_credits_entry();
+
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                       SCREEN_HEIGHT - BORDER_HEIGHT);
-        gPauseScreenMode = render_menus_and_dialogs();
-
-        if (gPauseScreenMode != 0) {
-            gSaveOptSelectIndex = gPauseScreenMode;
+        gMenuOptSelectIndex = render_menus_and_dialogs();
+        if (gMenuOptSelectIndex != MENU_OPT_NONE) {
+            gSaveOptSelectIndex = gMenuOptSelectIndex;
         }
 
         if (D_8032CE78 != NULL) {
             make_viewport_clip_rect(D_8032CE78);
-        } else
+        } else {
             gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                           SCREEN_HEIGHT - BORDER_HEIGHT);
+        }
 
         if (gWarpTransition.isActive) {
             if (gWarpTransDelay == 0) {

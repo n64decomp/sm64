@@ -13,7 +13,6 @@ void bhv_wf_rotating_wooden_platform_loop(void) {
         o->oAngleVelYaw = 0;
         if (o->oTimer > 60) {
             o->oAction++;
-            ; // needed to match
         }
     } else {
         o->oAngleVelYaw = 0x100;

@@ -18,13 +18,18 @@ extern void D_802F4380();
 #endif
 u32 D_80365CD0; // maybe initialized?
 u64 osClockRate = 62500000;
-u32 D_80334808 = 0;
+
+#ifdef VERSION_SH
+u32 osViClock = 0x02E6D354;
+#endif
+
+u32 D_80334808 = 0; // used in __osException
 
 #if defined(VERSION_EU) || defined(VERSION_SH)
 u32 EU_D_80336C40;
 u32 EU_D_80336C44;
 
-u32 D_8030208C = OS_IM_ALL;
+u32 __OSGlobalIntMask = OS_IM_ALL;
 u32 EU_D_80302090 = 0;
 u8 EU_unusedZeroes[8] = { 0 };
 #endif
@@ -41,7 +46,7 @@ void osInitialize(void) {
     u32 sp34;
     u32 sp30 = 0;
 
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU)
     UNUSED u32 eu_sp34;
     UNUSED u32 eu_sp30;
 #endif
@@ -73,7 +78,15 @@ void osInitialize(void) {
     if (osResetType == RESET_TYPE_COLD_RESET) {
         bzero(osAppNmiBuffer, sizeof(osAppNmiBuffer));
     }
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_SH)
+    if (osTvType == TV_TYPE_PAL) {
+        osViClock = 0x02F5B2D2;
+    } else if (osTvType == TV_TYPE_MPAL) {
+        osViClock = 0x02E6025C;
+    } else {
+        osViClock = 0x02E6D354;
+    }
+#elif defined(VERSION_EU)
     eu_sp30 = HW_REG(PI_STATUS_REG, u32);
     while (eu_sp30 & PI_STATUS_ERROR) {
         eu_sp30 = HW_REG(PI_STATUS_REG, u32);

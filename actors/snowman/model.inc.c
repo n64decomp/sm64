@@ -28,27 +28,27 @@ UNUSED static const Lights1 snowman_lights_unused4 = gdSPDefLights1(
 );
 
 // 0x05008C70
-ALIGNED8 static const u8 snowman_seg5_texture_05008C70[] = {
+ALIGNED8 static const Texture snowman_seg5_texture_05008C70[] = {
 #include "actors/snowman/mr_blizzard_mitten.rgba16.inc.c"
 };
 
 // 0x05009470
-ALIGNED8 static const u8 snowman_seg5_texture_05009470[] = {
+ALIGNED8 static const Texture snowman_seg5_texture_05009470[] = {
 #include "actors/snowman/mr_blizzard_left_side.rgba16.inc.c"
 };
 
 // 0x0500A470
-ALIGNED8 static const u8 snowman_seg5_texture_0500A470[] = {
+ALIGNED8 static const Texture snowman_seg5_texture_0500A470[] = {
 #include "actors/snowman/mr_blizzard_right_side.rgba16.inc.c"
 };
 
 // 0x0500B470
-ALIGNED8 static const u8 snowman_seg5_texture_0500B470[] = {
+ALIGNED8 static const Texture snowman_seg5_texture_0500B470[] = {
 #include "actors/snowman/mr_blizzard_eye.rgba16.inc.c"
 };
 
 // 0x0500BC70
-ALIGNED8 static const u8 snowman_seg5_texture_0500BC70[] = {
+ALIGNED8 static const Texture snowman_seg5_texture_0500BC70[] = {
 #include "actors/snowman/mr_blizzard_mouth.rgba16.inc.c"
 };
 

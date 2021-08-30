@@ -18,6 +18,9 @@
 /* Flags  */
 #define M_TASK_FLAG0 1
 #define M_TASK_FLAG1 2
+#ifdef VERSION_SH
+#define M_TASK_FLAG2 4
+#endif
 
 /* SpStatus */
 #define SPSTATUS_CLEAR_HALT 0x00000001

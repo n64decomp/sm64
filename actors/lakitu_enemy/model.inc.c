@@ -2,58 +2,58 @@
 
 // Unreferenced light group
 UNUSED static const Lights1 lakitu_enemy_lights_unused1 = gdSPDefLights1(
-	0x33, 0x1f, 0x0c,
-	0xcc, 0x7f, 0x33, 0x28, 0x28, 0x28
+    0x33, 0x1f, 0x0c,
+    0xcc, 0x7f, 0x33, 0x28, 0x28, 0x28
 );
 
 // 0x0500ECB0
 static const Lights1 lakitu_enemy_seg5_lights_0500ECB0 = gdSPDefLights1(
-	0x29, 0x13, 0x06,
-	0xa5, 0x4f, 0x1b, 0x28, 0x28, 0x28
+    0x29, 0x13, 0x06,
+    0xa5, 0x4f, 0x1b, 0x28, 0x28, 0x28
 );
 
 // Unreferenced light group
 UNUSED static const Lights1 lakitu_enemy_lights_unused2 = gdSPDefLights1(
-	0x0d, 0x2c, 0x0b,
-	0x34, 0xb2, 0x2c, 0x28, 0x28, 0x28
+    0x0d, 0x2c, 0x0b,
+    0x34, 0xb2, 0x2c, 0x28, 0x28, 0x28
 );
 
 // Unreferenced texture
 // 0x0500ECE0
-ALIGNED8 static const u8 lakitu_enemy_seg5_texture_0500ECE0[] = {
+ALIGNED8 static const Texture lakitu_enemy_seg5_texture_0500ECE0[] = {
 #include "actors/lakitu_enemy/lakitu_enemy_cloud_face_unused.rgba16.inc.c"
 };
 
 // 0x0500F4E0
-ALIGNED8 static const u8 lakitu_enemy_seg5_texture_0500F4E0[] = {
+ALIGNED8 static const Texture lakitu_enemy_seg5_texture_0500F4E0[] = {
 #include "actors/lakitu_enemy/lakitu_enemy_eyes_open.rgba16.inc.c"
 };
 
 // 0x050104E0
-ALIGNED8 static const u8 lakitu_enemy_seg5_texture_050104E0[] = {
+ALIGNED8 static const Texture lakitu_enemy_seg5_texture_050104E0[] = {
 #include "actors/lakitu_enemy/lakitu_enemy_eyes_closed.rgba16.inc.c"
 };
 
 // 0x050114E0
-ALIGNED8 static const u8 lakitu_enemy_seg5_texture_050114E0[] = {
+ALIGNED8 static const Texture lakitu_enemy_seg5_texture_050114E0[] = {
 #include "actors/lakitu_enemy/lakitu_enemy_shell.rgba16.inc.c"
 };
 
 // 0x05011CE0
-ALIGNED8 static const u8 lakitu_enemy_seg5_texture_05011CE0[] = {
+ALIGNED8 static const Texture lakitu_enemy_seg5_texture_05011CE0[] = {
 #include "actors/lakitu_enemy/lakitu_enemy_frown.rgba16.inc.c"
 };
 
 // 0x050124E0
 static const Lights1 lakitu_enemy_seg5_lights_050124E0 = gdSPDefLights1(
-	0x7f, 0x7f, 0x7f,
-	0xff, 0xff, 0xff, 0x28, 0x28, 0x28
+    0x7f, 0x7f, 0x7f,
+    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
 );
 
 // 0x050124F8
 static const Lights1 lakitu_enemy_seg5_lights_050124F8 = gdSPDefLights1(
-	0x79, 0x55, 0x00,
-	0xf2, 0xab, 0x00, 0x28, 0x28, 0x28
+    0x79, 0x55, 0x00,
+    0xf2, 0xab, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x05012510

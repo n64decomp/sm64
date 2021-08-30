@@ -854,26 +854,20 @@ s16 geo_update_animation_frame(struct AnimInfo *obj, s32 *accelAssist) {
  */
 void geo_retreive_animation_translation(struct GraphNodeObject *obj, Vec3f position) {
     struct Animation *animation = obj->animInfo.curAnim;
-    u16 *attribute;
-    s16 *values;
-    s16 frame;
 
     if (animation != NULL) {
-        attribute = segmented_to_virtual((void *) animation->index);
-        values = segmented_to_virtual((void *) animation->values);
+        u16 *attribute = segmented_to_virtual((void *) animation->index);
+        s16 *values = segmented_to_virtual((void *) animation->values);
 
-        frame = obj->animInfo.animFrame;
+        s16 frame = obj->animInfo.animFrame;
 
         if (frame < 0) {
             frame = 0;
         }
 
-        if (1) // ? necessary to match
-        {
-            position[0] = (f32) values[retrieve_animation_index(frame, &attribute)];
-            position[1] = (f32) values[retrieve_animation_index(frame, &attribute)];
-            position[2] = (f32) values[retrieve_animation_index(frame, &attribute)];
-        }
+        position[0] = (f32) values[retrieve_animation_index(frame, &attribute)];
+        position[1] = (f32) values[retrieve_animation_index(frame, &attribute)];
+        position[2] = (f32) values[retrieve_animation_index(frame, &attribute)];
     } else {
         vec3f_set(position, 0, 0, 0);
     }

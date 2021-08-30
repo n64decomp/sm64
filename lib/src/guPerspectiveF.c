@@ -30,6 +30,7 @@ void guPerspectiveF(float mf[4][4], u16 *perspNorm, float fovy, float aspect, fl
         }
     }
 }
+
 void guPerspective(Mtx *m, u16 *perspNorm, float fovy, float aspect, float near, float far,
                    float scale) {
     float mat[4][4];

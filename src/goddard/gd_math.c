@@ -887,12 +887,12 @@ void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec) {
  *
  * Printed a prefix at some point, as shone by how the function is used.
  */
-void gd_print_plane(UNUSED const char *prefix, UNUSED const struct GdPlaneF *p) {
+void gd_print_bounding_box(UNUSED const char *prefix, UNUSED const struct GdBoundingBox *p) {
     UNUSED u8 pad[8];
 
-    printf("Min X = %f, Max X = %f \n", p->p0.x, p->p1.x);
-    printf("Min Y = %f, Max Y = %f \n", p->p0.y, p->p1.y);
-    printf("Min Z = %f, Max Z = %f \n", p->p0.z, p->p1.z);
+    printf("Min X = %f, Max X = %f \n", p->minX, p->maxX);
+    printf("Min Y = %f, Max Y = %f \n", p->minY, p->maxY);
+    printf("Min Z = %f, Max Z = %f \n", p->minZ, p->maxZ);
     printf("\n");
 }
 

@@ -2,6 +2,7 @@
 #define UTILS_H_
 
 #include <stdio.h>
+#include <stdint.h>
 
 // defines
 
@@ -39,15 +40,6 @@
    (buf)[1] = ((val)) & 0xFF; \
 } while(0)
 
-// print nibbles and bytes
-#define fprint_nibble(FP, NIB_) fputc((NIB_) < 10 ? ('0' + (NIB_)) : ('A' + (NIB_) - 0xA), FP)
-#define fprint_byte(FP, BYTE_) do { \
-    fprint_nibble(FP, (BYTE_) >> 4); \
-    fprint_nibble(FP, (BYTE_) & 0x0F); \
-  } while(0)
-#define print_nibble(NIB_) fprint_nibble(stdout, NIB_)
-#define print_byte(BYTE_) fprint_byte(stdout, BYTE_)
-
 // Windows compatibility
 #if defined(_MSC_VER) || defined(__MINGW32__)
   #include <direct.h>
@@ -66,12 +58,20 @@ typedef struct
    int count;
 } dir_list;
 
+typedef enum
+{
+   ENCODING_RAW,
+   ENCODING_U8,
+   ENCODING_U16,
+   ENCODING_U32,
+   ENCODING_U64,
+} write_encoding;
+
 // global verbosity setting
 extern int g_verbosity;
 
 #define ERROR(...) fprintf(stderr, __VA_ARGS__)
 #define INFO(...) if (g_verbosity) printf(__VA_ARGS__)
-#define INFO_HEX(...) if (g_verbosity) print_hex(__VA_ARGS__)
 
 // functions
 
@@ -85,13 +85,12 @@ float read_f32_be(unsigned char *buf);
 // returns 1 if val is power of 2, 0 otherwise
 int is_power2(unsigned int val);
 
-// print buffer as hex bytes
+// print buffer as raw binary, hex u8, hex u16, hex u32, hex u64. pads to encoding size
 // fp: file pointer
+// encoding: encoding type to use (see write_encoding)
 // buf: buffer to read bytes from
 // length: length of buffer to print
-void fprint_hex(FILE *fp, const unsigned char *buf, int length);
-void fprint_hex_source(FILE *fp, const unsigned char *buf, int length);
-void print_hex(const unsigned char *buf, int length);
+int fprint_write_output(FILE *fp, write_encoding encoding, const uint8_t *buf, int length);
 
 // perform byteswapping to convert from v64 to z64 ordering
 void swap_bytes(unsigned char *data, long length);

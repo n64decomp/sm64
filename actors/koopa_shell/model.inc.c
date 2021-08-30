@@ -408,12 +408,12 @@ static const Lights1 koopa_shell_seg8_lights_08027488 = gdSPDefLights1(
 );
 
 // 0x080274A0
-ALIGNED8 static const u8 koopa_shell_seg8_texture_080274A0[] = {
+ALIGNED8 static const Texture koopa_shell_seg8_texture_080274A0[] = {
 #include "actors/koopa_shell/koopa_shell_front.rgba16.inc.c"
 };
 
 // 0x08027CA0
-ALIGNED8 static const u8 koopa_shell_seg8_texture_08027CA0[] = {
+ALIGNED8 static const Texture koopa_shell_seg8_texture_08027CA0[] = {
 #include "actors/koopa_shell/koopa_shell_back.rgba16.inc.c"
 };
 

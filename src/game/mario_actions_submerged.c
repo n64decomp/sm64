@@ -15,7 +15,7 @@
 #include "audio/external.h"
 #include "behavior_data.h"
 #include "level_table.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 #define MIN_SWIM_STRENGTH 160
 #define MIN_SWIM_SPEED 16.0f
@@ -24,9 +24,9 @@ static s16 sWasAtSurface = FALSE;
 static s16 sSwimStrength = MIN_SWIM_STRENGTH;
 static s16 sWaterCurrentSpeeds[] = { 28, 12, 8, 4 };
 
-static s16 D_80339FD0;
-static s16 D_80339FD2;
-static f32 D_80339FD4;
+static s16 sBobTimer;
+static s16 sBobIncrement;
+static f32 sBobHeight;
 
 static void set_swimming_at_surface_particles(struct MarioState *m, u32 particleFlag) {
     s16 atSurface = m->pos[1] >= m->waterLevel - 130;
@@ -416,21 +416,24 @@ static s32 act_hold_water_action_end(struct MarioState *m) {
     return FALSE;
 }
 
-static void reset_float_globals(struct MarioState *m) {
-    D_80339FD0 = 0;
-    D_80339FD2 = 0x800;
-    D_80339FD4 = m->faceAngle[0] / 256.0f + 20.0f;
+static void reset_bob_variables(struct MarioState *m) {
+    sBobTimer = 0;
+    sBobIncrement = 0x800;
+    sBobHeight = m->faceAngle[0] / 256.0f + 20.0f;
 }
 
-static void float_surface_gfx(struct MarioState *m) {
-    if (D_80339FD2 != 0 && m->pos[1] > m->waterLevel - 85 && m->faceAngle[0] >= 0) {
-        if ((D_80339FD0 += D_80339FD2) >= 0) {
-            m->marioObj->header.gfx.pos[1] += D_80339FD4 * sins(D_80339FD0);
+/**
+ * Controls the bobbing that happens when you swim near the surface.
+ */
+static void surface_swim_bob(struct MarioState *m) {
+    if (sBobIncrement != 0 && m->pos[1] > m->waterLevel - 85 && m->faceAngle[0] >= 0) {
+        if ((sBobTimer += sBobIncrement) >= 0) {
+            m->marioObj->header.gfx.pos[1] += sBobHeight * sins(sBobTimer);
             return;
         }
     }
 
-    D_80339FD2 = 0;
+    sBobIncrement = 0;
 }
 
 static void common_swimming_step(struct MarioState *m, s16 swimStrength) {
@@ -475,7 +478,7 @@ static void common_swimming_step(struct MarioState *m, s16 swimStrength) {
     update_water_pitch(m);
     m->marioBodyState->headAngle[0] = approach_s32(m->marioBodyState->headAngle[0], 0, 0x200, 0x200);
 
-    float_surface_gfx(m);
+    surface_swim_bob(m);
     set_swimming_at_surface_particles(m, PARTICLE_WAVE_TRAIL);
 }
 
@@ -551,10 +554,10 @@ static s32 act_breaststroke(struct MarioState *m) {
     if (m->actionTimer == 1) {
         play_sound(sSwimStrength == MIN_SWIM_STRENGTH ? SOUND_ACTION_SWIM : SOUND_ACTION_SWIM_FAST,
                    m->marioObj->header.gfx.cameraToObject);
-        reset_float_globals(m);
+        reset_bob_variables(m);
     }
 
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
     if (m->actionTimer < 6) {
         func_sh_8024CA04();
     }
@@ -675,7 +678,7 @@ static s32 act_hold_breaststroke(struct MarioState *m) {
 
     if (m->actionTimer == 1) {
         play_sound(SOUND_ACTION_SWIM, m->marioObj->header.gfx.cameraToObject);
-        reset_float_globals(m);
+        reset_bob_variables(m);
     }
 
     set_mario_animation(m, MARIO_ANIM_SWIM_WITH_OBJ_PART1);
@@ -802,7 +805,7 @@ static s32 act_water_throw(struct MarioState *m) {
 
     if (m->actionTimer++ == 5) {
         mario_throw_held_object(m);
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
         queue_rumble_data(3, 50);
 #endif
     }
@@ -978,7 +981,7 @@ static s32 act_water_plunge(struct MarioState *m) {
 
         m->particleFlags |= PARTICLE_WATER_SPLASH;
         m->actionState = 1;
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
         if (m->prevAction & ACT_FLAG_AIR) {
             queue_rumble_data(5, 80);
         }
@@ -1006,7 +1009,7 @@ static s32 act_water_plunge(struct MarioState *m) {
                 set_mario_action(m, ACT_HOLD_METAL_WATER_FALLING, 0);
                 break;
         }
-        D_80339FD2 = 0;
+        sBobIncrement = 0;
     }
 
     switch (stateFlags) {
@@ -1087,7 +1090,7 @@ static s32 act_caught_in_whirlpool(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_GENERAL_FALL);
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
     reset_rumble_timers();
 #endif
 

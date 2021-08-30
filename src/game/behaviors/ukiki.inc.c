@@ -383,7 +383,8 @@ void ukiki_act_go_to_cage(void) {
         case UKIKI_SUB_ACT_CAGE_TALK_TO_MARIO:
             cur_obj_init_animation_with_sound(UKIKI_ANIM_HANDSTAND);
 
-            if (cur_obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG, DIALOG_080)) {
+            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN, 
+                DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_080)) {
                 o->oSubAction++;
             }
             break;
@@ -501,7 +502,7 @@ void ukiki_free_loop(void) {
  *
  * Possibly unused so AnimState could be used for wearing a cap?
  */
-static void ukiki_blink_timer(void) {
+UNUSED static void ukiki_blink_timer(void) {
     if (gGlobalTimer % 50 < 7) {
         o->oAnimState = UKIKI_ANIM_STATE_EYE_CLOSED;
     } else {
@@ -516,16 +517,16 @@ void cage_ukiki_held_loop(void) {
     if (o->oPosY - o->oHomeY > -100.0f) {
         switch(o->oUkikiTextState) {
             case UKIKI_TEXT_DEFAULT:
-                if (set_mario_npc_dialog(2) == 2) {
+                if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK) {
                     create_dialog_box_with_response(DIALOG_079);
                     o->oUkikiTextState = UKIKI_TEXT_CAGE_TEXTBOX;
                 }
                 break;
 
             case UKIKI_TEXT_CAGE_TEXTBOX:
-                if (gDialogResponse != 0) {
-                    set_mario_npc_dialog(0);
-                    if (gDialogResponse == 1) {
+                if (gDialogResponse != DIALOG_RESPONSE_NONE) {
+                    set_mario_npc_dialog(MARIO_DIALOG_STOP);
+                    if (gDialogResponse == DIALOG_RESPONSE_YES) {
                         o->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
                         o->oUkikiTextState = UKIKI_TEXT_GO_TO_CAGE;
                     } else {
@@ -567,7 +568,7 @@ void cap_ukiki_held_loop(void) {
             break;
 
         case UKIKI_TEXT_STEAL_CAP:
-            if (cur_obj_update_dialog(2, 2, DIALOG_100, 0)) {
+            if (cur_obj_update_dialog(MARIO_DIALOG_LOOK_UP, DIALOG_FLAG_TEXT_DEFAULT, DIALOG_100, 0)) {
                 o->oInteractionSubtype |= INT_SUBTYPE_DROP_IMMEDIATELY;
                 o->oUkikiTextState = UKIKI_TEXT_STOLE_CAP;
             }
@@ -577,9 +578,10 @@ void cap_ukiki_held_loop(void) {
             break;
 
         case UKIKI_TEXT_HAS_CAP:
-            if (cur_obj_update_dialog(2, 18, DIALOG_101, 0)) {
+            if (cur_obj_update_dialog(MARIO_DIALOG_LOOK_UP, 
+                (DIALOG_FLAG_TEXT_DEFAULT | DIALOG_FLAG_TIME_STOP_ENABLED), DIALOG_101, 0)) {
                 mario_retrieve_cap();
-                set_mario_npc_dialog(0);
+                set_mario_npc_dialog(MARIO_DIALOG_STOP);
                 o->oUkikiHasCap &= ~UKIKI_CAP_ON;
                 o->oUkikiTextState = UKIKI_TEXT_GAVE_CAP_BACK;
             }
@@ -617,7 +619,7 @@ void bhv_ukiki_loop(void) {
             break;
 
         case HELD_HELD:
-            cur_obj_unrender_and_reset_state(UKIKI_ANIM_HELD, 0);
+            cur_obj_unrender_set_action_and_anim(UKIKI_ANIM_HELD, 0);
             obj_copy_pos(o, gMarioObject);
 
             if (o->oBehParams2ndByte == UKIKI_CAP) {

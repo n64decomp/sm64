@@ -22,22 +22,22 @@ static const Lights1 ukiki_seg5_lights_05007BA0 = gdSPDefLights1(
 UNUSED static const u64 ukiki_unused_1 = 1;
 
 // 0x05007BC0
-ALIGNED8 static const u8 ukiki_seg5_texture_05007BC0[] = {
+ALIGNED8 static const Texture ukiki_seg5_texture_05007BC0[] = {
 #include "actors/ukiki/ukiki_face.rgba16.inc.c"
 };
 
 // 0x05008BC0
-ALIGNED8 static const u8 ukiki_seg5_texture_05008BC0[] = {
+ALIGNED8 static const Texture ukiki_seg5_texture_05008BC0[] = {
 #include "actors/ukiki/ukiki_face_blink.rgba16.inc.c"
 };
 
 // 0x05009BC0
-ALIGNED8 static const u8 ukiki_seg5_texture_05009BC0[] = {
+ALIGNED8 static const Texture ukiki_seg5_texture_05009BC0[] = {
 #include "actors/ukiki/ukiki_butt.rgba16.inc.c"
 };
 
 // 0x0500A3C0
-ALIGNED8 static const u8 ukiki_seg5_texture_0500A3C0[] = {
+ALIGNED8 static const Texture ukiki_seg5_texture_0500A3C0[] = {
 #include "actors/ukiki/ukiki_fur.rgba16.inc.c"
 };
 

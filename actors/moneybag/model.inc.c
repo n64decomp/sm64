@@ -1,12 +1,12 @@
 // Moneybag
 
 // 0x060039B0
-ALIGNED8 static const u8 moneybag_seg6_texture_060039B0[] = {
+ALIGNED8 static const Texture moneybag_seg6_texture_060039B0[] = {
 #include "actors/moneybag/moneybag_mouth.rgba16.inc.c"
 };
 
 // 0x060049B0
-ALIGNED8 static const u8 moneybag_seg6_texture_060049B0[] = {
+ALIGNED8 static const Texture moneybag_seg6_texture_060049B0[] = {
 #include "actors/moneybag/moneybag_eyes.rgba16.inc.c"
 };
 

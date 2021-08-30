@@ -1,8 +1,7 @@
 # Super Mario 64 Port
 
-- This repo contains a full decompilation of Super Mario 64 (J), (U), and (E) with minor exceptions in the audio subsystem.
+- This repo contains a full decompilation of Super Mario 64 (J), (U), (E), and (SH).
 - Naming and documentation of the source code and data structures are in progress.
-- Efforts to decompile the Shindou ROM steadily advance toward a matching build.
 - Beyond Nintendo 64, it can also target Linux and Windows natively.
 
 This repo does not include all assets necessary for compiling the game.

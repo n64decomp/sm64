@@ -13,22 +13,22 @@ UNUSED static const Lights1 swoop_lights_unused2 = gdSPDefLights1(
 );
 
 // 0x06004270
-ALIGNED8 static const u8 swoop_seg6_texture_06004270[] = {
+ALIGNED8 static const Texture swoop_seg6_texture_06004270[] = {
 #include "actors/swoop/swoop_body.rgba16.inc.c"
 };
 
 // 0x06004A70
-ALIGNED8 static const u8 swoop_seg6_texture_06004A70[] = {
+ALIGNED8 static const Texture swoop_seg6_texture_06004A70[] = {
 #include "actors/swoop/swoop_eye.rgba16.inc.c"
 };
 
 // 0x06005270
-ALIGNED8 static const u8 swoop_seg6_texture_06005270[] = {
+ALIGNED8 static const Texture swoop_seg6_texture_06005270[] = {
 #include "actors/swoop/swoop_nose.rgba16.inc.c"
 };
 
 // 0x06005A70
-ALIGNED8 static const u8 swoop_seg6_texture_06005A70[] = {
+ALIGNED8 static const Texture swoop_seg6_texture_06005A70[] = {
 #include "actors/swoop/swoop_wing.rgba16.inc.c"
 };
 

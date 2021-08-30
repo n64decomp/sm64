@@ -410,12 +410,12 @@
 
 // second set of actor bins, (0x64-0x73)
 // group 12
-#define MODEL_BOWSER                      0x64        // bowser_geo - 2nd geo loaded is bowser_geo_000424, starts with shadow command
+#define MODEL_BOWSER                      0x64        // bowser_geo
 #define MODEL_BOWSER_BOMB_CHILD_OBJ       0x65        // bowser_bomb_geo - Spawns as a chill object in bowser's behavior command, causing an explosion if it touches a bomb
 #define MODEL_BOWSER_SMOKE                0x66        // bowser_impact_smoke_geo
 #define MODEL_BOWSER_FLAMES               0x67        // bowser_flames_geo
 #define MODEL_BOWSER_WAVE                 0x68        // invisible_bowser_accessory_geo
-#define MODEL_BOWSER2                     0x69        // bowser2_geo - 2nd geo loaded is bowser_geo_000770, starts with node command, only difference
+#define MODEL_BOWSER_NO_SHADOW            0x69        // bowser_geo_no_shadow
 
 // group 13
 #define MODEL_BUB                         0x64        // cheep_cheep_geo
@@ -531,7 +531,7 @@
 #define MODEL_KOOPA_WITHOUT_SHELL         0xBF        // koopa_without_shell_geo
 #define MODEL_GOOMBA                      0xC0        // goomba_geo
 #define MODEL_SEAWEED                     0xC1        // seaweed_geo
-#define MODEL_AMP                         0xC2        // amp_geo
+#define MODEL_AMP                         0xC2        // dAmpGeo
 #define MODEL_BOBOMB_BUDDY                0xC3        // bobomb_buddy_geo
 // find me
 // find me

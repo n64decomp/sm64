@@ -48,7 +48,7 @@ struct AudioSessionSettingsEU gAudioSessionPresets[] = {
 // - memory used for persistent banks
 // - memory used for temporary sequences
 // - memory used for temporary banks
-#ifndef VERSION_EU
+#if defined(VERSION_JP) || defined(VERSION_US)
 struct AudioSessionSettings gAudioSessionPresets[18] = {
 #ifdef VERSION_JP
     { 32000, 16, 1, 0x0800, 0x2FFF, 0x7FFF, 0x3900, 0x6000, 0x4400, 0x2A00 },
@@ -82,7 +82,7 @@ struct AudioSessionSettings gAudioSessionPresets[18] = {
 };
 #endif
 // gAudioCosineTable[k] = round((2**15 - 1) * cos(pi/2 * k / 127)). Unused.
-#ifndef VERSION_EU
+#if defined(VERSION_JP) || defined(VERSION_US)
 u16 gAudioCosineTable[128] = {
     0x7FFF, 32764, 32757, 32744, 32727, 32704, 32677, 32644, 32607, 32564, 32517, 32464, 32407,
     32344,  32277, 32205, 32127, 32045, 31958, 31866, 31770, 31668, 31561, 31450, 31334, 31213,
@@ -100,7 +100,8 @@ u16 gAudioCosineTable[128] = {
 // Transforms a pitch scale factor in -127..127 into a frequency scale factor
 // between -1 and +1 octave.
 // gPitchBendFrequencyScale[k] = 0.5 * 2^(k/127)
-#ifdef VERSION_EU
+#ifndef VERSION_SH
+#if defined(VERSION_EU)
 f32 gPitchBendFrequencyScale[256] = {
     0.5f,
 #else
@@ -168,7 +169,7 @@ u8 gDefaultShortNoteDurationTable[16] = {
     229, 203, 177, 151, 139, 126, 113, 100, 87, 74, 61, 48, 36, 23, 10, 0,
 };
 
-#ifndef VERSION_EU
+#if defined(VERSION_JP) || defined(VERSION_US)
 // gVibratoCurve[k] = k*8
 s8 gVibratoCurve[16] = { 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120 };
 #endif
@@ -178,11 +179,14 @@ struct AdsrEnvelope gDefaultEnvelope[] = {
     { BSWAP16(1000), BSWAP16(32000) }, // stay there for 4.16 seconds
     { BSWAP16(ADSR_HANG), 0 }          // then continue staying there
 };
+#endif
 
 #ifdef VERSION_EU
 struct NoteSubEu gZeroNoteSub = { 0 };
 struct NoteSubEu gDefaultNoteSub = { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, { NULL } };
+#endif
 
+#if defined(VERSION_EU) || defined(VERSION_SH)
 s16 sSawtoothWaves[256] = {
     0,       1023,   2047,    3071,   4095,    5119,   6143,    7167,   8191,    9215,   10239,
     11263,   0x2FFF, 13311,   0x37FF, 15359,   0x3FFF, 17407,   0x47FF, 19455,   0x4FFF, 21503,
@@ -375,17 +379,142 @@ s16 sSawtoothWave[0x40] = {
 s16 *gWaveSamples[4] = { sSawtoothWave, sTriangleWave, sSineWave, sSquareWave };
 #endif
 
+#ifdef VERSION_SH
+s32 unk_sh_data_0[2] = {0, 0};
+f32 gPitchBendFrequencyScale[256] = {
+    0.5f,      0.5f,      0.502736f, 0.505488f, 0.508254f, 0.511036f, 0.513833f, 0.516645f, 0.519472f,
+    0.522315f, 0.525174f, 0.528048f, 0.530938f, 0.533843f, 0.536765f, 0.539702f, 0.542656f, 0.545626f,
+    0.548612f, 0.551614f, 0.554633f, 0.557669f, 0.560721f, 0.563789f, 0.566875f, 0.569977f, 0.573097f,
+    0.576233f, 0.579387f, 0.582558f, 0.585746f, 0.588951f, 0.592175f, 0.595415f, 0.598674f, 0.601950f,
+    0.605245f, 0.608557f, 0.611888f, 0.615236f, 0.618603f, 0.621989f, 0.625393f, 0.628815f, 0.632257f,
+    0.635717f, 0.639196f, 0.642694f, 0.646212f, 0.649748f, 0.653304f, 0.656880f, 0.660475f, 0.664089f,
+    0.667724f, 0.671378f, 0.675052f, 0.678747f, 0.682461f, 0.686196f, 0.689952f, 0.693727f, 0.697524f,
+    0.701341f, 0.705180f, 0.709039f, 0.712919f, 0.716821f, 0.720744f, 0.724689f, 0.728655f, 0.732642f,
+    0.736652f, 0.740684f, 0.744737f, 0.748813f, 0.752911f, 0.757031f, 0.761175f, 0.765340f, 0.769529f,
+    0.773740f, 0.777975f, 0.782232f, 0.786513f, 0.790818f, 0.795146f, 0.799497f, 0.803873f, 0.808272f,
+    0.812696f, 0.817144f, 0.821616f, 0.826112f, 0.830633f, 0.835179f, 0.839750f, 0.844346f, 0.848966f,
+    0.853613f, 0.858284f, 0.862982f, 0.867704f, 0.872453f, 0.877228f, 0.882029f, 0.886856f, 0.891709f,
+    0.896590f, 0.901496f, 0.906430f, 0.911391f, 0.916379f, 0.921394f, 0.926436f, 0.931507f, 0.936604f,
+    0.941730f, 0.946884f, 0.952066f, 0.957277f, 0.962516f, 0.967783f, 0.973080f, 0.978405f, 0.983760f,
+    0.989144f, 0.994557f, 1.0f,      1.005473f, 1.010975f, 1.016508f, 1.022071f, 1.027665f, 1.033289f,
+    1.038944f, 1.044630f, 1.050347f, 1.056095f, 1.061875f, 1.067687f, 1.073530f, 1.079405f, 1.085312f,
+    1.091252f, 1.097224f, 1.103229f, 1.109267f, 1.115337f, 1.121441f, 1.127579f, 1.133750f, 1.139955f,
+    1.146193f, 1.152466f, 1.158773f, 1.165115f, 1.171491f, 1.177903f, 1.184349f, 1.190831f, 1.197348f,
+    1.203901f, 1.210489f, 1.217114f, 1.223775f, 1.230473f, 1.237207f, 1.243978f, 1.250786f, 1.257631f,
+    1.264514f, 1.271434f, 1.278392f, 1.285389f, 1.292423f, 1.299497f, 1.306608f, 1.313759f, 1.320949f,
+    1.328178f, 1.335447f, 1.342756f, 1.350104f, 1.357493f, 1.364922f, 1.372392f, 1.379903f, 1.387455f,
+    1.395048f, 1.402683f, 1.410360f, 1.418078f, 1.425839f, 1.433642f, 1.441488f, 1.449377f, 1.457309f,
+    1.465285f, 1.473304f, 1.481367f, 1.489474f, 1.497626f, 1.505822f, 1.514063f, 1.522349f, 1.530681f,
+    1.539058f, 1.547481f, 1.555950f, 1.564465f, 1.573027f, 1.581636f, 1.590292f, 1.598995f, 1.607746f,
+    1.616545f, 1.625392f, 1.634287f, 1.643231f, 1.652224f, 1.661266f, 1.670358f, 1.679500f, 1.688691f,
+    1.697933f, 1.707225f, 1.716569f, 1.725963f, 1.735409f, 1.744906f, 1.754456f, 1.764058f, 1.773712f,
+    1.783419f, 1.793179f, 1.802993f, 1.812860f, 1.822782f, 1.832757f, 1.842788f, 1.852873f, 1.863013f,
+    1.873209f, 1.883461f, 1.893768f, 1.904132f, 1.914553f, 1.925031f, 1.935567f, 1.946159f, 1.956810f,
+    1.967520f, 1.978287f, 1.989114f, 2.0f
+};
+#endif
+
+#ifdef VERSION_SH
+f32 unk_sh_data_1[] = {
+  0.890899f,  0.890899f,  0.89171f,   0.892521f,  0.893333f,  0.894146f,  0.89496f,   0.895774f,
+  0.89659f,   0.897406f,  0.898222f,  0.89904f,   0.899858f,  0.900677f,  0.901496f,  0.902317f,
+  0.903138f,  0.90396f,   0.904783f,  0.905606f,  0.90643f,   0.907255f,  0.908081f,  0.908907f,
+  0.909734f,  0.910562f,  0.911391f,  0.91222f,   0.91305f,   0.913881f,  0.914713f,  0.915545f,
+  0.916379f,  0.917213f,  0.918047f,  0.918883f,  0.919719f,  0.920556f,  0.921394f,  0.922232f,
+  0.923072f,  0.923912f,  0.924752f,  0.925594f,  0.926436f,  0.927279f,  0.928123f,  0.928968f,
+  0.929813f,  0.93066f,   0.931507f,  0.932354f,  0.933203f,  0.934052f,  0.934902f,  0.935753f,
+  0.936604f,  0.937457f,  0.93831f,   0.939164f,  0.940019f,  0.940874f,  0.94173f,   0.942587f,
+  0.943445f,  0.944304f,  0.945163f,  0.946023f,  0.946884f,  0.947746f,  0.948608f,  0.949472f,
+  0.950336f,  0.951201f,  0.952066f,  0.952933f,  0.9538f,    0.954668f,  0.955537f,  0.956406f,
+  0.957277f,  0.958148f,  0.95902f,   0.959893f,  0.960766f,  0.961641f,  0.962516f,  0.963392f,
+  0.964268f,  0.965146f,  0.966024f,  0.966903f,  0.967783f,  0.968664f,  0.969546f,  0.970428f,
+  0.971311f,  0.972195f,  0.97308f,   0.973965f,  0.974852f,  0.975739f,  0.976627f,  0.977516f,
+  0.978405f,  0.979296f,  0.980187f,  0.981079f,  0.981972f,  0.982865f,  0.98376f,   0.984655f,
+  0.985551f,  0.986448f,  0.987346f,  0.988244f,  0.989144f,  0.990044f,  0.990945f,  0.991847f,
+  0.992749f,  0.993653f,  0.994557f,  0.995462f,  0.996368f,  0.997275f,  0.998182f,  0.999091f,
+  1.0f,       1.00091f,   1.001821f,  1.002733f,  1.003645f,  1.004559f,  1.005473f,  1.006388f,
+  1.007304f,  1.00822f,   1.009138f,  1.010056f,  1.010975f,  1.011896f,  1.012816f,  1.013738f,
+  1.014661f,  1.015584f,  1.016508f,  1.017433f,  1.018359f,  1.019286f,  1.020214f,  1.021142f,
+  1.022071f,  1.023002f,  1.023933f,  1.024864f,  1.025797f,  1.026731f,  1.027665f,  1.0286f,
+  1.029536f,  1.030473f,  1.031411f,  1.03235f,   1.033289f,  1.03423f,   1.035171f,  1.036113f,
+  1.037056f,  1.038f,     1.038944f,  1.03989f,   1.040836f,  1.041783f,  1.042731f,  1.04368f,
+  1.04463f,   1.045581f,  1.046532f,  1.047485f,  1.048438f,  1.049392f,  1.050347f,  1.051303f,
+  1.05226f,   1.053217f,  1.054176f,  1.055135f,  1.056095f,  1.057056f,  1.058018f,  1.058981f,
+  1.059945f,  1.06091f,   1.061875f,  1.062842f,  1.063809f,  1.064777f,  1.065746f,  1.066716f,
+  1.067687f,  1.068658f,  1.069631f,  1.070604f,  1.071578f,  1.072554f,  1.07353f,   1.074507f,
+  1.075485f,  1.076463f,  1.077443f,  1.078424f,  1.079405f,  1.080387f,  1.08137f,   1.082355f,
+  1.08334f,   1.084325f,  1.085312f,  1.0863f,    1.087289f,  1.088278f,  1.089268f,  1.09026f,
+  1.091252f,  1.092245f,  1.093239f,  1.094234f,  1.09523f,   1.096226f,  1.097224f,  1.098223f,
+  1.099222f,  1.100222f,  1.101224f,  1.102226f,  1.103229f,  1.104233f,  1.105238f,  1.106244f,
+  1.10725f,   1.108258f,  1.109267f,  1.110276f,  1.111287f,  1.112298f,  1.11331f,   1.114323f,
+  1.115337f,  1.116352f,  1.117368f,  1.118385f,  1.119403f,  1.120422f,  1.121441f,  1.122462f,
+};
+
+// Shindou moved these variables down here. :/
+// clang-format off
+f32 gNoteFrequencies[128] = {
+    0.105112f,  0.111362f,  0.117984f,  0.125f, 0.132433f, 0.140308f,  0.148651f,  0.15749f,  0.166855f, 0.176777f, 0.187288f,  0.198425f,
+    0.210224f,  0.222725f,  0.235969f,  0.25f,  0.264866f, 0.280616f,  0.297302f,  0.31498f,  0.33371f,  0.353553f, 0.374577f,  0.39685f,
+    0.420448f,  0.445449f,  0.471937f,  0.5f,   0.529732f, 0.561231f,  0.594604f,  0.629961f, 0.66742f,  0.707107f, 0.749154f,  0.793701f,
+    0.840897f,  0.890899f,  0.943875f,  1.0f,   1.059463f, 1.122462f,  1.189207f,  1.259921f, 1.33484f,  1.414214f, 1.498307f,  1.587401f,
+    1.681793f,  1.781798f,  1.887749f,  2.0f,   2.118926f, 2.244924f,  2.378414f,  2.519842f, 2.66968f,  2.828428f, 2.996615f,  3.174803f,
+    3.363586f,  3.563596f,  3.775498f,  4.0f,   4.237853f, 4.489849f,  4.756829f,  5.039685f, 5.33936f,  5.656855f, 5.993229f,  6.349606f,
+    6.727173f,  7.127192f,  7.550996f,  8.0f,   8.475705f, 8.979697f,  9.513658f,  10.07937f, 10.67872f, 11.31371f, 11.986459f, 12.699211f,
+    13.454346f, 14.254383f, 15.101993f, 16.0f,  16.95141f, 17.959394f, 19.027315f, 20.15874f, 21.35744f, 22.62742f, 23.972918f, 25.398422f,
+    26.908691f, 28.508766f, 30.203985f, 32.0f,  33.90282f, 35.91879f,  38.05463f,  40.31748f, 42.71488f, 45.25484f, 47.945835f, 50.796844f,
+    53.817383f, 57.017532f, 60.40797f,  64.0f,  67.80564f, 71.83758f,  76.10926f,  80.63496f, 85.42976f, 45.25484f, 47.945835f, 50.796844f,
+    53.817383f, 57.017532f, 60.40797f,  64.0f,  67.80564f, 71.83758f,  76.10926f,  80.63496f
+};
+// clang-format on
+
+u8 gDefaultShortNoteVelocityTable[16] = {
+    12, 25, 38, 51, 57, 64, 71, 76, 83, 89, 96, 102, 109, 115, 121, 127,
+};
+
+u8 gDefaultShortNoteDurationTable[16] = {
+    229, 203, 177, 151, 139, 126, 113, 100, 87, 74, 61, 48, 36, 23, 10, 0,
+};
+
+struct AdsrEnvelope gDefaultEnvelope[] = {
+    { BSWAP16(4), BSWAP16(32000) },    // go from 0 to 32000 over the course of 16ms
+    { BSWAP16(1000), BSWAP16(32000) }, // stay there for 4.16 seconds
+    { BSWAP16(ADSR_HANG), 0 }          // then continue staying there
+};
+
+u8 unk_sh_data2[4] = { 0, 0, 0, 0 };
+
+struct NoteSubEu gZeroNoteSub = { 0 };
+struct NoteSubEu gDefaultNoteSub = {
+    1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, { NULL },
+#ifdef VERSION_SH
+    0
+#endif
+};
+
+u16 gHeadsetPanQuantization[0x40] = {
+0x3C, 0x3A, 0x38, 0x36, 0x34, 0x32, 0x30, 0x2E,
+0x2C, 0x2A, 0x28, 0x26, 0x24, 0x22, 0x20, 0x1E,
+0x1C, 0x1A, 0x18, 0x16, 0x14, 0x12, 0x10, 0x0E,
+0x0C, 0x0A, 0x08, 0x06, 0x04, 0x02,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+};
+#endif
+
 #ifdef VERSION_EU
 u8 euUnknownData_8030194c[4] = { 0x40, 0x20, 0x10, 0x08 };
 u16 gHeadsetPanQuantization[0x10] = {
     0x40, 0x40, 0x30, 0x30, 0x20, 0x20, 0x10, 0, 0, 0,
 };
-s32 euUnknownData_80301950[32] = { //maybe envelope of some kind?
-    0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0,
-    0, 500, 0, 0, 0, 500, 0, 0, 0, 500, 0, 0, 0, 500, 0, 0,
-};
-#else
+#elif !defined(VERSION_SH)
 u16 gHeadsetPanQuantization[10] = { 0x40, 0x30, 0x20, 0x10, 0, 0, 0, 0, 0, 0 };
+#endif
+
+#if defined(VERSION_EU) || defined(VERSION_SH)
+s16 euUnknownData_80301950[64] = {
+    0, 0, 0,   0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
+    0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 500, 0, 0, 0, 0,
+};
 #endif
 
 // Linearly interpolated between
@@ -453,7 +582,7 @@ f32 gDefaultPanVolume[128] = {
     0.012368f, 0.0f
 };
 
-#ifndef VERSION_EU
+#if defined(VERSION_JP) || defined(VERSION_US)
 // gVolRampingLhs136[k] = 2^16 * max(1, (256*k)^(1/17)
 f32 gVolRampingLhs136[128] = {
     65536.0f,    90811.555f,  94590.766f,  96873.96f,   98527.26f,   99829.06f,   100905.47f,
@@ -581,18 +710,190 @@ f32 gVolRampingRhs128[128] = {
 };
 #endif
 
+#ifdef VERSION_SH
+u16 unk_sh_data_3[] = {
+    // 30 entries
+    // pattern:
+    // A B
+    // C D
+    // C B
+    // A E
+    0x1000, 0x1000,
+    0x1000, 0x1000,
+    0x1000, 0x1000,
+    0x1000, 0x1000,
+
+    0x0E6F, 0x1091,
+    0x11EF, 0x1267,
+    0x11EF, 0x1091,
+    0x0E6F, 0x0BB8,
+
+    0x0C1D, 0x111D,
+    0x1494, 0x15D2,
+    0x1494, 0x111D,
+    0x0C1D, 0x068E,
+
+    0x0838, 0x116E,
+    0x18A6, 0x1B61,
+    0x18A6, 0x116E,
+    0x0838, 0x0001,
+
+    0x0227, 0x0F42,
+    0x1B75, 0x206B,
+    0x1B75, 0x0F42,
+    0x0227, 0xFA2B,
+
+    0xFC28, 0x0AAE,
+    0x1BE7, 0x2394,
+    0x1BE7, 0x0AAE,
+    0xFC28, 0xF874,
+
+    0xF809, 0x0582,
+    0x1C36, 0x2788,
+    0x1C36, 0x0582,
+    0xF809, 0xFAEB,
+
+    0xF5F0, 0x0001,
+    0x1E34, 0x2F71,
+    0x1E34, 0x0001,
+    0xF5F0, 0x0000,
+
+    0xF8AD, 0xFAF3,
+    0x19ED, 0x2EB6,
+    0x19ED, 0xFAF3,
+    0xF8AD, 0x04AC,
+
+    0xFCC0, 0xF6FF,
+    0x178B, 0x3207,
+    0x178B, 0xF6FF,
+    0xFCC0, 0x065F,
+
+    0x01A5, 0xF44E,
+    0x1510, 0x36B4,
+    0x1510, 0xF44E,
+    0x01A5, 0x047B,
+
+    0x05C1, 0xF3CC,
+    0x1145, 0x3988,
+    0x1145, 0xF3CC,
+    0x05C1, 0x0001,
+
+    0x07B9, 0xF517,
+    0x0D20, 0x3C4C,
+    0x0D20, 0xF517,
+    0x07B9, 0xFBD4,
+
+    0x07C0, 0xF71C,
+    0x09A1, 0x4528,
+    0x09A1, 0xF71C,
+    0x07C0, 0xF9B7,
+
+    0x058F, 0xFA43,
+    0x05DC, 0x585F,
+    0x05DC, 0xFA43,
+    0x058F, 0xFAB3,
+};
+
+u16 unk_sh_data_4[] = {
+    0xFA73, 0xFA42,
+    0xFA27, 0x5866,
+    0xFA27, 0xFA42,
+    0xFA73, 0xFAB2,
+
+    0xF842, 0xF71B,
+    0xF661, 0x452B,
+    0xF661, 0xF71B,
+    0xF842, 0xF9B5,
+
+    0xF848, 0xF516,
+    0xF2E1, 0x3C4D,
+    0xF2E1, 0xF516,
+    0xF848, 0xFBD2,
+
+    0xFA3F, 0xF3CA,
+    0xEEBD, 0x3989,
+    0xEEBD, 0xF3CA,
+    0xFA3F, 0xFFFF,
+
+    0xFE5B, 0xF44C,
+    0xEAF2, 0x36B5,
+    0xEAF2, 0xF44C,
+    0xFE5B, 0x0479,
+
+    0x0340, 0xF6FD,
+    0xE877, 0x3207,
+    0xE877, 0xF6FD,
+    0x0340, 0x065E,
+
+    0x0753, 0xFAF1,
+    0xE615, 0x2EB5,
+    0xE615, 0xFAF1,
+    0x0753, 0x04AB,
+
+    0x0A12, 0xFFFF,
+    0xE1CD, 0x2F71,
+    0xE1CD, 0xFFFF,
+    0x0A12, 0x0000,
+
+    0x07FA, 0x057F,
+    0xE3CA, 0x2789,
+    0xE3CA, 0x057F,
+    0x07FA, 0xFAEA,
+
+    0x03DB, 0x0AAC,
+    0xE41A, 0x2394,
+    0xE41A, 0x0AAC,
+    0x03DB, 0xF873,
+
+    0xFDDC, 0x0F41,
+    0xE489, 0x206E,
+    0xE489, 0x0F41,
+    0xFDDC, 0xFA28,
+
+    0xF7CA, 0x116E,
+    0xE758, 0x1B63,
+    0xE758, 0x116E,
+    0xF7CA, 0xFFFF,
+
+    0xF3E4, 0x111D,
+    0xEB6A, 0x15D4,
+    0xEB6A, 0x111D,
+    0xF3E4, 0x068B,
+
+    0xF192, 0x1092,
+    0xEE11, 0x1268,
+    0xEE11, 0x1092,
+    0xF192, 0x0BB6,
+
+    0xF05F, 0x1026,
+    0xEF89, 0x1093,
+    0xEF89, 0x1026,
+    0xF05F, 0x0EEB,
+
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x7FFF, 0xD001,
+    0x3FFF, 0xF001,
+    0x5FFF, 0x9001,
+    0x7FFF, 0x8001
+};
+#endif
+
+#ifndef VERSION_SH
 s16 gTatumsPerBeat = TATUMS_PER_BEAT;
 s8 gUnusedCount80333EE8 = UNUSED_COUNT_80333EE8;
 s32 gAudioHeapSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_HEAP_SIZE);
 s32 gAudioInitPoolSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_INIT_POOL_SIZE);
 volatile s32 gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
+#endif
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU)
 u8 bufferDelete2[12] = { 0 };
 u8 D_EU_80302010 = 0;
 u8 D_EU_80302014 = 0;
+
 struct OSMesgQueue *OSMesgQueues[4] = { &OSMesgQueue0, &OSMesgQueue1, &OSMesgQueue2, &OSMesgQueue3 };
-#else
+#elif defined(VERSION_JP) || defined(VERSION_US)
 s8 sUnused8033EF8 = 24;
 #endif
 
@@ -600,7 +901,7 @@ s8 sUnused8033EF8 = 24;
 
 volatile s32 gAudioFrameCount;
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 s32 gCurrAudioFrameDmaCount;
 #else
 volatile s32 gCurrAudioFrameDmaCount;
@@ -615,7 +916,7 @@ u64 *gAudioCmd;
 struct SPTask *gAudioTask;
 struct SPTask gAudioTasks[2];
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 f32 D_EU_802298D0;
 s32 gRefreshRate;
 #endif
@@ -623,15 +924,38 @@ s32 gRefreshRate;
 s16 *gAiBuffers[NUMAIBUFFERS];
 s16 gAiBufferLengths[NUMAIBUFFERS];
 
-#ifndef VERSION_EU
+#if defined(VERSION_JP) || defined(VERSION_US)
 u32 gUnused80226E58[0x10];
 u16 gUnused80226E98[0x10];
 #endif
 
 u32 gAudioRandom;
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 s32 gAudioErrorFlags;
+#endif
+
+#ifdef VERSION_SH
+volatile u32 gAudioLoadLockSH;
+struct EuAudioCmd sAudioCmd[0x100];
+u8 D_SH_80350F18;
+u8 D_SH_80350F19;
+
+OSMesg D_SH_80350F1C[1];
+OSMesgQueue D_SH_80350F20; // address written to D_SH_80350F38
+OSMesgQueue *D_SH_80350F38;
+
+OSMesg D_SH_80350F40[4];
+OSMesgQueue D_SH_80350F50; // address written to D_SH_80350F68
+OSMesgQueue *D_SH_80350F68;
+
+OSMesg D_SH_80350F6C[1];
+OSMesgQueue D_SH_80350F70; // address written to D_SH_80350F88
+OSMesgQueue *D_SH_80350F88;
+
+OSMesg D_SH_80350F8C[1];
+OSMesgQueue D_SH_80350F90; // address written to D_SH_80350F90
+OSMesgQueue *D_SH_80350FA8;
 #endif
 
 u64 gAudioGlobalsEndMarker;

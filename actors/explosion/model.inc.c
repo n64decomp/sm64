@@ -9,37 +9,37 @@ static const Vtx explosion_seg3_vertex_030009C8[] = {
 };
 
 // 0x03000A08
-ALIGNED8 static const u8 explosion_seg3_texture_03000A08[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03000A08[] = {
 #include "actors/explosion/explosion_0.rgba16.inc.c"
 };
 
 // 0x03001208
-ALIGNED8 static const u8 explosion_seg3_texture_03001208[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03001208[] = {
 #include "actors/explosion/explosion_1.rgba16.inc.c"
 };
 
 // 0x03001A08
-ALIGNED8 static const u8 explosion_seg3_texture_03001A08[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03001A08[] = {
 #include "actors/explosion/explosion_2.rgba16.inc.c"
 };
 
 // 0x03002208
-ALIGNED8 static const u8 explosion_seg3_texture_03002208[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03002208[] = {
 #include "actors/explosion/explosion_3.rgba16.inc.c"
 };
 
 // 0x03002A08
-ALIGNED8 static const u8 explosion_seg3_texture_03002A08[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03002A08[] = {
 #include "actors/explosion/explosion_4.rgba16.inc.c"
 };
 
 // 0x03003208
-ALIGNED8 static const u8 explosion_seg3_texture_03003208[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03003208[] = {
 #include "actors/explosion/explosion_5.rgba16.inc.c"
 };
 
 // 0x03003A08
-ALIGNED8 static const u8 explosion_seg3_texture_03003A08[] = {
+ALIGNED8 static const Texture explosion_seg3_texture_03003A08[] = {
 #include "actors/explosion/explosion_6.rgba16.inc.c"
 };
 

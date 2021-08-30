@@ -19,7 +19,7 @@ static const Vtx bully_seg5_vertex_05000000[] = {
 };
 
 // 0x050000E0
-ALIGNED8 static const u8 bully_seg5_texture_050000E0[] = {
+ALIGNED8 static const Texture bully_seg5_texture_050000E0[] = {
 #include "actors/bully/bully_horn.rgba16.inc.c"
 };
 
@@ -85,17 +85,17 @@ static const Lights1 bully_seg5_lights_05000450 = gdSPDefLights1(
 
 // //! There's another malformed light entry here.
 // 0x05000468
-ALIGNED8 static const u8 bully_seg5_texture_05000468[] = {
+ALIGNED8 static const Texture bully_seg5_texture_05000468[] = {
 #include "actors/bully/bully_left_side.rgba16.inc.c"
 };
 
 // 0x05001468
-ALIGNED8 static const u8 bully_seg5_texture_05001468[] = {
+ALIGNED8 static const Texture bully_seg5_texture_05001468[] = {
 #include "actors/bully/bully_right_side.rgba16.inc.c"
 };
 
 // 0x05002468
-ALIGNED8 static const u8 bully_seg5_texture_05002468[] = {
+ALIGNED8 static const Texture bully_seg5_texture_05002468[] = {
 #include "actors/bully/bully_eye.rgba16.inc.c"
 };
 
@@ -355,7 +355,7 @@ const Gfx bully_seg5_dl_050037A0[] = {
 
 // 0x05003838 - 0x05003878
 const Gfx bully_seg5_dl_05003838[] = {
-    gsSPLight(bully_seg5_texture_05000468 + 0x8, 1), // yet another malformed light...
+    gsSPLight((u8*)bully_seg5_texture_05000468 + 0x8, 1), //! yet another malformed light...
     gsSPLight(bully_seg5_texture_05000468, 2),
     gsSPVertex(bully_seg5_vertex_05002EA8, 6, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),

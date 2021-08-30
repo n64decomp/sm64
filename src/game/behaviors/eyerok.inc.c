@@ -43,7 +43,7 @@ static void eyerok_boss_act_wake_up(void) {
     if (o->oEyerokBossNumHands == 2) {
         if (o->oTimer > 5) {
             if (o->oSubAction == 0) {
-                func_8031FFB4(SEQ_PLAYER_LEVEL, 60, 40);
+                seq_player_lower_volume(SEQ_PLAYER_LEVEL, 60, 40);
                 o->oSubAction += 1;
             }
 
@@ -63,7 +63,7 @@ static void eyerok_boss_act_wake_up(void) {
 }
 
 static void eyerok_boss_act_show_intro_text(void) {
-    if (cur_obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG, DIALOG_117)) {
+    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, DIALOG_FLAG_NONE, CUTSCENE_DIALOG, DIALOG_117)) {
         o->oAction = EYEROK_BOSS_ACT_FIGHT;
     }
 }
@@ -117,7 +117,7 @@ static void eyerok_boss_act_fight(void) {
 
 static void eyerok_boss_act_die(void) {
     if (o->oTimer == 60) {
-        if (cur_obj_update_dialog_with_cutscene(2, 0, CUTSCENE_DIALOG, DIALOG_118)) {
+        if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, DIALOG_FLAG_NONE, CUTSCENE_DIALOG, DIALOG_118)) {
             spawn_default_star(0.0f, -900.0f, -3700.0f);
         } else {
             o->oTimer -= 1;
@@ -241,8 +241,6 @@ static void eyerok_hand_act_idle(void) {
 }
 
 static void eyerok_hand_act_open(void) {
-    s16 sp1E;
-
     o->parentObj->oEyerokBossUnk1AC = o->oBehParams2ndByte;
 
     if (cur_obj_init_anim_and_check_if_end(4)) {
@@ -253,11 +251,10 @@ static void eyerok_hand_act_open(void) {
         o->collisionData = segmented_to_virtual(ssl_seg7_collision_070282F8);
 
         if (o->parentObj->oEyerokBossNumHands != 2) {
-            sp1E = o->oAngleToMario;
+            s16 sp1E = o->oAngleToMario;
             clamp_s16(&sp1E, -0x3000, 0x3000);
             o->oMoveAngleYaw = sp1E;
             o->oForwardVel = 50.0f;
-            ;
         } else {
             o->oMoveAngleYaw = 0;
         }

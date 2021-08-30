@@ -36,7 +36,7 @@ f32 D_801A81C0 = 0.0f;
 f32 D_801A81C4 = 0.0f;
 
 // bss
-struct GdPlaneF D_801B9DA0;
+struct GdBoundingBox gSomeBoundingBox;
 struct ObjCamera *sCurrentMoveCamera; // @ 801B9DB8
 struct ObjView *sCurrentMoveView;     // @ 801B9DBC
 struct DebugCounters gGdCounter;      // @ 801B9DC0
@@ -62,75 +62,74 @@ struct Unk801B9E68 sGdViewInfo; // @ 801B9E68
 void *D_801B9E80;
 struct ObjJoint *gGdJointList;  // @ 801B9E84
 struct ObjBone *gGdBoneList;    // @ 801B9E88
-struct GdObj *gGdObjectList;    // @ 801B9E8C
+struct GdObj *gGdObjectList;    // head of linked list containing every single GdObj that was created
 struct ObjGroup *gGdViewsGroup; // @ 801B9E90
 
 /* @ 22A480 for 0x70 */
-void func_8017BCB0(void) { /* Initialize Plane? */
-    D_801B9DA0.p0.x = 10000000.0f;
-    D_801B9DA0.p0.y = 10000000.0f;
-    D_801B9DA0.p0.z = 10000000.0f;
+void reset_bounding_box(void) { /* Initialize Plane? */
+    gSomeBoundingBox.minX = 10000000.0f;
+    gSomeBoundingBox.minY = 10000000.0f;
+    gSomeBoundingBox.minZ = 10000000.0f;
 
-    D_801B9DA0.p1.x = -10000000.0f;
-    D_801B9DA0.p1.y = -10000000.0f;
-    D_801B9DA0.p1.z = -10000000.0f;
+    gSomeBoundingBox.maxX = -10000000.0f;
+    gSomeBoundingBox.maxY = -10000000.0f;
+    gSomeBoundingBox.maxZ = -10000000.0f;
 }
 
-// TODO: fix first argument's type once type of set_cur_dynobj is known
-// Should be an ObjVertex*
-/* @ 22A4F0 for 0x140 */
-void func_8017BD20(void *a0) {
-    struct GdVec3f sp1c;
+void add_obj_pos_to_bounding_box(struct GdObj *obj) {
+    struct GdVec3f pos;
 
-    set_cur_dynobj(a0);
-    d_get_world_pos(&sp1c);
+    set_cur_dynobj(obj);
+    d_get_world_pos(&pos);
 
-    if (sp1c.x < D_801B9DA0.p0.x) {
-        D_801B9DA0.p0.x = sp1c.x;
+    if (pos.x < gSomeBoundingBox.minX) {
+        gSomeBoundingBox.minX = pos.x;
     }
 
-    if (sp1c.y < D_801B9DA0.p0.y) {
-        D_801B9DA0.p0.y = sp1c.y;
+    if (pos.y < gSomeBoundingBox.minY) {
+        gSomeBoundingBox.minY = pos.y;
     }
 
-    if (sp1c.z < D_801B9DA0.p0.z) {
-        D_801B9DA0.p0.z = sp1c.z;
+    if (pos.z < gSomeBoundingBox.minZ) {
+        gSomeBoundingBox.minZ = pos.z;
     }
 
-    if (sp1c.x > D_801B9DA0.p1.x) {
-        D_801B9DA0.p1.x = sp1c.x;
+    if (pos.x > gSomeBoundingBox.maxX) {
+        gSomeBoundingBox.maxX = pos.x;
     }
 
-    if (sp1c.y > D_801B9DA0.p1.y) {
-        D_801B9DA0.p1.y = sp1c.y;
+    if (pos.y > gSomeBoundingBox.maxY) {
+        gSomeBoundingBox.maxY = pos.y;
     }
 
-    if (sp1c.z > D_801B9DA0.p1.z) {
-        D_801B9DA0.p1.z = sp1c.z;
+    if (pos.z > gSomeBoundingBox.maxZ) {
+        gSomeBoundingBox.maxZ = pos.z;
     }
 }
 
 /* @ 22A630 for 0x70 */
-void func_8017BE60(struct GdPlaneF *a0) {
-    a0->p0.x = D_801B9DA0.p0.x;
-    a0->p0.y = D_801B9DA0.p0.y;
-    a0->p0.z = D_801B9DA0.p0.z;
+void get_some_bounding_box(struct GdBoundingBox *a0) {
+    a0->minX = gSomeBoundingBox.minX;
+    a0->minY = gSomeBoundingBox.minY;
+    a0->minZ = gSomeBoundingBox.minZ;
 
-    a0->p1.x = D_801B9DA0.p1.x;
-    a0->p1.y = D_801B9DA0.p1.y;
-    a0->p1.z = D_801B9DA0.p1.z;
+    a0->maxX = gSomeBoundingBox.maxX;
+    a0->maxY = gSomeBoundingBox.maxY;
+    a0->maxZ = gSomeBoundingBox.maxZ;
 }
 
 /* @ 22A6A0 for 0x24 */
-void func_8017BED0(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1) {
+void stub_objects_1(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1) {
     UNUSED u8 sp00[8];
     /* Debug stub? */
     return;
 }
 
-/* @ 22A6C4 for 0x2CC; orig. name: func_8017BEF4 */
-const char *get_obj_name_str(enum ObjTypeFlag objFlag) {
-    /* sp04 */ const char *objName;
+/**
+ * Returns a string containing the name of the the object type
+ */
+static const char *get_obj_name_str(enum ObjTypeFlag objFlag) {
+    const char *objName;
     switch (objFlag) {
         case OBJ_TYPE_JOINTS:
             objName = "joints";
@@ -196,18 +195,21 @@ const char *get_obj_name_str(enum ObjTypeFlag objFlag) {
     return objName;
 }
 
-/* @ 22A990 for 0x510 */
+/**
+ * Creates an object of the specified type
+ */
 struct GdObj *make_object(enum ObjTypeFlag objType) {
     struct GdObj *newObj;
     struct GdObj *objListOldHead;
     s32 objSize;
     s32 i;
     drawmethod_t objDrawFn;
-    const char *objNameStr;
+    const char *typeName;
     u8 *newObjBytes;
     s32 objPermanence = 0x10;
 
-    add_to_stacktrace("make_object");
+    imin("make_object");
+
     switch (objType) {
         case OBJ_TYPE_JOINTS:
             objSize = sizeof(struct ObjJoint);
@@ -227,11 +229,12 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
             break;
         case OBJ_TYPE_SHAPES:
             objSize = sizeof(struct ObjShape);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            // Shapes get drawn by their parent object instead of automatically.
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_UNK200000:
             objSize = sizeof(struct ObjUnk200000);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_NETS:
             objSize = sizeof(struct ObjNet);
@@ -243,7 +246,7 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
             break;
         case OBJ_TYPE_VERTICES:
             objSize = sizeof(struct ObjVertex);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_CAMERAS:
             objSize = sizeof(struct ObjCamera);
@@ -264,7 +267,7 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
             break;
         case OBJ_TYPE_WEIGHTS:
             objSize = sizeof(struct ObjWeight);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_GADGETS:
             objSize = sizeof(struct ObjGadget);
@@ -272,7 +275,7 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
             break;
         case OBJ_TYPE_VIEWS:
             objSize = sizeof(struct ObjView);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_LABELS:
             objSize = sizeof(struct ObjLabel);
@@ -280,46 +283,48 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
             break;
         case OBJ_TYPE_ANIMATORS:
             objSize = sizeof(struct ObjAnimator);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_VALPTRS:
-            objSize = sizeof(struct ObjValPtrs);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objSize = sizeof(struct ObjValPtr);
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         case OBJ_TYPE_ZONES:
             objSize = sizeof(struct ObjZone);
-            objDrawFn = (drawmethod_t) nop_obj_draw;
+            objDrawFn = (drawmethod_t) draw_nothing;
             break;
         default:
             fatal_print("make_object() : Unkown object!");
     }
 
-    objNameStr = get_obj_name_str(objType);
-    start_memtracker(objNameStr);
+    typeName = get_obj_name_str(objType);
 
+    // Allocate memory for the object
+    start_memtracker(typeName);
     newObj = gd_malloc(objSize, objPermanence);
-
     if (newObj == NULL) {
-        fatal_printf("Cant allocate object '%s' memory!", objNameStr);
+        fatal_printf("Cant allocate object '%s' memory!", typeName);
     }
+    stop_memtracker(typeName);
 
-    stop_memtracker(objNameStr);
-
+    // Zero out the object
     newObjBytes = (u8 *) newObj;
     for (i = 0; i < objSize; i++) {
         newObjBytes[i] = 0;
     }
 
+    // Add the new object to the beginning of gGdObjectList
     gGdObjCount++;
     objListOldHead = gGdObjectList;
     gGdObjectList = newObj;
-
     newObj->prev = NULL;
     if (objListOldHead != NULL) {
         newObj->next = objListOldHead;
         objListOldHead->prev = newObj;
     }
-    newObj->number = gGdObjCount;
+
+    // Fill in required fields
+    newObj->index = gGdObjCount;
     newObj->type = objType;
     newObj->objDrawFn = objDrawFn;
     newObj->drawFlags = 0;
@@ -329,15 +334,15 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
 }
 
 /* @ 22AEA0 for 0xD0; orig name: func_8017C6D0 */
-struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGroup *a2) {
+struct ObjZone *make_zone(struct ObjGroup *a0, struct GdBoundingBox *bbox, struct ObjGroup *a2) {
     struct ObjZone *newZone = (struct ObjZone *) make_object(OBJ_TYPE_ZONES);
 
-    newZone->unk14.p0.x = a1->p0.x;
-    newZone->unk14.p0.y = a1->p0.y;
-    newZone->unk14.p0.z = a1->p0.z;
-    newZone->unk14.p1.x = a1->p1.x;
-    newZone->unk14.p1.y = a1->p1.y;
-    newZone->unk14.p1.z = a1->p1.z;
+    newZone->boundingBox.minX = bbox->minX;
+    newZone->boundingBox.minY = bbox->minY;
+    newZone->boundingBox.minZ = bbox->minZ;
+    newZone->boundingBox.maxX = bbox->maxX;
+    newZone->boundingBox.maxY = bbox->maxY;
+    newZone->boundingBox.maxZ = bbox->maxZ;
     // pointers? prev, next?
     newZone->unk2C = a2;
     newZone->unk30 = a0;
@@ -350,69 +355,74 @@ struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGr
 
 /* @ 22AF70 for 0x60 */
 struct ObjUnk200000 *func_8017C7A0(struct ObjVertex *a0, struct ObjFace *a1) {
-    struct ObjUnk200000 *sp1C = (struct ObjUnk200000 *) make_object(OBJ_TYPE_UNK200000);
+    struct ObjUnk200000 *unk = (struct ObjUnk200000 *) make_object(OBJ_TYPE_UNK200000);
 
-    sp1C->unk30 = a0;
-    sp1C->unk34 = a1;
+    unk->unk30 = a0;
+    unk->unk34 = a1;
 
-    return sp1C;
+    return unk;
 }
 
-/* @ 22AFD0 for 0xC0; orig name: func_8017C800 */
-struct Links *make_link_to_obj(struct Links *head, struct GdObj *a1) {
-    struct Links *newLink;
+/**
+ * Creates a ListNode for the object. Adds the new node after `prevNode` if `prevNode` is not NULL.
+ */
+struct ListNode *make_link_to_obj(struct ListNode *prevNode, struct GdObj *obj) {
+    struct ListNode *newNode;
 
+    // Allocate link node
     start_memtracker("links");
-
-    newLink = gd_malloc_perm(sizeof(struct Links));
-
-    if (newLink == NULL) {
+    newNode = gd_malloc_perm(sizeof(struct ListNode));
+    if (newNode == NULL) {
         fatal_print("Cant allocate link memory!");
     }
-
     stop_memtracker("links");
 
-    if (head != NULL) {
-        head->next = newLink;
+    // Append to `prevNode` if not NULL
+    if (prevNode != NULL) {
+        prevNode->next = newNode;
     }
 
-    newLink->prev = head;
-    newLink->next = NULL;
-    newLink->obj = a1;
+    newNode->prev = prevNode;
+    newNode->next = NULL;
+    newNode->obj = obj;
 
-    return newLink;
+    return newNode;
 }
 
-/* @ 22B090 -> 22B154; orig name: func_8017C8C0 */
-struct VtxLink *make_vtx_link(struct VtxLink *prevlink, Vtx *data) {
-    struct VtxLink *newLink;
+/*
+ * Creates a VtxLink for the vertex. Adds the new node after `prevNode` if `prevNode` is not NULL.
+ */
+struct VtxLink *make_vtx_link(struct VtxLink *prevNode, Vtx *data) {
+    struct VtxLink *newNode;
 
-    newLink = gd_malloc_perm(sizeof(struct VtxLink));
-
-    if (newLink == NULL) {
+    newNode = gd_malloc_perm(sizeof(struct VtxLink));
+    if (newNode == NULL) {
         fatal_print("Cant allocate link memory!");
     }
 
-    if (prevlink != NULL) {
-        prevlink->next = newLink;
+    // Append to `prevNode` if not NULL
+    if (prevNode != NULL) {
+        prevNode->next = newNode;
     }
 
-    newLink->prev = prevlink;
-    newLink->next = NULL;
-    newLink->data = data;
-    // WTF?
-    if (((uintptr_t)(newLink)) == 0x3F800000) {
+    newNode->prev = prevNode;
+    newNode->next = NULL;
+    newNode->data = data;
+
+    // WTF? Not sure what this is supposed to check
+    if (((uintptr_t)(newNode)) == 0x3F800000) {
         fatal_printf("bad3\n");
     }
-    return newLink;
+
+    return newNode;
 }
 
 /* @ 22B154 for 0x88; orig name: func8017C984 */
-struct ObjValPtrs *make_valptrs(struct GdObj *obj, s32 flags, enum ValPtrType type, size_t offset) {
-    struct ObjValPtrs *sp1C = (struct ObjValPtrs *) make_object(OBJ_TYPE_VALPTRS);
+struct ObjValPtr *make_valptr(struct GdObj *obj, s32 flag, enum ValPtrType type, size_t offset) {
+    struct ObjValPtr *sp1C = (struct ObjValPtr *) make_object(OBJ_TYPE_VALPTRS);
 
     sp1C->obj = obj;
-    sp1C->unk20 = flags;
+    sp1C->flag = flag;
     sp1C->offset = offset;
     sp1C->datatype = type;
 
@@ -431,7 +441,7 @@ void reset_plane(struct ObjPlane *plane) {
     s32 sp30;
     register f32 sp28;
 
-    add_to_stacktrace("reset_plane");
+    imin("reset_plane");
 
     sp4C = plane->unk40;
     calc_face_normal(sp4C);
@@ -473,30 +483,30 @@ void reset_plane(struct ObjPlane *plane) {
             break;
     }
 
-    func_8017BCB0();
+    reset_bounding_box();
 
     for (i = 0; i < sp4C->vtxCount; i++) {
-        func_8017BD20(sp4C->vertices[i]);
+        add_obj_pos_to_bounding_box(&sp4C->vertices[i]->header);
     }
 
-    plane->plane28.p0.x = D_801B9DA0.p0.x;
-    plane->plane28.p0.y = D_801B9DA0.p0.y;
-    plane->plane28.p0.z = D_801B9DA0.p0.z;
-    plane->plane28.p1.x = D_801B9DA0.p1.x;
-    plane->plane28.p1.y = D_801B9DA0.p1.y;
-    plane->plane28.p1.z = D_801B9DA0.p1.z;
+    plane->boundingBox.minX = gSomeBoundingBox.minX;
+    plane->boundingBox.minY = gSomeBoundingBox.minY;
+    plane->boundingBox.minZ = gSomeBoundingBox.minZ;
+    plane->boundingBox.maxX = gSomeBoundingBox.maxX;
+    plane->boundingBox.maxY = gSomeBoundingBox.maxY;
+    plane->boundingBox.maxZ = gSomeBoundingBox.maxZ;
 
-    if (plane->plane28.p1.x - plane->plane28.p0.x < 100.0f) {
-        plane->plane28.p1.x += 50.0f;
-        plane->plane28.p0.x -= 50.0f;
+    if (plane->boundingBox.maxX - plane->boundingBox.minX < 100.0f) {
+        plane->boundingBox.maxX += 50.0f;
+        plane->boundingBox.minX -= 50.0f;
     }
 
-    plane->plane28.p1.y += 200.0f;
-    plane->plane28.p0.y -= 200.0f;
+    plane->boundingBox.maxY += 200.0f;
+    plane->boundingBox.minY -= 200.0f;
 
-    if (plane->plane28.p1.z - plane->plane28.p0.z < 100.0f) {
-        plane->plane28.p1.z += 50.0f;
-        plane->plane28.p0.z -= 50.0f;
+    if (plane->boundingBox.maxZ - plane->boundingBox.minZ < 100.0f) {
+        plane->boundingBox.maxZ += 50.0f;
+        plane->boundingBox.minZ -= 50.0f;
     }
     imout();
 }
@@ -516,7 +526,7 @@ struct ObjPlane *make_plane(s32 inZone, struct ObjFace *a1) {
 }
 
 /* @ 22B6A0 for 0x21C; orig name: func_8017CED0 */
-struct ObjCamera *make_camera(s32 a0, struct GdObj *a1) {
+struct ObjCamera *make_camera(s32 flags, struct GdObj *a1) {
     struct ObjCamera *newCam;
     struct ObjCamera *oldCameraHead;
 
@@ -533,7 +543,7 @@ struct ObjCamera *make_camera(s32 a0, struct GdObj *a1) {
         oldCameraHead->prev = newCam;
     }
 
-    newCam->unk2C = a0 | 0x10;
+    newCam->flags = flags | 0x10;
     newCam->unk30 = a1;
     gd_set_identity_mat4(&newCam->unk64);
     gd_set_identity_mat4(&newCam->unkA8);
@@ -549,13 +559,13 @@ struct ObjCamera *make_camera(s32 a0, struct GdObj *a1) {
     newCam->unk178 = 0.0f;
     newCam->unk17C = 0.25f;
 
-    newCam->zoom = 0;
-    newCam->zoomLevels = -1;
+    newCam->zoomLevel = 0;
+    newCam->maxZoomLevel = -1;
 
     newCam->unkA4 = 0.0f;
 
-    newCam->unk34.x = newCam->unk34.y = newCam->unk34.z = 0.0f;
-    newCam->unk14.x = newCam->unk14.y = newCam->unk14.z = 0.0f;
+    newCam->lookAt.x = newCam->lookAt.y = newCam->lookAt.z = 0.0f;
+    newCam->worldPos.x = newCam->worldPos.y = newCam->worldPos.z = 0.0f;
 
     return newCam;
 }
@@ -604,7 +614,7 @@ struct ObjLight *make_light(s32 flags, char *name, s32 id) {
 }
 
 /* @ 22BA78 for 0x294; orig name: func_8017D2A8*/
-struct ObjView *make_view(const char *name, s32 flags, s32 a2, s32 ulx, s32 uly, s32 lrx, s32 lry,
+struct ObjView *make_view(const char *name, s32 flags, s32 projectionType, s32 ulx, s32 uly, s32 lrx, s32 lry,
                           struct ObjGroup *parts) {
     struct ObjView *newView = (struct ObjView *) make_object(OBJ_TYPE_VIEWS);
 
@@ -622,7 +632,7 @@ struct ObjView *make_view(const char *name, s32 flags, s32 a2, s32 ulx, s32 uly,
     }
 
     newView->unk78 = 0;
-    newView->unk38 = a2;
+    newView->projectionType = projectionType;
 
     newView->clipping.x = 30.0f;
     newView->clipping.y = 5000.0f;
@@ -658,26 +668,29 @@ struct ObjView *make_view(const char *name, s32 flags, s32 a2, s32 ulx, s32 uly,
 struct ObjAnimator *make_animator(void) {
     struct ObjAnimator *newAnim = (struct ObjAnimator *) make_object(OBJ_TYPE_ANIMATORS);
     newAnim->unk24 = 1.0f;
-    newAnim->unk28 = 1.0f;
+    newAnim->frame = 1.0f;
 
-    newAnim->fn48 = NULL;
-    newAnim->unk4C = 0;
+    newAnim->controlFunc = NULL;
+    newAnim->state = 0;
 
     return newAnim;
 }
 
 /* @ 22BD84 for 0x78; orig name: func_8017D5B4 */
-struct ObjWeight *make_weight(UNUSED s32 a0, s32 id, struct ObjVertex *vtx, f32 weight) {
+struct ObjWeight *make_weight(UNUSED s32 a0, s32 vtxId, struct ObjVertex *vtx /* always NULL */, f32 weight) {
     struct ObjWeight *newWeight = (struct ObjWeight *) make_object(OBJ_TYPE_WEIGHTS);
 
-    newWeight->id = id;
-    newWeight->unk38 = weight;
-    newWeight->unk3C = vtx;
+    newWeight->vtxId = vtxId;
+    newWeight->weightVal = weight;
+    newWeight->vtx = vtx;  // is always NULL here. This vtx field actually gets set in reset_weight_vtx.
 
     return newWeight;
 }
 
-/* @ 22BDFC for 0xCC; orig name: func_8017D62C */
+/**
+ * Makes a group, adding all objects from `fromObj` to `toObj` with type `type`
+ * as members.
+ */
 struct ObjGroup *make_group_of_type(enum ObjTypeFlag type, struct GdObj *fromObj, struct GdObj *toObj) {
     struct ObjGroup *newGroup;
     struct GdObj *curObj;
@@ -700,8 +713,10 @@ struct ObjGroup *make_group_of_type(enum ObjTypeFlag type, struct GdObj *fromObj
     return newGroup;
 }
 
-/* @ 22BEC8 for 0x1CC; orig name: func_8017D6F8 */
-void sprint_obj_id(char *str, struct GdObj *obj) {
+/**
+ * Converts the object's ID to a string and places it in the buffer pointed to by `str`.
+ */
+void format_object_id(char *str, struct GdObj *obj) {
     enum ObjTypeFlag type = obj->type;
 
     switch (type) {
@@ -748,12 +763,12 @@ struct ObjGroup *make_group(s32 count, ...) {
     struct ObjGroup *oldGroupListHead;
     struct GdObj *vargObj;
     char idStrBuf[0x20];
-    struct Links *curLink;
+    struct ListNode *curLink;
 
     newGroup = (struct ObjGroup *) make_object(OBJ_TYPE_GROUPS);
     newGroup->id = ++gGdGroupCount;
-    newGroup->objCount = 0;
-    newGroup->link1C = newGroup->link20 = NULL;
+    newGroup->memberCount = 0;
+    newGroup->firstMember = newGroup->lastMember = NULL;
 
     printf("Made group no.%d\n", newGroup->id);
 
@@ -780,16 +795,16 @@ struct ObjGroup *make_group(s32 count, ...) {
         }
 
         curObj = vargObj;
-        newGroup->groupObjTypes |= curObj->type;
+        newGroup->memberTypes |= curObj->type;
         addto_group(newGroup, vargObj);
     }
     va_end(args);
 
-    curLink = newGroup->link1C;
+    curLink = newGroup->firstMember;
     printf("Made group no.%d from: ", newGroup->id);
     while (curLink != NULL) {
         curObj = curLink->obj;
-        sprint_obj_id(idStrBuf, curObj);
+        format_object_id(idStrBuf, curObj);
         printf("%s", idStrBuf);
         printf("\n");
         curLink = curLink->next;
@@ -798,74 +813,81 @@ struct ObjGroup *make_group(s32 count, ...) {
     return newGroup;
 }
 
-/* @ 22C2A4 for 0xEC */
+/**
+ * Adds the object as a member of the group, placing it at the end of the group's list.
+ */
 void addto_group(struct ObjGroup *group, struct GdObj *obj) {
     char strbuf[0x20];
     UNUSED u8 pad[0x8];
 
-    add_to_stacktrace("addto_group");
+    imin("addto_group");
 
-    if (group->link1C == NULL) {
-        group->link1C = make_link_to_obj(NULL, obj);
-        group->link20 = group->link1C;
+    // Add object to the end of group's member list
+    if (group->firstMember == NULL) {
+        group->firstMember = make_link_to_obj(NULL, obj);
+        group->lastMember = group->firstMember;
     } else {
-        group->link20 = make_link_to_obj(group->link20, obj);
+        group->lastMember = make_link_to_obj(group->lastMember, obj);
     }
 
-    group->groupObjTypes |= obj->type;
-    group->objCount++;
+    group->memberTypes |= obj->type;
+    group->memberCount++;
 
     printf("Added ");
-    sprint_obj_id(strbuf, obj);
+    format_object_id(strbuf, obj);
     printf("%s", strbuf);
     printf(" to ");
-    sprint_obj_id(strbuf, &group->header);
+    format_object_id(strbuf, &group->header);
     printf("%s", strbuf);
     printf("\n");
+
     imout();
 }
 
-/* @ 22C390 for 0xFC; orig name: func_8017DBC0 */
+/**
+ * Adds the object as a member of the group, placing it at the beginning of the group's list.
+ */
 void addto_groupfirst(struct ObjGroup *group, struct GdObj *obj) {
-    struct Links *newLink;
+    imin("addto_groupfirst");
 
-    add_to_stacktrace("addto_groupfirst");
-
-    if (group->link1C == NULL) {
-        group->link1C = make_link_to_obj(NULL, obj);
-        group->link20 = group->link1C;
+    // Add object to the beginning of group's member list
+    if (group->firstMember == NULL) {
+        group->firstMember = make_link_to_obj(NULL, obj);
+        group->lastMember = group->firstMember;
     } else {
-        newLink = make_link_to_obj(NULL, obj);
-        group->link1C->prev = newLink;
-        newLink->next = group->link1C;
-        group->link1C = newLink;
+        struct ListNode *newNode = make_link_to_obj(NULL, obj);
+        group->firstMember->prev = newNode;
+        newNode->next = group->firstMember;
+        group->firstMember = newNode;
     }
 
-    group->groupObjTypes |= obj->type;
-    group->objCount++;
+    group->memberTypes |= obj->type;
+    group->memberCount++;
+
     imout();
 }
 
-/* @ 22C48C for 0x84; orig name: func_8017DCBC */
+/**
+ * Returns TRUE if `obj` is a member of `group`, or FALSE otherwise
+ */
 s32 group_contains_obj(struct ObjGroup *group, struct GdObj *obj) {
-    struct Links *objLink = group->link1C;
+    struct ListNode *node = group->firstMember;
 
-    while (objLink != NULL) {
-        if (objLink->obj->number == obj->number) {
-            return 1;
-        }
-
-        objLink = objLink->next;
+    while (node != NULL) {
+        if (node->obj->index == obj->index)
+            return TRUE;
+        node = node->next;
     }
 
-    return 0;
+    return FALSE;
 }
 
-/* @ 22C510 for 0x4A8 */
-/* this shows details about all objects in the main object linked list */
+/**
+ * Unused (not called) - this shows details about all objects in the main object linked list 
+ */
 void show_details(enum ObjTypeFlag type) {
     enum ObjTypeFlag curObjType;
-    struct Links *curGroupLink;
+    struct ListNode *curGroupLink;
     struct ObjGroup *curSubGroup;
     struct GdObj *curObj;
     char idStrBuf[0x24];
@@ -894,11 +916,11 @@ void show_details(enum ObjTypeFlag type) {
     while (curObj != NULL) {
         curObjType = curObj->type;
         if (curObjType == type) {
-            sprint_obj_id(idStrBuf, curObj);
+            format_object_id(idStrBuf, curObj);
             switch (curObjType) {
                 case OBJ_TYPE_GROUPS:
                     gd_printf("Group %s: ", idStrBuf);
-                    curGroupTypes = ((struct ObjGroup *) curObj)->groupObjTypes;
+                    curGroupTypes = ((struct ObjGroup *) curObj)->memberTypes;
 
                     if (curGroupTypes & OBJ_TYPE_GROUPS) {
                         gd_printf("groups ");
@@ -931,9 +953,9 @@ void show_details(enum ObjTypeFlag type) {
                         gd_printf("vertex ");
                     }
 
-                    curGroupLink = ((struct ObjGroup *) curObj)->link1C;
+                    curGroupLink = ((struct ObjGroup *) curObj)->firstMember;
                     while (curGroupLink != NULL) {
-                        sprint_obj_id(idStrBuf, curGroupLink->obj);
+                        format_object_id(idStrBuf, curGroupLink->obj);
                         gd_printf("%s", idStrBuf);
                         curGroupLink = curGroupLink->next;
                     }
@@ -942,9 +964,9 @@ void show_details(enum ObjTypeFlag type) {
                 case OBJ_TYPE_BONES:
                     gd_printf("Bone %s: ", idStrBuf);
                     curSubGroup = ((struct ObjBone *) curObj)->unk10C;
-                    curGroupLink = curSubGroup->link1C;
+                    curGroupLink = curSubGroup->firstMember;
                     while (curGroupLink != NULL) {
-                        sprint_obj_id(idStrBuf, curGroupLink->obj);
+                        format_object_id(idStrBuf, curGroupLink->obj);
                         gd_printf("%s", idStrBuf);
                         curGroupLink = curGroupLink->next;
                     }
@@ -953,9 +975,9 @@ void show_details(enum ObjTypeFlag type) {
                 case OBJ_TYPE_JOINTS:
                     gd_printf("Joint %s: ", idStrBuf);
                     curSubGroup = ((struct ObjJoint *) curObj)->unk1C4;
-                    curGroupLink = curSubGroup->link1C;
+                    curGroupLink = curSubGroup->firstMember;
                     while (curGroupLink != NULL) {
-                        sprint_obj_id(idStrBuf, curGroupLink->obj);
+                        format_object_id(idStrBuf, curGroupLink->obj);
                         gd_printf("%s", idStrBuf);
                         curGroupLink = curGroupLink->next;
                     }
@@ -967,24 +989,28 @@ void show_details(enum ObjTypeFlag type) {
         curObj = curObj->next;
     }
 }
+
 /* @ 22C9B8 for 0x24 */
-s32 func_8017E1E8(void) {
+s32 stub_objects_2(void) {
     s32 sp4 = 0;
     return sp4;
 }
-/* @ 22C9DC for 0x24 */
-s32 func_8017E20C(void) {
+
+/**
+ * Unused - called by __main__
+ */
+s32 make_scene(void) {
     s32 sp4 = 0;
     return sp4;
 }
 
 /* @ 22CA00 for 0x88 */
-void gd_loadtexture(struct GdObj *obj) {
+static void reset_joint_or_net(struct GdObj *obj) {
     struct GdObj *localObjPtr = obj;
 
     switch (obj->type) {
         case OBJ_TYPE_JOINTS:
-            func_80191604((struct ObjJoint *) localObjPtr);
+            reset_joint((struct ObjJoint *) localObjPtr);
             break;
         case OBJ_TYPE_NETS:
             reset_net((struct ObjNet *) localObjPtr);
@@ -993,25 +1019,30 @@ void gd_loadtexture(struct GdObj *obj) {
     }
 }
 
-/* @ 22CA88 for 0x38 */
-void func_8017E2B8(void) {
-    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) gd_loadtexture, sCurrentMoveGrp);
+/**
+ * called when the user clicks the "Reset Positions" item from the
+ * "Dynamics" menu.
+ */
+void menu_cb_reset_positions(void) {
+    apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) reset_joint_or_net, sCurrentMoveGrp);
 }
 
-/* @ 22CAC0 for 0xF0 */
+/**
+ * Unused (not called) - does nothing useful
+ */
 struct GdObj *func_8017E2F0(struct GdObj *obj, enum ObjTypeFlag type) {
     UNUSED u32 sp2C;
     enum ObjTypeFlag curObjType;
-    struct Links *curGroupLink;
+    struct ListNode *node;
 
     curObjType = obj->type;
 
     switch (curObjType) {
         case OBJ_TYPE_GROUPS:
-            curGroupLink = ((struct ObjGroup *) obj)->link1C;
-            while (curGroupLink != NULL) {
-                func_8017E2F0(curGroupLink->obj, type);
-                curGroupLink = curGroupLink->next;
+            node = ((struct ObjGroup *) obj)->firstMember;
+            while (node != NULL) {
+                func_8017E2F0(node->obj, type);
+                node = node->next;
             }
             break;
         case OBJ_TYPE_BONES:
@@ -1029,10 +1060,14 @@ struct GdObj *func_8017E2F0(struct GdObj *obj, enum ObjTypeFlag type) {
 #endif
 }
 
-/* @ 22CBB0 for 0x1A4; orig name: func8017E3E0 */
-s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *group) {
-    struct Links *curLink;
-    struct Links *nextLink;
+/**
+ * Recursively calls `func` on all members of `group` whose type is in the
+ * `types` bitmask.
+ * Returns the number of objects this function was called on.
+ */
+s32 apply_to_obj_types_in_group(s32 types, applyproc_t func, struct ObjGroup *group) {
+    struct ListNode *curLink;
+    struct ListNode *nextLink;
     struct GdObj *linkedObj;
     enum ObjTypeFlag linkedObjType;
     applyproc_t objFn;
@@ -1055,12 +1090,12 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *grou
         return fnAppliedCount;
     }
 
-    if (!((group->groupObjTypes & OBJ_TYPE_GROUPS) | (group->groupObjTypes & types))) {
+    if (!((group->memberTypes & OBJ_TYPE_GROUPS) | (group->memberTypes & types))) {
         return fnAppliedCount;
     }
 
-    objFn = fn;
-    curLink = group->link1C;
+    objFn = func;
+    curLink = group->firstMember;
 
     while (curLink != NULL) {
         linkedObj = curLink->obj;
@@ -1068,7 +1103,7 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t fn, struct ObjGroup *grou
         nextLink = curLink->next;
 
         if (linkedObjType == OBJ_TYPE_GROUPS) {
-            fnAppliedCount += apply_to_obj_types_in_group(types, fn, (struct ObjGroup *) linkedObj);
+            fnAppliedCount += apply_to_obj_types_in_group(types, func, (struct ObjGroup *) linkedObj);
         }
 
         if (linkedObjType & types) {
@@ -1102,9 +1137,9 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp7C.y = a1->y;
     sp7C.z = a1->z;
 
-    sp1C.x = a0->unkB0.x;
-    sp1C.y = a0->unkB0.y;
-    sp1C.z = a0->unkB0.z;
+    sp1C.x = a0->centerOfGravity.x;
+    sp1C.y = a0->centerOfGravity.y;
+    sp1C.z = a0->centerOfGravity.z;
 
     gd_rotate_and_translate_vec3f(&sp1C, &a0->mat128);
 
@@ -1132,9 +1167,9 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp88.y = a2->y * sp2C;
     sp88.z = a2->z * sp2C;
 
-    a0->unk74.x += sp88.x;
-    a0->unk74.y += sp88.y;
-    a0->unk74.z += sp88.z;
+    a0->collDisp.x += sp88.x;
+    a0->collDisp.y += sp88.y;
+    a0->collDisp.z += sp88.z;
 }
 
 /* @ 22D008 for 0x1B4 */
@@ -1151,9 +1186,9 @@ void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp64.y = a1->y;
     sp64.z = a1->z;
 
-    sp18.x = a0->unkB0.x;
-    sp18.y = a0->unkB0.y;
-    sp18.z = a0->unkB0.z;
+    sp18.x = a0->centerOfGravity.x;
+    sp18.y = a0->centerOfGravity.y;
+    sp18.z = a0->centerOfGravity.z;
 
     gd_rotate_and_translate_vec3f(&sp18, &a0->mat128);
 
@@ -1168,28 +1203,30 @@ void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     gd_cross_vec3f(a2, &sp64, &sp70);
     gd_clamp_vec3f(&sp70, 5.0f);
 
-    a0->unk80.x += sp70.x;
-    a0->unk80.y += sp70.y;
-    a0->unk80.z += sp70.z;
+    a0->collTorque.x += sp70.x;
+    a0->collTorque.y += sp70.y;
+    a0->collTorque.z += sp70.z;
 }
 
 /* @ 22D1BC for 0xA8 */
-void func_8017E9EC(struct ObjNet *a0) {
+void func_8017E9EC(struct ObjNet *net) {
     struct GdVec3f sp5C;
     Mat4f sp1C;
     f32 sp18;
 
-    sp5C.x = a0->unkA4.x;
-    sp5C.y = a0->unkA4.y;
-    sp5C.z = a0->unkA4.z;
+    sp5C.x = net->torque.x;
+    sp5C.y = net->torque.y;
+    sp5C.z = net->torque.z;
 
     gd_normalize_vec3f(&sp5C);
-    sp18 = gd_vec3f_magnitude(&a0->unkA4);
+    sp18 = gd_vec3f_magnitude(&net->torque);
     gd_create_rot_mat_angular(&sp1C, &sp5C, -sp18);
     gd_mult_mat4f(&D_801B9DC8, &sp1C, &D_801B9DC8);
 }
 
-/* @ 22D264 for 0x90 */
+/**
+ * Unused (not called)
+ */
 s32 func_8017EA94(struct GdVec3f *vec, Mat4f matrix) {
     if (vec->x >= matrix[2][2] && vec->x <= matrix[3][1] && vec->z >= matrix[3][0]
         && vec->z <= matrix[3][3]) {
@@ -1199,117 +1236,131 @@ s32 func_8017EA94(struct GdVec3f *vec, Mat4f matrix) {
     return 0;
 }
 
-/* @ 22D2F4 for 0x1DC */
-s32 func_8017EB24(struct GdObj *a0, struct GdObj *a1) {
-    struct GdVec3f sp44;
-    struct GdVec3f sp38;
-    struct GdPlaneF *sp34;
-    struct GdPlaneF *sp30;
-    struct GdPlaneF sp18;
+/**
+ * Unused (not called)
+ */
+s32 func_8017EB24(struct GdObj *obj1, struct GdObj *obj2) {
+    struct GdVec3f pos1;
+    struct GdVec3f pos2;
+    struct GdBoundingBox *bbox1;
+    struct GdBoundingBox *bbox2;
+    struct GdBoundingBox sp18;
 
-    set_cur_dynobj(a0);
-    d_get_world_pos(&sp44);
-    sp34 = d_get_plane();
+    set_cur_dynobj(obj1);
+    d_get_world_pos(&pos1);
+    bbox1 = d_get_bounding_box();
 
-    set_cur_dynobj(a1);
-    d_get_world_pos(&sp38);
-    sp30 = d_get_plane();
+    set_cur_dynobj(obj2);
+    d_get_world_pos(&pos2);
+    bbox2 = d_get_bounding_box();
 
-    sp18.p0.x = sp34->p0.x + sp30->p0.x;
-    sp18.p0.y = sp34->p0.y + sp30->p0.y;
-    sp18.p0.z = sp34->p0.z + sp30->p0.z;
-    sp18.p1.x = sp34->p1.x + sp30->p1.x;
-    sp18.p1.y = sp34->p1.y + sp30->p1.y;
-    sp18.p1.z = sp34->p1.z + sp30->p1.z;
+    // bbox2 is an offset for bbox1?
+    sp18.minX = bbox1->minX + bbox2->minX;
+    sp18.minY = bbox1->minY + bbox2->minY;
+    sp18.minZ = bbox1->minZ + bbox2->minZ;
+    sp18.maxX = bbox1->maxX + bbox2->maxX;
+    sp18.maxY = bbox1->maxY + bbox2->maxY;
+    sp18.maxZ = bbox1->maxZ + bbox2->maxZ;
 
-    D_801B9E08.x = sp38.x - sp44.x;
-    D_801B9E08.y = sp38.y - sp44.y;
-    D_801B9E08.z = sp38.z - sp44.z;
+    D_801B9E08.x = pos2.x - pos1.x;
+    D_801B9E08.y = pos2.y - pos1.y;
+    D_801B9E08.z = pos2.z - pos1.z;
 
-    if (D_801B9E08.x >= sp18.p0.x) {
-        if (D_801B9E08.x <= sp18.p1.x) {
-            if (D_801B9E08.z >= sp18.p0.z) {
-                if (D_801B9E08.z <= sp18.p1.z) {
-                    return 1;
-                }
-            }
-        }
-    }
-
-    return 0;
-}
-
-/* @ 22D4D0 for 0xCC */
-s32 func_8017ED00(struct GdObj *a0, struct GdPlaneF *a1) {
-    struct GdVec3f sp1C;
-
-    set_cur_dynobj(a0);
-    d_get_world_pos(&sp1C);
-
-    if (sp1C.x >= a1->p0.x) {
-        if (sp1C.x <= a1->p1.x) {
-            if (sp1C.z >= a1->p0.z) {
-                if (sp1C.z <= a1->p1.z) {
-                    return 1;
-                }
-            }
-        }
-    }
-
-    return 0;
-}
-
-/* @ 22D59C for 0x90 */
-s32 func_8017EDCC(struct GdVec3f *a0, struct GdPlaneF *a1) {
-    if (a0->x >= a1->p0.x) {
-        if (a0->x <= a1->p1.x) {
-            if (a0->z >= a1->p0.z) {
-                if (a0->z <= a1->p1.z) {
-                    return 1;
-                }
-            }
-        }
-    }
-
-    return 0;
-}
-
-/* @ 22D62C for 0x1F8; orig name: func_8017EE5C */
-s32 gd_plane_point_within(struct GdPlaneF *a0, struct GdPlaneF *a1) {
-    if (a0->p0.x >= a1->p0.x) {
-        if (a0->p0.x <= a1->p1.x) {
-            if (a0->p0.z >= a1->p0.z) {
-                if (a0->p0.z <= a1->p1.z) {
+    if (D_801B9E08.x >= sp18.minX) {
+        if (D_801B9E08.x <= sp18.maxX) {
+            if (D_801B9E08.z >= sp18.minZ) {
+                if (D_801B9E08.z <= sp18.maxZ) {
                     return TRUE;
                 }
             }
         }
     }
 
-    if (a0->p1.x >= a1->p0.x) {
-        if (a0->p1.x <= a1->p1.x) {
-            if (a0->p0.z >= a1->p0.z) {
-                if (a0->p0.z <= a1->p1.z) {
+    return FALSE;
+}
+
+/**
+ * Unused (not called)
+ */
+s32 is_obj_xz_in_bounding_box(struct GdObj *obj, struct GdBoundingBox *bbox) {
+    struct GdVec3f pos;
+
+    set_cur_dynobj(obj);
+    d_get_world_pos(&pos);
+
+    if (pos.x >= bbox->minX) {
+        if (pos.x <= bbox->maxX) {
+            if (pos.z >= bbox->minZ) {
+                if (pos.z <= bbox->maxZ) {
                     return TRUE;
                 }
             }
         }
     }
 
-    if (a0->p1.x >= a1->p0.x) {
-        if (a0->p1.x <= a1->p1.x) {
-            if (a0->p1.z >= a1->p0.z) {
-                if (a0->p1.z <= a1->p1.z) {
+    return FALSE;
+}
+
+/**
+ * Unused (not called)
+ */
+s32 is_point_xz_in_bounding_box(struct GdVec3f *point, struct GdBoundingBox *bbox) {
+    if (point->x >= bbox->minX) {
+        if (point->x <= bbox->maxX) {
+            if (point->z >= bbox->minZ) {
+                if (point->z <= bbox->maxZ) {
                     return TRUE;
                 }
             }
         }
     }
 
-    if (a0->p0.x >= a1->p0.x) {
-        if (a0->p0.x <= a1->p1.x) {
-            if (a0->p1.z >= a1->p0.z) {
-                if (a0->p1.z <= a1->p1.z) {
+    return FALSE;
+}
+
+/**
+ * Unused (called by func_801A71CC) - returns TRUE if any of the four corners of
+ * box1's X-Z plane lie within box2's X-Z plane
+ */
+s32 gd_plane_point_within(struct GdBoundingBox *box1, struct GdBoundingBox *box2) {
+    // test if min x and min z of box1 are within box2
+    if (box1->minX >= box2->minX) {
+        if (box1->minX <= box2->maxX) {
+            if (box1->minZ >= box2->minZ) {
+                if (box1->minZ <= box2->maxZ) {
+                    return TRUE;
+                }
+            }
+        }
+    }
+
+    // test if max x and min z of box1 are within box2
+    if (box1->maxX >= box2->minX) {
+        if (box1->maxX <= box2->maxX) {
+            if (box1->minZ >= box2->minZ) {
+                if (box1->minZ <= box2->maxZ) {
+                    return TRUE;
+                }
+            }
+        }
+    }
+
+    // test if max x and max z of box1 are within box2
+    if (box1->maxX >= box2->minX) {
+        if (box1->maxX <= box2->maxX) {
+            if (box1->maxZ >= box2->minZ) {
+                if (box1->maxZ <= box2->maxZ) {
+                    return TRUE;
+                }
+            }
+        }
+    }
+
+    // test if min x and max z of box1 are within box2
+    if (box1->minX >= box2->minX) {
+        if (box1->minX <= box2->maxX) {
+            if (box1->maxZ >= box2->minZ) {
+                if (box1->maxZ <= box2->maxZ) {
                     return TRUE;
                 }
             }
@@ -1320,52 +1371,53 @@ s32 gd_plane_point_within(struct GdPlaneF *a0, struct GdPlaneF *a1) {
 }
 
 /* @ 22D824 for 0x1BC */
-s32 func_8017F054(struct GdObj *a0, struct GdObj *a1) {
-    struct Links *curLink;
+s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj) {
+    struct ListNode *curLink;
     struct ObjGroup *curGroup;
     UNUSED u32 sp54;
-    Mat4f *sp50;
-    Mat4f *sp4C;
-    Mat4f *sp48;
-    Mat4f *sp44;
-    Mat4f *sp40;
+    Mat4f *parentUnkMtx;
+    Mat4f *iMtx;
+    Mat4f *unkMtx;
+    Mat4f *rotMtx;
+    Mat4f *rotMtx2;
     UNUSED u8 pad20[0x18];
-    struct GdVec3f sp1C;
+    struct GdVec3f scale;
 
-    if (a1 != NULL) {
-        set_cur_dynobj(a1);
-        sp50 = d_get_matrix_ptr();
-        sp44 = (Mat4f *) d_get_rot_mtx_ptr();
+    if (parentObj != NULL) {
+        set_cur_dynobj(parentObj);
+        parentUnkMtx = d_get_matrix_ptr();
+        rotMtx = (Mat4f *) d_get_rot_mtx_ptr();
 
-        set_cur_dynobj(a0);
-        sp4C = d_get_idn_mtx_ptr();
-        sp40 = (Mat4f *) d_get_rot_mtx_ptr();
+        set_cur_dynobj(obj);
+        iMtx = d_get_i_mtx_ptr();
+        rotMtx2 = (Mat4f *) d_get_rot_mtx_ptr();
 
-        d_get_scale(&sp1C);
-        sp48 = d_get_matrix_ptr();
+        d_get_scale(&scale);
 
-        gd_mult_mat4f(sp4C, sp50, sp48);
-        gd_mult_mat4f(sp4C, sp44, sp40);
-        gd_scale_mat4f_by_vec3f(sp40, &sp1C);
+        unkMtx = d_get_matrix_ptr();
+        gd_mult_mat4f(iMtx, parentUnkMtx, unkMtx);
+
+        gd_mult_mat4f(iMtx, rotMtx, rotMtx2);
+        gd_scale_mat4f_by_vec3f(rotMtx2, &scale);
     } else {
-        set_cur_dynobj(a0);
-        sp48 = d_get_matrix_ptr();
-        sp4C = d_get_idn_mtx_ptr();
-        sp44 = (Mat4f *) d_get_rot_mtx_ptr();
+        set_cur_dynobj(obj);
+        unkMtx = d_get_matrix_ptr();
+        iMtx = d_get_i_mtx_ptr();
+        rotMtx = (Mat4f *) d_get_rot_mtx_ptr();
 
-        d_get_scale(&sp1C);
-        gd_set_identity_mat4(sp48);
-        gd_copy_mat4f(sp4C, sp44);
-        gd_scale_mat4f_by_vec3f(sp44, &sp1C);
+        d_get_scale(&scale);
+        gd_set_identity_mat4(unkMtx);
+        gd_copy_mat4f(iMtx, rotMtx);
+        gd_scale_mat4f_by_vec3f(rotMtx, &scale);
     }
 
-    set_cur_dynobj(a0);
+    // Recursively call this function on attached children
+    set_cur_dynobj(obj);
     curGroup = d_get_att_objgroup();
-
     if (curGroup != NULL) {
-        curLink = curGroup->link1C;
+        curLink = curGroup->firstMember;
         while (curLink != NULL) {
-            func_8017F054(curLink->obj, a0);
+            transform_child_objects_recursive(curLink->obj, obj);
             curLink = curLink->next;
         }
     }
@@ -1374,7 +1426,7 @@ s32 func_8017F054(struct GdObj *a0, struct GdObj *a1) {
 
 /* @ 22D9E0 for 0x1BC */
 s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
-    struct Links *sp6C;
+    struct ListNode *sp6C;
     struct ObjGroup *sp68;
     UNUSED u32 sp64;
     UNUSED Mat4f *sp60;
@@ -1394,7 +1446,7 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
         sp54 = (Mat4f *) d_get_rot_mtx_ptr();
 
         set_cur_dynobj(a0);
-        sp5C = d_get_idn_mtx_ptr();
+        sp5C = d_get_i_mtx_ptr();
         sp50 = (Mat4f *) d_get_rot_mtx_ptr();
 
         d_get_scale(&sp2C);
@@ -1403,7 +1455,7 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
     } else {
         set_cur_dynobj(a0);
         sp58 = d_get_matrix_ptr();
-        sp5C = d_get_idn_mtx_ptr();
+        sp5C = d_get_i_mtx_ptr();
         sp54 = (Mat4f *) d_get_rot_mtx_ptr();
 
         d_get_scale(&sp2C);
@@ -1415,7 +1467,7 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
     sp68 = d_get_att_objgroup();
 
     if (sp68 != NULL) {
-        sp6C = sp68->link1C;
+        sp6C = sp68->firstMember;
         while (sp6C != NULL) {
             count += func_8017F210(sp6C->obj, a0);
             sp6C = sp6C->next;
@@ -1430,34 +1482,44 @@ void func_8017F3CC(struct Unk8017F3CC *a0) {
 }
 
 /* @ 22DBD4 for 0x20 */
-void func_8017F404(UNUSED f32 a0, UNUSED struct GdObj *a1, UNUSED struct GdObj *a2) {
+void stub_objects_3(UNUSED f32 a0, UNUSED struct GdObj *a1, UNUSED struct GdObj *a2) {
     UNUSED u8 pad[0x30];
 }
 
-/* @ 22DBF4 for 0x1A0 */
-void func_8017F424(struct GdTriangleF *a0, struct GdTriangleF *a1, f32 a2) {
-    Mat4f sp40;
-    struct GdTriangleF sp1C;
+/**
+ * Interpolates between animation transformations `t1` and `t2`, with `dt` as
+ * the interpolation factor (between 0 and 1). Sets the current dynobj's matrix
+ * as the result of the transformation.
+ */
+void interpolate_animation_transform(struct GdAnimTransform *t1, struct GdAnimTransform *t2, f32 dt) {
+    Mat4f mtx;
 
-    gd_set_identity_mat4(&sp40);
+    gd_set_identity_mat4(&mtx);
 
-    if (a2 != 0.0f) {
-        sp1C.p1.x = a0->p1.x + (a1->p1.x - a0->p1.x) * a2;
-        sp1C.p1.y = a0->p1.y + (a1->p1.y - a0->p1.y) * a2;
-        sp1C.p1.z = a0->p1.z + (a1->p1.z - a0->p1.z) * a2;
-        sp1C.p2.x = a0->p2.x + (a1->p2.x - a0->p2.x) * a2;
-        sp1C.p2.y = a0->p2.y + (a1->p2.y - a0->p2.y) * a2;
-        sp1C.p2.z = a0->p2.z + (a1->p2.z - a0->p2.z) * a2;
+    if (dt != 0.0f) {
+        struct GdAnimTransform transform;
 
-        gd_scale_mat4f_by_vec3f(&sp40, &a0->p0);
-        gd_rot_mat_about_vec(&sp40, &sp1C.p1);
-        gd_add_vec3f_to_mat4f_offset(&sp40, &sp1C.p2);
-    } else { // L8017F568
-        d_set_scale(a0->p0.x, a0->p0.y, a0->p0.z);
-        gd_rot_mat_about_vec(&sp40, &a0->p1);
-        gd_add_vec3f_to_mat4f_offset(&sp40, &a0->p2);
-    } // L8017F5A4
-    d_set_idn_mtx(&sp40);
+        // interpolate rotation between t1 and t2
+        transform.rotate.x = t1->rotate.x + (t2->rotate.x - t1->rotate.x) * dt;
+        transform.rotate.y = t1->rotate.y + (t2->rotate.y - t1->rotate.y) * dt;
+        transform.rotate.z = t1->rotate.z + (t2->rotate.z - t1->rotate.z) * dt;
+
+        // interpolate position between t1 and t2
+        transform.pos.x = t1->pos.x + (t2->pos.x - t1->pos.x) * dt;
+        transform.pos.y = t1->pos.y + (t2->pos.y - t1->pos.y) * dt;
+        transform.pos.z = t1->pos.z + (t2->pos.z - t1->pos.z) * dt;
+
+        // not going to interpolate scale?
+
+        gd_scale_mat4f_by_vec3f(&mtx, &t1->scale);
+        gd_rot_mat_about_vec(&mtx, &transform.rotate);
+        gd_add_vec3f_to_mat4f_offset(&mtx, &transform.pos);
+    } else {
+        d_set_scale(t1->scale.x, t1->scale.y, t1->scale.z);
+        gd_rot_mat_about_vec(&mtx, &t1->rotate);
+        gd_add_vec3f_to_mat4f_offset(&mtx, &t1->pos);
+    }
+    d_set_i_matrix(&mtx);
 }
 
 /* @ 22DD94 for 0x1060; orig name: func_8017F5C4 */
@@ -1465,42 +1527,41 @@ void move_animator(struct ObjAnimator *animObj) {
     struct AnimDataInfo *animData; // array?
     Mat4f *mtxArr;
     Mat4f localMtx;
-    struct GdTriangleF *triPtr; // Used as GdTriangleF[] or GdTriangleF*
-    struct GdTriangleF tri1;
-    struct GdTriangleF tri2;
-    s16(*triHArr)[9];              // GdTriangleH[]?
-    s16(*vec3hArr)[3];             // MyVec3h[]?
-    s16(*planeHArr)[6];            // GdPlaneH[]?
-    s16(*camPlaneHArr)[6];         // camera GdPlaneH[]?
+    struct GdAnimTransform *triPtr;
+    struct GdAnimTransform currTransform;  // transformation for the current keyframe
+    struct GdAnimTransform nextTransform;  // transformation for the next keyframe
+    s16(*animData9s16)[9];              // GdTriangleH[]?
+    s16(*animData3s16)[3];             // MyVec3h[]?
+    s16(*animData6s16)[6];            // GdPlaneH[]?
+    s16(*animDataCam)[6];         // camera GdPlaneH[]?
     struct GdObj *stubObj1 = NULL; // used only for call to stubbed function
     struct GdObj *stubObj2 = NULL; // used only for call to stubbed function
     UNUSED s32 sp50;
     UNUSED s32 sp4C;
     UNUSED s32 sp48;
     UNUSED struct GdVec3f unusedVec;
-    s32 sp38;
-    s32 sp34;
-    f32 sp30;
+    s32 currKeyFrame;
+    s32 nextKeyFrame;
+    f32 dt;
     f32 scale = 0.1f;
     struct AnimMtxVec *sp28;
-    register struct Links *link;
+    register struct ListNode *link;
     struct GdObj *linkedObj;
 
-    if (animObj->fn48 != NULL) {
-        (*animObj->fn48)(animObj);
+    if (animObj->controlFunc != NULL) {
+        animObj->controlFunc(animObj);
     }
 
-    if (animObj->unk14 == NULL) {
-        return;
+    if (animObj->animatedPartsGrp == NULL) {
+        return;  // nothing to animate
     }
 
-    animData = (struct AnimDataInfo *) animObj->animdata->link1C->obj;
+    animData = (struct AnimDataInfo *) animObj->animdataGrp->firstMember->obj;
 
-    if (animObj->unk44 != NULL) {
-        animObj->unk28 = ((struct ObjAnimator *) animObj->unk44)->unk28
-                         / ((struct ObjAnimator *) animObj->unk44)->unk24;
-        animData +=
-            ((struct ObjAnimator *) animObj->unk44)->unk20; //...why offset this pointer like this...
+    if (animObj->attachedToObj != NULL) {
+        animObj->frame = ((struct ObjAnimator *) animObj->attachedToObj)->frame
+                         / ((struct ObjAnimator *) animObj->attachedToObj)->unk24;
+        animData += ((struct ObjAnimator *) animObj->attachedToObj)->animSeqNum;
     }
 
     if (animData->type == 0) {
@@ -1511,170 +1572,183 @@ void move_animator(struct ObjAnimator *animObj) {
     unusedVec.y = 1.0f;
     unusedVec.z = 1.0f;
 
-    if (animObj->unk28 > (f32) animData->count) {
-        animObj->unk28 = 1.0f;
-    } else if (animObj->unk28 < 0.0f) {
-        animObj->unk28 = (f32) animData->count;
+    if (animObj->frame > (f32) animData->count) {
+        animObj->frame = 1.0f;
+    } else if (animObj->frame < 0.0f) {
+        animObj->frame = (f32) animData->count;
     }
 
-    sp38 = animObj->unk28;
-    sp30 = animObj->unk28 - (f32) sp38;
-    sp34 = sp38 + 1;
+    currKeyFrame = (s32) animObj->frame;
+    dt = animObj->frame - (f32) currKeyFrame;
+    nextKeyFrame = currKeyFrame + 1;
 
-    if (sp34 > animData->count) {
-        sp34 = 1;
+    if (nextKeyFrame > animData->count) {
+        nextKeyFrame = 1;
     }
 
-    sp38--;
-    sp34--;
-    link = animObj->unk14->link1C;
+    // convert frame numbers to zero-indexed
+    currKeyFrame--;
+    nextKeyFrame--;
+
+    link = animObj->animatedPartsGrp->firstMember;
     while (link != NULL) {
         linkedObj = link->obj;
         set_cur_dynobj(linkedObj);
         switch (animData->type) {
-            case GD_ANIM_MATRIX: // data = Mat4f* (f32[4][4])
+            case GD_ANIM_MTX4x4: // data = Mat4f* (f32[4][4])
                 mtxArr = (Mat4f *) animData->data;
                 /* This needs be be un-dereferenced pointer addition to make the registers match */
-                d_set_idn_mtx(mtxArr + (s32) animObj->unk28);
+                d_set_i_matrix(mtxArr + (s32) animObj->frame);
                 break;
-            case GD_ANIM_3H_SCALED: // data = s16(*)[3] or MyVec3h[]...
-                vec3hArr = (s16(*)[3]) animData->data;
+            case GD_ANIM_ROT3S: // data = s16(*)[3] - rotation only
+                animData3s16 = (s16(*)[3]) animData->data;
 
-                d_get_scale(&tri1.p0);
-                tri2.p0.x = tri1.p0.x;
-                tri2.p0.y = tri1.p0.y;
-                tri2.p0.z = tri1.p0.z;
+                // keep current object scale
+                d_get_scale(&currTransform.scale);
+                nextTransform.scale.x = currTransform.scale.x;
+                nextTransform.scale.y = currTransform.scale.y;
+                nextTransform.scale.z = currTransform.scale.z;
 
-                d_get_init_pos(&tri1.p2);
-                tri2.p2.x = tri1.p2.x;
-                tri2.p2.y = tri1.p2.y;
-                tri2.p2.z = tri1.p2.z;
+                // keep current object position
+                d_get_init_pos(&currTransform.pos);
+                nextTransform.pos.x = currTransform.pos.x;
+                nextTransform.pos.y = currTransform.pos.y;
+                nextTransform.pos.z = currTransform.pos.z;
 
-                tri1.p1.x = (f32) vec3hArr[sp38][0] * scale;
-                tri1.p1.y = (f32) vec3hArr[sp38][1] * scale;
-                tri1.p1.z = (f32) vec3hArr[sp38][2] * scale;
+                // use animation rotation
+                currTransform.rotate.x = (f32) animData3s16[currKeyFrame][0] * scale;
+                currTransform.rotate.y = (f32) animData3s16[currKeyFrame][1] * scale;
+                currTransform.rotate.z = (f32) animData3s16[currKeyFrame][2] * scale;
 
-                tri2.p1.x = (f32) vec3hArr[sp34][0] * scale;
-                tri2.p1.y = (f32) vec3hArr[sp34][1] * scale;
-                tri2.p1.z = (f32) vec3hArr[sp34][2] * scale;
+                nextTransform.rotate.x = (f32) animData3s16[nextKeyFrame][0] * scale;
+                nextTransform.rotate.y = (f32) animData3s16[nextKeyFrame][1] * scale;
+                nextTransform.rotate.z = (f32) animData3s16[nextKeyFrame][2] * scale;
 
-                func_8017F424(&tri1, &tri2, sp30);
+                interpolate_animation_transform(&currTransform, &nextTransform, dt);
                 break;
-            case GD_ANIM_3H: // data = s16(*)[3] or MyVec3h[]...
-                vec3hArr = (s16(*)[3]) animData->data;
+            case GD_ANIM_POS3S: // data = s16(*)[3] - position only
+                animData3s16 = (s16(*)[3]) animData->data;
 
-                d_get_scale(&tri1.p0);
-                tri2.p0.x = tri1.p0.x;
-                tri2.p0.y = tri1.p0.y;
-                tri2.p0.z = tri1.p0.z;
+                // keep current object scale
+                d_get_scale(&currTransform.scale);
+                nextTransform.scale.x = currTransform.scale.x;
+                nextTransform.scale.y = currTransform.scale.y;
+                nextTransform.scale.z = currTransform.scale.z;
 
-                d_get_init_rot(&tri1.p1);
-                tri2.p1.x = tri1.p1.x;
-                tri2.p1.y = tri1.p1.y;
-                tri2.p1.z = tri1.p1.z;
+                // keep current object rotation
+                d_get_init_rot(&currTransform.rotate);
+                nextTransform.rotate.x = currTransform.rotate.x;
+                nextTransform.rotate.y = currTransform.rotate.y;
+                nextTransform.rotate.z = currTransform.rotate.z;
 
-                tri1.p2.x = (f32) vec3hArr[sp38][0];
-                tri1.p2.y = (f32) vec3hArr[sp38][1];
-                tri1.p2.z = (f32) vec3hArr[sp38][2];
+                // use animation position
+                currTransform.pos.x = (f32) animData3s16[currKeyFrame][0];
+                currTransform.pos.y = (f32) animData3s16[currKeyFrame][1];
+                currTransform.pos.z = (f32) animData3s16[currKeyFrame][2];
 
-                tri2.p2.x = (f32) vec3hArr[sp34][0];
-                tri2.p2.y = (f32) vec3hArr[sp34][1];
-                tri2.p2.z = (f32) vec3hArr[sp34][2];
+                nextTransform.pos.x = (f32) animData3s16[nextKeyFrame][0];
+                nextTransform.pos.y = (f32) animData3s16[nextKeyFrame][1];
+                nextTransform.pos.z = (f32) animData3s16[nextKeyFrame][2];
 
-                func_8017F424(&tri1, &tri2, sp30);
+                interpolate_animation_transform(&currTransform, &nextTransform, dt);
                 break;
-            case GD_ANIM_6H_SCALED: // data = s16(*)[6] or GdPlaneH[]...
-                planeHArr = (s16(*)[6]) animData->data;
+            case GD_ANIM_ROT3S_POS3S: // data = s16(*)[6] - rotation and position
+                animData6s16 = (s16(*)[6]) animData->data;
 
-                d_get_scale(&tri1.p0);
-                tri2.p0.x = tri1.p0.x;
-                tri2.p0.y = tri1.p0.y;
-                tri2.p0.z = tri1.p0.z;
+                // keep current object scale
+                d_get_scale(&currTransform.scale);
+                nextTransform.scale.x  = currTransform.scale.x;
+                nextTransform.scale.y  = currTransform.scale.y;
+                nextTransform.scale.z  = currTransform.scale.z;
 
-                tri1.p1.x = (f32) planeHArr[sp38][0] * scale;
-                tri1.p1.y = (f32) planeHArr[sp38][1] * scale;
-                tri1.p1.z = (f32) planeHArr[sp38][2] * scale;
+                // use animation rotation
+                currTransform.rotate.x = (f32) animData6s16[currKeyFrame][0] * scale;
+                currTransform.rotate.y = (f32) animData6s16[currKeyFrame][1] * scale;
+                currTransform.rotate.z = (f32) animData6s16[currKeyFrame][2] * scale;
 
-                tri2.p1.x = (f32) planeHArr[sp34][0] * scale;
-                tri2.p1.y = (f32) planeHArr[sp34][1] * scale;
-                tri2.p1.z = (f32) planeHArr[sp34][2] * scale;
+                nextTransform.rotate.x = (f32) animData6s16[nextKeyFrame][0] * scale;
+                nextTransform.rotate.y = (f32) animData6s16[nextKeyFrame][1] * scale;
+                nextTransform.rotate.z = (f32) animData6s16[nextKeyFrame][2] * scale;
 
-                tri1.p2.x = (f32) planeHArr[sp38][3];
-                tri1.p2.y = (f32) planeHArr[sp38][4];
-                tri1.p2.z = (f32) planeHArr[sp38][5];
+                // use animation position
+                currTransform.pos.x  = (f32) animData6s16[currKeyFrame][3];
+                currTransform.pos.y  = (f32) animData6s16[currKeyFrame][4];
+                currTransform.pos.z  = (f32) animData6s16[currKeyFrame][5];
 
-                tri2.p2.x = (f32) planeHArr[sp34][3];
-                tri2.p2.y = (f32) planeHArr[sp34][4];
-                tri2.p2.z = (f32) planeHArr[sp34][5];
+                nextTransform.pos.x  = (f32) animData6s16[nextKeyFrame][3];
+                nextTransform.pos.y  = (f32) animData6s16[nextKeyFrame][4];
+                nextTransform.pos.z  = (f32) animData6s16[nextKeyFrame][5];
 
-                func_8017F424(&tri1, &tri2, sp30);
+                interpolate_animation_transform(&currTransform, &nextTransform, dt);
                 break;
-            case GD_ANIM_9H: // data = s16(*)[9] or GdTriangleFH[]...
-                triHArr = (s16(*)[9]) animData->data;
+            case GD_ANIM_SCALE3S_POS3S_ROT3S: // data = s16(*)[9] - scale, position, and rotation
+                animData9s16 = (s16(*)[9]) animData->data;
 
-                tri1.p0.x = (f32) triHArr[sp38][0] * scale;
-                tri1.p0.y = (f32) triHArr[sp38][1] * scale;
-                tri1.p0.z = (f32) triHArr[sp38][2] * scale;
+                currTransform.scale.x  = (f32) animData9s16[currKeyFrame][0] * scale;
+                currTransform.scale.y  = (f32) animData9s16[currKeyFrame][1] * scale;
+                currTransform.scale.z  = (f32) animData9s16[currKeyFrame][2] * scale;
 
-                tri1.p1.x = (f32) triHArr[sp38][3] * scale;
-                tri1.p1.y = (f32) triHArr[sp38][4] * scale;
-                tri1.p1.z = (f32) triHArr[sp38][5] * scale;
+                currTransform.rotate.x = (f32) animData9s16[currKeyFrame][3] * scale;
+                currTransform.rotate.y = (f32) animData9s16[currKeyFrame][4] * scale;
+                currTransform.rotate.z = (f32) animData9s16[currKeyFrame][5] * scale;
 
-                tri1.p2.x = (f32) triHArr[sp38][6];
-                tri1.p2.y = (f32) triHArr[sp38][7];
-                tri1.p2.z = (f32) triHArr[sp38][8];
+                currTransform.pos.x  = (f32) animData9s16[currKeyFrame][6];
+                currTransform.pos.y  = (f32) animData9s16[currKeyFrame][7];
+                currTransform.pos.z  = (f32) animData9s16[currKeyFrame][8];
 
-                tri2.p0.x = (f32) triHArr[sp34][0] * scale;
-                tri2.p0.y = (f32) triHArr[sp34][1] * scale;
-                tri2.p0.z = (f32) triHArr[sp34][2] * scale;
+                nextTransform.scale.x  = (f32) animData9s16[nextKeyFrame][0] * scale;
+                nextTransform.scale.y  = (f32) animData9s16[nextKeyFrame][1] * scale;
+                nextTransform.scale.z  = (f32) animData9s16[nextKeyFrame][2] * scale;
 
-                tri2.p1.x = (f32) triHArr[sp34][3] * scale;
-                tri2.p1.y = (f32) triHArr[sp34][4] * scale;
-                tri2.p1.z = (f32) triHArr[sp34][5] * scale;
+                nextTransform.rotate.x = (f32) animData9s16[nextKeyFrame][3] * scale;
+                nextTransform.rotate.y = (f32) animData9s16[nextKeyFrame][4] * scale;
+                nextTransform.rotate.z = (f32) animData9s16[nextKeyFrame][5] * scale;
 
-                tri2.p2.x = (f32) triHArr[sp34][6];
-                tri2.p2.y = (f32) triHArr[sp34][7];
-                tri2.p2.z = (f32) triHArr[sp34][8];
+                nextTransform.pos.x  = (f32) animData9s16[nextKeyFrame][6];
+                nextTransform.pos.y  = (f32) animData9s16[nextKeyFrame][7];
+                nextTransform.pos.z  = (f32) animData9s16[nextKeyFrame][8];
 
-                func_8017F424(&tri1, &tri2, sp30);
+                interpolate_animation_transform(&currTransform, &nextTransform, dt);
                 break;
-            case GD_ANIM_CAMERA: // s16(*)[6]?
+            case GD_ANIM_CAMERA_EYE3S_LOOKAT3S: // s16(*)[6]?
                 if (linkedObj->type == OBJ_TYPE_CAMERAS) {
-                    camPlaneHArr = animData->data;
+                    animDataCam = animData->data;
 
-                    tri1.p2.x = (f32) camPlaneHArr[sp38][0];
-                    tri1.p2.y = (f32) camPlaneHArr[sp38][1];
-                    tri1.p2.z = (f32) camPlaneHArr[sp38][2];
+                    // eye position
+                    currTransform.pos.x = (f32) animDataCam[currKeyFrame][0];
+                    currTransform.pos.y = (f32) animDataCam[currKeyFrame][1];
+                    currTransform.pos.z = (f32) animDataCam[currKeyFrame][2];
 
-                    tri2.p2.x = (f32) camPlaneHArr[sp38][3];
-                    tri2.p2.y = (f32) camPlaneHArr[sp38][4];
-                    tri2.p2.z = (f32) camPlaneHArr[sp38][5];
+                    // lookat position
+                    nextTransform.pos.x = (f32) animDataCam[currKeyFrame][3];
+                    nextTransform.pos.y = (f32) animDataCam[currKeyFrame][4];
+                    nextTransform.pos.z = (f32) animDataCam[currKeyFrame][5];
 
-                    ((struct ObjCamera *) linkedObj)->unk14.x = tri1.p2.x;
-                    ((struct ObjCamera *) linkedObj)->unk14.y = tri1.p2.y;
-                    ((struct ObjCamera *) linkedObj)->unk14.z = tri1.p2.z;
+                    ((struct ObjCamera *) linkedObj)->worldPos.x = currTransform.pos.x;
+                    ((struct ObjCamera *) linkedObj)->worldPos.y = currTransform.pos.y;
+                    ((struct ObjCamera *) linkedObj)->worldPos.z = currTransform.pos.z;
 
-                    ((struct ObjCamera *) linkedObj)->unk34.x = tri2.p2.x;
-                    ((struct ObjCamera *) linkedObj)->unk34.y = tri2.p2.y;
-                    ((struct ObjCamera *) linkedObj)->unk34.z = tri2.p2.z;
+                    ((struct ObjCamera *) linkedObj)->lookAt.x = nextTransform.pos.x;
+                    ((struct ObjCamera *) linkedObj)->lookAt.y = nextTransform.pos.y;
+                    ((struct ObjCamera *) linkedObj)->lookAt.z = nextTransform.pos.z;
                 }
                 break;
-            case GD_ANIM_TRI_F_2: // GdTriangleF[]
-                triPtr = (struct GdTriangleF *) animData->data;
-                func_8017F424(&triPtr[sp38], &triPtr[sp34], sp30);
+            case GD_ANIM_SCALE3F_ROT3F_POS3F: // scale, rotation, and position (as floats)
+                triPtr = (struct GdAnimTransform *) animData->data;
+                interpolate_animation_transform(&triPtr[currKeyFrame], &triPtr[nextKeyFrame], dt);
                 break;
-            case GD_ANIM_MTX_VEC: // AnimMtxVec[]
-                sp28 = &((struct AnimMtxVec *) animData->data)[sp38];
-                d_set_idn_mtx(&sp28->matrix);
+            case GD_ANIM_MTX4x4F_SCALE3F: // AnimMtxVec[]
+                sp28 = &((struct AnimMtxVec *) animData->data)[currKeyFrame];
+                d_set_i_matrix(&sp28->matrix);
                 d_set_scale(sp28->vec.x, sp28->vec.y, sp28->vec.z);
                 break;
-            case GD_ANIM_TRI_F_4: // GdTriangleF*
-                triPtr = (struct GdTriangleF *) animData->data;
+            case GD_ANIM_SCALE3F_ROT3F_POS3F_2:  // similar to GD_ANIM_SCALE3F_ROT3F_POS3F, but no interpolation? what matrix does d_set_i_matrix set?
+                triPtr = (struct GdAnimTransform *) animData->data;
                 gd_set_identity_mat4(&localMtx);
-                gd_scale_mat4f_by_vec3f(&localMtx, &triPtr->p0);
-                gd_rot_mat_about_vec(&localMtx, &triPtr->p1);
-                gd_add_vec3f_to_mat4f_offset(&localMtx, &triPtr->p2);
-                d_set_idn_mtx(&localMtx);
+                gd_scale_mat4f_by_vec3f(&localMtx, &triPtr->scale);
+                gd_rot_mat_about_vec(&localMtx, &triPtr->rotate);
+                gd_add_vec3f_to_mat4f_offset(&localMtx, &triPtr->pos);
+                d_set_i_matrix(&localMtx);
                 break;
             case GD_ANIM_STUB:
                 if (stubObj1 == NULL) {
@@ -1682,7 +1756,7 @@ void move_animator(struct ObjAnimator *animObj) {
                 } else {
                     if (stubObj2 == NULL) {
                         stubObj2 = linkedObj;
-                        func_8017F404(animObj->unk28, stubObj1, stubObj2);
+                        stub_objects_3(animObj->frame, stubObj1, stubObj2);
                     } else {
                         fatal_printf("Too many objects to morph");
                     }
@@ -1700,7 +1774,7 @@ void drag_picked_object(struct GdObj *inputObj) {
     UNUSED u32 spE4;
     UNUSED u32 spE0;
     UNUSED u32 spDC;
-    struct GdVec3f spD0;
+    struct GdVec3f displacement;
     struct GdVec3f spC4;
     struct GdControl *ctrl;
     Mat4f sp80;
@@ -1708,7 +1782,7 @@ void drag_picked_object(struct GdObj *inputObj) {
     UNUSED u32 pad34[3];
     struct GdObj *obj;
     UNUSED u32 pad2C;
-    f32 sp28;
+    f32 dispMag;
 
     ctrl = &gGdCtrl;
 
@@ -1716,18 +1790,18 @@ void drag_picked_object(struct GdObj *inputObj) {
         return;
     }
 
-    sp28 = gd_vec3f_magnitude(&gViewUpdateCamera->unk40);
-    sp28 /= 1000.0f;
+    dispMag = gd_vec3f_magnitude(&gViewUpdateCamera->unk40);
+    dispMag /= 1000.0f;
 
-    spD0.x = ((f32)(ctrl->csrX - ctrl->csrXatApress)) * sp28;
-    spD0.y = ((f32) - (ctrl->csrY - ctrl->csrYatApress)) * sp28;
-    spD0.z = 0.0f;
+    displacement.x = ((f32)(ctrl->csrX - ctrl->dragStartX)) * dispMag;
+    displacement.y = ((f32) - (ctrl->csrY - ctrl->dragStartY)) * dispMag;
+    displacement.z = 0.0f;
 
     gd_inverse_mat4f(&gViewUpdateCamera->unkE8, &sp40);
-    gd_mat4f_mult_vec3f(&spD0, &sp40);
+    gd_mat4f_mult_vec3f(&displacement, &sp40);
 
     obj = inputObj;
-    if ((inputObj->drawFlags & OBJ_PICKED) && gGdCtrl.btnApressed) {
+    if ((inputObj->drawFlags & OBJ_PICKED) && gGdCtrl.dragging) {
         gd_play_sfx(GD_SFX_PINCH_FACE);
         // Note: this second sfx won't play, as it is "overwritten" by the first
         if (ABS(ctrl->stickDeltaX) + ABS(ctrl->stickDeltaY) >= 11) {
@@ -1736,22 +1810,22 @@ void drag_picked_object(struct GdObj *inputObj) {
 
         switch (inputObj->type) {
             case OBJ_TYPE_JOINTS:
-                ((struct ObjJoint *) obj)->mat128[3][0] += spD0.x;
-                ((struct ObjJoint *) obj)->mat128[3][1] += spD0.y;
-                ((struct ObjJoint *) obj)->mat128[3][2] += spD0.z;
+                ((struct ObjJoint *) obj)->mat128[3][0] += displacement.x;
+                ((struct ObjJoint *) obj)->mat128[3][1] += displacement.y;
+                ((struct ObjJoint *) obj)->mat128[3][2] += displacement.z;
                 break;
             case OBJ_TYPE_GADGETS:
                 break;
             case OBJ_TYPE_NETS:
                 gd_inverse_mat4f(&((struct ObjNet *) obj)->mat128, &sp80);
-                spC4.x = spD0.x;
-                spC4.y = spD0.y;
-                spC4.z = spD0.z;
+                spC4.x = displacement.x;
+                spC4.y = displacement.y;
+                spC4.z = displacement.z;
 
                 gd_mat4f_mult_vec3f(&spC4, &sp80);
-                ((struct ObjNet *) obj)->matE8[3][0] += spD0.x;
-                ((struct ObjNet *) obj)->matE8[3][1] += spD0.y;
-                ((struct ObjNet *) obj)->matE8[3][2] += spD0.z;
+                ((struct ObjNet *) obj)->matE8[3][0] += displacement.x;
+                ((struct ObjNet *) obj)->matE8[3][1] += displacement.y;
+                ((struct ObjNet *) obj)->matE8[3][2] += displacement.z;
                 break;
             case OBJ_TYPE_PARTICLES:
                 break;
@@ -1783,10 +1857,10 @@ void move_camera(struct ObjCamera *cam) {
     Mat4f sp70;
     UNUSED u8 pad30[0x70 - 0x30];
     Mat4f *sp2C;
-    struct GdControl *ctrl; // 28
+    struct GdControl *ctrl;
 
     ctrl = &gGdCtrl;
-    if ((cam->unk2C & 0x10) == 0) {
+    if (!(cam->flags & 0x10)) {
         return;
     }
 
@@ -1816,20 +1890,21 @@ void move_camera(struct ObjCamera *cam) {
         cam->unkA8[1][1] = 1.0f;
         cam->unkA8[1][2] = 0.0f;
 
+        // setting the unkA8 matrix above is pointless, if we're just going to overwrite it with the identity matrix.
         gd_set_identity_mat4(&cam->unkA8);
     } else {
         gd_set_identity_mat4(&cam->unkA8);
     }
 
     sp2C = &cam->unk64;
-    if ((cam->unk2C & 0x4) != 0) { // new B press
-        if (ctrl->btnB != FALSE && ctrl->prevFrame->btnB == FALSE) {
-            cam->zoom++;
-            if (cam->zoom > cam->zoomLevels) {
-                cam->zoom = 0;
+    if ((cam->flags & CAMERA_FLAG_CONTROLLABLE) != 0) {
+        if (ctrl->btnB != FALSE && ctrl->prevFrame->btnB == FALSE) {  // new B press
+            cam->zoomLevel++;
+            if (cam->zoomLevel > cam->maxZoomLevel) {
+                cam->zoomLevel = 0;
             }
 
-            switch (cam->zoom) {
+            switch (cam->zoomLevel) {
                 case 0:
                     gd_play_sfx(GD_SFX_CAM_ZOOM_IN);
                     break;
@@ -1858,9 +1933,9 @@ void move_camera(struct ObjCamera *cam) {
 
         cam->unk128.x = gd_clamp_f32(cam->unk128.x, 80.0f);
 
-        cam->unk4C.x = cam->positions[cam->zoom].x;
-        cam->unk4C.y = cam->positions[cam->zoom].y;
-        cam->unk4C.z = cam->positions[cam->zoom].z;
+        cam->unk4C.x = cam->zoomPositions[cam->zoomLevel].x;
+        cam->unk4C.y = cam->zoomPositions[cam->zoomLevel].y;
+        cam->unk4C.z = cam->zoomPositions[cam->zoomLevel].z;
 
         gd_rot_2d_vec(cam->unk128.x, &cam->unk4C.y, &cam->unk4C.z);
         gd_rot_2d_vec(-cam->unk128.y, &cam->unk4C.x, &cam->unk4C.z);
@@ -1883,13 +1958,13 @@ void move_camera(struct ObjCamera *cam) {
     gd_mult_mat4f(sp2C, &cam->unkA8, &cam->unkA8);
     gd_mat4f_mult_vec3f(&spD4, &cam->unkA8);
 
-    cam->unk14.x = spD4.x;
-    cam->unk14.y = spD4.y;
-    cam->unk14.z = spD4.z;
+    cam->worldPos.x = spD4.x;
+    cam->worldPos.y = spD4.y;
+    cam->worldPos.z = spD4.z;
 
-    cam->unk14.x += spE0.x;
-    cam->unk14.y += spE0.y;
-    cam->unk14.z += spE0.z;
+    cam->worldPos.x += spE0.x;
+    cam->worldPos.y += spE0.y;
+    cam->worldPos.z += spE0.z;
 }
 
 /* @ 22F7A4 for 0x38; orig name: func_80180FD4 */
@@ -1982,7 +2057,7 @@ void move_group_members(void) {
 
 /* @ 22FC2C for 0x98; orig name: func_8018145C */
 void proc_view_movement(struct ObjView *view) {
-    add_to_stacktrace("movement");
+    imin("movement");
     sCurrentMoveCamera = view->activeCam;
     sCurrentMoveView = view;
     if ((sCurrentMoveGrp = view->components) != NULL) {

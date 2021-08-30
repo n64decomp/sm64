@@ -32,7 +32,7 @@ static void camera_lakitu_intro_act_trigger_cutscene(void) {
         && gMarioObject->oPosZ > -2000.0f && gMarioObject->oPosZ < -177.0f
         && gMarioObject->oPosZ < -177.0f) // always double check your conditions
     {
-        if (set_mario_npc_dialog(2) == 1) {
+        if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_START) {
             o->oAction = CAMERA_LAKITU_INTRO_ACT_SPAWN_CLOUD;
         }
     }
@@ -42,7 +42,7 @@ static void camera_lakitu_intro_act_trigger_cutscene(void) {
  * Warp up into the air and spawn cloud, then enter the TODO action.
  */
 static void camera_lakitu_intro_act_spawn_cloud(void) {
-    if (set_mario_npc_dialog(2) == 2) {
+    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK) {
         o->oAction = CAMERA_LAKITU_INTRO_ACT_UNK2;
 
         o->oPosX = 1800.0f;
@@ -63,6 +63,10 @@ static void camera_lakitu_intro_act_spawn_cloud(void) {
 static void camera_lakitu_intro_act_show_dialog(void) {
     s16 targetMovePitch;
     s16 targetMoveYaw;
+#ifdef AVOID_UB
+    targetMovePitch = 0;
+    targetMoveYaw = 0;
+#endif
 
     cur_obj_play_sound_1(SOUND_AIR_LAKITU_FLY);
 
@@ -115,7 +119,8 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                     }
                 }
             }
-        } else if (cur_obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0, CUTSCENE_DIALOG, DIALOG_034) != 0) {
+        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+            DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_034)) {
             o->oCameraLakituFinishedDialog = TRUE;
         }
     }

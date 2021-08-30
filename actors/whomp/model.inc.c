@@ -5,22 +5,22 @@ UNUSED static const u64 whomp_unused_1 = 2;
 
 
 // 0x0601C360
-ALIGNED8 static const u8 whomp_seg6_texture_0601C360[] = {
+ALIGNED8 static const Texture whomp_seg6_texture_0601C360[] = {
 #include "actors/whomp/whomp_back.rgba16.inc.c"
 };
 
 // 0x0601D360
-ALIGNED8 static const u8 whomp_seg6_texture_0601D360[] = {
+ALIGNED8 static const Texture whomp_seg6_texture_0601D360[] = {
 #include "actors/whomp/whomp_face.rgba16.inc.c"
 };
 
 // 0x0601D360
-ALIGNED8 static const u8 whomp_seg6_texture_0601E360[] = {
+ALIGNED8 static const Texture whomp_seg6_texture_0601E360[] = {
 #include "actors/whomp/whomp_hand.rgba16.inc.c"
 };
 
 // 0x0601EB60
-ALIGNED8 static const u8 whomp_seg6_texture_0601EB60[] = {
+ALIGNED8 static const Texture whomp_seg6_texture_0601EB60[] = {
 #include "actors/whomp/whomp_surface.rgba16.inc.c"
 };
 

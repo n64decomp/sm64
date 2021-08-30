@@ -15,6 +15,7 @@
 #include "goddard/renderer.h"
 #include "interaction.h"
 #include "level_update.h"
+#include "mario_actions_cutscene.h"
 #include "mario_misc.h"
 #include "memory.h"
 #include "object_helpers.h"
@@ -92,7 +93,7 @@ Gfx *geo_draw_mario_head_goddard(s32 callContext, struct GraphNode *node, Mat4 *
             gd_copy_p1_contpad(gPlayer1Controller->controllerData);
         }
         gfx = (Gfx *) PHYSICAL_TO_VIRTUAL(gdm_gettestdl(asGenerated->parameter));
-        D_8032C6A0 = gd_vblank;
+        gGoddardVblankCallback = gd_vblank;
         sfx = gd_sfx_to_play();
         play_menu_sounds(sfx);
     }
@@ -122,8 +123,8 @@ static void toad_message_opaque(void) {
 }
 
 static void toad_message_talking(void) {
-    if (cur_obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId)
-        != 0) {
+    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN, 
+        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId)) {
         gCurrentObject->oToadMessageRecentlyTalked = TRUE;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
         switch (gCurrentObject->oToadMessageDialogId) {

@@ -2,7 +2,6 @@
  * Create an ADPCM codebook either by extracting it from an AIFF section, or
  * by executing tabledesign.
  */
-#define _XOPEN_SOURCE 500
 #include <unistd.h>
 #include <math.h>
 #include <string.h>

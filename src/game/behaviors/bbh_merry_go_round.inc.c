@@ -74,7 +74,7 @@ void bhv_merry_go_round_loop(void) {
             o->oMerryGoRoundMarioIsOutside++;
         }
     } else {
-        play_sound(SOUND_AIR_HOWLING_WIND, gDefaultSoundArgs);
+        play_sound(SOUND_AIR_HOWLING_WIND, gGlobalSoundSource);
 
         if (
             // There are objects outside BBH, such as corkboxes.

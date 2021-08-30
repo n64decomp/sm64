@@ -43,22 +43,22 @@ UNUSED static const Lights1 chuckya_lights_unused7 = gdSPDefLights1(
 );
 
 // 0x08006778
-ALIGNED8 static const u8 chuckya_seg8_texture_08006778[] = {
+ALIGNED8 static const Texture chuckya_seg8_texture_08006778[] = {
 #include "actors/chuckya/chuckya_eyes.rgba16.inc.c"
 };
 
 // 0x08007778
-ALIGNED8 static const u8 chuckya_seg8_texture_08007778[] = {
+ALIGNED8 static const Texture chuckya_seg8_texture_08007778[] = {
 #include "actors/chuckya/chuckya_hand_antenna.rgba16.inc.c"
 };
 
 // 0x08007F78
-ALIGNED8 static const u8 chuckya_seg8_texture_08007F78[] = {
+ALIGNED8 static const Texture chuckya_seg8_texture_08007F78[] = {
 #include "actors/chuckya/chuckya_body_arm_left_side.rgba16.inc.c"
 };
 
 // 0x08008F78
-ALIGNED8 static const u8 chuckya_seg8_texture_08008F78[] = {
+ALIGNED8 static const Texture chuckya_seg8_texture_08008F78[] = {
 #include "actors/chuckya/chuckya_body_arm_right_side.rgba16.inc.c"
 };
 

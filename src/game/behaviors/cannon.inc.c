@@ -107,10 +107,6 @@ void (*sOpenedCannonActions[])(void) = { opened_cannon_act_0, opened_cannon_act_
                                          opened_cannon_act_3, opened_cannon_act_4, opened_cannon_act_5,
                                          opened_cannon_act_6 };
 
-u8 unused0EA1FC[] = { 2,  0,   0, 0, 0,  0,   0, 0, 63, 128, 0, 0, 2,  0,   0, 0, 65, 32,  0, 0,
-                      63, 128, 0, 0, 2,  0,   0, 0, 65, 160, 0, 0, 63, 128, 0, 0, 2,  0,   0, 0,
-                      65, 160, 0, 0, 63, 128, 0, 0, 8,  0,   0, 0, 65, 32,  0, 0, 63, 128, 0, 0 };
-
 void bhv_cannon_base_loop(void) {
     cur_obj_call_action_function(sOpenedCannonActions);
     if (o->oCannonUnkF8)

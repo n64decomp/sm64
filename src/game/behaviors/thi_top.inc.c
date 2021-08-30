@@ -1,10 +1,8 @@
 // thi_top.c.inc
 
-struct SpawnParticlesInfo D_8032F134 = {
+struct SpawnParticlesInfo sThiTopPuffs = {
     0, 30, MODEL_WHITE_PARTICLE_SMALL, 0, 40, 0, 20, 40, 252, 30, 20.0f, 0.0f
 };
-
-UNUSED u8 unused8032F134[] = { 10, 11, 12 };
 
 void bhv_thi_huge_island_top_loop(void) {
     if (gTHIWaterDrained & 1) {
@@ -21,8 +19,8 @@ void bhv_thi_tiny_island_top_loop(void) {
             if (o->oDistanceToMario < 500.0f)
                 if (gMarioStates[0].action == ACT_GROUND_POUND_LAND) {
                     o->oAction++;
-                    cur_obj_spawn_particles(&D_8032F134);
-                    spawn_triangle_break_particles(20, 138, 0.3f, 3);
+                    cur_obj_spawn_particles(&sThiTopPuffs);
+                    spawn_triangle_break_particles(20, MODEL_DIRT_ANIMATION, 0.3f, 3);
                     cur_obj_play_sound_2(SOUND_GENERAL_ACTIVATE_CAP_SWITCH);
                     cur_obj_hide();
                 }

@@ -22,7 +22,7 @@ void bhv_koopa_shell_underwater_loop(void) {
             set_koopa_shell_underwater_hitbox();
             break;
         case HELD_HELD:
-            cur_obj_unrender_and_reset_state(-1, 0);
+            cur_obj_unrender_set_action_and_anim(-1, 0);
             break;
         case HELD_THROWN:
         case HELD_DROPPED:

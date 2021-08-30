@@ -7,6 +7,7 @@ void guScaleF(float mf[4][4], float x, float y, float z) {
     mf[2][2] = z;
     mf[3][3] = 1.0;
 }
+
 void guScale(Mtx *m, float x, float y, float z) {
     float mf[4][4];
     guScaleF(mf, x, y, z);

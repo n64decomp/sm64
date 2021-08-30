@@ -184,7 +184,7 @@ u8 dim_shadow_with_distance(u8 solidity, f32 distFromFloor) {
  */
 f32 get_water_level_below_shadow(struct Shadow *s) {
     f32 waterLevel = find_water_level(s->parentX, s->parentZ);
-    if (waterLevel < -10000.0) {
+    if (waterLevel < FLOOR_LOWER_LIMIT_SHADOW) {
         return 0;
     } else if (s->parentY >= waterLevel && s->floorHeight <= waterLevel) {
         gShadowAboveWaterOrLava = TRUE;
@@ -192,6 +192,9 @@ f32 get_water_level_below_shadow(struct Shadow *s) {
     }
     //! @bug Missing return statement. This compiles to return `waterLevel`
     //! incidentally.
+#ifdef AVOID_UB
+    return waterLevel;
+#endif
 }
 
 /**
@@ -228,7 +231,7 @@ s8 init_shadow(struct Shadow *s, f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, 
     } else {
         // Don't draw a shadow if the floor is lower than expected possible,
         // or if the y-normal is negative (an unexpected result).
-        if (s->floorHeight < -10000.0 || floorGeometry->normalY <= 0.0) {
+        if (s->floorHeight < FLOOR_LOWER_LIMIT_SHADOW || floorGeometry->normalY <= 0.0) {
             return 1;
         }
 
@@ -708,7 +711,7 @@ Gfx *create_shadow_circle_assuming_flat_ground(f32 xPos, f32 yPos, f32 zPos, s16
     f32 floorHeight = find_floor_height_and_data(xPos, yPos, zPos, &dummy);
     f32 radius = shadowScale / 2;
 
-    if (floorHeight < -10000.0) {
+    if (floorHeight < FLOOR_LOWER_LIMIT_SHADOW) {
         return NULL;
     } else {
         distBelowFloor = floorHeight - yPos;
@@ -767,12 +770,12 @@ s32 get_shadow_height_solidity(f32 xPos, f32 yPos, f32 zPos, f32 *shadowHeight, 
     f32 waterLevel;
     *shadowHeight = find_floor_height_and_data(xPos, yPos, zPos, &dummy);
 
-    if (*shadowHeight < -10000.0) {
+    if (*shadowHeight < FLOOR_LOWER_LIMIT_SHADOW) {
         return 1;
     } else {
         waterLevel = find_water_level(xPos, zPos);
 
-        if (waterLevel < -10000.0) {
+        if (waterLevel < FLOOR_LOWER_LIMIT_SHADOW) {
             // Dead if-statement. There may have been an assert here.
         } else if (yPos >= waterLevel && waterLevel >= *shadowHeight) {
             gShadowAboveWaterOrLava = TRUE;

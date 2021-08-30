@@ -4,9 +4,12 @@ void bhv_1up_interact(void) {
     UNUSED s32 sp1C;
 
     if (obj_check_if_collided_with_object(o, gMarioObject) == 1) {
-        play_sound(SOUND_GENERAL_COLLECT_1UP, gDefaultSoundArgs);
+        play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
         gMarioState->numLives++;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+#if ENABLE_RUMBLE
+        queue_rumble_data(5, 80);
+#endif
     }
 }
 
@@ -74,7 +77,7 @@ void bhv_1up_walking_loop(void) {
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
             if (o->oTimer == 0)
-                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gGlobalSoundSource);
 
             one_up_loop_in_air();
 
@@ -111,7 +114,7 @@ void bhv_1up_running_away_loop(void) {
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
             if (o->oTimer == 0)
-                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gGlobalSoundSource);
 
             one_up_loop_in_air();
 
@@ -217,7 +220,7 @@ void bhv_1up_hidden_loop(void) {
                 o->oVelY = 40.0f;
                 o->oAction = 3;
                 o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
-                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gGlobalSoundSource);
             }
             break;
 
@@ -269,7 +272,7 @@ void bhv_1up_hidden_in_pole_loop(void) {
                 o->oVelY = 40.0f;
                 o->oAction = 3;
                 o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
-                play_sound(SOUND_GENERAL2_1UP_APPEAR, gDefaultSoundArgs);
+                play_sound(SOUND_GENERAL2_1UP_APPEAR, gGlobalSoundSource);
             }
             break;
 
@@ -301,7 +304,6 @@ void bhv_1up_hidden_in_pole_trigger_loop(void) {
         sp1C = cur_obj_nearest_object_with_behavior(bhvHidden1upInPole);
         if (sp1C != NULL) {
             sp1C->o1UpHiddenUnkF4++;
-            ;
         }
 
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;

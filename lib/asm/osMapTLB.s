@@ -1,14 +1,14 @@
-.set noreorder # don't insert nops after branches
+.set noreorder // don't insert nops after branches
 .set gp=64
 
-.include "macros.inc"
+#include "macros.inc"
 
 
 .section .text, "ax"
 
-# This file is handwritten
+// This file is handwritten
 
-#void osMapTLB(s32 index, OSPageMask pm, void *vaddr, u32 evenpaddr, u32 oddpaddr, s32 asid);
+// void osMapTLB(s32 index, OSPageMask pm, void *vaddr, u32 evenpaddr, u32 oddpaddr, s32 asid);
 glabel osMapTLB
     mfc0  $t0, $10
     mtc0  $a0, $0

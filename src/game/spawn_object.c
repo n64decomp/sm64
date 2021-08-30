@@ -196,7 +196,7 @@ void clear_object_lists(struct ObjectNode *objLists) {
  * This function looks broken, but it appears to attempt to delete the leaf
  * graph nodes under obj and obj's siblings.
  */
-static void unused_delete_leaf_nodes(struct Object *obj) {
+UNUSED static void unused_delete_leaf_nodes(struct Object *obj) {
     struct Object *children;
     struct Object *sibling;
     struct Object *obj0 = obj;
@@ -223,7 +223,7 @@ void unload_object(struct Object *obj) {
     obj->prevObj = NULL;
 
     obj->header.gfx.throwMatrix = NULL;
-    func_803206F8(obj->header.gfx.cameraToObject);
+    stop_sounds_from_source(obj->header.gfx.cameraToObject);
     geo_remove_child(&obj->header.gfx.node);
 #ifndef USE_SYSTEM_MALLOC
     geo_add_child(&gObjParentGraphNode, &obj->header.gfx.node);

@@ -11,21 +11,21 @@
 
 // structs
 struct MemTracker {
-    /* 0x00 */ const char *name;
-    /* 0x04 */ f32 begin;   // in bytes?
-    /* 0x08 */ f32 end;
-    /* 0x0C */ f32 total;
+    /* 0x00 */ const char *name;  // name (used as an identifier)
+    /* 0x04 */ f32 begin;         // used heap space (in bytes) before allocating memory
+    /* 0x08 */ f32 end;           // used heap space (in bytes) after allocating memory
+    /* 0x0C */ f32 total;         // total memory (in bytes) allocated between all start_memtracker/stop_memtracker calls
 };
 
 struct GdTimer {
     /* 0x00 */ s32 start;   // in cycles
     /* 0x04 */ s32 end;     // in cycles
     /* 0x08 */ s32 total;   // in cycles
-    /* 0x0C */ f32 unk0C;
+    /* 0x0C */ f32 unused0C;
     /* 0x10 */ f32 scaledTotal;  // total / sTimeScaleFactor (1.0f) Unused function modified value
     /* 0x14 */ f32 prevScaledTotal;
     /* 0x18 */ const char *name;
-    /* 0x1C */ s32 unk1C;
+    /* 0x1C */ s32 gadgetColourNum;  // color of gadget that represents timer?
     /* 0x20 */ s32 resetCount;
 }; // sizeof = 0x24
 
@@ -56,7 +56,7 @@ extern u8 *gGdStreamBuffer;
 extern struct MemTracker *start_memtracker(const char *);
 extern u32 stop_memtracker(const char *);
 extern void remove_all_memtrackers(void);
-extern struct MemTracker *get_memtracker_by_id(s32);
+extern struct MemTracker *get_memtracker_by_index(s32);
 extern void print_all_memtrackers(void);
 extern void print_all_timers(void);
 extern void deactivate_timing(void);
@@ -71,9 +71,9 @@ extern void stop_timer(const char *);
 extern f32 get_scaled_timer_total(const char *);
 extern void fatal_print(const char *) NORETURN;
 extern void fatal_printf(const char *, ...) NORETURN;
-extern void add_to_stacktrace(const char *);
+extern void imin(const char *);
 extern void imout(void);
-extern f32 func_8018D560(void);
+extern f32 gd_rand_float(void);
 extern s32 gd_atoi(const char *);
 extern f64 gd_lazy_atof(const char *, u32 *);
 extern char *sprint_val_withspecifiers(char *, union PrintVal, char *);

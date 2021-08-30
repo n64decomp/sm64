@@ -9,7 +9,7 @@ static const Vtx smoke_seg5_vertex_05007280[] = {
 };
 
 // 0x050072C0
-ALIGNED8 static const u8 smoke_seg5_texture_050072C0[] = {
+ALIGNED8 static const Texture smoke_seg5_texture_050072C0[] = {
 #include "actors/smoke/smoke.ia16.inc.c"
 };
 

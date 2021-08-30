@@ -1,10 +1,10 @@
 #include <PR/ultratypes.h>
 
+#include "macros.h"
 #include "animdata.h"
 #include "../gd_types.h"
 
-/* @ 0400DE40 */
-s16 animdata_mario_lips_1_1[820][3] = {
+static s16 animdata_mario_lips_1_1[][3] = {
     { -80, -6, 1818 },   { -80, -6, 1818 },   { -80, -6, 1818 },   { -80, -6, 1817 },
     { -80, -6, 1817 },   { -80, -6, 1816 },   { -80, -6, 1815 },   { -80, -6, 1815 },
     { -80, -6, 1814 },   { -80, -6, 1813 },   { -80, -6, 1812 },   { -80, -6, 1812 },
@@ -212,8 +212,7 @@ s16 animdata_mario_lips_1_1[820][3] = {
     { -36, -4, 1820 },   { -59, -5, 1819 },   { -74, -5, 1818 },   { -80, -6, 1818 },
 };
 
-/* @ 0400F178 */
-s16 animdata_mario_lips_1_2[166][3] = {
+static s16 animdata_mario_lips_1_2[][3] = {
     { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 },
     { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 },
     { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 }, { -97, -93, 1924 },
@@ -250,9 +249,8 @@ s16 animdata_mario_lips_1_2[166][3] = {
     { -80, -6, 1818 },
 };
 
-/* @ 0400F55C */
-struct AnimDataInfo anim_mario_lips_1[3] = {
-    { 820, GD_ANIM_3H_SCALED, animdata_mario_lips_1_1 },
-    { 166, GD_ANIM_3H_SCALED, animdata_mario_lips_1_2 },
+struct AnimDataInfo anim_mario_lips_1[] = {
+    { ARRAY_COUNT(animdata_mario_lips_1_1), GD_ANIM_ROT3S, animdata_mario_lips_1_1 },
+    { ARRAY_COUNT(animdata_mario_lips_1_2), GD_ANIM_ROT3S, animdata_mario_lips_1_2 },
     END_ANIMDATA_INFO_ARR,
 };

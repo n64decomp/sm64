@@ -24,8 +24,17 @@ enum GdProperty {
     GD_PROP_ZBUF_FN       = 22
 };
 
+enum GdSceneId {
+    GD_SCENE_YOSHI,  // create yoshi?
+    GD_SCENE_YOSHI1,  // destroy yoshi?
+    GD_SCENE_REGULAR_MARIO,
+    GD_SCENE_DIZZY_MARIO,
+    GD_SCENE_CAR,   // create car?
+    GD_SCENE_CAR5  // destroy car?
+};
+
 // data
-extern s32 gGdFrameBuf;
+extern s32 gGdFrameBufNum;
 
 // functions
 u32 get_alloc_mem_amt(void);
@@ -41,10 +50,10 @@ void *gd_allocblock(u32 size);
 void *gd_malloc(u32 size, u8 perm);
 void *gd_malloc_perm(u32 size);
 void *gd_malloc_temp(u32 size);
-void func_8019BD0C(s32 dlNum, s32 gfxIdx);
+void draw_indexed_dl(s32 dlNum, s32 gfxIdx);
 #ifdef USE_SYSTEM_MALLOC
 void gdm_init(void *(*allocFn)(u32 size), void (*freeFn)(void *ptr));
-#else
+#else   
 void gd_add_to_heap(void *addr, u32 size);
 void gdm_init(void *blockpool, u32 size);
 #endif
@@ -53,37 +62,37 @@ void gdm_maketestdl(s32 id);
 void gd_vblank(void);
 void gd_copy_p1_contpad(OSContPad *p1cont);
 s32 gd_sfx_to_play(void);
-void *gdm_gettestdl(s32 id);
+Gfx *gdm_gettestdl(s32 id);
 void gd_draw_rect(f32 ulx, f32 uly, f32 lrx, f32 lry);
 void gd_draw_border_rect(f32 ulx, f32 uly, f32 lrx, f32 lry);
-void gd_set_fill(struct GdColour *colour);
+void gd_dl_set_fill(struct GdColour *colour);
 void stash_current_gddl(void);
 void pop_gddl_stash(void);
 s32 gd_startdisplist(s32 memarea);
 s32 gd_enddlsplist_parent(void);
-void add_mat4_load_to_dl(Mat4f *mtx);
-void idn_mtx_push_gddl(void);
-void pop_mtx_gddl(void);
-void translate_mtx_gddl(f32 x, f32 y, f32 z);
-void translate_load_mtx_gddl(f32 x, f32 y, f32 z);
-void func_8019F258(f32 x, f32 y, f32 z);
+void gd_dl_load_matrix(Mat4f *mtx);
+void gd_dl_push_matrix(void);
+void gd_dl_pop_matrix(void);
+void gd_dl_mul_trans_matrix(f32 x, f32 y, f32 z);
+void gd_dl_load_trans_matrix(f32 x, f32 y, f32 z);
+void gd_dl_scale(f32 x, f32 y, f32 z);
 void func_8019F2C4(f32 arg0, s8 arg1);
-void func_8019F318(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7);
+void gd_dl_lookat(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7);
 void check_tri_display(s32 vtxcount);
-Vtx *make_vtx_if_new(f32 x, f32 y, f32 z, f32 alpha);
+Vtx *gd_dl_make_vertex(f32 x, f32 y, f32 z, f32 alpha);
 void func_8019FEF0(void);
-void add_tri_to_dl(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3);
+void gd_dl_make_triangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3);
 void func_801A0038(void);
-void func_801A0070(void);
-void func_801A02B8(f32 arg0);
+void gd_dl_flush_vertices(void);
+void set_render_alpha(f32 arg0);
 void set_light_id(s32 index);
 void set_light_num(s32 n);
 s32 create_mtl_gddl(s32 mtlType);
 void branch_to_gddl(s32 dlNum);
-void func_801A0478(s32, struct ObjCamera *, struct GdVec3f *, struct GdVec3f *, struct GdVec3f *, struct GdColour *);
-void func_801A0478(s32 idx, struct ObjCamera *cam, UNUSED struct GdVec3f *arg2, UNUSED struct GdVec3f *arg3,
+void gd_dl_hilite(s32, struct ObjCamera *, struct GdVec3f *, struct GdVec3f *, struct GdVec3f *, struct GdColour *);
+void gd_dl_hilite(s32 idx, struct ObjCamera *cam, UNUSED struct GdVec3f *arg2, UNUSED struct GdVec3f *arg3,
                    struct GdVec3f *arg4, struct GdColour *colour);
-s32 func_801A086C(s32 id, struct GdColour *colour, s32 material);
+s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material);
 void set_Vtx_norm_buf_1(struct GdVec3f *norm);
 void set_Vtx_norm_buf_2(struct GdVec3f *norm);
 void set_gd_mtx_parameters(s32 params);
@@ -99,19 +108,19 @@ void gd_create_perspective_matrix(f32 fovy, f32 aspect, f32 near, f32 far);
 s32 setup_view_buffers(const char *name, struct ObjView *view, UNUSED s32 ulx, UNUSED s32 uly,
                        UNUSED s32 lrx, UNUSED s32 lry);
 void gd_init_controllers(void);
-void func_801A43DC(struct GdObj *obj); //apply to OBJ_TYPE_VIEWS
-void *func_801A43F0(UNUSED const char *menufmt, ...);   // TUI code..? query_user? doesn't actually return anything... maybe it returned a "menu *"?
-void func_801A4410(void *arg0);  // function looks like it got various controller/input attributes..?
-void func_801A4424(void *arg0);  // TUI stuff?
+void stub_renderer_6(struct GdObj *obj); //apply to OBJ_TYPE_VIEWS
+long defpup(UNUSED const char *menufmt, ...);
+void menu_cb_control_type(u32);
+void menu_cb_recalibrate_controller(u32);
 void func_801A4438(f32 x, f32 y, f32 z);
-void func_801A48C4(u32 arg0);
-void func_801A48D8(UNUSED char *s);
+void stub_renderer_10(u32 arg0);
+void stub_draw_label_text(UNUSED char *s);
 void set_active_view(struct ObjView *v);
 void func_801A520C(void);
 void gd_init(void);
-void func_801A5998(s8 *arg0);    /* convert LE bytes to BE word? */
-void func_801A59AC(UNUSED void *arg0);
-void func_801A59C0(UNUSED s8 *arg0);    /* convert LE bytes to BE f32? */
+void stub_renderer_12(s8 *arg0);    /* convert LE bytes to BE word? */
+void stub_renderer_13(UNUSED void *arg0);
+void stub_renderer_14(UNUSED s8 *arg0);    /* convert LE bytes to BE f32? */
 void init_pick_buf(s16 *buf, s32 len);
 void store_in_pickbuf(s16 data);
 s32 get_cur_pickbuf_offset(UNUSED s16 *arg0);

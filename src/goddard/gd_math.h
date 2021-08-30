@@ -50,7 +50,7 @@ void gd_rotate_and_translate_vec3f(struct GdVec3f *vec, const Mat4f *mtx);
 void gd_mat4f_mult_vec3f(struct GdVec3f *vec, const Mat4f *mtx);
 void gd_mult_mat4f(const Mat4f *mA, const Mat4f *mB, Mat4f *dst);
 void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec);
-void gd_print_plane(UNUSED const char *prefix, const struct GdPlaneF *p);
+void gd_print_bounding_box(UNUSED const char *prefix, const struct GdBoundingBox *p);
 void gd_print_mtx(UNUSED const char *prefix, const Mat4f *mtx);
 
 #endif // GD_MATH_H

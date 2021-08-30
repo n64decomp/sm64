@@ -13,12 +13,12 @@ static const Vtx mr_i_eyeball_seg6_vertex_06000000[] = {
 };
 
 // 0x06000080
-ALIGNED8 static const u8 mr_i_eyeball_seg6_texture_06000080[] = {
+ALIGNED8 static const Texture mr_i_eyeball_seg6_texture_06000080[] = {
 #include "actors/mr_i_eyeball/mr_i_eyeball_left_side.rgba16.inc.c"
 };
 
 // 0x06001080
-ALIGNED8 static const u8 mr_i_eyeball_seg6_texture_06001080[] = {
+ALIGNED8 static const Texture mr_i_eyeball_seg6_texture_06001080[] = {
 #include "actors/mr_i_eyeball/mr_i_eyeball_right_side.rgba16.inc.c"
 };
 

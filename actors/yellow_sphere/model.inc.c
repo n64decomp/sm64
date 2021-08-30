@@ -9,7 +9,7 @@ static const Vtx yellow_sphere_seg6_vertex_0601EB48[] = {
 };
 
 // 0x0601EB88
-ALIGNED8 static const u8 yellow_sphere_seg6_texture_0601EB88[] = {
+ALIGNED8 static const Texture yellow_sphere_seg6_texture_0601EB88[] = {
 #include "actors/yellow_sphere/yellow_sphere.rgba16.inc.c"
 };
 

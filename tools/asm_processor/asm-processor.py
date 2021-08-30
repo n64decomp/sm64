@@ -185,7 +185,7 @@ class Section:
         if self.sh_entsize != 0:
             assert self.sh_size % self.sh_entsize == 0
         if self.sh_type == SHT_NOBITS:
-            self.data = ''
+            self.data = b''
         else:
             self.data = data[self.sh_offset:self.sh_offset + self.sh_size]
         self.index = index
@@ -466,6 +466,9 @@ class GlobalAsmBlock:
             self.fail(".ascii with no string", real_line)
         return ret + num_parts if z else ret
 
+    def align2(self):
+        while self.fn_section_sizes[self.cur_section] % 2 != 0:
+            self.fn_section_sizes[self.cur_section] += 1
 
     def align4(self):
         while self.fn_section_sizes[self.cur_section] % 4 != 0:
@@ -553,6 +556,9 @@ class GlobalAsmBlock:
             self.add_sized(self.count_quoted_size(line, z, real_line, output_enc), real_line)
         elif line.startswith('.byte'):
             self.add_sized(len(line.split(',')), real_line)
+        elif line.startswith('.half'):
+            self.align2()
+            self.add_sized(2*len(line.split(',')), real_line)
         elif line.startswith('.'):
             # .macro, ...
             self.fail("asm directive not supported", real_line)
@@ -778,7 +784,7 @@ def parse_source(f, opt, framepointer, input_enc, output_enc, print_source=None)
                 output_lines[-1] = ''.join(src)
                 asm_functions.append(fn)
                 global_asm = None
-            elif ((line.startswith('#include "')) and line.endswith('" EARLY')):
+            elif line.startswith('#include "') and line.endswith('" EARLY'):
                 # C includes qualified with EARLY (i.e. #include "file.c" EARLY) will be
                 # processed recursively when encountered
                 fpath = os.path.dirname(f.name)
@@ -1095,7 +1101,7 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
         except:
             pass
 
-def run_wrapped(argv, outfile):
+def run_wrapped(argv, outfile, functions):
     parser = argparse.ArgumentParser(description="Pre-process .c files and post-process .o files to enable embedding assembly into C.")
     parser.add_argument('filename', help="path to .c code")
     parser.add_argument('--post-process', dest='objfile', help="path to .o file to post-process")
@@ -1118,12 +1124,13 @@ def run_wrapped(argv, outfile):
 
     if args.objfile is None:
         with open(args.filename, encoding=args.input_enc) as f:
-            parse_source(f, opt=opt, framepointer=args.framepointer, input_enc=args.input_enc, output_enc=args.output_enc, print_source=outfile)
+            return parse_source(f, opt=opt, framepointer=args.framepointer, input_enc=args.input_enc, output_enc=args.output_enc, print_source=outfile)
     else:
         if args.assembler is None:
             raise Failure("must pass assembler command")
-        with open(args.filename, encoding=args.input_enc) as f:
-            functions = parse_source(f, opt=opt, framepointer=args.framepointer, input_enc=args.input_enc, output_enc=args.output_enc)
+        if functions is None:
+            with open(args.filename, encoding=args.input_enc) as f:
+                functions = parse_source(f, opt=opt, framepointer=args.framepointer, input_enc=args.input_enc, output_enc=args.output_enc)
         if not functions:
             return
         asm_prelude = b''
@@ -1132,9 +1139,9 @@ def run_wrapped(argv, outfile):
                 asm_prelude = f.read()
         fixup_objfile(args.objfile, functions, asm_prelude, args.assembler, args.output_enc)
 
-def run(argv, outfile=sys.stdout.buffer):
+def run(argv, outfile=sys.stdout.buffer, functions=None):
     try:
-        run_wrapped(argv, outfile)
+        return run_wrapped(argv, outfile, functions)
     except Failure as e:
         print("Error:", e, file=sys.stderr)
         sys.exit(1)

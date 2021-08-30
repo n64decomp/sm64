@@ -1,11 +1,8 @@
-#include <ultra64.h>
-#include "sm64.h"
-#include "surface_terrains.h"
-#include "moving_texture_macros.h"
-#include "level_misc_macros.h"
-#include "macro_preset_names.h"
-#include "special_preset_names.h"
-#include "textures.h"
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
+
+#include "macros.h"
+#include "types.h"
 
 #include "make_const_nonconst.h"
 
@@ -2580,12 +2577,12 @@ static const Vtx intro_seg7_vertex_07007DF0[] = {
 };
 
 // 0x07007EA0 - 0x07007EA2
-ALIGNED8 static const u8 intro_seg7_texture_07007EA0[] = {
+ALIGNED8 static const Texture intro_seg7_texture_07007EA0[] = {
 #include "levels/intro/0.rgba16.inc.c"
 };
 
 // 0x070086A0 - 0x070086A2
-ALIGNED8 static const u8 intro_seg7_texture_070086A0[] = {
+ALIGNED8 static const Texture intro_seg7_texture_070086A0[] = {
 #include "levels/intro/1.rgba16.inc.c"
 };
 
@@ -3336,25 +3333,31 @@ static const Vtx intro_seg7_vertex_0700B460[] = {
     {{{   268,    196,     -1}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
 };
 
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
 // 0x0700B4A0 - 0x0700B4A2
-ALIGNED8 static const u8 intro_seg7_texture_0700B4A0[] = {
+ALIGNED8 static const Texture intro_seg7_texture_0700B4A0[] = {
 #include "levels/intro/2_eu_copyright.rgba16.inc.c"
-};
-
-// 0x0700C4A0 - 0x0700D4A0
-ALIGNED8 static const u8 intro_seg7_texture_0700C4A0[] = {
-#include "levels/intro/3_eu_tm.rgba16.inc.c"
 };
 
 #else
 // 0x0700B4A0 - 0x0700B4A2
-ALIGNED8 static const u8 intro_seg7_texture_0700B4A0[] = {
+ALIGNED8 static const Texture intro_seg7_texture_0700B4A0[] = {
 #include "levels/intro/2_copyright.rgba16.inc.c"
 };
+#endif
 
+#if defined(VERSION_EU)
 // 0x0700C4A0 - 0x0700D4A0
 ALIGNED8 static const u8 intro_seg7_texture_0700C4A0[] = {
+#include "levels/intro/3_eu_tm.rgba16.inc.c"
+};
+#elif defined(VERSION_SH)
+ALIGNED8 static const u8 intro_seg7_texture_0700C4A0[] = {
+#include "levels/intro/3_sh_tm.rgba16.inc.c"
+};
+#else
+// 0x0700C4A0 - 0x0700D4A0
+ALIGNED8 static const Texture intro_seg7_texture_0700C4A0[] = {
 #include "levels/intro/3_tm.rgba16.inc.c"
 };
 #endif

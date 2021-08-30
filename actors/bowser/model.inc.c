@@ -1,149 +1,149 @@
 // Bowser (King Koopa)
 
 // 0x0601F438
-ALIGNED8 static const u8 bowser_seg6_texture_0601F438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0601F438[] = {
 #include "actors/bowser/bowser_shell.rgba16.inc.c"
 };
 
 // 0x0601FC38
-ALIGNED8 static const u8 bowser_seg6_texture_0601FC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0601FC38[] = {
 #include "actors/bowser/bowser_eyebrow.rgba16.inc.c"
 };
 
 // 0x06020C38
-ALIGNED8 static const u8 bowser_seg6_texture_06020C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06020C38[] = {
 #include "actors/bowser/bowser_muzzle.rgba16.inc.c"
 };
 
 // 0x06021438
-ALIGNED8 static const u8 bowser_seg6_texture_06021438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06021438[] = {
 #include "actors/bowser/bowser_nostrils.rgba16.inc.c"
 };
 
 // 0x06022438
-ALIGNED8 static const u8 bowser_seg6_texture_06022438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06022438[] = {
 #include "actors/bowser/bowser_body.rgba16.inc.c"
 };
 
 // 0x06022C38
-ALIGNED8 static const u8 bowser_seg6_texture_06022C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06022C38[] = {
 #include "actors/bowser/bowser_armband_spike.rgba16.inc.c"
 };
 
 // 0x06023C38
-ALIGNED8 static const u8 bowser_seg6_texture_06023C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06023C38[] = {
 #include "actors/bowser/bowser_armband.rgba16.inc.c"
 };
 
 // 0x06024438
-ALIGNED8 static const u8 bowser_seg6_texture_06024438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06024438[] = {
 #include "actors/bowser/bowser_tongue.rgba16.inc.c"
 };
 
 // 0x06025438
-ALIGNED8 static const u8 bowser_seg6_texture_06025438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06025438[] = {
 #include "actors/bowser/bowser_chest.rgba16.inc.c"
 };
 
 // 0x06025C38
-ALIGNED8 static const u8 bowser_seg6_texture_06025C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06025C38[] = {
 #include "actors/bowser/bowser_shell_edge.rgba16.inc.c"
 };
 
 // unreferenced, seen in pre-Spaceworld 1995 B-roll footage build
 // 0x06026438
-ALIGNED8 static const u8 bowser_seg6_texture_06026438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06026438[] = {
 #include "actors/bowser/bowser_blue_eye_unused.rgba16.inc.c"
 };
 
 // unreferenced (stubbed texture? possibly original texture for mouth)
 // 0x06027438
-ALIGNED8 static const u8 bowser_seg6_texture_06027438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06027438[] = {
 #include "actors/bowser/bowser_mouth_unused.rgba16.inc.c"
 };
 
 // 0x06028438
-ALIGNED8 static const u8 bowser_seg6_texture_06028438[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06028438[] = {
 #include "actors/bowser/bowser_upper_face.rgba16.inc.c"
 };
 
 // 0x06028C38
-ALIGNED8 static const u8 bowser_seg6_texture_06028C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06028C38[] = {
 #include "actors/bowser/bowser_hair.rgba16.inc.c"
 };
 
 // 0x06029C38
-ALIGNED8 static const u8 bowser_seg6_texture_06029C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06029C38[] = {
 #include "actors/bowser/bowser_claw_edge.rgba16.inc.c"
 };
 
 // 0x0602AC38
-ALIGNED8 static const u8 bowser_seg6_texture_0602AC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0602AC38[] = {
 #include "actors/bowser/bowser_claw_horn_tooth.rgba16.inc.c"
 };
 
 // 0x0602BC38
-ALIGNED8 static const u8 bowser_seg6_texture_0602BC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0602BC38[] = {
 #include "actors/bowser/bowser_claw_horn_angle.rgba16.inc.c"
 };
 
 // 0x0602CC38
-ALIGNED8 static const u8 bowser_seg6_texture_0602CC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0602CC38[] = {
 #include "actors/bowser/bowser_eye_left_0.rgba16.inc.c"
 };
 
 // 0x0602DC38
-ALIGNED8 static const u8 bowser_seg6_texture_0602DC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0602DC38[] = {
 #include "actors/bowser/bowser_eye_half_closed_0.rgba16.inc.c"
 };
 
 // 0x0602EC38
-ALIGNED8 static const u8 bowser_seg6_texture_0602EC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0602EC38[] = {
 #include "actors/bowser/bowser_eye_closed_0.rgba16.inc.c"
 };
 
 // 0x0602FC38
-ALIGNED8 static const u8 bowser_seg6_texture_0602FC38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_0602FC38[] = {
 #include "actors/bowser/bowser_eye_center_0.rgba16.inc.c"
 };
 
 // 0x06030C38
-ALIGNED8 static const u8 bowser_seg6_texture_06030C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06030C38[] = {
 #include "actors/bowser/bowser_eye_right_0.rgba16.inc.c"
 };
 
 // 0x06031C38
-ALIGNED8 static const u8 bowser_seg6_texture_06031C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06031C38[] = {
 #include "actors/bowser/bowser_eye_far_left_0.rgba16.inc.c"
 };
 
 // 0x06032C38
-ALIGNED8 static const u8 bowser_seg6_texture_06032C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06032C38[] = {
 #include "actors/bowser/bowser_eye_left_1.rgba16.inc.c"
 };
 
 // 0x06033C38
-ALIGNED8 static const u8 bowser_seg6_texture_06033C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06033C38[] = {
 #include "actors/bowser/bowser_eye_half_closed_1.rgba16.inc.c"
 };
 
 // 0x06034C38
-ALIGNED8 static const u8 bowser_seg6_texture_06034C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06034C38[] = {
 #include "actors/bowser/bowser_eye_closed_1.rgba16.inc.c"
 };
 
 // 0x06035C38
-ALIGNED8 static const u8 bowser_seg6_texture_06035C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06035C38[] = {
 #include "actors/bowser/bowser_eye_center_1.rgba16.inc.c"
 };
 
 // 0x06036C38
-ALIGNED8 static const u8 bowser_seg6_texture_06036C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06036C38[] = {
 #include "actors/bowser/bowser_eye_right_1.rgba16.inc.c"
 };
 
 // 0x06037C38
-ALIGNED8 static const u8 bowser_seg6_texture_06037C38[] = {
+ALIGNED8 static const Texture bowser_seg6_texture_06037C38[] = {
 #include "actors/bowser/bowser_eye_far_left_1.rgba16.inc.c"
 };
 
@@ -1184,7 +1184,7 @@ const Gfx bowser_seg6_dl_0603B8D0[] = {
     gsSPEndDisplayList(),
 };
 
-#ifndef VERSION_JP
+#if BUGFIX_BOWSER_FADING_OUT
 // 0x0603B948 - 0x0603B9C8
 const Gfx bowser_seg6_dl_0603B948[] = {
     gsDPPipeSync(),
@@ -2870,7 +2870,7 @@ const Gfx bowser_seg6_dl_06040210[] = {
     gsSPEndDisplayList(),
 };
 
-#ifndef VERSION_JP
+#if BUGFIX_BOWSER_FADING_OUT
 // 0x06040358 - 0x06040428
 const Gfx bowser_seg6_dl_06040358[] = {
     gsDPPipeSync(),

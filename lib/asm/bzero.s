@@ -1,9 +1,9 @@
-.set noreorder # don't insert nops after branches
+.set noreorder // don't insert nops after branches
 .set gp=64
 
-.include "macros.inc"
+#include "macros.inc"
 
-#this file is probably handwritten
+// this file is probably handwritten
 
 .section .text, "ax"
 

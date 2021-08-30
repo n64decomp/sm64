@@ -49,11 +49,11 @@ extern u32 D_80365E3C;
 typedef struct {
     u32 initialized; // probably something like initialized?
     OSThread *mgrThread;
-    OSMesgQueue *unk08;
-    OSMesgQueue *unk0c;
-    OSMesgQueue *unk10;
+    OSMesgQueue *cmdQueue;
+    OSMesgQueue *eventQueue;
+    OSMesgQueue *accessQueue;
     s32 (*dma_func)(s32, u32, void *, size_t);
-#ifdef VERSION_EU
+#if defined(VERSION_EU) || defined(VERSION_SH)
     s32 (*edma_func)(OSPiHandle*, s32, u32, void *, size_t);
 #else
     u64 force_align;

@@ -21,6 +21,7 @@ OSTask *_VirtualToPhysicalTask(OSTask *task) {
     _osVirtualToPhysical(physicalTask->t.yield_data_ptr);
     return physicalTask;
 }
+
 void osSpTaskLoad(OSTask *task) {
     OSTask *physicalTask;
     physicalTask = _VirtualToPhysicalTask(task);
@@ -28,6 +29,11 @@ void osSpTaskLoad(OSTask *task) {
         physicalTask->t.ucode_data = physicalTask->t.yield_data_ptr;
         physicalTask->t.ucode_data_size = physicalTask->t.yield_data_size;
         task->t.flags &= ~M_TASK_FLAG0;
+#ifdef VERSION_SH
+        if (physicalTask->t.flags & M_TASK_FLAG2) {
+            physicalTask->t.ucode = (u64*)HW_REG((uintptr_t)task->t.yield_data_ptr + 0xBFC, u64*);
+        }
+#endif
     }
     osWritebackDCache(physicalTask, sizeof(OSTask));
     __osSpSetStatus(SPSTATUS_CLEAR_SIGNAL0 | SPSTATUS_CLEAR_SIGNAL1 | SPSTATUS_CLEAR_SIGNAL2
@@ -49,6 +55,7 @@ void osSpTaskLoad(OSTask *task) {
         ;
     }
 }
+
 void osSpTaskStartGo(UNUSED OSTask *task) {
     while (__osSpDeviceBusy()) {
         ;

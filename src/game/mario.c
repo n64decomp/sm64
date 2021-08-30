@@ -31,7 +31,7 @@
 #include "print.h"
 #include "save_file.h"
 #include "sound_init.h"
-#include "thread6.h"
+#include "rumble_init.h"
 
 u32 unused80339F10;
 s8 filler80339F1C[20];
@@ -63,9 +63,9 @@ s32 is_anim_past_end(struct MarioState *m) {
  */
 s16 set_mario_animation(struct MarioState *m, s32 targetAnimID) {
     struct Object *o = m->marioObj;
-    struct Animation *targetAnim = m->animation->targetAnim;
+    struct Animation *targetAnim = m->animList->bufTarget;
 
-    if (load_patchable_table(m->animation, targetAnimID)) {
+    if (load_patchable_table(m->animList, targetAnimID)) {
         targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->values);
         targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->index);
     }
@@ -96,9 +96,9 @@ s16 set_mario_animation(struct MarioState *m, s32 targetAnimID) {
  */
 s16 set_mario_anim_with_accel(struct MarioState *m, s32 targetAnimID, s32 accel) {
     struct Object *o = m->marioObj;
-    struct Animation *targetAnim = m->animation->targetAnim;
+    struct Animation *targetAnim = m->animList->bufTarget;
 
-    if (load_patchable_table(m->animation, targetAnimID)) {
+    if (load_patchable_table(m->animList, targetAnimID)) {
         targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->values);
         targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->index);
     }
@@ -269,7 +269,7 @@ void play_mario_jump_sound(struct MarioState *m) {
  */
 void adjust_sound_for_speed(struct MarioState *m) {
     s32 absForwardVel = (m->forwardVel > 0.0f) ? m->forwardVel : -m->forwardVel;
-    func_80320A4C(1, (absForwardVel > 100) ? 100 : absForwardVel);
+    set_sound_moving_speed(SOUND_BANK_MOVING, (absForwardVel > 100) ? 100 : absForwardVel);
 }
 
 /**
@@ -1393,10 +1393,11 @@ void update_mario_inputs(struct MarioState *m) {
     if (!(m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED))) {
         m->input |= INPUT_UNKNOWN_5;
     }
-
+    
+    // These 3 flags are defined by Bowser stomping attacks
     if (m->marioObj->oInteractStatus
-        & (INT_STATUS_HOOT_GRABBED_BY_MARIO | INT_STATUS_MARIO_UNK1 | INT_STATUS_HIT_BY_SHOCKWAVE)) {
-        m->input |= INPUT_UNKNOWN_10;
+        & (INT_STATUS_MARIO_STUNNED | INT_STATUS_MARIO_KNOCKBACK_DMG | INT_STATUS_MARIO_SHOCKWAVE)) {
+        m->input |= INPUT_STOMPED;
     }
 
     // This function is located near other unused trampoline functions,
@@ -1494,9 +1495,9 @@ void update_mario_health(struct MarioState *m) {
 
         // Play a noise to alert the player when Mario is close to drowning.
         if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300)) {
-            play_sound(SOUND_MOVING_ALMOST_DROWNING, gDefaultSoundArgs);
-#ifdef VERSION_SH
-            if (!gRumblePakTimer) {
+            play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
+#if ENABLE_RUMBLE
+            if (gRumblePakTimer == 0) {
                 gRumblePakTimer = 36;
                 if (is_rumble_finished_and_queue_empty()) {
                     queue_rumble_data(3, 30);
@@ -1661,7 +1662,7 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
  * An unused and possibly a debug function. Z + another button input
  * sets Mario with a different cap.
  */
-static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capMusic) {
+UNUSED static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capMusic) {
     // This checks for Z_TRIG instead of Z_DOWN flag
     // (which is also what other debug functions do),
     // so likely debug behavior rather than unused behavior.
@@ -1677,7 +1678,7 @@ static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capM
     }
 }
 
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
 void func_sh_8025574C(void) {
     if (gMarioState->particleFlags & PARTICLE_HORIZONTAL_STAR) {
         queue_rumble_data(5, 80);
@@ -1686,7 +1687,7 @@ void func_sh_8025574C(void) {
     } else if (gMarioState->particleFlags & PARTICLE_TRIANGLE) {
         queue_rumble_data(5, 80);
     }
-    if(gMarioState->heldObj && gMarioState->heldObj->behavior == segmented_to_virtual(bhvBobomb)) {
+    if (gMarioState->heldObj && gMarioState->heldObj->behavior == segmented_to_virtual(bhvBobomb)) {
         reset_rumble_timers();
     }
 }
@@ -1770,7 +1771,7 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         play_infinite_stairs_music();
         gMarioState->marioObj->oInteractStatus = 0;
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
         func_sh_8025574C();
 #endif
 
@@ -1875,7 +1876,7 @@ void init_mario_from_save_file(void) {
     gMarioState->statusForCamera = &gPlayerCameraState[0];
     gMarioState->marioBodyState = &gBodyStates[0];
     gMarioState->controller = &gControllers[0];
-    gMarioState->animation = &D_80339D10;
+    gMarioState->animList = &gMarioAnimsBuf;
 
     gMarioState->numCoins = 0;
     gMarioState->numStars =

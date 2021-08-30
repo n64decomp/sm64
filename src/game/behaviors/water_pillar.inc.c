@@ -1,7 +1,7 @@
 // water_pillar.c.inc
 
 void water_level_pillar_undrained(void) {
-    struct Object *sp1C;
+    struct Object *otherWaterPillar;
     switch (o->oAction) {
         case 0:
             if (cur_obj_is_mario_ground_pounding_platform()) {
@@ -16,16 +16,16 @@ void water_level_pillar_undrained(void) {
                 o->oAction++;
             break;
         case 2:
-            sp1C = cur_obj_nearest_object_with_behavior(bhvWaterLevelPillar);
-            if (sp1C != NULL) {
-                if (sp1C->oAction < 2)
+            otherWaterPillar = cur_obj_nearest_object_with_behavior(bhvWaterLevelPillar);
+            if (otherWaterPillar != NULL) {
+                if (otherWaterPillar->oAction < 2)
                     o->oAction++;
             }
             break;
         case 3:
-            sp1C = cur_obj_nearest_object_with_behavior(bhvWaterLevelPillar);
-            if (sp1C != NULL) {
-                if (sp1C->oAction > 1) {
+            otherWaterPillar = cur_obj_nearest_object_with_behavior(bhvWaterLevelPillar);
+            if (otherWaterPillar != NULL) {
+                if (otherWaterPillar->oAction > 1) {
                     o->oAction++;
 
                     save_file_set_flags(SAVE_FLAG_MOAT_DRAINED);
@@ -40,7 +40,7 @@ void water_level_pillar_undrained(void) {
                     (s32) approach_f32_symmetric(gEnvironmentLevels[2], -2450.0f, 5.0f);
                 gEnvironmentLevels[0] =
                     (s32) approach_f32_symmetric(gEnvironmentLevels[0], -2450.0f, 5.0f);
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
                 reset_rumble_timers_2(2);
 #endif
             } else

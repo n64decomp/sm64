@@ -1,10 +1,13 @@
 #include <ultra64.h>
 
 #include "buffers.h"
+#include "config.h"
 
 ALIGNED8 u8 gDecompressionHeap[0xD000];
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU)
 ALIGNED16 u8 gAudioHeap[DOUBLE_SIZE_ON_64_BIT(0x31200) - 0x3800];
+#elif defined(VERSION_SH)
+ALIGNED16 u8 gAudioHeap[DOUBLE_SIZE_ON_64_BIT(0x31200) - 0x4800];
 #else
 ALIGNED16 u8 gAudioHeap[DOUBLE_SIZE_ON_64_BIT(0x31200)];
 #endif
@@ -13,7 +16,7 @@ ALIGNED8 u8 gIdleThreadStack[0x800];
 ALIGNED8 u8 gThread3Stack[0x2000];
 ALIGNED8 u8 gThread4Stack[0x2000];
 ALIGNED8 u8 gThread5Stack[0x2000];
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
 ALIGNED8 u8 gThread6Stack[0x2000];
 #endif
 // 0x400 bytes

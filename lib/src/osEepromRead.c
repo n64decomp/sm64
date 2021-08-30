@@ -96,4 +96,7 @@ s32 __osPackEepReadData(u8 address) {
     *(unkStruct2 *) sp14 = sp8;
     sp14 += 0xc;
     *sp14 = 254;
+#ifdef AVOID_UB
+    return 0;
+#endif
 }
