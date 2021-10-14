@@ -107,8 +107,7 @@ void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 
 
             n -= digit * powBase;
         }
-    } else // n is zero.
-    {
+    } else { // n is zero.
         numDigits = 1;
         if (width > numDigits) {
             for (len = 0; len < width - numDigits; len++) dest[len] = pad;
@@ -138,8 +137,7 @@ void parse_width_field(const char *str, s32 *srcIndex, u8 *width, s8 *zeroPad) {
     while (str[*srcIndex] != 'd' && str[*srcIndex] != 'x') {
         digits[digitsLen] = str[*srcIndex] - '0';
 
-        if (digits[digitsLen] < 0 || digits[digitsLen] >= 10) // not a valid digit
-        {
+        if (digits[digitsLen] < 0 || digits[digitsLen] >= 10) { // not a valid digit
             *width = 0;
             return;
         }
@@ -206,8 +204,7 @@ void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n) {
             srcIndex++;
 
             format_integer(n, base, sTextLabels[sTextLabelsCount]->buffer + len, &len, width, zeroPad);
-        } else // straight copy
-        {
+        } else { // straight copy
             sTextLabels[sTextLabelsCount]->buffer[len] = c;
             len++;
             srcIndex++;

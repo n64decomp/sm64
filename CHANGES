@@ -1,3 +1,13 @@
+Refresh 15 (mostly a hotfix for RSP microcode selection)
+
+1.) Renamed frame_buffer funcs and _ZBUFFER (#1184)
+2.) RSP Microcode Hotfix (#1183)
+3.) Label osSetTimer.c (#1182)
+4.) Fix styling (#1177)
+5.) Rename all `FrameBuffer` variants to `Framebuffer` (#1176)
+6.) Remove (WIP) from sh.
+7.) Allow both archives and ELF objects to be patched (#1127)
+
 Refresh 14
 
 1.) Label whomp and some object fields (#1174)

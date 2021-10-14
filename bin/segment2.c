@@ -2097,13 +2097,13 @@ const Gfx dl_hud_img_begin[] = {
     gsDPSetTexturePersp(G_TP_NONE),
     gsDPSetAlphaCompare(G_AC_THRESHOLD),
     gsDPSetBlendColor(255, 255, 255, 255),
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_JP) || defined(VERSION_US)
+    gsDPSetRenderMode(G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2),
+#else
     gsDPSetRenderMode(G_RM_NOOP, G_RM_NOOP2),
 #endif
 #ifdef VERSION_EU
     gsDPSetTextureFilter(G_TF_POINT),
-#elif defined(VERSION_JP) || defined(VERSION_US)
-    gsDPSetRenderMode(G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2),
 #endif
     gsSPEndDisplayList(),
 };

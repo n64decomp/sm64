@@ -10,7 +10,6 @@
 #include "buffers/framebuffers.h"
 #include "game/game_init.h"
 #include "audio/external.h"
-#include "prevent_bss_reordering.h"
 
 // frame counts for the zoom in, hold, and zoom out of title model
 #define INTRO_STEPS_ZOOM_IN 20
@@ -29,7 +28,7 @@ struct GraphNodeMore {
 
 // intro geo bss
 #ifdef VERSION_SH
-static u16 *sFrameBuffers[3];
+static u16 *sFramebuffers[3];
 #endif
 static s32 sGameOverFrameCounter;
 static s32 sGameOverTableIndex;
@@ -272,11 +271,12 @@ Gfx *geo_intro_gameover_backdrop(s32 state, struct GraphNode *node, UNUSED void 
 }
 
 #ifdef VERSION_SH
+
 extern Gfx title_screen_bg_dl_0A0065E8[];
 extern Gfx title_screen_bg_dl_0A006618[];
 extern Gfx title_screen_bg_dl_0A007548[];
 
-//Data
+// Data
 s8 sFaceVisible[] = {
     1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1,
@@ -296,8 +296,7 @@ s8 sFaceToggleOrder[] = {
 
 s8 sFaceCounter = 0;
 
-void intro_gen_face_texrect(Gfx **dlIter)
-{
+void intro_gen_face_texrect(Gfx **dlIter) {
     s32 x;
     s32 y;
 
@@ -311,8 +310,7 @@ void intro_gen_face_texrect(Gfx **dlIter)
     }
 }
 
-Gfx *intro_draw_face(u16 *image, s32 imageW, s32 imageH)
-{
+Gfx *intro_draw_face(u16 *image, s32 imageW, s32 imageH) {
     Gfx *dl;
     Gfx *dlIter;
 
@@ -337,7 +335,7 @@ Gfx *intro_draw_face(u16 *image, s32 imageW, s32 imageH)
     return dl;
 }
 
-u16 *intro_sample_frame_buffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH) {
+u16 *intro_sample_framebuffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH) {
     u16 *fb;
     u16 *image;
     s32 pixel;
@@ -348,7 +346,7 @@ u16 *intro_sample_frame_buffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH)
     s32 xOffset = 120;
     s32 yOffset = 80;
 
-    fb = sFrameBuffers[sRenderingFrameBuffer];
+    fb = sFramebuffers[sRenderingFramebuffer];
     image = alloc_display_list(imageW * imageH * sizeof(u16));
 
     if (image == NULL) {
@@ -398,9 +396,9 @@ Gfx *geo_intro_face_easter_egg(s32 state, struct GraphNode *node, UNUSED void *c
     s32 i;
 
     if (state != 1) {
-        sFrameBuffers[0] = gFrameBuffer0;
-        sFrameBuffers[1] = gFrameBuffer1;
-        sFrameBuffers[2] = gFrameBuffer2;
+        sFramebuffers[0] = gFramebuffer0;
+        sFramebuffers[1] = gFramebuffer1;
+        sFramebuffers[2] = gFramebuffer2;
 
         for (i = 0; i < 48; i++) {
             sFaceVisible[i] = 0;
@@ -422,7 +420,7 @@ Gfx *geo_intro_face_easter_egg(s32 state, struct GraphNode *node, UNUSED void *c
 
         // Draw while the first or last face is visible.
         if (sFaceVisible[0] == 1 || sFaceVisible[17] == 1) {
-            image = intro_sample_frame_buffer(40, 40, 2, 2);
+            image = intro_sample_framebuffer(40, 40, 2, 2);
             if (image != NULL) {
                 genNode->fnNode.node.flags = (genNode->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
                 dl = intro_draw_face(image, 40, 40);
@@ -469,4 +467,3 @@ Gfx *geo_intro_rumble_pak_graphic(s32 state, struct GraphNode *node, UNUSED void
 }
 
 #endif
-

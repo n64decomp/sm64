@@ -1747,7 +1747,7 @@ const Collision ccm_seg7_area_1_collision[] = {
     COL_TRI(336, 609, 616),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(21),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/ -1512,  2560, -2305, /*yaw*/ 100), // unused, probably an early way to set intial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/ -1512,  2560, -2305, /*yaw*/ 100), // unused, probably an early way to set initial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03,     /*pos*/  -409,  2765, -1637, /*yaw*/   0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04,     /*pos*/  2355, -4095,  4096, /*yaw*/   0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_05,     /*pos*/ -4210, -1446,  1874, /*yaw*/   0),

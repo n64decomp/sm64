@@ -19,7 +19,6 @@
 #include "segment2.h"
 #include "segment_symbols.h"
 #include "rumble_init.h"
-#include <prevent_bss_reordering.h>
 
 // First 3 controller slots
 struct Controller gControllers[3];
@@ -46,7 +45,7 @@ OSMesg gGfxMesgBuf[1];
 struct VblankHandler gGameVblankHandler;
 
 // Buffers
-uintptr_t gPhysicalFrameBuffers[3];
+uintptr_t gPhysicalFramebuffers[3];
 uintptr_t gPhysicalZBuffer;
 
 // Mario Anims and Demo allocation
@@ -64,7 +63,7 @@ u32 gGlobalTimer = 0;
 
 // Framebuffer rendering values (max 3)
 u16 sRenderedFramebuffer = 0;
-u16 sRenderingFrameBuffer = 0;
+u16 sRenderingFramebuffer = 0;
 
 // Goddard Vblank Function Caller
 void (*gGoddardVblankCallback)(void) = NULL;
@@ -150,12 +149,12 @@ void init_z_buffer(void) {
 /**
  * Tells the RDP which of the three framebuffers it shall draw to.
  */
-void select_frame_buffer(void) {
+void select_framebuffer(void) {
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
     gDPSetColorImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, SCREEN_WIDTH,
-                     gPhysicalFrameBuffers[sRenderingFrameBuffer]);
+                     gPhysicalFramebuffers[sRenderingFramebuffer]);
     gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                   SCREEN_HEIGHT - BORDER_HEIGHT);
 }
@@ -164,7 +163,7 @@ void select_frame_buffer(void) {
  * Clear the framebuffer and fill it with a 32-bit color.
  * Information about the color argument: https://jrra.zone/n64/doc/n64man/gdp/gDPSetFillColor.htm
  */
-void clear_frame_buffer(s32 color) {
+void clear_framebuffer(s32 color) {
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
@@ -277,7 +276,7 @@ void init_rcp(void) {
     init_rdp();
     init_rsp();
     init_z_buffer();
-    select_frame_buffer();
+    select_framebuffer();
 }
 
 /**
@@ -310,7 +309,7 @@ void draw_reset_bars(void) {
             fbNum = sRenderedFramebuffer - 1;
         }
 
-        fbPtr = (u64 *) PHYSICAL_TO_VIRTUAL(gPhysicalFrameBuffers[fbNum]);
+        fbPtr = (u64 *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[fbNum]);
         fbPtr += gNmiResetBarsTimer++ * (SCREEN_WIDTH / 4);
 
         for (width = 0; width < ((SCREEN_HEIGHT / 16) + 1); width++) {
@@ -335,11 +334,11 @@ void render_init(void) {
     gDisplayListHead = gGfxPool->buffer;
     gGfxPoolEnd = (u8 *)(gGfxPool->buffer + GFX_POOL_SIZE);
     init_rcp();
-    clear_frame_buffer(0);
+    clear_framebuffer(0);
     end_master_display_list();
     exec_display_list(&gGfxPool->spTask);
 
-    sRenderingFrameBuffer++;
+    sRenderingFramebuffer++;
     gGlobalTimer++;
 }
 
@@ -371,14 +370,14 @@ void display_and_vsync(void) {
     exec_display_list(&gGfxPool->spTask);
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
-    osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFrameBuffers[sRenderedFramebuffer]));
+    osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     if (++sRenderedFramebuffer == 3) {
         sRenderedFramebuffer = 0;
     }
-    if (++sRenderingFrameBuffer == 3) {
-        sRenderingFrameBuffer = 0;
+    if (++sRenderingFramebuffer == 3) {
+        sRenderingFramebuffer = 0;
     }
     gGlobalTimer++;
 }
@@ -424,7 +423,7 @@ UNUSED static void record_demo(void) {
  * Take the updated controller struct and calculate the new x, y, and distance floats.
  */
 void adjust_analog_stick(struct Controller *controller) {
-    UNUSED u8 pad[8];
+    UNUSED u8 filler[8];
 
     // Reset the controller's x and y floats.
     controller->stickX = 0;
@@ -545,8 +544,7 @@ void read_controller_inputs(void) {
             // 0.5x A presses are a good meme
             controller->buttonDown = controller->controllerData->button;
             adjust_analog_stick(controller);
-        } else // otherwise, if the controllerData is NULL, 0 out all of the inputs.
-        {
+        } else { // otherwise, if the controllerData is NULL, 0 out all of the inputs.
             controller->rawStickX = 0;
             controller->rawStickY = 0;
             controller->buttonPressed = 0;
@@ -613,7 +611,7 @@ void init_controllers(void) {
  * Setup main segments and framebuffers.
  */
 void setup_game_memory(void) {
-    UNUSED u64 padding;
+    UNUSED u8 filler[8];
 
     // Setup general Segment 0
     set_segment_base_addr(0, (void *) 0x80000000);
@@ -622,9 +620,9 @@ void setup_game_memory(void) {
     osCreateMesgQueue(&gGameVblankQueue, gGameMesgBuf, ARRAY_COUNT(gGameMesgBuf));
     // Setup z buffer and framebuffer
     gPhysicalZBuffer = VIRTUAL_TO_PHYSICAL(gZBuffer);
-    gPhysicalFrameBuffers[0] = VIRTUAL_TO_PHYSICAL(gFrameBuffer0);
-    gPhysicalFrameBuffers[1] = VIRTUAL_TO_PHYSICAL(gFrameBuffer1);
-    gPhysicalFrameBuffers[2] = VIRTUAL_TO_PHYSICAL(gFrameBuffer2);
+    gPhysicalFramebuffers[0] = VIRTUAL_TO_PHYSICAL(gFramebuffer0);
+    gPhysicalFramebuffers[1] = VIRTUAL_TO_PHYSICAL(gFramebuffer1);
+    gPhysicalFramebuffers[2] = VIRTUAL_TO_PHYSICAL(gFramebuffer2);
     // Setup Mario Animations
     gMarioAnimsMemAlloc = main_pool_alloc(0x4000, MEMORY_POOL_LEFT);
     set_segment_base_addr(17, (void *) gMarioAnimsMemAlloc);
@@ -666,7 +664,7 @@ void thread5_game_loop(UNUSED void *arg) {
 
     while (TRUE) {
         // If the reset timer is active, run the process to reset the game.
-        if (gResetTimer) {
+        if (gResetTimer != 0) {
             draw_reset_bars();
             continue;
         }

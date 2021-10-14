@@ -13,15 +13,15 @@
  * Hitbox for chain chomp.
  */
 static struct ObjectHitbox sChainChompHitbox = {
-    /* interactType: */ INTERACT_MR_BLIZZARD,
-    /* downOffset: */ 0,
+    /* interactType:      */ INTERACT_MR_BLIZZARD,
+    /* downOffset:        */ 0,
     /* damageOrCoinValue: */ 3,
-    /* health: */ 1,
-    /* numLootCoins: */ 0,
-    /* radius: */ 80,
-    /* height: */ 160,
-    /* hurtboxRadius: */ 80,
-    /* hurtboxHeight: */ 160,
+    /* health:            */ 1,
+    /* numLootCoins:      */ 0,
+    /* radius:            */ 80,
+    /* height:            */ 160,
+    /* hurtboxRadius:     */ 80,
+    /* hurtboxHeight:     */ 160,
 };
 
 /**
@@ -190,7 +190,7 @@ static void chain_chomp_sub_act_turn(void) {
                         o->oChainChompTargetPitch = obj_get_pitch_from_vel();
                     }
                 } else {
-                    o->oTimer -= 1;
+                    o->oTimer--;
                 }
             } else {
                 o->oForwardVel = 0.0f;
@@ -201,7 +201,7 @@ static void chain_chomp_sub_act_turn(void) {
             o->oVelY = 20.0f;
         }
     } else {
-        cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x190);
+        cur_obj_rotate_yaw_toward(o->oAngleToMario, 400);
         o->oTimer = 0;
     }
 }
@@ -228,7 +228,7 @@ static void chain_chomp_sub_act_lunge(void) {
     } else {
         // Turn toward pivot
         cur_obj_rotate_yaw_toward(atan2s(o->oChainChompSegments[0].posZ, o->oChainChompSegments[0].posX),
-                              0x1000);
+                                  0x1000);
 
         if (o->oChainChompUnk104 != 0.0f) {
             approach_f32_ptr(&o->oChainChompUnk104, 0.0f, 0.8f);
@@ -274,9 +274,9 @@ static void chain_chomp_released_lunge_around(void) {
     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         // Before first bounce, turn toward mario and wait 2 seconds
         if (o->oChainChompNumLunges == 0) {
-            if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x320)) {
+            if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 800)) {
                 if (o->oTimer > 60) {
-                    o->oChainChompNumLunges += 1;
+                    o->oChainChompNumLunges++;
                     // enable wall collision
                     o->oWallHitboxRadius = 200.0f;
                 }
@@ -434,7 +434,7 @@ static void chain_chomp_act_move(void) {
         chain_chomp_update_chain_segments();
 
         // Begin a lunge if mario tries to attack
-        if (obj_check_attacks(&sChainChompHitbox, o->oAction)) {
+        if (obj_check_attacks(&sChainChompHitbox, o->oAction) != 0) {
             o->oSubAction = CHAIN_CHOMP_SUB_ACT_LUNGE;
             o->oChainChompMaxDistFromPivotPerChainPart = 900.0f / 5;
             o->oForwardVel = 0.0f;

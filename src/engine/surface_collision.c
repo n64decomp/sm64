@@ -211,7 +211,7 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
     numCollisions += find_wall_collisions_from_list(node, colData);
 
     // Increment the debug tracker.
-    gNumCalls.wall += 1;
+    gNumCalls.wall++;
 
     return numCollisions;
 }
@@ -305,18 +305,20 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
  */
 f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     s16 cellZ, cellX;
+
     struct Surface *ceil, *dynamicCeil;
     struct SurfaceNode *surfaceList;
+
     f32 height = CELL_HEIGHT_LIMIT;
     f32 dynamicHeight = CELL_HEIGHT_LIMIT;
-    s16 x, y, z;
 
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
-    // float locations  can return ceilings despite them not existing there.
-    //(Dynamic ceilings will unload due to the range.)
-    x = (s16) posX;
-    y = (s16) posY;
-    z = (s16) posZ;
+    //  float locations can return ceilings despite them not existing there.
+    //  (Dynamic ceilings will unload due to the range.)
+    s16 x = (s16) posX;
+    s16 y = (s16) posY;
+    s16 z = (s16) posZ;
+
     *pceil = NULL;
 
     if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
@@ -346,7 +348,7 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     *pceil = ceil;
 
     // Increment the debug tracker.
-    gNumCalls.ceil += 1;
+    gNumCalls.ceil++;
 
     return height;
 }
@@ -518,8 +520,8 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     f32 dynamicHeight = FLOOR_LOWER_LIMIT;
 
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
-    // float locations  can return floors despite them not existing there.
-    //(Dynamic floors will unload due to the range.)
+    //  float locations can return floors despite them not existing there.
+    //  (Dynamic floors will unload due to the range.)
     s16 x = (s16) xPos;
     s16 y = (s16) yPos;
     s16 z = (s16) zPos;
@@ -563,7 +565,7 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
 
     // If a floor was missed, increment the debug counter.
     if (floor == NULL) {
-        gNumFindFloorMisses += 1;
+        gNumFindFloorMisses++;
     }
 
     if (dynamicHeight > height) {
@@ -574,7 +576,7 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     *pfloor = floor;
 
     // Increment the debug tracker.
-    gNumCalls.floor += 1;
+    gNumCalls.floor++;
 
     return height;
 }
@@ -624,7 +626,7 @@ f32 find_water_level(f32 x, f32 z) {
 f32 find_poison_gas_level(f32 x, f32 z) {
     s32 i;
     s32 numRegions;
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     s16 val;
     f32 loX, hiX, loZ, hiZ;
     f32 gasLevel = FLOOR_LOWER_LIMIT;

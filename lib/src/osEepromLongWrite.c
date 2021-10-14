@@ -21,7 +21,7 @@ s32 osEepromLongWrite(OSMesgQueue *mq, u8 address, u8 *buffer, int nbytes) {
         }
 
         nbytes -= 8;
-        address += 1;
+        address++;
         buffer += 8;
         osSetTimer(&D_80365D28, 12000 * osClockRate / 1000000, 0, &_osContMesgQueue, _osContMesgBuff);
         osRecvMesg(&_osContMesgQueue, NULL, OS_MESG_BLOCK);

@@ -64,7 +64,7 @@ Gfx *geo_update_layer_transparency(s32 callContext, struct GraphNode *node, UNUS
         currentGraphNode = (struct GraphNodeGenerated *) node;
         sp2C = (struct GraphNodeGenerated *) node;
 
-        if (gCurGraphNodeHeldObject) {
+        if (gCurGraphNodeHeldObject != NULL) {
             objectGraphNode = gCurGraphNodeHeldObject->objNode;
         }
 
@@ -393,7 +393,7 @@ s16 obj_angle_to_object(struct Object *obj1, struct Object *obj2) {
 
 s16 obj_turn_toward_object(struct Object *obj, struct Object *target, s16 angleIndex, s16 turnAmount) {
     f32 a, b, c, d;
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     s16 targetAngle, startAngle;
 
     switch (angleIndex) {
@@ -452,26 +452,26 @@ void obj_set_angle(struct Object *obj, s16 pitch, s16 yaw, s16 roll) {
  */
 struct Object *spawn_object_abs_with_rot(struct Object *parent, s16 uselessArg, u32 model,
                                          const BehaviorScript *behavior,
-                                         s16 x, s16 y, s16 z, s16 rx, s16 ry, s16 rz) {
+                                         s16 x, s16 y, s16 z, s16 pitch, s16 yaw, s16 roll) {
     // 'uselessArg' is unused in the function spawn_object_at_origin()
     struct Object *newObj = spawn_object_at_origin(parent, uselessArg, model, behavior);
     obj_set_pos(newObj, x, y, z);
-    obj_set_angle(newObj, rx, ry, rz);
+    obj_set_angle(newObj, pitch, yaw, roll);
 
     return newObj;
 }
 
 /*
  * Spawns an object relative to the parent with a specified angle... is what it is supposed to do.
- * The rz argument is never used, and the z offset is used for z-rotation instead. This is most likely
+ * The roll argument is never used, and the z offset is used for z-rotation instead. This is most likely
  * a copy-paste typo by one of the programmers.
  */
 struct Object *spawn_object_rel_with_rot(struct Object *parent, u32 model, const BehaviorScript *behavior,
-                                         s16 xOff, s16 yOff, s16 zOff, s16 rx, s16 ry, UNUSED s16 rz) {
+                                         s16 xOff, s16 yOff, s16 zOff, s16 pitch, s16 yaw, UNUSED s16 roll) {
     struct Object *newObj = spawn_object_at_origin(parent, 0, model, behavior);
     newObj->oFlags |= OBJ_FLAG_TRANSFORM_RELATIVE_TO_PARENT;
     obj_set_parent_relative_pos(newObj, xOff, yOff, zOff);
-    obj_set_angle(newObj, rx, ry, zOff); // Nice typo you got there Nintendo.
+    obj_set_angle(newObj, pitch, yaw, zOff); // Nice typo you got there Nintendo.
 
     return newObj;
 }
@@ -1124,7 +1124,7 @@ void mario_set_flag(s32 flag) {
 
 s32 cur_obj_clear_interact_status_flag(s32 flag) {
     if (o->oInteractStatus & flag) {
-        o->oInteractStatus &= flag ^ ~(0);
+        o->oInteractStatus &= flag ^ 0xFFFFFFFF;
         return TRUE;
     }
     return FALSE;
@@ -1207,7 +1207,7 @@ static s32 cur_obj_move_xz(f32 steepSlopeNormalY, s32 careAboutEdgesAndSteepSlop
     f32 intendedFloorHeight = find_floor(intendedX, o->oPosY, intendedZ, &intendedFloor);
     f32 deltaFloorHeight = intendedFloorHeight - o->oFloorHeight;
 
-    UNUSED f32 unused;
+    UNUSED u8 filler[4];
     UNUSED f32 ny;
 
     o->oMoveFlags &= ~OBJ_MOVE_HIT_EDGE;
@@ -1984,7 +1984,7 @@ s32 cur_obj_follow_path(UNUSED s32 unusedArg) {
     struct Waypoint *lastWaypoint;
     struct Waypoint *targetWaypoint;
     f32 prevToNextX, prevToNextY, prevToNextZ;
-    UNUSED s32 sp2C;
+    UNUSED u8 filler[4];
     f32 objToNextXZ;
     f32 objToNextX, objToNextY, objToNextZ;
 
@@ -2282,10 +2282,10 @@ void cur_obj_scale_over_time(s32 a0, s32 a1, f32 sp10, f32 sp14) {
 }
 
 void cur_obj_set_pos_to_home_with_debug(void) {
-    o->oPosX = o->oHomeX + gDebugInfo[5][0];
-    o->oPosY = o->oHomeY + gDebugInfo[5][1];
-    o->oPosZ = o->oHomeZ + gDebugInfo[5][2];
-    cur_obj_scale(gDebugInfo[5][3] / 100.0f + 1.0l);
+    o->oPosX = o->oHomeX + gDebugInfo[DEBUG_PAGE_ENEMYINFO][0];
+    o->oPosY = o->oHomeY + gDebugInfo[DEBUG_PAGE_ENEMYINFO][1];
+    o->oPosZ = o->oHomeZ + gDebugInfo[DEBUG_PAGE_ENEMYINFO][2];
+    cur_obj_scale(gDebugInfo[DEBUG_PAGE_ENEMYINFO][3] / 100.0f + 1.0l);
 }
 
 void stub_obj_helpers_4(void) {
@@ -2504,17 +2504,17 @@ Gfx *geo_offset_klepto_held_object(s32 callContext, struct GraphNode *node, UNUS
     return NULL;
 }
 
-s32 geo_offset_klepto_debug(s32 callContext, struct GraphNode *a1, UNUSED s32 sp8) {
+Gfx *geo_offset_klepto_debug(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
     if (callContext == GEO_CONTEXT_RENDER) {
-        ((struct GraphNode_802A45E4 *) a1->next)->unk18 = gDebugInfo[4][0];
-        ((struct GraphNode_802A45E4 *) a1->next)->unk1A = gDebugInfo[4][1];
-        ((struct GraphNode_802A45E4 *) a1->next)->unk1C = gDebugInfo[4][2];
-        ((struct GraphNode_802A45E4 *) a1->next)->unk1E = gDebugInfo[4][3];
-        ((struct GraphNode_802A45E4 *) a1->next)->unk20 = gDebugInfo[4][4];
-        ((struct GraphNode_802A45E4 *) a1->next)->unk22 = gDebugInfo[4][5];
+        ((struct GraphNodeTranslationRotation *) node->next)->translation[0] = gDebugInfo[DEBUG_PAGE_EFFECTINFO][0];
+        ((struct GraphNodeTranslationRotation *) node->next)->translation[1] = gDebugInfo[DEBUG_PAGE_EFFECTINFO][1];
+        ((struct GraphNodeTranslationRotation *) node->next)->translation[2] = gDebugInfo[DEBUG_PAGE_EFFECTINFO][2];
+        ((struct GraphNodeTranslationRotation *) node->next)->rotation[0]    = gDebugInfo[DEBUG_PAGE_EFFECTINFO][3];
+        ((struct GraphNodeTranslationRotation *) node->next)->rotation[1]    = gDebugInfo[DEBUG_PAGE_EFFECTINFO][4];
+        ((struct GraphNodeTranslationRotation *) node->next)->rotation[2]    = gDebugInfo[DEBUG_PAGE_EFFECTINFO][5];
     }
 
-    return 0;
+    return NULL;
 }
 
 s32 obj_is_hidden(struct Object *obj) {
@@ -2908,7 +2908,7 @@ void cur_obj_spawn_loot_blue_coin(void) {
 #ifndef VERSION_JP
 void cur_obj_spawn_star_at_y_offset(f32 targetX, f32 targetY, f32 targetZ, f32 offsetY) {
     f32 objectPosY = o->oPosY;
-    o->oPosY += offsetY + gDebugInfo[5][0];
+    o->oPosY += offsetY + gDebugInfo[DEBUG_PAGE_ENEMYINFO][0];
     spawn_default_star(targetX, targetY, targetZ);
     o->oPosY = objectPosY;
 }

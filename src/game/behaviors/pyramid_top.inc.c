@@ -1,3 +1,4 @@
+
 /**
  * Behaviors for bhvPyramidTop, bhvPyramidTopFragment, and
  * bhvPyramidPillarTouchDetector.
@@ -14,14 +15,14 @@
  * Spawn the four pillars' touch detectors.
  */
 void bhv_pyramid_top_init(void) {
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, 1789, 1024, 764, 0, 0,
-                              0);
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, 1789, 896, -2579, 0, 0,
-                              0);
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, -5883, 1024, -2579, 0, 0,
-                              0);
-    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector, -5883, 1024, 764, 0, 0,
-                              0);
+    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,
+                              1789, 1024, 764, 0, 0, 0);
+    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,
+                              1789, 896, -2579, 0, 0, 0);
+    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,
+                              -5883, 1024, -2579, 0, 0, 0);
+    spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvPyramidPillarTouchDetector,
+                              -5883, 1024, 764, 0, 0, 0);
 }
 
 /**
@@ -29,8 +30,6 @@ void bhv_pyramid_top_init(void) {
  * fragments in the process.
  */
 void bhv_pyramid_top_spinning(void) {
-    struct Object *pyramidFragment;
-
     // (TODO: What is this doing)
     o->oPosX = o->oHomeX + sins(o->oTimer * 0x4000) * 40.0f;
 
@@ -52,7 +51,7 @@ void bhv_pyramid_top_spinning(void) {
     // Every frame until 90 frames have passed, generate a pyramid fragment
     // with a random velocity and angle.
     if (o->oTimer < 90) {
-        pyramidFragment = spawn_object(o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment);
+        struct Object *pyramidFragment = spawn_object(o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment);
         pyramidFragment->oForwardVel = random_float() * 10.0f + 20.0f;
         pyramidFragment->oMoveAngleYaw = random_u16();
         pyramidFragment->oPyramidTopFragmentsScale = 0.8f;
@@ -76,9 +75,7 @@ void bhv_pyramid_top_explode(void) {
 
     // Generate 30 pyramid fragments with random properties.
     for (i = 0; i < 30; i++) {
-        pyramidFragment = spawn_object(
-            o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment
-        );
+        pyramidFragment = spawn_object(o, MODEL_DIRT_ANIMATION, bhvPyramidTopFragment);
         pyramidFragment->oForwardVel = random_float() * 50 + 80;
         pyramidFragment->oVelY = random_float() * 80 + 20;
         pyramidFragment->oMoveAngleYaw = random_u16();
@@ -147,7 +144,7 @@ void bhv_pyramid_top_fragment_loop(void) {
  */
 void bhv_pyramid_pillar_touch_detector_loop(void) {
     cur_obj_become_tangible();
-    if (obj_check_if_collided_with_object(o, gMarioObject) == 1) {
+    if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
         // Increase the pyramid top's count of pillars touched.
         o->parentObj->oPyramidTopPillarsTouched++;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;

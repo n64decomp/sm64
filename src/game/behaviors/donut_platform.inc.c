@@ -1,3 +1,5 @@
+// donut_platform.inc.c
+
 static Vec3s sDonutPlatformPositions[] = {
     { 0x0B4C, 0xF7D7, 0x19A4 }, { 0xF794, 0x08A3, 0xFFA9 }, { 0x069C, 0x09D8, 0xFFE0 },
     { 0x05CF, 0x09D8, 0xFFE0 }, { 0x0502, 0x09D8, 0xFFE0 }, { 0x054C, 0xF7D7, 0x19A4 },
@@ -15,24 +17,19 @@ static Vec3s sDonutPlatformPositions[] = {
 void bhv_donut_platform_spawner_update(void) {
     s32 i;
     s32 platformFlag;
-    f32 dx;
-    f32 dy;
-    f32 dz;
-    f32 marioSqDist;
 
-    for (i = 0, platformFlag = 1; i < 31; i++, platformFlag = platformFlag << 1) {
+    for (i = 0, platformFlag = 1; i < ARRAY_COUNT(sDonutPlatformPositions); i++, platformFlag = platformFlag << 1) {
         if (!(o->oDonutPlatformSpawnerSpawnedPlatforms & platformFlag)) {
-            dx = gMarioObject->oPosX - sDonutPlatformPositions[i][0];
-            dy = gMarioObject->oPosY - sDonutPlatformPositions[i][1];
-            dz = gMarioObject->oPosZ - sDonutPlatformPositions[i][2];
-            marioSqDist = dx * dx + dy * dy + dz * dz;
+            f32 dx = gMarioObject->oPosX - sDonutPlatformPositions[i][0];
+            f32 dy = gMarioObject->oPosY - sDonutPlatformPositions[i][1];
+            f32 dz = gMarioObject->oPosZ - sDonutPlatformPositions[i][2];
+            f32 marioSqDist = dx * dx + dy * dy + dz * dz;
 
             // dist > 1000 and dist < 2000
             if (marioSqDist > 1000000.0f && marioSqDist < 4000000.0f) {
                 if (spawn_object_relative(i, sDonutPlatformPositions[i][0],
                                           sDonutPlatformPositions[i][1], sDonutPlatformPositions[i][2],
-                                          o, MODEL_RR_DONUT_PLATFORM, bhvDonutPlatform)
-                    != NULL) {
+                                          o, MODEL_RR_DONUT_PLATFORM, bhvDonutPlatform) != NULL) {
                     o->oDonutPlatformSpawnerSpawnedPlatforms |= platformFlag;
                 }
             }

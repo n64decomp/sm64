@@ -627,6 +627,7 @@ void render_score_menu_buttons(struct Object *scoreButton) {
 #else
     #define SCORE_TIMER 31
 #endif
+
 /**
  * In the score menu, checks if a button was clicked to play a sound, button state and other functions.
  */
@@ -681,6 +682,7 @@ void check_score_menu_clicked_buttons(struct Object *scoreButton) {
         }
     }
 }
+
 #undef SCORE_TIMER
 
 /**
@@ -980,6 +982,7 @@ void erase_action_file_button(struct Object *eraseButton, s32 eraseFileButtonID)
             break;
     }
 }
+
 #undef BUZZ_TIMER
 
 /**
@@ -1025,6 +1028,7 @@ void check_erase_menu_clicked_buttons(struct Object *eraseButton) {
         }
     }
 }
+
 #undef ACTION_TIMER
 #undef MAIN_RETURN_TIMER
 
@@ -1074,6 +1078,7 @@ void render_sound_mode_menu_buttons(struct Object *soundModeButton) {
     sMainMenuButtons[MENU_BUTTON_OPTION_MIN + sSoundMode]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN;
 #endif
 }
+
 #undef SOUND_BUTTON_Y
 
 /**
@@ -1200,9 +1205,8 @@ void load_score_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceBut
     // If the previous button is in default state
     if (sMainMenuButtons[prevMenuButtonID]->oMenuButtonState == MENU_BUTTON_STATE_DEFAULT) {
         // Hide buttons of corresponding button menu groups
-        if (prevMenuButtonID == MENU_BUTTON_SCORE) //! Not possible, this is checking if the score menu
-                                                   //! was opened from the score menu!
-        {
+        //! Not possible, this is checking if the score menu was opened from the score menu!
+        if (prevMenuButtonID == MENU_BUTTON_SCORE) {
             for (buttonID = MENU_BUTTON_SCORE_MIN; buttonID < MENU_BUTTON_SCORE_MAX; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
@@ -1246,9 +1250,8 @@ void load_copy_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButt
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
         }
-        if (prevMenuButtonID == MENU_BUTTON_COPY) //! Not possible, this is checking if the copy menu
-                                                  //! was opened from the copy menu!
-        {
+        //! Not possible, this is checking if the copy menu was opened from the copy menu!
+        if (prevMenuButtonID == MENU_BUTTON_COPY) {
             for (buttonID = MENU_BUTTON_COPY_MIN; buttonID < MENU_BUTTON_COPY_MAX; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
@@ -1292,9 +1295,8 @@ void load_erase_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceBut
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
         }
-        if (prevMenuButtonID == MENU_BUTTON_ERASE) //! Not possible, this is checking if the erase menu
-                                                   //! was opened from the erase menu!
-        {
+        //! Not possible, this is checking if the erase menu was opened from the erase menu!
+        if (prevMenuButtonID == MENU_BUTTON_ERASE) {
             for (buttonID = MENU_BUTTON_ERASE_MIN; buttonID < MENU_BUTTON_ERASE_MAX; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
@@ -1376,7 +1378,7 @@ void bhv_menu_button_manager_init(void) {
     sTextBaseAlpha = 0;
 }
 
-#if defined(VERSION_JP)
+#ifdef VERSION_JP
     #define SAVE_FILE_SOUND SOUND_MENU_STAR_SOUND
 #else
     #define SAVE_FILE_SOUND SOUND_MENU_STAR_SOUND_OKEY_DOKEY
@@ -1485,6 +1487,7 @@ void check_main_menu_clicked_buttons(void) {
     }
 #endif
 }
+
 #undef SAVE_FILE_SOUND
 
 /**
@@ -1622,10 +1625,11 @@ void handle_cursor_button_input(void) {
         || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_D) {
         if (gPlayer3Controller->buttonPressed
 #ifdef VERSION_EU
-            & (B_BUTTON | START_BUTTON | Z_TRIG)) {
+            & (B_BUTTON | START_BUTTON | Z_TRIG)
 #else
-            & (B_BUTTON | START_BUTTON)) {
+            & (B_BUTTON | START_BUTTON)
 #endif
+        ) {
             sClickPos[0] = sCursorPos[0];
             sClickPos[1] = sCursorPos[1];
             sCursorClickingTimer = 1;
@@ -1801,7 +1805,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     #define SAVEFILE_X2 209
     #define MARIOTEXT_X1 92
     #define MARIOTEXT_X2 207
-#else // VERSION_EU
+#elif defined(VERSION_EU)
     #define SAVEFILE_X1 97
     #define SAVEFILE_X2 204
     #define MARIOTEXT_X1 97
@@ -1888,15 +1892,15 @@ void print_main_lang_strings(void) {
 }
 #endif
 
-#ifdef VERSION_EU
-#define CHECK_FILE_X checkFileX
-#define NOSAVE_DATA_X1 noSaveDataX
-#elif defined(VERSION_JP) || defined(VERSION_SH)
-#define CHECK_FILE_X 90
-#define NOSAVE_DATA_X1 90
-#else
-#define CHECK_FILE_X 95
-#define NOSAVE_DATA_X1 99
+#if defined(VERSION_JP) || defined(VERSION_SH)
+    #define CHECK_FILE_X 90
+    #define NOSAVE_DATA_X1 90
+#elif defined(VERSION_US)
+    #define CHECK_FILE_X 95
+    #define NOSAVE_DATA_X1 99
+#elif defined(VERSION_EU)
+    #define CHECK_FILE_X checkFileX
+    #define NOSAVE_DATA_X1 noSaveDataX
 #endif
 
 /**
@@ -1927,14 +1931,14 @@ void score_menu_display_message(s8 messageID) {
     #define RETURN_X     45
     #define COPYFILE_X1  128
     #define ERASEFILE_X1 228
+#elif defined(VERSION_US)
+    #define RETURN_X     44
+    #define COPYFILE_X1  135
+    #define ERASEFILE_X1 231
 #elif defined(VERSION_EU)
     #define RETURN_X     centeredX
     #define COPYFILE_X1  centeredX
     #define ERASEFILE_X1 centeredX
-#else
-    #define RETURN_X     44
-    #define COPYFILE_X1  135
-    #define ERASEFILE_X1 231
 #endif
 
 #ifdef VERSION_EU
@@ -2014,6 +2018,13 @@ void print_score_menu_strings(void) {
     #define NOSAVE_DATA_X2 90
     #define COPYCOMPLETE_X 90
     #define SAVE_EXISTS_X1 90
+#elif defined(VERSION_US)
+    #define NOFILE_COPY_X  119
+    #define COPY_FILE_X    104
+    #define COPYIT_WHERE_X 109
+    #define NOSAVE_DATA_X2 101
+    #define COPYCOMPLETE_X 110
+    #define SAVE_EXISTS_X1 110
 #elif defined(VERSION_EU)
     #define NOFILE_COPY_X  centeredX
     #define COPY_FILE_X    centeredX
@@ -2021,13 +2032,6 @@ void print_score_menu_strings(void) {
     #define NOSAVE_DATA_X2 centeredX
     #define COPYCOMPLETE_X centeredX
     #define SAVE_EXISTS_X1 centeredX
-#else
-    #define NOFILE_COPY_X  119
-    #define COPY_FILE_X    104
-    #define COPYIT_WHERE_X 109
-    #define NOSAVE_DATA_X2 101
-    #define COPYCOMPLETE_X 110
-    #define SAVE_EXISTS_X1 110
 #endif
 
 /**
@@ -2129,14 +2133,14 @@ void copy_menu_update_message(void) {
 #if defined(VERSION_JP)
     #define VIEWSCORE_X1 133
     #define ERASEFILE_X2 220
-#elif defined(VERSION_SH)
-    #define VIEWSCORE_X1 133
+#elif defined(VERSION_US)
+    #define VIEWSCORE_X1 128
     #define ERASEFILE_X2 230
 #elif defined(VERSION_EU)
     #define VIEWSCORE_X1 centeredX
     #define ERASEFILE_X2 centeredX
-#else
-    #define VIEWSCORE_X1 128
+#elif defined(VERSION_SH)
+    #define VIEWSCORE_X1 133
     #define ERASEFILE_X2 230
 #endif
 
@@ -2192,12 +2196,12 @@ void print_copy_menu_strings(void) {
 #endif
 }
 
-#if defined(VERSION_JP)
+#if defined(VERSION_JP) || defined(VERSION_SH)
+#ifdef VERSION_JP
     #define CURSOR_X 160.0f
-    #define MENU_ERASE_YES_MIN_X 145
-    #define MENU_ERASE_YES_MAX_X 164
-#elif defined(VERSION_SH)
+#else
     #define CURSOR_X (x + 70)
+#endif
     #define MENU_ERASE_YES_MIN_X 145
     #define MENU_ERASE_YES_MAX_X 164
 #else
@@ -2289,27 +2293,27 @@ void print_erase_menu_prompt(s16 x, s16 y) {
 // M a r i o   A --- マ リ オ Ａ
 // 0 1 2 3 4 5 6 --- 0 1 2 3
 #if defined(VERSION_JP) || defined(VERSION_SH)
-#ifdef VERSION_SH
-    #define ERASE_FILE_X     111
-#else
+#ifdef VERSION_JP
     #define ERASE_FILE_X     96
+#else
+    #define ERASE_FILE_X     111
 #endif
     #define NOSAVE_DATA_X3   90
     #define MARIO_ERASED_VAR 3
     #define MARIO_ERASED_X   90
     #define SAVE_EXISTS_X2   90
+#elif defined(VERSION_US)
+    #define ERASE_FILE_X     98
+    #define NOSAVE_DATA_X3   100
+    #define MARIO_ERASED_VAR 6
+    #define MARIO_ERASED_X   100
+    #define SAVE_EXISTS_X2   100
 #elif defined(VERSION_EU)
     #define ERASE_FILE_X     centeredX
     #define NOSAVE_DATA_X3   centeredX
     #define MARIO_ERASED_VAR 6
     #define MARIO_ERASED_X   centeredX
     #define SAVE_EXISTS_X2   centeredX
-#else
-    #define ERASE_FILE_X     98
-    #define NOSAVE_DATA_X3   100
-    #define MARIO_ERASED_VAR 6
-    #define MARIO_ERASED_X   100
-    #define SAVE_EXISTS_X2   100
 #endif
 
 /**
@@ -2404,11 +2408,11 @@ void erase_menu_update_message(void) {
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
-#define VIEWSCORE_X2 133
-#define COPYFILE_X2 223
+    #define VIEWSCORE_X2 133
+    #define COPYFILE_X2 223
 #else
-#define VIEWSCORE_X2 127
-#define COPYFILE_X2 233
+    #define VIEWSCORE_X2 127
+    #define COPYFILE_X2 233
 #endif
 
 /**
@@ -2671,8 +2675,13 @@ void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
     #define SECRET_STARS_PAD 6
     #define LEVEL_NAME_X 23
     #define STAR_SCORE_X 171
+#ifdef VERSION_EU
+    #define MYSCORE_X get_str_x_pos_from_center(257, textMyScore[sLanguageMode], 10.0f)
+    #define HISCORE_X get_str_x_pos_from_center(257, textHiScore[sLanguageMode], 10.0f)
+#else
     #define MYSCORE_X 238
     #define HISCORE_X 231
+#endif
 #endif
 
 #ifdef VERSION_EU
@@ -2750,7 +2759,6 @@ void print_save_file_scores(s8 fileIndex) {
     PRINT_COURSE_SCORES(COURSE_THI, 0)
     PRINT_COURSE_SCORES(COURSE_TTC, 0)
     PRINT_COURSE_SCORES(COURSE_RR,  0)
-
 #undef PRINT_COURSE_SCORES
 
     // Print castle secret stars text
@@ -2761,20 +2769,11 @@ void print_save_file_scores(s8 fileIndex) {
 
     // Print current coin score mode
     if (sScoreFileCoinScoreMode == 0) {
-#ifdef VERSION_EU
-        print_menu_generic_string(get_str_x_pos_from_center(257, textMyScore[sLanguageMode], 10.0f),
-            24, textMyScore[sLanguageMode]);
-#else
-        print_menu_generic_string(MYSCORE_X, 24, textMyScore);
-#endif
+        print_menu_generic_string(MYSCORE_X, 24, LANGUAGE_ARRAY(textMyScore));
     } else {
-#ifdef VERSION_EU
-        print_menu_generic_string(get_str_x_pos_from_center(257, textHiScore[sLanguageMode], 10.0f),
-            24,textHiScore[sLanguageMode]);
-#else
-        print_menu_generic_string(HISCORE_X, 24, textHiScore);
-#endif
+        print_menu_generic_string(HISCORE_X, 24, LANGUAGE_ARRAY(textHiScore));
     }
+
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 }
 
@@ -2783,8 +2782,7 @@ void print_save_file_scores(s8 fileIndex) {
  * Also checks if all saves exists and defines text and main menu timers.
  */
 static void print_file_select_strings(void) {
-    UNUSED s32 unused1;
-    UNUSED s32 unused2;
+    UNUSED u8 filler[8];
 
     create_dl_ortho_matrix();
     switch (sSelectedButtonID) {
@@ -2834,7 +2832,7 @@ static void print_file_select_strings(void) {
         sTextBaseAlpha += 10;
     }
     if (sMainMenuTimer < 1000) {
-        sMainMenuTimer += 1;
+        sMainMenuTimer++;
     }
 }
 

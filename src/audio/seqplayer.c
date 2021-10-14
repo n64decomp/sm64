@@ -1390,8 +1390,7 @@ s32 seq_channel_layer_process_script_part3(struct SequenceChannelLayer *layer, s
     layer->delay = sp3A;
     layer->duration = layer->noteDuration * sp3A >> 8;
     if ((seqPlayer->muted && (seqChannel->muteBehavior & 0x50) != 0)
-        || seqChannel->stopSomething2)
-    {
+        || seqChannel->stopSomething2) {
         layer->stopSomething = TRUE;
         return -1;
     }
@@ -1404,8 +1403,7 @@ u8 get_instrument(struct SequenceChannel *seqChannel, u8 instId, struct Instrume
     struct Instrument *inst;
 #if defined(VERSION_EU) || defined(VERSION_SH)
     inst = get_instrument_inner(seqChannel->bankId, instId);
-    if (inst == NULL)
-    {
+    if (inst == NULL) {
         *instOut = NULL;
         return 0;
     }
@@ -1524,25 +1522,21 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
         for (;;) {
             cmd = m64_read_u8(state);
 #if !defined(VERSION_EU) && !defined(VERSION_SH)
-            if (cmd == 0xff) // chan_end
-            {
+            if (cmd == 0xff) { // chan_end
                 if (state->depth == 0) {
                     sequence_channel_disable(seqChannel);
                     break;
                 }
                 state->depth--, state->pc = state->stack[state->depth];
             }
-            if (cmd == 0xfe) // chan_delay1
-            {
+            if (cmd == 0xfe) { // chan_delay1
                 break;
             }
-            if (cmd == 0xfd) // chan_delay
-            {
+            if (cmd == 0xfd) { // chan_delay
                 seqChannel->delay = m64_read_compressed_u16(state);
                 break;
             }
-            if (cmd == 0xf3) // chan_hang
-            {
+            if (cmd == 0xf3) { // chan_hang
                 seqChannel->stopScript = TRUE;
                 break;
             }
@@ -2362,8 +2356,7 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 #endif
         for (;;) {
             cmd = m64_read_u8(state);
-            if (cmd == 0xff) // seq_end
-            {
+            if (cmd == 0xff) { // seq_end
                 if (state->depth == 0) {
                     sequence_player_disable(seqPlayer);
                     break;
@@ -2375,14 +2368,12 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 #endif
             }
 
-            if (cmd == 0xfd) // seq_delay
-            {
+            if (cmd == 0xfd) { // seq_delay
                 seqPlayer->delay = m64_read_compressed_u16(state);
                 break;
             }
 
-            if (cmd == 0xfe) // seq_delay1
-            {
+            if (cmd == 0xfe) { // seq_delay1
                 seqPlayer->delay = 1;
                 break;
             }
@@ -2502,7 +2493,7 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
                             seqPlayer->tempo = gTempoInternalToExternal;
                         }
 
-                        //if (cmd){}
+                        //if (cmd) {}
 
                         if ((s16) seqPlayer->tempo <= 0) {
                             seqPlayer->tempo = 1;

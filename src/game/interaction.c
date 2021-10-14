@@ -1226,7 +1226,7 @@ u32 interact_clam_or_bubba(struct MarioState *m, UNUSED u32 interactType, struct
 }
 
 u32 interact_bully(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    UNUSED u32 unused;
+    UNUSED u8 filler[4];
 
     u32 interaction;
     if (m->flags & MARIO_METAL_CAP) {
@@ -1321,7 +1321,7 @@ u32 interact_mr_blizzard(struct MarioState *m, UNUSED u32 interactType, struct O
 }
 
 u32 interact_hit_from_below(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    UNUSED u32 unused;
+    UNUSED u8 filler[4];
 
     u32 interaction;
     if (m->flags & MARIO_METAL_CAP) {
@@ -1799,7 +1799,7 @@ void mario_process_interactions(struct MarioState *m) {
     }
 
     if (m->invincTimer > 0 && !sDelayInvincTimer) {
-        m->invincTimer -= 1;
+        m->invincTimer--;
     }
 
     //! If the kick/punch flags are set and an object collision changes Mario's

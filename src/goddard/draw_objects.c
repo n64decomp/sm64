@@ -40,7 +40,7 @@ enum SceneType {
  * texture S,T coordinates.
  */
 struct BetaVtx {
-    /* 0x00 */ u8 pad[0x44 - 0];
+    /* 0x00 */ u8 filler[68];
     /* 0x44 */ f32 s;
     /* 0x48 */ f32 t;
 };
@@ -91,12 +91,12 @@ static f32 sPickObjDistance;             ///< distance between object position a
 static struct GdObj *sPickedObject;      ///< object selected with cursor
 /// Various counters and pointers set in update_view() and used in various `draw_XXX` functions
 static struct {
-    u32 pad00;            // @ 801B9CE0
+    u8 filler1[4];        // @ 801B9CE0
     struct ObjView *view; // @ 801B9CE4
     s32 unreadCounter;    // @ 801B9CE8
     s32 mtlDlNum;         // @ 801B9CEC; name is a big guess
     s32 shapesDrawn;      // @ 801B9CF0
-    s32 unused18;         // @ 801B9CF4
+    s32 unused;           // @ 801B9CF4
 } sUpdateViewState;
 static struct ObjLight *sPhongLight;          // material light? phong light?
 static struct GdVec3f sPhongLightPosition;    //@ 801B9D00; guess; light source unit position for light
@@ -168,7 +168,7 @@ void draw_shape(struct ObjShape *shape, s32 flag, f32 c, f32 d, f32 e, // "sweep
                 f32 i, f32 j, f32 k, // translate shape
                 f32 l, f32 m, f32 n, // rotate x, y, z
                 s32 colorIdx, Mat4f *rotMtx) {
-    UNUSED u8 unused[8];
+    UNUSED u8 filler[8];
     struct GdVec3f sp1C;
 
     restart_timer("drawshape");
@@ -245,7 +245,7 @@ void draw_shape(struct ObjShape *shape, s32 flag, f32 c, f32 d, f32 e, // "sweep
 void draw_shape_2d(struct ObjShape *shape, s32 flag, UNUSED f32 c, UNUSED f32 d, UNUSED f32 e, f32 f,
                    f32 g, f32 h, UNUSED f32 i, UNUSED f32 j, UNUSED f32 k, UNUSED f32 l, UNUSED f32 m,
                    UNUSED f32 n, UNUSED s32 color, UNUSED s32 p) {
-    UNUSED u8 unused[8];
+    UNUSED u8 filler[8];
     struct GdVec3f sp1C;
 
     restart_timer("drawshape2d");
@@ -437,15 +437,14 @@ void draw_face(struct ObjFace *face) {
     f32 z;                 // 38
     f32 y;                 // 34
     f32 x;                 // 30
-    UNUSED u8 pad[12];
+    UNUSED u8 filler[12];
     s32 i;             // 20; also used to store mtl's gddl number
     s32 hasTextCoords; // 1c
     Vtx *gbiVtx;       // 18
 
     imin("draw_face");
     hasTextCoords = FALSE;
-    if (sUseSelectedColor == FALSE && face->mtlId >= 0) // -1 == colored face
-    {
+    if (sUseSelectedColor == FALSE && face->mtlId >= 0) { // -1 == colored face
         if (face->mtl != NULL) {
             if ((i = face->mtl->gddlNumber) != 0) {
                 if (i != sUpdateViewState.mtlDlNum) {
@@ -536,7 +535,7 @@ void Unknown801792F0(struct GdObj *obj) {
 void draw_label(struct ObjLabel *label) {
     struct GdVec3f position;
     char strbuf[0x100];
-    UNUSED u8 unused[16];
+    UNUSED u8 filler[16];
     struct ObjValPtr *valptr;
     union ObjVarVal varval;
     valptrproc_t valfn = label->valfn;
@@ -594,7 +593,7 @@ void draw_label(struct ObjLabel *label) {
 void draw_net(struct ObjNet *self) {
     struct ObjNet *net = self;
     s32 netColor;
-    UNUSED u8 unused[80];
+    UNUSED u8 filler[80];
 
     if (sSceneProcessType == FIND_PICKS) {
         return;
@@ -728,9 +727,9 @@ void world_pos_to_screen_coords(struct GdVec3f *pos, struct ObjCamera *cam, stru
  * @param input `GdObj` to check position of
  * @return void
  */
-void check_grabable_click(struct GdObj *input) {
+void check_grabbable_click(struct GdObj *input) {
     struct GdVec3f objPos;
-    UNUSED u8 unused[12];
+    UNUSED u8 filler[12];
     struct GdObj *obj;
     Mat4f *mtx;
 
@@ -738,7 +737,7 @@ void check_grabable_click(struct GdObj *input) {
         return;
     }
     obj = input;
-    if (!(obj->drawFlags & OBJ_IS_GRABBALE)) {
+    if (!(obj->drawFlags & OBJ_IS_GRABBABLE)) {
         return;
     }
 
@@ -773,7 +772,7 @@ void check_grabable_click(struct GdObj *input) {
  * @param lightgrp lights of `ObjView
  */
 void drawscene(enum SceneType process, struct ObjGroup *interactables, struct ObjGroup *lightgrp) {
-    UNUSED u8 unused[16];
+    UNUSED u8 filler[16];
 
     restart_timer("drawscene");
     imin("draw_scene()");
@@ -820,7 +819,7 @@ void drawscene(enum SceneType process, struct ObjGroup *interactables, struct Ob
     restart_timer("drawobj");
     imin("process_group");
     if (sSceneProcessType == FIND_PICKS) {
-        apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) check_grabable_click, interactables);
+        apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) check_grabbable_click, interactables);
     } else {
         apply_to_obj_types_in_group(OBJ_TYPE_LIGHTS | OBJ_TYPE_GADGETS | OBJ_TYPE_NETS
                                         | OBJ_TYPE_PARTICLES,
@@ -869,11 +868,11 @@ void draw_shape_faces(struct ObjShape *shape) {
  */
 void draw_particle(struct GdObj *obj) {
     struct ObjParticle *ptc = (struct ObjParticle *) obj;
-    UNUSED u8 unused1[16];
+    UNUSED u8 filler1[16];
     struct GdColour *white;
     struct GdColour *black;
     f32 brightness;
-    UNUSED u8 unused2[16];
+    UNUSED u8 filler2[16];
 
     if (ptc->timeout > 0) {
         white = sColourPalette[0];
@@ -909,9 +908,9 @@ void draw_particle(struct GdObj *obj) {
  */
 void draw_bone(struct GdObj *obj) {
     struct ObjBone *bone = (struct ObjBone *) obj;
-    UNUSED u8 unused1[4];
+    UNUSED u8 filler1[4];
     s32 colour;
-    UNUSED u8 unused2[4];
+    UNUSED u8 filler2[4];
     struct GdVec3f scale; // guess
 
     return;
@@ -940,14 +939,14 @@ void draw_bone(struct GdObj *obj) {
  */
 void draw_joint(struct GdObj *obj) {
     struct ObjJoint *joint = (struct ObjJoint *) obj;
-    UNUSED u8 unused1[4];
+    UNUSED u8 filler1[4];
     UNUSED f32 sp7C = 70.0f;
-    UNUSED u8 unused2[4];
+    UNUSED u8 filler2[4];
     UNUSED s32 sp74 = 1;
     s32 colour;
-    UNUSED u8 unused[8];
+    UNUSED u8 filler3[8];
     struct ObjShape *boneShape;
-    UNUSED u8 unused3[28];
+    UNUSED u8 filler4[28];
 
     if ((boneShape = joint->shapePtr) == NULL) {
         return;
@@ -1341,7 +1340,7 @@ void map_vertices(struct ObjGroup *facegrp, struct ObjGroup *vtxgrp) {
  */
 void unpick_obj(struct GdObj *obj) {
     struct GdObj *why = obj;
-    if (why->drawFlags & OBJ_IS_GRABBALE) {
+    if (why->drawFlags & OBJ_IS_GRABBABLE) {
         why->drawFlags &= ~(OBJ_PICKED | OBJ_HIGHLIGHTED);
     }
 }
@@ -1357,10 +1356,10 @@ void unpick_obj(struct GdObj *obj) {
  */
 void find_closest_pickable_obj(struct GdObj *input) {
     struct GdObj *obj = input;
-    UNUSED u8 unused[12];
+    UNUSED u8 filler[12];
     f32 distance;
 
-    if (obj->drawFlags & OBJ_IS_GRABBALE) {
+    if (obj->drawFlags & OBJ_IS_GRABBABLE) {
         if (obj->index == sPickDataTemp) {
             if (gViewUpdateCamera != NULL) {
                 distance = d_calc_world_dist_btwn(&gViewUpdateCamera->header, obj);
@@ -1412,7 +1411,7 @@ void update_view(struct ObjView *view) {
     char objTypeAbbr[0x100];
 
     sUpdateViewState.shapesDrawn = 0;
-    sUpdateViewState.unused18 = 0;
+    sUpdateViewState.unused = 0;
 
     if (!(view->flags & VIEW_UPDATE)) {
         view->flags &= ~VIEW_WAS_UPDATED;
@@ -1517,8 +1516,7 @@ void update_view(struct ObjView *view) {
             }
 
             find_and_drag_picked_object(sUpdateViewState.view->components);
-        } else // check for any previously picked objects, and turn off?
-        {
+        } else { // check for any previously picked objects, and turn off?
             if (sUpdateViewState.view->pickedObj != NULL) {
                 sUpdateViewState.view->pickedObj->drawFlags &= ~OBJ_PICKED;
                 sUpdateViewState.view->pickedObj->drawFlags &= ~OBJ_HIGHLIGHTED;

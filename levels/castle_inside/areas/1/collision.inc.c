@@ -3741,7 +3741,7 @@ const Collision inside_castle_seg7_area_1_collision[] = {
     COL_TRI(77, 79, 80),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(11),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,        /*pos*/ -1023,    0,  1152, /*yaw*/ 128), // unused, probably an early way to set intial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,        /*pos*/ -1023,    0,  1152, /*yaw*/ 128), // unused, probably an early way to set initial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_wooden_door,       /*pos*/  -271,    0,  -824, /*yaw*/  32),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_wooden_door,       /*pos*/ -1775,    0,  -824, /*yaw*/ 224),
     SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_castle_door_warp,  /*pos*/ -1100,    0,  2202, /*yaw*/   0, /*behParam2*/ 0),

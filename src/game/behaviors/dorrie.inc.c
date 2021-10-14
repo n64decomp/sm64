@@ -1,10 +1,9 @@
+// dorrie.inc.c
 
 void dorrie_raise_head(void) {
-    s16 startAngle;
+    s16 startAngle = o->oDorrieNeckAngle;
     f32 xzDisp;
     f32 yDisp;
-
-    startAngle = o->oDorrieNeckAngle;
 
     o->oDorrieNeckAngle -= (s16) absf(370.0f * sins(o->oDorrieHeadRaiseSpeed));
 
@@ -16,12 +15,10 @@ void dorrie_raise_head(void) {
 }
 
 void dorrie_act_move(void) {
-    s16 startYaw;
+    s16 startYaw = o->oMoveAngleYaw;
     s16 targetYaw;
     s16 targetSpeed;
-    s16 circularTurn;
 
-    startYaw = o->oMoveAngleYaw;
     o->oDorrieNeckAngle = -0x26F4;
     cur_obj_init_animation_with_sound(1);
 
@@ -36,7 +33,7 @@ void dorrie_act_move(void) {
             targetYaw = gMarioObject->oFaceAngleYaw;
             targetSpeed = 10;
         } else {
-            circularTurn = 0x4000 - atan2s(2000.0f, o->oDorrieDistToHome - 2000.0f);
+            s16 circularTurn = 0x4000 - atan2s(2000.0f, o->oDorrieDistToHome - 2000.0f);
             if ((s16)(o->oMoveAngleYaw - o->oDorrieAngleToHome) < 0) {
                 circularTurn = -circularTurn;
             }
@@ -112,8 +109,7 @@ void dorrie_act_raise_head(void) {
 
 void bhv_dorrie_update(void) {
     f32 boundsShift;
-    UNUSED s32 unused1;
-    UNUSED s32 unused2;
+    UNUSED u8 filler[8];
     f32 maxOffsetY;
 
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {

@@ -32,7 +32,7 @@ void func_802F4B08(void) {
     }
     sp24 = (sp28->first + sp28->validCount) % sp28->msgCount;
     sp28->msg[sp24] = sp2c->msg;
-    sp28->validCount += 1;
+    sp28->validCount++;
     if (sp28->mtqueue->next != NULL) {
         s0 = __osPopThread(&sp28->mtqueue);
         __osEnqueueThread(&D_80334898, s0);

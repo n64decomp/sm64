@@ -50,8 +50,7 @@
 #define MARIO_SPAWN_UNKNOWN_27            0x27
 
 
-struct CreditsEntry
-{
+struct CreditsEntry {
     /*0x00*/ u8 levelNum;
     /*0x01*/ u8 areaIndex;
     /*0x02*/ u8 unk02;
@@ -69,7 +68,7 @@ extern s16 sCurrPlayMode;
 extern u16 D_80339ECA;
 extern s16 sTransitionTimer;
 extern void (*sTransitionUpdate)(s16 *);
-extern u8 unused3[4];
+extern u8 unused2[4];
 
 struct WarpDest {
     u8 type;
@@ -86,7 +85,7 @@ extern s16 sDelayedWarpOp;
 extern s16 sDelayedWarpTimer;
 extern s16 sSourceWarpNodeId;
 extern s32 sDelayedWarpArg;
-extern u8 unused4[2];
+extern u8 unused3[2];
 extern s8 sTimerRunning;
 
 struct HudDisplay {

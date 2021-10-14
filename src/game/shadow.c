@@ -211,7 +211,7 @@ s8 init_shadow(struct Shadow *s, f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, 
 
     s->floorHeight = find_floor_height_and_data(s->parentX, s->parentY, s->parentZ, &floorGeometry);
 
-    if (gEnvironmentRegions != 0) {
+    if (gEnvironmentRegions != NULL) {
         waterLevel = get_water_level_below_shadow(s);
     }
     if (gShadowAboveWaterOrLava) {
@@ -309,8 +309,8 @@ void make_shadow_vertex_at_xyz(Vtx *vertices, s8 index, f32 relX, f32 relY, f32 
         vtxY += 5;
         vtxZ += 5;
     }
-    make_vertex(vertices, index, vtxX, vtxY, vtxZ, textureX << 5, textureY << 5, 255, 255, 255,
-                alpha // shadows are black
+    make_vertex( // shadows are black
+        vertices, index, vtxX, vtxY, vtxZ, textureX << 5, textureY << 5, 255, 255, 255, alpha
     );
 }
 

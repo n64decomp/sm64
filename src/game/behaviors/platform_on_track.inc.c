@@ -8,7 +8,7 @@
 /**
  * Collision models for the different types of platforms.
  */
-static void const *sPlatformOnTrackCollisionModels[] = {
+static Collision const *sPlatformOnTrackCollisionModels[] = {
     /* PLATFORM_ON_TRACK_TYPE_CARPET    */ rr_seg7_collision_07029038,
     /* PLATFORM_ON_TRACK_TYPE_SKI_LIFT  */ ccm_seg7_collision_070163F8,
     /* PLATFORM_ON_TRACK_TYPE_CHECKERED */ checkerboard_platform_seg8_collision_0800D710,
@@ -18,10 +18,16 @@ static void const *sPlatformOnTrackCollisionModels[] = {
 /**
  * Paths for the different instances of these platforms.
  */
-static void const *sPlatformOnTrackPaths[] = {
-    rr_seg7_trajectory_0702EC3C,    rr_seg7_trajectory_0702ECC0,  ccm_seg7_trajectory_0701669C,
-    bitfs_seg7_trajectory_070159AC, hmc_seg7_trajectory_0702B86C, lll_seg7_trajectory_0702856C,
-    lll_seg7_trajectory_07028660,   rr_seg7_trajectory_0702ED9C,  rr_seg7_trajectory_0702EEE0,
+static Trajectory const *sPlatformOnTrackPaths[] = {
+    rr_seg7_trajectory_0702EC3C,
+    rr_seg7_trajectory_0702ECC0,
+    ccm_seg7_trajectory_0701669C,
+    bitfs_seg7_trajectory_070159AC,
+    hmc_seg7_trajectory_0702B86C,
+    lll_seg7_trajectory_0702856C,
+    lll_seg7_trajectory_07028660,
+    rr_seg7_trajectory_0702ED9C,
+    rr_seg7_trajectory_0702EEE0,
 };
 
 /**

@@ -974,7 +974,8 @@ void audio_init() {
 #endif
 
 #ifdef TARGET_N64
-    eu_stubbed_printf_3("Clear Workarea %x -%x size %x \n",
+    eu_stubbed_printf_3(
+        "Clear Workarea %x -%x size %x \n",
         (uintptr_t) &gAudioGlobalsStartMarker,
         (uintptr_t) &gAudioGlobalsEndMarker,
         (uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker

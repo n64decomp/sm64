@@ -109,7 +109,7 @@ void print_intro_text(void) {
 #ifdef VERSION_EU
     s32 language = eu_get_language();
 #endif
-    if ((gGlobalTimer & 0x1F) < 20) {
+    if ((gGlobalTimer & 31) < 20) {
         if (gControllerBits == 0) {
 #ifdef VERSION_EU
             print_text_centered(SCREEN_WIDTH / 2, 20, gNoControllerMsg[language]);
@@ -194,7 +194,7 @@ void clear_areas(void) {
         gAreaData[i].instantWarps = NULL;
         gAreaData[i].objectSpawnInfos = NULL;
         gAreaData[i].camera = NULL;
-        gAreaData[i].unused28 = NULL;
+        gAreaData[i].unused = NULL;
         gAreaData[i].whirlpools[0] = NULL;
         gAreaData[i].whirlpools[1] = NULL;
         gAreaData[i].dialog[0] = DIALOG_NONE;
@@ -330,16 +330,14 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
 
         gWarpTransition.data.texTimer = 0;
 
-        if (transType & 1) // Is the image fading in?
-        {
+        if (transType & 1) { // Is the image fading in?
             gWarpTransition.data.startTexRadius = GFX_DIMENSIONS_FULL_RADIUS;
             if (transType >= 0x0F) {
                 gWarpTransition.data.endTexRadius = 16;
             } else {
                 gWarpTransition.data.endTexRadius = 0;
             }
-        } else // The image is fading out. (Reverses start & end circles)
-        {
+        } else { // The image is fading out. (Reverses start & end circles)
             if (transType >= 0x0E) {
                 gWarpTransition.data.startTexRadius = 16;
             } else {
@@ -409,7 +407,7 @@ void render_game(void) {
         if (D_8032CE78 != NULL) {
             clear_viewport(D_8032CE78, gWarpTransFBSetColor);
         } else {
-            clear_frame_buffer(gWarpTransFBSetColor);
+            clear_framebuffer(gWarpTransFBSetColor);
         }
     }
 

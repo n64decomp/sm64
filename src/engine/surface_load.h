@@ -9,14 +9,12 @@
 #define NUM_CELLS       (2 * LEVEL_BOUNDARY_MAX / CELL_SIZE)
 #define NUM_CELLS_INDEX (NUM_CELLS - 1)
 
-struct SurfaceNode
-{
+struct SurfaceNode {
     struct SurfaceNode *next;
     struct Surface *surface;
 };
 
-enum
-{
+enum {
     SPATIAL_PARTITION_FLOORS,
     SPATIAL_PARTITION_CEILS,
     SPATIAL_PARTITION_WALLS

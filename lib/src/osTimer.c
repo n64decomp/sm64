@@ -1,88 +1,90 @@
 #include "libultra_internal.h"
 
-// TODO: document
-OSTimer D_80365D80;
-OSTimer *D_80334830 = &D_80365D80;
-OSTime _osCurrentTime;
-u32 D_80365DA8;
+OSTimer __osBaseTimer;
+OSTimer *__osTimerList = &__osBaseTimer;
+OSTime __osCurrentTime;
+u32 __osBaseCounter;
 u32 __osViIntrCount;
-u32 D_80365DB0;
+u32 __osTimerCounter;
 
 void __osTimerServicesInit(void) {
-    _osCurrentTime = 0;
-    D_80365DA8 = 0;
+    __osCurrentTime = 0;
+    __osBaseCounter = 0;
     __osViIntrCount = 0;
-    D_80334830->prev = D_80334830;
-    D_80334830->next = D_80334830->prev;
-    D_80334830->remaining = 0;
-    D_80334830->interval = D_80334830->remaining;
-    D_80334830->mq = NULL;
-    D_80334830->msg = NULL;
+    __osTimerList->prev = __osTimerList;
+    __osTimerList->next = __osTimerList->prev;
+    __osTimerList->remaining = 0;
+    __osTimerList->interval = __osTimerList->remaining;
+    __osTimerList->mq = NULL;
+    __osTimerList->msg = NULL;
 }
 
 void __osTimerInterrupt(void) {
-    OSTimer *sp24;
-    u32 sp20;
-    u32 sp1c;
-    if (D_80334830->next == D_80334830) {
+    OSTimer *t;
+    u32 count;
+    u32 elapsedCycles;
+
+    if (__osTimerList->next == __osTimerList) {
         return;
     }
+
     while (TRUE) {
-        sp24 = D_80334830->next;
-        if (sp24 == D_80334830) {
+        t = __osTimerList->next;
+        if (t == __osTimerList) {
             __osSetCompare(0);
-            D_80365DB0 = 0;
+            __osTimerCounter = 0;
             break;
         }
-        sp20 = osGetCount();
-        sp1c = sp20 - D_80365DB0;
-        D_80365DB0 = sp20;
-        if (sp1c < sp24->remaining) {
-            sp24->remaining -= sp1c;
-            __osSetTimerIntr(sp24->remaining);
+        count = osGetCount();
+        elapsedCycles = count - __osTimerCounter;
+        __osTimerCounter = count;
+        if (elapsedCycles < t->remaining) {
+            t->remaining -= elapsedCycles;
+            __osSetTimerIntr(t->remaining);
             return;
         } else {
-            sp24->prev->next = sp24->next;
-            sp24->next->prev = sp24->prev;
-            sp24->next = NULL;
-            sp24->prev = NULL;
-            if (sp24->mq != NULL) {
-                osSendMesg(sp24->mq, sp24->msg, OS_MESG_NOBLOCK);
+            t->prev->next = t->next;
+            t->next->prev = t->prev;
+            t->next = NULL;
+            t->prev = NULL;
+            if (t->mq != NULL) {
+                osSendMesg(t->mq, t->msg, OS_MESG_NOBLOCK);
             }
-            if (sp24->interval != 0) {
-                sp24->remaining = sp24->interval;
-                __osInsertTimer(sp24);
+            if (t->interval != 0) {
+                t->remaining = t->interval;
+                __osInsertTimer(t);
             }
         }
     }
 }
 
-void __osSetTimerIntr(u64 a0) {
-    u64 tmp;
-    s32 intDisabled = __osDisableInt();
-    D_80365DB0 = osGetCount();
-    tmp = a0 + D_80365DB0;
-    __osSetCompare(tmp);
-    __osRestoreInt(intDisabled);
+void __osSetTimerIntr(OSTime time) {
+    OSTime newTime;
+    s32 savedMask = __osDisableInt();
+    __osTimerCounter = osGetCount();
+    newTime = time + __osTimerCounter;
+    __osSetCompare(newTime);
+    __osRestoreInt(savedMask);
 }
 
-u64 __osInsertTimer(OSTimer *a0) {
-    OSTimer *sp34;
-    u64 sp28;
-    s32 intDisabled;
-    intDisabled = __osDisableInt();
-    for (sp34 = D_80334830->next, sp28 = a0->remaining; sp34 != D_80334830 && sp28 > sp34->remaining;
-         sp28 -= sp34->remaining, sp34 = sp34->next) {
+OSTime __osInsertTimer(OSTimer *t) {
+    OSTimer *timep;
+    OSTime time;
+    s32 savedMask;
+
+    savedMask = __osDisableInt();
+    for (timep = __osTimerList->next, time = t->remaining; timep != __osTimerList && time > timep->remaining;
+         time -= timep->remaining, timep = timep->next) {
         ;
     }
-    a0->remaining = sp28;
-    if (sp34 != D_80334830) {
-        sp34->remaining -= sp28;
+    t->remaining = time;
+    if (timep != __osTimerList) {
+        timep->remaining -= time;
     }
-    a0->next = sp34;
-    a0->prev = sp34->prev;
-    sp34->prev->next = a0;
-    sp34->prev = a0;
-    __osRestoreInt(intDisabled);
-    return sp28;
+    t->next = timep;
+    t->prev = timep->prev;
+    timep->prev->next = t;
+    timep->prev = t;
+    __osRestoreInt(savedMask);
+    return time;
 }

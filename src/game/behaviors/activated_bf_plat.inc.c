@@ -1,3 +1,4 @@
+
 /**
  * Behavior for bhvActivatedBackAndForthPlatform.
  * There are only 2 of these in the game; the BitFS gray elevator
@@ -16,7 +17,7 @@
  * move off of it. To do this, they changed it to a bhvPlatformOnTrack, but
  * forgot to remove its entry in this table.
  */
-static void const *sActivatedBackAndForthPlatformCollisionModels[] = {
+static Collision const *sActivatedBackAndForthPlatformCollisionModels[] = {
     /* ACTIVATED_BF_PLAT_TYPE_BITS_ARROW_PLAT */ bits_seg7_collision_0701AD54,
     /* ACTIVATED_BF_PLAT_TYPE_BITFS_MESH_PLAT */ bitfs_seg7_collision_070157E0,
     /* ACTIVATED_BF_PLAT_TYPE_BITFS_ELEVATOR  */ bitfs_seg7_collision_07015124
@@ -61,7 +62,7 @@ void bhv_activated_back_and_forth_platform_init(void) {
  * Activated back-and-forth platform update function.
  */
 void bhv_activated_back_and_forth_platform_update(void) {
-    UNUSED s32 unused[3];
+    UNUSED u8 filler[12];
 
     // oVelY is used for vertical platforms' movement and also for
     // horizontal platforms' dipping up/down when Mario gets on/off them
@@ -78,7 +79,7 @@ void bhv_activated_back_and_forth_platform_update(void) {
         // and one more frame of "lag" after it finally reaches 0 here,
         // Mario actually has to wait 22 frames before the platform starts moving.
         if (o->oActivatedBackAndForthPlatformCountdown != 0) {
-            o->oActivatedBackAndForthPlatformCountdown -= 1;
+            o->oActivatedBackAndForthPlatformCountdown--;
         } else {
             // After the wait period is over, we start moving, by adding the velocity
             // to the positional offset.

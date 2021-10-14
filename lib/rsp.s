@@ -134,9 +134,9 @@ glabel rspF3DDataEnd
 glabel rspF3DDataStart
     #ifdef F3DZEX_GBI_2
         .incbin "lib/PR/f3dex2/F3DZEX_NoN_data.bin"
-    #elseif F3DEX_GBI
+    #elif defined(F3DEX_GBI)
         .incbin "lib/PR/f3dex/F3DEX_data.bin"
-    #elseif F3DEX_GBI_2
+    #elif defined(F3DEX_GBI_2)
         .incbin "lib/PR/f3dex2/F3DEX2_data.bin"
     #endif
 glabel rspF3DDataEnd

@@ -847,7 +847,7 @@ const Collision castle_courtyard_seg7_collision[] = {
     COL_TRI(136, 45, 133),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(19),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/    15,    0,   202, /*yaw*/ 128), // unused, probably an early way to set intial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/    15,    0,   202, /*yaw*/ 128), // unused, probably an early way to set initial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03,     /*pos*/     0, 2048,  2662, /*yaw*/   0),
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/  2272, -214, -1432),
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/   818,   10,   203),

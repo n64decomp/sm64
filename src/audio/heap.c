@@ -82,8 +82,7 @@ void unk_pools_init(u32 size1, u32 size2);
  * Assuming 'k' in [9, 24],
  * Computes a newton's method step for f(x) = x^k - d
  */
-f64 root_newton_step(f64 x, s32 k, f64 d)
-{
+f64 root_newton_step(f64 x, s32 k, f64 d) {
     f64 deg2 = x * x;
     f64 deg4 = deg2 * deg2;
     f64 deg8 = deg4 * deg4;

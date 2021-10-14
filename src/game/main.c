@@ -183,7 +183,7 @@ void receive_new_tasks(void) {
 }
 
 void start_sptask(s32 taskType) {
-    UNUSED s32 pad; // needed to pad the stack
+    UNUSED u8 filler[4];
 
     if (taskType == M_AUDTASK) {
         gActiveSPTask = sCurrentAudioSPTask;
@@ -218,7 +218,7 @@ void pretend_audio_sptask_done(void) {
 }
 
 void handle_vblank(void) {
-    UNUSED s32 pad; // needed to pad the stack
+    UNUSED u8 filler[4];
 
     stub_main_3();
     gNumVblanks++;
@@ -452,7 +452,7 @@ void thread1_idle(UNUSED void *arg) {
 }
 
 void main_func(void) {
-    UNUSED u8 pad[64]; // needed to pad the stack
+    UNUSED u8 filler[64];
 
     osInitialize();
     stub_main_1();

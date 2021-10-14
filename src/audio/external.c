@@ -2110,10 +2110,11 @@ void set_audio_muted(u8 muted) {
 
     for (i = 0; i < SEQUENCE_PLAYERS; i++) {
 #if defined(VERSION_EU) || defined(VERSION_SH)
-        if (muted)
+        if (muted) {
             func_802ad74c(0xf1000000, 0);
-        else
+        } else {
             func_802ad74c(0xf2000000, 0);
+        }
 #else
         gSequencePlayers[i].muted = muted;
 #endif

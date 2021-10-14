@@ -12,8 +12,7 @@
 #define SPTYPE_UNKNOWN            3 // object is 14-bytes long, has 3 extra shorts that get converted to floats.
 #define SPTYPE_DEF_PARAM_AND_YROT 4 // object is 10-bytes long, has y-rotation and uses the default param
 
-struct SpecialPreset
-{
+struct SpecialPreset {
     /*00*/ u8  preset_id;
     /*01*/ u8  type;      // Determines whether object is 8, 10, 12 or 14 bytes long.
     /*02*/ u8  defParam;  // Default parameter, only used when type is SPTYPE_DEF_PARAM_AND_YROT
@@ -23,8 +22,7 @@ struct SpecialPreset
 
 // Some Models ID's are missing their names because they are probably unused
 
-static struct SpecialPreset SpecialObjectPresets[] =
-{
+static struct SpecialPreset SpecialObjectPresets[] = {
     {0x00, SPTYPE_YROT_NO_PARAMS    , 0x00, MODEL_NONE, NULL},
     {0x01, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_YELLOW_COIN, bhvYellowCoin},
     {0x02, SPTYPE_NO_YROT_OR_PARAMS , 0x00, MODEL_YELLOW_COIN, bhvYellowCoin},

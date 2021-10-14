@@ -29,8 +29,7 @@
  * Every object is categorized into an object list, which controls the order
  * they are processed and which objects they can collide with.
  */
-enum ObjectList
-{
+enum ObjectList {
     OBJ_LIST_PLAYER,      //  (0) Mario
     OBJ_LIST_UNUSED_1,    //  (1) (unused)
     OBJ_LIST_DESTRUCTIVE, //  (2) things that can be used to destroy other objects, like

@@ -523,8 +523,8 @@ extern u8 sl_movtex_water[];
 extern u8 wdw_movtex_area1_water[];
 extern u8 wdw_movtex_area2_water[];
 extern u8 jrb_movtex_water[];
-extern u8 jrb_movtex_intial_mist[];
-extern u8 jrb_movtex_sinked_boat_water[];
+extern u8 jrb_movtex_initial_mist[];
+extern u8 jrb_movtex_sunken_ship_water[];
 extern u8 thi_movtex_area1_water[];
 extern u8 thi_movtex_area2_water[];
 extern u8 castle_grounds_movtex_water[];
@@ -566,10 +566,10 @@ void *get_quad_collection_from_id(u32 id) {
             return wdw_movtex_area2_water;
         case JRB_MOVTEX_WATER:
             return jrb_movtex_water;
-        case JRB_MOVTEX_INTIAL_MIST:
-            return jrb_movtex_intial_mist;
-        case JRB_MOVTEX_SINKED_BOAT_WATER:
-            return jrb_movtex_sinked_boat_water;
+        case JRB_MOVTEX_INITIAL_MIST:
+            return jrb_movtex_initial_mist;
+        case JRB_MOVTEX_SUNKEN_SHIP_WATER:
+            return jrb_movtex_sunken_ship_water;
         case THI_MOVTEX_AREA1_WATER:
             return thi_movtex_area1_water;
         case THI_MOVTEX_AREA2_WATER:
@@ -605,7 +605,7 @@ void movtex_change_texture_format(u32 quadCollectionId, Gfx **gfx) {
         case SSL_MOVTEX_TOXBOX_QUICKSAND_MIST:
             gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
             break;
-        case JRB_MOVTEX_INTIAL_MIST:
+        case JRB_MOVTEX_INITIAL_MIST:
             gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
             break;
         default:
@@ -643,11 +643,12 @@ Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUS
             gfx = gfxHead;
         }
         asGenerated = (struct GraphNodeGenerated *) node;
-        if (asGenerated->parameter == JRB_MOVTEX_INTIAL_MIST) {
+        if (asGenerated->parameter == JRB_MOVTEX_INITIAL_MIST) {
             if (gLakituState.goalPos[1] < 1024.0) { // if camera under water
                 return NULL;
             }
-            if (save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_JRB - 1) & 1) { // first star in JRB complete
+            if (save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_JRB))
+                & (1 << 0)) { // the "Plunder in the Sunken Ship" star in JRB is collected
                 return NULL;
             }
         } else if (asGenerated->parameter == HMC_MOVTEX_TOXIC_MAZE_MIST) {

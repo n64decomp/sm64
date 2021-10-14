@@ -17,8 +17,7 @@
 #define MAX_UPDATES_PER_FRAME 4
 #endif
 
-struct ReverbRingBufferItem
-{
+struct ReverbRingBufferItem {
     s16 numSamplesAfterDownsampling;
     s16 chunkLen; // never read
     s16 *toDownsampleLeft;
@@ -28,8 +27,7 @@ struct ReverbRingBufferItem
     s16 lengthB; // second length in ring buffer (from pos 0)
 }; // size = 0x14
 
-struct SynthesisReverb
-{
+struct SynthesisReverb {
     /*0x00, 0x00, 0x00*/ u8 resampleFlags;
     /*0x01, 0x01, 0x01*/ u8 useReverb;
     /*0x02, 0x02, 0x02*/ u8 framesLeftToIgnore;
@@ -53,8 +51,7 @@ struct SynthesisReverb
     /*0x08, 0x0C, 0x14*/ s32 nextRingBufferPos;
     /*0x0C, 0x10, 0x18*/ s32 unkC; // never read
     /*0x10, 0x14, 0x1C*/ s32 bufSizePerChannel;
-    struct
-    {
+    struct {
         s16 *left;
         s16 *right;
     } ringBuffer;

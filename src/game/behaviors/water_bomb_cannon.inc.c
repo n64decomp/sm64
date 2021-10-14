@@ -1,8 +1,6 @@
 // water_bomb_cannon.inc.c
 
 void bhv_bubble_cannon_barrel_loop(void) {
-    struct Object *val04;
-
     if (o->parentObj->oAction == 2) {
         obj_mark_for_deletion(o);
     } else {
@@ -20,12 +18,14 @@ void bhv_bubble_cannon_barrel_loop(void) {
             // check this
             if (o->parentObj->oWaterCannonUnkF4 != 0) {
                 if (o->oForwardVel == 0.0f) {
+                    struct Object *waterBomb;
+
                     o->oForwardVel = 35.0f;
 
-                    val04 = spawn_object(o, MODEL_WATER_BOMB, bhvWaterBomb);
-                    if (val04 != NULL) {
-                        val04->oForwardVel = -100.0f;
-                        val04->header.gfx.scale[1] = 1.7f;
+                    waterBomb = spawn_object(o, MODEL_WATER_BOMB, bhvWaterBomb);
+                    if (waterBomb != NULL) {
+                        waterBomb->oForwardVel = -100.0f;
+                        waterBomb->header.gfx.scale[1] = 1.7f;
                     }
 
                     set_camera_shake_from_point(SHAKE_POS_MEDIUM, o->oPosX, o->oPosY, o->oPosZ);
@@ -52,18 +52,18 @@ void water_bomb_cannon_act_1(void) {
         o->oAction = 2;
     } else if (o->oBehParams2ndByte == 0) {
         if (o->oWaterCannonUnkF4 != 0) {
-            o->oWaterCannonUnkF4 -= 1;
+            o->oWaterCannonUnkF4--;
         } else {
             obj_move_pitch_approach(o->oWaterCannonUnkFC, 0x80);
             obj_face_yaw_approach(o->oWaterCannonUnk100, 0x100);
 
             if ((s16) o->oFaceAngleYaw == (s16) o->oWaterCannonUnk100) {
                 if (o->oWaterCannonUnkF8 != 0) {
-                    o->oWaterCannonUnkF8 -= 1;
+                    o->oWaterCannonUnkF8--;
                 } else {
                     cur_obj_play_sound_2(SOUND_OBJ_CANNON4);
                     o->oWaterCannonUnkF4 = 70;
-                    o->oWaterCannonUnkFC = 0x1000 + 0x400 * (random_u16() & 0x3);
+                    o->oWaterCannonUnkFC = 0x1000 + 0x400 * (random_u16() & 0x03);
                     o->oWaterCannonUnk100 = -0x2000 + o->oMoveAngleYaw + 0x1000 * (random_u16() % 5);
                     o->oWaterCannonUnkF8 = 60;
                 }

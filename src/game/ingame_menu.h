@@ -38,13 +38,12 @@ enum MenuMode {
 extern s8 gDialogCourseActNum;
 extern s8 gHudFlash;
 
-struct DialogEntry
-{
- /*0x00*/ u32 unused;
- /*0x04*/ s8 linesPerBox;
- /*0x06*/ s16 leftOffset;
- /*0x08*/ s16 width;
- /*0x0C*/ const u8 *str;
+struct DialogEntry {
+    /*0x00*/ u32 unused;
+    /*0x04*/ s8 linesPerBox;
+    /*0x06*/ s16 leftOffset;
+    /*0x08*/ s16 width;
+    /*0x0C*/ const u8 *str;
 };
 
 // EU only
@@ -57,6 +56,12 @@ enum HudSpecialHUDChars {
 enum SpecialFontChars {
     GLOBAL_CHAR_SPACE = 0x9E,
     GLOBAR_CHAR_TERMINATOR = 0xFF
+};
+
+enum DialogMark {
+    DIALOG_MARK_NONE,
+    DIALOG_MARK_DAKUTEN,
+    DIALOG_MARK_HANDAKUTEN
 };
 
 // definitions for some of the special characters defined in charmap.txt
@@ -101,8 +106,9 @@ enum DialogSpecialChars {
     DIALOG_CHAR_SPACE = 0x9E,
     DIALOG_CHAR_STAR_COUNT = 0xE0, // number of stars
     DIALOG_CHAR_UMLAUT = 0xE9,
-    DIALOG_CHAR_DAKUTEN = 0xF0,
-    DIALOG_CHAR_PERIOD_OR_HANDAKUTEN = 0xF1,
+    DIALOG_CHAR_MARK_START = 0xEF,
+    DIALOG_CHAR_DAKUTEN = DIALOG_CHAR_MARK_START + DIALOG_MARK_DAKUTEN,
+    DIALOG_CHAR_PERIOD_OR_HANDAKUTEN = DIALOG_CHAR_MARK_START + DIALOG_MARK_HANDAKUTEN,
     DIALOG_CHAR_STAR_FILLED = 0xFA,
     DIALOG_CHAR_STAR_OPEN = 0xFD,
     DIALOG_CHAR_NEWLINE = 0xFE,
@@ -142,7 +148,7 @@ s16 get_str_x_pos_from_center(s16 centerPos, u8 *str, f32 scale);
 #if defined(VERSION_JP) || defined(VERSION_EU) || defined(VERSION_SH)
 s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale);
 #endif
-void print_hud_my_score_coins(s32 useCourseCoinScore, s8 fileNum, s8 courseNum, s16 x, s16 y);
+void print_hud_my_score_coins(s32 useCourseCoinScore, s8 fileIndex, s8 courseIndex, s16 x, s16 y);
 void int_to_str(s32 num, u8 *dst);
 s16 get_dialog_id(void);
 void create_dialog_box(s16 dialog);

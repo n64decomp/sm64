@@ -34,7 +34,7 @@
 #include "rumble_init.h"
 
 u32 unused80339F10;
-s8 filler80339F1C[20];
+u8 unused80339F1C[20];
 
 /**************************************************
  *                    ANIMATIONS                  *
@@ -133,7 +133,7 @@ void set_anim_to_frame(struct MarioState *m, s16 animFrame) {
     struct AnimInfo *animInfo = &m->marioObj->header.gfx.animInfo;
     struct Animation *curAnim = animInfo->curAnim;
 
-    if (animInfo->animAccel) {
+    if (animInfo->animAccel != 0) {
         if (curAnim->flags & ANIM_FLAG_FORWARD) {
             animInfo->animFrameAccelAssist = (animFrame << 0x10) + animInfo->animAccel;
         } else {
@@ -154,7 +154,7 @@ s32 is_anim_past_frame(struct MarioState *m, s16 animFrame) {
     struct AnimInfo *animInfo = &m->marioObj->header.gfx.animInfo;
     struct Animation *curAnim = animInfo->curAnim;
 
-    if (animInfo->animAccel) {
+    if (animInfo->animAccel != 0) {
         if (curAnim->flags & ANIM_FLAG_FORWARD) {
             isPastFrame =
                 (animInfo->animFrameAccelAssist > acceleratedFrame)
@@ -545,7 +545,7 @@ struct Surface *resolve_and_return_wall_collisions(Vec3f pos, f32 offset, f32 ra
  * Finds the ceiling from a vec3f horizontally and a height (with 80 vertical buffer).
  */
 f32 vec3f_find_ceil(Vec3f pos, f32 height, struct Surface **ceil) {
-    UNUSED f32 unused;
+    UNUSED u8 filler[4];
 
     return find_ceil(pos[0], height + 80.0f, pos[2], ceil);
 }
@@ -774,7 +774,7 @@ static void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVel
  * Transitions for a variety of airborne actions.
  */
 static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actionArg) {
-    f32 fowardVel;
+    f32 forwardVel;
 
     if ((m->squishTimer != 0 || m->quicksandDepth >= 1.0f)
         && (action == ACT_DOUBLE_JUMP || action == ACT_TWIRLING)) {
@@ -854,10 +854,10 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             break;
 
         case ACT_DIVE:
-            if ((fowardVel = m->forwardVel + 15.0f) > 48.0f) {
-                fowardVel = 48.0f;
+            if ((forwardVel = m->forwardVel + 15.0f) > 48.0f) {
+                forwardVel = 48.0f;
             }
-            mario_set_forward_vel(m, fowardVel);
+            mario_set_forward_vel(m, forwardVel);
             break;
 
         case ACT_LONG_JUMP:
@@ -1277,13 +1277,13 @@ void update_mario_button_inputs(struct MarioState *m) {
     if (m->input & INPUT_A_PRESSED) {
         m->framesSinceA = 0;
     } else if (m->framesSinceA < 0xFF) {
-        m->framesSinceA += 1;
+        m->framesSinceA++;
     }
 
     if (m->input & INPUT_B_PRESSED) {
         m->framesSinceB = 0;
     } else if (m->framesSinceB < 0xFF) {
-        m->framesSinceB += 1;
+        m->framesSinceB++;
     }
 }
 

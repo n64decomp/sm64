@@ -1,3 +1,4 @@
+
 /**
  * Behaviors for bhvPyramidElevator and bhvPyramidElevatorTrajectoryMarkerBall.
  *
@@ -11,10 +12,10 @@
  */
 void bhv_pyramid_elevator_init(void) {
     s32 i;
-    struct Object *ball;
 
     for (i = 0; i < 10; i++) {
-        ball = spawn_object(o, MODEL_TRAJECTORY_MARKER_BALL, bhvPyramidElevatorTrajectoryMarkerBall);
+        struct Object *ball = spawn_object(o, MODEL_TRAJECTORY_MARKER_BALL,
+                                           bhvPyramidElevatorTrajectoryMarkerBall);
         ball->oPosY = 4600 - i * 460;
     }
 }
@@ -26,8 +27,9 @@ void bhv_pyramid_elevator_loop(void) {
          * transition to the starting state.
          */
         case PYRAMID_ELEVATOR_IDLE:
-            if (gMarioObject->platform == o)
+            if (gMarioObject->platform == o) {
                 o->oAction = PYRAMID_ELEVATOR_START_MOVING;
+            }
             break;
 
         /**
@@ -36,8 +38,9 @@ void bhv_pyramid_elevator_loop(void) {
          */
         case PYRAMID_ELEVATOR_START_MOVING:
             o->oPosY = o->oHomeY - sins(o->oTimer * 0x1000) * 10.0f;
-            if (o->oTimer == 8)
+            if (o->oTimer == 8) {
                 o->oAction = PYRAMID_ELEVATOR_CONSTANT_VELOCITY;
+            }
             break;
 
         /**

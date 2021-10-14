@@ -1,4 +1,4 @@
-// cannon.c.inc
+// cannon.inc.c
 
 void bhv_cannon_base_unused_loop(void) {
     o->oPosY += o->oVelY;
@@ -17,18 +17,18 @@ void opened_cannon_act_0(void) {
         cur_obj_enable_rendering();
         cur_obj_become_tangible();
     }
+
     if (o->oDistanceToMario < 500.0f) {
         cur_obj_become_tangible();
         cur_obj_enable_rendering();
         if (o->oInteractStatus & INT_STATUS_INTERACTED
-            && (!(o->oInteractStatus
-                  & INT_STATUS_TOUCHED_BOB_OMB))) // bob-omb explodes when it gets into a cannon
-        {
+            && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) { // bob-omb explodes when it gets into a cannon
             o->oAction = 4;
             o->oCannonUnk10C = 1;
             o->oCannonUnkF8 = 1;
-        } else
+        } else {
             o->oInteractStatus = 0;
+        }
     } else {
         cur_obj_become_intangible();
         cur_obj_disable_rendering();
@@ -37,11 +37,14 @@ void opened_cannon_act_0(void) {
 }
 
 void opened_cannon_act_4(void) {
-    if (o->oTimer == 0)
+    if (o->oTimer == 0) {
         cur_obj_play_sound_2(SOUND_OBJ_CANNON1);
+    }
+
     o->oPosY += 5.0f;
     o->oPosX += (f32)((o->oTimer / 2 & 1) - 0.5) * 2;
     o->oPosZ += (f32)((o->oTimer / 2 & 1) - 0.5) * 2;
+
     if (o->oTimer > 67) {
         o->oPosX += (f32)((o->oTimer / 2 & 1) - 0.5) * 4;
         o->oPosZ += (f32)((o->oTimer / 2 & 1) - 0.5) * 4;
@@ -50,8 +53,10 @@ void opened_cannon_act_4(void) {
 }
 
 void opened_cannon_act_6(void) {
-    if (o->oTimer == 0)
+    if (o->oTimer == 0) {
         cur_obj_play_sound_2(SOUND_OBJ_CANNON2);
+    }
+
     if (o->oTimer < 4) {
         o->oPosX += (f32)((o->oTimer / 2 & 1) - 0.5) * 4.0f;
         o->oPosZ += (f32)((o->oTimer / 2 & 1) - 0.5) * 4.0f;
@@ -72,25 +77,30 @@ void opened_cannon_act_6(void) {
 }
 
 void opened_cannon_act_5(void) {
-    if (o->oTimer == 0)
+    if (o->oTimer == 0) {
         cur_obj_play_sound_2(SOUND_OBJ_CANNON3);
+    }
+
     if (o->oTimer < 4) {
     } else {
         if (o->oTimer < 20) {
             o->oCannonUnkF4 += 0x400;
             o->oMoveAnglePitch = sins(o->oCannonUnkF4) * 0x2000;
         } else if (o->oTimer < 25) {
-        } else
+        } else {
             o->oAction = 1;
+        }
     }
 }
 
 void opened_cannon_act_1(void) {
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
+
     cur_obj_become_intangible();
     cur_obj_disable_rendering();
+
     o->oCannonUnk10C = 0;
-    gMarioShotFromCannon = 1;
+    gMarioShotFromCannon = TRUE;
 }
 
 void opened_cannon_act_2(void) {
@@ -98,29 +108,41 @@ void opened_cannon_act_2(void) {
 }
 
 void opened_cannon_act_3(void) {
-    UNUSED s32 unused;
-    if (o->oTimer > 3)
+    UNUSED u8 filler[4];
+    if (o->oTimer > 3) {
         o->oAction = 0;
+    }
 }
 
-void (*sOpenedCannonActions[])(void) = { opened_cannon_act_0, opened_cannon_act_1, opened_cannon_act_2,
-                                         opened_cannon_act_3, opened_cannon_act_4, opened_cannon_act_5,
-                                         opened_cannon_act_6 };
+void (*sOpenedCannonActions[])(void) = {
+    opened_cannon_act_0,
+    opened_cannon_act_1,
+    opened_cannon_act_2,
+    opened_cannon_act_3,
+    opened_cannon_act_4,
+    opened_cannon_act_5,
+    opened_cannon_act_6,
+};
 
 void bhv_cannon_base_loop(void) {
     cur_obj_call_action_function(sOpenedCannonActions);
-    if (o->oCannonUnkF8)
+
+    if (o->oCannonUnkF8) {
         o->oCannonUnkF8++;
+    }
+
     o->oInteractStatus = 0;
 }
 
 void bhv_cannon_barrel_loop(void) {
     struct Object *parent = o->parentObj;
+
     if (parent->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
         cur_obj_enable_rendering();
         obj_copy_pos(o, o->parentObj);
         o->oMoveAngleYaw = o->parentObj->oMoveAngleYaw;
         o->oFaceAnglePitch = o->parentObj->oMoveAnglePitch;
-    } else
+    } else {
         cur_obj_disable_rendering();
+    }
 }

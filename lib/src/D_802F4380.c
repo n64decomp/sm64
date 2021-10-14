@@ -57,7 +57,7 @@ u32 D_802F4380() {
             return 1;
         }
         sp2c->dramAddr = (void *) ((u32) sp2c->dramAddr + sp2c->sectorSize);
-        sp30->sectorNum += 1;
+        sp30->sectorNum++;
         osEPiRawStartDma(__osDiskHandle, 1, 0x05000400, sp2c->dramAddr, sp2c->sectorSize);
         return 1;
     }
@@ -77,8 +77,7 @@ u32 D_802F4380() {
             sp2c->dramAddr = (void *) ((u32) sp2c->dramAddr + sp2c->sectorSize);
         }
         sp34 = HW_REG(ASIC_BM_STATUS, u32);
-        if (((C1_SINGLE & sp34) && (C1_DOUBLE & sp34)) || (sp34 & MICRO_STATUS))
-        {
+        if (((C1_SINGLE & sp34) && (C1_DOUBLE & sp34)) || (sp34 & MICRO_STATUS)) {
             if (sp2c->C1ErrNum > 3) {
                 if (sp30->transferMode != 3 || sp30->sectorNum > 0x52) {
                     sp30->errStatus = 17;
@@ -89,7 +88,7 @@ u32 D_802F4380() {
                 sp28 = sp2c->C1ErrNum;
                 sp2c->C1ErrSector[sp28] = sp30->sectorNum + 1;
             }
-            sp2c->C1ErrNum += 1;
+            sp2c->C1ErrNum++;
         }
         if (sp3c & C2_TRANSFER) {
             if (sp30->sectorNum != 87) {
@@ -123,7 +122,7 @@ u32 D_802F4380() {
             sp30->errStatus = 0;
             func_802F4B08();
         }
-        sp30->sectorNum += 1;
+        sp30->sectorNum++;
         if (sp3c & DATA_REQUEST) {
             if (sp30->sectorNum > 0x54) {
                 sp30->errStatus = 6;

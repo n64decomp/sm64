@@ -165,7 +165,7 @@ static void apply_water_current(struct MarioState *m, Vec3f step) {
 }
 
 static u32 perform_water_step(struct MarioState *m) {
-    UNUSED u32 unused;
+    UNUSED u8 filler[4];
     u32 stepResult;
     Vec3f nextPos;
     Vec3f step;

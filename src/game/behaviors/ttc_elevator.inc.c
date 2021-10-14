@@ -20,7 +20,7 @@ void bhv_ttc_elevator_init(void) {
     // If behParam is nonzero, then move 100 * behParam units. Otherwise default
     // to 500
     f32 peakOffset =
-        ((o->oBehParams >> 16) & 0xFFFF) != 0 ? 100.0f * ((o->oBehParams >> 16) & 0xFFFF) : 500.0f;
+        ((o->oBehParams >> 16) & 0xFFFF) ? 100.0f * ((o->oBehParams >> 16) & 0xFFFF) : 500.0f;
 
     o->oTTCElevatorPeakY = o->oPosY + peakOffset;
 }

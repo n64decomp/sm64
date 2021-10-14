@@ -93,7 +93,7 @@ s32 __osLeoInterrupt() {
                 int errNum = blockInfo->C1ErrNum;
                 blockInfo->C1ErrSector[errNum] = info->sectorNum + 1;
             }
-            blockInfo->C1ErrNum += 1;
+            blockInfo->C1ErrNum++;
         }
         if (stat & LEO_STATUS_C2_TRANSFER) {
             if (info->sectorNum != 87) {
