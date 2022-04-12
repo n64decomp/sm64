@@ -20,6 +20,8 @@ def read_local_asset_list(f):
 
 
 def asset_needs_update(asset, version):
+    if version <= 6 and asset in ["actors/king_bobomb/king_bob-omb_eyes.rgba16.png", "actors/king_bobomb/king_bob-omb_hand.rgba16.png"]:
+        return True
     if version <= 5 and asset == "textures/spooky/bbh_textures.00800.rgba16.png":
         return True
     if version <= 4 and asset in ["textures/mountain/ttm_textures.01800.rgba16.png", "textures/mountain/ttm_textures.05800.rgba16.png"]:
@@ -59,7 +61,7 @@ def clean_assets(local_asset_file):
 def main():
     # In case we ever need to change formats of generated files, we keep a
     # revision ID in the local asset file.
-    new_version = 6
+    new_version = 7
 
     try:
         local_asset_file = open(".assets-local.txt")

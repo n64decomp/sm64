@@ -1,6 +1,6 @@
 // sliding_platform_2.inc.c
 
-static void const *sSlidingPlatform2CollisionData[] = {
+static Collision const *sSlidingPlatform2CollisionData[] = {
     bits_seg7_collision_0701A9A0,
     bits_seg7_collision_0701AA0C,
     bitfs_seg7_collision_07015714,
@@ -12,9 +12,8 @@ static void const *sSlidingPlatform2CollisionData[] = {
 };
 
 void bhv_sliding_plat_2_init(void) {
-    s32 collisionDataIndex;
+    s32 collisionDataIndex = ((u16)(o->oBehParams >> 16) & 0x0380) >> 7;
 
-    collisionDataIndex = ((u16)(o->oBehParams >> 16) & 0x0380) >> 7;
     o->collisionData = segmented_to_virtual(sSlidingPlatform2CollisionData[collisionDataIndex]);
     o->oBackAndForthPlatformPathLength = 50.0f * ((u16)(o->oBehParams >> 16) & 0x003F);
 

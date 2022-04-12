@@ -254,6 +254,9 @@ f32 painting_ripple_y(struct Painting *painting, s8 ySource) {
             return painting->size / 2.0; // some concentric ripples don't care about Mario
             break;
     }
+#ifdef AVOID_UB
+    return 0.0f;
+#endif
 }
 
 /**
@@ -279,6 +282,9 @@ f32 painting_nearest_4th(struct Painting *painting) {
     } else if (painting->floorEntered & ENTER_RIGHT) {
         return thirdQuarter;
     }
+#ifdef AVOID_UB
+    return 0.0f;
+#endif
 }
 
 /**
@@ -310,6 +316,9 @@ f32 painting_ripple_x(struct Painting *painting, s8 xSource) {
             return painting->size / 2.0;
             break;
     }
+#ifdef AVOID_UB
+    return 0.0f;
+#endif
 }
 
 /**
@@ -1100,7 +1109,7 @@ void reset_painting(struct Painting *painting) {
  */
 void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32 speed) {
     // Obtain the DDD star flags
-    u32 dddFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_DDD - 1);
+    u32 dddFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_DDD));
     // Get the other save file flags
     u32 saveFileFlags = save_file_get_flags();
     // Find out whether Board Bowser's Sub was collected

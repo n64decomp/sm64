@@ -51,7 +51,7 @@ void bhv_ttc_2d_rotator_update(void) {
     s32 startYaw = o->oFaceAngleYaw;
 
     if (o->oTTC2DRotatorRandomDirTimer != 0) {
-        o->oTTC2DRotatorRandomDirTimer -= 1;
+        o->oTTC2DRotatorRandomDirTimer--;
     }
 
     // Wait until rotated to target yaw
@@ -67,7 +67,7 @@ void bhv_ttc_2d_rotator_update(void) {
                 // If ready for a change in direction, then pick a new
                 // direction
                 if (o->oTTC2DRotatorRandomDirTimer == 0) {
-                    if (random_u16() & 0x3) {
+                    if (random_u16() & 0x03) {
                         o->oTTC2DRotatorIncrement = o->oTTC2DRotatorSpeed;
                         o->oTTC2DRotatorRandomDirTimer = random_mod_offset(90, 60, 4);
                     } else {

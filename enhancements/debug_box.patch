@@ -2,10 +2,10 @@ diff --git a/src/game/area.c b/src/game/area.c
 index af9d0156..c68a7f6e 100644
 --- a/src/game/area.c
 +++ b/src/game/area.c
-@@ -21,6 +21,7 @@
- #include "engine/geo_layout.h"
+@@ -22,6 +22,7 @@
  #include "save_file.h"
  #include "level_table.h"
+ #include "dialog_ids.h"
 +#include "debug_box.h"
  
  struct SpawnInfo gPlayerSpawnInfos[1];

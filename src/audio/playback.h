@@ -33,7 +33,7 @@ void note_init_all(void);
 #if defined(VERSION_SH)
 void note_set_vel_pan_reverb(struct Note *note, struct ReverbInfo *reverbInfo);
 #elif defined(VERSION_EU)
-void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb);
+void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverbVol);
 #endif
 
 #if defined(VERSION_EU) || defined(VERSION_SH)

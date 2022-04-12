@@ -2,6 +2,7 @@
 #define DIALOG_IDS_H
 
 enum DialogId {
+    DIALOG_NONE = -1,
     DIALOG_000,
     DIALOG_001,
     DIALOG_002,

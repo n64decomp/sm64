@@ -1,4 +1,4 @@
-// wind.c.inc
+// wind.inc.c
 
 void spawn_wind_particles(s16 pitch, s16 yaw) {
     s32 i;
@@ -11,7 +11,8 @@ void spawn_wind_particles(s16 pitch, s16 yaw) {
 
 void bhv_wind_loop(void) {
     s16 sp2E = 500;
-    f32 sp28 = 1.0f;
+    f32 scale = 1.0f;
+
     if (o->oTimer == 0) {
         o->oOpacity = 100;
         if (o->oMoveAnglePitch == 0) {
@@ -29,10 +30,13 @@ void bhv_wind_loop(void) {
             o->oForwardVel = 10.0f;
         }
         obj_set_billboard(o);
-        cur_obj_scale(sp28);
+        cur_obj_scale(scale);
     }
-    if (o->oTimer > 8)
+
+    if (o->oTimer > 8) {
         obj_mark_for_deletion(o);
+    }
+
     o->oFaceAnglePitch += 4000.0f + 2000.0f * random_float();
     o->oFaceAngleYaw += 4000.0f + 2000.0f * random_float();
     cur_obj_move_using_fvel_and_gravity();

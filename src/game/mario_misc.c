@@ -15,6 +15,7 @@
 #include "goddard/renderer.h"
 #include "interaction.h"
 #include "level_update.h"
+#include "mario_actions_cutscene.h"
 #include "mario_misc.h"
 #include "memory.h"
 #include "object_helpers.h"
@@ -122,8 +123,8 @@ static void toad_message_opaque(void) {
 }
 
 static void toad_message_talking(void) {
-    if (cur_obj_update_dialog_with_cutscene(3, 1, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId)
-        != 0) {
+    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN, 
+        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId)) {
         gCurrentObject->oToadMessageRecentlyTalked = TRUE;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
         switch (gCurrentObject->oToadMessageDialogId) {
@@ -237,9 +238,9 @@ void bhv_unlock_door_star_init(void) {
 }
 
 void bhv_unlock_door_star_loop(void) {
-    UNUSED u8 unused1[4];
+    UNUSED u8 filler1[4];
     s16 prevYaw = gCurrentObject->oMoveAngleYaw;
-    UNUSED u8 unused2[4];
+    UNUSED u8 filler2[4];
 
     // Speed up the star every frame
     if (gCurrentObject->oUnlockDoorStarYawVel < 0x2400) {
@@ -320,12 +321,12 @@ static Gfx *make_gfx_mario_alpha(struct GraphNodeGenerated *node, s16 alpha) {
  * Sets the correct blend mode and color for mirror Mario.
  */
 Gfx *geo_mirror_mario_set_alpha(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
-    UNUSED u8 unused1[4];
+    UNUSED u8 filler1[4];
     Gfx *gfx = NULL;
     struct GraphNodeGenerated *asGenerated = (struct GraphNodeGenerated *) node;
     struct MarioBodyState *bodyState = &gBodyStates[asGenerated->parameter];
     s16 alpha;
-    UNUSED u8 unused2[4];
+    UNUSED u8 filler2[4];
 
     if (callContext == GEO_CONTEXT_RENDER) {
         alpha = (bodyState->modelState & 0x100) ? (bodyState->modelState & 0xFF) : 255;
@@ -612,9 +613,9 @@ Gfx *geo_render_mirror_mario(s32 callContext, struct GraphNode *node, UNUSED Mat
                 gMirrorMario.pos[0] = mirroredX + MIRROR_X;
                 gMirrorMario.angle[1] = -gMirrorMario.angle[1];
                 gMirrorMario.scale[0] *= -1.0f;
-                ((struct GraphNode *) &gMirrorMario)->flags |= 1;
+                ((struct GraphNode *) &gMirrorMario)->flags |= GRAPH_RENDER_ACTIVE;
             } else {
-                ((struct GraphNode *) &gMirrorMario)->flags &= ~1;
+                ((struct GraphNode *) &gMirrorMario)->flags &= ~GRAPH_RENDER_ACTIVE;
             }
             break;
     }

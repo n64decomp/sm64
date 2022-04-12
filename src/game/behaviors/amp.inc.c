@@ -1,3 +1,4 @@
+
 /**
  * Behavior for bhvHomingAmp and bhvCirclingAmp.
  * These are distinct objects; one chases (homes in on) Mario,
@@ -24,9 +25,9 @@ void bhv_homing_amp_init(void) {
     o->oHomeX = o->oPosX;
     o->oHomeY = o->oPosY;
     o->oHomeZ = o->oPosZ;
-    o->oGravity = 0;
-    o->oFriction = 1.0;
-    o->oBuoyancy = 1.0;
+    o->oGravity = 0.0f;
+    o->oFriction = 1.0f;
+    o->oBuoyancy = 1.0f;
     o->oHomingAmpAvgY = o->oHomeY;
 
     // Homing amps start at 1/10th their normal size.
@@ -48,8 +49,9 @@ static void check_amp_attack(void) {
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         // Unnecessary if statement, maybe caused by a macro for
-        //     if (o->oInteractStatus & INT_STATUS_INTERACTED)
+        //     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         //         o->oAction = X;
+        //     }
         // ?
         if (o->oInteractStatus & INT_STATUS_INTERACTED) {
             // This function is used for both normal amps and homing amps,
@@ -88,7 +90,7 @@ static void homing_amp_appear_loop(void) {
 
     // Once the timer becomes greater than 90, i.e. 91 frames have passed,
     // reset the amp's size and start chasing Mario.
-    if (o->oTimer >= 91) {
+    if (o->oTimer > 90) {
         cur_obj_scale(1.0f);
         o->oAction = HOMING_AMP_ACT_CHASE;
         o->oAmpYPhase = 0;
@@ -121,7 +123,7 @@ static void homing_amp_chase_loop(void) {
             o->oHomingAmpAvgY = gMarioObject->header.gfx.pos[1] + 150.0f;
         }
 
-        if (o->oTimer >= 31) {
+        if (o->oTimer > 30) {
             o->oHomingAmpLockedOn = FALSE;
         }
     } else {
@@ -160,7 +162,7 @@ static void homing_amp_give_up_loop(void) {
     // Move forward for 152 frames
     o->oForwardVel = 15.0f;
 
-    if (o->oTimer >= 151) {
+    if (o->oTimer > 150) {
         // Hide the amp and reset it back to its inactive state
         o->oPosX = o->oHomeX;
         o->oPosY = o->oHomeY;
@@ -168,7 +170,7 @@ static void homing_amp_give_up_loop(void) {
         o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
         o->oAction = HOMING_AMP_ACT_INACTIVE;
         o->oAnimState = 0;
-        o->oForwardVel = 0;
+        o->oForwardVel = 0.0f;
         o->oHomingAmpAvgY = o->oHomeY;
     }
 }
@@ -179,15 +181,15 @@ static void homing_amp_give_up_loop(void) {
 static void amp_attack_cooldown_loop(void) {
     // Turn intangible and wait for 90 frames before chasing Mario again after hitting him.
     o->header.gfx.animInfo.animFrame += 2;
-    o->oForwardVel = 0;
+    o->oForwardVel = 0.0f;
 
     cur_obj_become_intangible();
 
-    if (o->oTimer >= 31) {
+    if (o->oTimer > 30) {
         o->oAnimState = 0;
     }
 
-    if (o->oTimer >= 91) {
+    if (o->oTimer > 90) {
         o->oAnimState = 1;
         cur_obj_become_tangible();
         o->oAction = HOMING_AMP_ACT_CHASE;
@@ -334,7 +336,6 @@ void bhv_circling_amp_loop(void) {
             } else {
                 circling_amp_idle_loop();
             }
-
             break;
 
         case AMP_ACT_ATTACK_COOLDOWN:

@@ -56,13 +56,14 @@
 
 #define A_ADDMIXER              4
 #define A_RESAMPLE_ZOH          6
-#define A_INTERL                17
+#define A_DMEMMOVE2             16
+#define A_DOWNSAMPLE_HALF       17
 #define A_ENVSETUP1             18
 #define A_ENVMIXER              19
 #define A_LOADBUFF              20
 #define A_SAVEBUFF              21
 #define A_ENVSETUP2             22
-#define A_UNK_23                23
+#define A_S8DEC                 23
 #define A_HILOGAIN              24
 #define A_UNK_25                25
 #define A_DUPLICATE             26
@@ -306,6 +307,8 @@ typedef short ENVMIX_STATE[40];
  * address is later used as parameter, the 8 high bits will be an index
  * to the segment table and the lower 24 bits are added to the base address
  * stored in the segment table for this entry. The result is the physical address.
+ * With the newer rsp audio code, this segment table is not used. The address is
+ * used directly instead.
  *
  * Transfers to/from DRAM are executed using DMA and hence follow these restrictions:
  * All DRAM addresses should be aligned by 8 bytes, or they will be
@@ -346,14 +349,6 @@ typedef short ENVMIX_STATE[40];
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = _SHIFTL(A_ADPCM, 24, 8) | _SHIFTL(f, 16, 8);     \
-        _a->words.w1 = (uintptr_t)(s);                                  \
-}
-
-#define aADPCM_23(pkt, f, s)                                            \
-{                                                                       \
-        Acmd *_a = (Acmd *)pkt;                                         \
-                                                                        \
-        _a->words.w0 = _SHIFTL(A_UNK_23, 24, 8) | _SHIFTL(f, 16, 8); \
         _a->words.w1 = (uintptr_t)(s);                                  \
 }
 
@@ -570,15 +565,6 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16);          \
 }
 
-#define aInterl(pkt, f, i, o, c)                                        \
-{                                                                       \
-        Acmd *_a = (Acmd *)pkt;                                         \
-                                                                        \
-        _a->words.w0 = (_SHIFTL(A_INTERL, 24, 8) | _SHIFTL(f, 16, 8) |  \
-                        _SHIFTL(i, 0, 16));                             \
-        _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16);          \
-}
-
 /*
  * Sets internal volume parameters.
  * See aEnvMixer for more info.
@@ -663,12 +649,50 @@ typedef short ENVMIX_STATE[40];
 #undef aEnvMixer
 #undef aInterleave
 
+// New or modified operations in the new audio microcode below
+
+/**
+ * Decompresses S8 data.
+ * Possible flags: A_INIT and A_LOOP.
+ *
+ * First set up internal data in DMEM:
+ * aSetLoop(cmd++, physicalAddressOfLoopState)    (if A_LOOP is set)
+ *
+ * Then before this command, call:
+ * aSetBuffer(cmd++, 0, in, out, count)
+ *
+ * Note: count will be rounded up to the nearest multiple of 32 bytes.
+ *
+ * S8 decompression works by expanding s8 bytes into s16 numbers,
+ * by performing a left shift of 8 steps.
+ *
+ * Before the algorithm starts, the previous 16 samples are loaded according to flag:
+ *   A_INIT: all zeros
+ *   A_LOOP: the address set by aSetLoop
+ *   no flags: the DRAM address in the s parameter
+ * These 16 samples are immediately copied to the destination address.
+ *
+ * The result of "count" bytes will be written after these 16 initial samples.
+ * The last 16 samples written to the destination will also be written to
+ * the state address in DRAM.
+ */
+#define aS8Dec(pkt, f, s)                                               \
+{                                                                       \
+        Acmd *_a = (Acmd *)pkt;                                         \
+                                                                        \
+        _a->words.w0 = _SHIFTL(A_S8DEC, 24, 8) | _SHIFTL(f, 16, 8);     \
+        _a->words.w1 = (uintptr_t)(s);                                  \
+}
+
 /*
  * Mix two tracks by simple clamped addition.
  *
  * s: DMEM source track 1
  * d: DMEM source track 2 and destination
- * c: number of bytes to write (rounded down to 16 byte alignment)
+ * c: number of bytes to write
+ *
+ * Note: count is first rounded down to the nearest multiple of 16 bytes
+ * and then rounded up to the nearest multiple of 64 bytes.
  */
 #define aAddMixer(pkt, s, d, c)                                         \
 {                                                                       \
@@ -727,6 +751,28 @@ typedef short ENVMIX_STATE[40];
 }
 
 /*
+ * Copies memory in DMEM, second version.
+ *
+ * Copies t * c bytes from address i to address o.
+ *
+ * Note: count is first rounded up to the nearest multiple of 32 bytes,
+ * before the multiplication by t.
+ *
+ * Note: This acts as memcpy where 32 bytes are moved at a time, therefore
+ * if input and output overlap, output address should be less than input address.
+ *
+ * Not used in SM64.
+ */
+#define aDMEMMove2(pkt, t, i, o, c)                                     \
+{                                                                       \
+        Acmd *_a = (Acmd *)pkt;                                         \
+                                                                        \
+        _a->words.w0 = _SHIFTL(A_DMEMMOVE2, 24, 8) |                    \
+                    _SHIFTL(t, 16, 8) | _SHIFTL(i, 0, 16);              \
+        _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16);          \
+}
+
+/*
  * Fast resample.
  *
  * Before this command, call:
@@ -734,14 +780,37 @@ typedef short ENVMIX_STATE[40];
  *
  * This works like the other resample command but just takes the "nearest" sample,
  * instead of a function of the four nearest samples.
+ *
+ * Initially the current position is calculated as (in << 16) + startFract.
+ * For every sample to create, the value is simply taken from the sample
+ * at address ((position >> 17) << 1). Then the current position is incremented
+ * by (pitch << 2).
+ *
+ * Note: count represents the number of output bytes to create, and is
+ * rounded up to the nearest multiple of 8 bytes.
  */
-#define aResampleZoh(pkt, pitch, start_fract)                           \
+#define aResampleZoh(pkt, pitch, startFract)                            \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = (_SHIFTL(A_RESAMPLE_ZOH, 24, 8) |                \
                     _SHIFTL(pitch, 0, 16));                             \
-        _a->words.w1 = _SHIFTL(start_fract, 0, 16);                     \
+        _a->words.w1 = _SHIFTL(startFract, 0, 16);                      \
+}
+
+/*
+ * Fast downsampling by taking every other sample, discarding others.
+ *
+ * Note: nSamples refers to the number of output samples to create, and
+ * is first rounded up to the nearest multiple of 8.
+ */
+#define aDownsampleHalf(pkt, nSamples, i, o)                            \
+{                                                                       \
+        Acmd *_a = (Acmd *)pkt;                                         \
+                                                                        \
+        _a->words.w0 = (_SHIFTL(A_DOWNSAMPLE_HALF, 24, 8) |             \
+                        _SHIFTL(nSamples, 0, 16));                      \
+        _a->words.w1 = _SHIFTL(i, 16, 16) | _SHIFTL(o, 0, 16);          \
 }
 
 /*
@@ -764,39 +833,87 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(i, 16, 16) | _SHIFTL(o, 0, 16);          \
 }
 
-#define aEnvSetup1(pkt, a, b, c, d)                                     \
+/*
+ * See aEnvMixer for more info.
+ */
+#define aEnvSetup1(pkt, initialVolReverb, rampReverb, rampLeft, rampRight) \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = (_SHIFTL(A_ENVSETUP1, 24, 8) |                   \
-                    _SHIFTL(a, 16, 8) | _SHIFTL(b, 0, 16));             \
-        _a->words.w1 = _SHIFTL(c, 16, 16) | _SHIFTL(d, 0, 16);          \
+                    _SHIFTL(initialVolReverb, 16, 8) |                  \
+                    _SHIFTL(rampReverb, 0, 16));                        \
+        _a->words.w1 = _SHIFTL(rampLeft, 16, 16) |                      \
+                    _SHIFTL(rampRight, 0, 16);                          \
 }
 
-#define aEnvSetup2(pkt, volLeft, volRight)                              \
+/*
+ * See aEnvMixer for more info.
+ */
+#define aEnvSetup2(pkt, initialVolLeft, initialVolRight)                \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = _SHIFTL(A_ENVSETUP2, 24, 8);                     \
-        _a->words.w1 = _SHIFTL(volLeft, 16, 16) |                       \
-                    _SHIFTL(volRight, 0, 16);                           \
+        _a->words.w1 = _SHIFTL(initialVolLeft, 16, 16) |                \
+                    _SHIFTL(initialVolRight, 0, 16);                    \
 }
 
-#define aEnvMixer(pkt, inBuf, nSamples, bit1, bit2, bit3, dryLeft, dryRight, wetLeft, wetRight) \
+/*
+ * Mixes an envelope with mono sound into 4 channels.
+ *
+ * To allow for many parameters, a sequence of aEnvSetup1, aEnvSetup2,
+ * aEnvMixer shall always be called.
+ *
+ * The function works in blocks of 8 samples.
+ * However, nSamples is rounded up to the nearest multiple of 16 samples.
+ *
+ * For each sample in a block:
+ * 1. sampleLeft = in * volLeft * (negLeft ? -1 : 1)
+ * 2. sampleRight = in * volRight * (negRight ? -1 : 1)
+ * 3. dryLeft += sampleLeft
+ * 4. dryRight += sampleRight
+ * 5. if swapReverb: swap sampleLeft and sampleRight
+ * 6. wetLeft += sampleLeft * volReverb
+ * 7. wetRight += sampleRight * volReverb
+ *
+ * After each block, all vol variables are added by their corresponding
+ * ramp value.
+ *
+ * Each volume variable is treated as a UQ0.16 number. Make sure
+ * the ramp additions don't overflow, or wrapping will occur.
+ * The initialVolReverb parameter is only 8 bits, but will be left
+ * shifted 8 bits by the rsp.
+ */
+#define aEnvMixer(pkt, inBuf, nSamples, swapReverb, negLeft, negRight,  \
+                  dryLeft, dryRight, wetLeft, wetRight)                 \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = (_SHIFTL(A_ENVMIXER, 24, 8) |                    \
                     _SHIFTL((inBuf) >> 4, 16, 8) |                      \
                     _SHIFTL(nSamples, 8, 8)) |                          \
-                    _SHIFTL(bit1, 2, 1) | _SHIFTL(bit2, 1, 1) |         \
-                    _SHIFTL(bit3, 0, 1);                                \
+                    _SHIFTL(swapReverb, 2, 1) | _SHIFTL(negLeft, 1, 1) |\
+                    _SHIFTL(negRight, 0, 1);                            \
         _a->words.w1 = _SHIFTL((dryLeft) >> 4, 24, 8) |                 \
                     _SHIFTL((dryRight) >> 4, 16, 8) |                   \
                     _SHIFTL((wetLeft) >> 4, 8, 8) |                     \
                     _SHIFTL((wetRight) >> 4, 0, 8);                     \
 }
 
+/*
+ * Interleaves two mono channels into stereo.
+ *
+ * The count refers to the size of each input. Hence 2 * count bytes
+ * will be written out.
+ *
+ * A left sample will be placed before the right sample.
+ * All addresses (output, left, right) are DMEM addresses.
+ *
+ * Note: count will be rounded up to the nearest multiple of 8 bytes.
+ * The previous version of this function rounded up to the nearest
+ * multiple of 16 bytes.
+ */
 #define aInterleave(pkt, o, l, r, c)                                    \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -806,7 +923,26 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = _SHIFTL(l, 16, 16) | _SHIFTL(r, 0, 16);          \
 }
 
-// countOrBuf meaning depends on flag
+/*
+ * Linear filter function.
+ *
+ * Calculates out[i] = sum all elements in the vector in[i..i-7] * filter[0..7],
+ * where "*" represents dot multiplication. The input/output contains s16
+ * samples and filter contains Q1.15 signed fixed point numbers.
+ * Every result sample is rounded and clamped.
+ *
+ * First initiate by calling with the flag f set to 2, countOrBuf contains
+ * the length in bytes that shall be processed in the next call. The addr
+ * parameter shall contain the DRAM address to the filter table (16 bytes).
+ * The count will be rounded up to the nearest multiple of 16 bytes.
+ *
+ * The aFilter function shall then be called in direct succession, with flag
+ * set to either 0 or 1. The countOrBuf parameter shall contain the DMEM
+ * address for the input/output. The addr parameter shall contain the DRAM
+ * address for the state, containing the last previous 8 input samples.
+ * The state is always written to upon exit, but is only read at entry if
+ * the flag is 0 (otherwise all-zero samples are used instead).
+ */
 #define aFilter(pkt, f, countOrBuf, addr)                               \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
@@ -816,22 +952,41 @@ typedef short ENVMIX_STATE[40];
         _a->words.w1 = (uintptr_t)(addr);                               \
 }
 
-#define aHilogain(pkt, id, buflen, i)                                   \
+/*
+ * Modifies the volume of samples using a simple UQ4.4 gain multiplier.
+ *
+ * Performs the following:
+ *
+ * 1. Count c is rounded up to 32 byte alignment
+ * 2. g is a u8 that contains a UQ4.4 number
+ * 3. Modify each sample s, so that s = clamp_s16(s * g >> 4)
+ */
+#define aHiLoGain(pkt, g, buflen, i)                                    \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = _SHIFTL(A_HILOGAIN, 24, 8) |                     \
-                _SHIFTL((id), 16, 8) | _SHIFTL((buflen), 0, 16);        \
+                _SHIFTL((g), 16, 8) | _SHIFTL((buflen), 0, 16);         \
         _a->words.w1 = _SHIFTL((i), 16, 16);                            \
 }
 
-#define aUnknown25(pkt, f, g, i, o)                                     \
+/*
+ * Performs the following:
+ *
+ * 1. Count c is rounded up to 64 byte alignment
+ * 2. f is added to i
+ * 3. i and o are from now treated as s16 pointers
+ * 4. 32 s16 samples are loaded from i to tbl
+ * 5. for (u32 idx = 0; idx * sizeof(s16) < c; idx++)
+ *        o[idx] = clamp_s16((s32)o[idx] * (s32)tbl[idx % 32]);
+ */
+#define aUnknown25(pkt, f, c, o, i)                                     \
 {                                                                       \
         Acmd *_a = (Acmd *)pkt;                                         \
                                                                         \
         _a->words.w0 = (_SHIFTL(A_UNK_25, 24, 8) |                      \
-                _SHIFTL((f), 16, 8) |  _SHIFTL((g), 0, 16));            \
-        _a->words.w1 = _SHIFTL((i), 16, 16) | _SHIFTL((o), 0, 16);      \
+                _SHIFTL((f), 16, 8) |  _SHIFTL((c), 0, 16));            \
+        _a->words.w1 = _SHIFTL((o), 16, 16) | _SHIFTL((i), 0, 16);      \
 }
 
 #endif

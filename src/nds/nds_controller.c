@@ -2,7 +2,7 @@
 
 #include "lib/src/osContInternal.h"
 
-extern u8 audio_state;
+extern u8 nds_audio_state;
 
 s32 osContInit(UNUSED OSMesgQueue *mq, u8 *controllerBits, UNUSED OSContStatus *status) {
     *controllerBits = 1;
@@ -63,6 +63,6 @@ void osContGetReadData(OSContPad *pad) {
     }
 
     if (keysDown() & KEY_SELECT) {
-        audio_state = !audio_state;
+        nds_audio_state = !nds_audio_state;
     }
 }

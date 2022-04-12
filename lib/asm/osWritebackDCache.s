@@ -1,7 +1,7 @@
-.set noreorder # don't insert nops after branches
+.set noreorder // don't insert nops after branches
 .set gp=64
 
-.include "macros.inc"
+#include "macros.inc"
 
 
 .section .text, "ax"
@@ -34,6 +34,6 @@ glabel osWritebackDCache
 .L80324E4C:
     cache 1, ($t0)
     bltu  $t0, $t1, .L80324E4C
-     addiu $t0, 0x10 # addiu $t0, $t0, 0x10
+     addiu $t0, 0x10 // addiu $t0, $t0, 0x10
     jr    $ra
      nop

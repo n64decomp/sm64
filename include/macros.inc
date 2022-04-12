@@ -1,4 +1,4 @@
-# Assembly Macros
+// Assembly Macros
 
 .set K0BASE, 0x80000000
 .set K1BASE, 0xA0000000

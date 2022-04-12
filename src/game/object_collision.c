@@ -9,7 +9,7 @@
 
 struct Object *debug_print_obj_collision(struct Object *a) {
     struct Object *sp24;
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     s32 i;
 
     for (i = 0; i < a->numCollidedObjs; i++) {
@@ -57,6 +57,9 @@ s32 detect_object_hitbox_overlap(struct Object *a, struct Object *b) {
     }
 
     //! no return value
+#ifdef AVOID_UB
+    return 0;
+#endif
 }
 
 s32 detect_object_hurtbox_overlap(struct Object *a, struct Object *b) {
@@ -89,6 +92,9 @@ s32 detect_object_hurtbox_overlap(struct Object *a, struct Object *b) {
     }
 
     //! no return value
+#ifdef AVOID_UB
+    return 0;
+#endif
 }
 
 void clear_object_collision(struct Object *a) {

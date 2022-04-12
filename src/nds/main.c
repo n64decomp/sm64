@@ -10,31 +10,16 @@
 #include "game/game_init.h"
 #include "nds_renderer.h"
 
-OSMesg D_80339BEC;
-OSMesgQueue gSIEventMesgQueue;
-
-s8 gResetTimer;
-s8 D_8032C648;
-s8 gDebugLevelSelect;
-s8 gShowProfiler;
-s8 gShowDebugText;
-
-u8 audio_state;
+u8 nds_audio_state;
 static u8 audio_step;
 
-void set_vblank_handler(UNUSED s32 index, UNUSED struct VblankHandler *handler, UNUSED OSMesgQueue *queue, UNUSED OSMesg *msg) {
-}
-
-void dispatch_audio_sptask(UNUSED struct SPTask *spTask) {
-}
-
-void send_display_list(struct SPTask *spTask) {
+void exec_display_list(struct SPTask *spTask) {
     draw_frame((Gfx*)spTask->task.t.data_ptr);
 }
 
 static void update_audio(void) {
     // Update audio at the ARM7's request
-    if (audio_state == 0) {
+    if (nds_audio_state == 0) {
         // Update the audio logic at 30 Hz
         if ((audio_step = (audio_step + 1) & 7) == 0) {
             update_game_sound();
@@ -44,12 +29,12 @@ static void update_audio(void) {
 
         // Update the sequences at 240 Hz
         process_sequences(0);
-    } else if (audio_state == 1) {
+    } else if (nds_audio_state == 1) {
         // Disable audio
         for (int i = 0; i < 16; i++) {
             gNotes[i].enabled = false;
         }
-        audio_state = 2;
+        nds_audio_state = 2;
     }
 
     // Tell the ARM7 it can go ahead

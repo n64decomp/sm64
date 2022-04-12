@@ -15,7 +15,7 @@
 
 #define PAINTING_ID_DDD 7
 
-#define BOARD_BOWSERS_SUB 1
+#define BOARD_BOWSERS_SUB (1 << 0)
 
 #define BOWSERS_SUB_BEATEN 0x2
 #define DDD_BACK 0x1
@@ -32,8 +32,7 @@
 /// Painting that has one texture used for an environment map effect
 #define PAINTING_ENV_MAP 1
 
-struct Painting
-{
+struct Painting {
     s16 id;
     /// How many images should be drawn when the painting is rippling.
     s8 imageCount;

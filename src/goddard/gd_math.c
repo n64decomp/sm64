@@ -397,8 +397,7 @@ void gd_inverse_mat4f(Mat4f *src, Mat4f *dst) {
     gd_adjunct_mat4f(src, dst);
     determinant = gd_mat4f_det(dst);
 
-    if (ABS(determinant) < 1e-5) //? 1e-5f
-    {
+    if (ABS(determinant) < 1e-5) { //? 1e-5f
         fatal_print("Non-singular matrix, no inverse!\n");
     }
 
@@ -602,7 +601,7 @@ void UNUSED gd_quat_rotation(f32 quat[4], UNUSED s32 unused, f32 c, f32 s, s32 i
     s32 j;
     s32 k;
     f32 quatVal;
-    UNUSED u32 pad[2];
+    UNUSED u8 filler[8];
 
     if ((j = i + 1) >= 4) {
         j = 1;
@@ -876,7 +875,7 @@ void gd_mult_mat4f(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
  * Printed the prefix at some point, as shown by how the function is used.
  */
 void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec) {
-    UNUSED u8 pad[8];
+    UNUSED u8 filler[8];
 
     printf("%f,%f,%f\n", vec->x, vec->y, vec->z);
     printf("\n");
@@ -888,7 +887,7 @@ void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec) {
  * Printed a prefix at some point, as shone by how the function is used.
  */
 void gd_print_bounding_box(UNUSED const char *prefix, UNUSED const struct GdBoundingBox *p) {
-    UNUSED u8 pad[8];
+    UNUSED u8 filler[8];
 
     printf("Min X = %f, Max X = %f \n", p->minX, p->maxX);
     printf("Min Y = %f, Max Y = %f \n", p->minY, p->maxY);

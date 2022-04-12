@@ -9,7 +9,6 @@ extern OSPiHandle *__osPiTable;
 OSPiHandle LeoDiskHandle;
 OSPiHandle *__osDiskHandle;
 
-// some kind of piHandle init function, maybe osDriveRomInit or osCartRomInit
 OSPiHandle *osLeoDiskInit(void) {
     s32 sp1c;
     LeoDiskHandle.type = 2;

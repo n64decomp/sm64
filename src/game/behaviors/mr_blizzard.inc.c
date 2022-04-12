@@ -1,3 +1,5 @@
+// mr_blizzard.inc.c
+
 // Mr. Blizzard hitbox
 struct ObjectHitbox sMrBlizzardHitbox = {
     /* interactType:      */ INTERACT_MR_BLIZZARD,
@@ -34,13 +36,13 @@ void mr_blizzard_spawn_white_particles(s8 count, s8 offsetY, s8 forwardVelBase, 
     D_80331A00.forwardVelBase = forwardVelBase;
     D_80331A00.velYBase = velYBase;
     D_80331A00.sizeBase = sizeBase;
+
     cur_obj_spawn_particles(&D_80331A00);
 }
 
 /**
  * Mr. Blizzard initialization function.
  */
-
 void bhv_mr_blizzard_init(void) {
     if (o->oBehParams2ndByte == MR_BLIZZARD_STYPE_JUMPING) {
         // Jumping Mr. Blizzard.
@@ -48,11 +50,10 @@ void bhv_mr_blizzard_init(void) {
         o->oMrBlizzardGraphYOffset = 24.0f;
         o->oMrBlizzardTargetMoveYaw = o->oMoveAngleYaw;
     } else {
-        if (o->oBehParams2ndByte != MR_BLIZZARD_STYPE_NO_CAP) {
-            // Cap wearing Mr. Blizzard from SL.
-            if (save_file_get_flags() & SAVE_FLAG_CAP_ON_MR_BLIZZARD) {
-                o->oAnimState = 1;
-            }
+        // Cap wearing Mr. Blizzard from SL.
+        if ((o->oBehParams2ndByte != MR_BLIZZARD_STYPE_NO_CAP)
+            && (save_file_get_flags() & SAVE_FLAG_CAP_ON_MR_BLIZZARD)) {
+            o->oAnimState = 1;
         }
 
         // Mr. Blizzard starts under the floor holding nothing.
@@ -64,9 +65,7 @@ void bhv_mr_blizzard_init(void) {
 /**
  * Handler for spawning Mr. Blizzard's snowball.
  */
-
 static void mr_blizzard_act_spawn_snowball(void) {
-
     // If Mr. Blizzard is not holding a snowball, and the animation reaches 5 frames
     // spawn the Mr. Blizzard snowball.
     if (o->oMrBlizzardHeldObj == NULL && cur_obj_init_anim_check_frame(0, 5)) {
@@ -89,9 +88,7 @@ static void mr_blizzard_act_spawn_snowball(void) {
 /**
  * Handler for Mario entering or exiting Mr. Blizzard's range.
  */
-
 static void mr_blizzard_act_hide_unhide(void) {
-
     if (o->oDistanceToMario < 1000.0f) {
         // If Mario is in range, move to rising action, make Mr. Blizzard visible,
         // make Mr. Blizzard tangible, and initialize GraphYVel.
@@ -112,12 +109,10 @@ static void mr_blizzard_act_hide_unhide(void) {
 /**
  * Handler for Mr. Blizzard popping up out of the ground.
  */
-
 static void mr_blizzard_act_rise_from_ground(void) {
-
     // If the timer is not 0, decrement by 1 until it reaches 0.
     if (o->oMrBlizzardTimer != 0) {
-        o->oMrBlizzardTimer -= 1;
+        o->oMrBlizzardTimer--;
     } else if ((o->oMrBlizzardGraphYOffset += o->oMrBlizzardGraphYVel) > 24.0f) {
         // Increments GraphYOffset by GraphYVel until it is greater than 24,
         // moving Mr. Blizzard's graphical position upward each frame.
@@ -142,14 +137,11 @@ static void mr_blizzard_act_rise_from_ground(void) {
 /**
  * Handler for Mr. Blizzard's rotation.
  */
-
 static void mr_blizzard_act_rotate(void) {
-
-    s16 angleDiff;
-    f32 prevDizziness;
     // While Mr. Blizzard is on the ground, rotate toward Mario at
     // 8.4375 degrees/frame.
     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
+        s16 angleDiff;
         cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x600);
 
         // Modify the ChangeInDizziness based on Mario's angle to Mr. Blizzard.
@@ -164,7 +156,7 @@ static void mr_blizzard_act_rotate(void) {
             // Incremement Dizziness by value of ChangeInDizziness
             o->oMrBlizzardDizziness += o->oMrBlizzardChangeInDizziness;
         } else if (o->oMrBlizzardDizziness != 0.0f) {
-            prevDizziness = o->oMrBlizzardDizziness;
+            f32 prevDizziness = o->oMrBlizzardDizziness;
             // Slowly move Dizziness back to 0 by making ChangeInDizziness positive if Dizziness
             // is negative, and making ChangeInDizziness negative if Dizziness is positive.
             if (o->oMrBlizzardDizziness < 0.0f) {
@@ -188,13 +180,15 @@ static void mr_blizzard_act_rotate(void) {
                 o->prevObj = o->oMrBlizzardHeldObj = NULL;
                 cur_obj_become_intangible();
             }
-            // If Mario gets too far away, move to burrow action and delete the snowball.
-        } else if (o->oDistanceToMario > 1500.0f) {
+        }
+        // If Mario gets too far away, move to burrow action and delete the snowball.
+        else if (o->oDistanceToMario > 1500.0f) {
             o->oAction = MR_BLIZZARD_ACT_BURROW;
             o->oMrBlizzardChangeInDizziness = 300.0f;
             o->prevObj = o->oMrBlizzardHeldObj = NULL;
-            // After 60 frames, if Mario is within 11.25 degrees of Mr. Blizzard, throw snowball action.
-        } else if (o->oTimer > 60 && abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw) < 0x800) {
+        }
+        // After 60 frames, if Mario is within 11.25 degrees of Mr. Blizzard, throw snowball action.
+        else if (o->oTimer > 60 && abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw) < 0x800) {
             o->oAction = MR_BLIZZARD_ACT_THROW_SNOWBALL;
         }
     }
@@ -203,17 +197,14 @@ static void mr_blizzard_act_rotate(void) {
 /**
  * Handler for Mr. Blizzard's death.
  */
-
 static void mr_blizzard_act_death(void) {
-
-    struct Object *cap;
-
     if (clamp_f32(&o->oMrBlizzardDizziness, -0x4000, 0x4000)) {
         if (o->oMrBlizzardChangeInDizziness != 0.0f) {
             cur_obj_play_sound_2(SOUND_OBJ_SNOW_SAND1);
             // If Mr. Blizzard is wearing Mario's cap, clear
             // the save flag and spawn Mario's cap.
-            if (o->oAnimState) {
+            if (o->oAnimState != 0) {
+                struct Object *cap;
                 save_file_clear_flags(SAVE_FLAG_CAP_ON_MR_BLIZZARD);
 
                 cap = spawn_object_relative(0, 5, 105, 0, o, MODEL_MARIOS_CAP, bhvNormalCap);
@@ -253,8 +244,9 @@ static void mr_blizzard_act_death(void) {
                     set_object_respawn_info_bits(o, 1);
                 }
             }
-            // Reset Mr. Blizzard if Mario leaves its radius.
-        } else if (o->oDistanceToMario > 1000.0f) {
+        }
+        // Reset Mr. Blizzard if Mario leaves its radius.
+        else if (o->oDistanceToMario > 1000.0f) {
             cur_obj_init_animation_with_sound(1);
 
             o->oAction = MR_BLIZZARD_ACT_SPAWN_SNOWBALL;
@@ -269,9 +261,7 @@ static void mr_blizzard_act_death(void) {
 /**
  * Handler for snowball throw.
  */
-
 static void mr_blizzard_act_throw_snowball(void) {
-
     // Play a sound and set HeldObj to NULL. Then set action to 0.
     if (cur_obj_init_anim_check_frame(1, 7)) {
         cur_obj_play_sound_2(SOUND_OBJ2_SCUTTLEBUG_ALERT);
@@ -284,9 +274,7 @@ static void mr_blizzard_act_throw_snowball(void) {
 /**
  * Mr. Blizzard's going back into the ground function.
  */
-
 static void mr_blizzard_act_burrow(void) {
-
     // Reset Dizziness by increasing ChangeInDizziness if
     // dizziness is negative and decreasing it if Dizziness
     o->oMrBlizzardDizziness += o->oMrBlizzardChangeInDizziness;
@@ -307,9 +295,7 @@ static void mr_blizzard_act_burrow(void) {
 /**
  * Jumping Mr. Blizzard handler function.
  */
-
 static void mr_blizzard_act_jump(void) {
-
     if (o->oMrBlizzardTimer != 0) {
         cur_obj_rotate_yaw_toward(o->oMrBlizzardTargetMoveYaw, 3400);
 
@@ -323,8 +309,9 @@ static void mr_blizzard_act_jump(void) {
                 o->oVelY = 25.0f;
                 o->oMrBlizzardTimer = 30;
                 o->oMrBlizzardDistFromHome = 0;
-                // Jump forward.
-            } else {
+            }
+            // Jump forward.
+            else {
                 o->oForwardVel = 10.0f;
                 o->oVelY = 50.0f;
                 o->oMoveFlags = 0;
@@ -350,7 +337,6 @@ static void mr_blizzard_act_jump(void) {
 /**
  * Mr. Blizzard update function.
  */
-
 void bhv_mr_blizzard_update(void) {
     cur_obj_update_floor_and_walls();
 
@@ -397,7 +383,6 @@ void bhv_mr_blizzard_update(void) {
 /**
  * Snowball initial takeoff position handler.
  */
-
 static void mr_blizzard_snowball_act_0(void) {
     cur_obj_move_using_fvel_and_gravity();
     if (o->parentObj->prevObj == o) {
@@ -410,13 +395,10 @@ static void mr_blizzard_snowball_act_0(void) {
 /**
  * Snowball launching action.
  */
-
 static void mr_blizzard_snowball_act_1(void) {
-    f32 marioDist;
-
     if (o->parentObj->prevObj == NULL) {
         if (o->parentObj->oAction == MR_BLIZZARD_ACT_THROW_SNOWBALL) {
-            marioDist = o->oDistanceToMario;
+            f32 marioDist = o->oDistanceToMario;
             if (marioDist > 800.0f) {
                 marioDist = 800.0f;
             }
@@ -431,6 +413,7 @@ static void mr_blizzard_snowball_act_1(void) {
         o->oMoveFlags = 0;
     }
 }
+
 // Snowball hitbox.
 struct ObjectHitbox sMrBlizzardSnowballHitbox = {
     /* interactType:      */ INTERACT_MR_BLIZZARD,
@@ -447,7 +430,6 @@ struct ObjectHitbox sMrBlizzardSnowballHitbox = {
 /**
  * Snowball collision function.
  */
-
 static void mr_blizzard_snowball_act_2(void) {
     // Set snowball to interact with walls, floors, and Mario.
     cur_obj_update_floor_and_walls();
@@ -466,7 +448,6 @@ static void mr_blizzard_snowball_act_2(void) {
 /**
  * Snowball behavior loop.
  */
-
 void bhv_mr_blizzard_snowball(void) {
     switch (o->oAction) {
         case 0:

@@ -1,7 +1,14 @@
 #include <ultra64.h>
 
 #ifdef VERSION_SH
-// The first four debug prints are in data.c.
+// synthesis.c
+char shindouDebugPrint1[] = "Terminate-Canceled Channel %d,Phase %d\n";
+char shindouDebugPrint2[] = "S->W\n";
+char shindouDebugPrint3[] = "W->S\n";
+char shindouDebugPrint4[] = "S-Resample Pitch %x (old %d -> delay %d)\n";
+s32 shindouDebugPrintPadding1[] = {0,0,0};
+
+// heap.c
 char shindouDebugPrint5[] = "Warning:Kill Note  %x \n";
 char shindouDebugPrint6[] = "Kill Voice %d (ID %d) %d\n";
 char shindouDebugPrint7[] = "Warning: Running Sequence's data disappear!\n";
@@ -58,8 +65,9 @@ char shindouDebugPrint57[] = "Request--------Single-Stay, %d\n";
 char shindouDebugPrint58[] = "Try Kill %d \n";
 char shindouDebugPrint59[] = "Try Kill %x %x\n";
 char shindouDebugPrint60[] = "Try Kill %x %x %x\n";
-// Zero padding here. These aren't used variables, so they could be either unused variables or a file boundary.
 s32 shindouDebugPrintPadding[] = {0, 0, 0};
+
+// load.c
 char shindouDebugPrint61[] = "CAUTION:WAVE CACHE FULL %d";
 char shindouDebugPrint62[] = "SUPERDMA";
 char shindouDebugPrint63[] = "Bank Change... top %d lba %d\n";
@@ -124,6 +132,8 @@ char shindouDebugPrint121[] = "N start %d\n";
 char shindouDebugPrint122[] = "============Error: Magic is Broken: %x\n";
 char shindouDebugPrint123[] = "Error: No Handle.\n";
 char shindouDebugPrint124[] = "Success: %x\n";
+
+// port_eu.c
 char shindouDebugPrint125[] = "DAC:Lost 1 Frame.\n";
 char shindouDebugPrint126[] = "DMA: Request queue over.( %d )\n";
 char shindouDebugPrint127[] = "Spec Change Override. %d -> %d\n";

@@ -6,10 +6,15 @@
 /**
  * Collision models for the different seesaw platforms.
  */
-static void const *sSeesawPlatformCollisionModels[] = {
-    bitdw_seg7_collision_0700F70C, bits_seg7_collision_0701ADD8,  bits_seg7_collision_0701AE5C,
-    bob_seg7_collision_bridge,     bitfs_seg7_collision_07015928, rr_seg7_collision_07029750,
-    rr_seg7_collision_07029858,    vcutm_seg7_collision_0700AC44,
+static Collision const *sSeesawPlatformCollisionModels[] = {
+    bitdw_seg7_collision_0700F70C,
+    bits_seg7_collision_0701ADD8,
+    bits_seg7_collision_0701AE5C,
+    bob_seg7_collision_bridge,
+    bitfs_seg7_collision_07015928,
+    rr_seg7_collision_07029750,
+    rr_seg7_collision_07029858,
+    vcutm_seg7_collision_0700AC44,
 };
 
 /**
@@ -39,7 +44,7 @@ void bhv_seesaw_platform_update(void) {
     if (gMarioObject->platform == o) {
         // Rotate toward mario
         f32 rotation = o->oDistanceToMario * coss(o->oAngleToMario - o->oMoveAngleYaw);
-        UNUSED s32 unused;
+        UNUSED u8 filler[4];
 
         // Deceleration is faster than acceleration
         if (o->oSeesawPlatformPitchVel * rotation < 0) {

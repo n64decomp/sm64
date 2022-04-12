@@ -1,3 +1,4 @@
+
 /**
  * Behavior for bhvBetaHoldableObject.
  * This is a simple implementation of a holdable object, probably used
@@ -11,9 +12,9 @@
  * Just sets various physics constants for the object.
  */
 void bhv_beta_holdable_object_init(void) {
-    o->oGravity = 2.5;
-    o->oFriction = 0.8;
-    o->oBuoyancy = 1.3;
+    o->oGravity = 2.5f;
+    o->oFriction = 0.8f;
+    o->oBuoyancy = 1.3f;
 }
 
 /**
@@ -27,8 +28,8 @@ static void beta_holdable_object_drop(void) {
 
     o->oHeldState = HELD_FREE;
 
-    o->oForwardVel = 0;
-    o->oVelY = 0;
+    o->oForwardVel = 0.0f;
+    o->oVelY = 0.0f;
 }
 
 /**
@@ -46,8 +47,8 @@ static void beta_holdable_object_throw(void) {
     o->oFlags &= ~OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW;
 
     // Set initial velocity
-    o->oForwardVel = 40.0;
-    o->oVelY = 20.0;
+    o->oForwardVel = 40.0f;
+    o->oVelY = 20.0f;
 }
 
 /**

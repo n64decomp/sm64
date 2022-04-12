@@ -1,3 +1,4 @@
+// swing_platform.inc.c
 
 void bhv_swing_platform_init(void) {
     o->oSwingPlatformAngle = 0x2000;

@@ -1,7 +1,7 @@
 #include "libultra_internal.h"
 
-extern OSTime _osCurrentTime;
+extern OSTime __osCurrentTime;
 
 void osSetTime(OSTime time) {
-    _osCurrentTime = time;
+    __osCurrentTime = time;
 }

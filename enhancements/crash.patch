@@ -1,13 +1,13 @@
 diff --git a/asm/crash.s b/asm/crash.s
 new file mode 100644
-index 00000000..0b2a5574
+index 00000000..033bf952
 --- /dev/null
 +++ b/asm/crash.s
 @@ -0,0 +1,153 @@
-+# SM64 Crash Handler
-+# See Readme below.
++// SM64 Crash Handler
++// See Readme below.
 +
-+.include "macros.inc"
++#include "macros.inc"
 +
 +/* ---------------------------------------------------------------
 + * IMPORTANT README:
@@ -58,7 +58,7 @@ index 00000000..0b2a5574
 +    sw   $a3, %lo(nAssertStopProgram)($at)
 +    beqz $a3, .end_2
 +     nop
-+    syscall # trigger crash screen
++    syscall // trigger crash screen
 +.end_2:
 +    jr $ra
 +     nop
@@ -75,15 +75,15 @@ index 00000000..0b2a5574
 +    jr   $ra
 +     mfc0 $v0, COP0_BADVADDR
 +
-+# If the error code field of cop0's cause register is non-zero,
-+# draw crash details to the screen and hang
-+#
-+# If there wasn't an error, continue to the original handler
++// If the error code field of cop0's cause register is non-zero,
++// draw crash details to the screen and hang
++
++// If there wasn't an error, continue to the original handler
 +
 +glabel __crash_handler_entry
 +    mfc0  $k1, COP0_CAUSE
 +    andi  $k1, $k1, (0x1F << 2)
-+    beqzl $k1, .end2  # exit if ExCode is 0
++    beqzl $k1, .end2  // exit if ExCode is 0
 +     lui   $k0, %hi(__osException)
 +    la    $k0, exceptionRegContext
 +    sd    $zero, 0x018 ($k0)
@@ -116,7 +116,7 @@ index 00000000..0b2a5574
 +    sd    $sp, 0x0F0 ($k0)
 +    sd    $fp, 0x0F8 ($k0)
 +    sd    $ra, 0x100 ($k0)
-+    # cop unusable exception fired twice on startup so we'll ignore it for now
++    // cop unusable exception fired twice on startup so we'll ignore it for now
 +    li    $t0, (0x0B << 2)
 +    beq   $k1, $t0, .end
 +     nop
@@ -155,14 +155,14 @@ index 00000000..0b2a5574
 +    lui   $k0, %hi(__osException)
 +    .end2:
 +    addiu $k0, $k0, %lo(__osException)
-+    jr    $k0 # run the original handler
++    jr    $k0 // run the original handler
 +     nop
 diff --git a/lib/asm/__osExceptionPreamble.s b/lib/asm/__osExceptionPreamble.s
-index e14928ce..4d12129e 100644
+index c3b97993..c552a485 100644
 --- a/lib/asm/__osExceptionPreamble.s
 +++ b/lib/asm/__osExceptionPreamble.s
-@@ -18,8 +18,8 @@
- .endif
+@@ -11,8 +11,8 @@
+ #endif
  
  glabel __osExceptionPreamble
 -    lui   $k0, %hi(__osException)
@@ -173,10 +173,10 @@ index e14928ce..4d12129e 100644
       nop
  
 diff --git a/sm64.ld b/sm64.ld
-index f80f5b4d..569344bc 100755
+index 7d9b5b4a..c7bb81b9 100755
 --- a/sm64.ld
 +++ b/sm64.ld
-@@ -116,6 +116,7 @@ SECTIONS
+@@ -117,6 +117,7 @@ SECTIONS
        BUILD_DIR/src/game/rendering_graph_node.o(.text);
        BUILD_DIR/src/game/profiler.o(.text);
        BUILD_DIR/asm/decompress.o(.text);

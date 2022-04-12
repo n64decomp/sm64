@@ -13,16 +13,16 @@ index 00000000..e60550ab
 +extern enum ConsoleType get_console_type(void);
 diff --git a/lib/asm/skGetId.s b/lib/asm/skGetId.s
 new file mode 100644
-index 00000000..8fb4c449
+index 00000000..58e7d4f9
 --- /dev/null
 +++ b/lib/asm/skGetId.s
 @@ -0,0 +1,18 @@
-+# Code by stuckpixel
++// Code by stuckpixel
 +
 +.set noreorder
 +.set gp=64
 +
-+.include "macros.inc"
++#include "macros.inc"
 +
 +glabel skGetId
 +    li  $v0, 0
@@ -36,10 +36,10 @@ index 00000000..8fb4c449
 +    nop
 +    nop
 diff --git a/lib/src/__osViSwapContext.c b/lib/src/__osViSwapContext.c
-index b9d364b1..fa149b5d 100644
+index 990cb11f..22756e91 100644
 --- a/lib/src/__osViSwapContext.c
 +++ b/lib/src/__osViSwapContext.c
-@@ -52,7 +52,9 @@ void __osViSwapContext() {
+@@ -54,7 +54,9 @@ void __osViSwapContext() {
      HW_REG(VI_INTR_REG, u32) = s0->fldRegs[field].vIntr;
      HW_REG(VI_X_SCALE_REG, u32) = s1->unk20;
      HW_REG(VI_Y_SCALE_REG, u32) = s1->unk2c;
@@ -269,7 +269,7 @@ index 1a86477b..a94f8721 100644
      return sp34;
  }
 diff --git a/lib/src/osInitialize.c b/lib/src/osInitialize.c
-index ea247636..4adb45cb 100644
+index ba73024b..6deaf407 100644
 --- a/lib/src/osInitialize.c
 +++ b/lib/src/osInitialize.c
 @@ -1,6 +1,7 @@
@@ -280,7 +280,7 @@ index ea247636..4adb45cb 100644
  
  #define PIF_ADDR_START (void *) 0x1FC007FC
  
-@@ -54,6 +55,7 @@ void osInitialize(void) {
+@@ -51,6 +52,7 @@ void osInitialize(void) {
      UNUSED u32 eu_sp30;
  #endif
      UNUSED u32 sp2c;
@@ -289,24 +289,24 @@ index ea247636..4adb45cb 100644
      __osSetSR(__osGetSR() | 0x20000000);
      __osSetFpcCsr(0x01000800);
 diff --git a/sm64.ld b/sm64.ld
-index f80f5b4d..e53d4e40 100755
+index 7d9b5b4a..be853a3b 100755
 --- a/sm64.ld
 +++ b/sm64.ld
-@@ -300,6 +300,8 @@ SECTIONS
- #ifdef VERSION_SH
-       BUILD_DIR/libultra.a:unk_shindou_file_3.o(.text)
+@@ -306,6 +306,8 @@ SECTIONS
+ #if ENABLE_RUMBLE
+       BUILD_DIR/libultra.a:unk_shindou_file_3.o(.text);
  #endif
 +      BUILD_DIR/libultra.a:consoleType.o(.text)
 +      BUILD_DIR/libultra.a:skGetId.o(.text)
        BUILD_DIR/lib/rsp.o(.text);
  #else
        BUILD_DIR/src/game*.o(.text);
-@@ -410,6 +412,8 @@ SECTIONS
-       BUILD_DIR/libultra.a:__osGetCause.o(.text);
-       BUILD_DIR/libultra.a:__osAtomicDec.o(.text);
-       BUILD_DIR/libultra.a:guLookAtRef.o(.text); /* Fast3DEX2 only */
-+      BUILD_DIR/libultra.a:consoleType.o(.text);
-+      BUILD_DIR/libultra.a:skGetId.o(.text);
+@@ -428,6 +430,8 @@ SECTIONS
+ #if ENABLE_RUMBLE
+       BUILD_DIR/libultra.a:unk_shindou_file_3.o(.text);
+ #endif
++      BUILD_DIR/libultra.a:consoleType.o(.text)
++      BUILD_DIR/libultra.a:skGetId.o(.text)
        BUILD_DIR/lib/rsp.o(.text);
  #endif
  

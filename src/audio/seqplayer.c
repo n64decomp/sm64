@@ -55,9 +55,9 @@ void sequence_channel_init(struct SequenceChannel *seqChannel) {
     seqChannel->panChannelWeight = 1.0f;
     seqChannel->noteUnused = NULL;
 #endif
-    seqChannel->reverb = 0;
+    seqChannel->reverbVol = 0;
 #ifdef VERSION_SH
-    seqChannel->unkSH0C = 0;
+    seqChannel->synthesisVolume = 0;
 #endif
     seqChannel->notePriority = NOTE_PRIORITY_DEFAULT;
 #ifdef VERSION_SH
@@ -142,7 +142,7 @@ s32 seq_channel_set_layer(struct SequenceChannel *seqChannel, s32 layerIndex) {
     layer->freqScale = 1.0f;
     layer->velocitySquare = 0.0f;
 #ifdef VERSION_SH
-    layer->unkSH28 = 1.0f;
+    layer->freqScaleMultiplier = 1.0f;
 #endif
     layer->instOrWave = 0xff;
 #else
@@ -989,7 +989,7 @@ void seq_channel_layer_process_script_part1(struct SequenceChannelLayer *layer) 
 }
 
 s32 seq_channel_layer_process_script_part5(struct SequenceChannelLayer *layer, s32 cmd) {
-    if (!layer->stopSomething && layer->sound != NULL && layer->sound->sample->codec == 2 &&
+    if (!layer->stopSomething && layer->sound != NULL && layer->sound->sample->codec == CODEC_SKIP &&
         layer->sound->sample->medium != 0) {
         layer->stopSomething = TRUE;
         return -1;
@@ -1176,7 +1176,7 @@ s32 seq_channel_layer_process_script_part2(struct SequenceChannelLayer *layer) {
 
             case 0xce:
                 cmd = m64_read_u8(state) + 0x80;
-                layer->unkSH28 = unk_sh_data_1[cmd];
+                layer->freqScaleMultiplier = unk_sh_data_1[cmd];
                 // missing break :)
 
             default:
@@ -1320,7 +1320,7 @@ s32 seq_channel_layer_process_script_part4(struct SequenceChannelLayer *layer, s
         }
     }
     layer->delayUnused = layer->delay;
-    layer->freqScale *= layer->unkSH28;
+    layer->freqScale *= layer->freqScaleMultiplier;
     return sameSound;
 }
 
@@ -1390,8 +1390,7 @@ s32 seq_channel_layer_process_script_part3(struct SequenceChannelLayer *layer, s
     layer->delay = sp3A;
     layer->duration = layer->noteDuration * sp3A >> 8;
     if ((seqPlayer->muted && (seqChannel->muteBehavior & 0x50) != 0)
-        || seqChannel->stopSomething2)
-    {
+        || seqChannel->stopSomething2) {
         layer->stopSomething = TRUE;
         return -1;
     }
@@ -1404,8 +1403,7 @@ u8 get_instrument(struct SequenceChannel *seqChannel, u8 instId, struct Instrume
     struct Instrument *inst;
 #if defined(VERSION_EU) || defined(VERSION_SH)
     inst = get_instrument_inner(seqChannel->bankId, instId);
-    if (inst == NULL)
-    {
+    if (inst == NULL) {
         *instOut = NULL;
         return 0;
     }
@@ -1524,25 +1522,21 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
         for (;;) {
             cmd = m64_read_u8(state);
 #if !defined(VERSION_EU) && !defined(VERSION_SH)
-            if (cmd == 0xff) // chan_end
-            {
+            if (cmd == 0xff) { // chan_end
                 if (state->depth == 0) {
                     sequence_channel_disable(seqChannel);
                     break;
                 }
                 state->depth--, state->pc = state->stack[state->depth];
             }
-            if (cmd == 0xfe) // chan_delay1
-            {
+            if (cmd == 0xfe) { // chan_delay1
                 break;
             }
-            if (cmd == 0xfd) // chan_delay
-            {
+            if (cmd == 0xfd) { // chan_delay
                 seqChannel->delay = m64_read_compressed_u16(state);
                 break;
             }
-            if (cmd == 0xf3) // chan_hang
-            {
+            if (cmd == 0xf3) { // chan_hang
                 seqChannel->stopScript = TRUE;
                 break;
             }
@@ -1828,7 +1822,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 #endif
 
                     case 0xd4: // chan_setreverb
-                        seqChannel->reverb = m64_read_u8(state);
+                        seqChannel->reverbVol = m64_read_u8(state);
                         break;
 
                     case 0xc6: // chan_setbank; switch bank within set
@@ -1972,8 +1966,8 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                         seqChannel->transposition = (s8) *seqData++;
                         seqChannel->newPan = *seqData++;
                         seqChannel->panChannelWeight = *seqData++;
-                        seqChannel->reverb = *seqData++;
-                        seqChannel->reverbIndex = *seqData++; // reverb index?
+                        seqChannel->reverbVol = *seqData++;
+                        seqChannel->reverbIndex = *seqData++;
                         seqChannel->changes.as_bitfields.pan = TRUE;
                         break;
 
@@ -1984,7 +1978,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                         seqChannel->transposition = (s8) m64_read_u8(state);
                         seqChannel->newPan = m64_read_u8(state);
                         seqChannel->panChannelWeight = m64_read_u8(state);
-                        seqChannel->reverb = m64_read_u8(state);
+                        seqChannel->reverbVol = m64_read_u8(state);
                         seqChannel->reverbIndex = m64_read_u8(state);
                         seqChannel->changes.as_bitfields.pan = TRUE;
                         break;
@@ -2016,7 +2010,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 #endif
 #ifdef VERSION_SH
                     case 0xed:
-                        seqChannel->unkSH0C = m64_read_u8(state);
+                        seqChannel->synthesisVolume = m64_read_u8(state);
                         break;
 
                     case 0xef:
@@ -2112,7 +2106,7 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 
                     case 0x10:
                         seqChannel->soundScriptIO[loBits] = -1;
-                        if (func_802f47c8(seqChannel->bankId, (u8)value, &seqChannel->soundScriptIO[loBits]) == -1) {
+                        if (func_sh_802f47c8(seqChannel->bankId, (u8)value, &seqChannel->soundScriptIO[loBits]) == -1) {
                         }
                         break;
 #else
@@ -2362,8 +2356,7 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 #endif
         for (;;) {
             cmd = m64_read_u8(state);
-            if (cmd == 0xff) // seq_end
-            {
+            if (cmd == 0xff) { // seq_end
                 if (state->depth == 0) {
                     sequence_player_disable(seqPlayer);
                     break;
@@ -2375,14 +2368,12 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
 #endif
             }
 
-            if (cmd == 0xfd) // seq_delay
-            {
+            if (cmd == 0xfd) { // seq_delay
                 seqPlayer->delay = m64_read_compressed_u16(state);
                 break;
             }
 
-            if (cmd == 0xfe) // seq_delay1
-            {
+            if (cmd == 0xfe) { // seq_delay1
                 seqPlayer->delay = 1;
                 break;
             }
@@ -2502,7 +2493,7 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
                             seqPlayer->tempo = gTempoInternalToExternal;
                         }
 
-                        //if (cmd){}
+                        //if (cmd) {}
 
                         if ((s16) seqPlayer->tempo <= 0) {
                             seqPlayer->tempo = 1;

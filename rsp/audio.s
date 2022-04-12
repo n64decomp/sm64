@@ -53,15 +53,15 @@ dispatchTable:
   jumpTableEntry cmd_SPNOOP
   jumpTableEntry cmd_SETLOOP
 
-  jumpTableEntry cmd_17e4
-  jumpTableEntry cmd_INTERL
+  jumpTableEntry cmd_DMEMMOVE2
+  jumpTableEntry cmd_DOWNSAMPLE_HALF
   jumpTableEntry cmd_ENVSETUP1
   jumpTableEntry cmd_ENVMIXER
 
   jumpTableEntry cmd_LOADBUFF
   jumpTableEntry cmd_SAVEBUFF
   jumpTableEntry cmd_ENVSETUP2
-  jumpTableEntry cmd_1b78
+  jumpTableEntry cmd_S8DEC
 
   jumpTableEntry cmd_HILOGAIN
   jumpTableEntry cmd_1c7c
@@ -938,12 +938,12 @@ cmd_RESAMPLE:
 .endif
     addi  $8, $8, -8
 .ifdef VERSION_SH
-    sdv   $v16[0], 0x00($8)  
+    sdv   $v16[0], 0x00($8)
 .endif
 @@audio_c410c:
     lsv   $v23[14], 0x08($23)   // saved pitch_accumulator
 .ifdef VERSION_SH
-    ldv   $v16[0], 0x00($8)  
+    ldv   $v16[0], 0x00($8)
 .else
     ldv   $v16[0], 0x00($23)    // saved next 4 unprocessed samples
     sdv   $v16[0], 0x00($8)     // store them before the input samples
@@ -1100,8 +1100,8 @@ cmd_RESAMPLE:
      mtc0  $zero, SP_SEMAPHORE
 
 .ifdef VERSION_SH
-cmd_17e4:
-    srl   $t7, $k0, 16 
+cmd_DMEMMOVE2:
+    srl   $t7, $k0, 16
     andi  $t7, $t7, 0xff
     andi  $t5, $k0, 0xffff
     srl   $t6, $t9, 0x10
@@ -1150,7 +1150,7 @@ cmd_DUPLICATE:
     j cmd_SPNOOP
      nop
 
-cmd_INTERL:
+cmd_DOWNSAMPLE_HALF:
     andi  $t4, $k0, 0xffff
     andi  $t6, $t9, 0xffff
     srl   $t5, $t9, 0x10
@@ -1606,24 +1606,24 @@ cmd_MIXER:
     j cmd_SPNOOP
      nop
 
-cmd_1b78:
-    lhu   $13, 0x0(r24)
+cmd_S8DEC:
+    lhu   $13, (audio_in_buf)(r24)
     vxor  $v2, $v2, $v2
-    lhu   $14, 0x2(r24)
+    lhu   $14, (audio_out_buf)(r24)
     vxor  $v3, $v3, $v3
-    lhu   $12, 0x4(r24)
+    lhu   $12, (audio_count)(r24)
     sll   $17, $25, 8
-    srl   $17, $17, 8
-    sqv   $v2[0], 0x0(r14)
+    srl   $17, $17, 8                   // state addr
+    sqv   $v2[0], 0x0(r14)              // store 0 to first 16 samples if A_INIT
     sqv   $v3[0], 0x10(r14)
     srl   $1, $26, 16
     andi  $1, $1, 0x1
-    bgtz  $1, @audio_4001bd8
+    bgtz  $1, @audio_4001bd8            // A_INIT
      srl  $1, $26, 16
     andi  $1, $1, 0x2
-    beq   $0, $1, @audio_4001bbc
+    beq   $0, $1, @audio_4001bbc        // A_LOOP
      addi $2, $17, 0x0
-    lw    $2, 0x10(r24)
+    lw    $2, (audio_loop_value)(r24)
 @audio_4001bbc:
     addi  $1, $14, 0x0
     jal   dma_read_start
@@ -1635,10 +1635,10 @@ cmd_1b78:
     mtc0  $0, sp_semaphore
 @audio_4001bd8:
     addi  $14, $14, 0x20
-    beq   $12, $0, @audio_4001c04
+    beq   $12, $0, @audio_4001c04       // this of very few ops allows count=0
      nop
 @audio_4001be4:
-    lpv   $v2[0], 0x0(r13)
+    lpv   $v2[0], 0x0(r13)              // load each byte to upper 8 bits per elem
     lpv   $v3[0], 0x8(r13)
     addi  $13, $13, 0x10
     addi  $12, $12, 0xffe0
@@ -1647,7 +1647,7 @@ cmd_1b78:
     bgtz  $12, @audio_4001be4
      addi $14, $14, 0x20
 @audio_4001c04:
-    addi  $1, $14, 0xffe0
+    addi  $1, $14, 0xffe0               // write last 16 samples to the state
     addi  $2, $17, 0x0
     jal   dma_write_start
      addi  $3, $0, 0x1f

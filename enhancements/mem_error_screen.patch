@@ -1,8 +1,8 @@
 diff --git a/Makefile b/Makefile
-index f81fd27b..318140f2 100644
+index f50b7622..124c7ec6 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -419,6 +419,7 @@ $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
+@@ -478,6 +478,7 @@ $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
  $(BUILD_DIR)/src/menu/file_select.o: $(BUILD_DIR)/include/text_strings.h
  $(BUILD_DIR)/src/menu/star_select.o: $(BUILD_DIR)/include/text_strings.h
  $(BUILD_DIR)/src/game/ingame_menu.o: $(BUILD_DIR)/include/text_strings.h
@@ -11,12 +11,12 @@ index f81fd27b..318140f2 100644
  
  #==============================================================================#
 diff --git a/include/segments.h b/include/segments.h
-index a8c1bf97..84c3d7a4 100644
+index a97d6ee8..186c968e 100644
 --- a/include/segments.h
 +++ b/include/segments.h
-@@ -1,6 +1,9 @@
- #ifndef SEGMENTS_H
- #define SEGMENTS_H
+@@ -3,6 +3,9 @@
+ 
+ #include "config.h"
  
 +/* Use expansion pack RAM */
 +#define USE_EXT_RAM 1
@@ -58,7 +58,7 @@ index 17c773ed..677a5ae9 100644
 +    JUMP(/*target*/ level_script_entry_error_screen),
 +};
 diff --git a/levels/intro/geo.c b/levels/intro/geo.c
-index 7a297fe7..71b16442 100644
+index 30a87806..6bf7b79a 100644
 --- a/levels/intro/geo.c
 +++ b/levels/intro/geo.c
 @@ -15,6 +15,24 @@
@@ -100,7 +100,7 @@ index 99277e86..04797cd7 100644
 +
  #endif
 diff --git a/levels/intro/script.c b/levels/intro/script.c
-index a130cc04..926c0d09 100644
+index 04b8fc4c..ca9058c4 100644
 --- a/levels/intro/script.c
 +++ b/levels/intro/script.c
 @@ -18,6 +18,21 @@
@@ -138,7 +138,7 @@ index d41a91c8..7d047236 100644
  struct LevelCommand *level_script_execute(struct LevelCommand *cmd);
  
 diff --git a/src/game/main.c b/src/game/main.c
-index 9615f25a..e2d7b3d4 100644
+index 1a9d9e7e..f4f7a9e5 100644
 --- a/src/game/main.c
 +++ b/src/game/main.c
 @@ -11,6 +11,7 @@
@@ -149,7 +149,7 @@ index 9615f25a..e2d7b3d4 100644
  
  // Message IDs
  #define MESG_SP_COMPLETE 100
-@@ -127,6 +128,10 @@ void alloc_pool(void) {
+@@ -131,6 +132,10 @@ void alloc_pool(void) {
      void *start = (void *) SEG_POOL_START;
      void *end = (void *) SEG_POOL_END;
  
@@ -160,7 +160,7 @@ index 9615f25a..e2d7b3d4 100644
      main_pool_init(start, end);
      gEffectsMemoryPool = mem_pool_init(0x4000, MEMORY_POOL_LEFT);
  }
-@@ -332,7 +337,10 @@ void thread3_main(UNUSED void *arg) {
+@@ -336,7 +341,10 @@ void thread3_main(UNUSED void *arg) {
      create_thread(&gSoundThread, 4, thread4_sound, NULL, gThread4Stack + 0x2000, 20);
      osStartThread(&gSoundThread);
  
@@ -174,7 +174,7 @@ index 9615f25a..e2d7b3d4 100644
      while (TRUE) {
 diff --git a/src/game/mem_error_screen.c b/src/game/mem_error_screen.c
 new file mode 100644
-index 00000000..81efaf91
+index 00000000..f432927c
 --- /dev/null
 +++ b/src/game/mem_error_screen.c
 @@ -0,0 +1,104 @@
@@ -274,15 +274,14 @@ index 00000000..81efaf91
 +
 +    addr = segmented_to_virtual(level_script_entry_error_screen);
 +
-+    rendering_init();
++    render_init();
 +
 +    while (1) {
-+        config_gfx_pool();
++        select_gfx_pool();
 +        addr = level_script_execute(addr);
 +        display_and_vsync();
 +    }
 +}
-\ No newline at end of file
 diff --git a/src/game/mem_error_screen.h b/src/game/mem_error_screen.h
 new file mode 100644
 index 00000000..9fbff34c

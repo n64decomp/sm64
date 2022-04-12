@@ -17,7 +17,7 @@ extern const GeoLayout bowser_geo_000424[];
 extern const GeoLayout bowser_geo_000770[];
 extern const GeoLayout bowser_shadow_geo[];
 extern const GeoLayout bowser_geo[];
-extern const GeoLayout bowser2_geo[];
+extern const GeoLayout bowser_geo_no_shadow[];
 extern const Gfx bowser_seg6_dl_06039110[];
 extern const Gfx bowser_seg6_dl_060391C8[];
 extern const Gfx bowser_seg6_dl_06039260[];
@@ -90,7 +90,7 @@ extern const Gfx bowser_seg6_dl_06043548[];
 extern const Gfx bowser_seg6_dl_06043648[];
 extern const Gfx bowser_seg6_dl_06043698[];
 extern const struct Animation *const bowser_seg6_anims_06057690[];
-extern const s16 bowser_seg6_unkmoveshorts_060576FC[];
+extern const s16 dBowserFlamesOrientationValues[];
 
 // bowser_flame
 extern const GeoLayout bowser_flames_geo[];

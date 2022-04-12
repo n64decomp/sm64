@@ -1,3 +1,4 @@
+
 /**
  * This is the behavior file for the tilting inverted pyramids in BitFS/LLL.
  * The object essentially just tilts and moves Mario with it.
@@ -77,9 +78,9 @@ void bhv_tilting_inverted_pyramid_loop(void) {
     f32 mz;
 
     s32 marioOnPlatform = FALSE;
-    UNUSED s32 unused;
+    UNUSED u8 filler1[4];
     Mat4 *transform = &o->transform;
-    UNUSED s32 unused2[7];
+    UNUSED u8 filler2[28];
 
     if (gMarioObject->platform == o) {
         get_mario_pos(&mx, &my, &mz);
@@ -107,8 +108,9 @@ void bhv_tilting_inverted_pyramid_loop(void) {
             dz = 0.0f;
         }
 
-        if (o->oTiltingPyramidMarioOnPlatform == TRUE)
+        if (o->oTiltingPyramidMarioOnPlatform == TRUE) {
             marioOnPlatform++;
+        }
 
         o->oTiltingPyramidMarioOnPlatform = TRUE;
     } else {
@@ -126,7 +128,7 @@ void bhv_tilting_inverted_pyramid_loop(void) {
     create_transform_from_normals(*transform, o->oTiltingPyramidNormalX, o->oTiltingPyramidNormalY, o->oTiltingPyramidNormalZ);
 
     // If Mario is on the platform, adjust his position for the platform tilt.
-    if (marioOnPlatform != FALSE) {
+    if (marioOnPlatform) {
         linear_mtxf_mul_vec3f(*transform, posAfterRotation, dist);
         mx += posAfterRotation[0] - posBeforeRotation[0];
         my += posAfterRotation[1] - posBeforeRotation[1];

@@ -15,6 +15,7 @@
 #include "engine/surface_load.h"
 #include "game_init.h"
 #include "geo_misc.h"
+#include "ingame_menu.h"
 #include "interaction.h"
 #include "level_table.h"
 #include "level_update.h"
@@ -98,10 +99,11 @@ static s16 obj_get_pitch_from_vel(void) {
  */
 static s32 obj_update_race_proposition_dialog(s16 dialogID) {
     s32 dialogResponse =
-        cur_obj_update_dialog_with_cutscene(2, DIALOG_UNK2_FLAG_0 | DIALOG_UNK2_LEAVE_TIME_STOP_ENABLED, CUTSCENE_RACE_DIALOG, dialogID);
+        cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
+        (DIALOG_FLAG_TURN_TO_MARIO | DIALOG_FLAG_TIME_STOP_ENABLED), CUTSCENE_RACE_DIALOG, dialogID);
 
-    if (dialogResponse == 2) {
-        set_mario_npc_dialog(0);
+    if (dialogResponse == DIALOG_RESPONSE_NO) {
+        set_mario_npc_dialog(MARIO_DIALOG_STOP);
         disable_time_stop_including_mario();
     }
 
@@ -150,7 +152,7 @@ static void platform_on_track_update_pos_or_spawn_ball(s32 ballIndex, f32 x, f32
     struct Waypoint *initialPrevWaypoint;
     struct Waypoint *nextWaypoint;
     struct Waypoint *prevWaypoint;
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     f32 amountToMove;
     f32 dx;
     f32 dy;
@@ -172,7 +174,7 @@ static void platform_on_track_update_pos_or_spawn_ball(s32 ballIndex, f32 x, f32
         do {
             prevWaypoint = nextWaypoint;
 
-            nextWaypoint += 1;
+            nextWaypoint++;
             if (nextWaypoint->flags == WAYPOINT_FLAGS_END) {
                 if (ballIndex == 0) {
                     o->oPlatformOnTrackPrevWaypointFlags = WAYPOINT_FLAGS_END;
@@ -533,7 +535,7 @@ static s32 oscillate_toward(s32 *value, f32 *vel, s32 target, f32 velCloseToZero
 static void obj_update_blinking(s32 *blinkTimer, s16 baseCycleLength, s16 cycleLengthRange,
                                 s16 blinkLength) {
     if (*blinkTimer != 0) {
-        *blinkTimer -= 1;
+        (*blinkTimer)--;
     } else {
         *blinkTimer = random_linear_offset(baseCycleLength, cycleLengthRange);
     }
@@ -640,7 +642,7 @@ static void obj_die_if_health_non_positive(void) {
     }
 }
 
-static void obj_unused_die(void) {
+UNUSED static void obj_unused_die(void) {
     o->oHealth = 0;
     obj_die_if_health_non_positive();
 }

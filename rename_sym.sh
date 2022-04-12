@@ -10,4 +10,4 @@ fi
 
 #echo "Replace $1 with $2?"
 #read
-grep -rl "$1" text/**/*.{c,h} assets/**/*.c enhancements/*.patch lib/**/*.{c,h,s} asm/**/*.s bin/**/*.c data/*.c levels/**/*.{c,h} actors/**/*.c src/**/*.{c,h} include/**/*.{h,in} undefined_syms.txt | xargs sed -i "s/\b$1\b/$2/g"
+grep -rl "$1" text/**/*.{c,h} assets/**/*.c enhancements/*.patch lib/**/*.{c,h,s} asm/**/*.s bin/**/*.c data/*.c levels/**/*.{c,h} actors/**/*.{c,h} src/**/*.{c,h} include/**/*.{h,in} undefined_syms.txt | xargs sed -i "s/\b$1\b/$2/g"

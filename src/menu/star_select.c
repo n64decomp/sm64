@@ -19,7 +19,6 @@
 #include "sm64.h"
 #include "star_select.h"
 #include "text_strings.h"
-#include "prevent_bss_reordering.h"
 
 /**
  * @file star_select.c
@@ -108,7 +107,7 @@ void render_100_coin_star(u8 stars) {
 void bhv_act_selector_init(void) {
     s16 i = 0;
     s32 selectorModelIDs[10];
-    u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+    u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
     sVisibleStars = 0;
     while (i != sObtainedStars) {
@@ -167,7 +166,7 @@ void bhv_act_selector_init(void) {
 void bhv_act_selector_loop(void) {
     s8 i;
     u8 starIndexCounter;
-    u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+    u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
     if (sObtainedStars != 6) {
         // Sometimes, stars are not selectable even if they appear on the screen.
@@ -271,14 +270,12 @@ void print_act_selector_strings(void) {
     u8 **actNameTbl;
 #else
     u8 **levelNameTbl = segmented_to_virtual(seg2_course_name_table);
-    u8 *currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
+    u8 *currLevelName = segmented_to_virtual(levelNameTbl[COURSE_NUM_TO_INDEX(gCurrCourseNum)]);
     u8 **actNameTbl = segmented_to_virtual(seg2_act_name_table);
 #endif
     u8 *selectedActName;
-#ifndef VERSION_EU
     s16 lvlNameX;
     s16 actNameX;
-#endif
     s8 i;
 #ifdef VERSION_EU
     s16 language = eu_get_language();
@@ -301,19 +298,19 @@ void print_act_selector_strings(void) {
             levelNameTbl = segmented_to_virtual(course_name_table_eu_de);
             break;
     }
-    currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
+    currLevelName = segmented_to_virtual(levelNameTbl[COURSE_NUM_TO_INDEX(gCurrCourseNum)]);
 #endif
 
     // Print the coin highscore.
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
-    print_hud_my_score_coins(1, gCurrSaveFileNum - 1, gCurrCourseNum - 1, 155, 106);
+    print_hud_my_score_coins(1, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum), 155, 106);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
     // Print the "MY SCORE" text if the coin score is more than 0
-    if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0) {
+    if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum)) != 0) {
 #ifdef VERSION_EU
         print_generic_string(95, 118, myScore[language]);
 #else
@@ -321,12 +318,8 @@ void print_act_selector_strings(void) {
 #endif
     }
 
-#ifdef VERSION_EU
-    print_generic_string(get_str_x_pos_from_center(160, currLevelName + 3, 10.0f), 33, currLevelName + 3);
-#else
     lvlNameX = get_str_x_pos_from_center(160, currLevelName + 3, 10.0f);
     print_generic_string(lvlNameX, 33, currLevelName + 3);
-#endif
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 
@@ -340,14 +333,10 @@ void print_act_selector_strings(void) {
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
     // Print the name of the selected act.
     if (sVisibleStars != 0) {
-        selectedActName = segmented_to_virtual(actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedActIndex]);
+        selectedActName = segmented_to_virtual(actNameTbl[COURSE_NUM_TO_INDEX(gCurrCourseNum) * 6 + sSelectedActIndex]);
 
-#ifdef VERSION_EU
-        print_menu_generic_string(get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f), 81, selectedActName);
-#else
         actNameX = get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f);
         print_menu_generic_string(actNameX, 81, selectedActName);
-#endif
     }
 
     // Print the numbers above each star.
@@ -383,13 +372,14 @@ Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node) {
  * Also load how much stars a course has, without counting the 100 coin star.
  */
 s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
-    u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+    u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
     sLoadedActNum = 0;
     sInitSelectedActNum = 0;
     sVisibleStars = 0;
     sActSelectorMenuTimer = 0;
-    sObtainedStars = save_file_get_course_star_count(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+    sObtainedStars =
+        save_file_get_course_star_count(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
     // Don't count 100 coin star
     if (stars & (1 << 6)) {
@@ -407,7 +397,7 @@ s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
  * Also updates objects and returns act number selected after is chosen.
  */
 s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
-    if (sActSelectorMenuTimer >= 11) {
+    if (sActSelectorMenuTimer > 10) {
         // If any of these buttons are pressed, play sound and go to course act
 #ifndef VERSION_EU
         if ((gPlayer3Controller->buttonPressed & A_BUTTON)
@@ -416,12 +406,12 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
 #else
         if ((gPlayer3Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG))) {
 #endif
-#if defined(VERSION_JP)
+#ifdef VERSION_JP
             play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #else
             play_sound(SOUND_MENU_STAR_SOUND_LETS_A_GO, gGlobalSoundSource);
 #endif
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
             queue_rumble_data(60, 70);
             func_sh_8024C89C(1);
 #endif

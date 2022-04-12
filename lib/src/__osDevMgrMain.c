@@ -10,7 +10,7 @@ void __osDevMgrMain(void *args) {
     OSMesg dummy;
     s32 ret;
     OSMgrArgs *sp34;
-#ifndef VERSION_SH
+#ifdef VERSION_EU
     UNUSED u32 sp30;
 #endif
     u32 sp2c;
@@ -19,7 +19,7 @@ void __osDevMgrMain(void *args) {
 #ifdef VERSION_SH
     u32 tmp;
 #endif
-#ifndef VERSION_SH
+#ifdef VERSION_EU
     sp30 = 0;
 #endif
     sp2c = 0;
@@ -108,7 +108,7 @@ void __osDevMgrMain(void *args) {
             }
             if (ret == 0) {
                 osRecvMesg(sp34->eventQueue, &em, OS_MESG_BLOCK);
-#ifndef VERSION_SH
+#ifdef VERSION_EU
                 sp30 =
 #endif
                 osSendMesg(mb->hdr.retQueue, mb, OS_MESG_NOBLOCK);

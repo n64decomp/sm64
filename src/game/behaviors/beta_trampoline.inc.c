@@ -1,3 +1,4 @@
+
 /**
  * Behavior for bhvBetaTrampolineTop and bhvBetaTrampolineSpring.
  * This was a trampoline that was never finished. The model and collision

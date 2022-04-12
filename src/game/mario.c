@@ -34,7 +34,7 @@
 #include "rumble_init.h"
 
 u32 unused80339F10;
-s8 filler80339F1C[20];
+u8 unused80339F1C[20];
 
 /**************************************************
  *                    ANIMATIONS                  *
@@ -63,9 +63,9 @@ s32 is_anim_past_end(struct MarioState *m) {
  */
 s16 set_mario_animation(struct MarioState *m, s32 targetAnimID) {
     struct Object *o = m->marioObj;
-    struct Animation *targetAnim = m->animation->targetAnim;
+    struct Animation *targetAnim = m->animList->bufTarget;
 
-    if (load_patchable_table(m->animation, targetAnimID)) {
+    if (load_patchable_table(m->animList, targetAnimID)) {
         targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->values);
         targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->index);
     }
@@ -96,9 +96,9 @@ s16 set_mario_animation(struct MarioState *m, s32 targetAnimID) {
  */
 s16 set_mario_anim_with_accel(struct MarioState *m, s32 targetAnimID, s32 accel) {
     struct Object *o = m->marioObj;
-    struct Animation *targetAnim = m->animation->targetAnim;
+    struct Animation *targetAnim = m->animList->bufTarget;
 
-    if (load_patchable_table(m->animation, targetAnimID)) {
+    if (load_patchable_table(m->animList, targetAnimID)) {
         targetAnim->values = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->values);
         targetAnim->index = (void *) VIRTUAL_TO_PHYSICAL((u8 *) targetAnim + (uintptr_t) targetAnim->index);
     }
@@ -133,7 +133,7 @@ void set_anim_to_frame(struct MarioState *m, s16 animFrame) {
     struct AnimInfo *animInfo = &m->marioObj->header.gfx.animInfo;
     struct Animation *curAnim = animInfo->curAnim;
 
-    if (animInfo->animAccel) {
+    if (animInfo->animAccel != 0) {
         if (curAnim->flags & ANIM_FLAG_FORWARD) {
             animInfo->animFrameAccelAssist = (animFrame << 0x10) + animInfo->animAccel;
         } else {
@@ -154,7 +154,7 @@ s32 is_anim_past_frame(struct MarioState *m, s16 animFrame) {
     struct AnimInfo *animInfo = &m->marioObj->header.gfx.animInfo;
     struct Animation *curAnim = animInfo->curAnim;
 
-    if (animInfo->animAccel) {
+    if (animInfo->animAccel != 0) {
         if (curAnim->flags & ANIM_FLAG_FORWARD) {
             isPastFrame =
                 (animInfo->animFrameAccelAssist > acceleratedFrame)
@@ -545,7 +545,7 @@ struct Surface *resolve_and_return_wall_collisions(Vec3f pos, f32 offset, f32 ra
  * Finds the ceiling from a vec3f horizontally and a height (with 80 vertical buffer).
  */
 f32 vec3f_find_ceil(Vec3f pos, f32 height, struct Surface **ceil) {
-    UNUSED f32 unused;
+    UNUSED u8 filler[4];
 
     return find_ceil(pos[0], height + 80.0f, pos[2], ceil);
 }
@@ -774,7 +774,7 @@ static void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVel
  * Transitions for a variety of airborne actions.
  */
 static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actionArg) {
-    f32 fowardVel;
+    f32 forwardVel;
 
     if ((m->squishTimer != 0 || m->quicksandDepth >= 1.0f)
         && (action == ACT_DOUBLE_JUMP || action == ACT_TWIRLING)) {
@@ -854,10 +854,10 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             break;
 
         case ACT_DIVE:
-            if ((fowardVel = m->forwardVel + 15.0f) > 48.0f) {
-                fowardVel = 48.0f;
+            if ((forwardVel = m->forwardVel + 15.0f) > 48.0f) {
+                forwardVel = 48.0f;
             }
-            mario_set_forward_vel(m, fowardVel);
+            mario_set_forward_vel(m, forwardVel);
             break;
 
         case ACT_LONG_JUMP:
@@ -1277,13 +1277,13 @@ void update_mario_button_inputs(struct MarioState *m) {
     if (m->input & INPUT_A_PRESSED) {
         m->framesSinceA = 0;
     } else if (m->framesSinceA < 0xFF) {
-        m->framesSinceA += 1;
+        m->framesSinceA++;
     }
 
     if (m->input & INPUT_B_PRESSED) {
         m->framesSinceB = 0;
     } else if (m->framesSinceB < 0xFF) {
-        m->framesSinceB += 1;
+        m->framesSinceB++;
     }
 }
 
@@ -1393,10 +1393,11 @@ void update_mario_inputs(struct MarioState *m) {
     if (!(m->input & (INPUT_NONZERO_ANALOG | INPUT_A_PRESSED))) {
         m->input |= INPUT_UNKNOWN_5;
     }
-
+    
+    // These 3 flags are defined by Bowser stomping attacks
     if (m->marioObj->oInteractStatus
-        & (INT_STATUS_HOOT_GRABBED_BY_MARIO | INT_STATUS_MARIO_UNK1 | INT_STATUS_HIT_BY_SHOCKWAVE)) {
-        m->input |= INPUT_UNKNOWN_10;
+        & (INT_STATUS_MARIO_STUNNED | INT_STATUS_MARIO_KNOCKBACK_DMG | INT_STATUS_MARIO_SHOCKWAVE)) {
+        m->input |= INPUT_STOMPED;
     }
 
     // This function is located near other unused trampoline functions,
@@ -1495,8 +1496,8 @@ void update_mario_health(struct MarioState *m) {
         // Play a noise to alert the player when Mario is close to drowning.
         if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300)) {
             play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
-#ifdef VERSION_SH
-            if (!gRumblePakTimer) {
+#if ENABLE_RUMBLE
+            if (gRumblePakTimer == 0) {
                 gRumblePakTimer = 36;
                 if (is_rumble_finished_and_queue_empty()) {
                     queue_rumble_data(3, 30);
@@ -1661,7 +1662,7 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
  * An unused and possibly a debug function. Z + another button input
  * sets Mario with a different cap.
  */
-static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capMusic) {
+UNUSED static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capMusic) {
     // This checks for Z_TRIG instead of Z_DOWN flag
     // (which is also what other debug functions do),
     // so likely debug behavior rather than unused behavior.
@@ -1677,7 +1678,7 @@ static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capM
     }
 }
 
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
 void func_sh_8025574C(void) {
     if (gMarioState->particleFlags & PARTICLE_HORIZONTAL_STAR) {
         queue_rumble_data(5, 80);
@@ -1770,7 +1771,7 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         play_infinite_stairs_music();
         gMarioState->marioObj->oInteractStatus = 0;
-#ifdef VERSION_SH
+#if ENABLE_RUMBLE
         func_sh_8025574C();
 #endif
 
@@ -1875,7 +1876,7 @@ void init_mario_from_save_file(void) {
     gMarioState->statusForCamera = &gPlayerCameraState[0];
     gMarioState->marioBodyState = &gBodyStates[0];
     gMarioState->controller = &gControllers[0];
-    gMarioState->animation = &D_80339D10;
+    gMarioState->animList = &gMarioAnimsBuf;
 
     gMarioState->numCoins = 0;
     gMarioState->numStars =

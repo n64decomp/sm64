@@ -1,3 +1,4 @@
+
 /**
  * Behavior for bhvBird. These are the birds in the castle grounds
  * that fly away and scatter when Mario comes near them. There are
@@ -52,7 +53,7 @@ static void bird_act_inactive(void) {
  * and the parent spawner bird if it's a spawned bird.
  */
 static void bird_act_fly(void) {
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     f32 distance;
 
     // Compute forward velocity and vertical velocity from oBirdSpeed and pitch

@@ -877,12 +877,6 @@ u16 unk_sh_data_4[] = {
     0x5FFF, 0x9001,
     0x7FFF, 0x8001
 };
-
-char shindouDebugPrint1[] = "Terminate-Canceled Channel %d,Phase %d\n";
-char shindouDebugPrint2[] = "S->W\n";
-char shindouDebugPrint3[] = "W->S\n";
-char shindouDebugPrint4[] = "S-Resample Pitch %x (old %d -> delay %d)\n";
-// These debug prints are continued in shindou_debug_prints_1.c.
 #endif
 
 #ifndef VERSION_SH

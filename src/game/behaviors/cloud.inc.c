@@ -103,10 +103,8 @@ static void cloud_fwoosh_update(void) {
  * unloads, and when fwoosh blows wind.
  */
 static void cloud_act_main(void) {
-    s16 localOffsetPhase;
+    s16 localOffsetPhase = 0x800 * gGlobalTimer;
     f32 localOffset;
-
-    localOffsetPhase = 0x800 * gGlobalTimer;
 
     if (o->parentObj != o) {
         // Despawn if the parent lakitu does
@@ -176,7 +174,7 @@ void bhv_cloud_part_update(void) {
     if (o->parentObj->oAction == CLOUD_ACT_UNLOAD) {
         obj_mark_for_deletion(o);
     } else {
-        f32 size = 2.0f / 3.0f * o->parentObj->header.gfx.scale[0];
+        f32 scale = 2.0f / 3.0f * o->parentObj->header.gfx.scale[0];
         s16 angleFromCenter = o->parentObj->oFaceAngleYaw + 0x10000 / 5 * o->oBehParams2ndByte;
 
         // Takes 32 frames to cycle
@@ -185,22 +183,22 @@ void bhv_cloud_part_update(void) {
 
         f32 cloudRadius;
 
-        cur_obj_scale(size);
+        cur_obj_scale(scale);
 
         // Cap fwoosh's face size
-        if (o->oBehParams2ndByte == 5 && size > 2.0f) {
-            size = o->header.gfx.scale[1] = 2.0f;
+        if (o->oBehParams2ndByte == 5 && scale > 2.0f) {
+            scale = o->header.gfx.scale[1] = 2.0f;
         }
 
         // Move back and forth along (1, 1, 1)
-        localOffset = 2 * coss(localOffsetPhase) * size;
+        localOffset = 2 * coss(localOffsetPhase) * scale;
 
-        cloudRadius = 25.0f * size;
+        cloudRadius = 25.0f * scale;
 
         o->oPosX = o->parentObj->oCloudCenterX + cloudRadius * sins(angleFromCenter) + localOffset;
 
         o->oPosY =
-            o->parentObj->oCloudCenterY + localOffset + size * sCloudPartHeights[o->oBehParams2ndByte];
+            o->parentObj->oCloudCenterY + localOffset + scale * sCloudPartHeights[o->oBehParams2ndByte];
 
         o->oPosZ = o->parentObj->oPosZ + cloudRadius * coss(angleFromCenter) + localOffset;
 

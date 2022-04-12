@@ -47,13 +47,11 @@ void unagi_act_1_4(s32 arg0) {
         if (cur_obj_check_anim_frame(30)) {
             o->oForwardVel = 40.0f;
         }
-    } else {
-        if (cur_obj_check_if_at_animation_end()) {
-            if (o->oAction != arg0 && (o->oPathedPrevWaypointFlags & 0xFF) >= 7) {
-                cur_obj_init_animation_with_sound(3);
-            } else {
-                cur_obj_init_animation_with_sound(2);
-            }
+    } else if (cur_obj_check_if_at_animation_end()) {
+        if (o->oAction != arg0 && (o->oPathedPrevWaypointFlags & 0xFF) >= 7) {
+            cur_obj_init_animation_with_sound(3);
+        } else {
+            cur_obj_init_animation_with_sound(2);
         }
     }
 
@@ -61,7 +59,7 @@ void unagi_act_1_4(s32 arg0) {
         cur_obj_play_sound_2(SOUND_GENERAL_MOVING_WATER);
     }
 
-    if (cur_obj_follow_path(0) == -1) {
+    if (cur_obj_follow_path(0) == PATH_REACHED_END) {
         o->oAction = arg0;
     }
 
@@ -140,13 +138,13 @@ void unagi_act_3(void) {
 }
 
 void bhv_unagi_loop(void) {
-    s32 val04;
+    s32 i;
 
     if (o->oUnagiUnk1B2 == 0) {
         o->oUnagiUnk1AC = 99999.0f;
         if (o->oDistanceToMario < 3000.0f) {
-            for (val04 = -4; val04 < 4; val04++) {
-                spawn_object_relative(val04, 0, 0, 0, o, MODEL_NONE, bhvUnagiSubobject);
+            for (i = -4; i < 4; i++) {
+                spawn_object_relative(i, 0, 0, 0, o, MODEL_NONE, bhvUnagiSubobject);
             }
             o->oUnagiUnk1B2 = 1;
         }
@@ -173,12 +171,10 @@ void bhv_unagi_loop(void) {
 }
 
 void bhv_unagi_subobject_loop(void) {
-    f32 val04;
-
     if (o->parentObj->oUnagiUnk1B2 == 0) {
         obj_mark_for_deletion(o);
     } else {
-        val04 = 300.0f * o->oBehParams2ndByte;
+        f32 val04 = 300.0f * o->oBehParams2ndByte;
 
         o->oPosY = o->parentObj->oPosY - val04 * sins(o->parentObj->oFaceAnglePitch) * 1.13f;
 

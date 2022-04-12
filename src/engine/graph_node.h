@@ -68,16 +68,14 @@ typedef Gfx *(*GraphNodeFunc)(s32 callContext, struct GraphNode *node, void *con
  *  Many graph node types have an update function that gets called
  *  when they are processed.
  */
-struct FnGraphNode
-{
+struct FnGraphNode {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ GraphNodeFunc func;
 };
 
 /** The very root of the geo tree. Specifies the viewport.
  */
-struct GraphNodeRoot
-{
+struct GraphNodeRoot {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ u8 areaIndex;
     /*0x15*/ s8 unk15; // ?
@@ -92,8 +90,7 @@ struct GraphNodeRoot
 /** A node that sets up an orthographic projection based on the global
  *  root node. Used to draw the skybox image.
  */
-struct GraphNodeOrthoProjection
-{
+struct GraphNodeOrthoProjection {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ f32 scale;
 };
@@ -102,8 +99,7 @@ struct GraphNodeOrthoProjection
  *  game world. It does not set up the camera position, that is done by
  *  the child of this node, which has type GraphNodeCamera.
  */
-struct GraphNodePerspective
-{
+struct GraphNodePerspective {
     /*0x00*/ struct FnGraphNode fnNode;
     /*0x18*/ s32 unused;
     /*0x1C*/ f32 fov;   // horizontal field of view in degrees
@@ -114,8 +110,7 @@ struct GraphNodePerspective
 /** An entry in the master list. It is a linked list of display lists
  *  carrying a transformation matrix.
  */
-struct DisplayListNode
-{
+struct DisplayListNode {
     Mtx *transform;
     void *displayList;
     struct DisplayListNode *next;
@@ -126,8 +121,7 @@ struct DisplayListNode
  *  different master list than opaque objects.
  *  It also sets the z-buffer on before rendering and off after.
  */
-struct GraphNodeMasterList
-{
+struct GraphNodeMasterList {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ struct DisplayListNode *listHeads[GFX_NUM_MASTER_LISTS];
     /*0x34*/ struct DisplayListNode *listTails[GFX_NUM_MASTER_LISTS];
@@ -136,8 +130,7 @@ struct GraphNodeMasterList
 /** Simply used as a parent to group multiple children.
  *  Does not have any additional functionality.
  */
-struct GraphNodeStart
-{
+struct GraphNodeStart {
     /*0x00*/ struct GraphNode node;
 };
 
@@ -147,8 +140,7 @@ struct GraphNodeStart
  *  Usage examples: Mario has three level's of detail: Normal, low-poly arms only, and fully low-poly
  *  The tower in Whomp's fortress has two levels of detail.
  */
-struct GraphNodeLevelOfDetail
-{
+struct GraphNodeLevelOfDetail {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ s16 minDistance;
     /*0x16*/ s16 maxDistance;
@@ -159,8 +151,7 @@ struct GraphNodeLevelOfDetail
  *  which is set in the node's function.
  *  Usage examples: room visibility, coin animation, blinking, Mario's power-up / hand pose / cap
  */
-struct GraphNodeSwitchCase
-{
+struct GraphNodeSwitchCase {
     /*0x00*/ struct FnGraphNode fnNode;
     /*0x18*/ s32 unused;
     /*0x1C*/ s16 numCases;
@@ -171,8 +162,7 @@ struct GraphNodeSwitchCase
  * GraphNode that specifies the location and aim of the camera.
  * When the roll is 0, the up vector is (0, 1, 0).
  */
-struct GraphNodeCamera
-{
+struct GraphNodeCamera {
     /*0x00*/ struct FnGraphNode fnNode;
     /*0x18*/ union {
         // When the node is created, a mode is assigned to the node.
@@ -195,8 +185,7 @@ struct GraphNodeCamera
  *  based on the ENEMYINFO array.
  *  The display list can be null, in which case it won't draw anything itself.
  */
-struct GraphNodeTranslationRotation
-{
+struct GraphNodeTranslationRotation {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ Vec3s translation;
@@ -207,12 +196,11 @@ struct GraphNodeTranslationRotation
  *  Usage example: SUPER MARIO logo letters in debug level select.
  *  The display list can be null, in which case it won't draw anything itself.
  */
-struct GraphNodeTranslation
-{
+struct GraphNodeTranslation {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ Vec3s translation;
-    u8 pad1E[2];
+    u8 filler[2];
 };
 
 /** GraphNode that rotates itself and its children.
@@ -220,12 +208,11 @@ struct GraphNodeTranslation
  *  set by a parent script node in that case.
  *  The display list can be null, in which case it won't draw anything itself.
  */
-struct GraphNodeRotation
-{
+struct GraphNodeRotation {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ Vec3s rotation;
-    u8 pad1E[2];
+    u8 filler[2];
 };
 
 /** GraphNode part that transforms itself and its children based on animation
@@ -235,8 +222,7 @@ struct GraphNodeRotation
  *  Used for Mario, enemies and anything else with animation data.
  *  The display list can be null, in which case it won't draw anything itself.
  */
-struct GraphNodeAnimatedPart
-{
+struct GraphNodeAnimatedPart {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ Vec3s translation;
@@ -247,8 +233,7 @@ struct GraphNodeAnimatedPart
  *  then it simply sets the billboard flag for the entire object, this node is
  *  used for billboard parts (like a chuckya or goomba body).
  */
-struct GraphNodeBillboard
-{
+struct GraphNodeBillboard {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ Vec3s translation;
@@ -257,8 +242,7 @@ struct GraphNodeBillboard
 /** A GraphNode that simply draws a display list without doing any
  *  transformation beforehand. It does inherit the parent's transformation.
  */
-struct GraphNodeDisplayList
-{
+struct GraphNodeDisplayList {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
 };
@@ -271,8 +255,7 @@ struct GraphNodeDisplayList
  *  There is also a level command that scales the entire level, used for THI.
  *  The display list can be null, in which case it won't draw anything itself.
  */
-struct GraphNodeScale
-{
+struct GraphNodeScale {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ f32 scale;
@@ -283,8 +266,7 @@ struct GraphNodeScale
  *  The shadow type determines the shape (round or rectangular), vertices (4 or 9)
  *  and other features.
  */
-struct GraphNodeShadow
-{
+struct GraphNodeShadow {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ s16 shadowScale; // diameter (when a circle) or side (when a square) of shadow
     /*0x16*/ u8 shadowSolidity; // opacity of shadow, 255 = opaque
@@ -294,8 +276,7 @@ struct GraphNodeShadow
 /** GraphNode that contains as its sharedChild a group node containing all
  *  object nodes.
  */
-struct GraphNodeObjectParent
-{
+struct GraphNodeObjectParent {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ struct GraphNode *sharedChild;
 };
@@ -308,8 +289,7 @@ struct GraphNodeObjectParent
  *  The parameter field gives extra context info. For shifting sand or paintings,
  *  it can determine which texture to use.
  */
-struct GraphNodeGenerated
-{
+struct GraphNodeGenerated {
     /*0x00*/ struct FnGraphNode fnNode;
     /*0x18*/ u32 parameter; // extra context for the function
 };
@@ -317,8 +297,7 @@ struct GraphNodeGenerated
 /** GraphNode that draws a background image or a rectangle of a color.
  *  Drawn in an orthographic projection, used for skyboxes.
  */
-struct GraphNodeBackground
-{
+struct GraphNodeBackground {
     /*0x00*/ struct FnGraphNode fnNode;
     /*0x18*/ s32 unused;
     /*0x1C*/ s32 background; // background ID, or rgba5551 color if fnNode.func is null
@@ -326,8 +305,7 @@ struct GraphNodeBackground
 
 /** Renders the object that Mario is holding.
  */
-struct GraphNodeHeldObject
-{
+struct GraphNodeHeldObject {
     /*0x00*/ struct FnGraphNode fnNode;
     /*0x18*/ s32 playerIndex;
     /*0x1C*/ struct Object *objNode;
@@ -339,11 +317,10 @@ struct GraphNodeHeldObject
  *  object node. Used for very large objects, such as shock wave rings that Bowser
  *  creates, tornadoes, the big eel.
  */
-struct GraphNodeCullingRadius
-{
+struct GraphNodeCullingRadius {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ s16 cullingRadius; // specifies the 'sphere radius' for purposes of frustum culling
-    u8 pad1E[2];
+    u8 filler[2];
 };
 
 extern struct GraphNodeMasterList *gCurGraphNodeMasterList;

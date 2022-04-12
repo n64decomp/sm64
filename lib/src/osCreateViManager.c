@@ -13,8 +13,8 @@ static OSIoMesg viEventCounterMesg;
 
 extern void __osTimerServicesInit(void);
 extern void __osTimerInterrupt(void);
-extern OSTime _osCurrentTime;
-extern u32 D_80365DA8;
+extern OSTime __osCurrentTime;
+extern u32 __osBaseCounter;
 extern u32 __osViIntrCount;
 void viMgrMain(void *);
 
@@ -92,13 +92,13 @@ void viMgrMain(void *vargs) {
                 __osViIntrCount++;
                 if (sp28) {
                     sp24 = osGetCount();
-                    _osCurrentTime = sp24;
+                    __osCurrentTime = sp24;
                     sp28 = 0;
                 }
-                sp24 = D_80365DA8;
-                D_80365DA8 = osGetCount();
-                sp24 = D_80365DA8 - sp24;
-                _osCurrentTime = _osCurrentTime + sp24;
+                sp24 = __osBaseCounter;
+                __osBaseCounter = osGetCount();
+                sp24 = __osBaseCounter - sp24;
+                __osCurrentTime = __osCurrentTime + sp24;
                 break;
 
             case 14:

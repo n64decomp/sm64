@@ -1,3 +1,4 @@
+
 /**
  * Behavior for WDW arrow lifts.
  * When a player stands on an arrow lift, it starts moving between

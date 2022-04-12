@@ -15,7 +15,7 @@ void note_set_resampling_rate(struct Note *note, f32 resamplingRateInput);
 #ifdef VERSION_SH
 void note_set_vel_pan_reverb(struct Note *note, struct ReverbInfo *reverbInfo)
 #else
-void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb)
+void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverbVol)
 #endif
 {
     struct NoteSubEu *sub = &note->noteSubEu;
@@ -30,7 +30,7 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb)
     UNUSED u32 pad1;
     f32 velocity;
     u8 pan;
-    u8 reverb;
+    u8 reverbVol;
     struct ReverbBitsData reverbBits;
 #endif
 
@@ -38,7 +38,7 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb)
     note_set_resampling_rate(note, reverbInfo->freqScale);
     velocity = reverbInfo->velocity;
     pan = reverbInfo->pan;
-    reverb = reverbInfo->reverb;
+    reverbVol = reverbInfo->reverbVol;
     reverbBits = reverbInfo->reverbBits.s;
     pan &= 0x7f;
 #else
@@ -119,7 +119,7 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, u8 pan, u8 reverb)
     }
 
 #ifdef VERSION_SH
-if (velocity < 0.0f) {
+    if (velocity < 0.0f) {
         velocity = 0.0f;
     }
     if (velocity > 1.0f) {
@@ -128,7 +128,7 @@ if (velocity < 0.0f) {
 
     sub->targetVolLeft =  ((s32) (velocity * volLeft * 4095.999f));
     sub->targetVolRight = ((s32) (velocity * volRight * 4095.999f));
-    sub->bankId = reverbInfo->bankId;
+    sub->synthesisVolume = reverbInfo->synthesisVolume;
     sub->filter = reverbInfo->filter;
 #else
     if (velocity < 0.0f) {
@@ -144,11 +144,12 @@ if (velocity < 0.0f) {
     sub->targetVolRight = ((s32) (velocity * volRight) & 0xffff) >> 5;
 #endif
 
-    if (sub->reverbVol != reverb) {
+    //! @bug for the change to UQ0.7, the if statement should also have been changed accordingly
+    if (sub->reverbVol != reverbVol) {
 #ifdef VERSION_SH
-        sub->reverbVol = reverb >> 1;
+        sub->reverbVol = reverbVol >> 1;
 #else
-        sub->reverbVol = reverb;
+        sub->reverbVol = reverbVol;
 #endif
         sub->envMixerNeedsInit = TRUE;
         return;
@@ -345,7 +346,7 @@ void process_notes(void) {
 #ifndef VERSION_SH
     f32 frequency;
 #if defined(VERSION_JP) || defined(VERSION_US)
-    u8 reverb;
+    u8 reverbVol;
 #endif
     f32 velocity;
 #if defined(VERSION_JP) || defined(VERSION_US)
@@ -359,11 +360,11 @@ void process_notes(void) {
     struct NoteSubEu *noteSubEu;
 #ifndef VERSION_SH
     UNUSED u8 pad[12];
-    u8 reverb;
+    u8 reverbVol;
     UNUSED u8 pad3;
     u8 pan;
 #else
-    u8 pad[8];
+    UNUSED u8 pad[8];
     struct ReverbInfo reverbInfo;
 #endif
     u8 bookOffset;
@@ -508,9 +509,9 @@ void process_notes(void) {
                 reverbInfo.freqScale = attributes->freqScale;
                 reverbInfo.velocity = attributes->velocity;
                 reverbInfo.pan = attributes->pan;
-                reverbInfo.reverb = attributes->reverb;
+                reverbInfo.reverbVol = attributes->reverbVol;
                 reverbInfo.reverbBits = attributes->reverbBits;
-                reverbInfo.bankId = attributes->unk1;
+                reverbInfo.synthesisVolume = attributes->synthesisVolume;
                 reverbInfo.filter = attributes->filter;
                 bookOffset = noteSubEu->bookOffset;
             } else {
@@ -518,8 +519,8 @@ void process_notes(void) {
                 reverbInfo.velocity = playbackState->parentLayer->noteVelocity;
                 reverbInfo.pan = playbackState->parentLayer->notePan;
                 reverbInfo.reverbBits = playbackState->parentLayer->reverbBits;
-                reverbInfo.reverb = playbackState->parentLayer->seqChannel->reverb;
-                reverbInfo.bankId = playbackState->parentLayer->seqChannel->unkSH0C;
+                reverbInfo.reverbVol = playbackState->parentLayer->seqChannel->reverbVol;
+                reverbInfo.synthesisVolume = playbackState->parentLayer->seqChannel->synthesisVolume;
                 reverbInfo.filter = playbackState->parentLayer->seqChannel->filter;
                 bookOffset = playbackState->parentLayer->seqChannel->bookOffset & 0x7;
                 if (playbackState->parentLayer->seqChannel->seqPlayer->muted
@@ -538,7 +539,7 @@ void process_notes(void) {
                 frequency = attributes->freqScale;
                 velocity = attributes->velocity;
                 pan = attributes->pan;
-                reverb = attributes->reverb;
+                reverbVol = attributes->reverbVol;
                 if (1) {
                 }
                 bookOffset = noteSubEu->bookOffset;
@@ -546,7 +547,7 @@ void process_notes(void) {
                 frequency = playbackState->parentLayer->noteFreqScale;
                 velocity = playbackState->parentLayer->noteVelocity;
                 pan = playbackState->parentLayer->notePan;
-                reverb = playbackState->parentLayer->seqChannel->reverb;
+                reverbVol = playbackState->parentLayer->seqChannel->reverbVol;
                 bookOffset = playbackState->parentLayer->seqChannel->bookOffset & 0x7;
             }
 
@@ -554,7 +555,7 @@ void process_notes(void) {
             frequency *= gAudioBufferParameters.resampleRate;
             velocity = velocity * scale * scale;
             note_set_resampling_rate(note, frequency);
-            note_set_vel_pan_reverb(note, velocity, pan, reverb);
+            note_set_vel_pan_reverb(note, velocity, pan, reverbVol);
 #endif
             noteSubEu->bookOffset = bookOffset;
             skip:;
@@ -603,12 +604,12 @@ void process_notes(void) {
                 frequency = attributes->freqScale;
                 velocity = attributes->velocity;
                 pan = attributes->pan;
-                reverb = attributes->reverb;
+                reverbVol = attributes->reverbVol;
             } else {
                 frequency = note->parentLayer->noteFreqScale;
                 velocity = note->parentLayer->noteVelocity;
                 pan = note->parentLayer->notePan;
-                reverb = note->parentLayer->seqChannel->reverb;
+                reverbVol = note->parentLayer->seqChannel->reverbVol;
             }
 
             scale = note->adsrVolScale;
@@ -621,7 +622,7 @@ void process_notes(void) {
             scale *= 4.3498e-5f; // ~1 / 23000
             velocity = velocity * scale * scale;
             note_set_frequency(note, frequency);
-            note_set_vel_pan_reverb(note, velocity, pan, reverb);
+            note_set_vel_pan_reverb(note, velocity, pan, reverbVol);
             continue;
         }
 #endif
@@ -746,9 +747,9 @@ void seq_channel_layer_decay_release_internal(struct SequenceChannelLayer *seqLa
         attributes->reverbBits = seqLayer->reverbBits;
 #endif
         if (seqLayer->seqChannel != NULL) {
-            attributes->reverb = seqLayer->seqChannel->reverb;
+            attributes->reverbVol = seqLayer->seqChannel->reverbVol;
 #ifdef VERSION_SH
-            attributes->unk1 = seqLayer->seqChannel->unkSH0C;
+            attributes->synthesisVolume = seqLayer->seqChannel->synthesisVolume;
             attributes->filter = seqLayer->seqChannel->filter;
             if (seqLayer->seqChannel->seqPlayer->muted && (seqLayer->seqChannel->muteBehavior & 8) != 0) {
                 note->noteSubEu.finished = TRUE;
@@ -1159,7 +1160,7 @@ void note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLaye
         build_synthetic_wave(note, seqLayer, instId);
     }
 #ifdef VERSION_SH
-    note->unkSH33 = seqLayer->seqChannel->bankId;
+    note->bankId = seqLayer->seqChannel->bankId;
 #else
     sub->bankId = seqLayer->seqChannel->bankId;
 #endif
@@ -1444,7 +1445,7 @@ void note_init_all(void) {
 #if defined(VERSION_EU) || defined(VERSION_SH)
         note->waveId = 0;
 #else
-        note->reverb = 0;
+        note->reverbVol = 0;
         note->usesHeadsetPanEffects = FALSE;
         note->sampleCount = 0;
         note->instOrWave = 0;

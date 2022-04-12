@@ -7,7 +7,7 @@
 /**
  * The collision models for cube and triangular prism, respectively.
  */
-static void const *sTTCRotatingSolidCollisionModels[] = {
+static Collision const *sTTCRotatingSolidCollisionModels[] = {
     ttc_seg7_collision_07014F70,
     ttc_seg7_collision_07015008,
 };
@@ -51,7 +51,7 @@ void bhv_ttc_rotating_solid_update(void) {
                 (s32)((f32) o->oTTCRotatingSolidNumTurns / o->oTTCRotatingSolidNumSides * 0x10000);
             s32 startRoll = o->oFaceAngleRoll;
 
-            obj_face_roll_approach(targetRoll, 0x4B0);
+            obj_face_roll_approach(targetRoll, 1200);
 
             o->oAngleVelRoll = o->oFaceAngleRoll - startRoll;
             if (o->oAngleVelRoll == 0) {

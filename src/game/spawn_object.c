@@ -163,7 +163,7 @@ void clear_object_lists(struct ObjectNode *objLists) {
  * This function looks broken, but it appears to attempt to delete the leaf
  * graph nodes under obj and obj's siblings.
  */
-static void unused_delete_leaf_nodes(struct Object *obj) {
+UNUSED static void unused_delete_leaf_nodes(struct Object *obj) {
     struct Object *children;
     struct Object *sibling;
     struct Object *obj0 = obj;

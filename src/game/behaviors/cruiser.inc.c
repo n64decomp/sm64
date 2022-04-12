@@ -1,4 +1,4 @@
-// cruiser.c.inc
+// cruiser.inc.c
 
 void bhv_rr_cruiser_wing_init(void) {
     o->oRRCruiserWingUnkF4 = o->oFaceAngleYaw;

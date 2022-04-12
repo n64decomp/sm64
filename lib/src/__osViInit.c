@@ -1,14 +1,6 @@
 #include "libultra_internal.h"
 #include "hardware.h"
 
-#ifdef VERSION_SH
-extern s32 D_SH_80000300; // Potentially a TV type
-#endif
-
-#ifndef VERSION_JP
-extern u32 osTvType;
-#endif
-
 OSViContext sViContexts[2] = { 0 };
 OSViContext *__osViCurr = &sViContexts[0];
 OSViContext *__osViNext = &sViContexts[1];
@@ -80,6 +72,7 @@ void __osViInit(void) {
         osViClock = 0x02E6025C;
 #endif
     }
+
 #endif
 
     __osViNext->unk00 = 0x20;

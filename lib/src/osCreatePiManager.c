@@ -12,7 +12,7 @@ OSMgrArgs __osPiDevMgr = { 0 };
 OSPiHandle *__osPiTable = NULL;
 #endif
 #ifdef VERSION_SH
-OSPiHandle *__osCurrentHandle[2] = { &CartRomHandle, &LeoDiskHandle };
+OSPiHandle **__osCurrentHandle[2] = { &CartRomHandle, &LeoDiskHandle };
 #endif
 OSThread piMgrThread;
 u32 piMgrStack[0x400]; // stack bottom

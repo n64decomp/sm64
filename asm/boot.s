@@ -1,21 +1,21 @@
-# assembler directives
-.set noat      # allow manual use of $at
-.set noreorder # don't insert nops after branches
+// assembler directives
+.set noat      // allow manual use of $at
+.set noreorder // don't insert nops after branches
 .set gp=64
 
-.include "macros.inc"
+#include "macros.inc"
 
-# 0xA0000000-0xBFFFFFFF: KSEG1 direct map non-cache mirror of 0x00000000
-# 0xA4000000-0xA4000FFF: RSP DMEM
+// 0xA0000000-0xBFFFFFFF: KSEG1 direct map non-cache mirror of 0x00000000
+// 0xA4000000-0xA4000FFF: RSP DMEM
 
-# 0xA4000000-0xA400003F: ROM header
+// 0xA4000000-0xA400003F: ROM header
 
 .section .text, "ax"
 
-# 0xA4000040-0xA4000B6F: IPL3
+// 0xA4000040-0xA4000B6F: IPL3
 
-# IPL3 entry point jumped to from IPL2
-glabel ipl3_entry # 0xA4000040
+// IPL3 entry point jumped to from IPL2
+glabel ipl3_entry // 0xA4000040
     mtc0  $zero, $13
     mtc0  $zero, $9
     mtc0  $zero, $11
@@ -797,7 +797,7 @@ func_A4000AD0:
      nop
     nop
 
-# 0xA4000B70-0xA4000FFF: IPL3 Font
+// 0xA4000B70-0xA4000FFF: IPL3 Font
 glabel ipl3_font
 .incbin "textures/ipl3_raw/ipl3_font_00.ia1"
 .incbin "textures/ipl3_raw/ipl3_font_01.ia1"

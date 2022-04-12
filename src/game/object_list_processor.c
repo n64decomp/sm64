@@ -225,7 +225,7 @@ void copy_mario_state_to_object(void) {
     s32 i = 0;
     // L is real
     if (gCurrentObject != gMarioObject) {
-        i += 1;
+        i++;
     }
 
     gCurrentObject->oVelX = gMarioStates[i].vel[0];
@@ -300,7 +300,7 @@ s32 update_objects_starting_at(struct ObjectNode *objList, struct ObjectNode *fi
         cur_obj_update();
 
         firstObj = firstObj->next;
-        count += 1;
+        count++;
     }
 
     return count;
@@ -470,7 +470,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
     while (spawnInfo != NULL) {
         struct Object *object;
-        UNUSED s32 unused;
+        UNUSED u8 filler[4];
         const BehaviorScript *script;
         UNUSED s16 arg16 = (s16)(spawnInfo->behaviorArg & 0xFFFF);
 
@@ -571,13 +571,13 @@ void update_terrain_objects(void) {
  * the order specified by sObjectListUpdateOrder.
  */
 void update_non_terrain_objects(void) {
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     s32 listIndex;
 
     s32 i = 2;
     while ((listIndex = sObjectListUpdateOrder[i]) != -1) {
         gObjectCounter += update_objects_in_list(&gObjectLists[listIndex]);
-        i += 1;
+        i++;
     }
 }
 
@@ -585,13 +585,13 @@ void update_non_terrain_objects(void) {
  * Unload deactivated objects in any object list.
  */
 void unload_deactivated_objects(void) {
-    UNUSED s32 unused;
+    UNUSED u8 filler[4];
     s32 listIndex;
 
     s32 i = 0;
     while ((listIndex = sObjectListUpdateOrder[i]) != -1) {
         unload_deactivated_objects_in_list(&gObjectLists[listIndex]);
-        i += 1;
+        i++;
     }
 
     // TIME_STOP_UNKNOWN_0 was most likely intended to be used to track whether
@@ -602,7 +602,7 @@ void unload_deactivated_objects(void) {
 /**
  * Unused profiling function.
  */
-static u16 unused_get_elapsed_time(u64 *cycleCounts, s32 index) {
+UNUSED static u16 unused_get_elapsed_time(u64 *cycleCounts, s32 index) {
     u16 time;
     f64 cycles;
 
