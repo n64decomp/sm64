@@ -74,14 +74,14 @@
             "release_rate": 100,
             "normal_range_lo": 41,
             "envelope": "envelope0",
-            "sound_lo": "00",
+            "sound_lo": "00_banjo_D2",
             "sound": "01_banjo_A2"
         },
         "inst1": {
             "release_rate": 100,
             "normal_range_lo": 41,
             "envelope": "envelope1",
-            "sound_lo": "00",
+            "sound_lo": "00_banjo_D2",
             "sound": "01_banjo_A2"
         },
         "inst2": {
