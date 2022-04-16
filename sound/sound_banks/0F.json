@@ -33,24 +33,24 @@
             "normal_range_lo": 55,
             "normal_range_hi": 56,
             "envelope": "envelope0",
-            "sound_lo": "2A",
-            "sound": "2B",
-            "sound_hi": "2C"
+            "sound_lo": "2A_tabla_riff_1",
+            "sound": "2B_tabla_riff_2",
+            "sound_hi": "2C_tabla_riff_3"
         },
         "inst1": {
             "release_rate": 10,
             "envelope": "envelope1",
-            "sound": "22_boys_choir"
+            "sound": "22_boys_choir_Bb4"
         },
         "inst2": {
             "release_rate": 90,
             "envelope": "envelope2",
-            "sound": "28_sitar_1"
+            "sound": "28_sitar_1_A2"
         },
         "inst3": {
             "release_rate": 10,
             "envelope": "envelope3",
-            "sound": "39_sitar_2"
+            "sound": "39_sitar_2_C#3"
         }
     },
     "instrument_list": [

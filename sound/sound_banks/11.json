@@ -94,37 +94,37 @@
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "21_sine_bass"
+            "sound": "21_sine_bass_Bb2"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "35_gospel_organ"
+            "sound": "35_gospel_organ_F4"
         },
         "inst3": {
             "release_rate": 10,
             "envelope": "envelope3",
-            "sound": "48_steel_drum"
+            "sound": "48_steel_drum_C#3"
         },
         "inst4": {
             "release_rate": 208,
             "envelope": "envelope4",
-            "sound": "19_brass"
+            "sound": "19_brass_Eb3"
         },
         "inst5": {
             "release_rate": 208,
             "envelope": "envelope5",
-            "sound": "1A_slap_bass"
+            "sound": "1A_slap_bass_G#2"
         },
         "inst6": {
             "release_rate": 128,
             "envelope": "envelope6",
-            "sound": "1B_organ_2"
+            "sound": "1B_percussive_synth_Eb3"
         },
         "inst7": {
             "release_rate": 208,
             "envelope": "envelope7",
-            "sound": "1C"
+            "sound": "1C_les_paul_guitar_E2"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope8", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

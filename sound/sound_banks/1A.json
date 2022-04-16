@@ -61,34 +61,34 @@
         "inst0": {
             "release_rate": 67,
             "envelope": "envelope0",
-            "sound": "17_trumpet"
+            "sound": "17_trumpet_C#3"
         },
         "inst1": {
             "release_rate": 119,
             "envelope": "envelope1",
-            "sound": "2D_trombone"
+            "sound": "2D_trombone_Bb2"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "16_french_horns"
+            "sound": "16_french_horns_C3"
         },
         "inst3": {
             "release_rate": 24,
             "normal_range_lo": 42,
             "envelope": "envelope3",
-            "sound_lo": "14_strings_5",
-            "sound": "15_strings_4"
+            "sound_lo": "14_strings_Eb2",
+            "sound": "15_strings_B3"
         },
         "inst4": {
             "release_rate": 208,
             "envelope": "envelope4",
-            "sound": "19_brass"
+            "sound": "19_brass_Eb3"
         },
         "inst5": {
             "release_rate": 10,
             "envelope": "envelope5",
-            "sound": "26_crystal_rhodes"
+            "sound": "26_crystal_rhodes_C4"
         },
         "inst6": {
             "release_rate": 10,
