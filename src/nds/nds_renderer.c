@@ -72,6 +72,111 @@ static int32_t z_depth;
 static int no_texture;
 static int frame_count;
 
+struct
+{
+    const void *texture;
+    gl_texture_data *tex;
+} glTexQueue[128];
+
+static uint8_t glTexCount;
+static void glTexSync();
+
+// This is a modified (and simplified) version of glTexImage2D from libnds
+// The original updates texture VRAM right away, which causes tearing when done mid-frame
+// This adds textures to a queue, so VRAM will only be updated when glTexSync is called
+static int glTexImage2DAsync(int target, int empty1, GL_TEXTURE_TYPE_ENUM type, int sizeX, int sizeY, int empty2, int param, const void *texture) {
+    if (!glGlob->activeTexture)
+        return 0;
+
+    uint32_t size = 1 << (sizeX + sizeY + 6);
+    uint32_t typeSizes[9] = { 0, 8, 2, 4, 8, 3, 8, 16, 16 }; // Represents the number of bits per pixels for each format
+
+    if (type == GL_RGBA)
+        size <<= 1;
+    else if (type == GL_NOTEXTURE)
+        size = 0;
+    else if (type != GL_RGB8_A5)
+        return 0;
+
+    gl_texture_data *tex = (gl_texture_data*)DynamicArrayGet(&glGlob->texturePtrs, glGlob->activeTexture);
+
+    // Clear out the texture data if one already exists for the active texture
+    if (tex) {
+        uint32_t texType = ((tex->texFormat >> 26) & 0x07);
+        if ((tex->texSize != size) || (typeSizes[texType] != typeSizes[type])) {
+            if(tex->texIndexExt)
+                vramBlock_deallocateBlock(glGlob->vramBlocks[0], tex->texIndexExt);
+            if(tex->texIndex)
+                vramBlock_deallocateBlock(glGlob->vramBlocks[0], tex->texIndex);
+            tex->texIndex = tex->texIndexExt = 0;
+            tex->vramAddr = NULL;
+        }
+    }
+
+    tex->texSize = size;
+
+    // Allocate a new space for the texture in VRAM
+    if (!tex->texIndex) {
+        if (type != GL_NOTEXTURE) {
+            tex->texIndex = vramBlock_allocateBlock(glGlob->vramBlocks[0], tex->texSize, 3);
+        }
+        if (tex->texIndex) {
+            tex->vramAddr = vramBlock_getAddr(glGlob->vramBlocks[0], tex->texIndex);
+            tex->texFormat = (sizeX << 20) | (sizeY << 23) | (type << 26) | (((uint32_t)tex->vramAddr >> 3) & 0xFFFF);
+        } else {
+            tex->vramAddr = NULL;
+            tex->texFormat = 0;
+            return 0;
+        }
+    } else {
+        tex->texFormat = (sizeX << 20) | (sizeY << 23) | (type << 26) | (tex->texFormat & 0xFFFF);
+    }
+
+    glTexParameter(target, param);
+
+    // Queue texture data to be copied into VRAM
+    if (type != GL_NOTEXTURE && texture) {
+        if (glTexCount == 128)
+            glTexSync();
+
+        glTexQueue[glTexCount].texture = texture;
+        glTexQueue[glTexCount].tex = tex;
+        glTexCount++;
+    }
+
+    return 1;
+}
+
+static void glTexSync() {
+    // Copy all queued texture data into VRAM
+    for (size_t i = 0; i < glTexCount; i++) {
+        const void *texture = glTexQueue[i].texture;
+        gl_texture_data *tex = glTexQueue[i].tex;
+
+        uint32_t vramTemp = VRAM_CR;
+        uint16_t *startBank = vramGetBank((uint16_t*)tex->vramAddr);
+        uint16_t *endBank = vramGetBank((uint16_t*)((char*)tex->vramAddr + tex->texSize - 1));
+
+        do {
+            if (startBank == VRAM_A)
+                vramSetBankA(VRAM_A_LCD);
+            else if (startBank == VRAM_B)
+                vramSetBankB(VRAM_B_LCD);
+            else if (startBank == VRAM_C)
+                vramSetBankC(VRAM_C_LCD);
+            else if (startBank == VRAM_D)
+                vramSetBankD(VRAM_D_LCD);
+            startBank += 0x10000;
+        } while (startBank <= endBank);
+
+        dmaCopyWords(0, texture, tex->vramAddr, tex->texSize);
+
+        vramRestorePrimaryBanks(vramTemp);
+    }
+
+    glTexCount = 0;
+}
+
 static void load_texture() {
     // Look up the current texture using a simple hash calculated from its address
     uint32_t index = ((uint32_t)texture_address >> 5) & 0x7FF;
@@ -91,7 +196,7 @@ static void load_texture() {
         // Copy the texture back into VRAM if it was pushed out, pushing out other textures if necessary
         glGenTextures(1, &cur->name);
         glBindTexture(GL_TEXTURE_2D, cur->name);
-        while (!glTexImage2D(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->address)) {
+        while (!glTexImage2DAsync(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->address)) {
             glDeleteTextures(1, &texture_map[texture_fifo[texture_fifo_end]].name);
             texture_map[texture_fifo[texture_fifo_end]].name = 0;
             texture_fifo_end = (texture_fifo_end + 1) & 0x7FF;
@@ -123,7 +228,7 @@ static void load_texture() {
     // Copy the texture into VRAM, pushing out other textures if necessary
     glGenTextures(1, &cur->name);
     glBindTexture(GL_TEXTURE_2D, cur->name);
-    while (!glTexImage2D(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->address)) {
+    while (!glTexImage2DAsync(GL_TEXTURE_2D, 0, cur->type, cur->size_x, cur->size_y, 0, TEXGEN_TEXCOORD, cur->address)) {
         glDeleteTextures(1, &texture_map[texture_fifo[texture_fifo_end]].name);
         texture_map[texture_fifo[texture_fifo_end]].name = 0;
         texture_fifo_end = (texture_fifo_end + 1) & 0x7FF;
@@ -867,6 +972,10 @@ static void execute(Gfx* cmd) {
 static void count_frames() {
     // Count a frame (triggered at V-blank)
     frame_count++;
+
+    // Update texture VRAM for the next frame
+    if (glTexCount > 0)
+        glTexSync();
 }
 
 void renderer_init() {
@@ -891,7 +1000,7 @@ void renderer_init() {
     // Generate an empty texture for when no texture should be used
     glGenTextures(1, &no_texture);
     glBindTexture(GL_TEXTURE_2D, no_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_NOTEXTURE, 0, 0, 0, TEXGEN_TEXCOORD, NULL);
+    glTexImage2DAsync(GL_TEXTURE_2D, 0, GL_NOTEXTURE, 0, 0, 0, TEXGEN_TEXCOORD, NULL);
 
     // Set up an intensity palette for IA textures
     uint16_t palette[8];
