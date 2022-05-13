@@ -24,8 +24,9 @@ struct Light {
     uint8_t r, g, b;
 };
 
-static struct Color env_color;
 static struct Color fill_color;
+static struct Color fog_color;
+static struct Color env_color;
 
 static Vtx vertex_buffer[16];
 static struct Texture texture_map[2048];
@@ -68,6 +69,10 @@ static bool use_env_alpha;
 static bool shrunk;
 static bool background;
 static int32_t z_depth;
+
+static uint8_t fog_status;
+static uint16_t fog_min;
+static uint16_t fog_max;
 
 static int no_texture;
 static int frame_count;
@@ -264,11 +269,16 @@ static void draw_vertices(const Vtx_t **v, int count) {
         texture_dirty = false;
     }
 
-    // Apply the polygon attributes
-    glPolyFmt(poly_fmt | POLY_ALPHA(alpha) | POLY_ID(polygon_id));
-    glBegin(GL_TRIANGLE);
-
     if (geometry_mode & G_ZBUFFER) {
+        // Apply fog to opaque polygons, and IA textures because they look bad otherwise
+        int fmt = poly_fmt | POLY_ALPHA(alpha) | POLY_ID(polygon_id);
+        if (alpha == 31 || ((glGetTexParameter() >> 26) & 0x7) == GL_RGB8_A5)
+            fmt |= POLY_FOG;
+
+        // Apply the polygon attributes
+        glPolyFmt(fmt);
+        glBegin(GL_TRIANGLE);
+
         // Incoming vertices expect W to be 1, not 1 << 12 like the DS sets
         // This is a hack to scale W values; it's reverted during matrix multiplication to prevent breakage
         if (!shrunk) {
@@ -332,6 +342,10 @@ static void draw_vertices(const Vtx_t **v, int count) {
             background = false;
         }
     } else {
+        // Apply the polygon attributes
+        glPolyFmt(poly_fmt | POLY_ALPHA(alpha) | POLY_ID(polygon_id));
+        glBegin(GL_TRIANGLE);
+
         // Since depth test is disabled, 2D elements are likely being drawn and these expect proper multiplication by 1
         // So instead of scaling the W value down, scale the other components up to have proper 12-bit fractionals
         const m4x4 enlarge = {{
@@ -589,9 +603,28 @@ static void g_moveword(Gwords *words) {
             num_lights = (words->w1 / 24) + 2;
             break;
 
+        case G_MW_FOG:
+            if (fog_status < 2) {
+                // Calculate the min and max fog depths, between 0 and 1000
+                int16_t mul = words->w1 >> 16;
+                int16_t ofs = words->w1 >>  0;
+                uint16_t min = 500 - ofs * 500 / mul;
+                uint16_t max = 128000 / mul + min;
+
+                // Only allow changing fog twice per frame, and then lock it
+                // This is a hack to keep the above-water fog set in JRB
+                // The DS can only render one fog per frame, and this one looks better
+                if (fog_status == 0 || fog_min != min || fog_max != max)
+                {
+                    fog_status++;
+                    fog_min = min;
+                    fog_max = max;
+                }
+            }
+            break;
+
         // Unimplemented writes
         case G_MW_CLIP:      break;
-        case G_MW_FOG:       break;
         case G_MW_PERSPNORM: break;
 
         default:
@@ -840,6 +873,16 @@ static void g_setfillcolor(Gwords *words) {
     fill_color.a = (words->w1 >>  0) & 0xFF;
 }
 
+static void g_setfogcolor(Gwords *words) {
+    // Set the fog color if it isn't locked
+    if (fog_status < 2) {
+        fog_color.r = (words->w1 >> 24) & 0xFF;
+        fog_color.g = (words->w1 >> 16) & 0xFF;
+        fog_color.b = (words->w1 >>  8) & 0xFF;
+        fog_color.a = (words->w1 >>  0) & 0xFF;
+    }
+}
+
 static void g_setenvcolor(Gwords *words) {
     // Set the environment color
     env_color.r = (words->w1 >> 24) & 0xFF;
@@ -927,6 +970,7 @@ static void execute(Gfx* cmd) {
             case G_SETTILE:        g_settile(&cmd->words);        break;
             case G_FILLRECT:       g_fillrect(&cmd->words);       break;
             case G_SETFILLCOLOR:   g_setfillcolor(&cmd->words);   break;
+            case G_SETFOGCOLOR:    g_setfogcolor(&cmd->words);    break;
             case G_SETENVCOLOR:    g_setenvcolor(&cmd->words);    break;
             case G_SETCOMBINE:     g_setcombine(&cmd->words);     break;
             case G_SETTIMG:        g_settimg(&cmd->words);        break;
@@ -942,7 +986,6 @@ static void execute(Gfx* cmd) {
             // Unimplemented opcodes
             case G_SETSCISSOR:    break;
             case G_SETTILESIZE:   break;
-            case G_SETFOGCOLOR:   break;
             case G_SETBLENDCOLOR: break;
             case G_SETPRIMCOLOR:  break;
 
@@ -1016,13 +1059,44 @@ void renderer_init() {
 }
 
 void draw_frame(Gfx *display_list) {
-    // Reset the depth hack parameters
+    // Reset some parameters at the start of a frame
     background = true;
     z_depth = 0x1000 * 6;
+    fog_status = 0;
 
-    // Process and draw a frame
+    // Process and draw the frame
     execute(display_list);
     glFlush(GL_TRANS_MANUALSORT);
+
+    // Configure fog based on the frame parameters
+    if (fog_status)
+    {
+        // Calculate the largest fog shift that still covers the fog distance
+        int shift = 0;
+        for (int i = 500; i >= fog_max - fog_min; i >>= 1)
+            shift++;
+
+        // Calculate the density increase for each fog step, rounded
+        int density = 0;
+        int inc = ((((128 * 1000) << 1) / ((fog_max - fog_min) * 32)) + 1) >> (shift + 1);
+
+        // Fill the fog density table
+        for (int i = 0; i < 32; i++) {
+            glFogDensity(i, density);
+            if ((density += inc) > 127)
+                density = 127;
+        }
+
+        // Apply the fog
+        glFogShift(shift);
+        glFogOffset((fog_min * 0x7FFF / 1000) - (0x400 >> shift));
+        glFogColor(fog_color.r >> 3, fog_color.g >> 3, fog_color.b >> 3, fog_color.a >> 3);
+        glEnable(GL_FOG);
+    }
+    else
+    {
+        glDisable(GL_FOG);
+    }
 
     // Limit to 30FPS by waiting for up to 2 frames, depending on how long it took the current frame to render
     for (int i = frame_count; i < 2; i++) {
