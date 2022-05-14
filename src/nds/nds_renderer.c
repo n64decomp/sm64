@@ -270,9 +270,9 @@ static void draw_vertices(const Vtx_t **v, int count) {
     }
 
     if (geometry_mode & G_ZBUFFER) {
-        // Apply fog to opaque polygons, and IA textures because they look bad otherwise
+        // Apply fog to polygons with it enabled, and IA textures because they look bad otherwise
         int fmt = poly_fmt | POLY_ALPHA(alpha) | POLY_ID(polygon_id);
-        if (alpha == 31 || ((glGetTexParameter() >> 26) & 0x7) == GL_RGB8_A5)
+        if ((geometry_mode & G_FOG) || ((glGetTexParameter() >> 26) & 0x7) == GL_RGB8_A5)
             fmt |= POLY_FOG;
 
         // Apply the polygon attributes
