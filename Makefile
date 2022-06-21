@@ -281,7 +281,7 @@ endif
 SOUND_BANK_FILES    := $(wildcard sound/sound_banks/*.json)
 SOUND_SAMPLE_DIRS   := $(wildcard sound/samples/*)
 SOUND_SAMPLE_AIFFS  := $(foreach dir,$(SOUND_SAMPLE_DIRS),$(wildcard $(dir)/*.aiff))
-ifdef TARGET_NDS
+ifeq ($(TARGET_NDS),1)
 SOUND_SAMPLE_HALFS  := $(wildcard sound/samples/instruments/*.aiff) sound/samples/sfx_9/03.aiff
 SOUND_SAMPLE_AIFCS  := $(foreach file,$(SOUND_SAMPLE_AIFFS),$(BUILD_DIR)/$(file:.aiff=.ima)) $(foreach file,$(SOUND_SAMPLE_HALFS),$(BUILD_DIR)/$(file:.aiff=.half.ima))
 else
@@ -575,7 +575,7 @@ $(BUILD_DIR)/src/game/ingame_menu.o: $(BUILD_DIR)/include/text_strings.h
 #==============================================================================#
 TEXTURE_ENCODING := u8
 
-ifdef TARGET_NDS
+ifeq ($(TARGET_NDS),1)
   TEXTURE_OPTIONS := -d
 endif
 
@@ -638,7 +638,7 @@ endif
 # Sound File Generation                                                        #
 #==============================================================================#
 
-ifdef TARGET_NDS
+ifeq ($(TARGET_NDS),1)
 $(BUILD_DIR)/%.half.wav: %.aiff
 	$(call print,Converting AIFF:,$<,$@)
 	$(V)$(SOX) $^ -r $(shell $(PYTHON) -c "print($(shell $(SOX) --i -r $^) / 2)") $@
