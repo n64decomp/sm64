@@ -64,6 +64,7 @@ ifeq ($(TARGET_NDS),1)
   COMPILER := gcc
   DEVKITPRO ?= /opt/devkitpro
   DEVKITARM ?= $(DEVKITPRO)/devkitARM
+  NDSTOOL ?= $(DEVKITPRO)/tools/bin/ndstool
 endif
 
 TARGET := sm64.$(VERSION)
@@ -216,6 +217,8 @@ BUILD_DIR_BASE := build
 # BUILD_DIR is the location where all build artifacts are placed
 ifeq ($(TARGET_NDS),1)
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)_nds
+ARM7           := $(BUILD_DIR)/$(TARGET).arm7.elf
+ARM9           := $(BUILD_DIR)/$(TARGET).arm9.elf
 ROM            := $(BUILD_DIR)/$(TARGET).nds
 else
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)
@@ -649,7 +652,7 @@ $(BUILD_DIR)/%.wav: %.aiff
 
 $(BUILD_DIR)/%.ima: $(BUILD_DIR)/%.wav
 	$(call print,Encoding IMA:,$<,$@)
-	$(V)$(ADPCM_XQ) -q -r -b15 $^ $@
+	$(V)$(ADPCM_XQ) -y -q -r -b15 $^ $@
 
 else
 $(BUILD_DIR)/%.table: %.aiff
@@ -836,10 +839,18 @@ $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
 
 # Build NDS ROM
 ifeq ($(TARGET_NDS),1)
-$(ROM): $(O_FILES) $(ARM7_O_FILES) $(MIO0_FILES:.mio0=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
-	$(LD) -L $(BUILD_DIR) -o $@.arm9.elf $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
-	$(LD) -L $(BUILD_DIR) -o $@.arm7.elf $(ARM7_O_FILES) $(ARM7_LDFLAGS)
-	ndstool -c $@ -9 $@.arm9.elf -7 $@.arm7.elf
+
+$(ARM7): $(ARM7_O_FILES)
+	@$(PRINT) "$(GREEN)Linking ARM7 binary:  $(BLUE)$@ $(NO_COL)\n"
+	$(V)$(LD) -L $(BUILD_DIR) -o $@ $(ARM7_O_FILES) $(ARM7_LDFLAGS)
+
+$(ARM9): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
+	@$(PRINT) "$(GREEN)Linking ARM9 binary:  $(BLUE)$@ $(NO_COL)\n"
+	$(V)$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
+
+$(ROM): $(ARM7) $(ARM9)
+	@$(PRINT) "$(GREEN)Building ROM: $(BLUE)$@ $(NO_COL)\n"
+	$(V)$(NDSTOOL) -c $@ -9 $(ARM9) -7 $(ARM7)
 else
 
 # Run linker script through the C preprocessor
