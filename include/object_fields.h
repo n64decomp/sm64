@@ -849,8 +849,8 @@
 #define /*0x0F4*/ oSeesawPlatformPitchVel OBJECT_FIELD_F32(0x1B)
 
 /* Ship Part 3 */
-#define /*0x0F4*/ oShipPart3UnkF4 OBJECT_FIELD_S32(0x1B) // angle?
-#define /*0x0F8*/ oShipPart3UnkF8 OBJECT_FIELD_S32(0x1C) // angle?
+#define /*0x0F4*/ oShipPart3PitchAdjust OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oShipPart3RollAdjust OBJECT_FIELD_S32(0x1C)
 
 /* Sink When Stepped On */
 #define /*0x104*/ oSinkWhenSteppedOnUnk104 OBJECT_FIELD_S32(0x1F)
@@ -864,9 +864,9 @@
 #define /*0x1AC*/ oSkeeterUnk1AC              OBJECT_FIELD_S16(0x49, 0)
 
 /* Jrb Sliding Box */
-#define /*0x0F4*/ oJrbSlidingBoxUnkF4 OBJECT_FIELD_OBJ(0x1B)
-#define /*0x0F8*/ oJrbSlidingBoxUnkF8 OBJECT_FIELD_S32(0x1C)
-#define /*0x0FC*/ oJrbSlidingBoxUnkFC OBJECT_FIELD_F32(0x1D)
+#define /*0x0F4*/ oJrbSlidingBoxShipCenterReference OBJECT_FIELD_OBJ(0x1B)
+#define /*0x0F8*/ oJrbSlidingBoxUnkF8               OBJECT_FIELD_S32(0x1C)
+#define /*0x0FC*/ oJrbSlidingBoxUnkFC               OBJECT_FIELD_F32(0x1D)
 
 /* WF Sliding Brick Platform */
 #define /*0x0F4*/ oWFSlidBrickPtfmMovVel OBJECT_FIELD_F32(0x1B)

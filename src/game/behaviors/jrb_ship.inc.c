@@ -28,10 +28,10 @@ void bhv_ship_part_3_loop(void) {
 
     cur_obj_set_pos_to_home_with_debug();
 
-    o->oShipPart3UnkF4 += 0x100;
+    o->oShipPart3PitchAdjust += 0x100;
 
-    o->oFaceAnglePitch = sins(o->oShipPart3UnkF4) * 0x400;
-    o->oFaceAngleRoll = sins(o->oShipPart3UnkF8) * 0x400;
+    o->oFaceAnglePitch = sins(o->oShipPart3PitchAdjust) * 0x400;
+    o->oFaceAngleRoll = sins(o->oShipPart3RollAdjust) * 0x400;
     o->oAngleVelPitch = o->oFaceAnglePitch - sp1E;
     o->oAngleVelRoll = o->oFaceAngleRoll - sp1C;
 
@@ -45,28 +45,28 @@ void bhv_jrb_sliding_box_loop(void) {
     Vec3f sp54;
     Vec3f sp48;
     Vec3s sp40;
-    struct Object *sp3C;
+    struct Object *shipCenter;
     struct Surface *sp38;
     UNUSED Vec3f sp2C;
     Vec3f sp20;
     s16 sp1E;
 
-    if (o->oJrbSlidingBoxUnkF4 == NULL) {
-        sp3C = cur_obj_nearest_object_with_behavior(bhvInSunkenShip3);
+    if (o->oJrbSlidingBoxShipCenterReference == NULL) {
+        shipCenter = cur_obj_nearest_object_with_behavior(bhvInSunkenShip3);
 
-        if (sp3C != NULL) { // NULL check only for assignment, not for dereference?
-            o->oJrbSlidingBoxUnkF4 = sp3C;
+        if (shipCenter != NULL) { // NULL check only for assignment, not for dereference?
+            o->oJrbSlidingBoxShipCenterReference = shipCenter;
         }
 
-        o->oParentRelativePosX = o->oPosX - sp3C->oPosX;
-        o->oParentRelativePosY = o->oPosY - sp3C->oPosY;
-        o->oParentRelativePosZ = o->oPosZ - sp3C->oPosZ;
+        o->oParentRelativePosX = o->oPosX - shipCenter->oPosX;
+        o->oParentRelativePosY = o->oPosY - shipCenter->oPosY;
+        o->oParentRelativePosZ = o->oPosZ - shipCenter->oPosZ;
     } else {
-        sp3C = o->oJrbSlidingBoxUnkF4;
+        shipCenter = o->oJrbSlidingBoxShipCenterReference;
 
-        sp40[0] = sp3C->oFaceAnglePitch;
-        sp40[1] = sp3C->oFaceAngleYaw;
-        sp40[2] = sp3C->oFaceAngleRoll;
+        sp40[0] = shipCenter->oFaceAnglePitch;
+        sp40[1] = shipCenter->oFaceAngleYaw;
+        sp40[2] = shipCenter->oFaceAngleRoll;
 
         sp54[0] = o->oParentRelativePosX;
         sp54[1] = o->oParentRelativePosY;
@@ -75,11 +75,11 @@ void bhv_jrb_sliding_box_loop(void) {
         mtxf_rotate_zxy_and_translate(sp60, sp54, sp40);
         linear_mtxf_mul_vec3f(sp60, sp48, sp54);
 
-        o->oPosX = sp3C->oPosX + sp48[0];
-        o->oPosY = sp3C->oPosY + sp48[1];
-        o->oPosZ = sp3C->oPosZ + sp48[2];
+        o->oPosX = shipCenter->oPosX + sp48[0];
+        o->oPosY = shipCenter->oPosY + sp48[1];
+        o->oPosZ = shipCenter->oPosZ + sp48[2];
 
-        sp1E = sp3C->oFaceAnglePitch;
+        sp1E = shipCenter->oFaceAnglePitch;
     }
 
     sp20[0] = o->oPosX;
