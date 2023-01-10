@@ -63,37 +63,37 @@
             "normal_range_lo": 29,
             "normal_range_hi": 63,
             "envelope": "envelope0",
-            "sound_lo": "3B_banjo_2",
-            "sound": "3C_acoustic_guitar",
-            "sound_hi": "3D"
+            "sound_lo": "3B_acoustic_guitar_A1",
+            "sound": "3C_acoustic_guitar_E3",
+            "sound_hi": "3D_acoustic_guitar_B6"
         },
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "05_acoustic_bass"
+            "sound": "05_acoustic_bass_A1"
         },
         "inst2": {
             "release_rate": 15,
             "normal_range_lo": 27,
             "normal_range_hi": 46,
             "envelope": "envelope2",
-            "sound_lo": "23_strings_1",
-            "sound": "24_strings_2",
-            "sound_hi": "25_strings_3"
+            "sound_lo": "23_strings_Eb2",
+            "sound": "24_strings_G#2",
+            "sound_hi": "25_strings_F#3"
         },
         "inst3": {
             "release_rate": 15,
             "normal_range_lo": 27,
             "normal_range_hi": 46,
             "envelope": "envelope3",
-            "sound_lo": "23_strings_1",
-            "sound": "24_strings_2",
-            "sound_hi": "25_strings_3"
+            "sound_lo": "23_strings_Eb2",
+            "sound": "24_strings_G#2",
+            "sound_hi": "25_strings_F#3"
         },
         "inst4": {
             "release_rate": 10,
             "envelope": "envelope4",
-            "sound": "26_crystal_rhodes"
+            "sound": "26_crystal_rhodes_C4"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope5", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

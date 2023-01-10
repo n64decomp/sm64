@@ -31,30 +31,30 @@
         "inst0": {
             "release_rate": 255,
             "envelope": "envelope0",
-            "sound": "27_harpsichord"
+            "sound": "27_harpsichord_F3"
         },
         "inst1": {
             "release_rate": 255,
             "envelope": "envelope1",
-            "sound": "27_harpsichord"
+            "sound": "27_harpsichord_F3"
         },
         "inst2": {
             "release_rate": 15,
             "normal_range_lo": 27,
             "normal_range_hi": 46,
             "envelope": "envelope2",
-            "sound_lo": "23_strings_1",
-            "sound": "24_strings_2",
-            "sound_hi": "25_strings_3"
+            "sound_lo": "23_strings_Eb2",
+            "sound": "24_strings_G#2",
+            "sound_hi": "25_strings_F#3"
         },
         "inst3": {
             "release_rate": 15,
             "normal_range_lo": 27,
             "normal_range_hi": 46,
             "envelope": "envelope3",
-            "sound_lo": "23_strings_1",
-            "sound": "24_strings_2",
-            "sound_hi": "25_strings_3"
+            "sound_lo": "23_strings_Eb2",
+            "sound": "24_strings_G#2",
+            "sound_hi": "25_strings_F#3"
         }
     },
     "instrument_list": [
