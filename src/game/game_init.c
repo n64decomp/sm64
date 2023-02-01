@@ -407,7 +407,7 @@ UNUSED static void record_demo(void) {
         rawStickY = 0;
     }
 
-    // Rrecord the distinct input and timer so long as they are unique.
+    // Record the distinct input and timer so long as they are unique.
     // If the timer hits 0xFF, reset the timer for the next demo input.
     if (gRecordedDemoInput.timer == 0xFF || buttonMask != gRecordedDemoInput.buttonMask
         || rawStickX != gRecordedDemoInput.rawStickX || rawStickY != gRecordedDemoInput.rawStickY) {
