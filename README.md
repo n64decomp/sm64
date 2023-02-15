@@ -59,7 +59,7 @@ sudo apt install -y binutils-mips-linux-gnu build-essential git libcapstone-dev 
 ##### Arch Linux
 To install build dependencies:
 ```
-sudo pacman -S base-devel capstone python
+sudo pacman -S --needed base-devel capstone python
 ```
 Install the following AUR packages:
 * [mips64-elf-binutils](https://aur.archlinux.org/packages/mips64-elf-binutils) (AUR)
