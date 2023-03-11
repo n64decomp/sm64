@@ -4,6 +4,11 @@
 #include "text_menu_strings.h"
 
 /**
+ * MOVEMENT MASTERY
+ */
+#define TEXT_FULL_GAME_MODE _("FULL GAME")
+
+/**
  * Global Symbols
  */
 #define TEXT_ZERO _("0")

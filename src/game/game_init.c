@@ -61,6 +61,8 @@ static s32 sUnusedGameInitValue = 0;
 // General timer that runs as the game starts
 u32 gGlobalTimer = 0;
 
+bool gIsFullGameMode = FALSE;
+
 // Framebuffer rendering values (max 3)
 u16 sRenderedFramebuffer = 0;
 u16 sRenderingFramebuffer = 0;

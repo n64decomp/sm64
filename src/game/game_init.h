@@ -60,6 +60,7 @@ extern u8 gDemoInputs[];
 
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
+extern bool gIsFullGameMode;
 
 void setup_game_memory(void);
 void thread5_game_loop(UNUSED void *arg);

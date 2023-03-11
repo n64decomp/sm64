@@ -253,10 +253,9 @@ u32 pressed_pause(void) {
 
 u32 pressed_reset(void) {
     u32 dialogActive = get_dialog_id() >= 0;
-    // TODO prevent resetting during star animations in speedrun mode
-    u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
+    // u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
 
-    if (!gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
+    if (!gIsFullGameMode && !gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
         && (gPlayer1Controller->buttonPressed & L_TRIG)) {
         return TRUE;
     }

@@ -29,6 +29,7 @@ enum MenuButtonTypes {
     // Main Menu (SELECT FILE)
     MENU_BUTTON_MAIN_MIN,
     MENU_BUTTON_PLAY_FILE_A = MENU_BUTTON_MAIN_MIN,
+    MENU_BUTTON_PLAY_SPEEDRUN_MODE,
     MENU_BUTTON_SCORE,
     MENU_BUTTON_COPY,
     MENU_BUTTON_ERASE,
@@ -114,6 +115,8 @@ enum EraseMenuActionPhase {
 enum SoundModeMenuActionPhase {
     SOUND_MODE_PHASE_MAIN
 };
+
+extern bool gIsFullGameMode;
 
 void beh_yellow_background_menu_init(void);
 void beh_yellow_background_menu_loop(void);

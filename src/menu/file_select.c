@@ -153,7 +153,8 @@ static unsigned char textEraseFileButton[][16] = { {TEXT_ERASE_FILE}, {TEXT_ERAS
 static unsigned char textSoundModes[][8] = { { TEXT_STEREO }, { TEXT_MONO }, { TEXT_HEADSET } };
 #endif
 
-static unsigned char textMarioA[] = { TEXT_FILE_MARIO_A };
+static unsigned char textSingleStar[] = { TEXT_FILE_MARIO_A };
+static unsigned char textFullGameMode[] = { TEXT_FULL_GAME_MODE };
 
 #ifndef VERSION_EU
 static unsigned char textNew[] = { TEXT_NEW };
@@ -1240,6 +1241,10 @@ void bhv_menu_button_manager_init(void) {
     }
     sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A]->oMenuButtonScale = 1.0f;
 
+    sMainMenuButtons[MENU_BUTTON_PLAY_SPEEDRUN_MODE] = spawn_object_rel_with_rot(
+        gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE, bhvMenuButton, 1500, 2800, 0, 0, 0, 0);
+    sMainMenuButtons[MENU_BUTTON_PLAY_SPEEDRUN_MODE]->oMenuButtonScale = 1.0f;
+
     // Score menu button
     sMainMenuButtons[MENU_BUTTON_SCORE] = spawn_object_rel_with_rot(
         gCurrentObject, MODEL_MAIN_MENU_GREEN_SCORE_BUTTON, bhvMenuButton, -6400, -3500, 0, 0, 0, 0);
@@ -1314,6 +1319,13 @@ void check_main_menu_clicked_buttons(void) {
                 func_sh_8024C89C(1);
 #endif
                 break;
+            case MENU_BUTTON_PLAY_SPEEDRUN_MODE:
+                play_sound(SAVE_FILE_SOUND, gGlobalSoundSource);
+#if ENABLE_RUMBLE
+                queue_rumble_data(60, 70);
+                func_sh_8024C89C(1);
+#endif
+                break;
 
             // Play sound of the button clicked and render buttons of that menu.
             case MENU_BUTTON_SCORE:
@@ -1365,6 +1377,10 @@ void bhv_menu_button_manager_loop(void) {
             break;
         case MENU_BUTTON_PLAY_FILE_A:
             load_main_menu_save_file(sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A], 1);
+            break;
+        case MENU_BUTTON_PLAY_SPEEDRUN_MODE:
+            gIsFullGameMode = TRUE;
+            load_main_menu_save_file(sMainMenuButtons[MENU_BUTTON_PLAY_SPEEDRUN_MODE], 1);
             break;
         case MENU_BUTTON_SCORE:
             check_score_menu_clicked_buttons(sMainMenuButtons[MENU_BUTTON_SCORE]);
@@ -1679,7 +1695,8 @@ void print_main_menu_strings(void) {
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_menu_generic_string(MARIOTEXT_X1, 65, textMarioA);
+    print_menu_generic_string(MARIOTEXT_X1, 65, textSingleStar);
+    print_menu_generic_string(MARIOTEXT_X2, 65, textFullGameMode);
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 }
 
@@ -1824,7 +1841,7 @@ void print_score_menu_strings(void) {
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_menu_generic_string(89, 62, textMarioA);
+    print_menu_generic_string(89, 62, textSingleStar);
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 #endif
 }
@@ -2003,7 +2020,7 @@ void print_copy_menu_strings(void) {
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_menu_generic_string(89, 62, textMarioA);
+    print_menu_generic_string(89, 62, textSingleStar);
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 #endif
 }
@@ -2273,7 +2290,7 @@ void print_erase_menu_strings(void) {
     // Print file names
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_menu_generic_string(89, 62, textMarioA);
+    print_menu_generic_string(89, 62, textSingleStar);
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 #endif
 }
