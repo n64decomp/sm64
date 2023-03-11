@@ -161,6 +161,9 @@ struct CreditsEntry sCreditsSequence[] = {
 
 struct MarioState gMarioStates[1];
 struct HudDisplay gHudDisplay;
+struct Timer gTimer;
+s8 sTimerRunning;
+
 s16 sCurrPlayMode;
 u16 D_80339ECA;
 s16 sTransitionTimer;
@@ -176,7 +179,7 @@ s32 sDelayedWarpArg;
 #if defined(VERSION_EU) || defined(VERSION_SH)
 s16 unusedEULevelUpdateBss1;
 #endif
-s8 sTimerRunning;
+s8 sPssTimerRunning;
 s8 gNeverEnteredCastle;
 
 struct MarioState *gMarioState = &gMarioStates[0];
@@ -188,26 +191,51 @@ u8 unused3[2];
 u16 level_control_timer(s32 timerOp) {
     switch (timerOp) {
         case TIMER_CONTROL_SHOW:
-            gHudDisplay.flags |= HUD_DISPLAY_FLAG_TIMER;
-            sTimerRunning = FALSE;
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_PSS_TIMER;
+            sPssTimerRunning = FALSE;
             gHudDisplay.timer = 0;
             break;
 
         case TIMER_CONTROL_START:
-            sTimerRunning = TRUE;
+            sPssTimerRunning = TRUE;
             break;
 
         case TIMER_CONTROL_STOP:
-            sTimerRunning = FALSE;
+            sPssTimerRunning = FALSE;
             break;
 
         case TIMER_CONTROL_HIDE:
-            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_TIMER;
-            sTimerRunning = FALSE;
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_PSS_TIMER;
+            sPssTimerRunning = FALSE;
             gHudDisplay.timer = 0;
             break;
     }
 
+    return gHudDisplay.timer;
+}
+
+void start_gtimer(void) {
+    sTimerRunning = TRUE;
+}
+
+void stop_gtimer(void) {
+    sTimerRunning = FALSE;
+}
+
+void show_gtimer(void) {
+    gHudDisplay.flags |= HUD_DISPLAY_FLAG_TIMER;
+}
+
+void hide_gtimer(void) {
+    gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_TIMER;
+}
+
+void reset_gtimer(void) {
+    gTimer.time = 0;
+    gTimer.collectedStarId = -1;
+}
+
+u16 get_timer_val(void) {
     return gHudDisplay.timer;
 }
 
@@ -1019,8 +1047,11 @@ s32 play_mode_normal(void) {
     warp_area();
     check_instant_warp();
 
-    if (sTimerRunning && gHudDisplay.timer < 17999) {
+    if (sPssTimerRunning && gHudDisplay.timer < 17999) {
         gHudDisplay.timer++;
+    }
+    if (sTimerRunning && gTimer.time < 17999) {
+        gTimer.time++;
     }
 
     area_update_objects();
@@ -1214,7 +1245,7 @@ s32 init_level(void) {
         gHudDisplay.flags = HUD_DISPLAY_NONE;
     }
 
-    sTimerRunning = FALSE;
+    sPssTimerRunning = FALSE;
 
     if (sWarpDest.type != WARP_TYPE_NOT_WARPING) {
         if (sWarpDest.nodeId >= WARP_NODE_CREDITS_MIN) {

@@ -15,6 +15,7 @@
 #define MENU_DATA_MAGIC 0x4849
 #define SAVE_FILE_MAGIC 0x4441
 
+STATIC_ASSERT(sizeof(struct HighScores) == sizeof(struct SaveFile) * 4, "HighScores size must match");
 STATIC_ASSERT(sizeof(struct SaveBuffer) == EEPROM_SIZE, "eeprom buffer size must match");
 
 extern struct SaveBuffer gSaveBuffer;
@@ -265,12 +266,18 @@ void save_file_do_save(s32 fileIndex) {
         gSaveFileModified = FALSE;
     }
 
+    write_eeprom_data(gSaveBuffer.highScores, sizeof(gSaveBuffer.highScores));
+
     save_main_menu_data();
 }
 
 void save_file_erase(s32 fileIndex) {
     touch_high_score_ages(fileIndex);
     bzero(&gSaveBuffer.files[fileIndex][0], sizeof(gSaveBuffer.files[fileIndex][0]));
+    /* Don't delete highscores on file erase
+     * // bzero(&gSaveBuffer.highScores, sizeof(gSaveBuffer.highScores));
+     * // bzero(&gSaveBuffer, sizeof(gSaveBuffer));
+     */
 
     gSaveFileModified = TRUE;
     save_file_do_save(fileIndex);
@@ -406,6 +413,46 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
             }
             break;
     }
+}
+
+bool save_file_register_new_time(s32 courseIndex, s16 starIndex, u16 time) {
+    if (time > 0 && time < save_file_get_best_time(courseIndex, starIndex)) {
+        gSaveBuffer.highScores[0].times[courseIndex][starIndex] = time;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+u16 save_file_get_best_time(s32 courseIndex, s16 starIndex) {
+    if (!save_file_best_time_exists(courseIndex, starIndex)) {
+        return 17999;
+    }
+    return gSaveBuffer.highScores[0].times[courseIndex][starIndex];
+}
+
+bool save_file_best_time_exists(s32 courseIndex, s16 starIndex) {
+    return gSaveBuffer.highScores[0].times[courseIndex][starIndex] != 0;
+}
+
+u32 save_file_get_course_sob(s32 courseIndex) {
+    u32 sob;
+    u32 starFlags;
+    s16 i;
+
+    sob = 0;
+    starFlags = save_file_get_star_flags(0, courseIndex);
+
+    for (i = 0; i < 7; i++) {
+        if (starFlags & (1 << i) || save_file_best_time_exists(courseIndex, i)) {
+            u16 starPb = save_file_get_best_time(courseIndex, i);
+            sob += starPb;
+            if (sob > 17999) {
+                sob = 17999;
+            }
+        }
+    }
+
+    return sob;
 }
 
 s32 save_file_exists(s32 fileIndex) {
@@ -563,7 +610,11 @@ void save_file_set_sound_mode(u16 mode) {
 }
 
 u16 save_file_get_sound_mode(void) {
-    return gSaveBuffer.menuData[0].soundMode;
+    u16 soundMode = gSaveBuffer.menuData[0].soundMode;
+    if (is_sound_mode_valid(soundMode)) {
+        return soundMode;
+    }
+    return SOUND_MENU_MODE_STEREO;
 }
 
 void save_file_move_cap_to_default_location(void) {

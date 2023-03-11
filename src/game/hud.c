@@ -317,39 +317,31 @@ void render_hud_keys(void) {
     }
 }
 
+s32 get_y_pos(u8 hudIdx) {
+    return 24 * hudIdx;
+}
+
 /**
- * Renders the timer when Mario start sliding in PSS.
+ * Displays a timer in the top-right
  */
-void render_hud_timer(void) {
+void render_hud_timer(u16 timeInFrames, u8 timerIdx, const char *prefix, u32 distFromRightEdge) {
     u8 *(*hudLUT)[58] = segmented_to_virtual(&main_hud_lut);
-    u16 timerValFrames = gHudDisplay.timer;
-    u16 timerMins = timerValFrames / (30 * 60);
-    u16 timerSecs = (timerValFrames - (timerMins * 1800)) / 30;
-    u16 timerFracSecs = ((timerValFrames - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) / 3;
 
-#ifdef VERSION_EU
-    switch (eu_get_language()) {
-        case LANGUAGE_ENGLISH:
-            print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "TIME");
-            break;
-        case LANGUAGE_FRENCH:
-            print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(155), 185, "TEMPS");
-            break;
-        case LANGUAGE_GERMAN:
-            print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "ZEIT");
-            break;
-    }
-#else
-    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "TIME");
-#endif
+    struct TimerDisplay time = frames_to_display_time(timeInFrames);
+    s32 yPos = 184 - get_y_pos(timerIdx);
+    s32 yPosApostropes = 32 + get_y_pos(timerIdx);
 
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%0d", timerMins);
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(71), 185, "%02d", timerSecs);
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(37), 185, "%d", timerFracSecs);
+    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(distFromRightEdge), yPos, prefix);
+
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), yPos, "%0d", time.mins);
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(71), yPos, "%02d", time.secs);
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(37), yPos, "%02d", time.fracSecs);
 
     gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
-    render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(81), 32, (*hudLUT)[GLYPH_APOSTROPHE]);
-    render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(46), 32, (*hudLUT)[GLYPH_DOUBLE_QUOTE]);
+    render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(81), yPosApostropes,
+                       (*hudLUT)[GLYPH_APOSTROPHE]);
+    render_hud_tex_lut(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(45), yPosApostropes,
+                       (*hudLUT)[GLYPH_DOUBLE_QUOTE]);
     gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
 }
 
@@ -407,6 +399,7 @@ void render_hud_camera_status(void) {
  */
 void render_hud(void) {
     s16 hudDisplayFlags = gHudDisplay.flags;
+    u16 best_time;
 
     if (hudDisplayFlags == HUD_DISPLAY_NONE) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
@@ -456,7 +449,35 @@ void render_hud(void) {
         }
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
-            render_hud_timer();
+            render_hud_timer(gTimer.time, 0, "", 100);
+            if (gTimer.collectedStarId >= 0) {
+                best_time = save_file_get_best_time(COURSE_NUM_TO_INDEX(gCurrCourseNum),
+                                                    gTimer.collectedStarId);
+                render_hud_timer(best_time, 1, "PB", 120);
+            }
+        } else if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
+            char *prefix;
+            u32 distFromRightEdge;
+#ifdef VERSION_EU
+            switch (eu_get_language()) {
+                case LANGUAGE_ENGLISH:
+                    str = "TIME";
+                    distFromRightEdge = 150;
+                    break;
+                case LANGUAGE_FRENCH:
+                    str = "TEMPS";
+                    distFromRightEdge = 155;
+                    break;
+                case LANGUAGE_GERMAN:
+                    str = "ZEIT";
+                    distFromRightEdge = 150;
+                    break;
+            }
+#else
+            prefix = "ZEIT";
+            distFromRightEdge = 150;
+#endif
+            render_hud_timer(gHudDisplay.timer, 0, prefix, distFromRightEdge);
         }
 
 #ifdef DEBUG

@@ -130,6 +130,7 @@ static u32 sBackwardKnockbackActions[][3] = {
 static u8 sDisplayingDoorText = FALSE;
 static u8 sJustTeleported = FALSE;
 static u8 sPssSlideStarted = FALSE;
+static u8 timerStarted = FALSE;
 
 /**
  * Returns the type of cap Mario is wearing.
@@ -808,6 +809,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         m->usedObj = o;
 
         starIndex = (o->oBehParams >> 24) & 0x1F;
+        gTimer.collectedStarId = starIndex;
         save_file_collect_star_or_key(m->numCoins, starIndex);
 
         m->numStars =
@@ -1835,7 +1837,7 @@ void check_lava_boost(struct MarioState *m) {
 }
 
 void pss_begin_slide(UNUSED struct MarioState *m) {
-    if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_TIMER)) {
+    if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_PSS_TIMER)) {
         level_control_timer(TIMER_CONTROL_SHOW);
         level_control_timer(TIMER_CONTROL_START);
         sPssSlideStarted = TRUE;
@@ -1851,6 +1853,25 @@ void pss_end_slide(struct MarioState *m) {
             spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
         }
         sPssSlideStarted = FALSE;
+    }
+}
+
+void begin_timer(UNUSED struct MarioState *m) {
+    reset_gtimer();
+    show_gtimer();
+    start_gtimer();
+}
+
+void end_timer(struct MarioState *m) {
+    if (sTimerRunning) {
+        stop_gtimer();
+        if (gTimer.collectedStarId >= 0) {
+            bool isPb = save_file_register_new_time(COURSE_NUM_TO_INDEX(gCurrCourseNum),
+                                                    gTimer.collectedStarId, gTimer.time);
+            if (isPb) {
+                save_file_do_save(gCurrSaveFileNum - 1);
+            }
+        }
     }
 }
 

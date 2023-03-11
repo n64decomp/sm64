@@ -638,7 +638,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
 }
 
 s32 act_star_dance(struct MarioState *m) {
-    // TODO end timer
+    end_timer(m);
     m->faceAngle[1] = m->area->camera->yaw;
     set_mario_animation(m, m->actionState == 2 ? MARIO_ANIM_RETURN_FROM_STAR_DANCE
                                                : MARIO_ANIM_STAR_DANCE);
@@ -651,7 +651,7 @@ s32 act_star_dance(struct MarioState *m) {
 }
 
 s32 act_star_dance_water(struct MarioState *m) {
-    // TODO end timer
+    end_timer(m);
     m->faceAngle[1] = m->area->camera->yaw;
     set_mario_animation(m, m->actionState == 2 ? MARIO_ANIM_RETURN_FROM_WATER_STAR_DANCE
                                                : MARIO_ANIM_WATER_STAR_DANCE);
@@ -998,6 +998,7 @@ s32 act_emerge_from_pipe(struct MarioState *m) {
 }
 
 s32 act_spawn_spin_airborne(struct MarioState *m) {
+    begin_timer(m);
     // entered water, exit action
     if (m->pos[1] < m->waterLevel - 100) {
         load_level_init_text(0);
@@ -1030,6 +1031,7 @@ s32 act_spawn_spin_airborne(struct MarioState *m) {
 }
 
 s32 act_spawn_spin_landing(struct MarioState *m) {
+    begin_timer(m);
     stop_and_set_height_to_floor(m);
     set_mario_animation(m, MARIO_ANIM_GENERAL_LAND);
     if (is_anim_at_end(m)) {
@@ -1177,7 +1179,7 @@ s32 act_death_exit(struct MarioState *m) {
 
 /** (Ab-)used as a life-restoring level entry with no control downtime **/
 s32 act_unused_death_exit(struct MarioState *m) {
-    // TODO begin timer
+    begin_timer(m);
 
     if (launch_mario_until_land(m, ACT_FREEFALL_LAND_STOP, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
 #ifdef VERSION_JP
@@ -1261,6 +1263,7 @@ s32 act_special_death_exit(struct MarioState *m) {
 }
 
 s32 act_spawn_no_spin_airborne(struct MarioState *m) {
+    begin_timer(m);
     launch_mario_until_land(m, ACT_SPAWN_NO_SPIN_LANDING, MARIO_ANIM_GENERAL_FALL, 0.0f);
     if (m->pos[1] < m->waterLevel - 100) {
         set_water_plunge_action(m);
@@ -1269,6 +1272,7 @@ s32 act_spawn_no_spin_airborne(struct MarioState *m) {
 }
 
 s32 act_spawn_no_spin_landing(struct MarioState *m) {
+    begin_timer(m);
     play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING);
     set_mario_animation(m, MARIO_ANIM_GENERAL_LAND);
     stop_and_set_height_to_floor(m);

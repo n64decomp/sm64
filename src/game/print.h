@@ -25,9 +25,16 @@
 #define GLYPH_DOUBLE_QUOTE    57
 #define GLYPH_UMLAUT          58
 
+struct TimerDisplay {
+    u16 mins;
+    u16 secs;
+    u16 fracSecs;
+};
+
 void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n);
 void print_text(s32 x, s32 y, const char *str);
 void print_text_centered(s32 x, s32 y, const char *str);
 void render_text_labels(void);
+struct TimerDisplay frames_to_display_time(u16 timeInFrames);
 
 #endif // PRINT_H

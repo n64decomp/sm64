@@ -457,3 +457,15 @@ void render_text_labels(void) {
 
     sTextLabelsCount = 0;
 }
+
+struct TimerDisplay frames_to_display_time(u16 timeInFrames) {
+    u16 timerMins = timeInFrames / (30 * 60);
+    u16 timerSecs = (timeInFrames - (timerMins * 1800)) / 30;
+    u16 timerFracSecs =
+        (u16) (((timeInFrames - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) * 3.34f);
+    struct TimerDisplay t;
+    t.mins = timerMins;
+    t.secs = timerSecs;
+    t.fracSecs = timerFracSecs;
+    return t;
+}
