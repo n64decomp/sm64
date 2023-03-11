@@ -1192,14 +1192,9 @@ s32 init_level(void) {
 
             if (gCurrDemoInput != NULL) {
                 set_mario_action(gMarioState, ACT_IDLE, 0);
-            } else if (!gDebugLevelSelect) {
+            } else if (gDebugLevelSelect == 0) {
                 if (gMarioState->action != ACT_UNINITIALIZED) {
-                    if (save_file_exists(gCurrSaveFileNum - 1)) {
-                        set_mario_action(gMarioState, ACT_IDLE, 0);
-                    } else {
-                        set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
-                        val4 = TRUE;
-                    }
+                    set_mario_action(gMarioState, ACT_IDLE, 0);
                 }
             }
         }

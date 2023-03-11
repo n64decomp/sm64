@@ -458,5 +458,44 @@ void render_hud(void) {
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
             render_hud_timer();
         }
+
+#ifdef DEBUG
+        print_fps(8, 8);
+#endif
     }
 }
+
+// ------------- FPS COUNTER ---------------
+// To use it, call print_fps(x,y); every frame.
+#define FRAMETIME_COUNT 30
+
+OSTime frameTimes[FRAMETIME_COUNT];
+u8 curFrameTimeIndex = 0;
+
+#include "PR/os.h"
+
+// Call once per frame
+f32 calculate_and_update_fps() {
+    OSTime newTime = osGetTime();
+    OSTime oldTime = frameTimes[curFrameTimeIndex];
+    frameTimes[curFrameTimeIndex] = newTime;
+
+    curFrameTimeIndex++;
+    if (curFrameTimeIndex >= FRAMETIME_COUNT) {
+        curFrameTimeIndex = 0;
+    }
+    return ((f32) FRAMETIME_COUNT * 1000000.0f) / (s32) OS_CYCLES_TO_USEC(newTime - oldTime);
+}
+
+void print_fps(s32 x, s32 y) {
+    f32 fps = calculate_and_update_fps();
+    char text[14];
+
+    sprintf(text, "FPS %2.2f", fps);
+#ifdef PUPPYPRINT
+    print_small_text(x, y, text, PRINT_TEXT_ALIGN_LEFT, PRINT_ALL, FONT_OUTLINE);
+#else
+    print_text(x, y, text);
+#endif
+}
+// ------------ END OF FPS COUNER -----------------

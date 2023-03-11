@@ -8,6 +8,8 @@
 #define TRUE 1
 #define FALSE 0
 
+typedef signed char bool;
+
 typedef signed char            s8;
 typedef unsigned char          u8;
 typedef signed short int       s16;

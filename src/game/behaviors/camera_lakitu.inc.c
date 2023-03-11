@@ -12,10 +12,7 @@
  */
 void bhv_camera_lakitu_init(void) {
     if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
-        // Despawn unless this is the very beginning of the game
-        if (gNeverEnteredCastle != TRUE) {
-            obj_mark_for_deletion(o);
-        }
+        obj_mark_for_deletion(o);
     } else {
         spawn_object_relative_with_scale(CLOUD_BP_LAKITU_CLOUD, 0, 0, 0, 2.0f, o, MODEL_MIST, bhvCloud);
     }
