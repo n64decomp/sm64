@@ -346,6 +346,19 @@ void render_hud_timer(u16 timeInFrames, u8 timerIdx, const char *prefix, u32 dis
 }
 
 /**
+ * Displays a rank in the top-left
+ */
+void render_hud_rank(struct RankDisplay rank, u8 timerIdx, u32 distFromLeftEdge, const char *prefix,
+                     u32 prefixLength) {
+    s32 yPos;
+    char rankStr[2] = { '\0', '\0' };
+    rankStr[0] = rank.asChar;
+    yPos = 184 - get_y_pos(timerIdx);
+    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(distFromLeftEdge), yPos, prefix);
+    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(distFromLeftEdge + prefixLength), yPos, rankStr);
+}
+
+/**
  * Sets HUD status camera value depending of the actions
  * defined in update_camera_status.
  */
@@ -454,8 +467,14 @@ void render_hud(void) {
                 best_time = save_file_get_best_time(COURSE_NUM_TO_INDEX(gCurrCourseNum),
                                                     gTimer.collectedStarId);
                 render_hud_timer(best_time, 1, "PB", 120);
+                render_hud_rank(time_to_rank(gTimer.time, COURSE_NUM_TO_INDEX(gCurrCourseNum),
+                                             gTimer.collectedStarId),
+                                0, 10, "RANK", 60);
+                render_hud_rank(time_to_rank(best_time, COURSE_NUM_TO_INDEX(gCurrCourseNum),
+                                             gTimer.collectedStarId),
+                                1, 35, "PB", 35);
             }
-        } else if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
+        } else if (hudDisplayFlags & HUD_DISPLAY_FLAG_PSS_TIMER) {
             char *prefix;
             u32 distFromRightEdge;
 #ifdef VERSION_EU

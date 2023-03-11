@@ -2216,8 +2216,20 @@ u8 gTextCourse[][7] = {
 
 void render_scores_hud_lut(u8 courseIndex) {
     int i;
+    u8 rankText[2] = { 0xFF, 0xFF };
     print_hud_my_sob(courseIndex, 178, 103);
     print_hud_my_score_stars(gCurrSaveFileNum - 1, courseIndex, 118, 103);
+    for (i = 0; i < 7; i++) {
+        const s16 x = 30 + i * 40;
+        const s16 y = 32;
+        if (save_file_best_time_exists(courseIndex, i)) {
+            rankText[0] = time_to_rank(save_file_get_best_time(courseIndex, i), courseIndex, i)
+                              .asU8; // TODO use couseIndex or num everywhere
+        } else {
+            rankText[0] = RANK_NONE_2;
+        }
+        print_hud_lut_string(HUD_LUT_GLOBAL, x, y, rankText);
+    }
 }
 
 void render_pause_scores(void) {
@@ -2479,6 +2491,7 @@ void print_hud_pause_colorful_str(void) {
 void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseIndex) {
     u16 starIdx = 0;
     u8 starStr[COURSE_STAGES_COUNT * 2];
+    u8 rankStr[NUM_SCORES_PER_STAGE * 3];
 
     u8 starFlags = save_file_get_star_flags(fileIndex, courseIndex);
 
@@ -2488,13 +2501,23 @@ void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseInd
         } else {
             starStr[starIdx * 2] = DIALOG_CHAR_STAR_OPEN;
         }
+        if (save_file_best_time_exists(courseIndex, starIdx)) {
+            rankStr[starIdx * 3] =
+                time_to_rank(save_file_get_best_time(courseIndex, starIdx), courseIndex, starIdx).asU8;
+        } else {
+            rankStr[starIdx * 3] = RANK_NONE;
+        }
 
         starStr[starIdx * 2 + 1] = DIALOG_CHAR_SPACE;
+        rankStr[starIdx * 3 + 1] = DIALOG_CHAR_SPACE;
+        rankStr[starIdx * 3 + 2] = DIALOG_CHAR_SPACE;
     }
 
     starStr[starIdx * 2] = DIALOG_CHAR_TERMINATOR;
+    rankStr[starIdx * 3] = DIALOG_CHAR_TERMINATOR;
 
     print_generic_string(x + 5, y, starStr);
+    print_generic_string(x + 3, y - 16, rankStr);
 }
 
 u8 hudDialogApostrophe[] = { 0x3E, 0xFF };
