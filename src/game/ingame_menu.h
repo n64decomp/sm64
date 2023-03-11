@@ -148,7 +148,7 @@ s16 get_str_x_pos_from_center(s16 centerPos, u8 *str, f32 scale);
 #if defined(VERSION_JP) || defined(VERSION_EU) || defined(VERSION_SH)
 s16 get_str_x_pos_from_center_scale(s16 centerPos, u8 *str, f32 scale);
 #endif
-void print_hud_my_score_coins(s32 useCourseCoinScore, s8 fileIndex, s8 courseIndex, s16 x, s16 y);
+void print_hud_my_sob(s8 courseIndex, s16 x, s16 y);
 void int_to_str(s32 num, u8 *dst);
 s16 get_dialog_id(void);
 void create_dialog_box(s16 dialog);

@@ -813,25 +813,28 @@ s16 get_string_width(u8 *str) {
 }
 #endif
 
-u8 gHudSymCoin[] = { GLYPH_COIN, GLYPH_SPACE };
-u8 gHudSymX[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
+u8 gHudSymApostrophe[] = { GLYPH_APOSTROPHE, GLYPH_SPACE };
+u8 gHudSymDoubleQuote[] = { GLYPH_DOUBLE_QUOTE, GLYPH_SPACE };
+u8 textSOB[] = { 0x1C, 0x18, 0x0B, GLOBAR_CHAR_TERMINATOR };
 
-void print_hud_my_score_coins(s32 useCourseCoinScore, s8 fileIndex, s8 courseIndex, s16 x, s16 y) {
-    u8 strNumCoins[4];
-    s16 numCoins;
+void print_hud_my_sob(s8 courseIndex, s16 x, s16 y) {
+    struct TimerDisplay time;
+    u8 strMins[4];
+    u8 strSecs[4];
+    u8 strFracSecs[4];
+    u32 sob;
 
-    if (!useCourseCoinScore) {
-        numCoins = (u16)(save_file_get_max_coin_score(courseIndex) & 0xFFFF);
-    } else {
-        numCoins = save_file_get_course_coin_score(fileIndex, courseIndex);
-    }
-
-    if (numCoins != 0) {
-        print_hud_lut_string(HUD_LUT_GLOBAL, x, y, gHudSymCoin);
-        print_hud_lut_string(HUD_LUT_GLOBAL, x + 16, y, gHudSymX);
-        int_to_str(numCoins, strNumCoins);
-        print_hud_lut_string(HUD_LUT_GLOBAL, x + 32, y, strNumCoins);
-    }
+    sob = save_file_get_course_sob(courseIndex);
+    time = frames_to_display_time(sob);
+    print_hud_lut_string(HUD_LUT_GLOBAL, x + 6, y, textSOB);
+    int_to_str(time.mins, strMins);
+    print_hud_lut_string(HUD_LUT_GLOBAL, x + 50, y, strMins);
+    print_hud_lut_string(HUD_LUT_GLOBAL, x + 60, y - 8, gHudSymApostrophe);
+    int_to_str(time.secs, strSecs);
+    print_hud_lut_string(HUD_LUT_GLOBAL, x + 70, y, strSecs);
+    print_hud_lut_string(HUD_LUT_GLOBAL, x + 94, y - 8, gHudSymDoubleQuote);
+    int_to_str(time.fracSecs, strFracSecs);
+    print_hud_lut_string(HUD_LUT_GLOBAL, x + 104, y, strFracSecs);
 }
 
 void print_hud_my_score_stars(s8 fileIndex, s8 courseIndex, s16 x, s16 y) {
@@ -2211,7 +2214,13 @@ u8 gTextCourse[][7] = {
     #define MYSCORE_X         62
 #endif
 
-void render_pause_my_score_coins(void) {
+void render_scores_hud_lut(u8 courseIndex) {
+    int i;
+    print_hud_my_sob(courseIndex, 178, 103);
+    print_hud_my_score_stars(gCurrSaveFileNum - 1, courseIndex, 118, 103);
+}
+
+void render_pause_scores(void) {
 #ifdef VERSION_EU
     u8 textMyScore[][10] = {
         { TEXT_MY_SCORE },
@@ -2262,8 +2271,7 @@ void render_pause_my_score_coins(void) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
     if (courseIndex <= COURSE_NUM_TO_INDEX(COURSE_STAGES_MAX)) {
-        print_hud_my_score_coins(1, gCurrSaveFileNum - 1, courseIndex, 178, 103);
-        print_hud_my_score_stars(gCurrSaveFileNum - 1, courseIndex, 118, 103);
+        render_scores_hud_lut(courseIndex);
     }
 
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
@@ -2418,7 +2426,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
 
 void render_pause_castle_menu_box(s16 x, s16 y) {
     create_dl_translation_matrix(MENU_MTX_PUSH, x - 78, y - 32, 0);
-    create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.2f, 0.8f, 1.0f);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.2f, 1.0f, 1.0f);
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 105);
     gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -2429,7 +2437,7 @@ void render_pause_castle_menu_box(s16 x, s16 y) {
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-    create_dl_translation_matrix(MENU_MTX_PUSH, x - 9, y - 101, 0);
+    create_dl_translation_matrix(MENU_MTX_PUSH, x - 9, y - 118, 0);
     create_dl_rotation_matrix(MENU_MTX_NOPUSH, 270.0f, 0, 0, 1.0f);
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -2469,46 +2477,36 @@ void print_hud_pause_colorful_str(void) {
 }
 
 void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseIndex) {
-    s16 hasStar = 0;
-
-    u8 str[COURSE_STAGES_COUNT * 2];
-
-    u8 textStar[] = { TEXT_STAR };
+    u16 starIdx = 0;
+    u8 starStr[COURSE_STAGES_COUNT * 2];
 
     u8 starFlags = save_file_get_star_flags(fileIndex, courseIndex);
-    u16 starCount = save_file_get_course_star_count(fileIndex, courseIndex);
 
-    u16 nextStar = 0;
-
-    if (starFlags & (1 << 6)) {
-        starCount--;
-        print_generic_string(x + 89, y - 5, textStar);
-    }
-
-    while (hasStar != starCount) {
-        if (starFlags & (1 << nextStar)) {
-            str[nextStar * 2] = DIALOG_CHAR_STAR_FILLED;
-            hasStar++;
+    for (starIdx = 0; starIdx < NUM_SCORES_PER_STAGE; starIdx++) {
+        if (starFlags & (1 << starIdx)) {
+            starStr[starIdx * 2] = DIALOG_CHAR_STAR_FILLED;
         } else {
-            str[nextStar * 2] = DIALOG_CHAR_STAR_OPEN;
+            starStr[starIdx * 2] = DIALOG_CHAR_STAR_OPEN;
         }
 
-        str[nextStar * 2 + 1] = DIALOG_CHAR_SPACE;
-        nextStar++;
+        starStr[starIdx * 2 + 1] = DIALOG_CHAR_SPACE;
     }
 
-    if (starCount == nextStar && starCount != 6) {
-        str[nextStar * 2] = DIALOG_CHAR_STAR_OPEN;
-        str[nextStar * 2 + 1] = DIALOG_CHAR_SPACE;
-        nextStar++;
-    }
+    starStr[starIdx * 2] = DIALOG_CHAR_TERMINATOR;
 
-    str[nextStar * 2] = DIALOG_CHAR_TERMINATOR;
-
-    print_generic_string(x + 14, y + 13, str);
+    print_generic_string(x + 5, y, starStr);
 }
 
+u8 hudDialogApostrophe[] = { 0x3E, 0xFF };
+u8 hudDialogDoubleQuote[] = { 0xF6, 0xFF };
+
 void render_pause_castle_main_strings(s16 x, s16 y) {
+    struct TimerDisplay time;
+    u8 strMins[4];
+    u8 strSecs[4];
+    u8 strFracSecs[4];
+    u32 sob;
+
 #ifdef VERSION_EU
     void **courseNameTbl;
 #else
@@ -2574,14 +2572,21 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
     if (gDialogLineNum <= COURSE_NUM_TO_INDEX(COURSE_STAGES_MAX)) { // Main courses
+        const s16 ySob = y - 25;
         courseName = segmented_to_virtual(courseNameTbl[gDialogLineNum]);
-        render_pause_castle_course_stars(x, y, gCurrSaveFileNum - 1, gDialogLineNum);
-        print_generic_string(x + 34, y - 5, textCoin);
-#ifdef VERSION_EU
-        print_generic_string(x + 44, y - 5, textX);
-#endif
-        int_to_str(save_file_get_course_coin_score(gCurrSaveFileNum - 1, gDialogLineNum), strVal);
-        print_generic_string(x + 54, y - 5, strVal);
+        render_pause_castle_course_stars(x, y + 10, gCurrSaveFileNum - 1, gDialogLineNum);
+
+        sob = save_file_get_course_sob(gDialogLineNum);
+        time = frames_to_display_time(sob);
+        print_generic_string(x + 20, ySob, textSOB);
+        int_to_str(time.mins, strMins);
+        print_generic_string(x + 43, ySob, strMins);
+        print_generic_string(x + 51, ySob, hudDialogApostrophe);
+        int_to_str(time.secs, strSecs);
+        print_generic_string(x + 56, ySob, strSecs);
+        print_generic_string(x + 71, ySob, hudDialogDoubleQuote);
+        int_to_str(time.fracSecs, strFracSecs);
+        print_generic_string(x + 78, ySob, strFracSecs);
 #ifdef VERSION_EU
         print_generic_string(x - 17, y + 30, courseName);
 #endif
@@ -2633,7 +2638,7 @@ s16 render_pause_courses_and_castle(void) {
 
         case DIALOG_STATE_VERTICAL:
             shade_screen();
-            render_pause_my_score_coins();
+            render_pause_scores();
             render_pause_red_coins();
 
             if (gMarioStates[0].action & ACT_FLAG_PAUSE_EXIT) {
