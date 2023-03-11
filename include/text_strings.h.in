@@ -40,9 +40,6 @@
 #define TEXT_SOUND_SELECT TEXT_JPHUD_SOUND_SELECT
 
 #define TEXT_FILE_MARIO_A _("マリオＡ")
-#define TEXT_FILE_MARIO_B _("マリオＢ")
-#define TEXT_FILE_MARIO_C _("マリオＣ")
-#define TEXT_FILE_MARIO_D _("マリオＤ")
 
 // Menu Options
 #define TEXT_SCORE _("スコア")
@@ -68,9 +65,6 @@
 #define TEXT_HI_SCORE _("ハイスコア")
 #define TEXT_MY_SCORE _("マイスコア")
 #define TEXT_SCORE_MARIO_A _("マリオＡ")
-#define TEXT_SCORE_MARIO_B _("マリオＢ")
-#define TEXT_SCORE_MARIO_C _("マリオＣ")
-#define TEXT_SCORE_MARIO_D _("マリオＤ")
 
 // Copy Menu
 #define TEXT_COPY_IT_TO_WHERE _("どこにコピーしますか？")
@@ -137,9 +131,6 @@
 #define TEXT_ERASE_FILE _("ERASE FILE")
 #define TEXT_SOUND_SELECT _("SOUND SELECT")
 #define TEXT_FILE_MARIO_A _("MARIO A")
-#define TEXT_FILE_MARIO_B _("MARIO B")
-#define TEXT_FILE_MARIO_C _("MARIO C")
-#define TEXT_FILE_MARIO_D _("MARIO D")
 
 // Menu Options
 #define TEXT_SCORE _("SCORE")
@@ -166,9 +157,6 @@
 #define TEXT_MY_SCORE _("MY SCORE")
 // Score Mario Text ("☺" is the Mario face defined in the US/EU menu char table)
 #define TEXT_SCORE_MARIO_A _("☺A")
-#define TEXT_SCORE_MARIO_B _("☺B")
-#define TEXT_SCORE_MARIO_C _("☺C")
-#define TEXT_SCORE_MARIO_D _("☺D")
 
 // Copy Menu
 #define TEXT_COPY_IT_TO_WHERE _("COPY IT TO WHERE?")

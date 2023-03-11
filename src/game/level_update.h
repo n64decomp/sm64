@@ -87,7 +87,7 @@ extern s16 sDelayedWarpTimer;
 extern s16 sSourceWarpNodeId;
 extern s32 sDelayedWarpArg;
 extern u8 unused3[2];
-extern s8 sTimerRunning;
+extern s8 sPssTimerRunning;
 
 struct HudDisplay {
     /*0x00*/ s16 lives;
@@ -102,6 +102,14 @@ struct HudDisplay {
 extern struct HudDisplay gHudDisplay;
 extern s8 gNeverEnteredCastle;
 
+struct Timer {
+    u16 time;
+    s8 collectedStarId; /* ID of the star that has just been collected or -1 otherwise */
+};
+
+extern struct Timer gTimer;
+extern s8 sTimerRunning;
+
 enum HUDDisplayFlag {
     HUD_DISPLAY_FLAG_LIVES = 0x0001,
     HUD_DISPLAY_FLAG_COIN_COUNT = 0x0002,
@@ -109,15 +117,24 @@ enum HUDDisplayFlag {
     HUD_DISPLAY_FLAG_CAMERA_AND_POWER = 0x0008,
     HUD_DISPLAY_FLAG_KEYS = 0x0010,
     HUD_DISPLAY_FLAG_UNKNOWN_0020 = 0x0020,
-    HUD_DISPLAY_FLAG_TIMER = 0x0040,
+    HUD_DISPLAY_FLAG_PSS_TIMER = 0x0040,
+    HUD_DISPLAY_FLAG_TIMER = 0x0080,
     HUD_DISPLAY_FLAG_EMPHASIZE_POWER = 0x8000,
 
     HUD_DISPLAY_NONE = 0x0000,
-    HUD_DISPLAY_DEFAULT = HUD_DISPLAY_FLAG_LIVES | HUD_DISPLAY_FLAG_COIN_COUNT | HUD_DISPLAY_FLAG_STAR_COUNT | HUD_DISPLAY_FLAG_CAMERA_AND_POWER | HUD_DISPLAY_FLAG_KEYS | HUD_DISPLAY_FLAG_UNKNOWN_0020
+    HUD_DISPLAY_DEFAULT = HUD_DISPLAY_FLAG_LIVES | HUD_DISPLAY_FLAG_COIN_COUNT
+                          | HUD_DISPLAY_FLAG_STAR_COUNT | HUD_DISPLAY_FLAG_CAMERA_AND_POWER
+                          | HUD_DISPLAY_FLAG_KEYS | HUD_DISPLAY_FLAG_UNKNOWN_0020
 };
 
-
 u16 level_control_timer(s32 timerOp);
+void start_gtimer(void);
+void stop_gtimer(void);
+void show_gtimer(void);
+void hide_gtimer(void);
+void reset_gtimer(void);
+u16 get_timer_val(void);
+
 void fade_into_special_warp(u32 arg, u32 color);
 void load_level_init_text(u32 arg);
 s16 level_trigger_warp(struct MarioState *m, s32 warpOp);

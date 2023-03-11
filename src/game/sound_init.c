@@ -139,9 +139,13 @@ void enable_background_sound(void) {
  * Called from threads: thread5_game_loop
  */
 void set_sound_mode(u16 soundMode) {
-    if (soundMode < 3) {
+    if (is_sound_mode_valid(soundMode)) {
         audio_set_sound_mode(sSoundMenuModeToSoundMode[soundMode]);
     }
+}
+
+bool is_sound_mode_valid(u16 soundMode) {
+    return soundMode < 3;
 }
 
 /**

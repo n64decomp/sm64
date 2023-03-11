@@ -24,6 +24,7 @@ void lower_background_noise(s32 a);
 void disable_background_sound(void);
 void enable_background_sound(void);
 void set_sound_mode(u16 soundMode);
+bool is_sound_mode_valid(u16 soundMode);
 void play_menu_sounds(s16 soundMenuFlags);
 void play_painting_eject_sound(void);
 void play_infinite_stairs_music(void);

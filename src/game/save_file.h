@@ -9,7 +9,8 @@
 #include "course_table.h"
 
 #define EEPROM_SIZE 0x200
-#define NUM_SAVE_FILES 4
+#define NUM_SAVE_FILES 1
+#define NUM_SCORES_PER_STAGE 7
 
 struct SaveBlockSignature {
     u16 magic;
@@ -36,12 +37,12 @@ struct SaveFile {
     struct SaveBlockSignature signature;
 };
 
-enum SaveFileIndex {
-    SAVE_FILE_A,
-    SAVE_FILE_B,
-    SAVE_FILE_C,
-    SAVE_FILE_D
+struct HighScores {
+    u16 times[COURSE_STAGES_COUNT][NUM_SCORES_PER_STAGE];
+    u8 filler[sizeof(struct SaveFile) * 4 - sizeof(u16) * COURSE_STAGES_COUNT * NUM_SCORES_PER_STAGE];
 };
+
+enum SaveFileIndex { SAVE_FILE_A };
 
 struct MainMenuSaveData {
     // Each save file has a 2 bit "age" for each course. The higher this value,
@@ -58,7 +59,8 @@ struct MainMenuSaveData {
 #endif
 
     // Pad to match the EEPROM size of 0x200 (10 bytes on JP/US, 8 bytes on EU)
-    u8 filler[EEPROM_SIZE / 2 - SUBTRAHEND - NUM_SAVE_FILES * (4 + sizeof(struct SaveFile))];
+    u8 filler[EEPROM_SIZE / 2 - SUBTRAHEND - NUM_SAVE_FILES * (4 + sizeof(struct SaveFile))
+              - sizeof(struct HighScores) / 2];
 
     struct SaveBlockSignature signature;
 };
@@ -66,6 +68,7 @@ struct MainMenuSaveData {
 struct SaveBuffer {
     // Each of the four save files has two copies. If one is bad, the other is used as a backup.
     struct SaveFile files[NUM_SAVE_FILES][2];
+    struct HighScores highScores[1];
     // The main menu data has two copies. If one is bad, the other is used as a backup.
     struct MainMenuSaveData menuData[2];
 };
@@ -131,6 +134,13 @@ BAD_RETURN(s32) save_file_copy(s32 srcFileIndex, s32 destFileIndex);
 void save_file_load_all(void);
 void save_file_reload(void);
 void save_file_collect_star_or_key(s16 coinScore, s16 starIndex);
+
+// PB-System
+bool save_file_register_new_time(s32 courseIndex, s16 starIndex, u16 time);
+u16 save_file_get_best_time(s32 courseIndex, s16 starIndex);
+bool save_file_best_time_exists(s32 courseIndex, s16 starIndex);
+u32 save_file_get_course_sob(s32 courseIndex);
+
 s32 save_file_exists(s32 fileIndex);
 u32 save_file_get_max_coin_score(s32 courseIndex);
 s32 save_file_get_course_star_count(s32 fileIndex, s32 courseIndex);
