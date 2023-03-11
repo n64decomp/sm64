@@ -638,6 +638,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
 }
 
 s32 act_star_dance(struct MarioState *m) {
+    // TODO end timer
     m->faceAngle[1] = m->area->camera->yaw;
     set_mario_animation(m, m->actionState == 2 ? MARIO_ANIM_RETURN_FROM_STAR_DANCE
                                                : MARIO_ANIM_STAR_DANCE);
@@ -650,6 +651,7 @@ s32 act_star_dance(struct MarioState *m) {
 }
 
 s32 act_star_dance_water(struct MarioState *m) {
+    // TODO end timer
     m->faceAngle[1] = m->area->camera->yaw;
     set_mario_animation(m, m->actionState == 2 ? MARIO_ANIM_RETURN_FROM_WATER_STAR_DANCE
                                                : MARIO_ANIM_WATER_STAR_DANCE);
@@ -1173,19 +1175,20 @@ s32 act_death_exit(struct MarioState *m) {
     return FALSE;
 }
 
+/** (Ab-)used as a life-restoring level entry with no control downtime **/
 s32 act_unused_death_exit(struct MarioState *m) {
+    // TODO begin timer
+
     if (launch_mario_until_land(m, ACT_FREEFALL_LAND_STOP, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
 #ifdef VERSION_JP
         play_sound(SOUND_MARIO_OOOF, m->marioObj->header.gfx.cameraToObject);
 #else
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
-        m->numLives--;
-        // restore 7.75 units of health
-        m->healCounter = 31;
     }
-    // one unit of health
-    m->health = 0x0100;
+    // restore 7.75 units of health
+    m->healCounter = 31;
+    m->health = 0x880;
     return FALSE;
 }
 
