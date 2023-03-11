@@ -251,6 +251,17 @@ void unload_area(void) {
     }
 }
 
+void reload_objects(void) {
+    if (TRUE
+        || gCurrentArea != NULL && (gCurrentArea->flags & 0x01)
+               && gCurrentArea->index == gMarioSpawnInfo->areaIndex) {
+        unload_objects_from_area(0, gMarioSpawnInfo->activeAreaIndex);
+
+        gCurrentArea->flags |= 0x01;
+        spawn_objects_from_info(0, gMarioSpawnInfo);
+    }
+}
+
 void load_mario_area(void) {
     stop_sounds_in_continuous_banks();
     load_area(gMarioSpawnInfo->areaIndex);

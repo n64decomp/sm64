@@ -39,6 +39,7 @@
 #define WARP_TYPE_CHANGE_LEVEL 1
 #define WARP_TYPE_CHANGE_AREA 2
 #define WARP_TYPE_SAME_AREA 3
+#define WARP_TYPE_RELOAD_LEVEL 4
 
 #define WARP_NODE_F0 0xF0
 #define WARP_NODE_DEATH 0xF1
@@ -164,6 +165,8 @@ s16 sCurrPlayMode;
 u16 D_80339ECA;
 s16 sTransitionTimer;
 void (*sTransitionUpdate)(s16 *);
+s16 recentWarpSourceNodeId = -1;
+struct WarpDest recentWarpDest;
 struct WarpDest sWarpDest;
 s16 D_80339EE0;
 s16 sDelayedWarpOp;
@@ -214,6 +217,19 @@ u32 pressed_pause(void) {
 
     if (!intangible && !dialogActive && !gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
         && (gPlayer1Controller->buttonPressed & START_BUTTON)) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+u32 pressed_reset(void) {
+    u32 dialogActive = get_dialog_id() >= 0;
+    // TODO prevent resetting during star animations in speedrun mode
+    u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
+
+    if (!gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
+        && (gPlayer1Controller->buttonPressed & L_TRIG)) {
         return TRUE;
     }
 
@@ -387,9 +403,14 @@ void init_mario_after_warp(void) {
             init_door_warp(&gPlayerSpawnInfos[0], sWarpDest.arg);
         }
 
-        if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL || sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
+        if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL || sWarpDest.type == WARP_TYPE_CHANGE_AREA
+            || sWarpDest.type == WARP_TYPE_RELOAD_LEVEL) {
             gPlayerSpawnInfos[0].areaIndex = sWarpDest.areaIdx;
             load_mario_area();
+        }
+        if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL || sWarpDest.type == WARP_TYPE_RELOAD_LEVEL) {
+            gMarioState->numCoins = 0;
+            gHudDisplay.coins = 0;
         }
 
         init_mario();
@@ -618,7 +639,7 @@ s16 music_changed_through_warp(s16 arg) {
 /**
  * Set the current warp type and destination level/area/node.
  */
-void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3) {
+void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3, bool reloadOnSameArea) {
     if (destWarpNode >= WARP_NODE_CREDITS_MIN) {
         sWarpDest.type = WARP_TYPE_CHANGE_LEVEL;
     } else if (destLevel != gCurrLevelNum) {
@@ -626,13 +647,18 @@ void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3) {
     } else if (destArea != gCurrentArea->index) {
         sWarpDest.type = WARP_TYPE_CHANGE_AREA;
     } else {
-        sWarpDest.type = WARP_TYPE_SAME_AREA;
+        if (reloadOnSameArea) {
+            sWarpDest.type = WARP_TYPE_CHANGE_LEVEL;
+        } else {
+            sWarpDest.type = WARP_TYPE_SAME_AREA;
+        }
     }
 
     sWarpDest.levelNum = destLevel;
     sWarpDest.areaIdx = destArea;
     sWarpDest.nodeId = destWarpNode;
     sWarpDest.arg = arg3;
+    recentWarpDest = sWarpDest;
 }
 
 // From Surface 0xD3 to 0xFC
@@ -676,7 +702,8 @@ void initiate_painting_warp(void) {
                     sWarpCheckpointActive = check_warp_checkpoint(&warpNode);
                 }
 
-                initiate_warp(warpNode.destLevel & 0x7F, warpNode.destArea, warpNode.destNode, 0);
+                initiate_warp(warpNode.destLevel & 0x7F, warpNode.destArea, warpNode.destNode, 0,
+                              FALSE);
                 check_if_should_set_warp_checkpoint(&warpNode);
 
                 play_transition_after_delay(WARP_TRANSITION_FADE_INTO_COLOR, 30, 255, 255, 255, 45);
@@ -724,6 +751,12 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sSourceWarpNodeId = WARP_NODE_F0;
                 val04 = FALSE;
                 gSavedCourseNum = COURSE_NONE;
+                play_transition(WARP_TRANSITION_FADE_INTO_COLOR, 0x3C, 0x00, 0x00, 0x00);
+                break;
+
+            case WARP_OP_RELOAD:
+                sDelayedWarpTimer = 4;
+                sSourceWarpNodeId = WARP_NODE_F0;
                 play_transition(WARP_TRANSITION_FADE_INTO_COLOR, 0x3C, 0x00, 0x00, 0x00);
                 break;
 
@@ -814,6 +847,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
         if (val04 && gCurrDemoInput == NULL) {
             fadeout_music((3 * sDelayedWarpTimer / 2) * 8 - 2);
         }
+        recentWarpSourceNodeId = sSourceWarpNodeId;
     }
 
     return sDelayedWarpTimer;
@@ -857,7 +891,7 @@ void initiate_delayed_warp(void) {
                 case WARP_OP_CREDITS_START:
                     gCurrCreditsEntry = &sCreditsSequence[0];
                     initiate_warp(gCurrCreditsEntry->levelNum, gCurrCreditsEntry->areaIndex,
-                                  WARP_NODE_CREDITS_START, 0);
+                                  WARP_NODE_CREDITS_START, 0, FALSE);
                     break;
 
                 case WARP_OP_CREDITS_NEXT:
@@ -872,14 +906,19 @@ void initiate_delayed_warp(void) {
                     }
 
                     initiate_warp(gCurrCreditsEntry->levelNum, gCurrCreditsEntry->areaIndex,
-                                  destWarpNode, 0);
+                                  destWarpNode, 0, FALSE);
+                    break;
+
+                case WARP_OP_RELOAD:
+                    initiate_warp(recentWarpDest.levelNum & 0x7F, recentWarpDest.areaIdx,
+                                  recentWarpDest.nodeId, recentWarpDest.arg, TRUE);
                     break;
 
                 default:
                     warpNode = area_get_warp_node(sSourceWarpNodeId);
 
                     initiate_warp(warpNode->node.destLevel & 0x7F, warpNode->node.destArea,
-                                  warpNode->node.destNode, sDelayedWarpArg);
+                                  warpNode->node.destNode, sDelayedWarpArg, TRUE);
 
                     check_if_should_set_warp_checkpoint(&warpNode->node);
                     if (sWarpDest.type != WARP_TYPE_CHANGE_LEVEL) {
@@ -994,13 +1033,15 @@ s32 play_mode_normal(void) {
     initiate_painting_warp();
     initiate_delayed_warp();
 
-    // If either initiate_painting_warp or initiate_delayed_warp initiated a
-    // warp, change play mode accordingly.
     if (sCurrPlayMode == PLAY_MODE_NORMAL) {
         if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL) {
             set_play_mode(PLAY_MODE_CHANGE_LEVEL);
         } else if (sTransitionTimer != 0) {
             set_play_mode(PLAY_MODE_CHANGE_AREA);
+        } else if (pressed_reset()) {
+            if (recentWarpSourceNodeId >= 0) {
+                level_trigger_warp(gMarioState, WARP_OP_RELOAD);
+            }
         } else if (pressed_pause()) {
             lower_background_noise(1);
 #if ENABLE_RUMBLE
@@ -1025,7 +1066,7 @@ s32 play_mode_paused(void) {
         if (gDebugLevelSelect) {
             fade_into_special_warp(-9, 1);
         } else {
-            initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
+            initiate_warp(LEVEL_CASTLE, 1, 0x0A, 0, FALSE); // TODO set pause menu warp here
             fade_into_special_warp(0, 0);
             gSavedCourseNum = COURSE_NONE;
         }
@@ -1258,9 +1299,30 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
             break;
     }
 #endif
+    recentWarpDest.type = WARP_TYPE_NOT_WARPING;
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
     gNeverEnteredCastle = !save_file_exists(gCurrSaveFileNum - 1);
+
+    // TODO maybe do that independent of level?
+    if (gCurrLevelNum == LEVEL_CASTLE)
+        return 0;
+    if (gCurrLevelNum == LEVEL_BOB)
+        return 0;
+    if (gCurrLevelNum == LEVEL_HMC)
+        return 0;
+    if (gCurrLevelNum == LEVEL_LLL)
+        return 0;
+    if (gCurrLevelNum == LEVEL_SSL)
+        return 0;
+    if (gCurrLevelNum == LEVEL_BBH)
+        return 0;
+    if (gCurrLevelNum == LEVEL_CCM)
+        return 0;
+    if (gCurrLevelNum == LEVEL_JRB)
+        return 0;
+    if (gCurrLevelNum == LEVEL_WF)
+        return 0;
 
     gCurrLevelNum = levelNum;
     gCurrCourseNum = COURSE_NONE;

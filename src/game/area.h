@@ -156,6 +156,7 @@ void clear_areas(void);
 void clear_area_graph_nodes(void);
 void load_area(s32 index);
 void unload_area(void);
+void reload_objects(void);
 void load_mario_area(void);
 void unload_mario_area(void);
 void change_area(s32 index);

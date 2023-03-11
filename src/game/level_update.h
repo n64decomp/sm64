@@ -17,6 +17,7 @@
 #define WARP_OP_WARP_DOOR     0x03
 #define WARP_OP_WARP_OBJECT   0x04
 #define WARP_OP_TELEPORT      0x05
+#define WARP_OP_RELOAD 0x06
 #define WARP_OP_STAR_EXIT     0x11
 #define WARP_OP_DEATH         0x12
 #define WARP_OP_WARP_FLOOR    0x13
