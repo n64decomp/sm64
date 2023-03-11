@@ -654,12 +654,14 @@ static void level_cmd_unload_area(void) {
 static void level_cmd_set_mario_start_pos(void) {
     gMarioSpawnInfo->areaIndex = CMD_GET(u8, 2);
 
+    // TODO: values are hardcoded into code rn, maybe look into loading them from a specific memory
+    // location (as before) or (better) from easily configurable sources
 #if IS_64_BIT
-    vec3s_set(gMarioSpawnInfo->startPos, CMD_GET(s16, 6), CMD_GET(s16, 8), CMD_GET(s16, 10));
+    vec3s_set(gMarioSpawnInfo->startPos, 0, 1200, 1800);
 #else
-    vec3s_copy(gMarioSpawnInfo->startPos, CMD_GET(Vec3s, 6));
+    vec3s_set(gMarioSpawnInfo->startPos, 0, 1200, 1800);
 #endif
-    vec3s_set(gMarioSpawnInfo->startAngle, 0, CMD_GET(s16, 4) * 0x8000 / 180, 0);
+    vec3s_set(gMarioSpawnInfo->startAngle, 0, 180 * 0x8000 / 180, 0);
 
     sCurrentCmd = CMD_NEXT;
 }
