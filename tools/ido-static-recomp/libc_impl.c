@@ -308,6 +308,11 @@ static void init_usr_lib_redirect(void) {
     if (_NSGetExecutablePath(path, &size) < 0) {
         return;
     }
+#elif defined __FreeBSD__
+    ssize_t size = readlink("/proc/curproc/file", path, PATH_MAX);
+    if (size < 0 || size == PATH_MAX) {
+        return;
+    }
 #else
     ssize_t size = readlink("/proc/self/exe", path, PATH_MAX);
     if (size < 0 || size == PATH_MAX) {
@@ -2499,7 +2504,17 @@ void wrapper_longjmp(uint8_t* mem, uint32_t addr, int status) {
 uint32_t wrapper_tempnam(uint8_t *mem, uint32_t dir_addr, uint32_t pfx_addr) {
     STRING(dir)
     STRING(pfx)
+#ifdef __FreeBSD__
+    //dir is coming in as empty string, or a / at best, force sane location, NULL would force /tmp/ too 
+    //linux man on this call suggests maybe it overrides in-appropriate, ie non-writable, etc to $TEMPDIR
+    //or /tmp, bsd man for this call doesn't mention it checks at all. not sure if dir is truly coming in
+    //empty and being masked by glibc checking if its valid, or if its fine and maybe truly a freebsd issue.
+    //under bsd this is an example ret output passing in dir: /cQyXjG obviously root is a bad place for temp
+    //files forcing works and might just be replicating the linux/glibc behavior anyway
+    char *ret = tempnam("/tmp/", pfx);
+#else
     char *ret = tempnam(dir, pfx);
+#endif
     char *ret_saved = ret;
     if (ret == NULL) {
         MEM_U32(ERRNO_ADDR) = errno;
@@ -2932,7 +2947,12 @@ uint32_t wrapper_regex(uint8_t* mem, uint32_t re_addr, uint32_t subject_addr, ui
 void wrapper___assert(uint8_t* mem, uint32_t assertion_addr, uint32_t file_addr, int line) {
     STRING(assertion)
     STRING(file)
+#ifdef __FreeBSD__
+    //#define	assert(e)	((e) ? (void)0 : __assert(__func__, __FILE__, __LINE__, #e))
+    __assert("undefinedfunc", file, line, assertion);
+#else
     __assert(assertion, file, line);
+#endif
 }
 
 union host_doubleword {
