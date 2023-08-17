@@ -51,8 +51,8 @@ static u8 sKoopaShelledAttackHandlers[] = {
  * Data to control the behavior of each instance of Koopa the Quick.
  */
 struct KoopaTheQuickProperties {
-    s16 initText;
-    s16 winText;
+    s16 initDialogID;
+    s16 winDialogID;
     Trajectory const *path;
     Vec3s starPos;
 };
@@ -69,7 +69,7 @@ static struct KoopaTheQuickProperties sKoopaTheQuickProperties[] = {
  * Initialization function.
  */
 void bhv_koopa_init(void) {
-    if ((o->oKoopaMovementType = o->oBehParams2ndByte) == KOOPA_BP_TINY) {
+    if ((o->oKoopaMovementType = o->oBhvParams2ndByte) == KOOPA_BP_TINY) {
         // Tiny koopa in THI
         o->oKoopaMovementType = KOOPA_BP_NORMAL;
         o->oKoopaAgility = 1.6f / 3.0f;
@@ -517,7 +517,7 @@ static void koopa_the_quick_act_wait_before_race(void) {
  */
 static void koopa_the_quick_act_show_init_text(void) {
     s32 response = obj_update_race_proposition_dialog(
-        sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].initText);
+        sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].initDialogID);
 
     if (response == DIALOG_RESPONSE_YES) {
         UNUSED u8 filler[4];
@@ -721,7 +721,7 @@ static void koopa_the_quick_act_after_race(void) {
                 } else {
                     // Mario won
                     o->parentObj->oKoopaRaceEndpointDialog =
-                        sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].winText;
+                        sKoopaTheQuickProperties[o->oKoopaTheQuickRaceIndex].winDialogID;
                 }
             } else {
                 // KtQ won
@@ -731,7 +731,7 @@ static void koopa_the_quick_act_after_race(void) {
             o->oFlags &= ~OBJ_FLAG_ACTIVE_FROM_AFAR;
         }
     } else if (o->parentObj->oKoopaRaceEndpointDialog > 0) {
-        s32 dialogResponse = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+        s32 dialogResponse = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
             DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, o->parentObj->oKoopaRaceEndpointDialog);
         if (dialogResponse != 0) {
             o->parentObj->oKoopaRaceEndpointDialog = DIALOG_NONE;

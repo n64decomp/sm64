@@ -28,7 +28,7 @@ static Collision const *sActivatedBackAndForthPlatformCollisionModels[] = {
  */
 void bhv_activated_back_and_forth_platform_init(void) {
     // Equivalent to the first behavior param byte & 3 (last 2 bits of the byte).
-    s32 platformType = ((u16)(o->oBehParams >> 16) & 0x0300) >> 8;
+    s32 platformType = ((u16)(o->oBhvParams >> 16) & ACTIVATED_BF_PLAT_BP_MASK_TYPE) >> 8;
 
     // The BitS arrow platform should flip 180º (0x8000 angle units), but
     // there is no reason for the other platforms to flip.
@@ -42,18 +42,18 @@ void bhv_activated_back_and_forth_platform_init(void) {
         segmented_to_virtual(sActivatedBackAndForthPlatformCollisionModels[platformType]);
 
     // Max distance the platform should move.
-    // Equivalent to 50 * (oBehParams2ndByte & 0x7F), i.e. 50 * (oBehParams2ndByte % 128).
+    // Equivalent to 50 * (oBhvParams2ndByte & 0x7F), i.e. 50 * (oBhvParams2ndByte % 128).
     // The maximum possible value of this is 50 * 127 = 6350.
     // It's 50 * 97 = 4850 in BitS and 50 * 31 = 1550 in BitFS.
-    o->oActivatedBackAndForthPlatformMaxOffset = 50.0f * ((u16)(o->oBehParams >> 16) & 0x007F);
+    o->oActivatedBackAndForthPlatformMaxOffset = 50.0f * ((u16)(o->oBhvParams >> 16) & 0x007F);
 
     if (platformType == ACTIVATED_BF_PLAT_TYPE_BITFS_ELEVATOR) {
         o->oActivatedBackAndForthPlatformMaxOffset -= 12.0f;
     }
 
     // Truthy/falsy value that determines the direction of movement.
-    // Equivalent to oBehParams2ndByte & 0x80, i.e. the most significant bit of oBehParams2ndByte.
-    o->oActivatedBackAndForthPlatformVertical = (u16)(o->oBehParams >> 16) & 0x0080;
+    // Equivalent to oBhvParams2ndByte & 0x80, i.e. the most significant bit of oBhvParams2ndByte.
+    o->oActivatedBackAndForthPlatformVertical = (u16)(o->oBhvParams >> 16) & 0x0080;
 
     o->oActivatedBackAndForthPlatformStartYaw = o->oFaceAngleYaw;
 }

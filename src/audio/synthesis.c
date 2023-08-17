@@ -1,4 +1,4 @@
-#ifndef VERSION_SH
+#if !defined(VERSION_SH) && !defined(VERSION_CN)
 #include <ultra64.h>
 
 #include "synthesis.h"

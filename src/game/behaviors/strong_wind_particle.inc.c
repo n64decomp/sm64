@@ -26,7 +26,7 @@ void bhv_strong_wind_particle_loop(void) {
         o->oForwardVel = coss(o->oMoveAnglePitch) * 100.0f;
         o->oVelY = sins(o->oMoveAnglePitch) * -100.0f;
 
-        o->oMoveAngleYaw += random_f32_around_zero(o->oBehParams2ndByte * 500); // Wind spread
+        o->oMoveAngleYaw += random_f32_around_zero(o->oBhvParams2ndByte * 500); // Wind spread
         o->oOpacity = 100;
     }
 

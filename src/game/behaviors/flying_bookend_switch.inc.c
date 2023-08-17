@@ -270,7 +270,7 @@ void bhv_book_switch_loop(void) {
             cur_obj_become_intangible();
 
             if (approach_f32_ptr(&o->oBookSwitchUnkF4, 0.0f, 20.0f) && o->oAction != 0) {
-                if (o->parentObj->oBookSwitchManagerUnkF4 == o->oBehParams2ndByte) {
+                if (o->parentObj->oBookSwitchManagerUnkF4 == o->oBhvParams2ndByte) {
                     play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
                     o->parentObj->oBookSwitchManagerUnkF4++;
                 } else {

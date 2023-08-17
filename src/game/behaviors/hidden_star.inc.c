@@ -6,7 +6,7 @@ void bhv_hidden_star_init(void) {
     if (count == 0) {
         struct Object *star = spawn_object_abs_with_rot(o, 0, MODEL_STAR, bhvStar,
                                                         o->oPosX, o->oPosY, o->oPosZ, 0, 0, 0);
-        star->oBehParams = o->oBehParams;
+        star->oBhvParams = o->oBhvParams;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 

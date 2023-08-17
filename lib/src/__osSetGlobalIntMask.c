@@ -1,9 +1,8 @@
 #include "libultra_internal.h"
-#include "hardware.h"
-#include "new_func.h"
+#include "PR/os.h"
 
-void __osSetGlobalIntMask(s32 arg0) {
-    register u32 prev = __osDisableInt();
-    __OSGlobalIntMask |= arg0;
-    __osRestoreInt(prev);
+void __osSetGlobalIntMask(s32 mask) {
+    register u32 saveMask = __osDisableInt();
+    __OSGlobalIntMask |= mask;
+    __osRestoreInt(saveMask);
 }

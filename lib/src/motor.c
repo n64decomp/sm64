@@ -2,6 +2,19 @@
 #include "PR/os_pi.h"
 #include "libultra_internal.h"
 #include "controller.h"
+#include "macros.h"
+
+#ifdef VERSION_CN
+
+s32 __osMotorAccess(UNUSED OSPfs *pfs, UNUSED s32 action) {
+    return PFS_ERR_INVALID;
+}
+
+s32 osMotorInit(UNUSED OSMesgQueue *mq, UNUSED OSPfs *pfs, UNUSED int channel) {
+    return PFS_ERR_DEVICE;
+}
+
+#else
 
 void _MakeMotorData(int channel, u16 address, u8 *buffer, OSPifRam *mdata);
 u32 __osMotorinitialized[MAXCONTROLLERS] = { 0, 0, 0, 0 };
@@ -22,7 +35,7 @@ s32 osMotorStop(OSPfs *pfs) {
     }
     __osSiGetAccess();
 
-    _osLastSentSiCmd = CONT_CMD_WRITE_MEMPACK;
+    __osContLastCmd = CONT_CMD_WRITE_MEMPACK;
     __osSiRawStartDma(OS_WRITE, &_MotorStopData[pfs->channel]);
     osRecvMesg(pfs->queue, NULL, OS_MESG_BLOCK);
     ret = __osSiRawStartDma(OS_READ, &__osPfsPifRam);
@@ -58,7 +71,7 @@ s32 osMotorStart(OSPfs *pfs) {
 
     __osSiGetAccess();
 
-    _osLastSentSiCmd = CONT_CMD_WRITE_MEMPACK;
+    __osContLastCmd = CONT_CMD_WRITE_MEMPACK;
     __osSiRawStartDma(OS_WRITE, &_MotorStartData[pfs->channel]);
     osRecvMesg(pfs->queue, NULL, OS_MESG_BLOCK);
     ret = __osSiRawStartDma(OS_READ, &__osPfsPifRam);
@@ -86,7 +99,7 @@ void _MakeMotorData(int channel, u16 address, u8 *buffer, OSPifRam *mdata) {
     int i;
 
     ptr = (u8 *) mdata->ramarray;
-    for (i = 0; i < ARRLEN(mdata->ramarray); i++) {
+    for (i = 0; i < ARRAY_COUNT(mdata->ramarray); i++) {
         mdata->ramarray[i] = 0;
     }
     mdata->pifstatus = CONT_CMD_EXE;
@@ -97,7 +110,7 @@ void _MakeMotorData(int channel, u16 address, u8 *buffer, OSPifRam *mdata) {
 
     ramreadformat.address = (address << 0x5) | __osContAddressCrc(address);
     ramreadformat.datacrc = CONT_CMD_NOP;
-    for (i = 0; i < ARRLEN(ramreadformat.data); i++) {
+    for (i = 0; i < ARRAY_COUNT(ramreadformat.data); i++) {
         ramreadformat.data[i] = *buffer++;
     }
     if (channel != 0) {
@@ -119,7 +132,7 @@ s32 osMotorInit(OSMesgQueue *mq, OSPfs *pfs, int channel) {
     pfs->status = 0;
     pfs->activebank = 128;
 
-    for (i = 0; i < ARRLEN(temp); i++) {
+    for (i = 0; i < ARRAY_COUNT(temp); i++) {
         temp[i] = 254;
     }
 
@@ -142,7 +155,7 @@ s32 osMotorInit(OSMesgQueue *mq, OSPfs *pfs, int channel) {
         return PFS_ERR_DEVICE;
     }
 
-    for (i = 0; i < ARRLEN(temp); i++) {
+    for (i = 0; i < ARRAY_COUNT(temp); i++) {
         temp[i] = 128;
     }
 
@@ -166,7 +179,7 @@ s32 osMotorInit(OSMesgQueue *mq, OSPfs *pfs, int channel) {
     }
 
     if (!__osMotorinitialized[channel]) {
-        for (i = 0; i < ARRLEN(_motorstartbuf); i++) {
+        for (i = 0; i < ARRAY_COUNT(_motorstartbuf); i++) {
             _motorstartbuf[i] = 1;
             _motorstopbuf[i] = 0;
         }
@@ -176,3 +189,5 @@ s32 osMotorInit(OSMesgQueue *mq, OSPfs *pfs, int channel) {
     }
     return 0;
 }
+
+#endif

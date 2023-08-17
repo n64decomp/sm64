@@ -82,7 +82,7 @@ void bhv_intro_lakitu_loop(void) {
             o->oIntroLakituSplineSegment = 0.0f;
             o->oIntroLakituSplineSegmentProgress = 0.0f;
             o->oIntroLakituCloud =
-                spawn_object_relative_with_scale(1, 0, 0, 0, 2.0f, o, MODEL_MIST, bhvCloud);
+                spawn_object_relative_with_scale(CLOUD_BP_LAKITU_CLOUD, 0, 0, 0, 2.0f, o, MODEL_MIST, bhvCloud);
 
             if (gCamera->cutscene == CUTSCENE_END_WAVING) {
                 o->oAction = 100;
@@ -110,7 +110,7 @@ void bhv_intro_lakitu_loop(void) {
             }
 
             switch (o->oTimer) {
-#if defined(VERSION_US) || defined(VERSION_SH)
+#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
                 case 534:
                     cur_obj_play_sound_2(SOUND_ACTION_FLYING_FAST);
                     break;

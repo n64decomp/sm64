@@ -63,7 +63,7 @@ void bhv_coffin_spawner_loop(void) {
  * Also controls laying the coffin down after it has stood up.
  */
 void coffin_act_idle(void) {
-    if (o->oBehParams2ndByte != COFFIN_BP_STATIC) {
+    if (o->oBhvParams2ndByte != COFFIN_BP_STATIC) {
         // Lay down if standing
         if (o->oFaceAnglePitch != 0) {
             o->oAngleVelPitch = approach_s16_symmetric(o->oAngleVelPitch, -2000, 200);

@@ -30,8 +30,8 @@ static struct ObjectHitbox sChainChompHitbox = {
 void bhv_chain_chomp_chain_part_update(void) {
     if (o->parentObj->oAction == CHAIN_CHOMP_ACT_UNLOAD_CHAIN) {
         obj_mark_for_deletion(o);
-    } else if (o->oBehParams2ndByte != CHAIN_CHOMP_CHAIN_PART_BP_PIVOT) {
-        struct ChainSegment *segment = &o->parentObj->oChainChompSegments[o->oBehParams2ndByte];
+    } else if (o->oBhvParams2ndByte != CHAIN_CHOMP_CHAIN_PART_BP_PIVOT) {
+        struct ChainSegment *segment = &o->parentObj->oChainChompSegments[o->oBhvParams2ndByte];
 
         // Set position relative to the pivot
         o->oPosX = o->parentObj->parentObj->oPosX + segment->posX;
@@ -256,7 +256,7 @@ static void chain_chomp_released_trigger_cutscene(void) {
 
     //! Can delay this if we get into a cutscene-unfriendly action after the
     //  last post ground pound and before this
-    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK 
+    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK
         && (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) && cutscene_object(CUTSCENE_STAR_SPAWN, o) == 1) {
         o->oChainChompReleaseStatus = CHAIN_CHOMP_RELEASED_LUNGE_AROUND;
         o->oTimer = 0;
@@ -503,7 +503,7 @@ void bhv_wooden_post_update(void) {
 
     if (o->oWoodenPostOffsetY != 0.0f) {
         o->oPosY = o->oHomeY + o->oWoodenPostOffsetY;
-    } else if (!(o->oBehParams & WOODEN_POST_BP_NO_COINS_MASK)) {
+    } else if (!(o->oBhvParams & WOODEN_POST_BP_NO_COINS_MASK)) {
         // Reset the timer once mario is far enough
         if (o->oDistanceToMario > 400.0f) {
             o->oTimer = o->oWoodenPostTotalMarioAngle = 0;
@@ -535,7 +535,7 @@ void bhv_chain_chomp_gate_update(void) {
     if (o->parentObj->oChainChompHitGate) {
         spawn_mist_particles_with_sound(SOUND_GENERAL_WALL_EXPLOSION);
         set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
-        spawn_mist_particles_variable(0, 0x7F, 200.0f);
+        spawn_mist_particles_variable(0, 127, 200.0f);
         spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, 4);
         obj_mark_for_deletion(o);
     }

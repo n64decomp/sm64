@@ -101,7 +101,7 @@
 #define /*0x138*/ oParentRelativePosX         OBJECT_FIELD_F32(O_PARENT_RELATIVE_POS_INDEX + 0)
 #define /*0x13C*/ oParentRelativePosY         OBJECT_FIELD_F32(O_PARENT_RELATIVE_POS_INDEX + 1)
 #define /*0x140*/ oParentRelativePosZ         OBJECT_FIELD_F32(O_PARENT_RELATIVE_POS_INDEX + 2)
-#define /*0x144*/ oBehParams2ndByte           OBJECT_FIELD_S32(0x2F)
+#define /*0x144*/ oBhvParams2ndByte           OBJECT_FIELD_S32(0x2F)
 // 0x148 unused, possibly a third param byte.
 #define /*0x14C*/ oAction                     OBJECT_FIELD_S32(0x31)
 #define /*0x150*/ oSubAction                  OBJECT_FIELD_S32(0x32)
@@ -118,7 +118,7 @@
 #define /*0x17C*/ oOpacity                    OBJECT_FIELD_S32(0x3D)
 #define /*0x180*/ oDamageOrCoinValue          OBJECT_FIELD_S32(0x3E)
 #define /*0x184*/ oHealth                     OBJECT_FIELD_S32(0x3F)
-#define /*0x188*/ oBehParams                  OBJECT_FIELD_S32(0x40)
+#define /*0x188*/ oBhvParams                  OBJECT_FIELD_S32(0x40)
 #define /*0x18C*/ oPrevAction                 OBJECT_FIELD_S32(0x41)
 #define /*0x190*/ oInteractionSubtype         OBJECT_FIELD_U32(0x42)
 #define /*0x194*/ oCollisionDistance          OBJECT_FIELD_F32(0x43)
@@ -126,7 +126,7 @@
 #define /*0x19C*/ oDrawingDistance            OBJECT_FIELD_F32(0x45)
 #define /*0x1A0*/ oRoom                       OBJECT_FIELD_S32(0x46)
 // 0x1A4 is unused, possibly related to 0x1A8 in removed macro purposes.
-#define /*0x1A8*/ oUnk1A8                     OBJECT_FIELD_U32(0x48)
+#define /*0x1A8*/ oUnusedBhvParams            OBJECT_FIELD_U32(0x48)
 // 0x1AC-0x1B2 (0x48-0x4A) are object specific and defined below the common fields.
 #define /*0x1B4*/ oWallAngle                  OBJECT_FIELD_S32(0x4B)
 #define /*0x1B8*/ oFloorType                  OBJECT_FIELD_S16(0x4C, 0)
@@ -165,8 +165,8 @@
 #define /*0x110*/ oMarioSteepJumpYaw     OBJECT_FIELD_S32(0x22)
 #define /*0x110*/ oMarioWalkingPitch     OBJECT_FIELD_S32(0x22)
 
-/* 1-Up Hidden */
-#define /*0x0F4*/ o1UpHiddenUnkF4 OBJECT_FIELD_S32(0x1B)
+/* Hidden 1-Up */
+#define /*0x0F4*/ oHidden1UpNumTouchedTriggers OBJECT_FIELD_S32(0x1B)
 
 /* Activated Back and Forth Platform */
 #define /*0x0F4*/ oActivatedBackAndForthPlatformMaxOffset    OBJECT_FIELD_F32(0x1B)
@@ -278,7 +278,7 @@
 #define /*0x0F4*/ oBowserStatus          OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oBowserTimer           OBJECT_FIELD_S32(0x1C)
 #define /*0x0FC*/ oBowserDistToCenter    OBJECT_FIELD_F32(0x1D)
-#define /*0x106*/ oBowserBitsJustJump    OBJECT_FIELD_S16(0x1F, 1)
+#define /*0x106*/ oBowserBitSJustJump    OBJECT_FIELD_S16(0x1F, 1)
 #define /*0x108*/ oBowserRandSplitFloor  OBJECT_FIELD_S16(0x20, 0)
 #define /*0x10A*/ oBowserHeldAnglePitch  OBJECT_FIELD_S16(0x20, 1)
 #define /*0x10D*/ oBowserHeldAngleVelYaw OBJECT_FIELD_S16(0x21, 0)
@@ -398,11 +398,11 @@
 #define /*0x1AC*/ oCloudFwooshMovementRadius OBJECT_FIELD_S16(0x49, 0)
 
 /* Coin */
-#define /*0x0F4*/ oCoinUnkF4  OBJECT_FIELD_S32(0x1B)
-#define /*0x0F8*/ oCoinUnkF8  OBJECT_FIELD_S32(0x1C)
-#define /*0x110*/ oCoinUnk110 OBJECT_FIELD_F32(0x22)
+#define /*0x0F4*/ oCoinCollectedFlags       OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oCoinOnGround             OBJECT_FIELD_S32(0x1C)
+#define /*0x110*/ oCoinBaseVelY             OBJECT_FIELD_F32(0x22)
 #ifndef VERSION_JP
-#define /*0x1B0*/ oCoinUnk1B0 OBJECT_FIELD_S32(0x4A)
+#define /*0x1B0*/ oCoinNumBounceSoundPlayed OBJECT_FIELD_S32(0x4A)
 #endif
 
 /* Collision Particle */
@@ -569,7 +569,7 @@
 #define /*0x0F4*/ oHeaveHoUnkF4 OBJECT_FIELD_F32(0x1B)
 
 /* Hidden Object */
-#define /*0x0F4*/ oHiddenObjectUnkF4 OBJECT_FIELD_OBJ(0x1B)
+#define /*0x0F4*/ oHiddenObjectPurpleSwitch OBJECT_FIELD_OBJ(0x1B)
 
 /* Hoot */
 #define /*0x0F4*/ oHootAvailability     OBJECT_FIELD_S32(0x1B)
@@ -724,8 +724,8 @@
 #define /*0x0FC*/ oRespawnerBehaviorToRespawn OBJECT_FIELD_CVPTR(0x1D)
 
 /* Openable Grill */
-#define /*0x088*/ oOpenableGrillUnk88 OBJECT_FIELD_S32(0x00)
-#define /*0x0F4*/ oOpenableGrillUnkF4 OBJECT_FIELD_OBJ(0x1B)
+#define /*0x088*/ oOpenableGrillUnk88        OBJECT_FIELD_S32(0x00)
+#define /*0x0F4*/ oOpenableGrillPurpleSwitch OBJECT_FIELD_OBJ(0x1B)
 
 /* Intro Cutscene Peach */
 #define /*0x108*/ oIntroPeachYawFromFocus OBJECT_FIELD_F32(0x20)
@@ -770,12 +770,12 @@
 #define /*0x0F8*/ oPitouneUnkF8 OBJECT_FIELD_F32(0x1C)
 #define /*0x0FC*/ oPitouneUnkFC OBJECT_FIELD_F32(0x1D)
 
-/* Falling Rising Bitfs Platform */
-#define /*0x0F4*/ oBitfsPlatformTimer   OBJECT_FIELD_S32(0x1B)
+/* Falling Rising BitFS Platform */
+#define /*0x0F4*/ oBitFSPlatformTimer   OBJECT_FIELD_S32(0x1B)
 
-/* Falling Bowser Bits Platform */
-#define /*0x0F8*/ oBitsPlatformBowser   OBJECT_FIELD_OBJ(0x1C)
-#define /*0x0FC*/ oBitsPlatformTimer    OBJECT_FIELD_S32(0x1D)
+/* Falling Bowser BitS Platform */
+#define /*0x0F8*/ oBitSPlatformBowser   OBJECT_FIELD_OBJ(0x1C)
+#define /*0x0FC*/ oBitSPlatformTimer    OBJECT_FIELD_S32(0x1D)
 
 /* WF Platform */
 #define /*0x10C*/ oPlatformUnk10C OBJECT_FIELD_F32(0x21)
@@ -831,10 +831,10 @@
 /* Rolling Log */
 #define /*0x0F4*/ oRollingLogUnkF4 OBJECT_FIELD_F32(0x1B)
 
-/* Lll Rotating Hex Flame */
-#define /*0x0F4*/ oLllRotatingHexFlameUnkF4 OBJECT_FIELD_F32(0x1B)
-#define /*0x0F8*/ oLllRotatingHexFlameUnkF8 OBJECT_FIELD_F32(0x1C)
-#define /*0x0FC*/ oLllRotatingHexFlameUnkFC OBJECT_FIELD_F32(0x1D)
+/* LLL Rotating Hex Flame */
+#define /*0x0F4*/ oLLLRotatingHexFlameUnkF4 OBJECT_FIELD_F32(0x1B)
+#define /*0x0F8*/ oLLLRotatingHexFlameUnkF8 OBJECT_FIELD_F32(0x1C)
+#define /*0x0FC*/ oLLLRotatingHexFlameUnkFC OBJECT_FIELD_F32(0x1D)
 
 /* Scuttlebug */
 #define /*0x0F4*/ oScuttlebugUnkF4 OBJECT_FIELD_S32(0x1B)
@@ -863,10 +863,10 @@
 #define /*0x100*/ oSkeeterWaitTime            OBJECT_FIELD_S32(0x1E)
 #define /*0x1AC*/ oSkeeterUnk1AC              OBJECT_FIELD_S16(0x49, 0)
 
-/* Jrb Sliding Box */
-#define /*0x0F4*/ oJrbSlidingBoxUnkF4 OBJECT_FIELD_OBJ(0x1B)
-#define /*0x0F8*/ oJrbSlidingBoxUnkF8 OBJECT_FIELD_S32(0x1C)
-#define /*0x0FC*/ oJrbSlidingBoxUnkFC OBJECT_FIELD_F32(0x1D)
+/* JRB Sliding Box */
+#define /*0x0F4*/ oJRBSlidingBoxUnkF4 OBJECT_FIELD_OBJ(0x1B)
+#define /*0x0F8*/ oJRBSlidingBoxUnkF8 OBJECT_FIELD_S32(0x1C)
+#define /*0x0FC*/ oJRBSlidingBoxUnkFC OBJECT_FIELD_F32(0x1D)
 
 /* WF Sliding Brick Platform */
 #define /*0x0F4*/ oWFSlidBrickPtfmMovVel OBJECT_FIELD_F32(0x1B)
@@ -952,8 +952,8 @@
 #define /*0x0F8*/ oSwoopTargetPitch   OBJECT_FIELD_S32(0x1C)
 #define /*0x0FC*/ oSwoopTargetYaw     OBJECT_FIELD_S32(0x1D)
 
-/* Thwomp */
-#define /*0x0F4*/ oThwompRandomTimer OBJECT_FIELD_S32(0x1B)
+/* Grindel or Thwomp */
+#define /*0x0F4*/ oGrindelThwompRandomTimer OBJECT_FIELD_S32(0x1B)
 
 /* Tilting Platform */
 #define /*0x0F4*/ oTiltingPyramidNormalX         OBJECT_FIELD_F32(0x1B)
@@ -962,13 +962,13 @@
 #define /*0x10C*/ oTiltingPyramidMarioOnPlatform OBJECT_FIELD_S32(0x21)
 
 /* Toad Message */
-#define /*0x108*/ oToadMessageDialogId       OBJECT_FIELD_U32(0x20)
+#define /*0x108*/ oToadMessageDialogID       OBJECT_FIELD_U32(0x20)
 #define /*0x10C*/ oToadMessageRecentlyTalked OBJECT_FIELD_S32(0x21)
 #define /*0x110*/ oToadMessageState          OBJECT_FIELD_S32(0x22)
 
 /* Tox Box */
-#define /*0x1AC*/ oToxBoxMovementPattern OBJECT_FIELD_VPTR(0x49)
-#define /*0x1B0*/ oToxBoxMovementStep    OBJECT_FIELD_S32(0x4A)
+#define /*0x1AC*/ oToxBoxActionTable OBJECT_FIELD_VPTR(0x49)
+#define /*0x1B0*/ oToxBoxActionStep  OBJECT_FIELD_S32(0x4A)
 
 /* TTC Rotating Solid */
 #define /*0x0F4*/ oTTCRotatingSolidNumTurns      OBJECT_FIELD_S32(0x1B)
@@ -1033,7 +1033,7 @@
 #define /*0x0F8*/ oTreasureChestUnkF8 OBJECT_FIELD_S32(0x1C)
 #define /*0x0FC*/ oTreasureChestUnkFC OBJECT_FIELD_S32(0x1D)
 
-/* Tree Snow Or Leaf */
+/* Tree Snow or Leaf */
 #define /*0x0F4*/ oTreeSnowOrLeafUnkF4 OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oTreeSnowOrLeafUnkF8 OBJECT_FIELD_S32(0x1C)
 #define /*0x0FC*/ oTreeSnowOrLeafUnkFC OBJECT_FIELD_S32(0x1D)
@@ -1146,8 +1146,8 @@
 #define /*0x1AC*/ oWigglerUnused                  OBJECT_FIELD_S16(0x49, 0)
 #define /*0x1AE*/ oWigglerTextStatus              OBJECT_FIELD_S16(0x49, 1)
 
-/* Lll Wood Piece */
-#define /*0x0F4*/ oLllWoodPieceOscillationTimer OBJECT_FIELD_S32(0x1B)
+/* LLL Wood Piece */
+#define /*0x0F4*/ oLLLWoodPieceOscillationTimer OBJECT_FIELD_S32(0x1B)
 
 /* Wooden Post */
 #define /*0x0F4*/ oWoodenPostTotalMarioAngle  OBJECT_FIELD_S32(0x1B)

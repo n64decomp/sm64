@@ -1,6 +1,10 @@
 #include <PR/ultratypes.h>
 #include <stdio.h>
 
+#if defined(VERSION_JP) || defined(VERSION_US)
+#include "prevent_bss_reordering.h"
+#endif
+
 #include "debug_utils.h"
 #include "dynlist_proc.h"
 #include "gd_macros.h"
@@ -1269,7 +1273,7 @@ static void find_thisface_verts(struct ObjFace *face, struct ObjGroup *vertexGrp
     struct ListNode *node;
 
     for (i = 0; i < face->vtxCount; i++) {
-        // find the vertex or particle whose index in vertexGrp equals face->vertices[i] 
+        // find the vertex or particle whose index in vertexGrp equals face->vertices[i]
         node = vertexGrp->firstMember;
         currIndex = 0;
         while (node != NULL) {

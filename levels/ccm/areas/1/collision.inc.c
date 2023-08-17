@@ -1767,7 +1767,7 @@ const Collision ccm_seg7_area_1_collision[] = {
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,        /*pos*/ -1146, -3583,  5919),
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,        /*pos*/ -1768,  2560, -1793),
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,        /*pos*/ -3443,   807, -2713),
-    SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_wooden_door_warp, /*pos*/  2464, -4607,  4302, /*yaw*/ 158, /*behParam2*/ 20),
+    SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_wooden_door_warp, /*pos*/  2464, -4607,  4302, /*yaw*/ 158, /*bhvParam2*/ 20),
     COL_WATER_BOX_INIT(1),
     COL_WATER_BOX(0, 3137, 4228, 3925, 4945, -4638),
     COL_END(),

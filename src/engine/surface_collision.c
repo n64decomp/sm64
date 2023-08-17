@@ -185,8 +185,8 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
     struct SurfaceNode *node;
     s16 cellX, cellZ;
     s32 numCollisions = 0;
-    s16 x = colData->x;
-    s16 z = colData->z;
+    TerrainData x = colData->x;
+    TerrainData z = colData->z;
 
     colData->numWalls = 0;
 
@@ -315,9 +315,9 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
     //  float locations can return ceilings despite them not existing there.
     //  (Dynamic ceilings will unload due to the range.)
-    s16 x = (s16) posX;
-    s16 y = (s16) posY;
-    s16 z = (s16) posZ;
+    TerrainData x = (TerrainData) posX;
+    TerrainData y = (TerrainData) posY;
+    TerrainData z = (TerrainData) posZ;
 
     *pceil = NULL;
 
@@ -491,9 +491,9 @@ f32 unused_find_dynamic_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfl
     f32 floorHeight = FLOOR_LOWER_LIMIT;
 
     // Would normally cause PUs, but dynamic floors unload at that range.
-    s16 x = (s16) xPos;
-    s16 y = (s16) yPos;
-    s16 z = (s16) zPos;
+    TerrainData x = (TerrainData) xPos;
+    TerrainData y = (TerrainData) yPos;
+    TerrainData z = (TerrainData) zPos;
 
     // Each level is split into cells to limit load, find the appropriate cell.
     s16 cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & NUM_CELLS_INDEX;
@@ -522,9 +522,9 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
     //  float locations can return floors despite them not existing there.
     //  (Dynamic floors will unload due to the range.)
-    s16 x = (s16) xPos;
-    s16 y = (s16) yPos;
-    s16 z = (s16) zPos;
+    TerrainData x = (TerrainData) xPos;
+    TerrainData y = (TerrainData) yPos;
+    TerrainData z = (TerrainData) zPos;
 
     *pfloor = NULL;
 
@@ -591,10 +591,10 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
 f32 find_water_level(f32 x, f32 z) {
     s32 i;
     s32 numRegions;
-    s16 val;
+    TerrainData val;
     f32 loX, hiX, loZ, hiZ;
     f32 waterLevel = FLOOR_LOWER_LIMIT;
-    s16 *p = gEnvironmentRegions;
+    TerrainData *p = gEnvironmentRegions;
 
     if (p != NULL) {
         numRegions = *p++;
@@ -627,10 +627,10 @@ f32 find_poison_gas_level(f32 x, f32 z) {
     s32 i;
     s32 numRegions;
     UNUSED u8 filler[4];
-    s16 val;
+    TerrainData val;
     f32 loX, hiX, loZ, hiZ;
     f32 gasLevel = FLOOR_LOWER_LIMIT;
-    s16 *p = gEnvironmentRegions;
+    TerrainData *p = gEnvironmentRegions;
 
     if (p != NULL) {
         numRegions = *p++;

@@ -1,7 +1,7 @@
 // orange_number.inc.c
 
 void bhv_orange_number_init(void) {
-    o->oAnimState = o->oBehParams2ndByte;
+    o->oAnimState = o->oBhvParams2ndByte;
     o->oVelY = 26.0f;
 }
 

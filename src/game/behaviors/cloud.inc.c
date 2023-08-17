@@ -22,7 +22,7 @@ static void cloud_act_spawn_parts(void) {
     s32 i;
 
     // Spawn the pieces of the cloud itself
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i <= 4; i++) {
         cloudPart = spawn_object_relative(i, 0, 0, 0, o, MODEL_MIST, bhvCloudPart);
 
         if (cloudPart != NULL) {
@@ -30,7 +30,7 @@ static void cloud_act_spawn_parts(void) {
         }
     }
 
-    if (o->oBehParams2ndByte == CLOUD_BP_FWOOSH) {
+    if (o->oBhvParams2ndByte == CLOUD_BP_FWOOSH) {
         // Spawn fwoosh's face
         spawn_object_relative(5, 0, 0, 0, o, MODEL_FWOOSH, bhvCloudPart);
 
@@ -117,7 +117,7 @@ static void cloud_act_main(void) {
 
             o->oMoveAngleYaw = o->parentObj->oFaceAngleYaw;
         }
-    } else if (o->oBehParams2ndByte != CLOUD_BP_FWOOSH) {
+    } else if (o->oBhvParams2ndByte != CLOUD_BP_FWOOSH) {
         // This code should never run, since a lakitu cloud should always have
         // a parent
         if (o->oDistanceToMario > 1500.0f) {
@@ -138,7 +138,7 @@ static void cloud_act_main(void) {
  * This action informs the cloud parts to despawn.
  */
 static void cloud_act_unload(void) {
-    if (o->oBehParams2ndByte != CLOUD_BP_FWOOSH) {
+    if (o->oBhvParams2ndByte != CLOUD_BP_FWOOSH) {
         obj_mark_for_deletion(o);
     } else {
         o->oAction = CLOUD_ACT_FWOOSH_HIDDEN;
@@ -175,10 +175,10 @@ void bhv_cloud_part_update(void) {
         obj_mark_for_deletion(o);
     } else {
         f32 scale = 2.0f / 3.0f * o->parentObj->header.gfx.scale[0];
-        s16 angleFromCenter = o->parentObj->oFaceAngleYaw + 0x10000 / 5 * o->oBehParams2ndByte;
+        s16 angleFromCenter = o->parentObj->oFaceAngleYaw + 0x10000 / 5 * o->oBhvParams2ndByte;
 
         // Takes 32 frames to cycle
-        s16 localOffsetPhase = 0x800 * gGlobalTimer + 0x4000 * o->oBehParams2ndByte;
+        s16 localOffsetPhase = 0x800 * gGlobalTimer + 0x4000 * o->oBhvParams2ndByte;
         f32 localOffset;
 
         f32 cloudRadius;
@@ -186,7 +186,7 @@ void bhv_cloud_part_update(void) {
         cur_obj_scale(scale);
 
         // Cap fwoosh's face size
-        if (o->oBehParams2ndByte == 5 && scale > 2.0f) {
+        if (o->oBhvParams2ndByte == 5 && scale > 2.0f) {
             scale = o->header.gfx.scale[1] = 2.0f;
         }
 
@@ -198,7 +198,7 @@ void bhv_cloud_part_update(void) {
         o->oPosX = o->parentObj->oCloudCenterX + cloudRadius * sins(angleFromCenter) + localOffset;
 
         o->oPosY =
-            o->parentObj->oCloudCenterY + localOffset + scale * sCloudPartHeights[o->oBehParams2ndByte];
+            o->parentObj->oCloudCenterY + localOffset + scale * sCloudPartHeights[o->oBhvParams2ndByte];
 
         o->oPosZ = o->parentObj->oPosZ + cloudRadius * coss(angleFromCenter) + localOffset;
 

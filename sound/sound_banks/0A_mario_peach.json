@@ -81,55 +81,55 @@
             "sound": "0D_mario_thank_you_playing_my_game"
         },
         "inst14": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "0E_peach_dear_mario"
         },
         "inst15": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "0F_peach_mario"
         },
         "inst16": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "10_peach_power_of_the_stars"
         },
         "inst17": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "11_peach_thanks_to_you"
         },
         "inst18": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "12_peach_thank_you_mario"
         },
         "inst19": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "13_peach_something_special"
         },
         "inst20": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "14_peach_bake_a_cake"
         },
         "inst21": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "15_peach_for_mario"
         },
         "inst22": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "16_peach_mario2"

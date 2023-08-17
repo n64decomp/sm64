@@ -3,17 +3,17 @@
 // these don't feel like they belong here
 // but it makes the most logical since there was printf data before
 #ifndef AVOID_UB
-OSThread *D_80334890 = NULL;
+OSThread *__osThreadTail = NULL;
 u32 D_80334894 = -1;
-OSThread *D_80334898 = (OSThread *) &D_80334890;
-OSThread *D_8033489C = (OSThread *) &D_80334890;
-OSThread *D_803348A0 = NULL;
-u32 D_803348A4 = 0; // UNKNOWN
+OSThread *__osRunQueue = (OSThread *) &__osThreadTail;
+OSThread *__osActiveQueue = (OSThread *) &__osThreadTail;
+OSThread *__osRunningThread = { 0 };
+OSThread *__osFaultedThread = { 0 };
 #else
-OSThread_ListHead D_80334890_fix = {NULL, -1, (OSThread *) &D_80334890_fix, (OSThread *) &D_80334890_fix, NULL, 0};
+OSThread_ListHead __osThreadTail_fix = {NULL, -1, (OSThread *) &__osThreadTail_fix, (OSThread *) &__osThreadTail_fix, NULL, 0};
 #endif
 
-void __osDequeueThread(OSThread **queue, OSThread *thread) {
+void __osDequeueThread(register OSThread **queue, register OSThread *thread) {
     register OSThread **a2;
     register OSThread *a3;
     a2 = queue;

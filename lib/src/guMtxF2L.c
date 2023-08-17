@@ -3,6 +3,8 @@
 #include <string.h>
 #endif
 
+#if !defined(VERSION_CN) || !defined(TARGET_N64)
+
 #ifndef GBI_FLOATS
 void guMtxF2L(float mf[4][4], Mtx *m) {
     int r, c;
@@ -68,3 +70,5 @@ void guMtxIdent(Mtx *m) {
     guMtxIdentF(m->m);
 #endif
 }
+
+#endif

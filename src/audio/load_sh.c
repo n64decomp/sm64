@@ -1,4 +1,4 @@
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 #include <ultra64.h>
 #include <PR/os.h>
 
@@ -983,7 +983,6 @@ void func_sh_802f41e4(s32 audioResetStatus) {
     func_sh_802f4dcc(audioResetStatus);
 }
 
-#if defined(VERSION_SH)
 u8 gShindouSoundBanksHeader[] = {
 #include "sound/ctl_header.inc.c"
 };
@@ -999,7 +998,6 @@ u8 gShindouSampleBanksHeader[] = {
 u8 gShindouSequencesHeader[] = {
 #include "sound/sequences_header.inc.c"
 };
-#endif
 
 // (void) must be omitted from parameters
 void audio_init() {

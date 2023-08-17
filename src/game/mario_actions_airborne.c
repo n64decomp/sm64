@@ -1271,8 +1271,8 @@ s32 act_getting_blown(struct MarioState *m) {
             m->forwardVel += 0.8f;
         }
 
-        if (m->vel[1] < 0.0f && m->unkC4 < 4.0f) {
-            m->unkC4 += 0.05f;
+        if (m->vel[1] < 0.0f && m->gettingBlownGravity < 4.0f) {
+            m->gettingBlownGravity += 0.05f;
         }
     }
 

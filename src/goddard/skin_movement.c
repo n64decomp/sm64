@@ -1,5 +1,9 @@
 #include <PR/ultratypes.h>
 
+#if defined(VERSION_SH) || defined(VERSION_CN)
+#include "prevent_bss_reordering.h"
+#endif
+
 #include "debug_utils.h"
 #include "gd_math.h"
 #include "gd_types.h"

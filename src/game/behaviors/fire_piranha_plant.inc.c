@@ -33,14 +33,14 @@ s32 sNumActiveFirePiranhaPlants;
 s32 sNumKilledFirePiranhaPlants;
 
 void bhv_fire_piranha_plant_init(void) {
-    o->oFirePiranhaPlantNeutralScale = D_80331B5C[(u16)(o->oBehParams >> 16)];
+    o->oFirePiranhaPlantNeutralScale = D_80331B5C[(u16)(o->oBhvParams >> 16)];
     obj_set_hitbox(o, &sFirePiranhaPlantHitbox);
 
-    if ((u16)(o->oBehParams >> 16) != 0) {
+    if ((u16)(o->oBhvParams >> 16) != 0) {
         o->oFlags |= OBJ_FLAG_PERSISTENT_RESPAWN;
         o->oHealth = 1;
 
-        if (o->oBehParams & 0x0000FF00) {
+        if (o->oBhvParams & 0x0000FF00) {
             o->oNumLootCoins = 0;
         } else {
             o->oNumLootCoins = 2;
@@ -67,7 +67,7 @@ static void fire_piranha_plant_act_hide(void) {
             sNumActiveFirePiranhaPlants--;
             o->oFirePiranhaPlantActive = FALSE;
 
-            if ((u16)(o->oBehParams >> 16) != 0 && o->oHealth == 0) {
+            if ((u16)(o->oBhvParams >> 16) != 0 && o->oHealth == 0) {
                 if (++sNumKilledFirePiranhaPlants == 5) {
                     spawn_default_star(-6300.0f, -1850.0f, -6300.0f);
                 }

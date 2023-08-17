@@ -146,7 +146,7 @@ void bhv_flame_moving_forward_growing_loop(void) {
 void bhv_flame_floating_landing_init(void) {
     o->oAnimState = (s32)(random_float() * 10.0f);
     o->oMoveAngleYaw = random_u16();
-    if (o->oBehParams2ndByte != 0) {
+    if (o->oBhvParams2ndByte != 0) {
         o->oForwardVel = random_float() * 5.0f;
     } else {
         o->oForwardVel = random_float() * 70.0f;
@@ -169,12 +169,12 @@ void bhv_flame_floating_landing_loop(void) {
         obj_mark_for_deletion(o);
     }
 
-    if (o->oVelY < sFlameFloatingYLimit[o->oBehParams2ndByte]) {
-        o->oVelY = sFlameFloatingYLimit[o->oBehParams2ndByte];
+    if (o->oVelY < sFlameFloatingYLimit[o->oBhvParams2ndByte]) {
+        o->oVelY = sFlameFloatingYLimit[o->oBhvParams2ndByte];
     }
 
     if (o->oMoveFlags & OBJ_MOVE_LANDED) {
-        if (o->oBehParams2ndByte == 0) {
+        if (o->oBhvParams2ndByte == 0) {
             spawn_object(o, MODEL_RED_FLAME, bhvFlameLargeBurningOut);
         } else {
             spawn_object(o, MODEL_NONE, bhvBlueFlamesGroup); //? wonder if they meant MODEL_BLUE_FLAME?
@@ -210,7 +210,7 @@ void bhv_blue_bowser_flame_loop(void) {
     cur_obj_move_standard(78);
 
     if (o->oTimer > 20) {
-        if (o->oBehParams2ndByte == 0) {
+        if (o->oBhvParams2ndByte == 0) {
             for (i = 0; i < 3; i++) {
                 spawn_object_relative_with_scale(0, 0, 0, 0, 5.0f, o, MODEL_RED_FLAME,
                                                  bhvFlameFloatingLanding);

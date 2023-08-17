@@ -32,16 +32,16 @@ void bhv_ferris_wheel_axle_init(void) {
     s32 i;
 
     o->collisionData =
-        segmented_to_virtual(sFerrisWheelProperties[o->oBehParams2ndByte].axleCollision);
+        segmented_to_virtual(sFerrisWheelProperties[o->oBhvParams2ndByte].axleCollision);
 
     for (i = 0; i < 4; i++) {
         platform = spawn_object_relative(i, 0, 0, 0, o,
-                                         sFerrisWheelProperties[o->oBehParams2ndByte].platformModel,
+                                         sFerrisWheelProperties[o->oBhvParams2ndByte].platformModel,
                                          bhvFerrisWheelPlatform);
 
         if (platform != NULL) {
             platform->collisionData =
-                segmented_to_virtual(sFerrisWheelProperties[o->oBehParams2ndByte].platformCollision);
+                segmented_to_virtual(sFerrisWheelProperties[o->oBhvParams2ndByte].platformCollision);
         }
     }
 }
@@ -56,7 +56,7 @@ void bhv_ferris_wheel_platform_update(void) {
 
     obj_perform_position_op(POS_OP_SAVE_POSITION);
 
-    offsetAngle = o->parentObj->oFaceAngleRoll + o->oBehParams2ndByte * 0x4000;
+    offsetAngle = o->parentObj->oFaceAngleRoll + o->oBhvParams2ndByte * 0x4000;
     offsetXZ = 400.0f * coss(offsetAngle);
 
     o->oPosX = o->parentObj->oPosX + offsetXZ * sins(o->parentObj->oMoveAngleYaw)

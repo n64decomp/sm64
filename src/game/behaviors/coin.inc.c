@@ -12,17 +12,6 @@ struct ObjectHitbox sYellowCoinHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
-s16 sCoinArrowPositions[][2] = {
-    { 0, -150 },
-    { 0, -50 },
-    { 0, 50 },
-    { 0, 150 },
-    { -50, 100 },
-    { -100, 50 },
-    { 50, 100 },
-    { 100, 50 },
-};
-
 s32 bhv_coin_sparkles_init(void) {
     if (o->oInteractStatus & INT_STATUS_INTERACTED
         && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) {
@@ -66,8 +55,8 @@ void bhv_temp_coin_loop(void) {
     bhv_coin_sparkles_init();
 }
 
-void bhv_coin_init(void) {
-    o->oVelY = random_float() * 10.0f + 30 + o->oCoinUnk110;
+void bhv_spawned_coin_init(void) {
+    o->oVelY = random_float() * 10.0f + 30.0f + o->oCoinBaseVelY;
     o->oForwardVel = random_float() * 10.0f;
     o->oMoveAngleYaw = random_u16();
 
@@ -76,21 +65,21 @@ void bhv_coin_init(void) {
     cur_obj_become_intangible();
 }
 
-void bhv_coin_loop(void) {
-    struct Surface *sp1C;
+void bhv_spawned_coin_loop(void) {
+    struct Surface *floor;
 
     cur_obj_update_floor_and_walls();
     cur_obj_if_hit_wall_bounce_away();
     cur_obj_move_standard(-62);
 
-    if ((sp1C = o->oFloor) != NULL) {
+    if ((floor = o->oFloor) != NULL) {
         if (o->oMoveFlags & OBJ_MOVE_ON_GROUND) {
             o->oSubAction = 1;
         }
         if (o->oSubAction == 1) {
             o->oBounciness = 0;
-            if (sp1C->normal.y < 0.9) {
-                s16 sp1A = atan2s(sp1C->normal.z, sp1C->normal.x);
+            if (floor->normal.y < 0.9) {
+                s16 sp1A = atan2s(floor->normal.z, floor->normal.x);
                 cur_obj_rotate_yaw_toward(sp1A, 0x400);
             }
         }
@@ -100,7 +89,7 @@ void bhv_coin_loop(void) {
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_SPURT);
     }
 
-    if (o->oVelY < 0) {
+    if (o->oVelY < 0.0f) {
         cur_obj_become_tangible();
     }
 
@@ -117,12 +106,12 @@ void bhv_coin_loop(void) {
 
     if (o->oMoveFlags & OBJ_MOVE_BOUNCE) {
 #ifndef VERSION_JP
-        if (o->oCoinUnk1B0 < 5) {
+        if (o->oCoinNumBounceSoundPlayed < 5) {
+#endif
             cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
+#ifndef VERSION_JP
         }
-        o->oCoinUnk1B0++;
-#else
-        cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
+        o->oCoinNumBounceSoundPlayed++;
 #endif
     }
 
@@ -139,7 +128,7 @@ void bhv_coin_formation_spawn_loop(void) {
         obj_set_hitbox(o, &sYellowCoinHitbox);
         bhv_init_room();
 
-        if (o->oCoinUnkF8) {
+        if (o->oCoinOnGround) {
             o->oPosY += 300.0f;
             cur_obj_update_floor_height();
 
@@ -157,94 +146,110 @@ void bhv_coin_formation_spawn_loop(void) {
         }
     } else {
         if (bhv_coin_sparkles_init()) {
-            o->parentObj->oCoinUnkF4 |= bit_shift_left(o->oBehParams2ndByte);
+            o->parentObj->oCoinCollectedFlags |= bit_shift_left(o->oBhvParams2ndByte);
         }
         o->oAnimState++;
     }
 
-    if (o->parentObj->oAction == 2) {
+    if (o->parentObj->oAction == COIN_FORMATION_ACT_RESPAWN_COINS) {
         obj_mark_for_deletion(o);
     }
 }
 
-void spawn_coin_in_formation(s32 sp50, s32 sp54) {
-    struct Object *sp4C;
-    Vec3i sp40;
-    s32 sp3C = 1;
-    s32 sp38 = 1;
+s16 sCoinArrowPositions[][2] = {
+    { 0, -150 },
+    { 0, -50 },
+    { 0, 50 },
+    { 0, 150 },
+    { -50, 100 },
+    { -100, 50 },
+    { 50, 100 },
+    { 100, 50 },
+};
 
-    sp40[0] = sp40[1] = sp40[2] = 0;
+void spawn_coin_in_formation(s32 coinIndex, s32 coinFormationFlags) {
+    struct Object *coinSpawner;
+    Vec3i pos;
+    s32 setSpawner = TRUE;
+    s32 onGround = TRUE;
 
-    switch (sp54 & 7) {
-        case 0:
-            sp40[2] = 160 * (sp50 - 2);
-            if (sp50 > 4) {
-                sp3C = 0;
+    pos[0] = pos[1] = pos[2] = 0;
+
+    switch (coinFormationFlags & COIN_FORMATION_BP_FLAG_MASK) {
+        case COIN_FORMATION_BP_LINE_HORIZONTAL:
+            pos[2] = 160 * (coinIndex - 2);
+            if (coinIndex > 4) {
+                setSpawner = FALSE;
             }
             break;
-        case 1:
-            sp38 = 0;
-            sp40[1] = 160 * sp50 * 0.8; // 128 * sp50
-            if (sp50 > 4) {
-                sp3C = 0;
+
+        case COIN_FORMATION_BP_LINE_VERTICAL:
+            onGround = FALSE;
+            pos[1] = 160 * coinIndex * 0.8; // 128 * coinIndex
+            if (coinIndex > 4) {
+                setSpawner = FALSE;
             }
             break;
-        case 2:
-            sp40[0] = sins(sp50 << 13) * 300.0f;
-            sp40[2] = coss(sp50 << 13) * 300.0f;
+
+        case COIN_FORMATION_BP_RING_HORIZONTAL:
+            pos[0] = sins(coinIndex << 13) * 300.0f;
+            pos[2] = coss(coinIndex << 13) * 300.0f;
             break;
-        case 3:
-            sp38 = 0;
-            sp40[0] = coss(sp50 << 13) * 200.0f;
-            sp40[1] = sins(sp50 << 13) * 200.0f + 200.0f;
+
+        case COIN_FORMATION_BP_RING_VERTICAL:
+            onGround = FALSE;
+            pos[0] = coss(coinIndex << 13) * 200.0f;
+            pos[1] = sins(coinIndex << 13) * 200.0f + 200.0f;
             break;
-        case 4:
-            sp40[0] = sCoinArrowPositions[sp50][0];
-            sp40[2] = sCoinArrowPositions[sp50][1];
+
+        case COIN_FORMATION_BP_ARROW:
+            pos[0] = sCoinArrowPositions[coinIndex][0];
+            pos[2] = sCoinArrowPositions[coinIndex][1];
             break;
     }
 
-    if (sp54 & 0x10) {
-        sp38 = 0;
+    if (coinFormationFlags & COIN_FORMATION_BP_FLAG_FLYING) {
+        onGround = FALSE;
     }
 
-    if (sp3C) {
-        sp4C = spawn_object_relative(sp50, sp40[0], sp40[1], sp40[2], o, MODEL_YELLOW_COIN,
-                                     bhvCoinFormationSpawn);
-        sp4C->oCoinUnkF8 = sp38;
+    if (setSpawner) {
+        coinSpawner = spawn_object_relative(coinIndex, pos[0], pos[1], pos[2], o,
+                                            MODEL_YELLOW_COIN, bhvCoinFormationSpawn);
+        coinSpawner->oCoinOnGround = onGround;
     }
 }
 
 void bhv_coin_formation_init(void) {
-    o->oCoinUnkF4 = (o->oBehParams >> 8) & 0xFF;
+    o->oCoinCollectedFlags = (o->oBhvParams >> 8) & 0xFF;
 }
 
 void bhv_coin_formation_loop(void) {
-    s32 bitIndex;
+    s32 coinIndex;
 
     switch (o->oAction) {
-        case 0:
+        case COIN_FORMATION_ACT_SPAWN_COINS:
             if (o->oDistanceToMario < 2000.0f) {
-                for (bitIndex = 0; bitIndex < 8; bitIndex++) {
-                    if (!(o->oCoinUnkF4 & (1 << bitIndex))) {
-                        spawn_coin_in_formation(bitIndex, o->oBehParams2ndByte);
+                for (coinIndex = 0; coinIndex <= 7; coinIndex++) {
+                    if (!(o->oCoinCollectedFlags & (1 << coinIndex))) {
+                        spawn_coin_in_formation(coinIndex, o->oBhvParams2ndByte);
                     }
                 }
                 o->oAction++;
             }
             break;
-        case 1:
+
+        case COIN_FORMATION_ACT_IDLE:
             if (o->oDistanceToMario > 2100.0f) {
                 o->oAction++;
             }
             break;
-        case 2:
-            o->oAction = 0;
+
+        case COIN_FORMATION_ACT_RESPAWN_COINS:
+            o->oAction = COIN_FORMATION_ACT_SPAWN_COINS;
             break;
     }
 
-    // Casting to u8 doesn't seem to match
-    set_object_respawn_info_bits(o, o->oCoinUnkF4 & 0xFF);
+    set_object_respawn_info_bits(o, o->oCoinCollectedFlags & 0xFF);
 }
 
 void coin_inside_boo_act_1(void) {
@@ -311,11 +316,11 @@ void bhv_coin_sparkles_loop(void) {
 }
 
 void bhv_golden_coin_sparkles_loop(void) {
-    struct Object *sp2C;
+    struct Object *sparkles;
     UNUSED u8 filler[4];
     f32 sp24 = 30.0f;
 
-    sp2C = spawn_object(o, MODEL_SPARKLES, bhvCoinSparkles);
-    sp2C->oPosX += random_float() * sp24 - sp24 / 2;
-    sp2C->oPosZ += random_float() * sp24 - sp24 / 2;
+    sparkles = spawn_object(o, MODEL_SPARKLES, bhvCoinSparkles);
+    sparkles->oPosX += random_float() * sp24 - sp24 / 2;
+    sparkles->oPosZ += random_float() * sp24 - sp24 / 2;
 }

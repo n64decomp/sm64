@@ -18,14 +18,14 @@ void bhv_checkerboard_elevator_group_init(void) {
     s32 i;
     struct Object *sp2C;
 
-    if (o->oBehParams2ndByte == 0) {
-        o->oBehParams2ndByte = 65;
+    if (o->oBhvParams2ndByte == 0) {
+        o->oBhvParams2ndByte = 65;
     }
 
-    sp3C = o->oBehParams2ndByte * 10;
-    sp34 = (o->oBehParams >> 24) & 0xFF;
+    sp3C = o->oBhvParams2ndByte * 10;
+    sp34 = (o->oBhvParams >> 24) & 0xFF;
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i <= 1; i++) {
         if (i == 0) {
             sp38 = -D_8032F754[sp34].unk0;
         } else {
@@ -59,7 +59,7 @@ void checkerboard_plat_act_rotate(s32 a0, s16 a1) {
 }
 
 void bhv_checkerboard_platform_init(void) {
-    o->oCheckerBoardPlatformUnkFC = o->parentObj->oBehParams2ndByte;
+    o->oCheckerBoardPlatformUnkFC = o->parentObj->oBhvParams2ndByte;
 }
 
 void bhv_checkerboard_platform_loop(void) {
@@ -73,7 +73,7 @@ void bhv_checkerboard_platform_loop(void) {
 
     switch (o->oAction) {
         case 0:
-            if (o->oBehParams2ndByte == 0) {
+            if (o->oBhvParams2ndByte == 0) {
                 o->oAction = 1;
             } else {
                 o->oAction = 3;

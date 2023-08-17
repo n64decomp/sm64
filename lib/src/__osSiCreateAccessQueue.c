@@ -1,8 +1,10 @@
 #include "libultra_internal.h"
 
+#include "macros.h"
+
 #define SIAccessQueueSize 2
 
-OSMesg osSiMesgBuff[SIAccessQueueSize];
+FORCE_BSS OSMesg osSiMesgBuff[SIAccessQueueSize];
 OSMesgQueue gOsSiMessageQueue;
 u32 gOsSiAccessQueueCreated = 0;
 

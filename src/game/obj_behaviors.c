@@ -100,7 +100,6 @@ Gfx UNUSED *geo_obj_transparency_something(s32 callContext, struct GraphNode *no
         obj = (struct Object *) node;
         unusedObject = (struct Object *) node;
 
-
         if (gCurGraphNodeHeldObject != NULL) {
             heldObject = gCurGraphNodeHeldObject->objNode;
         }
@@ -753,14 +752,14 @@ s8 obj_lava_death(void) {
 /**
  * Spawns an orange number object relatively, such as those that count up for secrets.
  */
-void spawn_orange_number(s8 behParam, s16 relX, s16 relY, s16 relZ) {
+void spawn_orange_number(s8 bhvParam, s16 relX, s16 relY, s16 relZ) {
     struct Object *orangeNumber;
 
-    if (behParam >= 10) {
+    if (bhvParam >= 10) {
         return;
     }
 
-    orangeNumber = spawn_object_relative(behParam, relX, relY, relZ, o, MODEL_NUMBER, bhvOrangeNumber);
+    orangeNumber = spawn_object_relative(bhvParam, relX, relY, relZ, o, MODEL_NUMBER, bhvOrangeNumber);
     orangeNumber->oPosY += 25.0f;
 }
 

@@ -120,7 +120,7 @@ void get_some_bounding_box(struct GdBoundingBox *a0) {
 
 /* @ 22A6A0 for 0x24 */
 void stub_objects_1(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1) {
-    UNUSED u8 sp00[8];
+    UNUSED u8 filler[8];
     /* Debug stub? */
     return;
 }
@@ -870,8 +870,9 @@ s32 group_contains_obj(struct ObjGroup *group, struct GdObj *obj) {
     struct ListNode *node = group->firstMember;
 
     while (node != NULL) {
-        if (node->obj->index == obj->index)
+        if (node->obj->index == obj->index) {
             return TRUE;
+        }
         node = node->next;
     }
 
@@ -879,7 +880,7 @@ s32 group_contains_obj(struct ObjGroup *group, struct GdObj *obj) {
 }
 
 /**
- * Unused (not called) - this shows details about all objects in the main object linked list 
+ * Unused (not called) - this shows details about all objects in the main object linked list
  */
 void show_details(enum ObjTypeFlag type) {
     enum ObjTypeFlag curObjType;

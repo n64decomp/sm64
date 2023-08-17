@@ -108,7 +108,7 @@ void bhv_monty_mole_hole_update(void) {
  */
 void monty_mole_spawn_dirt_particles(s8 offsetY, s8 velYBase) {
     static struct SpawnParticlesInfo montyMoleRiseFromGroundParticles = {
-        /* behParam:        */ 0,
+        /* bhvParam:        */ 0,
         /* count:           */ 3,
         /* model:           */ MODEL_SAND_DUST,
         /* offsetY:         */ 0,
@@ -142,7 +142,7 @@ void bhv_monty_mole_init(void) {
 static void monty_mole_act_select_hole(void) {
     f32 minDistToMario;
 
-    if (o->oBehParams2ndByte != MONTY_MOLE_BP_NO_ROCK) {
+    if (o->oBhvParams2ndByte != MONTY_MOLE_BP_NO_ROCK) {
         minDistToMario = 200.0f;
     } else if (gMarioStates[0].forwardVel < 8.0f) {
         minDistToMario = 100.0f;
@@ -206,7 +206,7 @@ static void monty_mole_act_spawn_rock(void) {
     struct Object *rock;
 
     if (cur_obj_init_anim_and_check_if_end(2)) {
-        if (o->oBehParams2ndByte != MONTY_MOLE_BP_NO_ROCK
+        if (o->oBhvParams2ndByte != MONTY_MOLE_BP_NO_ROCK
             && abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw) < 0x4000
             && (rock = spawn_object(o, MODEL_PEBBLE, bhvMontyMoleRock)) != NULL) {
             o->prevObj = rock;
@@ -376,7 +376,7 @@ void bhv_monty_mole_update(void) {
             if (distToLastKill < 1500.0f) {
                 if (sMontyMoleKillStreak == 7) {
                     play_puzzle_jingle();
-                    spawn_object(o, MODEL_1UP, bhv1upWalking);
+                    spawn_object(o, MODEL_1UP, bhv1UpWalking);
                 }
             } else {
                 sMontyMoleKillStreak = 0;
@@ -445,7 +445,7 @@ static struct ObjectHitbox sMontyMoleRockHitbox = {
  * The particles that spawn when a monty mole rock breaks.
  */
 static struct SpawnParticlesInfo sMontyMoleRockBreakParticles = {
-    /* behParam:        */ 0,
+    /* bhvParam:        */ 0,
     /* count:           */ 2,
     /* model:           */ MODEL_PEBBLE,
     /* offsetY:         */ 10,

@@ -29,7 +29,7 @@ void bhv_small_bully_init(void) {
 
     o->oHomeX = o->oPosX;
     o->oHomeZ = o->oPosZ;
-    o->oBehParams2ndByte = BULLY_BP_SIZE_SMALL;
+    o->oBhvParams2ndByte = BULLY_BP_SIZE_SMALL;
     o->oGravity = 4.0;
     o->oFriction = 0.91;
     o->oBuoyancy = 1.3;
@@ -43,7 +43,7 @@ void bhv_big_bully_init(void) {
     o->oHomeX = o->oPosX;
     o->oHomeY = o->oPosY;
     o->oHomeZ = o->oPosZ;
-    o->oBehParams2ndByte = BULLY_BP_SIZE_BIG;
+    o->oBhvParams2ndByte = BULLY_BP_SIZE_BIG;
     o->oGravity = 5.0;
     o->oFriction = 0.93;
     o->oBuoyancy = 1.3;
@@ -53,11 +53,11 @@ void bhv_big_bully_init(void) {
 
 void bully_check_mario_collision(void) {
     if (
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     o->oAction != BULLY_ACT_LAVA_DEATH && o->oAction != BULLY_ACT_DEATH_PLANE_DEATH &&
 #endif
     o->oInteractStatus & INT_STATUS_INTERACTED) {
-        if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
+        if (o->oBhvParams2ndByte == BULLY_BP_SIZE_SMALL) {
             cur_obj_play_sound_2(SOUND_OBJ2_BULLY_ATTACKED);
         } else {
             cur_obj_play_sound_2(SOUND_OBJ2_LARGE_BULLY_ATTACKED);
@@ -79,7 +79,7 @@ void bully_act_chase_mario(void) {
     if (o->oTimer < 10) {
         o->oForwardVel = 3.0;
         obj_turn_toward_object(o, gMarioObject, 16, 0x1000);
-    } else if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
+    } else if (o->oBhvParams2ndByte == BULLY_BP_SIZE_SMALL) {
         o->oForwardVel = 20.0;
         if (o->oTimer > 30) {
             o->oTimer = 0;
@@ -151,7 +151,7 @@ void bully_play_stomping_sound(void) {
     switch (o->oAction) {
         case BULLY_ACT_PATROL:
             if (animFrame == 0 || animFrame == 12) {
-                if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
+                if (o->oBhvParams2ndByte == BULLY_BP_SIZE_SMALL) {
                     cur_obj_play_sound_2(SOUND_OBJ_BULLY_WALK);
                 } else {
                     cur_obj_play_sound_2(SOUND_OBJ_BULLY_WALKING);
@@ -162,7 +162,7 @@ void bully_play_stomping_sound(void) {
         case BULLY_ACT_CHASE_MARIO:
         case BULLY_ACT_BACK_UP:
             if (animFrame == 0 || animFrame == 5) {
-                if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
+                if (o->oBhvParams2ndByte == BULLY_BP_SIZE_SMALL) {
                     cur_obj_play_sound_2(SOUND_OBJ_BULLY_WALK);
                 } else {
                     cur_obj_play_sound_2(SOUND_OBJ_BULLY_WALKING);
@@ -200,7 +200,7 @@ void bully_spawn_coin(void) {
 
 void bully_act_level_death(void) {
     if (obj_lava_death() == TRUE) {
-        if (o->oBehParams2ndByte == BULLY_BP_SIZE_SMALL) {
+        if (o->oBhvParams2ndByte == BULLY_BP_SIZE_SMALL) {
             if (o->oBullySubtype == BULLY_STYPE_MINION) {
                 o->parentObj->oBullyKBTimerAndMinionKOCounter++;
             }
@@ -212,7 +212,7 @@ void bully_act_level_death(void) {
                 spawn_default_star(130.0f, 1600.0f, -4335.0f);
             } else {
                 spawn_default_star(0, 950.0f, -6800.0f);
-                spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvLllTumblingBridge,
+                spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvLLLTumblingBridge,
                                           0, 154, -5631, 0, 0, 0);
             }
         }
@@ -273,7 +273,7 @@ void big_bully_spawn_minion(s32 x, s32 y, s32 z, s16 yaw) {
     struct Object *bully =
         spawn_object_abs_with_rot(o, 0, MODEL_BULLY, bhvSmallBully, x, y, z, 0, yaw, 0);
     bully->oBullySubtype = BULLY_STYPE_MINION;
-    bully->oBehParams2ndByte = BULLY_BP_SIZE_SMALL;
+    bully->oBhvParams2ndByte = BULLY_BP_SIZE_SMALL;
 }
 
 void bhv_big_bully_with_minions_init(void) {

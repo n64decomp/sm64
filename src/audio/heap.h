@@ -25,7 +25,7 @@ struct SoundAllocPool {
 struct SeqOrBankEntry {
     u8 *ptr;
     u32 size;
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     s16 poolIndex;
     s16 id;
 #else
@@ -93,7 +93,7 @@ extern struct SoundAllocPool gPersistentCommonPool;
 extern struct SoundAllocPool gTemporaryCommonPool;
 extern struct SoundMultiPool gSeqLoadedPool;
 extern struct SoundMultiPool gBankLoadedPool;
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 extern struct Unk1Pool gUnkPool1;
 extern struct UnkPool gUnkPool2;
 extern struct UnkPool gUnkPool3;
@@ -103,7 +103,7 @@ extern u8 gSeqLoadStatus[256];
 extern volatile u8 gAudioResetStatus;
 extern u8 gAudioResetPresetIdToLoad;
 
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
 extern volatile u8 gAudioResetStatus;
 #endif
 
@@ -111,14 +111,14 @@ void *soundAlloc(struct SoundAllocPool *pool, u32 size);
 void *sound_alloc_uninitialized(struct SoundAllocPool *pool, u32 size);
 void sound_init_main_pools(s32 sizeForAudioInitPool);
 void sound_alloc_pool_init(struct SoundAllocPool *pool, void *memAddr, u32 size);
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 void *alloc_bank_or_seq(s32 poolIdx, s32 size, s32 arg3, s32 id);
 void *get_bank_or_seq(s32 poolIdx, s32 arg1, s32 id);
 #else
 void *alloc_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 size, s32 arg3, s32 id);
 void *get_bank_or_seq(struct SoundMultiPool *arg0, s32 arg1, s32 id);
 #endif
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
 s32 audio_shut_down_and_reset_step(void);
 void audio_reset_session(void);
 #else
@@ -126,7 +126,7 @@ void audio_reset_session(struct AudioSessionSettings *preset);
 #endif
 void discard_bank(s32 bankId);
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 void fill_filter(s16 filter[8], s32 arg1, s32 arg2);
 u8 *func_sh_802f1d40(u32 size, s32 bank, u8 *arg2, s8 medium);
 u8 *func_sh_802f1d90(u32 size, s32 bank, u8 *arg2, s8 medium);

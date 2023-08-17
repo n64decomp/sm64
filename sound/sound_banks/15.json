@@ -81,22 +81,22 @@
         "inst2": {
             "release_rate": 10,
             "envelope": "envelope2",
-            "sound": "21_sine_bass"
+            "sound": "21_sine_bass_Bb2"
         },
         "inst3": {
             "release_rate": 208,
             "envelope": "envelope3",
-            "sound": "1A_slap_bass"
+            "sound": "1A_slap_bass_G#2"
         },
         "inst4": {
             "release_rate": 114,
             "envelope": "envelope4",
-            "sound": "21_sine_bass"
+            "sound": "21_sine_bass_Bb2"
         },
         "inst5": {
             "release_rate": 53,
             "envelope": "envelope5",
-            "sound": "04_bright_piano"
+            "sound": "04_bright_piano_G#3"
         },
         "inst6": {
             "release_rate": 208,
@@ -106,12 +106,12 @@
         "inst7": {
             "release_rate": 10,
             "envelope": "envelope7",
-            "sound": "22_boys_choir"
+            "sound": "22_boys_choir_Bb4"
         },
         "inst8": {
             "release_rate": 10,
             "envelope": "envelope8",
-            "sound": "22_boys_choir"
+            "sound": "22_boys_choir_Bb4"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope9", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

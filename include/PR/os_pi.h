@@ -61,7 +61,7 @@ typedef struct {
     /*0x08*/ void *dramAddr;
     /*0x0C*/ uintptr_t devAddr;
     /*0x10*/ size_t size;
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
     OSPiHandle *piHandle; // from the official definition
 #endif
 } OSIoMesg;

@@ -8,9 +8,9 @@ struct UnusedChuckyaData {
 
 struct UnusedChuckyaData sUnusedChuckyaData[] = {
     { 2, 0.f,  1.f },
-    { 2, 10.f, 1.f }, 
-    { 2, 20.f, 1.f }, 
-    { 2, 20.f, 1.f }, 
+    { 2, 10.f, 1.f },
+    { 2, 20.f, 1.f },
+    { 2, 20.f, 1.f },
     { 8, 10.f, 1.f },
 };
 
@@ -102,11 +102,11 @@ s32 approach_forward_vel(f32 *forwardVel, f32 spC, f32 sp10) {
 
 void chuckya_act_0(void) {
     s32 sp3C;
+    UNUSED u8 filler[16];
+    s32 sp28;
 #ifdef AVOID_UB
     sp3C = 0;
 #endif
-    UNUSED u8 filler[16];
-    s32 sp28;
 
     if (o->oTimer == 0) {
         o->oChuckyaUnkFC = 0;

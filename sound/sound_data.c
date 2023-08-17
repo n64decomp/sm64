@@ -10,7 +10,7 @@ unsigned char gMusicData[] = {
 #include "sound/sequences.bin.inc.c"
 };
 
-#ifndef VERSION_SH
+#if !defined(VERSION_SH) && !defined(VERSION_CN)
 unsigned char gBankSetsData[] = {
 #include "sound/bank_sets.inc.c"
 };

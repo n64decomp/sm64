@@ -4,12 +4,10 @@
 #include "object_helpers.h"
 #include "macro_special_objects.h"
 #include "object_list_processor.h"
-
 #include "behavior_data.h"
 
-#include "macro_presets.h"
-
-#include "special_presets.h"
+#include "macro_presets.inc.c"
+#include "special_presets.inc.c"
 
 /*
  * Converts the rotation value supplied by macro objects into one
@@ -40,27 +38,27 @@ s16 convert_rotation(s16 inRotation) {
 
 /*
  * Spawns an object at an absolute location with rotation around the y-axis and
- * parameters filling up the upper 2 bytes of newObj->oBehParams.
+ * parameters filling up the upper 2 bytes of newObj->oBhvParams.
  * The object will not spawn if 'behavior' is NULL.
  */
 void spawn_macro_abs_yrot_2params(s32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 params) {
     if (behavior != NULL) {
         struct Object *newObj = spawn_object_abs_with_rot(
             &gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, convert_rotation(ry), 0);
-        newObj->oBehParams = ((u32) params) << 16;
+        newObj->oBhvParams = ((u32) params) << 16;
     }
 }
 
 /*
  * Spawns an object at an absolute location with rotation around the y-axis and
- * a single parameter filling up the upper byte of newObj->oBehParams.
+ * a single parameter filling up the upper byte of newObj->oBhvParams.
  * The object will not spawn if 'behavior' is NULL.
  */
 void spawn_macro_abs_yrot_param1(s32 model, const BehaviorScript *behavior, s16 x, s16 y, s16 z, s16 ry, s16 param) {
     if (behavior != NULL) {
         struct Object *newObj = spawn_object_abs_with_rot(
             &gMacroObjectDefaultParent, 0, model, behavior, x, y, z, 0, convert_rotation(ry), 0);
-        newObj->oBehParams = ((u32) param) << 24;
+        newObj->oBhvParams = ((u32) param) << 24;
     }
 }
 
@@ -79,30 +77,28 @@ void spawn_macro_abs_special(s32 model, const BehaviorScript *behavior, s16 x, s
     newObj->oMacroUnk110 = (f32) unkC;
 }
 
-UNUSED static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 a1[]) {
-    struct Object *sp3C;
-    s16 model;
-
-    model = bhvYellowCoin == behavior ? MODEL_YELLOW_COIN : MODEL_NONE;
-
-    sp3C = spawn_object_abs_with_rot(&gMacroObjectDefaultParent, 0, model, behavior,
-                                     a1[1], a1[2], a1[3], 0, convert_rotation(a1[0]), 0);
-
-    sp3C->oUnk1A8 = a1[4];
-    sp3C->oBehParams = (a1[4] & 0xFF) >> 16;
-}
-
-struct LoadedPreset {
-    /*0x00*/ const BehaviorScript *behavior;
-    /*0x04*/ s16 param; // huh? why does the below function swap these.. just use the struct..
-    /*0x06*/ s16 model;
-};
-
 #define MACRO_OBJ_Y_ROT 0
 #define MACRO_OBJ_X 1
 #define MACRO_OBJ_Y 2
 #define MACRO_OBJ_Z 3
 #define MACRO_OBJ_PARAMS 4
+
+UNUSED static void spawn_macro_coin_unknown(const BehaviorScript *behavior, s16 objInfo[]) {
+    struct Object *coin;
+    s16 model = bhvYellowCoin == behavior ? MODEL_YELLOW_COIN : MODEL_NONE;
+
+    coin = spawn_object_abs_with_rot(&gMacroObjectDefaultParent, 0, model, behavior,
+                                     objInfo[MACRO_OBJ_X], objInfo[MACRO_OBJ_Y], objInfo[MACRO_OBJ_Z],
+                                     0, convert_rotation(objInfo[MACRO_OBJ_Y_ROT]), 0);
+    coin->oUnusedBhvParams = objInfo[MACRO_OBJ_PARAMS];
+    coin->oBhvParams = (objInfo[MACRO_OBJ_PARAMS] & 0xFF) >> 16;
+}
+
+struct LoadedPreset {
+    /* 0x00 */ const BehaviorScript *behavior;
+    /* 0x04 */ s16 param; // huh? why does the below function swap these.. just use the struct..
+    /* 0x06 */ s16 model;
+};
 
 void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
     UNUSED u8 filler[4];
@@ -120,7 +116,7 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
             break;
         }
 
-        presetID = (*macroObjList & 0x1FF) - 31; // Preset identifier for MacroObjectPresets array
+        presetID = (*macroObjList & 0x1FF) - 31; // Preset identifier for sMacroObjectPresets array
 
         if (presetID < 0) {
             break;
@@ -133,10 +129,10 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
         macroObject[MACRO_OBJ_Z] = *macroObjList++;                          // Z position
         macroObject[MACRO_OBJ_PARAMS] = *macroObjList++;                     // Behavior params
 
-        // Get the preset values from the MacroObjectPresets list.
-        preset.model = MacroObjectPresets[presetID].model;
-        preset.behavior = MacroObjectPresets[presetID].behavior;
-        preset.param = MacroObjectPresets[presetID].param;
+        // Get the preset values from the sMacroObjectPresets list.
+        preset.model = sMacroObjectPresets[presetID].model;
+        preset.behavior = sMacroObjectPresets[presetID].behavior;
+        preset.param = sMacroObjectPresets[presetID].param;
 
         if (preset.param != 0) {
             macroObject[MACRO_OBJ_PARAMS] =
@@ -160,10 +156,10 @@ void spawn_macro_objects(s16 areaIndex, s16 *macroObjList) {
                          0                                               // Z-rotation
                      );
 
-            newObj->oUnk1A8 = macroObject[MACRO_OBJ_PARAMS];
-            newObj->oBehParams = ((macroObject[MACRO_OBJ_PARAMS] & 0x00FF) << 16)
+            newObj->oUnusedBhvParams = macroObject[MACRO_OBJ_PARAMS];
+            newObj->oBhvParams = ((macroObject[MACRO_OBJ_PARAMS] & 0x00FF) << 16)
                                  + (macroObject[MACRO_OBJ_PARAMS] & 0xFF00);
-            newObj->oBehParams2ndByte = macroObject[MACRO_OBJ_PARAMS] & 0x00FF;
+            newObj->oBhvParams2ndByte = macroObject[MACRO_OBJ_PARAMS] & 0x00FF;
             newObj->respawnInfoType = RESPAWN_INFO_TYPE_16;
             newObj->respawnInfo = macroObjList - 1;
             newObj->parentObj = newObj;
@@ -208,11 +204,11 @@ void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList) {
                 break;
             case 1:
                 spawn_macro_abs_yrot_2params(MODEL_BBH_TILTING_FLOOR_PLATFORM,
-                                             bhvBbhTiltingTrapPlatform, macroObjX, macroObjY, macroObjZ,
+                                             bhvBBHTiltingTrapPlatform, macroObjX, macroObjY, macroObjZ,
                                              macroObjRY, 0);
                 break;
             case 2:
-                spawn_macro_abs_yrot_2params(MODEL_BBH_TUMBLING_PLATFORM, bhvBbhTumblingBridge,
+                spawn_macro_abs_yrot_2params(MODEL_BBH_TUMBLING_PLATFORM, bhvBBHTumblingBridge,
                                              macroObjX, macroObjY, macroObjZ, macroObjRY, 0);
                 break;
             case 3:
@@ -237,7 +233,7 @@ void spawn_macro_objects_hardcoded(s16 areaIndex, s16 *macroObjList) {
     }
 }
 
-void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
+void spawn_special_objects(s16 areaIndex, TerrainData **specialObjList) {
     s32 numOfSpecialObjects;
     s32 i;
     s32 offset;
@@ -269,20 +265,20 @@ void spawn_special_objects(s16 areaIndex, s16 **specialObjList) {
 
         offset = 0;
         while (TRUE) {
-            if (SpecialObjectPresets[offset].preset_id == presetID) {
+            if (sSpecialObjectPresets[offset].presetID == presetID) {
                 break;
             }
 
-            if (SpecialObjectPresets[offset].preset_id == 0xFF) {
+            if (sSpecialObjectPresets[offset].presetID == special_null_end) {
             }
 
             offset++;
         }
 
-        model = SpecialObjectPresets[offset].model;
-        behavior = SpecialObjectPresets[offset].behavior;
-        type = SpecialObjectPresets[offset].type;
-        defaultParam = SpecialObjectPresets[offset].defParam;
+        model = sSpecialObjectPresets[offset].model;
+        behavior = sSpecialObjectPresets[offset].behavior;
+        type = sSpecialObjectPresets[offset].type;
+        defaultParam = sSpecialObjectPresets[offset].defParam;
 
         switch (type) {
             case SPTYPE_NO_YROT_OR_PARAMS:
@@ -340,13 +336,13 @@ u32 get_special_objects_size(s16 *data) {
         offset = 0;
 
         while (TRUE) {
-            if (SpecialObjectPresets[offset].preset_id == presetID) {
+            if (sSpecialObjectPresets[offset].presetID == presetID) {
                 break;
             }
             offset++;
         }
 
-        switch (SpecialObjectPresets[offset].type) {
+        switch (sSpecialObjectPresets[offset].type) {
             case SPTYPE_NO_YROT_OR_PARAMS:
                 break;
             case SPTYPE_YROT_NO_PARAMS:

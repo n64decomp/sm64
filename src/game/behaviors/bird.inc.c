@@ -16,10 +16,10 @@
 static void bird_act_inactive(void) {
     // Start flying if the object is a spawned bird or if it's a spawner bird
     // and Mario is within 2000 units.
-    if (o->oBehParams2ndByte == BIRD_BP_SPAWNED || o->oDistanceToMario < 2000.0f) {
+    if (o->oBhvParams2ndByte == BIRD_BP_SPAWNED || o->oDistanceToMario < 2000.0f) {
         // If the object is a spawner bird, play the sound of birds flying away,
         // and spawn 6 spawned birds (which will start flying on the next frame).
-        if (o->oBehParams2ndByte != BIRD_BP_SPAWNED) {
+        if (o->oBhvParams2ndByte != BIRD_BP_SPAWNED) {
             s32 i;
 
             cur_obj_play_sound_2(SOUND_GENERAL_BIRDS_FLY_AWAY);
@@ -68,7 +68,7 @@ static void bird_act_fly(void) {
     } else {
         // If the bird is a spawner bird, fly towards its home; otherwise,
         // fly towards the bird's spawner bird.
-        if (o->oBehParams2ndByte != BIRD_BP_SPAWNED) {
+        if (o->oBhvParams2ndByte != BIRD_BP_SPAWNED) {
             distance = cur_obj_lateral_dist_to_home();
 
             // The spawner bird will start with its downwards (positive) pitch

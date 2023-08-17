@@ -290,6 +290,7 @@ static void level_cmd_load_mario_head(void) {
         gdm_setup();
         gdm_maketestdl(CMD_GET(s16, 2));
     } else {
+        CN_DEBUG_PRINTF(("face anime memory overflow\n"));
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -682,6 +683,7 @@ static void level_cmd_set_transition(void) {
 }
 
 static void level_cmd_nop(void) {
+    CN_DEBUG_PRINTF(("BAD: seqBlankColor\n"));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -823,6 +825,9 @@ struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sCurrentCmd = cmd;
 
     while (sScriptStatus == SCRIPT_RUNNING) {
+        CN_DEBUG_PRINTF(("%08X: ", sCurrentCmd));
+        CN_DEBUG_PRINTF(("%02d\n", sCurrentCmd->type));
+
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

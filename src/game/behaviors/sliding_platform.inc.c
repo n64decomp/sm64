@@ -5,7 +5,7 @@ void bhv_wf_sliding_platform_init(void) {
     o->oPosX += 2.0f;
     o->oHomeX = o->oPosX;
 
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case WF_SLID_BRICK_PTFM_BP_MOV_VEL_10:
             o->oWFSlidBrickPtfmMovVel = 10.0f;
             break;

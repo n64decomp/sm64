@@ -1,6 +1,6 @@
 #include <ultra64.h>
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 // synthesis.c
 char shindouDebugPrint1[] = "Terminate-Canceled Channel %d,Phase %d\n";
 char shindouDebugPrint2[] = "S->W\n";

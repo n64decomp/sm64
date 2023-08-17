@@ -1,16 +1,17 @@
 #include "libultra_internal.h"
 #include "PR/rcp.h"
 #include "controller.h"
+#include "macros.h"
 
-extern s32 func_8030A5C0(OSMesgQueue *, s32);
-void __osPackRamWriteData(int channel, u16 address, u8 *buffer);
+extern s32 __osPfsGetStatus(OSMesgQueue *, s32);
+void __osPackRamWriteData(s32 channel, u16 address, u8 *buffer);
 
-s32 __osContRamWrite(OSMesgQueue *mq, int channel, u16 address, u8 *buffer, int force) {
+s32 __osContRamWrite(OSMesgQueue *mq, s32 channel, u16 address, u8 *buffer, s32 force) {
     s32 ret;
-    int i;
+    s32 i;
     u8 *ptr;
     __OSContRamReadFormat ramreadformat;
-    int retry;
+    s32 retry;
 
     ret = 0;
     ptr = (u8 *)&__osPfsPifRam;
@@ -19,7 +20,7 @@ s32 __osContRamWrite(OSMesgQueue *mq, int channel, u16 address, u8 *buffer, int 
         return 0;
     }
     __osSiGetAccess();
-    _osLastSentSiCmd = CONT_CMD_WRITE_MEMPACK;
+    __osContLastCmd = CONT_CMD_WRITE_MEMPACK;
     __osPackRamWriteData(channel, address, buffer);
     ret = __osSiRawStartDma(OS_WRITE, &__osPfsPifRam);
     osRecvMesg(mq, NULL, OS_MESG_BLOCK);
@@ -38,7 +39,7 @@ s32 __osContRamWrite(OSMesgQueue *mq, int channel, u16 address, u8 *buffer, int 
         ret = CHNL_ERR(ramreadformat);
         if (ret == 0) {
             if (__osContDataCrc(buffer) != ramreadformat.datacrc) {
-                ret = func_8030A5C0(mq, channel);
+                ret = __osPfsGetStatus(mq, channel);
                 if (ret != 0) {
                     __osSiRelAccess();
                     return ret;
@@ -63,7 +64,7 @@ void __osPackRamWriteData(int channel, u16 address, u8 *buffer) {
 
     ptr = (u8 *)__osPfsPifRam.ramarray;
 
-    for (i = 0; i < ARRLEN(__osPfsPifRam.ramarray) + 1; i++) { // also clear pifstatus
+    for (i = 0; i < ARRAY_COUNT(__osPfsPifRam.ramarray) + 1; i++) {
         __osPfsPifRam.ramarray[i] = 0;
     }
 
@@ -74,7 +75,7 @@ void __osPackRamWriteData(int channel, u16 address, u8 *buffer) {
     ramreadformat.cmd = CONT_CMD_WRITE_MEMPACK;
     ramreadformat.address = (address << 0x5) | __osContAddressCrc(address);
     ramreadformat.datacrc = CONT_CMD_NOP;
-    for (i = 0; i < ARRLEN(ramreadformat.data); i++) {
+    for (i = 0; i < ARRAY_COUNT(ramreadformat.data); i++) {
         ramreadformat.data[i] = *buffer++;
     }
     if (channel != 0) {

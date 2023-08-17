@@ -11,7 +11,7 @@
  * Spawn cloud if not the intro lakitu.
  */
 void bhv_camera_lakitu_init(void) {
-    if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
+    if (o->oBhvParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
         // Despawn unless this is the very beginning of the game
         if (gNeverEnteredCastle != TRUE) {
             obj_mark_for_deletion(o);
@@ -116,7 +116,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                     }
                 }
             }
-        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
             DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_034)) {
             o->oCameraLakituFinishedDialog = TRUE;
         }
@@ -140,7 +140,7 @@ void bhv_camera_lakitu_update(void) {
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         obj_update_blinking(&o->oCameraLakituBlinkTimer, 20, 40, 4);
 
-        if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
+        if (o->oBhvParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
             switch (o->oAction) {
                 case CAMERA_LAKITU_INTRO_ACT_TRIGGER_CUTSCENE:
                     camera_lakitu_intro_act_trigger_cutscene();

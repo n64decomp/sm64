@@ -1,10 +1,10 @@
 #include "libultra_internal.h"
-#include "hardware.h"
+#include "PR/rcp.h"
 
-s32 __osSiRawReadIo(void *a0, u32 *a1) {
+s32 __osSiRawReadIo(u32 devAddr, u32 *data) {
     if (__osSiDeviceBusy()) {
         return -1;
     }
-    *a1 = HW_REG((uintptr_t) a0, u32);
+    *data = IO_READ(devAddr);
     return 0;
 }

@@ -8,28 +8,38 @@ void osDestroyThread(OSThread *thread) {
     int_disabled = __osDisableInt();
 
     if (thread == NULL) {
-        thread = D_803348A0;
+        thread = __osRunningThread;
     } else if (thread->state != OS_STATE_STOPPED) {
         __osDequeueThread(thread->queue, thread);
     }
 
-    if (D_8033489C == thread) {
-        D_8033489C = D_8033489C->tlnext;
+    if (__osActiveQueue == thread) {
+        __osActiveQueue = __osActiveQueue->tlnext;
     } else {
-        s1 = D_8033489C;
+        s1 = __osActiveQueue;
+#ifdef VERSION_CN
+        while (s1->priority != -1) {
+            s2 = s1->tlnext;
+            if (s2 == thread) {
+                s1->tlnext = thread->tlnext;
+                break;
+            }
+            s1 = s2;
+        }
+#else
         s2 = s1->tlnext;
         while (s2 != NULL) {
             if (s2 == thread) {
                 s1->tlnext = thread->tlnext;
                 break;
-            } else {
-                s1 = s2;
-                s2 = s1->tlnext;
             }
+            s1 = s2;
+            s2 = s1->tlnext;
         }
+#endif
     }
 
-    if (thread == D_803348A0) {
+    if (thread == __osRunningThread) {
         __osDispatchThread();
     }
 

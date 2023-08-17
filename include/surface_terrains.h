@@ -102,9 +102,9 @@
 #define SURFACE_PAINTING_WOBBLE_CD           0x00CD // Painting wobble (THI Huge - Left)
 #define SURFACE_PAINTING_WOBBLE_CE           0x00CE // Painting wobble (THI Huge - Middle)
 #define SURFACE_PAINTING_WOBBLE_CF           0x00CF // Painting wobble (THI Huge - Right)
-#define SURFACE_PAINTING_WOBBLE_D0           0x00D0 // Painting wobble (HMC & COTMC - Left), makes the painting wobble if touched
-#define SURFACE_PAINTING_WOBBLE_D1           0x00D1 // Painting wobble (Unused, HMC & COTMC - Middle)
-#define SURFACE_PAINTING_WOBBLE_D2           0x00D2 // Painting wobble (Unused, HMC & COTMC - Right)
+#define SURFACE_PAINTING_WOBBLE_D0           0x00D0 // Painting wobble (HMC & CotMC - Left), makes the painting wobble if touched
+#define SURFACE_PAINTING_WOBBLE_D1           0x00D1 // Painting wobble (Unused, HMC & CotMC - Middle)
+#define SURFACE_PAINTING_WOBBLE_D2           0x00D2 // Painting wobble (Unused, HMC & CotMC - Right)
 #define SURFACE_PAINTING_WARP_D3             0x00D3 // Painting warp (BoB Left)
 #define SURFACE_PAINTING_WARP_D4             0x00D4 // Painting warp (BoB Middle)
 #define SURFACE_PAINTING_WARP_D5             0x00D5 // Painting warp (BoB Right)

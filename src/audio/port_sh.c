@@ -1,5 +1,5 @@
-#ifdef VERSION_SH
-// TODO: merge this with port_eu.c?
+#if defined(VERSION_SH) || defined(VERSION_CN)
+// TODO: merge this with port_eu.c
 
 #include <ultra64.h>
 

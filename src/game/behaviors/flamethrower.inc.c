@@ -9,13 +9,13 @@ void bhv_flamethrower_flame_loop(void) {
         obj_translate_xyz_random(o, 10.0f);
     }
 
-    if (o->oBehParams2ndByte == 2) {
+    if (o->oBhvParams2ndByte == 2) {
         scale = o->oTimer * (o->oForwardVel - 6.0f) / 100.0 + 2.0;
     } else {
         scale = o->oTimer * (o->oForwardVel - 20.0) / 100.0 + 1.0;
     }
 
-    if (o->oBehParams2ndByte == 3) {
+    if (o->oBhvParams2ndByte == 3) {
         o->hitboxHeight = 200.0f;
         o->hitboxDownOffset = 150.0f;
         o->oVelY = -28.0f;
@@ -34,7 +34,7 @@ void bhv_flamethrower_flame_loop(void) {
 
     cur_obj_scale(scale);
 
-    if (o->oBehParams2ndByte == 4) {
+    if (o->oBhvParams2ndByte == 4) {
         o->oPosY += o->oForwardVel; // weird?
     } else {
         cur_obj_move_using_fvel_and_gravity();
@@ -63,11 +63,11 @@ void bhv_flamethrower_loop(void) {
         model = MODEL_RED_FLAME;
         flameVel = 95.0f;
 
-        if (o->oBehParams2ndByte == 1) {
+        if (o->oBhvParams2ndByte == 1) {
             model = MODEL_BLUE_FLAME;
         }
 
-        if (o->oBehParams2ndByte == 2) {
+        if (o->oBhvParams2ndByte == 2) {
             flameVel = 50.0f;
         }
 
@@ -83,7 +83,7 @@ void bhv_flamethrower_loop(void) {
 
         o->oFlameThowerUnk110 = sp34;
 
-        flame = spawn_object_relative(o->oBehParams2ndByte, 0, 0, 0, o, model, bhvFlamethrowerFlame);
+        flame = spawn_object_relative(o->oBhvParams2ndByte, 0, 0, 0, o, model, bhvFlamethrowerFlame);
         flame->oForwardVel = flameVel;
 
         cur_obj_play_sound_1(SOUND_AIR_BLOW_FIRE);

@@ -269,7 +269,7 @@ void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCy
 /*! Unused function. Checks whether a position is laterally within 3000 units
  *  to the point (x: 3380, z: -520). Considering there is an unused blizzard
  *  snow mode, this could have been used to check whether Mario is in a
- *  'blizzard area'. In Cool Cool Mountain and Snowman's Land the area lies
+ *  'blizzard area'. In Cool, Cool Mountain and Snowman's Land the area lies
  *  near the starting point and doesn't seem meaningful. Notably, the point is
  *  close to the entrance of SL, so maybe there were plans for an extra hint to
  *  find it. The radius of 3000 units is quite large for that though, covering

@@ -99,9 +99,9 @@ extern struct MemoryPool *gObjectMemoryPool;
 
 extern s16 gCheckingSurfaceCollisionsForCamera;
 extern s16 gFindFloorIncludeSurfaceIntangible;
-extern s16 *gEnvironmentRegions;
+extern TerrainData *gEnvironmentRegions;
 extern s32 gEnvironmentLevels[20];
-extern s8 gDoorAdjacentRooms[60][2];
+extern RoomData gDoorAdjacentRooms[60][2];
 extern s16 gMarioCurrentRoom;
 extern s16 D_8035FEE2;
 extern s16 D_8035FEE4;

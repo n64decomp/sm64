@@ -188,7 +188,7 @@ static s32 bhv_cmd_spawn_child_with_param(void) {
 
     struct Object *child = spawn_object_at_origin(gCurrentObject, 0, modelID, behavior);
     obj_copy_pos_and_angle(child, gCurrentObject);
-    child->oBehParams2ndByte = bhvParam;
+    child->oBhvParams2ndByte = bhvParam;
 
     gCurBhvCommand += 3;
     return BHV_PROC_CONTINUE;

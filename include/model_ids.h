@@ -14,11 +14,6 @@
 #define ALL_ACTS_MACRO ACT_1 | ACT_2 | ACT_3 | ACT_4 | ACT_5
 #define ALL_ACTS       ACT_1 | ACT_2 | ACT_3 | ACT_4 | ACT_5 | ACT_6
 
-#define COIN_FORMATION_FLAG_VERTICAL  (1 << 0)
-#define COIN_FORMATION_FLAG_RING      (1 << 1)
-#define COIN_FORMATION_FLAG_ARROW     (1 << 2)
-#define COIN_FORMATION_FLAG_FLYING    (1 << 4)
-
 #define MODEL_NONE                        0x00
 
 /* Global models that are loaded for every level */

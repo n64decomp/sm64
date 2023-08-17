@@ -4,11 +4,11 @@
 Gfx *geo_update_held_mario_pos(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {
     if (run == TRUE) {
         Mat4 sp20;
-        struct Object *sp1C = (struct Object *) gCurGraphNodeObject;
-        if (sp1C->prevObj != NULL) {
+        struct Object *obj = (struct Object *) gCurGraphNodeObject;
+        if (obj->prevObj != NULL) {
             create_transformation_from_matrices(sp20, mtx, *gCurGraphNodeCamera->matrixPtr);
-            obj_update_pos_from_parent_transformation(sp20, sp1C->prevObj);
-            obj_set_gfx_pos_from_pos(sp1C->prevObj);
+            obj_update_pos_from_parent_transformation(sp20, obj->prevObj);
+            obj_set_gfx_pos_from_pos(obj->prevObj);
         }
     }
 
@@ -200,7 +200,7 @@ void king_bobomb_act_6(void) {
 
 void king_bobomb_act_7(void) {
     cur_obj_init_animation_with_sound(2);
-    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
         DIALOG_FLAG_TEXT_DEFAULT, CUTSCENE_DIALOG, DIALOG_116)) {
         create_sound_spawner(SOUND_OBJ_KING_WHOMP_DEATH);
 
@@ -319,7 +319,7 @@ void king_bobomb_act_5(void) { // bobomb returns home
             break;
 
         case 4:
-            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
                 DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_128)) {
                 o->oAction = 2;
             }

@@ -123,22 +123,22 @@ static void toad_message_opaque(void) {
 }
 
 static void toad_message_talking(void) {
-    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN, 
-        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId)) {
+    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN,
+        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogID)) {
         gCurrentObject->oToadMessageRecentlyTalked = TRUE;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
-        switch (gCurrentObject->oToadMessageDialogId) {
+        switch (gCurrentObject->oToadMessageDialogID) {
             case TOAD_STAR_1_DIALOG:
-                gCurrentObject->oToadMessageDialogId = TOAD_STAR_1_DIALOG_AFTER;
-                bhv_spawn_star_no_level_exit(0);
+                gCurrentObject->oToadMessageDialogID = TOAD_STAR_1_DIALOG_AFTER;
+                bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_1);
                 break;
             case TOAD_STAR_2_DIALOG:
-                gCurrentObject->oToadMessageDialogId = TOAD_STAR_2_DIALOG_AFTER;
-                bhv_spawn_star_no_level_exit(1);
+                gCurrentObject->oToadMessageDialogID = TOAD_STAR_2_DIALOG_AFTER;
+                bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_2);
                 break;
             case TOAD_STAR_3_DIALOG:
-                gCurrentObject->oToadMessageDialogId = TOAD_STAR_3_DIALOG_AFTER;
-                bhv_spawn_star_no_level_exit(2);
+                gCurrentObject->oToadMessageDialogID = TOAD_STAR_3_DIALOG_AFTER;
+                bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_3);
                 break;
         }
     }
@@ -182,31 +182,32 @@ void bhv_toad_message_loop(void) {
 void bhv_toad_message_init(void) {
     s32 saveFlags = save_file_get_flags();
     s32 starCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    s32 dialogId = (gCurrentObject->oBehParams >> 24) & 0xFF;
+    s32 dialogID = (gCurrentObject->oBhvParams >> 24) & 0xFF;
     s32 enoughStars = TRUE;
 
-    switch (dialogId) {
+    switch (dialogID) {
         case TOAD_STAR_1_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_1_REQUIREMENT);
             if (saveFlags & SAVE_FLAG_COLLECTED_TOAD_STAR_1) {
-                dialogId = TOAD_STAR_1_DIALOG_AFTER;
+                dialogID = TOAD_STAR_1_DIALOG_AFTER;
             }
             break;
         case TOAD_STAR_2_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_2_REQUIREMENT);
             if (saveFlags & SAVE_FLAG_COLLECTED_TOAD_STAR_2) {
-                dialogId = TOAD_STAR_2_DIALOG_AFTER;
+                dialogID = TOAD_STAR_2_DIALOG_AFTER;
             }
             break;
         case TOAD_STAR_3_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_3_REQUIREMENT);
             if (saveFlags & SAVE_FLAG_COLLECTED_TOAD_STAR_3) {
-                dialogId = TOAD_STAR_3_DIALOG_AFTER;
+                dialogID = TOAD_STAR_3_DIALOG_AFTER;
             }
             break;
     }
+
     if (enoughStars) {
-        gCurrentObject->oToadMessageDialogId = dialogId;
+        gCurrentObject->oToadMessageDialogID = dialogID;
         gCurrentObject->oToadMessageRecentlyTalked = FALSE;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADED;
         gCurrentObject->oOpacity = 81;
@@ -644,5 +645,6 @@ Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, 
         }
         asGenerated->fnNode.node.flags = (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
     }
+
     return gfx;
 }

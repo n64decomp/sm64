@@ -1,8 +1,10 @@
-// Assembly Macros
+#ifndef VERSION_CN
+.set gp=64
+#endif
 
-.set K0BASE, 0x80000000
-.set K1BASE, 0xA0000000
-.set K2BASE, 0xC0000000
+.equ K0BASE, 0x80000000
+.equ K1BASE, 0xA0000000
+.equ K2BASE, 0xC0000000
 
 .macro glabel label
     .global \label

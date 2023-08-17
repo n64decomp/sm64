@@ -18,7 +18,7 @@ void bhv_openable_cage_door_loop(void) {
         }
     } else if (o->oAction == 1) {
         if (o->oTimer < 64) {
-            o->oMoveAngleYaw -= o->oBehParams2ndByte * 0x100;
+            o->oMoveAngleYaw -= o->oBhvParams2ndByte * 0x100;
         } else {
             o->oAction++;
         }
@@ -26,41 +26,41 @@ void bhv_openable_cage_door_loop(void) {
 }
 
 void bhv_openable_grill_loop(void) {
-    struct Object *grillObj;
+    struct Object *obj;
     s32 grillIdx;
 
     switch (o->oAction) {
         case 0:
-            grillIdx = o->oBehParams2ndByte;
+            grillIdx = o->oBhvParams2ndByte;
 
-            grillObj = spawn_object_relative(-1, gOpenableGrills[grillIdx].halfWidth, 0, 0, o,
-                                             gOpenableGrills[grillIdx].modelID, bhvOpenableCageDoor);
-            grillObj->oMoveAngleYaw += 0x8000;
-            obj_set_collision_data(grillObj, gOpenableGrills[grillIdx].collision);
+            obj = spawn_object_relative(-1, gOpenableGrills[grillIdx].halfWidth, 0, 0, o,
+                                        gOpenableGrills[grillIdx].modelID, bhvOpenableCageDoor);
+            obj->oMoveAngleYaw += 0x8000;
+            obj_set_collision_data(obj, gOpenableGrills[grillIdx].collision);
 
-            grillObj = spawn_object_relative(1, -gOpenableGrills[grillIdx].halfWidth, 0, 0, o,
-                                             gOpenableGrills[grillIdx].modelID, bhvOpenableCageDoor);
-            obj_set_collision_data(grillObj, gOpenableGrills[grillIdx].collision);
+            obj = spawn_object_relative(1, -gOpenableGrills[grillIdx].halfWidth, 0, 0, o,
+                                        gOpenableGrills[grillIdx].modelID, bhvOpenableCageDoor);
+            obj_set_collision_data(obj, gOpenableGrills[grillIdx].collision);
 
             o->oAction++;
             break;
 
         case 1:
-            if ((o->oOpenableGrillUnkF4 =
+            if ((o->oOpenableGrillPurpleSwitch =
                  cur_obj_nearest_object_with_behavior(bhvFloorSwitchGrills)) != NULL) {
                 o->oAction++;
             }
             break;
 
         case 2:
-            grillObj = o->oOpenableGrillUnkF4;
+            obj = o->oOpenableGrillPurpleSwitch;
 
-            if (grillObj->oAction == 2) {
+            if (obj->oAction == PURPLE_SWITCH_ACT_TICKING) {
                 o->oOpenableGrillUnk88 = 2;
                 cur_obj_play_sound_2(SOUND_GENERAL_CAGE_OPEN);
                 o->oAction++;
 
-                if (o->oBehParams2ndByte != 0) {
+                if (o->oBhvParams2ndByte != OPENABLE_GRILL_BP_BOB) {
                     play_puzzle_jingle();
                 }
             }

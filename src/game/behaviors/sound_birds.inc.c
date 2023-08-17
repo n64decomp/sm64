@@ -5,7 +5,7 @@ void bhv_birds_sound_loop(void) {
         return;
     }
 
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case 0:
             cur_obj_play_sound_1(SOUND_OBJ2_BIRD_CHIRP1);
             break;

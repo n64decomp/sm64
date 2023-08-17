@@ -8,6 +8,12 @@
     .error "armips 0.11 or newer is required"
 .endif
 
+.ifdef VERSION_SH
+.definelabel VERSION_SH_CN, 1
+.elseifdef VERSION_CN
+.definelabel VERSION_SH_CN, 1
+.endif
+
 .macro jumpTableEntry, addr
   .dh addr & 0xFFFF
 .endmacro
@@ -35,7 +41,7 @@ dispatchTable:
   jumpTableEntry cmd_SPNOOP
   jumpTableEntry cmd_ADPCM
   jumpTableEntry cmd_CLEARBUFF
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
   jumpTableEntry cmd_SPNOOP
 
   jumpTableEntry cmd_ADDMIXER
@@ -98,7 +104,7 @@ data0040:
 .dh 0x0000, 0x0000, 0x0001, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000 // 0x00000090
 .dh 0x0000, 0x0000, 0x0000, 0x0001, 0x0000, 0x0000, 0x0000, 0x0001 // 0x000000a0
 .dh 0x2000, 0x4000, 0x6000, 0x8000, 0xa000, 0xc000, 0xe000, 0xffff // 0x000000b0
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 .dh 0x0000, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
 .dh 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
 .endif
@@ -134,7 +140,7 @@ data0040:
 .dh 0xffb6, 0x1338, 0x655e, 0x07ab, 0xffbf, 0x11f0, 0x65cd, 0x087d // 0x00000290
 .dh 0xffc8, 0x10b4, 0x6626, 0x095a, 0xffd0, 0x0f83, 0x6669, 0x0a44 // 0x000002a0
 .dh 0xffd8, 0x0e5f, 0x6696, 0x0b39, 0xffdf, 0x0d46, 0x66ad, 0x0c39 // 0x000002b0
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 .dh 0xFFFF, 0xDFFF, 0xBFFF, 0x9FFF, 0x7FFF, 0x5FFF, 0x3FFF, 0x1FFF
 .dh 0x0000, 0x2000, 0x4000, 0x6000, 0x8000, 0xA000, 0xC000, 0xE000
 .dh 0x0000, 0x0002, 0x0004, 0x0006, 0x0008, 0x000A, 0x000C, 0x000E
@@ -142,7 +148,7 @@ data0040:
 
 .definelabel segmentTable, 0x320
 
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 .definelabel audioStruct, 0x320
 .else
 .definelabel audioStruct, 0x360
@@ -161,7 +167,7 @@ audio_rate_hi_left  equ 0x12 // 0x372 (shared)
 audio_rate_lo_left  equ 0x14 // 0x374
 audio_target_right  equ 0x16 // 0x376
 audio_rate_hi_right equ 0x18 // 0x378
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 .definelabel audio_rate_lo_right, 0x04 // 0x37a
 .else
 .definelabel audio_rate_lo_right, 0x1a // 0x37a
@@ -169,7 +175,7 @@ audio_rate_hi_right equ 0x18 // 0x378
 audio_dry_gain      equ 0x1c // 0x37c
 audio_wet_gain      equ 0x1e // 0x37e
 
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 .definelabel nextTaskEntry, 0x340
 .definelabel adpcmTable,    0x3c0
 .else
@@ -203,7 +209,7 @@ audio_wet_gain      equ 0x1e // 0x37e
      nop
     jal   audio_04001150
      nop
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     addi  $2, $zero, 0x000f
     addi  $1, $zero, segmentTable
 @@audio_040010c8:
@@ -254,14 +260,14 @@ audio_04001150:
     addi  $5, $ra, 0x0000
     add   $2, $zero, $28
     addi  $3, $27, 0x0000
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     addi  $4, $3, -0x80
 .else
     addi  $4, $3, -0x0140
 .endif
     blez  $4, @@audio_0400116c
      addi  $1, $zero, nextTaskEntry
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     addi  $3, $zero, 0x80
 .else
     addi  $3, $zero, 0x0140
@@ -305,21 +311,21 @@ dma_write_start:
 cmd_CLEARBUFF:
     andi  $3, $25, 0xffff
     beqz  $3, cmd_SPNOOP
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
      addi  $4, $zero, dmemBase
 .endif
     andi  $2, $26, 0xffff
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     add   $2, $2, $4
 .endif
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     vxor  $v0, $v0, $v0
 .else
     vxor  $v1, $v1, $v1
 .endif
     addi  $3, $3, -0x10
 @@audio_040011f8:
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     sdv   $v0[0], 0x0($2)
     sdv   $v0[0], 0x8($2)
 .else
@@ -332,7 +338,7 @@ cmd_CLEARBUFF:
     j     cmd_SPNOOP
      nop
 
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
 cmd_LOADBUFF:
     lhu   $3, (audio_count)($24)
     beqz  $3, cmd_SPNOOP
@@ -390,7 +396,7 @@ cmd_LOADADPCM:
      mtc0  $zero, SP_SEMAPHORE
 .endif
 cmd_SEGMENT:
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     sll   $3, $25, 8           // Least significant 24-bits offset
     srl   $3, $3, 8
     srl   $2, $25, 24          // Most significant 8-bits segment number
@@ -400,7 +406,7 @@ cmd_SEGMENT:
      sw    $3, (segmentTable)($4)
 .endif
 
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
 cmd_SETBUFF:
     addi  $1, $26, dmemBase
     srl   $2, $25, 16
@@ -420,7 +426,7 @@ cmd_SETBUFF:
      sh    $2, (audio_aux_buf1)($24)
 .endif
 
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 cmd_SETBUFF:
     srl   $2, $25, 16
     sh    $26, 0($24)
@@ -459,7 +465,7 @@ cmd_SETVOL:
      sh    $25, (audio_rate_lo_right)($24)
 
 cmd_INTERLEAVE:
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     andi  $a0, $k0, 0xffff
     srl   $at, $k0, 12
     andi  $at, $at, 0xff0
@@ -511,7 +517,7 @@ cmd_INTERLEAVE:
     addi  $3, $3, 0x10
 .endif
     bgtz  $1, @@audio_040013a8
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
      ssv   $v2[6], 0xFE($a0)
 .else
      addi  $4, $4, 0x20
@@ -523,11 +529,11 @@ cmd_DMEMMOVE:
     andi  $1, $25, 0xffff
     beqz  $1, cmd_SPNOOP
      andi  $2, $26, 0xffff
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     addi  $2, $2, dmemBase
 .endif
     srl   $3, $25, 16
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     addi  $3, $3, dmemBase
 .endif
 @@audio_04001424:
@@ -545,7 +551,7 @@ cmd_DMEMMOVE:
 cmd_SETLOOP:
     sll   $1, $25, 8
     srl   $1, $1, 8
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     srl   $3, $25, 24
     sll   $3, $3, 2
     lw    $2, (segmentTable)($3)
@@ -553,7 +559,7 @@ cmd_SETLOOP:
     sw    $1, (audio_loop_value)($24)
 .endif
     j     cmd_SPNOOP
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
      sw    $at, 0x10($t8)
 .else
      nop
@@ -571,27 +577,27 @@ cmd_ADPCM:
     vxor  $v14, $v14, $v14
     lhu   $18, (audio_count)($24)
     vxor  $v15, $v15, $v15
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     lui   $1, 0x00ff
 .endif
     vxor  $v16, $v16, $v16
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     sll   $s1, $t9, 8
 .else
     ori   $1, $1, 0xffff
 .endif
     vxor  $v17, $v17, $v17
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     and   $17, $25, $1
 .endif
     vxor  $v18, $v18, $v18
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     srl   $s1, $s1, 8
 .else
     srl   $2, $25, 24
 .endif
     vxor  $v19, $v19, $v19
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     sll   $2, $2, 2
     lw    $3, (segmentTable)($2)
     add   $17, $17, $3          // last frame addr
@@ -616,7 +622,7 @@ cmd_ADPCM:
      nop
     mtc0  $zero, SP_SEMAPHORE
 @@audio_0400150c:
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     addi  $16, $zero, 0x0050
 .else
     addi  $16, $zero, 0x0030
@@ -754,7 +760,7 @@ cmd_ADPCM:
      mtc0  $zero, SP_SEMAPHORE
 
 cmd_POLEF: // unused by SM64
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     lqv   $v31[0], 0x0000($zero)
     vxor  $v28, $v28, $v28
     lhu   $21, (audio_in_buf)($24)
@@ -790,14 +796,14 @@ cmd_POLEF: // unused by SM64
      addi  $3, $zero, 7
 .endif
 @@dma_read_busy:
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     mfc0  $5, SP_DMA_BUSY
     bnez  $5, @@dma_read_busy
      nop
     mtc0  $zero, SP_SEMAPHORE
 .endif
 @@audio_040017a0:
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     addi  $13, $zero, adpcmTable
     addi  $1, $zero, 0x0004
     mtc2  $1, $v14[0]
@@ -824,7 +830,7 @@ cmd_POLEF: // unused by SM64
     ldv   $v30[8], 0x08($21)
 .endif
 @@audio_04001800:
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     vmudh $v16, $v25, $v28[6]
     addi  $21, $21, 0x10
     vmadh $v16, $v24, $v28[7]
@@ -853,13 +859,13 @@ cmd_POLEF: // unused by SM64
      addi  $3, $zero, 7
 .endif
 @@dma_write_busy:
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     mfc0  $5, SP_DMA_BUSY
     bnez  $5, @@dma_write_busy
      nop
 .endif
 @@audio_04001874:
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     j     cmd_SPNOOP
      mtc0  $zero, SP_SEMAPHORE
 .endif
@@ -868,7 +874,7 @@ cmd_RESAMPLE:
     lh    $8, (audio_in_buf)($24)
     lh    $19, (audio_out_buf)($24)
     lh    $18, (audio_count)($24)
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     sll   $v0, $t9, 8
     srl   $v0, $v0, 8
 .else
@@ -902,7 +908,7 @@ cmd_RESAMPLE:
 @@audio_040018e8:
     andi  $10, $7, 0x02      // A_LOOP? A_OUT?
     beqz  $10, @@audio_04001908
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
      ldv   $v16[0], 0x00($23)
     addi  $t0, $t0, -4
     ssv   $v16[0], 0x00($t0)
@@ -919,7 +925,7 @@ cmd_RESAMPLE:
 .endif
 
 @@audio_04001908:
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     andi  $t2, $a3, 4
     beqz  $t2, @@audio_c4104
      nop
@@ -937,19 +943,19 @@ cmd_RESAMPLE:
 @@audio_c4104:
 .endif
     addi  $8, $8, -8
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     sdv   $v16[0], 0x00($8)
 .endif
 @@audio_c410c:
     lsv   $v23[14], 0x08($23)   // saved pitch_accumulator
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     ldv   $v16[0], 0x00($8)
 .else
     ldv   $v16[0], 0x00($23)    // saved next 4 unprocessed samples
     sdv   $v16[0], 0x00($8)     // store them before the input samples
 .endif
     mtc2  $8, $v18[4]
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     addi  $10, $zero, 0x100
 .else
     addi  $10, $zero, 0xc0
@@ -958,7 +964,7 @@ cmd_RESAMPLE:
     mtc2  $26, $v18[8]          // pitch
     addi  $10, $zero, 0x40
     mtc2  $10, $v18[10]
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
     addi  $9, $zero, 0x60
 .else
     addi  $9, $zero, data0040
@@ -1073,7 +1079,7 @@ cmd_RESAMPLE:
     ssv   $v23[0], 0x08($23)
     ldv   $v16[0], 0x00($17)
     sdv   $v16[0], 0x00($23)
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
     lh    $6, (audio_in_buf)($24)
     addi  $17, $17, 8
     sub   $5, $17, $6
@@ -1099,7 +1105,7 @@ cmd_RESAMPLE:
     j     cmd_SPNOOP
      mtc0  $zero, SP_SEMAPHORE
 
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 cmd_DMEMMOVE2:
     srl   $t7, $k0, 16
     andi  $t7, $t7, 0xff
@@ -1175,7 +1181,7 @@ cmd_DOWNSAMPLE_HALF:
      nop
 .endif
 
-.ifndef VERSION_SH
+.ifndef VERSION_SH_CN
 cmd_ENVMIXER:
     lui   $4, 0x00ff
     ori   $4, $4, 0xffff
@@ -1417,7 +1423,7 @@ cmd_MIXER:
     nop
 .endif
 
-.ifdef VERSION_SH
+.ifdef VERSION_SH_CN
 cmd_ENVMIXER:
     vxor  $v4, $v4, $v4
     vxor  $v0, $v0, $v0

@@ -1,25 +1,25 @@
 // thwomp.inc.c
 
-void grindel_thwomp_act_4(void) {
+void grindel_thwomp_act_idle_at_bottom(void) {
     if (o->oTimer == 0) {
-        o->oThwompRandomTimer = random_float() * 10.0f + 20.0f;
+        o->oGrindelThwompRandomTimer = random_float() * 10.0f + 20.0f; // [20, 29]
     }
-    if (o->oTimer > o->oThwompRandomTimer) {
-        o->oAction = 0;
+    if (o->oTimer > o->oGrindelThwompRandomTimer) {
+        o->oAction = GRINDEL_THWOMP_ACT_RAISE;
     }
 }
 
-void grindel_thwomp_act_2(void) {
+void grindel_thwomp_act_lower(void) {
     o->oVelY += -4.0f;
     o->oPosY += o->oVelY;
     if (o->oPosY < o->oHomeY) {
         o->oPosY = o->oHomeY;
         o->oVelY = 0.0f;
-        o->oAction = 3;
+        o->oAction = GRINDEL_THWOMP_ACT_LAND;
     }
 }
 
-void grindel_thwomp_act_3(void) {
+void grindel_thwomp_act_land(void) {
     if (o->oTimer == 0) {
         if (o->oDistanceToMario < 1500.0f) {
             cur_obj_shake_screen(SHAKE_POS_SMALL);
@@ -27,22 +27,22 @@ void grindel_thwomp_act_3(void) {
         }
     }
     if (o->oTimer >= 10) {
-        o->oAction = 4;
+        o->oAction = GRINDEL_THWOMP_ACT_IDLE_AT_BOTTOM;
     }
 }
 
-void grindel_thwomp_act_1(void) {
+void grindel_thwomp_act_idle_at_top(void) {
     if (o->oTimer == 0) {
-        o->oThwompRandomTimer = random_float() * 30.0f + 10.0f;
+        o->oGrindelThwompRandomTimer = random_float() * 30.0f + 10.0f; // [10, 39]
     }
-    if (o->oTimer > o->oThwompRandomTimer) {
-        o->oAction = 2;
+    if (o->oTimer > o->oGrindelThwompRandomTimer) {
+        o->oAction = GRINDEL_THWOMP_ACT_LOWER;
     }
 }
 
-void grindel_thwomp_act_0(void) {
-    if (o->oBehParams2ndByte + 40 < o->oTimer) {
-        o->oAction = 1;
+void grindel_thwomp_act_raise(void) {
+    if (o->oTimer > o->oBhvParams2ndByte + 40) {
+        o->oAction = GRINDEL_THWOMP_ACT_IDLE_AT_TOP;
         o->oPosY += 5.0f;
     } else {
         o->oPosY += 10.0f;
@@ -50,11 +50,11 @@ void grindel_thwomp_act_0(void) {
 }
 
 void (*sGrindelThwompActions[])(void) = {
-    grindel_thwomp_act_0,
-    grindel_thwomp_act_1,
-    grindel_thwomp_act_2,
-    grindel_thwomp_act_3,
-    grindel_thwomp_act_4,
+    grindel_thwomp_act_raise,
+    grindel_thwomp_act_idle_at_top,
+    grindel_thwomp_act_lower,
+    grindel_thwomp_act_land,
+    grindel_thwomp_act_idle_at_bottom,
 };
 
 void bhv_grindel_thwomp_loop(void) {

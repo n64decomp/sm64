@@ -106,6 +106,9 @@ void set_warp_transition_rgb(u8 red, u8 green, u8 blue) {
 }
 
 void print_intro_text(void) {
+#ifdef VERSION_CN
+    u8 sp18[] = { 0xB0, 0x00 }; // TODO: iQue colorful text
+#endif
 #ifdef VERSION_EU
     s32 language = eu_get_language();
 #endif
@@ -120,7 +123,11 @@ void print_intro_text(void) {
 #ifdef VERSION_EU
             print_text(20, 20, "START");
 #else
+#ifdef VERSION_CN
+            print_text_centered(60, 38, (char *) sp18);
+#else
             print_text_centered(60, 38, "PRESS");
+#endif
             print_text_centered(60, 20, "START");
 #endif
         }
@@ -132,7 +139,7 @@ u32 get_mario_spawn_type(struct Object *o) {
     const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
     for (i = 0; i < 20; i++) {
-        if (sWarpBhvSpawnTable[i] == behavior) {
+        if (behavior == sWarpBhvSpawnTable[i]) {
             return sSpawnTypeFromWarpBhv[i];
         }
     }
@@ -151,9 +158,9 @@ struct ObjectWarpNode *area_get_warp_node(u8 id) {
 }
 
 struct ObjectWarpNode *area_get_warp_node_from_params(struct Object *o) {
-    u8 sp1F = (o->oBehParams & 0x00FF0000) >> 16;
+    u8 id = (o->oBhvParams & 0x00FF0000) >> 16;
 
-    return area_get_warp_node(sp1F);
+    return area_get_warp_node(id);
 }
 
 void load_obj_warp_nodes(void) {

@@ -25,7 +25,8 @@ extern s16 ttc_movtex_tris_big_surface_treadmill[];
 extern s16 ttc_movtex_tris_small_surface_treadmill[];
 
 void bhv_ttc_treadmill_init(void) {
-    o->collisionData = segmented_to_virtual(sTTCTreadmillCollisionModels[o->oBehParams2ndByte & 0x01]);
+    o->collisionData = segmented_to_virtual(
+        sTTCTreadmillCollisionModels[o->oBhvParams2ndByte & TTC_TREADMILL_BP_FLAG_MASK]);
 
     o->oTTCTreadmillBigSurface = segmented_to_virtual(ttc_movtex_tris_big_surface_treadmill);
     o->oTTCTreadmillSmallSurface = segmented_to_virtual(ttc_movtex_tris_small_surface_treadmill);

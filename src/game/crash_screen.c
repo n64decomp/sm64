@@ -4,7 +4,7 @@
 
 #include "sm64.h"
 
-#if defined(TARGET_N64) && (defined(VERSION_EU) || defined(VERSION_SH))
+#if defined(TARGET_N64) && (defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN))
 
 #include "lib/src/printf.h"
 
@@ -118,7 +118,7 @@ void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
     if (size > 0) {
         ptr = buf;
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
         while (size > 0) {
 #else
         while (*ptr) {
@@ -130,7 +130,7 @@ void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
                 crash_screen_draw_glyph(x, y, glyph);
             }
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
             size--;
 #endif
 
@@ -189,7 +189,7 @@ void draw_crash_screen(OSThread *thread) {
         cause = 17;
     }
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     osWritebackDCacheAll();
 #endif
 

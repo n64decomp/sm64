@@ -118,7 +118,7 @@ s8 gMovtexVtxColor = MOVTEX_VTX_COLOR_DEFAULT;
 float gPaintingMarioYEntry = 0.0f;
 
 /// Variable to ensure the initial Wet-Dry World water level is set only once
-s32 gWdwWaterLevelSet = FALSE;
+s32 gWDWWaterLevelSet = FALSE;
 
 extern u8 ssl_quicksand[];
 extern u8 ssl_pyramid_sand[];
@@ -243,7 +243,7 @@ struct MovtexObject gMovtexNonColored[] = {
     { MOVTEX_COTMC_WATER, TEXTURE_WATER, 14, cotmc_movtex_tris_water, cotmc_dl_water_begin,
       cotmc_dl_water_end, cotmc_dl_water, 0xff, 0xff, 0xff, 0xb4, LAYER_TRANSPARENT_INTER },
 
-    // Tall Tall mountain has water going from the top to the bottom of the mountain.
+    // Tall, Tall mountain has water going from the top to the bottom of the mountain.
     { MOVTEX_TTM_BEGIN_WATERFALL, TEXTURE_WATER, 6, ttm_movtex_tris_begin_waterfall,
       dl_waterbox_rgba16_begin, dl_waterbox_end, ttm_dl_waterfall, 0xff, 0xff, 0xff, 0xb4,
       LAYER_TRANSPARENT },
@@ -308,9 +308,9 @@ Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *n
 
     // Why was this global variable needed when they could just check for GEO_CONTEXT_AREA_LOAD?
     if (callContext != GEO_CONTEXT_RENDER) {
-        gWdwWaterLevelSet = FALSE;
+        gWDWWaterLevelSet = FALSE;
     } else if (callContext == GEO_CONTEXT_RENDER && gEnvironmentRegions != NULL
-               && !gWdwWaterLevelSet) {
+               && !gWDWWaterLevelSet) {
         if (gPaintingMarioYEntry <= 1382.4) {
             wdwWaterHeight = 31;
         } else if (gPaintingMarioYEntry >= 1600.0) {
@@ -321,7 +321,7 @@ Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *n
         for (i = 0; i < *gEnvironmentRegions; i++) {
             gEnvironmentRegions[i * 6 + 6] = wdwWaterHeight;
         }
-        gWdwWaterLevelSet = TRUE;
+        gWDWWaterLevelSet = TRUE;
     }
     return NULL;
 }
@@ -670,8 +670,9 @@ Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUS
             waterId = gEnvironmentRegions[i * 6 + 1];
             waterY = gEnvironmentRegions[i * 6 + 6];
             subList = movtex_gen_quads_id(waterId, waterY, quadCollection);
-            if (subList != NULL)
+            if (subList != NULL) {
                 gSPDisplayList(gfx++, VIRTUAL_TO_PHYSICAL(subList));
+            }
         }
         gSPDisplayList(gfx++, dl_waterbox_end);
         gSPEndDisplayList(gfx);

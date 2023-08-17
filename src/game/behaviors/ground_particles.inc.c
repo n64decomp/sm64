@@ -6,7 +6,7 @@ void bhv_pound_white_puffs_init(void) {
 }
 
 static struct SpawnParticlesInfo sGlobalMistParticles = {
-    /* behParam:        */ 3,
+    /* bhvParam:        */ 3,
     /* count:           */ 20,
     /* model:           */ MODEL_MIST,
     /* offsetY:         */ 20,
@@ -25,7 +25,7 @@ void spawn_mist_from_global(void) {
 }
 
 static struct SpawnParticlesInfo sSandParticles = {
-    /* behParam:        */ 0,
+    /* bhvParam:        */ 0,
     /* count:           */ 5,
     /* model:           */ MODEL_SAND_DUST,
     /* offsetY:         */ 0,
@@ -62,7 +62,7 @@ void clear_particle_flags(u32 flags) {
 }
 
 static struct SpawnParticlesInfo sSnowParticles = {
-    /* behParam:        */ 0,
+    /* bhvParam:        */ 0,
     /* count:           */ 5,
     /* model:           */ MODEL_WHITE_PARTICLE_DL,
     /* offsetY:         */ 0,

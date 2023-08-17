@@ -30,7 +30,7 @@ static struct ObjectHitbox sWaterBombHitbox = {
  */
 void bhv_water_bomb_spawner_update(void) {
     f32 latDistToMario;
-    f32 spawnerRadius = 50 * (u16)(o->oBehParams >> 16) + 200.0f;
+    f32 spawnerRadius = 50 * (u16)(o->oBhvParams >> 16) + 200.0f;
 
     latDistToMario = lateral_dist_between_objects(o, gMarioObject);
 
@@ -68,7 +68,7 @@ void bhv_water_bomb_spawner_update(void) {
  */
 void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYBase) {
     static struct SpawnParticlesInfo waterBombExplodeParticles = {
-        /* behParam:        */ 0,
+        /* bhvParam:        */ 0,
         /* count:           */ 5,
         /* model:           */ MODEL_BUBBLE,
         /* offsetY:         */ 20,
@@ -176,7 +176,7 @@ static void water_bomb_act_explode(void) {
  */
 static void water_bomb_act_shot_from_cannon(void) {
     static struct SpawnParticlesInfo waterBombCannonParticle = {
-        /* behParam:        */ 0,
+        /* bhvParam:        */ 0,
         /* count:           */ 1,
         /* model:           */ MODEL_BUBBLE,
         /* offsetY:         */ 236,

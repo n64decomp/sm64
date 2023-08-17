@@ -30,7 +30,7 @@ void bhv_ttc_moving_bar_init(void) {
 
     // This causes the first cycle to start at different times for different
     // bars
-    o->oTTCMovingBarStoppedTimer = 10 * o->oBehParams2ndByte;
+    o->oTTCMovingBarStoppedTimer = 10 * o->oBhvParams2ndByte;
 
     o->oMoveAngleYaw = 0x4000 - o->oMoveAngleYaw;
 }

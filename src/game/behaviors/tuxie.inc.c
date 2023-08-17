@@ -50,8 +50,8 @@ void tuxies_mother_act_1(void) {
         case 0:
             cur_obj_init_animation_with_sound(3);
             if (!cur_obj_is_mario_on_platform()) {
-                s32 sp2C = (o->oBehParams >> 16) & 0xFF;
-                s32 sp28 = (o->prevObj->oBehParams >> 16) & 0xFF;
+                s32 sp2C = (o->oBhvParams >> 16) & 0xFF;
+                s32 sp28 = (o->prevObj->oBhvParams >> 16) & 0xFF;
                 s32 dialogID;
 
                 if (sp2C == sp28) {
@@ -59,7 +59,7 @@ void tuxies_mother_act_1(void) {
                 } else {
                     dialogID = DIALOG_059;
                 }
-                if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+                if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
                         DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, dialogID)) {
                     if (dialogID == DIALOG_058) {
                         o->oSubAction = 1;
@@ -129,7 +129,7 @@ void tuxies_mother_act_0(void) {
                 }
                 break;
             case 1:
-                if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+                if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
                     DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_057)) {
                     o->oSubAction++;
                 }
@@ -357,5 +357,6 @@ Gfx *geo_switch_tuxie_mother_eyes(s32 run, struct GraphNode *node, UNUSED Mat4 *
             }
         }
     }
+
     return NULL;
 }

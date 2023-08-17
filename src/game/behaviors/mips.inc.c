@@ -14,7 +14,7 @@ void bhv_mips_init(void) {
     // If the player has >= 15 stars and hasn't collected first MIPS star...
     if (save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 15
         && !(starFlags & SAVE_FLAG_TO_STAR_FLAG(SAVE_FLAG_COLLECTED_MIPS_STAR_1))) {
-        o->oBehParams2ndByte = 0;
+        o->oBhvParams2ndByte = MIPS_BP_15_STARS;
 #ifndef VERSION_JP
         o->oMipsForwardVelocity = 40.0f;
 #endif
@@ -22,7 +22,7 @@ void bhv_mips_init(void) {
     // If the player has >= 50 stars and hasn't collected second MIPS star...
     else if (save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 50
              && !(starFlags & SAVE_FLAG_TO_STAR_FLAG(SAVE_FLAG_COLLECTED_MIPS_STAR_2))) {
-        o->oBehParams2ndByte = 1;
+        o->oBhvParams2ndByte = MIPS_BP_50_STARS;
 #ifndef VERSION_JP
         o->oMipsForwardVelocity = 45.0f;
 #endif
@@ -109,16 +109,18 @@ void bhv_mips_act_wait_for_nearby_mario(void) {
 void bhv_mips_act_follow_path(void) {
     s16 collisionFlags = 0;
     s32 followStatus;
-#ifdef AVOID_UB
-    followStatus = 0;
-#endif
 
     // Retrieve current waypoint.
     struct Waypoint **pathBase = segmented_to_virtual(&inside_castle_seg7_trajectory_mips);
     struct Waypoint *waypoint = segmented_to_virtual(*(pathBase + o->oMipsStartWaypointIndex));
 
+#ifdef AVOID_UB
+    followStatus = 0;
+#endif
+
     // Set start waypoint and follow the path from there.
     o->oPathedStartWaypoint = waypoint;
+    //! Uninitialized parameter, but the parameter is unused in the called function
     followStatus = cur_obj_follow_path(followStatus);
 
     // Update velocity and angle and do movement.
@@ -187,7 +189,7 @@ void bhv_mips_act_idle(void) {
 
     // Spawn a star if he was just picked up for the first time.
     if (o->oMipsStarStatus == MIPS_STAR_STATUS_SHOULD_SPAWN_STAR) {
-        bhv_spawn_star_no_level_exit(o->oBehParams2ndByte + 3);
+        bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_4 + o->oBhvParams2ndByte);
         o->oMipsStarStatus = MIPS_STAR_STATUS_ALREADY_SPAWNED_STAR;
     }
 }
@@ -233,9 +235,9 @@ void bhv_mips_held(void) {
     // If MIPS hasn't spawned his star yet...
     if (o->oMipsStarStatus == MIPS_STAR_STATUS_HAVENT_SPAWNED_STAR) {
         // Choose dialog based on which MIPS encounter this is.
-        if (o->oBehParams2ndByte == 0) {
+        if (o->oBhvParams2ndByte == MIPS_BP_15_STARS) {
             dialogID = DIALOG_084;
-        } else {
+        } else { // MIPS_BP_50_STARS
             dialogID = DIALOG_162;
         }
 

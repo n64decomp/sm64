@@ -27,7 +27,7 @@ struct GraphNodeMore {
 };
 
 // intro geo bss
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 static u16 *sFramebuffers[3];
 #endif
 static s32 sGameOverFrameCounter;
@@ -82,7 +82,7 @@ Gfx *geo_intro_super_mario_64_logo(s32 state, struct GraphNode *node, UNUSED voi
         guScale(scaleMat, scaleX, scaleY, scaleZ);
 
         gSPMatrix(dlIter++, scaleMat, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        gSPDisplayList(dlIter++, &intro_seg7_dl_0700B3A0);  // draw model
+        gSPDisplayList(dlIter++, &intro_seg7_dl_logo);  // draw model
         gSPPopMatrix(dlIter++, G_MTX_MODELVIEW);
         gSPEndDisplayList(dlIter);
 
@@ -116,7 +116,7 @@ Gfx *geo_intro_tm_copyright(s32 state, struct GraphNode *node, UNUSED void *cont
                 gDPSetRenderMode(dlIter++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
                 break;
         }
-        gSPDisplayList(dlIter++, &intro_seg7_dl_0700C6A0);  // draw model
+        gSPDisplayList(dlIter++, &intro_seg7_dl_copyright);  // draw model
         gSPEndDisplayList(dlIter);
 
         // Once the "Super Mario 64" logo has just about zoomed fully, fade in the "TM" and copyright text
@@ -167,7 +167,7 @@ static Gfx *intro_backdrop_one_image(s32 index, s8 *backgroundTable) {
     guTranslate(mtx, xCoords[index], yCoords[index], 0.0f);
     gSPMatrix(displayListIter++, mtx, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_PUSH);
     gSPDisplayList(displayListIter++, &title_screen_bg_dl_0A000118);
-    for (i = 0; i < 4; ++i) {
+    for (i = 0; i < 4; i++) {
         gDPLoadTextureBlock(displayListIter++, vIntroBgTable[i], G_IM_FMT_RGBA, G_IM_SIZ_16b, 80, 20, 0,
                             G_TX_CLAMP, G_TX_CLAMP, 7, 6, G_TX_NOLOD, G_TX_NOLOD)
         gSPDisplayList(displayListIter++, introBackgroundDlRows[i]);
@@ -204,7 +204,7 @@ Gfx *geo_intro_regular_backdrop(s32 state, struct GraphNode *node, UNUSED void *
         graphNode->node.flags = (graphNode->node.flags & 0xFF) | (LAYER_OPAQUE << 8);
         gSPDisplayList(dlIter++, &dl_proj_mtx_fullscreen);
         gSPDisplayList(dlIter++, &title_screen_bg_dl_0A000100);
-        for (i = 0; i < 12; ++i) {
+        for (i = 0; i < 12; i++) {
             gSPDisplayList(dlIter++, intro_backdrop_one_image(i, backgroundTable));
         }
         gSPDisplayList(dlIter++, &title_screen_bg_dl_0A000190);
@@ -233,8 +233,9 @@ Gfx *geo_intro_gameover_backdrop(s32 state, struct GraphNode *node, UNUSED void 
     if (state != 1) {  // reset
         sGameOverFrameCounter = 0;
         sGameOverTableIndex = -2;
-        for (i = 0; i < ARRAY_COUNT(gameOverBackgroundTable); ++i)
+        for (i = 0; i < ARRAY_COUNT(gameOverBackgroundTable); i++) {
             gameOverBackgroundTable[i] = INTRO_BACKGROUND_GAME_OVER;
+        }
     } else {  // draw
         dl = alloc_display_list(16 * sizeof(*dl));
         dlIter = dl;
@@ -262,15 +263,16 @@ Gfx *geo_intro_gameover_backdrop(s32 state, struct GraphNode *node, UNUSED void 
         // draw all the tiles
         gSPDisplayList(dlIter++, &dl_proj_mtx_fullscreen);
         gSPDisplayList(dlIter++, &title_screen_bg_dl_0A000100);
-        for (j = 0; j < ARRAY_COUNT(gameOverBackgroundTable); ++j)
+        for (j = 0; j < ARRAY_COUNT(gameOverBackgroundTable); j++) {
             gSPDisplayList(dlIter++, intro_backdrop_one_image(j, gameOverBackgroundTable));
+        }
         gSPDisplayList(dlIter++, &title_screen_bg_dl_0A000190);
         gSPEndDisplayList(dlIter);
     }
     return dl;
 }
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 
 extern Gfx title_screen_bg_dl_0A0065E8[];
 extern Gfx title_screen_bg_dl_0A006618[];
@@ -335,6 +337,73 @@ Gfx *intro_draw_face(u16 *image, s32 imageW, s32 imageH) {
     return dl;
 }
 
+#ifdef VERSION_CN
+
+// TODO: See whether this matches other game versions too, clearly there was no actual
+//       substantive change in this function
+u16 *intro_sample_framebuffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH) {
+    u16 *fb;
+    u16 *image;
+    s32 xIndex;
+    s32 yIndex;
+    f32 size;
+    f32 r, g, b;
+    s32 iy, ix, sy, sx;
+    s32 xOffset, yOffset;
+    u16 fbr, fbg, fbb;
+    f32 f1, f2, f3;
+
+    fb = sFramebuffers[sRenderingFramebuffer];
+    image = alloc_display_list(imageW * imageH * sizeof(u16));
+
+    if (image == NULL) {
+        return image;
+    }
+
+    for (iy = 0; iy < imageH; iy++) {
+        yOffset = 80;
+
+        for (ix = 0; ix < imageW; ix++) {
+            xOffset = 120;
+
+            r = 0;
+            g = 0;
+            b = 0;
+
+            for (sy = 0; sy < sampleH; sy++) {
+                for (sx = 0; sx < sampleW; sx++) {
+                    yIndex = (sampleH * iy + yOffset) + sy;
+                    xIndex = (sampleW * ix + xOffset) + sx;
+
+                    fbr = fb[320 * yIndex + xIndex];
+                    fbg = fb[320 * yIndex + xIndex];
+                    fbb = fb[320 * yIndex + xIndex];
+
+                    f1 = (fbr >> 0xB) & 0x1F;
+                    f2 = (fbg >> 0x6) & 0x1F;
+                    f3 = (fbb >> 0x1) & 0x1F;
+
+                    r += f1;
+                    g += f2;
+                    b += f3;
+                }
+            }
+
+            size = sampleW * sampleH;
+
+            fbr = ((u16) (r / size + 0.5) << 0xB) & 0xF800;
+            fbg = ((u16) (g / size + 0.5) << 0x6) &  0x7C0;
+            fbb = ((u16) (b / size + 0.5) << 0x1) &   0x3E;
+
+            image[imageH * iy + ix] = fbr + fbg + fbb + 1;
+        }
+    }
+
+    return image;
+}
+
+#else
+
 u16 *intro_sample_framebuffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH) {
     u16 *fb;
     u16 *image;
@@ -389,11 +458,15 @@ u16 *intro_sample_framebuffer(s32 imageW, s32 imageH, s32 sampleW, s32 sampleH) 
     return image;
 }
 
+#endif
+
 Gfx *geo_intro_face_easter_egg(s32 state, struct GraphNode *node, UNUSED void *context) {
-    struct GraphNodeGenerated *genNode = (struct GraphNodeGenerated *)node;
+    struct GraphNodeGenerated *genNode;
     u16 *image;
     Gfx *dl = NULL;
     s32 i;
+
+    genNode = (struct GraphNodeGenerated *) node;
 
     if (state != 1) {
         sFramebuffers[0] = gFramebuffer0;
@@ -403,7 +476,6 @@ Gfx *geo_intro_face_easter_egg(s32 state, struct GraphNode *node, UNUSED void *c
         for (i = 0; i < 48; i++) {
             sFaceVisible[i] = 0;
         }
-
     } else if (state == 1) {
         if (sFaceCounter == 0) {
             if (gPlayer1Controller->buttonPressed & Z_TRIG) {

@@ -472,7 +472,7 @@ struct ObjGadget {
     /* 0x38 */ f32 rangeMin;
     /* 0x3C */ f32 rangeMax;
     /* 0x40 */ struct GdVec3f size;   // size (x = width, y = height)
-    /* 0x4C */ struct ObjGroup *valueGrp;  // group containing `ObjValPtr`s controlled by this gadget 
+    /* 0x4C */ struct ObjGroup *valueGrp;  // group containing `ObjValPtr`s controlled by this gadget
     /* 0x50 */ struct ObjShape *shapePtr;
     /* 0x54 */ struct ObjGroup *unk54;  //node group?
     /* 0x58 */ u8 filler2[4];
@@ -604,7 +604,7 @@ struct ObjValPtr {
     /* 0x14 */ struct GdObj *obj;   // maybe just a void *?
     /* 0x18 */ uintptr_t offset;  // value pointed to is `obj` + `offset`
     /* 0x1C */ enum ValPtrType datatype;
-    /* 0x20 */ s32 flag;       // TODO: better name for this? If 0x40000, then `offset` is an offset to a field in `obj`. Otherwise, `obj` is NULL, and `offset` is the address of a variable. 
+    /* 0x20 */ s32 flag;       // TODO: better name for this? If 0x40000, then `offset` is an offset to a field in `obj`. Otherwise, `obj` is NULL, and `offset` is the address of a variable.
 }; /* sizeof = 0x24 */
 
 enum GdLightFlags {

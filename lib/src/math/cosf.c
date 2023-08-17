@@ -58,7 +58,6 @@ float cosf(float x)
 		dn = dx * rpi.d + .5;
 		if (0 <= dn)
 		{
-
 			n = dn + .5;
 		}
 		else
@@ -67,13 +66,15 @@ float cosf(float x)
 		}
 		dn = n;
 
-		dx -= (dn - .5) * pihi.d;
-		dx -= (dn - .5) * pilo.d;
+		dn -= .5;
+		dx -= dn * pihi.d;
+		dx -= dn * pilo.d;
+
 		xsq = dx * dx;
 
 		poly = (((((P[4].d * xsq) + P[3].d) * xsq) + P[2].d) * xsq) + P[1].d;
 
-		result = ((dx * xsq) * poly) + dx;
+		result = dx + ((dx * xsq) * poly);
 
 		if ((n & 0x1) == 0)
 		{

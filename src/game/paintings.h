@@ -132,7 +132,7 @@ extern f32 gPaintingMarioZPos;
 extern struct PaintingMeshVertex *gPaintingMesh;
 extern Vec3f *gPaintingTriNorms;
 extern struct Painting *gRipplingPainting;
-extern s8 gDddPaintingStatus;
+extern s8 gDDDPaintingStatus;
 
 Gfx *geo_painting_draw(s32 callContext, struct GraphNode *node, UNUSED void *context);
 Gfx *geo_painting_update(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 c);

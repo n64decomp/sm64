@@ -1,6 +1,6 @@
 # Super Mario 64
 
-- This repo contains a full decompilation of Super Mario 64 (J), (U), (E), and (SH).
+- This repo contains a full decompilation of Super Mario 64 of the following releases: Japan (jp), North America (us), Europe (eu), Shindou (sh) and iQue Player (cn).
 - Naming and documentation of the source code and data structures are in progress.
 
 It builds the following ROMs:
@@ -9,16 +9,17 @@ It builds the following ROMs:
 * sm64.us.z64 `sha1: 9bef1128717f958171a4afac3ed78ee2bb4e86ce`
 * sm64.eu.z64 `sha1: 4ac5721683d0e0b6bbb561b58a71740845dceea9`
 * sm64.sh.z64 `sha1: 3f319ae697533a255a1003d09202379d78d5a2e0`
+* sm64.cn.z64 `sha1: 2e1db2780985a1f068077dc0444b685f39cd90ec`
 
 This repo does not include all assets necessary for compiling the ROMs.
 A prior copy of the game is required to extract the assets.
 
 ## Quick Start (for Ubuntu)
 
-1. Install prerequisites: `sudo apt install -y build-essential git binutils-mips-linux-gnu python3`
+1. Install prerequisites: `sudo apt install -y binutils-mips-linux-gnu build-essential git pkgconf python3`
 2. Clone the repo from within Linux: `git clone https://github.com/n64decomp/sm64.git`
-3. Place a Super Mario 64 ROM called `baserom.<VERSION>.z64` into the project folder for asset extraction, where `VERSION` can be `us`, `jp`, `eu`, or `sh`.
-4. Run `make` to build. Qualify the version through `make VERSION=<VERSION>`. Add `-j4` to improve build speed (hardware dependent).
+3. Place a Super Mario 64 ROM called `baserom.<VERSION>.z64` into the project folder for asset extraction, where `VERSION` can be `jp`, `us`, `eu`, `sh`, or `cn`.
+4. Run `make` to build. Specify the version through `make VERSION=<VERSION>`. Add `-j4` to improve build speed (hardware dependent).
 
 Ensure the repo path length does not exceed 255 characters. Long path names result in build errors.
 
@@ -44,7 +45,6 @@ There are 3 steps to set up a working build.
 
 The build system has the following package requirements:
  * binutils-mips
- * capstone
  * pkgconf
  * python3 >= 3.6
 
@@ -53,17 +53,16 @@ Dependency installation instructions for common Linux distros are provided below
 ##### Debian / Ubuntu
 To install build dependencies:
 ```
-sudo apt install -y binutils-mips-linux-gnu build-essential git libcapstone-dev pkgconf python3
+sudo apt install -y binutils-mips-linux-gnu build-essential git pkgconf python3
 ```
 
 ##### Arch Linux
 To install build dependencies:
 ```
-sudo pacman -S base-devel capstone python
+sudo pacman -S base-devel python
 ```
 Install the following AUR packages:
 * [mips64-elf-binutils](https://aur.archlinux.org/packages/mips64-elf-binutils) (AUR)
-
 
 ##### Other Linux distributions
 
@@ -79,7 +78,7 @@ You may also use [Docker](#docker-installation) to handle installing an image wi
 
 #### Step 2: Copy baserom(s) for asset extraction
 
-For each version (jp/us/eu/sh) for which you want to build a ROM, put an existing ROM at
+For each version (jp/us/eu/sh/cn) for which you want to build a ROM, put an existing ROM at
 `./baserom.<VERSION>.z64` for asset extraction.
 
 ##### Step 3: Build the ROM
@@ -95,10 +94,10 @@ Resulting artifacts can be found in the `build` directory.
 
 The full list of configurable variables are listed below, with the default being the first listed:
 
-* ``VERSION``: ``us``, ``jp``, ``eu``, ``sh``
+* ``VERSION``: ``jp``, ``us``, ``eu``, ``sh``, ``cn``
 * ``GRUCODE``: ``f3d_old``, ``f3d_new``, ``f3dex``, ``f3dex2``, ``f3dzex``
 * ``COMPARE``: ``1`` (compare ROM hash), ``0`` (do not compare ROM hash)
-* ``NON_MATCHING``: Use functionally equivalent C implementations for non-matchings (Currently there aren't any non-matchings, but this will apply to iQue). Also will avoid instances of undefined behavior.
+* ``NON_MATCHING``: Use functionally equivalent C implementations for non-matchings. Also will avoid instances of undefined behavior.
 * ``CROSS``: Cross-compiler tool prefix (Example: ``mips64-elf-``).
 
 ### macOS
@@ -111,12 +110,12 @@ With macOS, you may either use Homebrew or [Docker](#docker-installation).
 Install [Homebrew](https://brew.sh) and the following dependencies:
 ```
 brew update
-brew install capstone coreutils make pkg-config tehzz/n64-dev/mips64-elf-binutils
+brew install coreutils make pkg-config tehzz/n64-dev/mips64-elf-binutils
 ```
 
 #### Step 2: Copy baserom(s) for asset extraction
 
-For each version (jp/us/eu/sh) for which you want to build a ROM, put an existing ROM at
+For each version (jp/us/eu/sh/cn) for which you want to build a ROM, put an existing ROM at
 `./baserom.<VERSION>.z64` for asset extraction.
 
 ##### Step 3: Build the ROM
@@ -154,7 +153,7 @@ docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 --user $UID:
 Resulting artifacts can be found in the `build` directory.
 
 ## Project Structure
-	
+
 	sm64
 	├── actors: object behaviors, geo layout, and display lists
 	├── asm: handwritten assembly code, rom header

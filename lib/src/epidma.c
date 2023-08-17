@@ -1,4 +1,4 @@
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 
 #include "PR/os_internal.h"
 #include "piint.h"

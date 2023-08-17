@@ -514,7 +514,7 @@ f32 gd_mat4f_det(Mat4f *mtx) {
  * returns the determinant.
  */
 f32 gd_3x3_det(f32 r0c0, f32 r0c1, f32 r0c2,
-               f32 r1c0, f32 r1c1, f32 r1c2, 
+               f32 r1c0, f32 r1c1, f32 r1c2,
                f32 r2c0, f32 r2c1, f32 r2c2) {
     f32 det;
 
@@ -654,7 +654,7 @@ void gd_shift_mat_up(Mat4f *mtx) {
  * | 0 w^2+i^2-j^2-k^2     2ij+2wk         2ik+2wj     |
  * | 0     2ij-2wk     w^2+j^2-i^2-k^2     2jk+2wi     |
  * | 0     2ik+2wj         2jk-2wi     w^2+k^2-i^2-j^2 |
- * 
+ *
  * Potentially broken if 'mtx' is not an identity matrix/zero'ed.
  */
 void UNUSED gd_create_quat_rot_mat(f32 quat[4], UNUSED s32 unused, Mat4f *mtx) {
@@ -698,10 +698,10 @@ void UNUSED gd_create_quat_rot_mat(f32 quat[4], UNUSED s32 unused, Mat4f *mtx) {
  * Creates a rotation matrix to multiply the primary matrix by.
  * s/c are sin(angle)/cos(angle). That angular rotation is about vector
  * 'vec'.
- * 
+ *
  * Matrix has form-
  *
- * | (1-c)z^2+c (1-c)zy-sx (1-c)xz-sy 0 | 
+ * | (1-c)z^2+c (1-c)zy-sx (1-c)xz-sy 0 |
  * | (1-c)zy-sx (1-c)y^2+c (1-c)xy-sz 0 |
  * | (1-c)xz-sy (1-c)xy-sz (1-c)x^2+c 0 |
  * |      0          0          0     1 |
