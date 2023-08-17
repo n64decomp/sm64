@@ -39,6 +39,8 @@ ACTOR_GROUPS := \
 
 LEVEL_FILES := $(addsuffix leveldata,$(LEVEL_DIRS))
 
+LEVEL_ELF_FILES := $(foreach level_dir,$(LEVEL_DIRS),$(BUILD_DIR)/levels/$(level_dir)leveldata.elf)
+
 SEG_FILES := \
     $(SEGMENTS:%=$(BUILD_DIR)/bin/%.elf) \
     $(ACTOR_GROUPS:%=$(BUILD_DIR)/actors/%.elf) \
