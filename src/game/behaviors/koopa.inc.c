@@ -616,8 +616,8 @@ static void koopa_the_quick_act_race(void) {
 
                     if (o->parentObj->oKoopaRaceEndpointRaceStatus != 0 && o->oDistanceToMario > 1500.0f
                         && (o->oPathedPrevWaypointFlags & WAYPOINT_MASK_00FF) < 28) {
-                        // Move faster if mario has already finished the race or
-                        // cheated by shooting from cannon
+                        // Move faster if mario has already finished the race
+                        // but only if KtQ is far from mario and the finish line
                         o->oKoopaAgility = 8.0f;
                     } else if (o->oKoopaTheQuickRaceIndex != KOOPA_THE_QUICK_BOB_INDEX) {
                         o->oKoopaAgility = 6.0f;
