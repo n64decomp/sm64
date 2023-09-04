@@ -5,7 +5,7 @@ void bhv_wf_breakable_wall_loop(void) {
         cur_obj_become_tangible();
 
         if (obj_check_if_collided_with_object(o, gMarioObject)) {
-            if (cur_obj_has_behavior(bhvWfBreakableWallRight)) {
+            if (cur_obj_has_behavior(bhvWFBreakableWallRight)) {
                 play_puzzle_jingle();
             }
 

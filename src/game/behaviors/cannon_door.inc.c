@@ -5,7 +5,7 @@ void bhv_cannon_closed_init(void) {
         // If the cannon is open, spawn a cannon and despawn the object.
         struct Object *cannon = spawn_object(o, MODEL_CANNON_BASE, bhvCannon);
 
-        cannon->oBehParams2ndByte = o->oBehParams2ndByte;
+        cannon->oBhvParams2ndByte = o->oBhvParams2ndByte;
         cannon->oPosX = o->oHomeX;
         cannon->oPosY = o->oHomeY;
         cannon->oPosZ = o->oHomeZ;

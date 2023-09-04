@@ -146,9 +146,9 @@ struct MemoryPool *gObjectMemoryPool;
 
 s16 gCheckingSurfaceCollisionsForCamera;
 s16 gFindFloorIncludeSurfaceIntangible;
-s16 *gEnvironmentRegions;
+TerrainData *gEnvironmentRegions;
 s32 gEnvironmentLevels[20];
-s8 gDoorAdjacentRooms[60][2];
+RoomData gDoorAdjacentRooms[60][2];
 s16 gMarioCurrentRoom;
 s16 D_8035FEE2;
 s16 D_8035FEE4;
@@ -483,10 +483,10 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
             // Behavior parameters are often treated as four separate bytes, but
             // are stored as an s32.
-            object->oBehParams = spawnInfo->behaviorArg;
+            object->oBhvParams = spawnInfo->behaviorArg;
             // The second byte of the behavior parameters is copied over to a special field
             // as it is the most frequently used by objects.
-            object->oBehParams2ndByte = ((spawnInfo->behaviorArg) >> 16) & 0xFF;
+            object->oBhvParams2ndByte = ((spawnInfo->behaviorArg) >> 16) & 0xFF;
 
             object->behavior = script;
             object->unused1 = 0;

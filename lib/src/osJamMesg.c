@@ -3,9 +3,9 @@
 s32 osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag) {
     register s32 int_disabled;
     int_disabled = __osDisableInt();
-    while (mq->validCount >= mq->msgCount) {
+    while (MQ_IS_FULL(mq)) {
         if (flag == OS_MESG_BLOCK) {
-            D_803348A0->state = OS_STATE_WAITING;
+            __osRunningThread->state = OS_STATE_WAITING;
             __osEnqueueAndYield(&mq->fullqueue);
         } else {
             __osRestoreInt(int_disabled);

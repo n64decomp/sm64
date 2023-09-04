@@ -88,7 +88,7 @@ void bhv_courtyard_boo_triplet_init(void) {
     } else {
         for (i = 0; i < 3; i++) {
             struct Object *boo = spawn_object_relative(
-                1, sCourtyardBooTripletPositions[i][0], sCourtyardBooTripletPositions[i][1],
+                BOO_BP_GENERIC, sCourtyardBooTripletPositions[i][0], sCourtyardBooTripletPositions[i][1],
                 sCourtyardBooTripletPositions[i][2], o, MODEL_BOO, bhvGhostHuntBoo);
 
             boo->oMoveAngleYaw = random_u16();
@@ -321,31 +321,31 @@ static s32 boo_get_attack_status(void) {
 }
 
 // boo idle/chasing movement?
-static void boo_chase_mario(f32 a0, s16 a1, f32 a2) {
-    f32 sp1C;
-    s16 sp1A;
+static void boo_chase_mario(f32 a0, s16 turnSpeed, f32 velMultiplier) {
+    f32 dy;
+    s16 targetYaw;
 
     if (boo_vanish_or_appear()) {
         o->oInteractType = INTERACT_BOUNCE_TOP;
 
         if (cur_obj_lateral_dist_from_mario_to_home() > 1500.0f) {
-            sp1A = cur_obj_angle_to_home();
+            targetYaw = cur_obj_angle_to_home();
         } else {
-            sp1A = o->oAngleToMario;
+            targetYaw = o->oAngleToMario;
         }
 
-        cur_obj_rotate_yaw_toward(sp1A, a1);
+        cur_obj_rotate_yaw_toward(targetYaw, turnSpeed);
         o->oVelY = 0.0f;
 
         if (!mario_is_in_air_action()) {
-            sp1C = o->oPosY - gMarioObject->oPosY;
-            if (a0 < sp1C && sp1C < 500.0f) {
-                o->oVelY = increment_velocity_toward_range
-                               (o->oPosY, gMarioObject->oPosY + 50.0f, 10.0f, 2.0f);
+            dy = o->oPosY - gMarioObject->oPosY;
+            if (a0 < dy && dy < 500.0f) {
+                o->oVelY = increment_velocity_toward_range(
+                               o->oPosY, gMarioObject->oPosY + 50.0f, 10.0f, 2.0f);
             }
         }
 
-        cur_obj_set_vel_from_mario_vel(10.0f - o->oBooNegatedAggressiveness, a2);
+        cur_obj_set_vel_from_mario_vel(10.0f - o->oBooNegatedAggressiveness, velMultiplier);
 
         if (o->oForwardVel != 0.0f) {
             boo_oscillate(FALSE);
@@ -362,7 +362,7 @@ static void boo_chase_mario(f32 a0, s16 a1, f32 a2) {
 static void boo_act_0(void) {
     o->activeFlags |= ACTIVE_FLAG_MOVE_THROUGH_GRATE;
 
-    if (o->oBehParams2ndByte == 2) {
+    if (o->oBhvParams2ndByte == BOO_BP_MERRY_GO_ROUND) {
         o->oRoom = 10;
     }
 
@@ -376,7 +376,7 @@ static void boo_act_0(void) {
 
     if (boo_should_be_active()) {
         // Condition is met if the object is bhvBalconyBigBoo or bhvMerryGoRoundBoo
-        if (o->oBehParams2ndByte == 2) {
+        if (o->oBhvParams2ndByte == BOO_BP_MERRY_GO_ROUND) {
             o->oBooParentBigBoo = NULL;
             o->oAction = 5;
         } else {
@@ -434,7 +434,7 @@ static void boo_act_2(void) {
 
 static void boo_act_3(void) {
     if (boo_update_during_death()) {
-        if (o->oBehParams2ndByte != 0) {
+        if (o->oBhvParams2ndByte != BOO_BP_GHOST_HUNT) {
             obj_mark_for_deletion(o);
         } else {
             o->oAction = 4;
@@ -528,18 +528,18 @@ static void big_boo_act_0(void) {
 
 static void big_boo_act_1(void) {
     s32 attackStatus;
-    s16 sp22;
-    f32 sp1C;
+    s16 turnSpeed;
+    f32 velMultiplier;
 
     if (o->oHealth == 3) {
-        sp22 = 0x180; sp1C = 0.5f;
+        turnSpeed = 0x180; velMultiplier = 0.5f;
     } else if (o->oHealth == 2) {
-        sp22 = 0x240; sp1C = 0.6f;
+        turnSpeed = 0x240; velMultiplier = 0.6f;
     } else {
-        sp22 = 0x300; sp1C = 0.8f;
+        turnSpeed = 0x300; velMultiplier = 0.8f;
     }
 
-    boo_chase_mario(-100.0f, sp22, sp1C);
+    boo_chase_mario(-100.0f, turnSpeed, velMultiplier);
 
     attackStatus = boo_get_attack_status();
 
@@ -604,11 +604,11 @@ static void big_boo_act_3(void) {
 
             obj_set_angle(o, 0, 0, 0);
 
-            if (o->oBehParams2ndByte == 0) {
+            if (o->oBhvParams2ndByte == BIG_BOO_BP_GHOST_HUNT) {
                 big_boo_spawn_ghost_hunt_star();
-            } else if (o->oBehParams2ndByte == 1) {
+            } else if (o->oBhvParams2ndByte == BIG_BOO_BP_MERRY_GO_ROUND) {
                 big_boo_spawn_merry_go_round_star();
-            } else {
+            } else { // BIG_BOO_BP_BALCONY
                 big_boo_spawn_balcony_star();
             }
         }
@@ -629,11 +629,11 @@ static void big_boo_act_4(void) {
     boo_stop();
 #endif
 
-    if (o->oBehParams2ndByte == 0) {
+    if (o->oBhvParams2ndByte == BIG_BOO_BP_GHOST_HUNT) {
         obj_set_pos(o, 973, 0, 626);
 
         if (o->oTimer > 60 && o->oDistanceToMario < 600.0f) {
-            obj_set_pos(o,  973, 0, 717);
+            obj_set_pos(o, 973, 0, 717);
 
             spawn_object_relative(0, 0, 0,    0, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
             spawn_object_relative(1, 0, 0, -200, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
@@ -686,7 +686,7 @@ static void boo_with_cage_act_0(void) {
 static void boo_with_cage_act_1(void) {
     s32 attackStatus;
 
-    boo_chase_mario(100.0f, 512, 0.5f);
+    boo_chase_mario(100.0f, 0x200, 0.5f);
 
     attackStatus = boo_get_attack_status();
 
@@ -720,7 +720,7 @@ void bhv_boo_with_cage_init(void) {
         obj_mark_for_deletion(o);
     } else {
         struct Object *cage = spawn_object(o, MODEL_HAUNTED_CAGE, bhvBooCage);
-        cage->oBehParams = o->oBehParams;
+        cage->oBhvParams = o->oBhvParams;
     }
 }
 
@@ -760,8 +760,8 @@ void bhv_merry_go_round_boo_manager_loop(void) {
                 }
 
                 if (o->oMerryGoRoundBooManagerNumBoosKilled >= 5) {
-                    struct Object *boo = spawn_object(o, MODEL_BOO, bhvMerryGoRoundBigBoo);
-                    obj_copy_behavior_params(boo, o);
+                    struct Object *bigBoo = spawn_object(o, MODEL_BOO, bhvMerryGoRoundBigBoo);
+                    obj_copy_behavior_params(bigBoo, o);
 
                     o->oAction = 2;
 
@@ -859,7 +859,7 @@ void bhv_boo_in_castle_loop(void) {
 void bhv_boo_staircase(void) {
     f32 targetY;
 
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case 1:
             targetY = 0.0f;
             break;
@@ -899,7 +899,7 @@ void bhv_boo_staircase(void) {
             break;
 
         case 3:
-            if (o->oTimer == 0 && o->oBehParams2ndByte == 1) {
+            if (o->oTimer == 0 && o->oBhvParams2ndByte == 1) {
                 play_puzzle_jingle();
             }
 

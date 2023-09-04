@@ -101,15 +101,15 @@ void elevator_act_3(void) {
 }
 
 void bhv_elevator_init(void) {
-    s32 sp1C = sElevatorHeights[o->oBehParams2ndByte * 3 + 2];
+    s32 sp1C = sElevatorHeights[o->oBhvParams2ndByte * 3 + 2];
     if (sp1C == 0) {
-        o->oElevatorUnkF4 = sElevatorHeights[o->oBehParams2ndByte * 3];
+        o->oElevatorUnkF4 = sElevatorHeights[o->oBhvParams2ndByte * 3];
         o->oElevatorUnkF8 = o->oHomeY;
         o->oElevatorUnkFC = (o->oElevatorUnkF4 + o->oElevatorUnkF8) / 2;
-        o->oElevatorUnk100 = cur_obj_has_behavior(bhvRrElevatorPlatform);
+        o->oElevatorUnk100 = cur_obj_has_behavior(bhvRRElevatorPlatform);
     } else {
-        o->oElevatorUnkF4 = sElevatorHeights[o->oBehParams2ndByte * 3];
-        o->oElevatorUnkF8 = sElevatorHeights[o->oBehParams2ndByte * 3 + 1];
+        o->oElevatorUnkF4 = sElevatorHeights[o->oBhvParams2ndByte * 3];
+        o->oElevatorUnkF8 = sElevatorHeights[o->oBhvParams2ndByte * 3 + 1];
         o->oElevatorUnkFC = (o->oElevatorUnkF4 + o->oElevatorUnkF8) / 2;
         o->oElevatorUnk100 = 2;
     }

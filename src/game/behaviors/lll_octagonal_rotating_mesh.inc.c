@@ -73,7 +73,7 @@ void bhv_lll_moving_octagonal_mesh_platform_loop(void) {
         o->oAction++;
     } else {
         o->oHorizontalMovementUnkF8 =
-            lll_octagonal_mesh_move(D_8032F8C8[o->oBehParams2ndByte], o->oHorizontalMovementUnkF8);
+            lll_octagonal_mesh_move(D_8032F8C8[o->oBhvParams2ndByte], o->oHorizontalMovementUnkF8);
     }
 
     print_debug_top_down_objectinfo("number %d\n", o->oHorizontalMovementUnkF8);

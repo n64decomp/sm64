@@ -98,7 +98,7 @@
 /**
  * The table below defines all sounds that exist in the game, and which flags
  * they are used with. If a sound is used with multiple sets of flags (e.g.
- * different priorities), they are gives distinguishing suffixes.
+ * different priorities), they are given distinguishing suffixes.
  * A _2 suffix means the sound is the same despite a different sound ID.
  */
 

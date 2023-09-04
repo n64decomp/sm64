@@ -128,7 +128,7 @@ void bhv_falling_pillar_hitbox_loop(void) {
     f32 x = o->parentObj->oPosX;
     f32 y = o->parentObj->oPosY;
     f32 z = o->parentObj->oPosZ;
-    f32 yOffset = o->oBehParams2ndByte * 400 + 300;
+    f32 yOffset = o->oBhvParams2ndByte * 400 + 300;
 
     // Update position of hitboxes so they fall with the pillar.
     o->oPosX = sins(pitch) * sins(yaw) * yOffset + x;

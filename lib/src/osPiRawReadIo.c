@@ -1,14 +1,11 @@
 #include "libultra_internal.h"
-#include "hardware.h"
+#include "PR/rcp.h"
+#include "piint.h"
 
-extern u32 osRomBase;
+s32 osPiRawReadIo(u32 devAddr, u32 *data) {
+    register u32 status;
 
-s32 osPiRawReadIo(u32 a0, u32 *a1) {
-    register int status;
-    status = HW_REG(PI_STATUS_REG, u32);
-    while (status & (PI_STATUS_BUSY | PI_STATUS_IOBUSY | PI_STATUS_ERROR)) {
-        status = HW_REG(PI_STATUS_REG, u32);
-    }
-    *a1 = HW_REG(osRomBase | a0, u32);
+    WAIT_ON_IO_BUSY(status);
+    *data = IO_READ(osRomBase | devAddr);
     return 0;
 }

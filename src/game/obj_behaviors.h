@@ -160,6 +160,6 @@ void bhv_free_bowling_ball_roll_loop(void); /* likely unused */
 void bhv_free_bowling_ball_loop(void); /* likely unused */
 void bhv_rr_cruiser_wing_init(void);
 void bhv_rr_cruiser_wing_loop(void);
-void spawn_default_star(f32 sp20, f32 sp24, f32 sp28);
+void spawn_default_star(f32 homeX, f32 homeY, f32 homeZ);
 
 #endif // OBJ_BEHAVIORS_H

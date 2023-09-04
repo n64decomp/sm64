@@ -11,7 +11,7 @@ void controllable_platform_act_1(void) {
 }
 
 void controllable_platform_act_2(void) {
-    if (o->oBehParams2ndByte == D_80331694) {
+    if (o->oBhvParams2ndByte == D_80331694) {
         return;
     }
 
@@ -30,8 +30,8 @@ void bhv_controllable_platform_sub_loop(void) {
             }
 
             if (gMarioObject->platform == o) {
-                D_80331694 = o->oBehParams2ndByte;
-#ifdef VERSION_SH
+                D_80331694 = o->oBhvParams2ndByte;
+#if defined(VERSION_SH) || defined(VERSION_CN)
                 o->parentObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
 #endif
                 o->oAction = 1;
@@ -61,16 +61,16 @@ void bhv_controllable_platform_init(void) {
 
     sp34 = spawn_object_rel_with_rot(o, MODEL_HMC_METAL_ARROW_PLATFORM, bhvControllablePlatformSub, 0,
                                      51, 204, 0, 0, 0);
-    sp34->oBehParams2ndByte = 1;
+    sp34->oBhvParams2ndByte = 1;
     sp34 = spawn_object_rel_with_rot(o, MODEL_HMC_METAL_ARROW_PLATFORM, bhvControllablePlatformSub, 0,
                                      51, -204, 0, -0x8000, 0);
-    sp34->oBehParams2ndByte = 2;
+    sp34->oBhvParams2ndByte = 2;
     sp34 = spawn_object_rel_with_rot(o, MODEL_HMC_METAL_ARROW_PLATFORM, bhvControllablePlatformSub, 204,
                                      51, 0, 0, 0x4000, 0);
-    sp34->oBehParams2ndByte = 3;
+    sp34->oBhvParams2ndByte = 3;
     sp34 = spawn_object_rel_with_rot(o, MODEL_HMC_METAL_ARROW_PLATFORM, bhvControllablePlatformSub,
                                      -204, 51, 0, 0, -0x4000, 0);
-    sp34->oBehParams2ndByte = 4;
+    sp34->oBhvParams2ndByte = 4;
 
     D_80331694 = 0;
 

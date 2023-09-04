@@ -11,9 +11,9 @@ void opened_cannon_act_0(void) {
         o->oPosY = o->oHomeY;
         o->oPosZ = o->oHomeZ;
         o->oMoveAnglePitch = 0;
-        o->oMoveAngleYaw = (s16)(o->oBehParams2ndByte << 8);
+        o->oMoveAngleYaw = (s16)(o->oBhvParams2ndByte << 8);
         o->oCannonUnkF4 = 0;
-        o->oCannonUnk10C = 0;
+        o->oCannonUnk10C = FALSE;
         cur_obj_enable_rendering();
         cur_obj_become_tangible();
     }
@@ -21,10 +21,10 @@ void opened_cannon_act_0(void) {
     if (o->oDistanceToMario < 500.0f) {
         cur_obj_become_tangible();
         cur_obj_enable_rendering();
-        if (o->oInteractStatus & INT_STATUS_INTERACTED
+        if ((o->oInteractStatus & INT_STATUS_INTERACTED)
             && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) { // bob-omb explodes when it gets into a cannon
             o->oAction = 4;
-            o->oCannonUnk10C = 1;
+            o->oCannonUnk10C = TRUE;
             o->oCannonUnkF8 = 1;
         } else {
             o->oInteractStatus = 0;
@@ -32,7 +32,7 @@ void opened_cannon_act_0(void) {
     } else {
         cur_obj_become_intangible();
         cur_obj_disable_rendering();
-        o->oCannonUnk10C = 0;
+        o->oCannonUnk10C = FALSE;
     }
 }
 
@@ -65,7 +65,7 @@ void opened_cannon_act_6(void) {
         } else {
             if (o->oTimer < 22) {
                 o->oMoveAngleYaw =
-                    sins(o->oCannonUnkF4) * 0x4000 + ((s16)(o->oBehParams2ndByte << 8));
+                    sins(o->oCannonUnkF4) * 0x4000 + ((s16)(o->oBhvParams2ndByte << 8));
                 o->oCannonUnkF4 += 0x400;
             } else if (o->oTimer < 26) {
             } else {
@@ -99,7 +99,7 @@ void opened_cannon_act_1(void) {
     cur_obj_become_intangible();
     cur_obj_disable_rendering();
 
-    o->oCannonUnk10C = 0;
+    o->oCannonUnk10C = FALSE;
     gMarioShotFromCannon = TRUE;
 }
 
@@ -127,7 +127,7 @@ void (*sOpenedCannonActions[])(void) = {
 void bhv_cannon_base_loop(void) {
     cur_obj_call_action_function(sOpenedCannonActions);
 
-    if (o->oCannonUnkF8) {
+    if (o->oCannonUnkF8 != 0) {
         o->oCannonUnkF8++;
     }
 

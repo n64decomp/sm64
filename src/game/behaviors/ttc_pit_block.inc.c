@@ -37,7 +37,7 @@ static struct TTCPitBlockProperties sTTCPitBlockProperties[][2] = {
  * Init function for bhvTTCPitBlock.
  */
 void bhv_ttc_pit_block_init(void) {
-    o->collisionData = segmented_to_virtual(sTTCPitBlockCollisionModels[o->oBehParams2ndByte]);
+    o->collisionData = segmented_to_virtual(sTTCPitBlockCollisionModels[o->oBhvParams2ndByte]);
 
     o->oTTCPitBlockPeakY = o->oPosY + 330.0f;
 

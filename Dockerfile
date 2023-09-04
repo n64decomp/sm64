@@ -3,9 +3,8 @@ FROM ubuntu:18.04 as build
 RUN apt-get update && \
     apt-get install -y \
         binutils-mips-linux-gnu \
-        bsdmainutils \
         build-essential \
-        libcapstone-dev \
+        git \
         pkgconf \
         python3
 

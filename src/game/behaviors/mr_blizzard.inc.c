@@ -17,7 +17,7 @@ struct ObjectHitbox sMrBlizzardHitbox = {
 void mr_blizzard_spawn_white_particles(s8 count, s8 offsetY, s8 forwardVelBase, s8 velYBase,
                                        s8 sizeBase) {
     static struct SpawnParticlesInfo D_80331A00 = {
-        /* behParam:        */ 0,
+        /* bhvParam:        */ 0,
         /* count:           */ 6,
         /* model:           */ MODEL_WHITE_PARTICLE,
         /* offsetY:         */ 0,
@@ -44,14 +44,14 @@ void mr_blizzard_spawn_white_particles(s8 count, s8 offsetY, s8 forwardVelBase, 
  * Mr. Blizzard initialization function.
  */
 void bhv_mr_blizzard_init(void) {
-    if (o->oBehParams2ndByte == MR_BLIZZARD_STYPE_JUMPING) {
+    if (o->oBhvParams2ndByte == MR_BLIZZARD_STYPE_JUMPING) {
         // Jumping Mr. Blizzard.
         o->oAction = MR_BLIZZARD_ACT_JUMP;
         o->oMrBlizzardGraphYOffset = 24.0f;
         o->oMrBlizzardTargetMoveYaw = o->oMoveAngleYaw;
     } else {
         // Cap wearing Mr. Blizzard from SL.
-        if ((o->oBehParams2ndByte != MR_BLIZZARD_STYPE_NO_CAP)
+        if ((o->oBhvParams2ndByte != MR_BLIZZARD_STYPE_GENERIC)
             && (save_file_get_flags() & SAVE_FLAG_CAP_ON_MR_BLIZZARD)) {
             o->oAnimState = 1;
         }
@@ -239,7 +239,7 @@ static void mr_blizzard_act_death(void) {
         if (o->oMrBlizzardScale != 0.0f) {
             if ((o->oMrBlizzardScale -= 0.03f) <= 0.0f) {
                 o->oMrBlizzardScale = 0.0f;
-                if (!(o->oBehParams & 0x0000FF00)) {
+                if (!(o->oBhvParams & 0x0000FF00)) {
                     obj_spawn_loot_yellow_coins(o, o->oNumLootCoins, 20.0f);
                     set_object_respawn_info_bits(o, 1);
                 }

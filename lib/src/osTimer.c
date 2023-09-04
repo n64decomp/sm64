@@ -11,10 +11,8 @@ void __osTimerServicesInit(void) {
     __osCurrentTime = 0;
     __osBaseCounter = 0;
     __osViIntrCount = 0;
-    __osTimerList->prev = __osTimerList;
-    __osTimerList->next = __osTimerList->prev;
-    __osTimerList->remaining = 0;
-    __osTimerList->interval = __osTimerList->remaining;
+    __osTimerList->next = __osTimerList->prev = __osTimerList;
+    __osTimerList->interval = __osTimerList->remaining = 0;
     __osTimerList->mq = NULL;
     __osTimerList->msg = NULL;
 }
@@ -28,7 +26,7 @@ void __osTimerInterrupt(void) {
         return;
     }
 
-    while (TRUE) {
+    for (;;) {
         t = __osTimerList->next;
         if (t == __osTimerList) {
             __osSetCompare(0);
@@ -41,28 +39,33 @@ void __osTimerInterrupt(void) {
         if (elapsedCycles < t->remaining) {
             t->remaining -= elapsedCycles;
             __osSetTimerIntr(t->remaining);
-            return;
-        } else {
-            t->prev->next = t->next;
-            t->next->prev = t->prev;
-            t->next = NULL;
-            t->prev = NULL;
-            if (t->mq != NULL) {
-                osSendMesg(t->mq, t->msg, OS_MESG_NOBLOCK);
-            }
-            if (t->interval != 0) {
-                t->remaining = t->interval;
-                __osInsertTimer(t);
-            }
+            break;
+        }
+        t->prev->next = t->next;
+        t->next->prev = t->prev;
+        t->next = NULL;
+        t->prev = NULL;
+        if (t->mq != NULL) {
+            osSendMesg(t->mq, t->msg, OS_MESG_NOBLOCK);
+        }
+        if (t->interval != 0) {
+            t->remaining = t->interval;
+            __osInsertTimer(t);
         }
     }
 }
 
 void __osSetTimerIntr(OSTime time) {
     OSTime newTime;
-    s32 savedMask = __osDisableInt();
+    s32 savedMask;
+#ifdef VERSION_CN
+    if (time < 468) {
+        time = 468;
+    }
+#endif
+    savedMask = __osDisableInt();
     __osTimerCounter = osGetCount();
-    newTime = time + __osTimerCounter;
+    newTime = __osTimerCounter + time;
     __osSetCompare(newTime);
     __osRestoreInt(savedMask);
 }

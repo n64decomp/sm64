@@ -1,6 +1,6 @@
 #include "libultra_internal.h"
-#include "hardware.h"
+#include "PR/rcp.h"
 
 u32 __osSpGetStatus() {
-    return HW_REG(SP_STATUS_REG, u32);
+    return IO_READ(SP_STATUS_REG);
 }

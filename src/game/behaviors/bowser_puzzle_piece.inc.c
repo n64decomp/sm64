@@ -105,7 +105,7 @@ void bhv_lll_bowser_puzzle_spawn_pieces(f32 pieceWidth) {
 
     // Spawn all 14 puzzle pieces.
     for (i = 0; i < 14; i++) {
-        bhv_lll_bowser_puzzle_spawn_piece(sBowserPuzzlePieces[i].model, bhvLllBowserPuzzlePiece,
+        bhv_lll_bowser_puzzle_spawn_piece(sBowserPuzzlePieces[i].model, bhvLLLBowserPuzzlePiece,
                                           sBowserPuzzlePieces[i].xOffset * pieceWidth / 10.0f,
                                           sBowserPuzzlePieces[i].zOffset * pieceWidth / 10.0f,
                                           sBowserPuzzlePieces[i].initialAction,
@@ -197,7 +197,7 @@ void bhv_lll_bowser_puzzle_piece_update(void) {
     }
 }
 
-void bhv_lll_bowser_puzzle_piece_move(f32 xOffset, f32 zOffset, s32 duration, UNUSED s32 a3) {
+void bhv_lll_bowser_puzzle_piece_move(f32 xOffset, f32 zOffset, s32 duration, UNUSED s32 unused) {
     // For the first 20 frames, shake the puzzle piece up and down.
     if (o->oTimer < 20) {
         if (o->oTimer % 2) {

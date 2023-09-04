@@ -1,38 +1,33 @@
 #include "libultra_internal.h"
+#include "PR/rdb.h"
+#include "PR/R4300.h"
 
-typedef struct {
-    u8 unk00 : 2;
-    u8 pad : 4;
-    u8 unk01 : 2;
-    u8 unk2[3];
-} unkStruct;
+u32 __osRdbSendMessage = 0;
+u32 __osRdbWriteOK = 1;
 
-u32 D_80334A40 = 0;
-u32 D_80334A44 = 1;
+void __osSyncPutChars(s32 type, s32 length, u8 *buf) {
+    rdbPacket packet;
+    s32 i;
+    u32 mask;
+    packet.type = type;
+    packet.length = length;
 
-void __osSyncPutChars(s32 a0, s32 a1, u8 *a2) {
-    unkStruct sp24;
-    s32 sp20;
-    u32 sp1c;
-    sp24.unk00 = a0;
-    sp24.unk01 = a1;
-
-    for (sp20 = 0; sp20 < a1; sp20++) {
-        sp24.unk2[sp20] = a2[sp20];
+    for (i = 0; i < length; i++) {
+        packet.buf[i] = buf[i];
     }
 
-    while (!__osAtomicDec(&D_80334A44)) {
+    while (!__osAtomicDec(&__osRdbWriteOK)) {
         ;
     }
 
-    sp1c = __osDisableInt();
+    mask = __osDisableInt();
 
-    *(u32 *) 0xC0000000 = *(u32 *) &sp24;
-    while (!(__osGetCause() & 0x2000)) {
+    *(u32 *) RDB_BASE_REG = *(u32 *) &packet;
+    while (!(__osGetCause() & CAUSE_IP6)) {
         ;
     }
-    *(u32 *) 0xC000000C = 0;
-    D_80334A44++;
+    *(u32 *) RDB_READ_INTR_REG = 0;
+    __osRdbWriteOK++;
 
-    __osRestoreInt(sp1c);
+    __osRestoreInt(mask);
 }

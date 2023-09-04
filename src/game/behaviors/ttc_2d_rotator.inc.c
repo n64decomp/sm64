@@ -38,8 +38,8 @@ static s16 sTTC2DRotatorTimeBetweenTurns[][4] = {
  */
 void bhv_ttc_2d_rotator_init(void) {
     o->oTTC2DRotatorMinTimeUntilNextTurn =
-        sTTC2DRotatorTimeBetweenTurns[o->oBehParams2ndByte][gTTCSpeedSetting];
-    o->oTTC2DRotatorIncrement = o->oTTC2DRotatorSpeed = sTTC2DRotatorSpeeds[o->oBehParams2ndByte];
+        sTTC2DRotatorTimeBetweenTurns[o->oBhvParams2ndByte][gTTCSpeedSetting];
+    o->oTTC2DRotatorIncrement = o->oTTC2DRotatorSpeed = sTTC2DRotatorSpeeds[o->oBhvParams2ndByte];
 }
 
 /**
@@ -82,7 +82,7 @@ void bhv_ttc_2d_rotator_update(void) {
     }
 
     o->oAngleVelYaw = o->oFaceAngleYaw - startYaw;
-    if (o->oBehParams2ndByte == TTC_2D_ROTATOR_BP_HAND) {
+    if (o->oBhvParams2ndByte == TTC_2D_ROTATOR_BP_HAND) {
         load_object_collision_model();
     }
 }

@@ -1,12 +1,12 @@
 
 /**
- * Behavior for bhvBbhTiltingTrapPlatform.
+ * Behavior for bhvBBHTiltingTrapPlatform.
  * This is the tilting platform trap in the upper floor of BBH
  * that drops the player into the merry-go-round area.
  */
 
 /**
- * Update function for bhvBbhTiltingTrapPlatform.
+ * Update function for bhvBBHTiltingTrapPlatform.
  */
 void bhv_bbh_tilting_trap_platform_loop(void) {
     UNUSED u8 filler[4];

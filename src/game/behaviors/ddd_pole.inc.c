@@ -5,7 +5,7 @@ void bhv_ddd_pole_init(void) {
         obj_mark_for_deletion(o);
     } else {
         o->hitboxDownOffset = 100.0f;
-        o->oDDDPoleMaxOffset = 100.0f * o->oBehParams2ndByte;
+        o->oDDDPoleMaxOffset = 100.0f * o->oBhvParams2ndByte;
     }
 }
 

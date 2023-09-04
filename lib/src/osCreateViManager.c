@@ -18,12 +18,19 @@ extern u32 __osBaseCounter;
 extern u32 __osViIntrCount;
 void viMgrMain(void *);
 
+#ifdef VERSION_CN
+u32 __additional_scanline = 0;
+#endif
+
 void osCreateViManager(OSPri pri) {
     u32 int_disabled;
     OSPri newPri;
     OSPri currentPri;
     if (!viMgrMainArgs.initialized) {
         __osTimerServicesInit();
+#ifdef VERSION_CN
+        __additional_scanline = 0;
+#endif
         osCreateMesgQueue(&__osViMesgQueue, &viMgrMesgBuff[0], OS_VI_MANAGER_MESSAGE_BUFF_SIZE);
         viEventViMesg.hdr.type = 13;
         viEventViMesg.hdr.pri = 0;
@@ -46,7 +53,7 @@ void osCreateViManager(OSPri pri) {
         viMgrMainArgs.eventQueue = &__osViMesgQueue;
         viMgrMainArgs.accessQueue = NULL;
         viMgrMainArgs.dma_func = NULL;
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
         viMgrMainArgs.edma_func = NULL;
 #endif
 

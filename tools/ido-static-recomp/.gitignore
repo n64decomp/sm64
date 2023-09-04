@@ -1,0 +1,10 @@
+.idea/
+build/
+.vscode/
+
+qemu-irix
+
+ctx.c.m2c
+*.s
+
+.DS_Store

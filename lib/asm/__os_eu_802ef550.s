@@ -1,6 +1,5 @@
-.set noreorder // don't insert nops after branches
-.set gp=64
 .set noat
+.set noreorder // don't insert nops after branches
 
 #include "macros.inc"
 

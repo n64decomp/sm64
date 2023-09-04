@@ -3,7 +3,7 @@
 
 #include "internal.h"
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 #define DEFAULT_LEN_1CH 0x180
 #define DEFAULT_LEN_2CH 0x300
 #else
@@ -11,7 +11,7 @@
 #define DEFAULT_LEN_2CH 0x280
 #endif
 
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
 #define MAX_UPDATES_PER_FRAME 5
 #else
 #define MAX_UPDATES_PER_FRAME 4
@@ -32,19 +32,19 @@ struct SynthesisReverb {
     /*0x01, 0x01, 0x01*/ u8 useReverb;
     /*0x02, 0x02, 0x02*/ u8 framesLeftToIgnore;
     /*0x03, 0x03, 0x03*/ u8 curFrame;
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
     /*      0x04, 0x04*/ u8 downsampleRate;
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     /*            0x05*/ s8 unk5;
 #endif
     /*      0x06, 0x06*/ u16 windowSize; // same as bufSizePerChannel
 #endif
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     /*            0x08*/ u16 unk08;
 #endif
     /*0x04, 0x08, 0x0A*/ u16 reverbGain;
     /*0x06, 0x0A, 0x0C*/ u16 resampleRate;
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     /*            0x0E*/ u16 panRight;
     /*            0x10*/ u16 panLeft;
 #endif
@@ -60,7 +60,7 @@ struct SynthesisReverb {
     /*0x24, 0x28, 0x30*/ s16 *unk24; // never read
     /*0x28, 0x2C, 0x34*/ s16 *unk28; // never read
     /*0x2C, 0x30, 0x38*/ struct ReverbRingBufferItem items[2][MAX_UPDATES_PER_FRAME];
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
     // Only used in sh:
     /*            0x100*/ s16 *unk100;
     /*            0x104*/ s16 *unk104;
@@ -68,7 +68,7 @@ struct SynthesisReverb {
     /*            0x10C*/ s16 *unk10C;
 #endif
 }; // 0xCC <= size <= 0x100
-#if defined(VERSION_EU) || defined(VERSION_SH)
+#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
 extern struct SynthesisReverb gSynthesisReverbs[4];
 extern s8 gNumSynthesisReverbs;
 extern struct NoteSubEu *gNoteSubsEu;
@@ -80,7 +80,7 @@ extern f32 *gCurrentRightVolRamping; // Points to any of the three right buffers
 extern struct SynthesisReverb gSynthesisReverb;
 #endif
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
 extern s16 D_SH_803479B4;
 #endif
 

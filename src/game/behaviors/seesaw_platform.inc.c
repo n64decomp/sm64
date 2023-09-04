@@ -21,11 +21,11 @@ static Collision const *sSeesawPlatformCollisionModels[] = {
  * Init function for bhvSeesawPlatform.
  */
 void bhv_seesaw_platform_init(void) {
-    o->collisionData = segmented_to_virtual(sSeesawPlatformCollisionModels[o->oBehParams2ndByte]);
+    o->collisionData = segmented_to_virtual(sSeesawPlatformCollisionModels[o->oBhvParams2ndByte]);
 
     // The S-shaped seesaw platform in BitS is large, so increase its collision
     // distance
-    if (o->oBehParams2ndByte == 2) {
+    if (o->oBhvParams2ndByte == 2) {
         o->oCollisionDistance = 2000.0f;
     }
 }

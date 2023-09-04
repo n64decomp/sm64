@@ -31,7 +31,7 @@ struct ObjectHitbox sSnufitBulletHitbox = {
 };
 
 /**
- * This geo function shifts snufit's mask when it shrinks down, 
+ * This geo function shifts snufit's mask when it shrinks down,
  * since the parts move independently.
  */
 Gfx *geo_snufit_move_mask(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
@@ -193,7 +193,7 @@ void bhv_snufit_balls_loop(void) {
             o->oGravity = -4.0f;
 
             cur_obj_become_intangible();
-        } else if (o->oAction == 1 
+        } else if (o->oAction == 1
                    || (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL))) {
             // The Snufit shot Mario and has fulfilled its lonely existance.
             //! The above check could theoretically be avoided by finding a geometric

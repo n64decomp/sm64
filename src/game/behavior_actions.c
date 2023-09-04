@@ -80,7 +80,7 @@ static s16 sBooHitRotations[] = {
 
 // not in behavior file
 static struct SpawnParticlesInfo sMistParticles = {
-    /* behParam:        */ 2,
+    /* bhvParam:        */ 2,
     /* count:           */ 20,
     /* model:           */ MODEL_MIST,
     /* offsetY:         */ 0,
@@ -144,14 +144,13 @@ void spawn_mist_particles_variable(s32 count, s32 offsetY, f32 size) {
 
 // not sure what this is doing here. not in a behavior file.
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {
-    Mat4 sp20;
-
     if (run == TRUE) {
-        struct Object *sp1C = (struct Object *) gCurGraphNodeObject;
-        if (sp1C == gMarioObject && sp1C->prevObj != NULL) {
+        Mat4 sp20;
+        struct Object *obj = (struct Object *) gCurGraphNodeObject;
+        if (obj == gMarioObject && obj->prevObj != NULL) {
             create_transformation_from_matrices(sp20, mtx, *gCurGraphNodeCamera->matrixPtr);
-            obj_update_pos_from_parent_transformation(sp20, sp1C->prevObj);
-            obj_set_gfx_pos_from_pos(sp1C->prevObj);
+            obj_update_pos_from_parent_transformation(sp20, obj->prevObj);
+            obj_set_gfx_pos_from_pos(obj->prevObj);
         }
     }
 

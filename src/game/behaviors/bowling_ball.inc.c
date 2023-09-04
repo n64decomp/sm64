@@ -12,7 +12,7 @@ static struct ObjectHitbox sBowlingBallHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
-static Trajectory sThiHugeMetalBallTraj[] = {
+static Trajectory sTHIHugeMetalBallTraj[] = {
     TRAJECTORY_POS(0, /*pos*/ -4786,   101, -2166),
     TRAJECTORY_POS(1, /*pos*/ -5000,    81, -2753),
     TRAJECTORY_POS(2, /*pos*/ -5040,    33, -3846),
@@ -26,7 +26,7 @@ static Trajectory sThiHugeMetalBallTraj[] = {
     TRAJECTORY_END(),
 };
 
-static Trajectory sThiTinyMetalBallTraj[] = {
+static Trajectory sTHITinyMetalBallTraj[] = {
     TRAJECTORY_POS(0, /*pos*/ -1476,    29,  -680),
     TRAJECTORY_POS(1, /*pos*/ -1492,    14, -1072),
     TRAJECTORY_POS(2, /*pos*/ -1500,     3, -1331),
@@ -54,7 +54,7 @@ void bowling_ball_set_hitbox(void) {
 }
 
 void bowling_ball_set_waypoints(void) {
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
             o->oPathedStartWaypoint = segmented_to_virtual(bob_seg7_metal_ball_path0);
             break;
@@ -68,11 +68,11 @@ void bowling_ball_set_waypoints(void) {
             break;
 
         case BBALL_BP_STYPE_THI_LARGE:
-            o->oPathedStartWaypoint = (struct Waypoint *) sThiHugeMetalBallTraj;
+            o->oPathedStartWaypoint = (struct Waypoint *) sTHIHugeMetalBallTraj;
             break;
 
         case BBALL_BP_STYPE_THI_SMALL:
-            o->oPathedStartWaypoint = (struct Waypoint *) sThiTinyMetalBallTraj;
+            o->oPathedStartWaypoint = (struct Waypoint *) sTHITinyMetalBallTraj;
             break;
     }
 }
@@ -87,7 +87,7 @@ void bhv_bowling_ball_roll_loop(void) {
     bowling_ball_set_waypoints();
     collisionFlags = object_step();
 
-    //! Uninitialzed parameter, but the parameter is unused in the called function
+    //! Uninitialized parameter, but the parameter is unused in the called function
     followStatus = cur_obj_follow_path(followStatus);
 
     o->oBowlingBallTargetYaw = o->oPathedTargetYaw;
@@ -120,12 +120,12 @@ void bhv_bowling_ball_initialize_loop(void) {
 
     bowling_ball_set_waypoints();
 
-    //! Uninitialzed parameter, but the parameter is unused in the called function
+    //! Uninitialized parameter, but the parameter is unused in the called function
     followStatus = cur_obj_follow_path(followStatus);
 
     o->oMoveAngleYaw = o->oPathedTargetYaw;
 
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
             o->oForwardVel = 20.0f;
             break;
@@ -162,7 +162,7 @@ void bhv_bowling_ball_loop(void) {
             break;
     }
 
-    if (o->oBehParams2ndByte != BBALL_BP_STYPE_THI_SMALL) {
+    if (o->oBhvParams2ndByte != BBALL_BP_STYPE_THI_SMALL) {
         set_camera_shake_from_point(SHAKE_POS_BOWLING_BALL, o->oPosX, o->oPosY, o->oPosZ);
     }
 
@@ -170,7 +170,7 @@ void bhv_bowling_ball_loop(void) {
 }
 
 void bhv_generic_bowling_ball_spawner_init(void) {
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case BBALL_BP_STYPE_BOB_UPPER:
             o->oBBallSpawnerMaxSpawnDist = 7000.0f;
             o->oBBallSpawnerSpawnOdds = 2.0f;
@@ -202,7 +202,7 @@ void bhv_generic_bowling_ball_spawner_loop(void) {
         if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, o->oBBallSpawnerMaxSpawnDist)
             && (s32)(random_float() * o->oBBallSpawnerSpawnOdds) == 0) {
             struct Object *bowlingBall = spawn_object(o, MODEL_BOWLING_BALL, bhvBowlingBall);
-            bowlingBall->oBehParams2ndByte = o->oBehParams2ndByte;
+            bowlingBall->oBhvParams2ndByte = o->oBhvParams2ndByte;
         }
     }
 }
@@ -221,7 +221,7 @@ void bhv_thi_bowling_ball_spawner_loop(void) {
         if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 12000)
             && (s32)(random_float() * 1.5) == 0) {
             struct Object *bowlingBall = spawn_object(o, MODEL_BOWLING_BALL, bhvBowlingBall);
-            bowlingBall->oBehParams2ndByte = o->oBehParams2ndByte;
+            bowlingBall->oBhvParams2ndByte = o->oBhvParams2ndByte;
         }
     }
 }

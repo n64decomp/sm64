@@ -76,7 +76,7 @@ static void klepto_anim_dive(void) {
 }
 
 void bhv_klepto_init(void) {
-    if (o->oBehParams2ndByte != 0) {
+    if (o->oBhvParams2ndByte != 0) {
         o->oAnimState = KLEPTO_ANIM_STATE_HOLDING_STAR;
     } else {
         o->oKleptoStartPosX = o->oPosX;
@@ -297,7 +297,7 @@ static void klepto_act_retreat(void) {
 static void klepto_act_reset_position(void) {
     if (o->oTimer < 300) {
         klepto_circle_target(300.0f, 20.0f);
-    } else if (o->oBehParams2ndByte != 0) {
+    } else if (o->oBhvParams2ndByte != 0) {
         o->oHomeX = -2000.0f;
         o->oHomeZ = -1000.0f;
         o->oHomeY = o->oKleptoDistanceToTarget = 9999.0f;

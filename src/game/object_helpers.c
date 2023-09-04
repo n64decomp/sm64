@@ -27,7 +27,7 @@
 #include "spawn_object.h"
 #include "spawn_sound.h"
 
-static s8 sBbhStairJiggleOffsets[] = { -8, 8, -4, 4 };
+static s8 sBBHStairJiggleOffsets[] = { -8, 8, -4, 4 };
 static s16 sPowersOfTwo[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 static s8 sLevelsWithRooms[] = { LEVEL_BBH, LEVEL_CASTLE, LEVEL_HMC, -1 };
 
@@ -36,17 +36,16 @@ static s32 clear_move_flag(u32 *, s32);
 #define o gCurrentObject
 
 Gfx *geo_update_projectile_pos_from_parent(s32 callContext, UNUSED struct GraphNode *node, Mat4 mtx) {
-    Mat4 sp20;
-    struct Object *sp1C;
-
     if (callContext == GEO_CONTEXT_RENDER) {
-        sp1C = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
-        if (sp1C->prevObj) {
+        Mat4 sp20;
+        struct Object *obj = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
+        if (obj->prevObj) {
             create_transformation_from_matrices(sp20, mtx, *gCurGraphNodeCamera->matrixPtr);
-            obj_update_pos_from_parent_transformation(sp20, sp1C->prevObj);
-            obj_set_gfx_pos_from_pos(sp1C->prevObj);
+            obj_update_pos_from_parent_transformation(sp20, obj->prevObj);
+            obj_set_gfx_pos_from_pos(obj->prevObj);
         }
     }
+
     return NULL;
 }
 
@@ -134,10 +133,11 @@ Gfx *geo_update_layer_transparency(s32 callContext, struct GraphNode *node, UNUS
  * o32 calling convention.
  */
 #ifdef AVOID_UB
-Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node, UNUSED void *context) {
+Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node, UNUSED void *context)
 #else
-Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node) {
+Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node)
 #endif
+{
     struct Object *obj;
     struct GraphNodeSwitchCase *switchCase;
 
@@ -167,10 +167,11 @@ Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node) {
 
 //! @bug Same issue as geo_switch_anim_state.
 #ifdef AVOID_UB
-Gfx *geo_switch_area(s32 callContext, struct GraphNode *node, UNUSED void *context) {
+Gfx *geo_switch_area(s32 callContext, struct GraphNode *node, UNUSED void *context)
 #else
-Gfx *geo_switch_area(s32 callContext, struct GraphNode *node) {
+Gfx *geo_switch_area(s32 callContext, struct GraphNode *node)
 #endif
+{
     s16 sp26;
     struct Surface *sp20;
     UNUSED struct Object *sp1C =
@@ -257,9 +258,9 @@ void create_transformation_from_matrices(Mat4 a0, Mat4 a1, Mat4 a2) {
     a0[3][1] = a1[3][0] * a2[1][0] + a1[3][1] * a2[1][1] + a1[3][2] * a2[1][2] - sp8;
     a0[3][2] = a1[3][0] * a2[2][0] + a1[3][1] * a2[2][1] + a1[3][2] * a2[2][2] - sp4;
 
-    a0[0][3] = 0;
-    a0[1][3] = 0;
-    a0[2][3] = 0;
+    a0[0][3] = 0.0f;
+    a0[1][3] = 0.0f;
+    a0[2][3] = 0.0f;
     a0[3][3] = 1.0f;
 }
 
@@ -583,8 +584,8 @@ struct Object *spawn_object_relative(s16 behaviorParam, s16 relativePosX, s16 re
     obj_set_parent_relative_pos(obj, relativePosX, relativePosY, relativePosZ);
     obj_build_relative_transform(obj);
 
-    obj->oBehParams2ndByte = behaviorParam;
-    obj->oBehParams = (behaviorParam & 0xFF) << 16;
+    obj->oBhvParams2ndByte = behaviorParam;
+    obj->oBhvParams = (behaviorParam & 0xFF) << 16;
 
     return obj;
 }
@@ -732,8 +733,8 @@ void cur_obj_init_animation_with_accel_and_sound(s32 animIndex, f32 accel) {
 }
 
 void obj_init_animation_with_sound(struct Object *obj, const struct Animation * const* animations, s32 animIndex) {
-    struct Animation **anims = (struct Animation **)animations;
-    obj->oAnimations = (struct Animation **)animations;
+    struct Animation **anims = (struct Animation **) animations;
+    obj->oAnimations = (struct Animation **) animations;
     geo_obj_init_animation(&obj->header.gfx, &anims[animIndex]);
     obj->oSoundStateID = animIndex;
 }
@@ -907,13 +908,9 @@ s32 count_objects_with_behavior(const BehaviorScript *behavior) {
 
 struct Object *cur_obj_find_nearby_held_actor(const BehaviorScript *behavior, f32 maxDist) {
     const BehaviorScript *behaviorAddr = segmented_to_virtual(behavior);
-    struct ObjectNode *listHead;
-    struct Object *obj;
-    struct Object *foundObj;
-
-    listHead = &gObjectLists[OBJ_LIST_GENACTOR];
-    obj = (struct Object *) listHead->next;
-    foundObj = NULL;
+    struct ObjectNode *listHead = &gObjectLists[OBJ_LIST_GENACTOR];
+    struct Object *obj = (struct Object *) listHead->next;
+    struct Object *foundObj = NULL;
 
     while ((struct Object *) listHead != obj) {
         if (obj->behavior == behaviorAddr) {
@@ -946,14 +943,14 @@ void cur_obj_change_action(s32 action) {
     cur_obj_reset_timer_and_subaction();
 }
 
-void cur_obj_set_vel_from_mario_vel(f32 f12, f32 f14) {
-    f32 sp4 = gMarioStates[0].forwardVel;
-    f32 sp0 = f12 * f14;
+void cur_obj_set_vel_from_mario_vel(f32 objBaseForwardVel, f32 multiplier) {
+    f32 marioForwardVel = gMarioStates[0].forwardVel;
+    f32 objForwardVel = objBaseForwardVel * multiplier;
 
-    if (sp4 < sp0) {
-        o->oForwardVel = sp0;
+    if (marioForwardVel < objForwardVel) {
+        o->oForwardVel = objForwardVel;
     } else {
-        o->oForwardVel = sp4 * f14;
+        o->oForwardVel = marioForwardVel * multiplier;
     }
 }
 
@@ -964,10 +961,12 @@ BAD_RETURN(s16) cur_obj_reverse_animation(void) {
 }
 
 BAD_RETURN(s32) cur_obj_extend_animation_if_at_end(void) {
-    s32 sp4 = o->header.gfx.animInfo.animFrame;
+    s32 animFrame = o->header.gfx.animInfo.animFrame;
     s32 sp0 = o->header.gfx.animInfo.curAnim->loopEnd - 2;
 
-    if (sp4 == sp0) o->header.gfx.animInfo.animFrame--;
+    if (animFrame == sp0) {
+        o->header.gfx.animInfo.animFrame--;
+    }
 }
 
 s32 cur_obj_check_if_near_animation_end(void) {
@@ -1056,7 +1055,7 @@ void cur_obj_set_y_vel_and_animation(f32 yVel, s32 animIndex) {
 void cur_obj_unrender_set_action_and_anim(s32 animIndex, s32 action) {
     cur_obj_become_intangible();
     cur_obj_disable_rendering();
-    
+
     // only set animation if non-negative value
     if (animIndex >= 0) {
         cur_obj_init_animation_with_sound(animIndex);
@@ -1549,8 +1548,8 @@ void cur_obj_set_pos_to_home(void) {
 void cur_obj_set_pos_to_home_and_stop(void) {
     cur_obj_set_pos_to_home();
 
-    o->oForwardVel = 0;
-    o->oVelY = 0;
+    o->oForwardVel = 0.0f;
+    o->oVelY = 0.0f;
 }
 
 void cur_obj_shake_y(f32 amount) {
@@ -1588,7 +1587,7 @@ void cur_obj_set_hurtbox_radius_and_height(f32 radius, f32 height) {
     o->hurtboxHeight = height;
 }
 
-static void obj_spawn_loot_coins(struct Object *obj, s32 numCoins, f32 sp30,
+static void obj_spawn_loot_coins(struct Object *obj, s32 numCoins, f32 baseVelY,
                                     const BehaviorScript *coinBehavior,
                                     s16 posJitter, s16 model) {
     s32 i;
@@ -1611,16 +1610,16 @@ static void obj_spawn_loot_coins(struct Object *obj, s32 numCoins, f32 sp30,
         coin = spawn_object(obj, model, coinBehavior);
         obj_translate_xz_random(coin, posJitter);
         coin->oPosY = spawnHeight;
-        coin->oCoinUnk110 = sp30;
+        coin->oCoinBaseVelY = baseVelY;
     }
 }
 
-void obj_spawn_loot_blue_coins(struct Object *obj, s32 numCoins, f32 sp28, s16 posJitter) {
-    obj_spawn_loot_coins(obj, numCoins, sp28, bhvBlueCoinJumping, posJitter, MODEL_BLUE_COIN);
+void obj_spawn_loot_blue_coins(struct Object *obj, s32 numCoins, f32 baseVelY, s16 posJitter) {
+    obj_spawn_loot_coins(obj, numCoins, baseVelY, bhvBlueCoinJumping, posJitter, MODEL_BLUE_COIN);
 }
 
-void obj_spawn_loot_yellow_coins(struct Object *obj, s32 numCoins, f32 sp28) {
-    obj_spawn_loot_coins(obj, numCoins, sp28, bhvSingleCoinGetsSpawned, 0, MODEL_YELLOW_COIN);
+void obj_spawn_loot_yellow_coins(struct Object *obj, s32 numCoins, f32 baseVelY) {
+    obj_spawn_loot_coins(obj, numCoins, baseVelY, bhvSingleCoinGetsSpawned, 0, MODEL_YELLOW_COIN);
 }
 
 void cur_obj_spawn_loot_coin_at_mario_pos(void) {
@@ -2105,7 +2104,7 @@ void cur_obj_spawn_particles(struct SpawnParticlesInfo *info) {
 
         particle = spawn_object(o, info->model, bhvWhitePuffExplosion);
 
-        particle->oBehParams2ndByte = info->behParam;
+        particle->oBhvParams2ndByte = info->bhvParam;
         particle->oMoveAngleYaw = random_u16();
         particle->oGravity = info->gravity;
         particle->oDragStrength = info->dragStrength;
@@ -2193,9 +2192,9 @@ void spawn_mist_particles(void) {
     spawn_mist_particles_variable(0, 0, 46.0f);
 }
 
-void spawn_mist_particles_with_sound(u32 sp18) {
+void spawn_mist_particles_with_sound(u32 soundMagic) {
     spawn_mist_particles_variable(0, 0, 46.0f);
-    create_sound_spawner(sp18);
+    create_sound_spawner(soundMagic);
 }
 
 void cur_obj_push_mario_away(f32 radius) {
@@ -2238,30 +2237,30 @@ void bhv_dust_smoke_loop(void) {
 UNUSED static void stub_obj_helpers_2(void) {
 }
 
-s32 cur_obj_set_direction_table(s8 *a0) {
-    o->oToxBoxMovementPattern = a0;
-    o->oToxBoxMovementStep = 0;
+s32 cur_obj_set_action_table(s8 *actionTable) {
+    o->oToxBoxActionTable = actionTable;
+    o->oToxBoxActionStep = 0;
 
-    return *(s8 *) o->oToxBoxMovementPattern;
+    return *(s8 *) o->oToxBoxActionTable;
 }
 
-s32 cur_obj_progress_direction_table(void) {
-    s8 spF;
-    s8 *sp8 = o->oToxBoxMovementPattern;
-    s32 sp4 = o->oToxBoxMovementStep + 1;
+s32 cur_obj_progress_action_table(void) {
+    s8 nextAction;
+    s8 *actionTable = o->oToxBoxActionTable;
+    s32 nextActionIndex = o->oToxBoxActionStep + 1;
 
-    if (sp8[sp4] != -1) {
-        spF = sp8[sp4];
-        o->oToxBoxMovementStep++;
+    if (actionTable[nextActionIndex] != TOX_BOX_ACT_TABLE_END) {
+        nextAction = actionTable[nextActionIndex];
+        o->oToxBoxActionStep++;
     } else {
-        spF = sp8[0];
-        o->oToxBoxMovementStep = 0;
+        nextAction = actionTable[0];
+        o->oToxBoxActionStep = 0;
     }
 
-    return spF;
+    return nextAction;
 }
 
-void stub_obj_helpers_3(UNUSED s32 sp0, UNUSED s32 sp4) {
+void stub_obj_helpers_3(UNUSED s32 arg0, UNUSED s32 arg1) {
 }
 
 void cur_obj_scale_over_time(s32 a0, s32 a1, f32 sp10, f32 sp14) {
@@ -2318,7 +2317,7 @@ s32 jiggle_bbh_stair(s32 a0) {
         return TRUE;
     }
 
-    o->oPosY += sBbhStairJiggleOffsets[a0];
+    o->oPosY += sBBHStairJiggleOffsets[a0];
     return FALSE;
 }
 
@@ -2330,8 +2329,8 @@ void cur_obj_call_action_function(void (*actionFunctions[])(void)) {
 static struct Object *spawn_star_with_no_lvl_exit(s32 sp20, s32 sp24) {
     struct Object *sp1C = spawn_object(o, MODEL_STAR, bhvSpawnedStarNoLevelExit);
     sp1C->oSparkleSpawnUnk1B0 = sp24;
-    sp1C->oBehParams = o->oBehParams;
-    sp1C->oBehParams2ndByte = sp20;
+    sp1C->oBhvParams = o->oBhvParams;
+    sp1C->oBhvParams2ndByte = sp20;
 
     return sp1C;
 }
@@ -2461,9 +2460,8 @@ s32 cur_obj_set_hitbox_and_die_if_attacked(struct ObjectHitbox *hitbox, s32 deat
     return interacted;
 }
 
-
-void obj_explode_and_spawn_coins(f32 sp18, s32 sp1C) {
-    spawn_mist_particles_variable(0, 0, sp18);
+void obj_explode_and_spawn_coins(f32 mistParticleSize, s32 sp1C) {
+    spawn_mist_particles_variable(0, 0, mistParticleSize);
     spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, 4);
     obj_mark_for_deletion(o);
 
@@ -2824,8 +2822,8 @@ s32 cur_obj_was_attacked_or_ground_pounded(void) {
 }
 
 void obj_copy_behavior_params(struct Object *dst, struct Object *src) {
-    dst->oBehParams = src->oBehParams;
-    dst->oBehParams2ndByte = src->oBehParams2ndByte;
+    dst->oBhvParams = src->oBhvParams;
+    dst->oBhvParams2ndByte = src->oBhvParams2ndByte;
 }
 
 void cur_obj_init_animation_and_anim_frame(s32 animIndex, s32 animFrame) {
@@ -2900,7 +2898,7 @@ s32 cur_obj_check_interacted(void) {
 
 void cur_obj_spawn_loot_blue_coin(void) {
     if (o->oNumLootCoins >= 5) {
-        spawn_object(o, MODEL_BLUE_COIN, bhvMrIBlueCoin);
+        spawn_object(o, MODEL_BLUE_COIN, bhvSpawnedBlueCoin);
         o->oNumLootCoins -= 5;
     }
 }

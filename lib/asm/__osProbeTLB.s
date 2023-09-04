@@ -1,6 +1,5 @@
 .set noat      // allow manual use of $at
 .set noreorder // don't insert nops after branches
-.set gp=64
 
 #include "macros.inc"
 
@@ -10,7 +9,7 @@
 glabel __osProbeTLB
     mfc0  $t0, $10
     andi  $t1, $t0, 0xff
-    li    $at, -8192
+    li    $at, 0xFFFFE000
     and   $t2, $a0, $at
     or    $t1, $t1, $t2
     mtc0  $t1, $10
@@ -58,7 +57,3 @@ glabel __osProbeTLB
     mtc0  $t0, $10
     jr    $ra
      nop
-
-    nop
-    nop
-

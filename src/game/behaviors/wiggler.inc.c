@@ -66,7 +66,7 @@ void bhv_wiggler_body_part_update(void) {
     f32 dy;
     f32 dz;
     f32 dxz;
-    struct ChainSegment *segment = &o->parentObj->oWigglerSegments[o->oBehParams2ndByte];
+    struct ChainSegment *segment = &o->parentObj->oWigglerSegments[o->oBhvParams2ndByte];
     f32 posOffset;
 
     cur_obj_scale(o->parentObj->header.gfx.scale[0]);
@@ -91,7 +91,7 @@ void bhv_wiggler_body_part_update(void) {
         //  the floor
         o->oPosY += -30.0f;
         cur_obj_update_floor_height();
-        if (o->oFloorHeight > o->oPosY) { // TODO: Check ineq swap
+        if (o->oFloorHeight > o->oPosY) {
             o->oPosY = o->oFloorHeight;
         }
     }
@@ -300,7 +300,7 @@ static void wiggler_act_jumped_on(void) {
     // defeated) or go back to walking
     if (o->header.gfx.scale[1] >= 4.0f) {
         if (o->oTimer > 30) {
-            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
                 DIALOG_FLAG_NONE, CUTSCENE_DIALOG, attackText[o->oHealth - 2])) {
                 // Because we don't want the wiggler to disappear after being
                 // defeated, we leave its health at 1

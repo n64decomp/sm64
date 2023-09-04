@@ -94,7 +94,7 @@ void bhv_tilting_inverted_pyramid_loop(void) {
         dy = 500.0f;
         dz = gMarioObject->oPosZ - o->oPosZ;
         d = sqrtf(dx * dx + dy * dy + dz * dz);
-    
+
         //! Always true since dy = 500, making d >= 500.
         if (d != 0.0f) {
             // Normalizing
@@ -120,7 +120,7 @@ void bhv_tilting_inverted_pyramid_loop(void) {
         o->oTiltingPyramidMarioOnPlatform = FALSE;
     }
 
-    // Approach the normals by 0.01f towards the new goal, then create a transform matrix and orient the object. 
+    // Approach the normals by 0.01f towards the new goal, then create a transform matrix and orient the object.
     // Outside of the other conditionals since it needs to tilt regardless of whether Mario is on.
     o->oTiltingPyramidNormalX = approach_by_increment(dx, o->oTiltingPyramidNormalX, 0.01f);
     o->oTiltingPyramidNormalY = approach_by_increment(dy, o->oTiltingPyramidNormalY, 0.01f);

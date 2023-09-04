@@ -243,7 +243,7 @@ void bhv_circling_amp_init(void) {
     o->oAnimState = 1;
 
     // Determine the radius of the circling amp's circle
-    switch (o->oBehParams2ndByte) {
+    switch (o->oBhvParams2ndByte) {
         case AMP_BP_ROT_RADIUS_200:
             o->oAmpRadiusOfRotation = 200.0f;
             break;
@@ -331,7 +331,7 @@ static void circling_amp_idle_loop(void) {
 void bhv_circling_amp_loop(void) {
     switch (o->oAction) {
         case AMP_ACT_IDLE:
-            if (o->oBehParams2ndByte == AMP_BP_ROT_RADIUS_0) {
+            if (o->oBhvParams2ndByte == AMP_BP_ROT_RADIUS_0) {
                 fixed_circling_amp_idle_loop();
             } else {
                 circling_amp_idle_loop();

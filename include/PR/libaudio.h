@@ -7,7 +7,7 @@ typedef struct
 {
     u8 *offset;
     s32 len;
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     s8 medium;
     s8 magic; // tbl: 0x04, otherwise: 0x03
 
@@ -32,11 +32,11 @@ typedef struct
 
 typedef struct
 {
-#ifndef VERSION_SH
+#if !defined(VERSION_SH) && !defined(VERSION_CN)
     s16 revision;
 #endif
     s16 seqCount;
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     s16 unk2;
     u8 *data;
 #if !IS_64_BIT

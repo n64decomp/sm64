@@ -6,15 +6,15 @@
  * These rings contain a significant bug that is documented in water_ring.inc.c
  */
 
-static Trajectory sMantaRayTraj[] = { 
-    TRAJECTORY_POS(0, /*pos*/ -4500, -1380,   -40), 
-    TRAJECTORY_POS(1, /*pos*/ -4120, -2240,   740), 
-    TRAJECTORY_POS(2, /*pos*/ -3280, -3080,  1040), 
-    TRAJECTORY_POS(3, /*pos*/ -2240, -3320,   720), 
-    TRAJECTORY_POS(4, /*pos*/ -1840, -3140,  -280), 
-    TRAJECTORY_POS(5, /*pos*/ -2320, -2480, -1100), 
-    TRAJECTORY_POS(6, /*pos*/ -3220, -1600, -1360), 
-    TRAJECTORY_POS(7, /*pos*/ -4180, -1020, -1040), 
+static Trajectory sMantaRayTraj[] = {
+    TRAJECTORY_POS(0, /*pos*/ -4500, -1380,   -40),
+    TRAJECTORY_POS(1, /*pos*/ -4120, -2240,   740),
+    TRAJECTORY_POS(2, /*pos*/ -3280, -3080,  1040),
+    TRAJECTORY_POS(3, /*pos*/ -2240, -3320,   720),
+    TRAJECTORY_POS(4, /*pos*/ -1840, -3140,  -280),
+    TRAJECTORY_POS(5, /*pos*/ -2320, -2480, -1100),
+    TRAJECTORY_POS(6, /*pos*/ -3220, -1600, -1360),
+    TRAJECTORY_POS(7, /*pos*/ -4180, -1020, -1040),
     TRAJECTORY_END(),
 };
 
@@ -48,6 +48,7 @@ static void manta_ray_move(void) {
 #endif
 
     o->oPathedStartWaypoint = (struct Waypoint *) sMantaRayTraj;
+    //! Uninitialized parameter, but the parameter is unused in the called function
     pathStatus = cur_obj_follow_path(pathStatus);
 
     o->oMantaTargetYaw   = o->oPathedTargetYaw;

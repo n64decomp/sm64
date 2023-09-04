@@ -21,7 +21,7 @@ void whomp_init(void) {
     cur_obj_init_animation_with_accel_and_sound(0, 1.0f);
     cur_obj_set_pos_to_home();
 
-    if (o->oBehParams2ndByte != 0) {
+    if (o->oBhvParams2ndByte != WHOMP_BP_SMALL) {
         gSecondCameraFocus = o;
         cur_obj_scale(2.0f);
         if (o->oSubAction == 0) {
@@ -32,7 +32,7 @@ void whomp_init(void) {
                 cur_obj_set_pos_to_home();
                 o->oHealth = 3;
             }
-        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
             DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_114)) {
             o->oAction = 2;
         }
@@ -213,7 +213,7 @@ void whomp_on_ground_general(void) {
         o->oAngleVelYaw = 0;
         o->oAngleVelRoll = 0;
 
-        if (o->oBehParams2ndByte != 0) {
+        if (o->oBhvParams2ndByte != WHOMP_BP_SMALL) {
             king_whomp_on_ground();
         } else {
             whomp_on_ground();
@@ -227,7 +227,7 @@ void whomp_on_ground_general(void) {
     } else {
         o->oAngleVelPitch = 0;
         o->oFaceAnglePitch = 0;
-        if (o->oBehParams2ndByte != 0) {
+        if (o->oBhvParams2ndByte != WHOMP_BP_SMALL) {
             o->oAction = 2;
         } else {
             o->oAction = 1;
@@ -236,8 +236,8 @@ void whomp_on_ground_general(void) {
 }
 
 void whomp_die(void) {
-    if (o->oBehParams2ndByte != 0) {
-        if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+    if (o->oBhvParams2ndByte != WHOMP_BP_SMALL) {
+        if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
             DIALOG_FLAG_TEXT_DEFAULT, CUTSCENE_DIALOG, DIALOG_115)) {
             obj_set_angle(o, 0, 0, 0);
             cur_obj_hide();
@@ -282,7 +282,7 @@ void bhv_whomp_loop(void) {
     cur_obj_call_action_function(sWhompActions);
     cur_obj_move_standard(-20);
     if (o->oAction != 9) {
-        if (o->oBehParams2ndByte != 0) {
+        if (o->oBhvParams2ndByte != WHOMP_BP_SMALL) {
             cur_obj_hide_if_mario_far_away_y(2000.0f);
         } else {
             cur_obj_hide_if_mario_far_away_y(1000.0f);

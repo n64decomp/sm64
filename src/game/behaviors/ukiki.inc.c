@@ -11,7 +11,7 @@
  * or makes him wait to respawn if in water.
  */
 void handle_cap_ukiki_reset(void) {
-    if (o->oBehParams2ndByte == UKIKI_CAP) {
+    if (o->oBhvParams2ndByte == UKIKI_BP_CAP) {
         if (cur_obj_mario_far_away()) {
             cur_obj_set_pos_to_home_and_stop();
             o->oAction = UKIKI_ACT_IDLE;
@@ -26,7 +26,7 @@ void handle_cap_ukiki_reset(void) {
  * the cap ukiki.
  */
 s32 is_cap_ukiki_and_mario_has_normal_cap_on_head(void) {
-    if (o->oBehParams2ndByte == UKIKI_CAP
+    if (o->oBhvParams2ndByte == UKIKI_BP_CAP
         && does_mario_have_normal_cap_on_head(gMarioState)) {
         return TRUE;
     }
@@ -38,11 +38,9 @@ s32 is_cap_ukiki_and_mario_has_normal_cap_on_head(void) {
  * Unused copy of geo_update_projectile_pos_from_parent. Perhaps a copy paste mistake.
  */
 Gfx *geo_update_projectile_pos_from_parent_copy(s32 run,UNUSED struct GraphNode *node, Mat4 mtx) {
-    Mat4 mtx2;
-
     if (run == TRUE) {
-        // TODO: change global type to Object pointer
-        struct Object *obj = (struct Object *) gCurGraphNodeObject;
+        Mat4 mtx2;
+        struct Object *obj = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
 
         if (obj->prevObj != NULL) {
             create_transformation_from_matrices(mtx2, mtx, *gCurGraphNodeCamera->matrixPtr);
@@ -159,7 +157,7 @@ void ukiki_act_idle(void) {
         o->oUkikiTextState = UKIKI_TEXT_HAS_CAP;
     }
 
-    if (o->oBehParams2ndByte == UKIKI_CAP) {
+    if (o->oBhvParams2ndByte == UKIKI_BP_CAP) {
         if (o->oPosY < -1550.0f) {
             o->oAction = UKIKI_ACT_RETURN_HOME;
         }
@@ -377,7 +375,7 @@ void ukiki_act_go_to_cage(void) {
         case UKIKI_SUB_ACT_CAGE_TALK_TO_MARIO:
             cur_obj_init_animation_with_sound(UKIKI_ANIM_HANDSTAND);
 
-            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN, 
+            if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN,
                 DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_080)) {
                 o->oSubAction++;
             }
@@ -573,7 +571,7 @@ void cap_ukiki_held_loop(void) {
             break;
 
         case UKIKI_TEXT_HAS_CAP:
-            if (cur_obj_update_dialog(MARIO_DIALOG_LOOK_UP, 
+            if (cur_obj_update_dialog(MARIO_DIALOG_LOOK_UP,
                 (DIALOG_FLAG_TEXT_DEFAULT | DIALOG_FLAG_TIME_STOP_ENABLED), DIALOG_101, 0)) {
                 mario_retrieve_cap();
                 set_mario_npc_dialog(MARIO_DIALOG_STOP);
@@ -593,7 +591,7 @@ void cap_ukiki_held_loop(void) {
  * Initializatation for ukiki, determines if it has Mario's cap.
  */
 void bhv_ukiki_init(void) {
-    if ((o->oBehParams2ndByte == UKIKI_CAP)
+    if ((o->oBhvParams2ndByte == UKIKI_BP_CAP)
         && (save_file_get_flags() & SAVE_FLAG_CAP_ON_UKIKI)) {
         o->oUkikiTextState = UKIKI_TEXT_HAS_CAP;
         o->oUkikiHasCap |= UKIKI_CAP_ON;
@@ -616,7 +614,7 @@ void bhv_ukiki_loop(void) {
             cur_obj_unrender_set_action_and_anim(UKIKI_ANIM_HELD, 0);
             obj_copy_pos(o, gMarioObject);
 
-            if (o->oBehParams2ndByte == UKIKI_CAP) {
+            if (o->oBhvParams2ndByte == UKIKI_BP_CAP) {
                 cap_ukiki_held_loop();
             } else {
                 cage_ukiki_held_loop();

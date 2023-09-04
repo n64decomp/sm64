@@ -13,9 +13,9 @@ struct ObjectHitbox sUnagiHitbox = {
 };
 
 void bhv_unagi_init(void) {
-    if (o->oBehParams2ndByte != 1) {
+    if (o->oBhvParams2ndByte != 1) {
         o->oPathedStartWaypoint = segmented_to_virtual(jrb_seg7_trajectory_unagi_1);
-        if (o->oBehParams2ndByte == 0) {
+        if (o->oBhvParams2ndByte == 0) {
             o->oFaceAnglePitch = -7600;
         } else {
             o->oAction = 1;
@@ -174,7 +174,7 @@ void bhv_unagi_subobject_loop(void) {
     if (o->parentObj->oUnagiUnk1B2 == 0) {
         obj_mark_for_deletion(o);
     } else {
-        f32 val04 = 300.0f * o->oBehParams2ndByte;
+        f32 val04 = 300.0f * o->oBhvParams2ndByte;
 
         o->oPosY = o->parentObj->oPosY - val04 * sins(o->parentObj->oFaceAnglePitch) * 1.13f;
 
@@ -183,15 +183,15 @@ void bhv_unagi_subobject_loop(void) {
         o->oPosX = o->parentObj->oPosX + val04 * sins(o->parentObj->oFaceAngleYaw);
         o->oPosZ = o->parentObj->oPosZ + val04 * coss(o->parentObj->oFaceAngleYaw);
 
-        if (o->oBehParams2ndByte == -4) {
+        if (o->oBhvParams2ndByte == -4) {
             if (o->parentObj->oAnimState != 0 && o->oDistanceToMario < 150.0f) {
-                o->oBehParams = o->parentObj->oBehParams;
+                o->oBhvParams = o->parentObj->oBhvParams;
                 spawn_default_star(6833.0f, -3654.0f, 2230.0f);
                 o->parentObj->oAnimState = 0;
             }
         } else {
             obj_check_attacks(&sUnagiHitbox, o->oAction);
-            if (o->oBehParams2ndByte == 3) {
+            if (o->oBhvParams2ndByte == 3) {
                 o->parentObj->oUnagiUnk1AC = o->oDistanceToMario;
             }
         }

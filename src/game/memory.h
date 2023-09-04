@@ -75,7 +75,7 @@ struct AllocOnlyPool *alloc_only_pool_resize(struct AllocOnlyPool *pool, u32 siz
 
 struct MemoryPool *mem_pool_init(u32 size, u32 side);
 void *mem_pool_alloc(struct MemoryPool *pool, u32 size);
-void mem_pool_free(struct MemoryPool *pool, void *addr);
+BAD_RETURN(s32) mem_pool_free(struct MemoryPool *pool, void *addr);
 
 void *alloc_display_list(u32 size);
 void setup_dma_table_list(struct DmaHandlerList *list, void *srcAddr, void *buffer);

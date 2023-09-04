@@ -104,7 +104,7 @@ void init_rdp(void) {
     gDPSetColorDither(gDisplayListHead++, G_CD_MAGICSQ);
     gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
 
-#ifdef VERSION_SH
+#if defined(VERSION_SH) || defined(VERSION_CN)
     gDPSetAlphaDither(gDisplayListHead++, G_AD_PATTERN);
 #endif
     gDPPipeSync(gDisplayListHead++);
@@ -407,7 +407,7 @@ UNUSED static void record_demo(void) {
         rawStickY = 0;
     }
 
-    // Rrecord the distinct input and timer so long as they are unique.
+    // Record the distinct input and timer so long as they are unique.
     // If the timer hits 0xFF, reset the timer for the next demo input.
     if (gRecordedDemoInput.timer == 0xFF || buttonMask != gRecordedDemoInput.buttonMask
         || rawStickX != gRecordedDemoInput.rawStickX || rawStickY != gRecordedDemoInput.rawStickY) {
@@ -643,14 +643,21 @@ void setup_game_memory(void) {
 void thread5_game_loop(UNUSED void *arg) {
     struct LevelCommand *addr;
 
+    CN_DEBUG_PRINTF(("start gfx thread\n"));
+
     setup_game_memory();
 #if ENABLE_RUMBLE
     init_rumble_pak_scheduler_queue();
 #endif
+
+    CN_DEBUG_PRINTF(("init ctrl\n"));
     init_controllers();
+    CN_DEBUG_PRINTF(("done ctrl\n"));
+
 #if ENABLE_RUMBLE
     create_thread_6();
 #endif
+
     save_file_load_all();
 
     set_vblank_handler(2, &gGameVblankHandler, &gGameVblankQueue, (OSMesg) 1);

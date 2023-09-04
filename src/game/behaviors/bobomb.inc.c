@@ -20,9 +20,9 @@ void bhv_bobomb_init(void) {
 }
 
 void bobomb_spawn_coin(void) {
-    if (!((o->oBehParams >> 8) & 0x01)) {
+    if (!((o->oBhvParams >> 8) & 0x01)) {
         obj_spawn_yellow_coins(o, 1);
-        o->oBehParams = 0x100;
+        o->oBhvParams = 0x100;
         set_object_respawn_info_bits(o, 1);
     }
 }
@@ -83,7 +83,7 @@ void bobomb_act_patrol(void) {
 
 void bobomb_act_chase_mario(void) {
     UNUSED u8 filler[4];
-    s16 animFrame = ++o->header.gfx.animInfo.animFrame; 
+    s16 animFrame = ++o->header.gfx.animInfo.animFrame;
     s16 collisionFlags;
 
     o->oForwardVel = 20.0f;
@@ -172,7 +172,7 @@ void stationary_bobomb_free_loop(void) {
 }
 
 void bobomb_free_loop(void) {
-    if (o->oBehParams2ndByte == BOBOMB_BP_STYPE_GENERIC) {
+    if (o->oBhvParams2ndByte == BOBOMB_BP_STYPE_GENERIC) {
         generic_bobomb_free_loop();
     } else {
         stationary_bobomb_free_loop();
@@ -379,7 +379,7 @@ void bobomb_buddy_act_talk(void) {
 
         switch (o->oBobombBuddyRole) {
             case BOBOMB_BUDDY_ROLE_ADVICE:
-                if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, o->oBehParams2ndByte)
+                if (cutscene_object_with_dialog(CUTSCENE_DIALOG, o, o->oBhvParams2ndByte)
                     != BOBOMB_BUDDY_BP_STYPE_GENERIC) {
                     set_mario_npc_dialog(MARIO_DIALOG_STOP);
 

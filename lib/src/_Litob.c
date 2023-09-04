@@ -5,10 +5,10 @@
 
 #define BUFF_LEN 0x18
 
-static u8 D_80334960[] = "0123456789abcdef";
-static u8 D_80334974[] = "0123456789ABCDEF";
+static u8 ldigs[] = "0123456789abcdef";
+static u8 udigs[] = "0123456789ABCDEF";
 
-void _Litob(printf_struct *args, u8 type) {
+void _Litob(printf_struct *args, fmt_type type) {
     u8 buff[BUFF_LEN];
     const u8 *num_map;
     s32 base;
@@ -17,9 +17,9 @@ void _Litob(printf_struct *args, u8 type) {
     lldiv_t quotrem;
 
     if (type == 'X') {
-        num_map = D_80334974;
+        num_map = udigs;
     } else {
-        num_map = D_80334960;
+        num_map = ldigs;
     }
 
     base = (type == 'o') ? 8 : ((type != 'x' && type != 'X') ? 10 : 16);

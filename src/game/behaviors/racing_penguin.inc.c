@@ -1,21 +1,21 @@
 // racing_penguin.inc.c
 
 struct RacingPenguinData {
-    s16 text;
+    s16 dialogID;
     f32 radius;
     f32 height;
 };
 
 static struct RacingPenguinData sRacingPenguinData[] = {
-    { DIALOG_055, 200.0f, 200.0f },
-    { DIALOG_164, 350.0f, 250.0f },
+    /* RACING_PENGUIN_BP_THIN */ { DIALOG_055, 200.0f, 200.0f },
+    /* RACING_PENGUIN_BP_FAT  */ { DIALOG_164, 350.0f, 250.0f },
 };
 
 void bhv_racing_penguin_init(void) {
     if (gMarioState->numStars == 120) {
         cur_obj_scale(8.0f);
         o->header.gfx.scale[1] = 5.0f;
-        o->oBehParams2ndByte = 1;
+        o->oBhvParams2ndByte = RACING_PENGUIN_BP_FAT;
     }
 }
 
@@ -27,7 +27,7 @@ static void racing_penguin_act_wait_for_mario(void) {
 }
 
 static void racing_penguin_act_show_init_text(void) {
-    s32 response = obj_update_race_proposition_dialog(sRacingPenguinData[o->oBehParams2ndByte].text);
+    s32 response = obj_update_race_proposition_dialog(sRacingPenguinData[o->oBhvParams2ndByte].dialogID);
 
     if (response == DIALOG_RESPONSE_YES) {
         struct Object *child;
@@ -141,7 +141,7 @@ static void racing_penguin_act_show_final_text(void) {
         }
     } else if (o->oRacingPenguinFinalTextbox > 0) {
         s32 textResult;
-        if ((textResult = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
+        if ((textResult = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
             DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, o->oRacingPenguinFinalTextbox))) {
             o->oRacingPenguinFinalTextbox = -1;
             o->oTimer = 0;
@@ -182,8 +182,8 @@ void bhv_racing_penguin_update(void) {
 
     cur_obj_move_standard(78);
     cur_obj_align_gfx_with_floor();
-    cur_obj_push_mario_away_from_cylinder(sRacingPenguinData[o->oBehParams2ndByte].radius,
-                                          sRacingPenguinData[o->oBehParams2ndByte].height);
+    cur_obj_push_mario_away_from_cylinder(sRacingPenguinData[o->oBhvParams2ndByte].radius,
+                                          sRacingPenguinData[o->oBhvParams2ndByte].height);
 }
 
 void bhv_penguin_race_finish_line_update(void) {

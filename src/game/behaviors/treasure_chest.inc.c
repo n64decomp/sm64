@@ -39,8 +39,8 @@ void bhv_treasure_chest_top_loop(void) {
             if (o->oFaceAnglePitch < -0x4000) {
                 o->oFaceAnglePitch = -0x4000;
                 o->oAction++;
-                if (o->parentObj->oBehParams2ndByte != 4) {
-                    spawn_orange_number(o->parentObj->oBehParams2ndByte, 0, -40, 0);
+                if (o->parentObj->oBhvParams2ndByte != 4) {
+                    spawn_orange_number(o->parentObj->oBhvParams2ndByte, 0, -40, 0);
                 }
             }
             break;
@@ -71,7 +71,7 @@ void bhv_treasure_chest_bottom_loop(void) {
             if (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, gMarioObject->header.gfx.angle[1] + 0x8000, 0x3000)
                 && is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 150)
                 && !o->parentObj->oTreasureChestUnkF8) {
-                if (o->parentObj->oTreasureChestUnkF4 == o->oBehParams2ndByte) {
+                if (o->parentObj->oTreasureChestUnkF4 == o->oBhvParams2ndByte) {
                     play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
                     o->parentObj->oTreasureChestUnkF4++;
                     o->oAction = 1;
@@ -106,7 +106,7 @@ void bhv_treasure_chest_bottom_loop(void) {
 void spawn_treasure_chest(s8 sp3B, s32 x, s32 y, s32 z, s16 yaw) {
     struct Object *sp34 = spawn_object_abs_with_rot(o, 0, MODEL_TREASURE_CHEST_BASE,
                                                     bhvTreasureChestBottom, x, y, z, 0, yaw, 0);
-    sp34->oBehParams2ndByte = sp3B;
+    sp34->oBhvParams2ndByte = sp3B;
 }
 
 void bhv_treasure_chest_ship_init(void) {
@@ -176,7 +176,7 @@ void bhv_treasure_chest_jrb_loop(void) {
     }
 }
 
-void bhv_treasure_chest_init(void) {
+void bhv_treasure_chest_ddd_init(void) {
     spawn_treasure_chest(1, -4500, -5119, 1300, -0x6001);
     spawn_treasure_chest(2, -1800, -5119, 1050, 0x1FFF);
     spawn_treasure_chest(3, -4500, -5119, -1100, 9102);
@@ -186,7 +186,7 @@ void bhv_treasure_chest_init(void) {
     o->oTreasureChestUnkFC = 0;
 }
 
-void bhv_treasure_chest_loop(void) {
+void bhv_treasure_chest_ddd_loop(void) {
     switch (o->oAction) {
         case 0:
             if (o->oTreasureChestUnkF4 == 5) {

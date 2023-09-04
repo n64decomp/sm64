@@ -4,7 +4,7 @@ void bhv_white_puff_exploding_loop(void) {
     if (o->oTimer == 0) {
         cur_obj_compute_vel_xz();
         o->oWhitePuffUnkF4 = o->header.gfx.scale[0];
-        switch (o->oBehParams2ndByte) {
+        switch (o->oBhvParams2ndByte) {
             case 2:
                 o->oOpacity = 254;
                 o->oWhitePuffUnkF8 = -21;

@@ -1,23 +1,49 @@
 #include "libultra_internal.h"
+#include "osint.h"
 
-extern OSTimer *__osTimerList;
-extern u64 __osInsertTimer(OSTimer *);
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 
-u32 osSetTimer(OSTimer *t, OSTime countdown, OSTime interval, OSMesgQueue *mq, OSMesg msg) {
+u32 osSetTimer(OSTimer *timer, OSTime countdown, OSTime interval, OSMesgQueue *mq, OSMesg msg) {
     OSTime time;
-    t->next = NULL;
-    t->prev = NULL;
-    t->interval = interval;
-    if (countdown != 0) {
-        t->remaining = countdown;
+#ifdef VERSION_CN
+    OSTimer *next;
+    u32 count;
+    u32 remaining;
+    u32 prevInt;
+#endif
+
+    timer->next = NULL;
+    timer->prev = NULL;
+    timer->interval = interval;
+    timer->remaining = countdown != 0 ? countdown : interval;
+    timer->mq = mq;
+    timer->msg = msg;
+
+#ifdef VERSION_CN
+    prevInt = __osDisableInt();
+    if (__osTimerList->next == __osTimerList) {
     } else {
-        t->remaining = interval;
+        next = __osTimerList->next;
+        count = osGetCount();
+        remaining = count - __osTimerCounter;
+
+        if (remaining < next->remaining) {
+            next->remaining -= remaining;
+        } else {
+            next->remaining = 1;
+        }
     }
-    t->mq = mq;
-    t->msg = msg;
-    time = __osInsertTimer(t);
-    if (__osTimerList->next == t) {
+
+    time = __osInsertTimer(timer);
+    __osSetTimerIntr(__osTimerList->next->remaining);
+
+    __osRestoreInt(prevInt);
+#else
+    time = __osInsertTimer(timer);
+    if (__osTimerList->next == timer) {
         __osSetTimerIntr(time);
     }
+#endif
+
     return 0;
 }

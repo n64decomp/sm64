@@ -51,18 +51,18 @@ void bhv_jrb_sliding_box_loop(void) {
     Vec3f sp20;
     s16 sp1E;
 
-    if (o->oJrbSlidingBoxUnkF4 == NULL) {
+    if (o->oJRBSlidingBoxUnkF4 == NULL) {
         sp3C = cur_obj_nearest_object_with_behavior(bhvInSunkenShip3);
 
         if (sp3C != NULL) { // NULL check only for assignment, not for dereference?
-            o->oJrbSlidingBoxUnkF4 = sp3C;
+            o->oJRBSlidingBoxUnkF4 = sp3C;
         }
 
         o->oParentRelativePosX = o->oPosX - sp3C->oPosX;
         o->oParentRelativePosY = o->oPosY - sp3C->oPosY;
         o->oParentRelativePosZ = o->oPosZ - sp3C->oPosZ;
     } else {
-        sp3C = o->oJrbSlidingBoxUnkF4;
+        sp3C = o->oJRBSlidingBoxUnkF4;
 
         sp40[0] = sp3C->oFaceAnglePitch;
         sp40[1] = sp3C->oFaceAngleYaw;
@@ -96,17 +96,17 @@ void bhv_jrb_sliding_box_loop(void) {
         o->oFaceAnglePitch = sp1E;
     }
 
-    o->oJrbSlidingBoxUnkFC = sins(o->oJrbSlidingBoxUnkF8) * 20.0f;
-    o->oJrbSlidingBoxUnkF8 += 0x100;
-    o->oParentRelativePosZ += o->oJrbSlidingBoxUnkFC;
+    o->oJRBSlidingBoxUnkFC = sins(o->oJRBSlidingBoxUnkF8) * 20.0f;
+    o->oJRBSlidingBoxUnkF8 += 0x100;
+    o->oParentRelativePosZ += o->oJRBSlidingBoxUnkFC;
 
-    if (gMarioObject->oPosY > 1000.0f && absf(o->oJrbSlidingBoxUnkFC) > 3.0f) {
+    if (gMarioObject->oPosY > 1000.0f && absf(o->oJRBSlidingBoxUnkFC) > 3.0f) {
         cur_obj_play_sound_1(SOUND_AIR_ROUGH_SLIDE);
     }
 
     obj_set_hitbox(o, &sSkullSlidingBoxHitbox);
 
-    if (!(o->oJrbSlidingBoxUnkF8 & 0x7FFF)) {
+    if (!(o->oJRBSlidingBoxUnkF8 & 0x7FFF)) {
         cur_obj_become_tangible();
     }
 

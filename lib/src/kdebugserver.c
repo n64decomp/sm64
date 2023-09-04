@@ -1,22 +1,17 @@
 #include "libultra_internal.h"
+#include "PR/rdb.h"
 
-typedef struct {
-    u8 unk00 : 2;
-    u8 pad : 4;
-    u8 unk01 : 2;
-    u8 unk2[3];
-} unkStruct;
+#ifndef VERSION_CN
+static s32 debugState = 0;
+static s32 numChars = 0;
+static s32 numCharsToReceive = 0;
+#endif
 
-extern u32 D_80334A44;
+extern u8 debugBuffer[0x100];
 
-u32 D_80334A30 = 0;
-u32 D_80334A34 = 0;
-s32 D_80334A38 = 0;
+OSThread __osThreadSave;
 
-extern u8 D_80365E40[0x100];
-
-OSThread gInterruptedThread;
-
+#ifndef VERSION_CN
 void u32_to_string(u32 i, u8 *str) {
     str[0] = (i >> 0x18) & 0xff;
     str[1] = (i >> 0x10) & 0xff;
@@ -34,29 +29,29 @@ u32 string_to_u32(u8 *str) {
 }
 
 void send_packet(u8 *a0, s32 a1) {
-    unkStruct sp1c;
+    rdbPacket pkt;
     s32 i;
-    sp1c.unk00 = 2;
-    for (sp1c.unk01 = a1, i = 0; i < a1; i++) {
-        sp1c.unk2[i] = a0[i];
+    pkt.type = 2;
+    for (pkt.length = a1, i = 0; i < a1; i++) {
+        pkt.buf[i] = a0[i];
     }
-    *(volatile u32 *) 0xc0000000 = *(u32 *) &sp1c;
+    *(volatile u32 *) RDB_BASE_REG = *(u32 *) &pkt;
     while (!(__osGetCause() & 0x2000)) {
         ;
     }
-    *(volatile u32 *) 0xc000000c = 0;
+    *(volatile u32 *) RDB_READ_INTR_REG = 0;
 }
 
 void send(u8 *buff, s32 len) {
     s32 i;
     s32 end;
     s32 rem;
-    if (!D_80334A44) {
+    if (!__osRdbWriteOK) {
         while (!(__osGetCause() & 0x2000)) {
             ;
         }
-        *(volatile u32 *) 0xc000000c = 0;
-        D_80334A44 = 1;
+        *(volatile u32 *) RDB_READ_INTR_REG = 0;
+        __osRdbWriteOK = 1;
     }
     i = 0;
     rem = len % 3;
@@ -72,62 +67,63 @@ void send(u8 *buff, s32 len) {
 void process_command_memory(void) {
     u32 sp1c;
     u32 sp18;
-    sp1c = string_to_u32(&D_80365E40[1]);
-    sp18 = string_to_u32(&D_80365E40[5]);
+    sp1c = string_to_u32(&debugBuffer[1]);
+    sp18 = string_to_u32(&debugBuffer[5]);
     send((u8 *) (uintptr_t) sp1c, sp18);
 }
 
 void process_command_register(void) {
-    send((u8 *) &gInterruptedThread.context, sizeof(__OSThreadContext));
+    send((u8 *) &__osThreadSave.context, sizeof(__OSThreadContext));
 }
 
 void kdebugserver(u32 a0) {
     u32 sp2c;
-    unkStruct sp28;
-    *(u32 *) &sp28 = a0;
-    for (sp2c = 0; sp2c < sp28.unk01; sp2c++) {
-        D_80365E40[D_80334A34] = sp28.unk2[sp2c];
-        D_80334A34++;
+    rdbPacket pkt;
+    *(u32 *) &pkt = a0;
+    for (sp2c = 0; sp2c < pkt.length; sp2c++) {
+        debugBuffer[numChars] = pkt.buf[sp2c];
+        numChars++;
     }
-    D_80334A38 -= sp28.unk01;
-    switch (D_80334A30) {
+    numCharsToReceive -= pkt.length;
+    switch (debugState) {
         case 0:
-            switch (sp28.unk2[0]) {
+            switch (pkt.buf[0]) {
                 case 1:
-                    D_80334A30 = 1;
-                    D_80334A38 = 9 - sp28.unk01;
+                    debugState = 1;
+                    numCharsToReceive = 9 - pkt.length;
                     break;
                 case 2:
                     process_command_register();
-                    D_80334A30 = 0;
-                    D_80334A34 = 0;
-                    D_80334A38 = 0;
+                    debugState = 0;
+                    numChars = 0;
+                    numCharsToReceive = 0;
                     break;
                 default:
-                    D_80334A30 = 0;
-                    D_80334A34 = 0;
-                    D_80334A38 = 0;
+                    debugState = 0;
+                    numChars = 0;
+                    numCharsToReceive = 0;
                     break;
             }
             break;
         case 1:
-            if (D_80334A38 <= 0) {
-                if (D_80365E40[0] == 1) {
+            if (numCharsToReceive <= 0) {
+                if (debugBuffer[0] == 1) {
                     process_command_memory();
-                    D_80334A30 = 0;
-                    D_80334A34 = 0;
-                    D_80334A38 = 0;
+                    debugState = 0;
+                    numChars = 0;
+                    numCharsToReceive = 0;
                 } else {
-                    D_80334A30 = 0;
-                    D_80334A34 = 0;
-                    D_80334A38 = 0;
+                    debugState = 0;
+                    numChars = 0;
+                    numCharsToReceive = 0;
                 }
             }
             break;
         default:
-            D_80334A30 = 0;
-            D_80334A34 = 0;
-            D_80334A38 = 0;
+            debugState = 0;
+            numChars = 0;
+            numCharsToReceive = 0;
             break;
     }
 }
+#endif

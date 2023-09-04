@@ -18,7 +18,6 @@
 #define ACTIVE_FLAG_UNK9                   (1 <<  9) // 0x0200
 #define ACTIVE_FLAG_UNK10                  (1 << 10) // 0x0400
 
-
 /* respawnInfoType */
 #define RESPAWN_INFO_TYPE_NULL 0
 #define RESPAWN_INFO_TYPE_32   1
@@ -86,10 +85,10 @@
 #endif
 
 #define OBJ_MOVE_MASK_ON_GROUND (OBJ_MOVE_LANDED | OBJ_MOVE_ON_GROUND)
-#define OBJ_MOVE_MASK_IN_WATER (\
-    OBJ_MOVE_ENTERED_WATER |\
-    OBJ_MOVE_AT_WATER_SURFACE |\
-    OBJ_MOVE_UNDERWATER_OFF_GROUND |\
+#define OBJ_MOVE_MASK_IN_WATER ( \
+    OBJ_MOVE_ENTERED_WATER | \
+    OBJ_MOVE_AT_WATER_SURFACE | \
+    OBJ_MOVE_UNDERWATER_OFF_GROUND | \
     OBJ_MOVE_UNDERWATER_ON_GROUND)
 
 /* oActiveParticleFlags */
@@ -122,6 +121,15 @@
 #define OBJ_ACT_VERTICAL_KNOCKBACK   101
 #define OBJ_ACT_SQUISHED             102
 
+/* Star Index */
+#define STAR_INDEX_ACT_1     0
+#define STAR_INDEX_ACT_2     1
+#define STAR_INDEX_ACT_3     2
+#define STAR_INDEX_ACT_4     3
+#define STAR_INDEX_ACT_5     4
+#define STAR_INDEX_ACT_6     5
+#define STAR_INDEX_100_COINS 6
+
 /* gTTCSpeedSetting */
 #define TTC_SPEED_SLOW    0
 #define TTC_SPEED_FAST    1
@@ -129,17 +137,40 @@
 #define TTC_SPEED_STOPPED 3
 
 /* Bob-omb */
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define BOBOMB_BP_STYPE_GENERIC    0
     #define BOBOMB_BP_STYPE_STATIONARY 1
 
     /* oAction */
-    #define BOBOMB_ACT_PATROL              0
-    #define BOBOMB_ACT_LAUNCHED            1
-    #define BOBOMB_ACT_CHASE_MARIO         2
-    #define BOBOMB_ACT_EXPLODE             3
+    #define BOBOMB_ACT_PATROL            0
+    #define BOBOMB_ACT_LAUNCHED          1
+    #define BOBOMB_ACT_CHASE_MARIO       2
+    #define BOBOMB_ACT_EXPLODE           3
     #define BOBOMB_ACT_LAVA_DEATH        100
     #define BOBOMB_ACT_DEATH_PLANE_DEATH 101
+
+/* Coin Formation */
+    /* oAction */
+    #define COIN_FORMATION_ACT_SPAWN_COINS   0
+    #define COIN_FORMATION_ACT_IDLE          1
+    #define COIN_FORMATION_ACT_RESPAWN_COINS 2
+
+    /* oBhvParams2ndByte */
+    #define COIN_FORMATION_BP_FLAG_HORIZONTAL (0 << 0)
+    #define COIN_FORMATION_BP_FLAG_VERTICAL   (1 << 0)
+    #define COIN_FORMATION_BP_FLAG_RING       (1 << 1)
+    #define COIN_FORMATION_BP_FLAG_ARROW      (1 << 2)
+    #define COIN_FORMATION_BP_FLAG_FLYING     (1 << 4)
+    #define COIN_FORMATION_BP_FLAG_MASK       (COIN_FORMATION_BP_FLAG_HORIZONTAL | \
+                                               COIN_FORMATION_BP_FLAG_VERTICAL | \
+                                               COIN_FORMATION_BP_FLAG_RING | \
+                                               COIN_FORMATION_BP_FLAG_ARROW)
+
+    #define COIN_FORMATION_BP_LINE_HORIZONTAL (COIN_FORMATION_BP_FLAG_HORIZONTAL)
+    #define COIN_FORMATION_BP_LINE_VERTICAL   (COIN_FORMATION_BP_FLAG_VERTICAL)
+    #define COIN_FORMATION_BP_RING_HORIZONTAL (COIN_FORMATION_BP_FLAG_HORIZONTAL | COIN_FORMATION_BP_FLAG_RING)
+    #define COIN_FORMATION_BP_RING_VERTICAL   (COIN_FORMATION_BP_FLAG_VERTICAL | COIN_FORMATION_BP_FLAG_RING)
+    #define COIN_FORMATION_BP_ARROW           (COIN_FORMATION_BP_FLAG_ARROW)
 
 /* Hidden Blue Coin */
     /* oAction */
@@ -160,13 +191,13 @@
 
 /* Moving Yellow Coin */
     /* oAction */
-    #define MOV_YCOIN_ACT_IDLE                0
-    #define MOV_YCOIN_ACT_BLINKING            1
+    #define MOV_YCOIN_ACT_IDLE              0
+    #define MOV_YCOIN_ACT_BLINKING          1
     #define MOV_YCOIN_ACT_LAVA_DEATH        100
     #define MOV_YCOIN_ACT_DEATH_PLANE_DEATH 101
 
 /* Bob-omb Buddy */
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define BOBOMB_BUDDY_BP_STYPE_GENERIC        0
     #define BOBOMB_BUDDY_BP_STYPE_BOB_GRASS_KBB  1
     #define BOBOMB_BUDDY_BP_STYPE_BOB_CANNON_KBB 2
@@ -248,7 +279,7 @@
     #define BOWSER_ANIM_FLIP                25
     #define BOWSER_ANIM_STAND_UP_FROM_FLIP  26
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define BOWSER_BP_BITDW 0
     #define BOWSER_BP_BITFS 1
     #define BOWSER_BP_BITS  2
@@ -292,13 +323,13 @@
     #define BOWSER_SUB_ACT_HIT_MINE_START           0
     #define BOWSER_SUB_ACT_HIT_MINE_FALL            1
     #define BOWSER_SUB_ACT_HIT_MINE_STOP            2
-    
+
     #define BOWSER_SUB_ACT_JUMP_ON_STAGE_IDLE       0
     #define BOWSER_SUB_ACT_JUMP_ON_STAGE_START      1
     #define BOWSER_SUB_ACT_JUMP_ON_STAGE_LAND       2
     #define BOWSER_SUB_ACT_JUMP_ON_STAGE_STOP       3
 
-/* Bowser Bits Platform*/
+/* Bowser BitS Platform */
     /* oAction */
     #define BOWSER_BITS_PLAT_ACT_START 0
     #define BOWSER_BITS_PLAT_ACT_CHECK 1
@@ -308,9 +339,9 @@
     /* oAction */
     #define FISH_SPAWNER_ACT_SPAWN   0
     #define FISH_SPAWNER_ACT_IDLE    1
-    #define FISH_SPAWNER_ACT_RESPAWN 2    
+    #define FISH_SPAWNER_ACT_RESPAWN 2
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define FISH_SPAWNER_BP_MANY_BLUE 0
     #define FISH_SPAWNER_BP_FEW_BLUE  1
     #define FISH_SPAWNER_BP_MANY_CYAN 2
@@ -322,7 +353,7 @@
     #define FISH_ACT_ROAM 1
     #define FISH_ACT_FLEE 2
 
-/* Blue_Fish */
+/* Blue Fish */
     /* oAction */
     #define BLUE_FISH_ACT_DIVE      0
     #define BLUE_FISH_ACT_TURN      1
@@ -350,7 +381,7 @@
     #define HOMING_AMP_ACT_ATTACK_COOLDOWN 4
 
 /* Amp */
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define AMP_BP_ROT_RADIUS_200 0
     #define AMP_BP_ROT_RADIUS_300 1
     #define AMP_BP_ROT_RADIUS_400 2
@@ -377,27 +408,27 @@
     #define HOOT_ACT_CARRY  1
     #define HOOT_ACT_TIRED  2
 
-/* Bully (all variants) */
-    /* oBehParams2ndByte */
+/* Bully (All variants) */
+    /* oBhvParams2ndByte */
     #define BULLY_BP_SIZE_SMALL 0
     #define BULLY_BP_SIZE_BIG   1
 
     /* oAction */
-    #define BULLY_ACT_PATROL              0
-    #define BULLY_ACT_CHASE_MARIO         1
-    #define BULLY_ACT_KNOCKBACK           2
-    #define BULLY_ACT_BACK_UP             3
-    #define BULLY_ACT_INACTIVE            4
-    #define BULLY_ACT_ACTIVATE_AND_FALL   5
+    #define BULLY_ACT_PATROL            0
+    #define BULLY_ACT_CHASE_MARIO       1
+    #define BULLY_ACT_KNOCKBACK         2
+    #define BULLY_ACT_BACK_UP           3
+    #define BULLY_ACT_INACTIVE          4
+    #define BULLY_ACT_ACTIVATE_AND_FALL 5
     #define BULLY_ACT_LAVA_DEATH        100
     #define BULLY_ACT_DEATH_PLANE_DEATH 101
 
     /* oBullySubtype */
-    #define BULLY_STYPE_GENERIC  0
-    #define BULLY_STYPE_MINION   1
+    #define BULLY_STYPE_GENERIC 0
+    #define BULLY_STYPE_MINION  1
     #define BULLY_STYPE_CHILL   16
 
-/* Water Ring (all variants) */
+/* Water Ring (All variants) */
     /* oAction */
     #define WATER_RING_ACT_NOT_COLLECTED 0
     #define WATER_RING_ACT_COLLECTED     1
@@ -417,7 +448,7 @@
     #define LLL_DRAWBRIDGE_ACT_LOWER 0
     #define LLL_DRAWBRIDGE_ACT_RAISE 1
 
-/* Bomp (both variants) */
+/* Bomp (Both variants) */
     /* oAction */
     #define BOMP_ACT_WAIT     0
     #define BOMP_ACT_POKE_OUT 1
@@ -425,7 +456,7 @@
     #define BOMP_ACT_RETRACT  3
 
 /* WF Sliding Brick Platform */
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define WF_SLID_BRICK_PTFM_BP_MOV_VEL_10 1
     #define WF_SLID_BRICK_PTFM_BP_MOV_VEL_15 2
     #define WF_SLID_BRICK_PTFM_BP_MOV_VEL_20 3
@@ -462,8 +493,8 @@
     #define BBALL_ACT_INITIALIZE 0
     #define BBALL_ACT_ROLL       1
 
-/* Bowling Ball + Bowling Ball Spawner (all variants) */
-    /* oBehParams2ndByte */
+/* Bowling Ball + Bowling Ball Spawner (All variants) */
+    /* oBhvParams2ndByte */
     #define BBALL_BP_STYPE_BOB_UPPER 0
     #define BBALL_BP_STYPE_TTM       1
     #define BBALL_BP_STYPE_BOB_LOWER 2
@@ -495,9 +526,20 @@
     #define BOO_DEATH_STATUS_DEAD  2
 
     /* attackStatus */
-    #define BOO_NOT_ATTACKED  0
-    #define BOO_ATTACKED      1
+    #define BOO_NOT_ATTACKED 0
+    #define BOO_ATTACKED     1
     #define BOO_BOUNCED_ON   -1
+
+    /* oBhvParams2ndByte */
+    #define BOO_BP_GHOST_HUNT     0
+    #define BOO_BP_GENERIC        1
+    #define BOO_BP_MERRY_GO_ROUND 2
+
+/* Big Boo */
+    /* oBhvParams2ndByte */
+    #define BIG_BOO_BP_GHOST_HUNT     0
+    #define BIG_BOO_BP_MERRY_GO_ROUND 1
+    #define BIG_BOO_BP_BALCONY        2
 
 /* Beta Boo Key */
     /* oAction */
@@ -521,7 +563,7 @@
 /* BBH Merry-Go-Round */
     /* gMarioCurrentRoom */
     #define BBH_NEAR_MERRY_GO_ROUND_ROOM 10
-    #define BBH_DYNAMIC_SURFACE_ROOM      0
+    #define BBH_DYNAMIC_SURFACE_ROOM     0
     #define BBH_OUTSIDE_ROOM             13
 
 /* Coffin Spawner */
@@ -533,7 +575,7 @@
     #define COFFIN_ACT_IDLE     0
     #define COFFIN_ACT_STAND_UP 1
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define COFFIN_BP_STATIC 0
 
 /* WDW Arrow Lift */
@@ -548,12 +590,12 @@
 
 /* Yoshi */
     /* oAction */
-    #define YOSHI_ACT_IDLE                        0
-    #define YOSHI_ACT_WALK                        1
-    #define YOSHI_ACT_TALK                        2
-    #define YOSHI_ACT_WALK_JUMP_OFF_ROOF          3
-    #define YOSHI_ACT_FINISH_JUMPING_AND_DESPAWN  4
-    #define YOSHI_ACT_GIVE_PRESENT                5
+    #define YOSHI_ACT_IDLE                       0
+    #define YOSHI_ACT_WALK                       1
+    #define YOSHI_ACT_TALK                       2
+    #define YOSHI_ACT_WALK_JUMP_OFF_ROOF         3
+    #define YOSHI_ACT_FINISH_JUMPING_AND_DESPAWN 4
+    #define YOSHI_ACT_GIVE_PRESENT               5
     #define YOSHI_ACT_CREDITS                    10
 
 /* Koopa */
@@ -590,7 +632,7 @@
     #define KOOPA_THE_QUICK_BOB_INDEX 0
     #define KOOPA_THE_QUICK_THI_INDEX 1
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define KOOPA_BP_UNSHELLED            0
     #define KOOPA_BP_NORMAL               1
     #define KOOPA_BP_KOOPA_THE_QUICK_BASE 2
@@ -609,35 +651,40 @@
     #define SWOOP_ACT_IDLE 0
     #define SWOOP_ACT_MOVE 1
 
-/* Fly guy */
+/* Fly Guy */
     /* oAction */
     #define FLY_GUY_ACT_IDLE           0
     #define FLY_GUY_ACT_APPROACH_MARIO 1
     #define FLY_GUY_ACT_LUNGE          2
     #define FLY_GUY_ACT_SHOOT_FIRE     3
 
-/* Goomba triplet spawner */
-    /* oBehParams2ndByte */
-    #define GOOMBA_TRIPLET_SPAWNER_BP_SIZE_MASK          0x00000003
-    #define GOOMBA_TRIPLET_SPAWNER_BP_EXTRA_GOOMBAS_MASK 0x000000FC
-
-    /* oAction */
-    #define GOOMBA_TRIPLET_SPAWNER_ACT_UNLOADED 0
-    #define GOOMBA_TRIPLET_SPAWNER_ACT_LOADED   1
+    /* oBhvParams2ndByte */
+    #define FLY_GUY_BP_GENERIC 0
+    #define FLY_GUY_BP_FIRE    1
 
 /* Goomba */
-    /* oBehParams2ndByte */
-    #define GOOMBA_BP_SIZE_MASK         0x00000003
-    #define GOOMBA_SIZE_REGULAR         0
-    #define GOOMBA_SIZE_HUGE            1
-    #define GOOMBA_SIZE_TINY            2
-    #define GOOMBA_BP_TRIPLET_FLAG_MASK 0x000000FC
     /* oAction */
     #define GOOMBA_ACT_WALK           0
     #define GOOMBA_ACT_ATTACKED_MARIO 1
     #define GOOMBA_ACT_JUMP           2
 
-/* Chain chomp */
+    /* oBhvParams2ndByte */
+    #define GOOMBA_SIZE_REGULAR                 0
+    #define GOOMBA_SIZE_HUGE                    1
+    #define GOOMBA_SIZE_TINY                    2
+    #define GOOMBA_BP_SIZE_MASK                 (GOOMBA_SIZE_REGULAR | GOOMBA_SIZE_HUGE | GOOMBA_SIZE_TINY)
+    #define GOOMBA_BP_TRIPLET_RESPAWN_FLAG_MASK (0x000000FF & ~GOOMBA_BP_SIZE_MASK)
+
+/* Goomba Triplet Spawner */
+    /* oAction */
+    #define GOOMBA_TRIPLET_SPAWNER_ACT_UNLOADED 0
+    #define GOOMBA_TRIPLET_SPAWNER_ACT_LOADED   1
+
+    /* oBhvParams2ndByte */
+    #define GOOMBA_TRIPLET_SPAWNER_BP_EXTRA_GOOMBAS_MASK (0x000000FF & ~GOOMBA_BP_SIZE_MASK)
+    #define GOOMBA_TRIPLET_SPAWNER_BP_EXTRA_GOOMBAS(num) ((num) << 2)
+
+/* Chain Chomp */
     /* oAction */
     #define CHAIN_CHOMP_ACT_UNINITIALIZED 0
     #define CHAIN_CHOMP_ACT_MOVE          1
@@ -655,12 +702,12 @@
     #define CHAIN_CHOMP_RELEASED_JUMP_AWAY        4
     #define CHAIN_CHOMP_RELEASED_END_CUTSCENE     5
 
-/* Chain chomp chain part */
-    /* oBehParams2ndByte */
+/* Chain Chomp Chain Part */
+    /* oBhvParams2ndByte */
     #define CHAIN_CHOMP_CHAIN_PART_BP_PIVOT 0
 
-/* Wooden post */
-    /* oBehParams */
+/* Wooden Post */
+    /* oBhvParams */
     #define WOODEN_POST_BP_NO_COINS_MASK 0x0000FF00
 
 /* Wiggler */
@@ -684,7 +731,7 @@
     #define SPINY_ACT_THROWN_BY_LAKITU 2
     #define SPINY_ACT_ATTACKED_MARIO   3
 
-/* Evil lakitu */
+/* Evil Lakitu */
     /* oAction */
     #define ENEMY_LAKITU_ACT_UNINITIALIZED 0
     #define ENEMY_LAKITU_ACT_MAIN          1
@@ -701,17 +748,17 @@
     #define CLOUD_ACT_UNLOAD        2
     #define CLOUD_ACT_FWOOSH_HIDDEN 3
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define CLOUD_BP_FWOOSH       0
     #define CLOUD_BP_LAKITU_CLOUD 1
 
-/* Camera lakitu */
+/* Camera Lakitu */
     /* oAction */
     #define CAMERA_LAKITU_INTRO_ACT_TRIGGER_CUTSCENE 0
     #define CAMERA_LAKITU_INTRO_ACT_SPAWN_CLOUD      1
     #define CAMERA_LAKITU_INTRO_ACT_UNK2             2
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define CAMERA_LAKITU_BP_FOLLOW_CAMERA 0
     #define CAMERA_LAKITU_BP_INTRO         1
 
@@ -720,7 +767,7 @@
     #define MANTA_ACT_SPAWN_RINGS 0
     #define MANTA_ACT_NO_RINGS    1
 
-/* Monty mole */
+/* Monty Mole */
     /* oAction */
     #define MONTY_MOLE_ACT_SELECT_HOLE          0
     #define MONTY_MOLE_ACT_RISE_FROM_HOLE       1
@@ -731,10 +778,11 @@
     #define MONTY_MOLE_ACT_HIDE                 6
     #define MONTY_MOLE_ACT_JUMP_OUT_OF_HOLE     7
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define MONTY_MOLE_BP_NO_ROCK 0
+    #define MONTY_MOLE_BP_GENERIC 1
 
-/* Monty mole rock */
+/* Monty Mole Rock */
     /* oAction */
     #define MONTY_MOLE_ROCK_ACT_HELD 0
     #define MONTY_MOLE_ROCK_ACT_MOVE 1
@@ -776,21 +824,21 @@
     #define UKIKI_TEXT_DO_NOT_LET_GO 6
     #define UKIKI_TEXT_STEAL_CAP     7
 
-    /* oBehParams2ndByte */
-    #define UKIKI_CAGE 0
-    #define UKIKI_CAP  1
+    /* oBhvParams2ndByte */
+    #define UKIKI_BP_CAGE 0
+    #define UKIKI_BP_CAP  1
 
     /* Animations */
-    #define UKIKI_ANIM_RUN           0
-    #define UKIKI_ANIM_UNUSED_WALK   1
-    #define UKIKI_ANIM_UNUSED_APOSE  2
-    #define UKIKI_ANIM_UNUSED_DEATH  3
-    #define UKIKI_ANIM_SCREECH       4
-    #define UKIKI_ANIM_JUMP_CLAP     5
-    #define UKIKI_ANIM_UNUSED_HOP    6
-    #define UKIKI_ANIM_LAND          7
-    #define UKIKI_ANIM_JUMP          8
-    #define UKIKI_ANIM_ITCH          9
+    #define UKIKI_ANIM_RUN          0
+    #define UKIKI_ANIM_UNUSED_WALK  1
+    #define UKIKI_ANIM_UNUSED_APOSE 2
+    #define UKIKI_ANIM_UNUSED_DEATH 3
+    #define UKIKI_ANIM_SCREECH      4
+    #define UKIKI_ANIM_JUMP_CLAP    5
+    #define UKIKI_ANIM_UNUSED_HOP   6
+    #define UKIKI_ANIM_LAND         7
+    #define UKIKI_ANIM_JUMP         8
+    #define UKIKI_ANIM_ITCH         9
     #define UKIKI_ANIM_HANDSTAND    10
     #define UKIKI_ANIM_TURN         11
     #define UKIKI_ANIM_HELD         12
@@ -830,12 +878,13 @@
     /* oPiranhaPlantSleepMusicState */
     #define PIRANHA_PLANT_SLEEP_MUSIC_PLAYING 0
 
-/* Piranha Plant bubble */
+/* Piranha Plant Bubble */
+    /* oAction */
     #define PIRANHA_PLANT_BUBBLE_ACT_IDLE             0
     #define PIRANHA_PLANT_BUBBLE_ACT_GROW_SHRINK_LOOP 1
     #define PIRANHA_PLANT_BUBBLE_ACT_BURST            2
 
-/* Platform on track */
+/* Platform on Track */
     /* oAction */
     #define PLATFORM_ON_TRACK_ACT_INIT             0
     #define PLATFORM_ON_TRACK_ACT_WAIT_FOR_MARIO   1
@@ -843,11 +892,11 @@
     #define PLATFORM_ON_TRACK_ACT_PAUSE_BRIEFLY    3
     #define PLATFORM_ON_TRACK_ACT_FALL             4
 
-    /* oBehParams >> 16 */
-    #define PLATFORM_ON_TRACK_BP_MASK_PATH       0xF
-    #define PLATFORM_ON_TRACK_BP_MASK_TYPE       (0x7 << 4)
-    #define PLATFORM_ON_TRACK_BP_RETURN_TO_START (1 << 8)
-    #define PLATFORM_ON_TRACK_BP_DONT_DISAPPEAR  (1 << 9)
+    /* oBhvParams >> 16 */
+    #define PLATFORM_ON_TRACK_BP_MASK_PATH       0x000F
+    #define PLATFORM_ON_TRACK_BP_MASK_TYPE       0x0070
+    #define PLATFORM_ON_TRACK_BP_RETURN_TO_START (1 <<  8)
+    #define PLATFORM_ON_TRACK_BP_DONT_DISAPPEAR  (1 <<  9)
     #define PLATFORM_ON_TRACK_BP_DONT_TURN_YAW   (1 << 10)
     #define PLATFORM_ON_TRACK_BP_DONT_TURN_ROLL  (1 << 11)
 
@@ -856,35 +905,38 @@
     #define PLATFORM_ON_TRACK_TYPE_CHECKERED 2
     #define PLATFORM_ON_TRACK_TYPE_GRATE     3
 
-/* Purple switch */
-    #define PURPLE_SWITCH_IDLE                      0
-    #define PURPLE_SWITCH_PRESSED                   1
-    #define PURPLE_SWITCH_TICKING                   2
-    #define PURPLE_SWITCH_UNPRESSED                 3
-    #define PURPLE_SWITCH_WAIT_FOR_MARIO_TO_GET_OFF 4
+/* Purple Switch */
+    /* oAction */
+    #define PURPLE_SWITCH_ACT_IDLE                      0
+    #define PURPLE_SWITCH_ACT_PRESSED                   1
+    #define PURPLE_SWITCH_ACT_TICKING                   2
+    #define PURPLE_SWITCH_ACT_UNPRESSED                 3
+    #define PURPLE_SWITCH_ACT_WAIT_FOR_MARIO_TO_GET_OFF 4
 
-/* Pyramid elevator */
-    #define PYRAMID_ELEVATOR_IDLE              0
-    #define PYRAMID_ELEVATOR_START_MOVING      1
-    #define PYRAMID_ELEVATOR_CONSTANT_VELOCITY 2
-    #define PYRAMID_ELEVATOR_AT_BOTTOM         3
+/* Pyramid Elevator */
+    /* oAction */
+    #define PYRAMID_ELEVATOR_ACT_IDLE              0
+    #define PYRAMID_ELEVATOR_ACT_START_MOVING      1
+    #define PYRAMID_ELEVATOR_ACT_CONSTANT_VELOCITY 2
+    #define PYRAMID_ELEVATOR_ACT_AT_BOTTOM         3
 
-/* Pyramid top */
+/* Pyramid Top */
+    /* oAction */
     #define PYRAMID_TOP_ACT_CHECK_IF_SOLVED 0
     #define PYRAMID_TOP_ACT_SPINNING        1
     #define PYRAMID_TOP_ACT_EXPLODE         2
 
-/* Pyramid wall */
+/* Pyramid Wall */
     /* oAction */
     #define PYRAMID_WALL_ACT_MOVING_DOWN 0
     #define PYRAMID_WALL_ACT_MOVING_UP   1
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define PYRAMID_WALL_BP_POSITION_HIGH   0
     #define PYRAMID_WALL_BP_POSITION_MIDDLE 1
     #define PYRAMID_WALL_BP_POSITION_LOW    2
 
-/* Penguins (general) */
+/* Penguins (General) */
     /* Walking sounds */
     #define PENGUIN_WALK_BABY 0
     #define PENGUIN_WALK_BIG  1
@@ -893,7 +945,7 @@
     #define PENGUIN_ANIM_WALK 0
     #define PENGUIN_ANIM_IDLE 3
 
-/* Racing penguin */
+/* Racing Penguin */
     /* oAction */
     #define RACING_PENGUIN_ACT_WAIT_FOR_MARIO   0
     #define RACING_PENGUIN_ACT_SHOW_INIT_TEXT   1
@@ -902,57 +954,75 @@
     #define RACING_PENGUIN_ACT_FINISH_RACE      4
     #define RACING_PENGUIN_ACT_SHOW_FINAL_TEXT  5
 
-/* SL walking penguin */
+    /* oBhvParams2ndByte */
+    #define RACING_PENGUIN_BP_THIN 0
+    #define RACING_PENGUIN_BP_FAT  1
+
+/* SL Walking Penguin */
     /* oAction */
     #define SL_WALKING_PENGUIN_ACT_MOVING_FORWARDS  0
     #define SL_WALKING_PENGUIN_ACT_TURNING_BACK     1
     #define SL_WALKING_PENGUIN_ACT_RETURNING        2
     #define SL_WALKING_PENGUIN_ACT_TURNING_FORWARDS 3
 
-/* Snowman wind */
+/* Snowman Wind */
     /* oSubAction */
     #define SL_SNOWMAN_WIND_ACT_IDLE    0
     #define SL_SNOWMAN_WIND_ACT_TALKING 1
     #define SL_SNOWMAN_WIND_ACT_BLOWING 2
 
-/* Water bomb */
+/* Water Bomb */
     /* oAction */
     #define WATER_BOMB_ACT_SHOT_FROM_CANNON 0
     #define WATER_BOMB_ACT_INIT             1
     #define WATER_BOMB_ACT_DROP             2
     #define WATER_BOMB_ACT_EXPLODE          3
 
-/* TTC rotating solid */
-    /* oBehParams2ndByte */
+/* TTC Rotating Solid */
+    /* oBhvParams2ndByte */
     #define TTC_ROTATING_SOLID_BP_CUBE             0
     #define TTC_ROTATING_SOLID_BP_TRIANGULAR_PRISM 1
 
-/* TTC moving bar */
+/* TTC Treadmill */
+    /* oBhvParams2ndByte */
+    #define TTC_TREADMILL_BP_FLAG_LARGE (0 << 0)
+    #define TTC_TREADMILL_BP_FLAG_SMALL (1 << 0)
+    #define TTC_TREADMILL_BP_FLAG_MASK  (TTC_TREADMILL_BP_FLAG_LARGE | TTC_TREADMILL_BP_FLAG_SMALL)
+    #define TTC_TREADMILL_BP_LARGE_1    ((0 << 1) | TTC_TREADMILL_BP_FLAG_LARGE)
+    #define TTC_TREADMILL_BP_SMALL_1    ((0 << 1) | TTC_TREADMILL_BP_FLAG_SMALL)
+    #define TTC_TREADMILL_BP_LARGE_2    ((1 << 1) | TTC_TREADMILL_BP_FLAG_LARGE)
+    #define TTC_TREADMILL_BP_SMALL_2    ((1 << 1) | TTC_TREADMILL_BP_FLAG_SMALL)
+
+/* TTC Moving Bar */
     /* oAction */
     #define TTC_MOVING_BAR_ACT_WAIT      0
     #define TTC_MOVING_BAR_ACT_PULL_BACK 1
     #define TTC_MOVING_BAR_ACT_EXTEND    2
     #define TTC_MOVING_BAR_ACT_RETRACT   3
 
-/* TTC cog */
-    /* oBehParams2ndByte */
-    #define TTC_COG_BP_SHAPE_MASK     0x00000002
+/* TTC Cog */
+    /* oBhvParams2ndByte */
     #define TTC_COG_BP_SHAPE_HEXAGON  (0 << 1)
     #define TTC_COG_BP_SHAPE_TRIANGLE (1 << 1)
-    #define TTC_COG_BP_DIR_MASK       0x00000001
+    #define TTC_COG_BP_SHAPE_MASK     (TTC_COG_BP_SHAPE_HEXAGON | TTC_COG_BP_SHAPE_TRIANGLE)
     #define TTC_COG_BP_DIR_CCW        (0 << 0) // TODO: Check these
     #define TTC_COG_BP_DIR_CW         (1 << 0)
+    #define TTC_COG_BP_DIR_MASK       (TTC_COG_BP_DIR_CCW | TTC_COG_BP_DIR_CW)
 
 /* TTC 2D Rotator */
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define TTC_2D_ROTATOR_BP_HAND   0
     #define TTC_2D_ROTATOR_BP_2D_COG 1
 
 /* Activated Back-and-Forth Platform */
-    /* ((u16)(o->oBehParams >> 16) & 0x0300) >> 8 aka platform type */
     #define ACTIVATED_BF_PLAT_TYPE_BITS_ARROW_PLAT 0
     #define ACTIVATED_BF_PLAT_TYPE_BITFS_MESH_PLAT 1
     #define ACTIVATED_BF_PLAT_TYPE_BITFS_ELEVATOR  2
+
+    /* oBhvParams >> 16 */
+    #define ACTIVATED_BF_PLAT_BP_MASK_TYPE ((ACTIVATED_BF_PLAT_TYPE_BITS_ARROW_PLAT | \
+                                             ACTIVATED_BF_PLAT_TYPE_BITFS_MESH_PLAT | \
+                                             ACTIVATED_BF_PLAT_TYPE_BITFS_ELEVATOR) << 8)
 
 /* Dorrie */
     /* oAction */
@@ -960,22 +1030,22 @@
     #define DORRIE_ACT_LOWER_HEAD 1
     #define DORRIE_ACT_RAISE_HEAD 2
 
-/* Mad piano */
+/* Mad Piano */
     /* oAction */
     #define MAD_PIANO_ACT_WAIT   0
     #define MAD_PIANO_ACT_ATTACK 1
 
-/* Fire piranha plant */
+/* Fire Piranha Plant */
     /* oAction */
     #define FIRE_PIRANHA_PLANT_ACT_HIDE 0
     #define FIRE_PIRANHA_PLANT_ACT_GROW 1
 
-/* Fire spitter */
+/* Fire Spitter */
     /* oAction */
     #define FIRE_SPITTER_ACT_IDLE      0
     #define FIRE_SPITTER_ACT_SPIT_FIRE 1
 
-/* Eyerok boss */
+/* Eyerok Boss */
     /* oAction */
     #define EYEROK_BOSS_ACT_SLEEP           0
     #define EYEROK_BOSS_ACT_WAKE_UP         1
@@ -983,18 +1053,18 @@
     #define EYEROK_BOSS_ACT_FIGHT           3
     #define EYEROK_BOSS_ACT_DIE             4
 
-/* Eyerok hand */
+/* Eyerok Hand */
     /* oAction */
-    #define EYEROK_HAND_ACT_SLEEP               0
-    #define EYEROK_HAND_ACT_IDLE                1
-    #define EYEROK_HAND_ACT_OPEN                2
-    #define EYEROK_HAND_ACT_SHOW_EYE            3
-    #define EYEROK_HAND_ACT_CLOSE               4
-    #define EYEROK_HAND_ACT_RETREAT             5
-    #define EYEROK_HAND_ACT_TARGET_MARIO        6
-    #define EYEROK_HAND_ACT_SMASH               7
-    #define EYEROK_HAND_ACT_FIST_PUSH           8
-    #define EYEROK_HAND_ACT_FIST_SWEEP          9
+    #define EYEROK_HAND_ACT_SLEEP              0
+    #define EYEROK_HAND_ACT_IDLE               1
+    #define EYEROK_HAND_ACT_OPEN               2
+    #define EYEROK_HAND_ACT_SHOW_EYE           3
+    #define EYEROK_HAND_ACT_CLOSE              4
+    #define EYEROK_HAND_ACT_RETREAT            5
+    #define EYEROK_HAND_ACT_TARGET_MARIO       6
+    #define EYEROK_HAND_ACT_SMASH              7
+    #define EYEROK_HAND_ACT_FIST_PUSH          8
+    #define EYEROK_HAND_ACT_FIST_SWEEP         9
     #define EYEROK_HAND_ACT_BEGIN_DOUBLE_POUND 10 // raising for double smash
     #define EYEROK_HAND_ACT_DOUBLE_POUND       11 // double smashing
     #define EYEROK_HAND_ACT_ATTACKED           12
@@ -1023,7 +1093,7 @@
     #define BIRD_ACT_INACTIVE 0
     #define BIRD_ACT_FLY      1
 
-    /* oBehParams2ndByte */
+    /* oBhvParams2ndByte */
     #define BIRD_BP_SPAWNED 0
     #define BIRD_BP_SPAWNER 1
 
@@ -1049,23 +1119,28 @@
 
     #define TWEESTER_SUB_ACT_CHASE 0
 
-/* Triplet butterfly */
+/* Triplet Butterfly */
     /* oAction */
     #define TRIPLET_BUTTERFLY_ACT_INIT     0
     #define TRIPLET_BUTTERFLY_ACT_WANDER   1
     #define TRIPLET_BUTTERFLY_ACT_ACTIVATE 2
     #define TRIPLET_BUTTERFLY_ACT_EXPLODE  3
 
-    /* oBehParams2ndByte */
-    #define TRIPLET_BUTTERFLY_BP_BUTTERFLY_NUM 0x00000003
-    #define TRIPLET_BUTTERFLY_BP_NO_BOMBS      0x00000004
+    /* oBhvParams2ndByte */
+    #define TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNER   (0 << 0)
+    #define TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNED_1 (1 << 0)
+    #define TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNED_2 (1 << 1)
+    #define TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_MASK      (TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNER | \
+                                                       TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNED_1 | \
+                                                       TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNED_2)
+    #define TRIPLET_BUTTERFLY_BP_NO_BOMBS             (1 << 2)
 
     /* oTripletButterflyType */
     #define TRIPLET_BUTTERFLY_TYPE_NORMAL    -1
-    #define TRIPLET_BUTTERFLY_TYPE_EXPLODES   0
-    #define TRIPLET_BUTTERFLY_TYPE_SPAWN_1UP  1
+    #define TRIPLET_BUTTERFLY_TYPE_EXPLODES  0
+    #define TRIPLET_BUTTERFLY_TYPE_SPAWN_1UP 1
 
-/* Water level diamond */
+/* Water Level Diamond */
     /* oAction */
     // Loading
     #define WATER_LEVEL_DIAMOND_ACT_INIT               0
@@ -1088,6 +1163,10 @@
     #define MIPS_STAR_STATUS_HAVENT_SPAWNED_STAR  0
     #define MIPS_STAR_STATUS_SHOULD_SPAWN_STAR    1
     #define MIPS_STAR_STATUS_ALREADY_SPAWNED_STAR 2
+
+    /* oBhvParams2ndByte */
+    #define MIPS_BP_15_STARS 0
+    #define MIPS_BP_50_STARS 1
 
 /* Falling Pillar */
     /* oAction */
@@ -1112,8 +1191,119 @@
     #define MR_BLIZZARD_ACT_DEATH            6
     #define MR_BLIZZARD_ACT_JUMP             7
 
-    /* oBehParams2ndByte */
-    #define MR_BLIZZARD_STYPE_NO_CAP  0
+    /* oBhvParams2ndByte */
+    #define MR_BLIZZARD_STYPE_GENERIC 0
     #define MR_BLIZZARD_STYPE_JUMPING 1
+    #define MR_BLIZZARD_STYPE_CAP     2
+
+/* Whomp */
+    /* oBhvParams2ndByte */
+    #define WHOMP_BP_SMALL 0
+    #define WHOMP_BP_KING  1
+
+/* 1-Up Mushroom */
+    /* oBhvParams2ndByte */
+    #define ONE_UP_BP_GENERIC           0
+    #define ONE_UP_BP_BEAT_BITDW_BOWSER 1
+    #define ONE_UP_BP_BEAT_BITFS_BOWSER 2
+
+/* Breakable Box */
+    /* oBhvParams2ndByte */
+    #define BREAKABLE_BOX_BP_NO_COINS 0
+    #define BREAKABLE_BOX_BP_3_COINS  1
+    #define BREAKABLE_BOX_BP_5_COINS  2
+    #define BREAKABLE_BOX_BP_GIANT    3
+
+/* Hidden Object */
+    /* oAction */
+    #define HIDDEN_OBJECT_ACT_INACTIVE 0
+    #define HIDDEN_OBJECT_ACT_ACTIVE   1
+    #define HIDDEN_OBJECT_ACT_BROKEN   2
+
+    /* oBhvParams2ndByte */
+    #define HIDDEN_OBJECT_BP_BREAKABLE_BOX            0
+    #define HIDDEN_OBJECT_BP_WDW_PLATFORM             1
+    #define HIDDEN_OBJECT_BP_UNBREAKABLE_BOX_UNUSED_1 1
+    #define HIDDEN_OBJECT_BP_UNBREAKABLE_BOX_UNUSED_2 2
+
+/* Exclamation Box */
+    /* oAnimState */
+    #define EXCLAMATION_BOX_ANIM_STATE_WING_CAP   0
+    #define EXCLAMATION_BOX_ANIM_STATE_METAL_CAP  1
+    #define EXCLAMATION_BOX_ANIM_STATE_VANISH_CAP 2
+    #define EXCLAMATION_BOX_ANIM_STATE_DEFAULT    3
+
+    /* oBhvParams2ndByte */
+    #define EXCLAMATION_BOX_BP_WING_CAP         0
+    #define EXCLAMATION_BOX_BP_METAL_CAP        1
+    #define EXCLAMATION_BOX_BP_VANISH_CAP       2
+    #define EXCLAMATION_BOX_BP_SPECIAL_CAP_END  2
+    #define EXCLAMATION_BOX_BP_KOOPA_SHELL      3
+    #define EXCLAMATION_BOX_BP_ONE_COIN         4
+    #define EXCLAMATION_BOX_BP_THREE_COINS      5
+    #define EXCLAMATION_BOX_BP_TEN_COINS        6
+    #define EXCLAMATION_BOX_BP_1UP_WALKING      7
+    #define EXCLAMATION_BOX_BP_STAR_ACT_1       8
+    #define EXCLAMATION_BOX_BP_1UP_RUNNING_AWAY 9
+    #define EXCLAMATION_BOX_BP_STAR_ACT_2       10
+    #define EXCLAMATION_BOX_BP_STAR_ACT_3       11
+    #define EXCLAMATION_BOX_BP_STAR_ACT_4       12
+    #define EXCLAMATION_BOX_BP_STAR_ACT_5       13
+    #define EXCLAMATION_BOX_BP_STAR_ACT_6       14
+    #define EXCLAMATION_BOX_BP_END              99
+
+/* Cap Switch */
+    /* oBhvParams2ndByte */
+    #define CAP_SWITCH_BP_RED    0
+    #define CAP_SWITCH_BP_GREEN  1
+    #define CAP_SWITCH_BP_BLUE   2
+    #define CAP_SWITCH_BP_YELLOW 3
+
+/* Openable Grill */
+    /* oBhvParams2ndByte */
+    #define OPENABLE_GRILL_BP_BOB 0
+    #define OPENABLE_GRILL_BP_HMC 1
+
+/* WF Rotating Wooden Platform */
+    /* oAction */
+    #define WF_ROTATING_WOODEN_PLATFORM_ACT_IDLE     0
+    #define WF_ROTATING_WOODEN_PLATFORM_ACT_ROTATING 1
+
+/* Rotating Platform */
+    /* oBhvParams2ndByte */
+    #define ROTATING_PLATFORM_BP_WF  0
+    #define ROTATING_PLATFORM_BP_WDW 1
+
+/* Tumbling Bridge */
+    /* oBhvParams2ndByte */
+    #define TUMBLING_BRIDGE_BP_WF    0
+    #define TUMBLING_BRIDGE_BP_BBH   1
+    #define TUMBLING_BRIDGE_BP_LLL   2
+    #define TUMBLING_BRIDGE_BP_BITFS 3
+
+/* Grindel or Thwomp */
+    /* oAction */
+    #define GRINDEL_THWOMP_ACT_RAISE          0
+    #define GRINDEL_THWOMP_ACT_IDLE_AT_TOP    1
+    #define GRINDEL_THWOMP_ACT_LOWER          2
+    #define GRINDEL_THWOMP_ACT_LAND           3
+    #define GRINDEL_THWOMP_ACT_IDLE_AT_BOTTOM 4
+
+/* Tox Box */
+    /* oAction */
+    #define TOX_BOX_ACT_INIT          0
+    #define TOX_BOX_ACT_ROLL_LAND     1
+    #define TOX_BOX_ACT_IDLE          2
+    #define TOX_BOX_ACT_UNUSED_IDLE   3
+    #define TOX_BOX_ACT_ROLL_FORWARD  4
+    #define TOX_BOX_ACT_ROLL_BACKWARD 5
+    #define TOX_BOX_ACT_ROLL_RIGHT    6
+    #define TOX_BOX_ACT_ROLL_LEFT     7
+    #define TOX_BOX_ACT_TABLE_END     -1
+
+    /* oBhvParams2ndByte */
+    #define TOX_BOX_BP_MOVEMENT_PATTERN_1 0
+    #define TOX_BOX_BP_MOVEMENT_PATTERN_2 1
+    #define TOX_BOX_BP_MOVEMENT_PATTERN_3 2
 
 #endif // OBJECT_CONSTANTS_H

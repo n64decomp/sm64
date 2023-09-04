@@ -13,14 +13,16 @@ struct ObjectHitbox sSparkleSpawnStarHitbox = {
 };
 
 void bhv_spawned_star_init(void) {
-    s32 sp24;
+    s32 starIndex;
 
     if (!(o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT)) {
-        o->oBehParams = o->parentObj->oBehParams;
+        o->oBhvParams = o->parentObj->oBhvParams;
     }
-    sp24 = (o->oBehParams >> 24) & 0xFF;
 
-    if (bit_shift_left(sp24) & save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum))) {
+    starIndex = (o->oBhvParams >> 24) & 0xFF;
+
+    if (bit_shift_left(starIndex)
+        & save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum))) {
         cur_obj_set_model(MODEL_TRANSPARENT_STAR);
     }
 
@@ -69,7 +71,7 @@ void bhv_spawned_star_loop(void) {
             set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
             o->activeFlags |= ACTIVE_FLAG_INITIATED_TIME_STOP;
             o->oAngleVelYaw = 0x800;
-            if (o->oBehParams2ndByte == 0) {
+            if (o->oBhvParams2ndByte == 0) {
                 set_home_to_mario();
             } else {
                 set_y_home_to_pos();
@@ -123,9 +125,9 @@ void bhv_spawned_star_loop(void) {
     o->oInteractStatus = 0;
 }
 
-void bhv_spawn_star_no_level_exit(u32 sp20) {
-    struct Object *sp1C = spawn_object(o, MODEL_STAR, bhvSpawnedStarNoLevelExit);
-    sp1C->oBehParams = sp20 << 24;
-    sp1C->oInteractionSubtype = INT_SUBTYPE_NO_EXIT;
-    obj_set_angle(sp1C, 0, 0, 0);
+void bhv_spawn_star_no_level_exit(u32 starIndex) {
+    struct Object *star = spawn_object(o, MODEL_STAR, bhvSpawnedStarNoLevelExit);
+    star->oBhvParams = starIndex << 24;
+    star->oInteractionSubtype = INT_SUBTYPE_NO_EXIT;
+    obj_set_angle(star, 0, 0, 0);
 }

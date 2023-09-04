@@ -7,5 +7,6 @@
 #include "macros.h"
 
 extern u16 gZBuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
+extern s32 gZBufferEnd;
 
 #endif // ZBUFFER_H

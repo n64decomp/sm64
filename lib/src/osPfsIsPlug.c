@@ -1,6 +1,7 @@
 #include "PR/os_pi.h"
 #include "libultra_internal.h"
 #include "controller.h"
+#include "macros.h"
 
 OSPifRam __osPfsPifRam;
 
@@ -23,17 +24,17 @@ s32 osPfsIsPlug(OSMesgQueue *queue, u8 *pattern) {
         ret = __osSiRawStartDma(OS_READ, &__osPfsPifRam);
         osRecvMesg(queue, &dummy, OS_MESG_BLOCK);
         __osPfsGetInitData(&bitpattern, data);
-        for (channel = 0; channel < _osContNumControllers; channel++) {
+        for (channel = 0; channel < __osMaxControllers; channel++) {
             if ((data[channel].status & CONT_ADDR_CRC_ER) == 0) {
                 crc_error_cnt--;
                 break;
             }
         }
-        if (_osContNumControllers == channel) {
+        if (__osMaxControllers == channel) {
             crc_error_cnt = 0;
         }
         if (crc_error_cnt < 1) {
-            for (channel = 0; channel < _osContNumControllers; channel++) {
+            for (channel = 0; channel < __osMaxControllers; channel++) {
                 if (data[channel].errnum == 0 && (data[channel].status & CONT_CARD_ON) != 0) {
                     bits |= 1 << channel;
                 }
@@ -50,9 +51,9 @@ void __osPfsRequestData(u8 cmd) {
     __OSContRequesFormat requestformat;
     int i;
 
-    _osLastSentSiCmd = cmd;
+    __osContLastCmd = cmd;
 
-    for (i = 0; i < ARRLEN(__osPfsPifRam.ramarray) + 1; i++) { // also clear pifstatus
+    for (i = 0; i < ARRAY_COUNT(__osPfsPifRam.ramarray) + 1; i++) { // also clear pifstatus
         __osPfsPifRam.ramarray[i] = 0;
     }
 
@@ -67,7 +68,7 @@ void __osPfsRequestData(u8 cmd) {
     requestformat.typel = CONT_CMD_NOP;
     requestformat.status = CONT_CMD_NOP;
     requestformat.dummy1 = CONT_CMD_NOP;
-    for (i = 0; i < _osContNumControllers; i++) {
+    for (i = 0; i < __osMaxControllers; i++) {
         *(__OSContRequesFormat *)ptr = requestformat;
         ptr += sizeof(__OSContRequesFormat);
     }
@@ -81,7 +82,7 @@ void __osPfsGetInitData(u8 *pattern, OSContStatus *data) {
     u8 bits;
     bits = 0;
     ptr = (u8 *)&__osPfsPifRam;
-    for (i = 0; i < _osContNumControllers; i++, ptr += sizeof(__OSContRequesFormat)) {
+    for (i = 0; i < __osMaxControllers; i++, ptr += sizeof(__OSContRequesFormat)) {
         requestformat = *(__OSContRequesFormat *)ptr;
         data->errnum = CHNL_ERR(requestformat);
         if (data->errnum == 0) {

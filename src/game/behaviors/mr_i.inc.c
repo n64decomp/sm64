@@ -89,7 +89,7 @@ void mr_i_act_3(void) {
     f32 sp20;
     f32 sp1C;
 
-    if (o->oBehParams2ndByte != 0) {
+    if (o->oBhvParams2ndByte != 0) {
         sp1C = 2.0f;
     } else {
         sp1C = 1.0f;
@@ -132,7 +132,7 @@ void mr_i_act_3(void) {
             cur_obj_become_intangible();
             spawn_mist_particles();
             o->oMrIScale = sp1C * 0.6;
-            if (o->oBehParams2ndByte != 0) {
+            if (o->oBhvParams2ndByte != 0) {
                 o->oPosY += 100.0f;
                 spawn_default_star(1370, 2000.0f, -320.0f);
                 obj_mark_for_deletion(o);
@@ -158,7 +158,7 @@ void mr_i_act_2(void) {
     s16 sp1C;
 
     if (o->oTimer == 0) {
-        if (o->oBehParams2ndByte != 0) {
+        if (o->oBhvParams2ndByte != 0) {
             o->oMrIUnkF4 = 200;
         } else {
             o->oMrIUnkF4 = 120;
@@ -274,7 +274,7 @@ void mr_i_act_0(void) {
     o->oMoveAngleYaw = 0;
     o->oMoveAngleRoll = 0;
 #endif
-    cur_obj_scale(o->oBehParams2ndByte + 1);
+    cur_obj_scale(o->oBhvParams2ndByte + 1);
 
     if (o->oTimer == 0) {
         cur_obj_set_pos_to_home();

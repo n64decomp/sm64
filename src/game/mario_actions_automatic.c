@@ -567,13 +567,12 @@ s32 act_ledge_grab(struct MarioState *m) {
         }
         return let_go_of_ledge(m);
     }
+    if (m->actionTimer == 10 && (m->input & INPUT_NONZERO_ANALOG)
 #ifdef VERSION_EU
-    // On EU, you can't slow climb up ledges while holding A.
-    if (m->actionTimer == 10 && (m->input & INPUT_NONZERO_ANALOG) && !(m->input & INPUT_A_DOWN))
-#else
-    if (m->actionTimer == 10 && (m->input & INPUT_NONZERO_ANALOG))
+        // On EU, you can't slow climb up ledges while holding A.
+        && !(m->input & INPUT_A_DOWN)
 #endif
-    {
+    ) {
         if (intendedDYaw >= -0x4000 && intendedDYaw <= 0x4000) {
             if (hasSpaceForMario) {
                 return set_mario_action(m, ACT_LEDGE_CLIMB_SLOW_1, 0);

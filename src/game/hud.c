@@ -27,16 +27,6 @@ struct PowerMeterHUD {
     f32 unused;
 };
 
-struct UnusedHUDStruct {
-    u32 unused1;
-    u16 unused2;
-    u16 unused3;
-};
-
-struct CameraHUD {
-    s16 status;
-};
-
 // Stores health segmented value defined by numHealthWedges
 // When the HUD is rendered this value is 8, full health.
 static s16 sPowerMeterStoredHealth;
@@ -53,9 +43,15 @@ static struct PowerMeterHUD sPowerMeterHUD = {
 // when the power meter is hidden.
 s32 sPowerMeterVisibleTimer = 0;
 
-UNUSED static struct UnusedHUDStruct sUnusedHUDValues = { 0x00, 0x0A, 0x00 };
+// TODO: fakediff?
+#ifndef VERSION_CN
+UNUSED static s32 sUnusedHUDValue1 = 0;
+UNUSED static s16 sUnusedHUDValue2 = 10;
+#else
+UNUSED static s32 sUnusedHUDValue2 = 10;
+#endif
 
-static struct CameraHUD sCameraHUD = { CAM_STATUS_NONE };
+static s16 sCameraHUDStatus = CAM_STATUS_NONE;
 
 /**
  * Renders a rgba16 16x16 glyph texture from a table list.
@@ -325,7 +321,10 @@ void render_hud_timer(void) {
     u16 timerValFrames = gHudDisplay.timer;
     u16 timerMins = timerValFrames / (30 * 60);
     u16 timerSecs = (timerValFrames - (timerMins * 1800)) / 30;
-    u16 timerFracSecs = ((timerValFrames - (timerMins * 1800) - (timerSecs * 30)) & 0xFFFF) / 3;
+    u16 timerFracSecs = ((u16) (timerValFrames - (timerMins * 1800) - (timerSecs * 30))) / 3;
+#ifdef VERSION_CN
+    u8 timeString[2];
+#endif
 
 #ifdef VERSION_EU
     switch (eu_get_language()) {
@@ -339,6 +338,10 @@ void render_hud_timer(void) {
             print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "ZEIT");
             break;
     }
+#elif defined(VERSION_CN)
+    timeString[0] = 0xC0; // TODO: iQue colorful text
+    timeString[1] = 0x00;
+    print_text_centered(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, (const char *) timeString);
 #else
     print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(150), 185, "TIME");
 #endif
@@ -358,11 +361,11 @@ void render_hud_timer(void) {
  * defined in update_camera_status.
  */
 void set_hud_camera_status(s16 status) {
-    sCameraHUD.status = status;
+    sCameraHUDStatus = status;
 }
 
 /**
- * Renders camera HUD glyphs using a table list, depending of
+ * Renders camera HUD glyphs using a table list. Depending on
  * the camera status called, a defined glyph is rendered.
  */
 void render_hud_camera_status(void) {
@@ -370,14 +373,14 @@ void render_hud_camera_status(void) {
     s32 x = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(54);
     s32 y = 205;
 
-    if (sCameraHUD.status == CAM_STATUS_NONE) {
+    if (sCameraHUDStatus == CAM_STATUS_NONE) {
         return;
     }
 
     gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
     render_hud_tex_lut(x, y, (*cameraLUT)[GLYPH_CAM_CAMERA]);
 
-    switch (sCameraHUD.status & CAM_STATUS_MODE_GROUP) {
+    switch (sCameraHUDStatus & CAM_STATUS_MODE_GROUP) {
         case CAM_STATUS_MARIO:
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_MARIO_HEAD]);
             break;
@@ -389,7 +392,7 @@ void render_hud_camera_status(void) {
             break;
     }
 
-    switch (sCameraHUD.status & CAM_STATUS_C_MODE_GROUP) {
+    switch (sCameraHUDStatus & CAM_STATUS_C_MODE_GROUP) {
         case CAM_STATUS_C_DOWN:
             render_hud_small_tex_lut(x + 4, y + 16, (*cameraLUT)[GLYPH_CAM_ARROW_DOWN]);
             break;
