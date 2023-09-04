@@ -35,6 +35,8 @@ ifeq ($(OS),Windows_NT)
   DETECTED_OS := windows
 else ifeq ($(UNAME_S),Linux)
   DETECTED_OS := linux
+else ifeq ($(UNAME_S),FreeBSD)
+  DETECTED_OS := freebsd
 else ifeq ($(UNAME_S),Darwin)
   DETECTED_OS := macos
   MAKE := gmake
@@ -121,6 +123,10 @@ endif
 ifeq ($(DETECTED_OS),linux)
 # For traceback
 $(RECOMP_ELF): LDFLAGS   += -Wl,-export-dynamic
+endif
+ifeq ($(DETECTED_OS),freebsd)
+# For traceback
+$(RECOMP_ELF): LDFLAGS   += -Wl,-export-dynamic -lexecinfo
 endif
 
 # Too many warnings, disable everything for now...
