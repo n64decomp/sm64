@@ -3,6 +3,8 @@ import sys
 import os
 import json
 
+#respect make setting PYTHON to use, instead of assuming linux convention
+PYTHON_BIN=os.getenv('PYTHON')
 
 def read_asset_map():
     with open("assets.json") as f:
@@ -174,7 +176,7 @@ def main():
         if mio0 == "@sound":
             rom = roms[lang]
             args = [
-                "python3",
+                PYTHON_BIN,
                 "tools/disassemble_sound.py",
                 "baserom." + lang + ".z64",
             ]
