@@ -1,7 +1,7 @@
 CXX := g++
 
 libaudiofile.a: audiofile.o
-	$(AR) rcs $@ $^
+	ar rcs $@ $^
 
 audiofile.o: audiofile.cpp audiofile.h aupvlist.h
 	$(CXX) -std=c++11 -O2 -I. -c $< -o $@
