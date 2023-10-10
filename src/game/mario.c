@@ -559,12 +559,12 @@ s32 mario_facing_downhill(struct MarioState *m, s32 turnYaw) {
     // This is never used in practice, as turnYaw is
     // always passed as zero.
     if (turnYaw && m->forwardVel < 0.0f) {
-        faceAngleYaw += 0x8000;
+        faceAngleYaw += DEGREES(180);
     }
 
     faceAngleYaw = m->floorAngle - faceAngleYaw;
 
-    return (-0x4000 < faceAngleYaw) && (faceAngleYaw < 0x4000);
+    return (DEGREES(-90) < faceAngleYaw) && (faceAngleYaw < DEGREES(90));
 }
 
 /**
@@ -744,7 +744,7 @@ void set_steep_jump_action(struct MarioState *m) {
     if (m->forwardVel > 0.0f) {
         //! ((s16)0x8000) has undefined behavior. Therefore, this downcast has
         // undefined behavior if m->floorAngle >= 0.
-        s16 angleTemp = m->floorAngle + 0x8000;
+        s16 angleTemp = m->floorAngle + DEGREES(180);
         s16 faceAngleTemp = m->faceAngle[1] - angleTemp;
 
         f32 y = sins(faceAngleTemp) * m->forwardVel;
@@ -843,7 +843,7 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
         case ACT_STEEP_JUMP:
             m->marioObj->header.gfx.animInfo.animID = -1;
             set_mario_y_vel_based_on_fspeed(m, 42.0f, 0.25f);
-            m->faceAngle[0] = -0x2000;
+            m->faceAngle[0] = DEGREES(-45);
             break;
 
         case ACT_LAVA_BOOST:

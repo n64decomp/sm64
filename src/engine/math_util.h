@@ -5,6 +5,13 @@
 
 #include "types.h"
 
+/**
+ * Converts an angle in degrees to sm64's s16 angle units. For example, DEGREES(90) == 0x4000
+ * This should be used mainly to make math, physics, action, and camera code clearer at first glance.
+ * Shouldn't be used for angular velocities which are often small arbitrary s16 values.
+ */
+#define DEGREES(x) (int)((x) * 0x10000 / 360)
+
 /*
  * The sine and cosine tables overlap, but "#define gCosineTable (gSineTable +
  * 0x400)" doesn't give expected codegen; gSineTable and gCosineTable need to

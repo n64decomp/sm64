@@ -116,7 +116,7 @@ s32 act_holding_pole(struct MarioState *m) {
 #ifdef VERSION_JP
     if (m->input & INPUT_A_PRESSED) {
         add_tree_leaf_particles(m);
-        m->faceAngle[1] += 0x8000;
+        m->faceAngle[1] += DEGREES(180);
         return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
     }
 
@@ -134,7 +134,7 @@ s32 act_holding_pole(struct MarioState *m) {
 
     if (m->input & INPUT_A_PRESSED) {
         add_tree_leaf_particles(m);
-        m->faceAngle[1] += 0x8000;
+        m->faceAngle[1] += DEGREES(180);
         return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
     }
 #endif
@@ -200,7 +200,7 @@ s32 act_climbing_pole(struct MarioState *m) {
 
     if (m->input & INPUT_A_PRESSED) {
         add_tree_leaf_particles(m);
-        m->faceAngle[1] += 0x8000;
+        m->faceAngle[1] += DEGREES(180);
         return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
     }
 
@@ -573,7 +573,7 @@ s32 act_ledge_grab(struct MarioState *m) {
         && !(m->input & INPUT_A_DOWN)
 #endif
     ) {
-        if (intendedDYaw >= -0x4000 && intendedDYaw <= 0x4000) {
+        if (intendedDYaw >= DEGREES(-90) && intendedDYaw <= DEGREES(90)) {
             if (hasSpaceForMario) {
                 return set_mario_action(m, ACT_LEDGE_CLIMB_SLOW_1, 0);
             }
@@ -582,7 +582,7 @@ s32 act_ledge_grab(struct MarioState *m) {
         }
     }
 
-    heightAboveFloor = m->pos[1] - find_floor_height_relative_polar(m, -0x8000, 30.0f);
+    heightAboveFloor = m->pos[1] - find_floor_height_relative_polar(m, DEGREES(-180), 30.0f);
     if (hasSpaceForMario && heightAboveFloor < 100.0f) {
         return set_mario_action(m, ACT_LEDGE_CLIMB_FAST, 0);
     }
@@ -711,18 +711,18 @@ s32 act_in_cannon(struct MarioState *m) {
             m->faceAngle[0] -= (s16)(m->controller->stickY * 10.0f);
             marioObj->oMarioCannonInputYaw -= (s16)(m->controller->stickX * 10.0f);
 
-            if (m->faceAngle[0] > 0x38E3) {
-                m->faceAngle[0] = 0x38E3;
+            if (m->faceAngle[0] > DEGREES(80)) {
+                m->faceAngle[0] = DEGREES(80);
             }
             if (m->faceAngle[0] < 0) {
                 m->faceAngle[0] = 0;
             }
 
-            if (marioObj->oMarioCannonInputYaw > 0x4000) {
-                marioObj->oMarioCannonInputYaw = 0x4000;
+            if (marioObj->oMarioCannonInputYaw > DEGREES(90)) {
+                marioObj->oMarioCannonInputYaw = DEGREES(90);
             }
-            if (marioObj->oMarioCannonInputYaw < -0x4000) {
-                marioObj->oMarioCannonInputYaw = -0x4000;
+            if (marioObj->oMarioCannonInputYaw < DEGREES(-90)) {
+                marioObj->oMarioCannonInputYaw = DEGREES(-90);
             }
 
             m->faceAngle[1] = marioObj->oMarioCannonObjectYaw + marioObj->oMarioCannonInputYaw;

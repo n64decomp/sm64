@@ -220,9 +220,9 @@ static void star_door_unlock_spawn_particles(s16 angleOffset) {
     struct Object *sparkleParticle = spawn_object(gCurrentObject, 0, bhvSparkleSpawn);
 
     sparkleParticle->oPosX +=
-        100.0f * sins((gCurrentObject->oUnlockDoorStarTimer * 0x2800) + angleOffset);
+        100.0f * sins((gCurrentObject->oUnlockDoorStarTimer * DEGREES(56.25)) + angleOffset);
     sparkleParticle->oPosZ +=
-        100.0f * coss((gCurrentObject->oUnlockDoorStarTimer * 0x2800) + angleOffset);
+        100.0f * coss((gCurrentObject->oUnlockDoorStarTimer * DEGREES(56.25)) + angleOffset);
     // Particles are spawned lower each frame
     sparkleParticle->oPosY -= gCurrentObject->oUnlockDoorStarTimer * 10.0f;
 }
@@ -231,9 +231,9 @@ void bhv_unlock_door_star_init(void) {
     gCurrentObject->oUnlockDoorStarState = UNLOCK_DOOR_STAR_RISING;
     gCurrentObject->oUnlockDoorStarTimer = 0;
     gCurrentObject->oUnlockDoorStarYawVel = 0x1000;
-    gCurrentObject->oPosX += 30.0f * sins(gMarioState->faceAngle[1] - 0x4000);
+    gCurrentObject->oPosX += 30.0f * sins(gMarioState->faceAngle[1] - DEGREES(90));
     gCurrentObject->oPosY += 160.0f;
-    gCurrentObject->oPosZ += 30.0f * coss(gMarioState->faceAngle[1] - 0x4000);
+    gCurrentObject->oPosZ += 30.0f * coss(gMarioState->faceAngle[1] - DEGREES(90));
     gCurrentObject->oMoveAngleYaw = 0x7800;
     obj_scale(gCurrentObject, 0.5f);
 }
@@ -273,8 +273,8 @@ void bhv_unlock_door_star_loop(void) {
             break;
         case UNLOCK_DOOR_STAR_SPAWNING_PARTICLES:
             // Spawn two particles, opposite sides of the star.
-            star_door_unlock_spawn_particles(0);
-            star_door_unlock_spawn_particles(0x8000);
+            star_door_unlock_spawn_particles(DEGREES(0));
+            star_door_unlock_spawn_particles(DEGREES(180));
             if (gCurrentObject->oUnlockDoorStarTimer++ == 20) {
                 gCurrentObject->oUnlockDoorStarTimer = 0;
                 gCurrentObject->oUnlockDoorStarState++; // Sets state to UNLOCK_DOOR_STAR_DONE

@@ -153,7 +153,7 @@ s32 act_idle(struct MarioState *m) {
             // and that he's gone through 10 cycles before sleeping.
             // actionTimer is used to track how many cycles have passed.
             if (++m->actionState == 3) {
-                f32 deltaYOfFloorBehindMario = m->pos[1] - find_floor_height_relative_polar(m, -0x8000, 60.0f);
+                f32 deltaYOfFloorBehindMario = m->pos[1] - find_floor_height_relative_polar(m, DEGREES(-180), 60.0f);
                 if (deltaYOfFloorBehindMario < -24.0f || 24.0f < deltaYOfFloorBehindMario || m->floor->flags & SURFACE_FLAG_DYNAMIC) {
                     m->actionState = 0;
                 } else {
@@ -265,7 +265,7 @@ s32 act_sleeping(struct MarioState *m) {
         return set_mario_action(m, ACT_WAKING_UP, m->actionState);
     }
 
-    if (m->pos[1] - find_floor_height_relative_polar(m, -0x8000, 60.0f) > 24.0f) {
+    if (m->pos[1] - find_floor_height_relative_polar(m, DEGREES(-180), 60.0f) > 24.0f) {
         return set_mario_action(m, ACT_WAKING_UP, m->actionState);
     }
 
@@ -888,7 +888,7 @@ s32 act_side_flip_land_stop(struct MarioState *m) {
     }
 
     landing_step(m, MARIO_ANIM_SLIDEFLIP_LAND, ACT_IDLE);
-    m->marioObj->header.gfx.angle[1] += 0x8000;
+    m->marioObj->header.gfx.angle[1] += DEGREES(180);
     return FALSE;
 }
 
@@ -1070,7 +1070,7 @@ s32 act_first_person(struct MarioState *m) {
         && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 10) {
         s16 sp1A = m->statusForCamera->headRotation[0];
         s16 sp18 = ((m->statusForCamera->headRotation[1] * 4) / 3) + m->faceAngle[1];
-        if (sp1A == -0x1800 && (sp18 < -0x6FFF || sp18 >= 0x7000)) {
+        if (sp1A == DEGREES(-33.75) && (sp18 <= DEGREES(-157.5) || sp18 >= DEGREES(157.5))) {
             level_trigger_warp(m, WARP_OP_UNKNOWN_01);
         }
     }

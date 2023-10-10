@@ -75,7 +75,7 @@ BAD_RETURN(s32) init_bully_collision_data(struct BullyCollisionData *data, f32 p
                                f32 forwardVel, s16 yaw, f32 conversionRatio, f32 radius) {
     if (forwardVel < 0.0f) {
         forwardVel *= -1.0f;
-        yaw += 0x8000;
+        yaw += DEGREES(180);
     }
 
     data->radius = radius;
@@ -100,7 +100,7 @@ void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) {
     if (negateSpeed) {
         mario_set_forward_vel(m, -m->forwardVel);
     } else {
-        m->faceAngle[1] += 0x8000;
+        m->faceAngle[1] += DEGREES(180);
     }
 }
 
@@ -158,12 +158,12 @@ u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
 u32 mario_push_off_steep_floor(struct MarioState *m, u32 action, u32 actionArg) {
     s16 floorDYaw = m->floorAngle - m->faceAngle[1];
 
-    if (floorDYaw > -0x4000 && floorDYaw < 0x4000) {
+    if (floorDYaw > DEGREES(-90) && floorDYaw < DEGREES(90)) {
         m->forwardVel = 16.0f;
         m->faceAngle[1] = m->floorAngle;
     } else {
         m->forwardVel = -16.0f;
-        m->faceAngle[1] = m->floorAngle + 0x8000;
+        m->faceAngle[1] = m->floorAngle + DEGREES(180);
     }
 
     return set_mario_action(m, action, actionArg);
@@ -199,7 +199,7 @@ u32 mario_update_windy_ground(struct MarioState *m) {
 
             pushSpeed = m->forwardVel > 0.0f ? -m->forwardVel * 0.5f : -8.0f;
 
-            if (pushDYaw > -0x4000 && pushDYaw < 0x4000) {
+            if (pushDYaw > DEGREES(-90) && pushDYaw < DEGREES(90)) {
                 pushSpeed *= -1.0f;
             }
 
@@ -306,10 +306,10 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
     if (upperWall != NULL) {
         s16 wallDYaw = atan2s(upperWall->normal.z, upperWall->normal.x) - m->faceAngle[1];
 
-        if (wallDYaw >= 0x2AAA && wallDYaw <= 0x5555) {
+        if (wallDYaw >= DEGREES(60) && wallDYaw <= DEGREES(120)) {
             return GROUND_STEP_NONE;
         }
-        if (wallDYaw <= -0x2AAA && wallDYaw >= -0x5555) {
+        if (wallDYaw <= DEGREES(-60) && wallDYaw >= DEGREES(-120)) {
             return GROUND_STEP_NONE;
         }
 
@@ -381,7 +381,7 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     m->floorAngle = atan2s(ledgeFloor->normal.z, ledgeFloor->normal.x);
 
     m->faceAngle[0] = 0;
-    m->faceAngle[1] = atan2s(wall->normal.z, wall->normal.x) + 0x8000;
+    m->faceAngle[1] = atan2s(wall->normal.z, wall->normal.x) + DEGREES(180);
     return TRUE;
 }
 
@@ -491,7 +491,7 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
             return AIR_STEP_HIT_LAVA_WALL;
         }
 
-        if (wallDYaw < -0x6000 || wallDYaw > 0x6000) {
+        if (wallDYaw < DEGREES(-135) || wallDYaw > DEGREES(135)) {
             m->flags |= MARIO_UNKNOWN_30;
             return AIR_STEP_HIT_WALL;
         }

@@ -808,7 +808,7 @@ s16 look_down_slopes(s16 camYaw) {
     struct Surface *floor;
     f32 floorDY;
     // Default pitch
-    s16 pitch = 0x05B0;
+    s16 pitch = DEGREES(8);
     // x and z offsets towards the camera
     f32 xOff = sMarioCamState->pos[0] + sins(camYaw) * 40.f;
     f32 zOff = sMarioCamState->pos[2] + coss(camYaw) * 40.f;
@@ -818,7 +818,7 @@ s16 look_down_slopes(s16 camYaw) {
     if (floor != NULL) {
         if (floor->type != SURFACE_WALL_MISC && floorDY > 0) {
             if (floor->normal.z == 0.f && floorDY < 100.f) {
-                pitch = 0x05B0;
+                pitch = DEGREES(8);
             } else {
                 // Add the slope's angle of declination to the pitch
                 pitch += atan2s(40.f, floorDY);
@@ -2045,7 +2045,7 @@ void mode_water_surface_camera(struct Camera *c) {
  */
 s32 update_mario_camera(UNUSED struct Camera *c, Vec3f focus, Vec3f pos) {
     s16 yaw = sMarioCamState->faceAngle[1] + sModeOffsetYaw + DEGREES(180);
-    focus_on_mario(focus, pos, 125.f, 125.f, gCameraZoomDist, 0x05B0, yaw);
+    focus_on_mario(focus, pos, 125.f, 125.f, gCameraZoomDist, DEGREES(8), yaw);
 
     return sMarioCamState->faceAngle[1];
 }
@@ -4751,7 +4751,7 @@ s32 offset_yaw_outward_radial(struct Camera *c, s16 areaYaw) {
             areaCenter[2] = c->areaCenZ;
             distFromAreaCenter = calc_abs_dist(areaCenter, sMarioCamState->pos);
             if (800.f > distFromAreaCenter) {
-                yawGoal = 0x3800;
+                yawGoal = DEGREES(78.75);
             }
             break;
         case AREA_SSL_PYRAMID:
@@ -4778,7 +4778,7 @@ s32 offset_yaw_outward_radial(struct Camera *c, s16 areaYaw) {
     }
     // When the final yaw is out of [-60,60] degrees, approach yawGoal faster than dYaw will ever be,
     // making the camera lock in one direction until yawGoal drops below 60 (or Mario presses a C button)
-    if (yaw < -DEGREES(60)) {
+    if (yaw < DEGREES(-60)) {
         //! Maybe they meant to reverse yawGoal's sign?
         camera_approach_s16_symmetric_bool(&yaw, -yawGoal, 0x200);
     }

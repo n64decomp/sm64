@@ -426,12 +426,12 @@ void mtxf_align_terrain_triangle(Mat4 mtx, Vec3f pos, s16 yaw, f32 radius) {
     f32 avgY;
     f32 minY = -radius * 3;
 
-    point0[0] = pos[0] + radius * sins(yaw + 0x2AAA);
-    point0[2] = pos[2] + radius * coss(yaw + 0x2AAA);
-    point1[0] = pos[0] + radius * sins(yaw + 0x8000);
-    point1[2] = pos[2] + radius * coss(yaw + 0x8000);
-    point2[0] = pos[0] + radius * sins(yaw + 0xD555);
-    point2[2] = pos[2] + radius * coss(yaw + 0xD555);
+    point0[0] = pos[0] + radius * sins(yaw + DEGREES(60));
+    point0[2] = pos[2] + radius * coss(yaw + DEGREES(60));
+    point1[0] = pos[0] + radius * sins(yaw + DEGREES(180));
+    point1[2] = pos[2] + radius * coss(yaw + DEGREES(180));
+    point2[0] = pos[0] + radius * sins(yaw + DEGREES(300));
+    point2[2] = pos[2] + radius * coss(yaw + DEGREES(300));
 
     point0[1] = find_floor(point0[0], pos[1] + 150, point0[2], &sp74);
     point1[1] = find_floor(point1[0], pos[1] + 150, point1[2], &sp74);
@@ -718,14 +718,14 @@ s16 atan2s(f32 y, f32 x) {
             if (y >= x) {
                 ret = atan2_lookup(x, y);
             } else {
-                ret = 0x4000 - atan2_lookup(y, x);
+                ret = DEGREES(90) - atan2_lookup(y, x);
             }
         } else {
             y = -y;
             if (y < x) {
-                ret = 0x4000 + atan2_lookup(y, x);
+                ret = DEGREES(90) + atan2_lookup(y, x);
             } else {
-                ret = 0x8000 - atan2_lookup(x, y);
+                ret = DEGREES(180) - atan2_lookup(x, y);
             }
         }
     } else {
@@ -733,13 +733,13 @@ s16 atan2s(f32 y, f32 x) {
         if (y < 0) {
             y = -y;
             if (y >= x) {
-                ret = 0x8000 + atan2_lookup(x, y);
+                ret = DEGREES(180) + atan2_lookup(x, y);
             } else {
-                ret = 0xC000 - atan2_lookup(y, x);
+                ret = DEGREES(270) - atan2_lookup(y, x);
             }
         } else {
             if (y < x) {
-                ret = 0xC000 + atan2_lookup(y, x);
+                ret = DEGREES(270) + atan2_lookup(y, x);
             } else {
                 ret = -atan2_lookup(x, y);
             }

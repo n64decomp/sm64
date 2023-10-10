@@ -119,12 +119,12 @@ void check_ledge_climb_down(struct MarioState *m) {
                 wallAngle = atan2s(wall->normal.z, wall->normal.x);
                 wallDYaw = wallAngle - m->faceAngle[1];
 
-                if (wallDYaw > -0x4000 && wallDYaw < 0x4000) {
+                if (wallDYaw > DEGREES(-90) && wallDYaw < DEGREES(90)) {
                     m->pos[0] = wallCols.x - 20.0f * wall->normal.x;
                     m->pos[2] = wallCols.z - 20.0f * wall->normal.z;
 
                     m->faceAngle[0] = 0;
-                    m->faceAngle[1] = wallAngle + 0x8000;
+                    m->faceAngle[1] = wallAngle + DEGREES(180);
 
                     set_mario_action(m, ACT_LEDGE_CLIMB_DOWN, 0);
                     set_mario_animation(m, MARIO_ANIM_CLIMB_DOWN_LEDGE);
@@ -176,22 +176,22 @@ void update_sliding_angle(struct MarioState *m, f32 accel, f32 lossFactor) {
     facingDYaw = m->faceAngle[1] - m->slideYaw;
     newFacingDYaw = facingDYaw;
 
-    //! -0x4000 not handled - can slide down a slope while facing perpendicular to it
-    if (newFacingDYaw > 0 && newFacingDYaw <= 0x4000) {
+    //! -0x4000 / -90 degrees not handled - can slide down a slope while facing perpendicular to it
+    if (newFacingDYaw > 0 && newFacingDYaw <= DEGREES(90)) {
         if ((newFacingDYaw -= 0x200) < 0) {
             newFacingDYaw = 0;
         }
-    } else if (newFacingDYaw > -0x4000 && newFacingDYaw < 0) {
+    } else if (newFacingDYaw > DEGREES(-90) && newFacingDYaw < 0) {
         if ((newFacingDYaw += 0x200) > 0) {
             newFacingDYaw = 0;
         }
-    } else if (newFacingDYaw > 0x4000 && newFacingDYaw < 0x8000) {
-        if ((newFacingDYaw += 0x200) > 0x8000) {
-            newFacingDYaw = 0x8000;
+    } else if (newFacingDYaw > DEGREES(90) && newFacingDYaw < DEGREES(180)) {
+        if ((newFacingDYaw += 0x200) > DEGREES(180)) {
+            newFacingDYaw = DEGREES(180);
         }
-    } else if (newFacingDYaw > -0x8000 && newFacingDYaw < -0x4000) {
-        if ((newFacingDYaw -= 0x200) < -0x8000) {
-            newFacingDYaw = -0x8000;
+    } else if (newFacingDYaw > DEGREES(-180) && newFacingDYaw < DEGREES(-90)) {
+        if ((newFacingDYaw -= 0x200) < DEGREES(-180)) {
+            newFacingDYaw = DEGREES(-180);
         }
     }
 
@@ -211,7 +211,7 @@ void update_sliding_angle(struct MarioState *m, f32 accel, f32 lossFactor) {
         m->slideVelZ = m->slideVelZ * 100.0f / m->forwardVel;
     }
 
-    if (newFacingDYaw < -0x4000 || newFacingDYaw > 0x4000) {
+    if (newFacingDYaw < DEGREES(-90) || newFacingDYaw > DEGREES(90)) {
         m->forwardVel *= -1.0f;
     }
 }
@@ -311,7 +311,7 @@ void apply_slope_accel(struct MarioState *m) {
                 break;
         }
 
-        if (floorDYaw > -0x4000 && floorDYaw < 0x4000) {
+        if (floorDYaw > DEGREES(-90) && floorDYaw < DEGREES(90)) {
             m->forwardVel += slopeAccel * steepness;
         } else {
             m->forwardVel -= slopeAccel * steepness;
@@ -479,7 +479,7 @@ s32 should_begin_sliding(struct MarioState *m) {
 
 s32 analog_stick_held_back(struct MarioState *m) {
     s16 intendedDYaw = m->intendedYaw - m->faceAngle[1];
-    return intendedDYaw < -0x471C || intendedDYaw > 0x471C;
+    return intendedDYaw < DEGREES(-100) || intendedDYaw > DEGREES(100);
 }
 
 s32 check_ground_dive_or_punch(struct MarioState *m) {
@@ -685,7 +685,7 @@ void push_or_sidle_wall(struct MarioState *m, Vec3f startPos) {
         dWallAngle = wallAngle - m->faceAngle[1];
     }
 
-    if (m->wall == NULL || dWallAngle <= -0x71C8 || dWallAngle >= 0x71C8) {
+    if (m->wall == NULL || dWallAngle < DEGREES(-160) || dWallAngle > DEGREES(160)) {
         m->flags |= MARIO_UNKNOWN_31;
         set_mario_animation(m, MARIO_ANIM_PUSHING);
         play_step_sound(m, 6, 18);
@@ -702,9 +702,9 @@ void push_or_sidle_wall(struct MarioState *m, Vec3f startPos) {
         }
 
         m->actionState = 1;
-        m->actionArg = wallAngle + 0x8000;
-        m->marioObj->header.gfx.angle[1] = wallAngle + 0x8000;
-        m->marioObj->header.gfx.angle[2] = find_floor_slope(m, 0x4000);
+        m->actionArg = wallAngle + DEGREES(180);
+        m->marioObj->header.gfx.angle[1] = wallAngle + DEGREES(180);
+        m->marioObj->header.gfx.angle[2] = find_floor_slope(m, DEGREES(90));
     }
 }
 
@@ -720,15 +720,15 @@ void tilt_body_walking(struct MarioState *m, s16 startYaw) {
         s16 val02 = -(s16)(dYaw * m->forwardVel / 12.0f);
         s16 val00 = (s16)(m->forwardVel * 170.0f);
 
-        if (val02 > 0x1555) {
-            val02 = 0x1555;
+        if (val02 > DEGREES(30)) {
+            val02 = DEGREES(30);
         }
-        if (val02 < -0x1555) {
-            val02 = -0x1555;
+        if (val02 < DEGREES(-30)) {
+            val02 = DEGREES(-30);
         }
 
-        if (val00 > 0x1555) {
-            val00 = 0x1555;
+        if (val00 > DEGREES(30)) {
+            val00 = DEGREES(30);
         }
         if (val00 < 0) {
             val00 = 0;
@@ -752,15 +752,15 @@ void tilt_body_ground_shell(struct MarioState *m, s16 startYaw) {
     s16 val04 = -(s16)(dYaw * m->forwardVel / 12.0f);
     s16 val02 = (s16)(m->forwardVel * 170.0f);
 
-    if (val04 > 0x1800) {
-        val04 = 0x1800;
+    if (val04 > DEGREES(33.75)) {
+        val04 = DEGREES(33.75);
     }
-    if (val04 < -0x1800) {
-        val04 = -0x1800;
+    if (val04 < DEGREES(-33.75)) {
+        val04 = DEGREES(-33.75);
     }
 
-    if (val02 > 0x1000) {
-        val02 = 0x1000;
+    if (val02 > DEGREES(22.5)) {
+        val02 = DEGREES(22.5);
     }
     if (val02 < 0) {
         val02 = 0;
@@ -1030,7 +1030,7 @@ s32 act_finish_turning_around(struct MarioState *m) {
         set_mario_action(m, ACT_WALKING, 0);
     }
 
-    m->marioObj->header.gfx.angle[1] += 0x8000;
+    m->marioObj->header.gfx.angle[1] += DEGREES(180);
     return FALSE;
 }
 
@@ -1400,7 +1400,7 @@ void common_slide_action(struct MarioState *m, u32 endAction, u32 airAction, s32
                     slideSpeed = 4.0f;
                 }
 
-                m->slideYaw = wallAngle - (s16)(m->slideYaw - wallAngle) + 0x8000;
+                m->slideYaw = wallAngle - (s16)(m->slideYaw - wallAngle) + DEGREES(180);
 
                 m->vel[0] = m->slideVelX = slideSpeed * sins(m->slideYaw);
                 m->vel[2] = m->slideVelZ = slideSpeed * coss(m->slideYaw);
@@ -1813,7 +1813,7 @@ s32 act_side_flip_land(struct MarioState *m) {
     }
 
     if (common_landing_action(m, MARIO_ANIM_SLIDEFLIP_LAND, ACT_FREEFALL) != GROUND_STEP_HIT_WALL) {
-        m->marioObj->header.gfx.angle[1] += 0x8000;
+        m->marioObj->header.gfx.angle[1] += DEGREES(180);
     }
     return FALSE;
 }
