@@ -559,12 +559,12 @@ s32 mario_facing_downhill(struct MarioState *m, s32 turnYaw) {
     // This is never used in practice, as turnYaw is
     // always passed as zero.
     if (turnYaw && m->forwardVel < 0.0f) {
-        faceAngleYaw += 0x8000;
+        faceAngleYaw += DEGREES(180);
     }
 
     faceAngleYaw = m->floorAngle - faceAngleYaw;
 
-    return (-0x4000 < faceAngleYaw) && (faceAngleYaw < 0x4000);
+    return (DEGREES(-90) < faceAngleYaw) && (faceAngleYaw < DEGREES(90));
 }
 
 /**
@@ -574,26 +574,25 @@ u32 mario_floor_is_slippery(struct MarioState *m) {
     f32 normY;
 
     if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SLIDE
-        && m->floor->normal.y < 0.9998477f //~cos(1 deg)
-    ) {
+        && m->floor->normal.y < COS_1) { // ~cos(1 deg)
         return TRUE;
     }
 
     switch (mario_get_floor_class(m)) {
         case SURFACE_VERY_SLIPPERY:
-            normY = 0.9848077f; //~cos(10 deg)
+            normY = COS_10; //~cos(10 deg)
             break;
 
         case SURFACE_SLIPPERY:
-            normY = 0.9396926f; //~cos(20 deg)
+            normY = COS_20; //~cos(20 deg)
             break;
 
         default:
-            normY = 0.7880108f; //~cos(38 deg)
+            normY = COS_38; //~cos(38 deg)
             break;
 
         case SURFACE_NOT_SLIPPERY:
-            normY = 0.0f;
+            normY = COS_90;
             break;
     }
 
@@ -607,25 +606,25 @@ s32 mario_floor_is_slope(struct MarioState *m) {
     f32 normY;
 
     if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SLIDE
-        && m->floor->normal.y < 0.9998477f) { // ~cos(1 deg)
+        && m->floor->normal.y < COS_1) { // ~cos(1 deg)
         return TRUE;
     }
 
     switch (mario_get_floor_class(m)) {
         case SURFACE_VERY_SLIPPERY:
-            normY = 0.9961947f; // ~cos(5 deg)
+            normY = COS_5; // ~cos(5 deg)
             break;
 
         case SURFACE_SLIPPERY:
-            normY = 0.9848077f; // ~cos(10 deg)
+            normY = COS_10; // ~cos(10 deg)
             break;
 
         default:
-            normY = 0.9659258f; // ~cos(15 deg)
+            normY = COS_15; // ~cos(15 deg)
             break;
 
         case SURFACE_NOT_SLIPPERY:
-            normY = 0.9396926f; // ~cos(20 deg)
+            normY = COS_20; // ~cos(20 deg)
             break;
     }
 
@@ -646,19 +645,19 @@ s32 mario_floor_is_steep(struct MarioState *m) {
     if (!mario_facing_downhill(m, FALSE)) {
         switch (mario_get_floor_class(m)) {
             case SURFACE_VERY_SLIPPERY:
-                normY = 0.9659258f; // ~cos(15 deg)
+                normY = COS_15; // ~cos(15 deg)
                 break;
 
             case SURFACE_SLIPPERY:
-                normY = 0.9396926f; // ~cos(20 deg)
+                normY = COS_20; // ~cos(20 deg)
                 break;
 
             default:
-                normY = 0.8660254f; // ~cos(30 deg)
+                normY = COS_30; // ~cos(30 deg)
                 break;
 
             case SURFACE_NOT_SLIPPERY:
-                normY = 0.8660254f; // ~cos(30 deg)
+                normY = COS_30; // ~cos(30 deg)
                 break;
         }
 
@@ -744,7 +743,7 @@ void set_steep_jump_action(struct MarioState *m) {
     if (m->forwardVel > 0.0f) {
         //! ((s16)0x8000) has undefined behavior. Therefore, this downcast has
         // undefined behavior if m->floorAngle >= 0.
-        s16 angleTemp = m->floorAngle + 0x8000;
+        s16 angleTemp = m->floorAngle + DEGREES(180);
         s16 faceAngleTemp = m->faceAngle[1] - angleTemp;
 
         f32 y = sins(faceAngleTemp) * m->forwardVel;
@@ -843,7 +842,7 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
         case ACT_STEEP_JUMP:
             m->marioObj->header.gfx.animInfo.animID = -1;
             set_mario_y_vel_based_on_fspeed(m, 42.0f, 0.25f);
-            m->faceAngle[0] = -0x2000;
+            m->faceAngle[0] = DEGREES(-45);
             break;
 
         case ACT_LAVA_BOOST:

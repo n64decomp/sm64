@@ -5,6 +5,26 @@
 
 #include "types.h"
 
+#define COS_1  0.99984770f
+#define COS_5  0.99619470f
+#define COS_10 0.98480770f
+#define COS_15 0.96592580f
+#define COS_20 0.93969260f
+#define COS_25 0.90630780f
+#define COS_30 0.86602540f
+#define COS_38 0.78801080f
+#define COS_60 0.50000000f
+#define COS_73 0.29237170f
+#define COS_80 0.17364818f
+#define COS_90 0.00000000f
+
+/**
+ * Converts an angle in degrees to sm64's s16 angle units. For example, DEGREES(90) == 0x4000
+ * This should be used mainly to make math, physics, action, and camera code clearer at first glance.
+ * Shouldn't be used for angular velocities which are often small arbitrary s16 values.
+ */
+#define DEGREES(x) (int)((x) * 0x10000 / 360)
+
 /*
  * The sine and cosine tables overlap, but "#define gCosineTable (gSineTable +
  * 0x400)" doesn't give expected codegen; gSineTable and gCosineTable need to

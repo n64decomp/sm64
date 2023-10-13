@@ -261,7 +261,7 @@ void handle_save_menu(struct MarioState *m) {
         // not quitting
         if (gSaveOptSelectIndex != MENU_OPT_SAVE_AND_QUIT) {
             disable_time_stop();
-            m->faceAngle[1] += 0x8000;
+            m->faceAngle[1] += DEGREES(180);
             // figure out what dialog to show, if we should
             dialogID = get_star_collection_dialog(m);
             if (dialogID) {
@@ -779,7 +779,7 @@ s32 act_unlocking_key_door(struct MarioState *m) {
     m->pos[2] = m->usedObj->oPosZ + sins(m->faceAngle[1]) * 75.0f;
 
     if (m->actionArg & 2) {
-        m->faceAngle[1] += 0x8000;
+        m->faceAngle[1] += DEGREES(180);
     }
 
     if (m->actionTimer == 0) {
@@ -819,7 +819,7 @@ s32 act_unlocking_star_door(struct MarioState *m) {
         case 0:
             m->faceAngle[1] = m->usedObj->oMoveAngleYaw;
             if (m->actionArg & 2) {
-                m->faceAngle[1] += 0x8000;
+                m->faceAngle[1] += DEGREES(180);
             }
             m->marioObj->oMarioReadingSignDPosX = m->pos[0];
             m->marioObj->oMarioReadingSignDPosZ = m->pos[2];
@@ -898,7 +898,7 @@ s32 act_entering_star_door(struct MarioState *m) {
         m->faceAngle[1] = m->usedObj->oMoveAngleYaw;
 
         if (m->actionArg & 2) {
-            m->faceAngle[1] += 0x8000;
+            m->faceAngle[1] += DEGREES(180);
         }
 
         m->pos[0] += 12.0f * sins(m->faceAngle[1]);
@@ -939,7 +939,7 @@ s32 act_going_through_door(struct MarioState *m) {
         }
     } else if (is_anim_at_end(m)) {
         if (m->actionArg & 2) {
-            m->faceAngle[1] += 0x8000;
+            m->faceAngle[1] += DEGREES(180);
         }
         set_mario_action(m, ACT_IDLE, 0);
     }
@@ -1054,7 +1054,7 @@ s32 act_exit_airborne(struct MarioState *m) {
         m->healCounter = 31;
     }
     // rotate him to face away from the entrance
-    m->marioObj->header.gfx.angle[1] += 0x8000;
+    m->marioObj->header.gfx.angle[1] += DEGREES(180);
     m->particleFlags |= PARTICLE_SPARKLES;
     return FALSE;
 }
@@ -1065,7 +1065,7 @@ s32 act_falling_exit_airborne(struct MarioState *m) {
         m->healCounter = 31;
     }
     // rotate Mario to face away from the entrance
-    m->marioObj->header.gfx.angle[1] += 0x8000;
+    m->marioObj->header.gfx.angle[1] += DEGREES(180);
     m->particleFlags |= PARTICLE_SPARKLES;
     return FALSE;
 }
@@ -1149,7 +1149,7 @@ s32 act_exit_land_save_dialog(struct MarioState *m) {
             break;
     }
 
-    m->marioObj->header.gfx.angle[1] += 0x8000;
+    m->marioObj->header.gfx.angle[1] += DEGREES(180);
     return FALSE;
 }
 
@@ -1227,7 +1227,7 @@ s32 act_special_exit_airborne(struct MarioState *m) {
 
     m->particleFlags |= PARTICLE_SPARKLES;
     // rotate Mario to face away from the entrance
-    marioObj->header.gfx.angle[1] += 0x8000;
+    marioObj->header.gfx.angle[1] += DEGREES(180);
     // show Mario
     marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
 
@@ -1545,12 +1545,12 @@ s32 act_squished(struct MarioState *m) {
     }
 
     // steep floor
-    if (m->floor != NULL && m->floor->normal.y < 0.5f) {
+    if (m->floor != NULL && m->floor->normal.y < COS_60) {
         surfAngle = atan2s(m->floor->normal.z, m->floor->normal.x);
         underSteepSurf = TRUE;
     }
     // steep ceiling
-    if (m->ceil != NULL && -0.5f < m->ceil->normal.y) {
+    if (m->ceil != NULL && -COS_60 < m->ceil->normal.y) {
         surfAngle = atan2s(m->ceil->normal.z, m->ceil->normal.x);
         underSteepSurf = TRUE;
     }
@@ -1813,7 +1813,7 @@ static void jumbo_star_cutscene_falling(struct MarioState *m) {
         m->input |= INPUT_A_DOWN;
         m->flags |= (MARIO_WING_CAP | MARIO_CAP_ON_HEAD);
 
-        m->faceAngle[1] = -0x8000;
+        m->faceAngle[1] = DEGREES(-180);
         m->pos[0] = 0.0f;
         m->pos[2] = 0.0f;
 
@@ -2663,7 +2663,7 @@ static s32 act_end_waving_cutscene(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_CREDITS_WAVING);
     stop_and_set_height_to_floor(m);
 
-    m->marioObj->header.gfx.angle[1] += 0x8000;
+    m->marioObj->header.gfx.angle[1] += DEGREES(180);
     m->marioObj->header.gfx.pos[0] -= 60.0f;
     m->marioBodyState->handState = MARIO_HAND_RIGHT_OPEN;
 

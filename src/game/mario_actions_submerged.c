@@ -143,7 +143,7 @@ static void apply_water_current(struct MarioState *m, Vec3f step) {
             s16 pitchToWhirlpool = atan2s(lateralDist, dy);
             s16 yawToWhirlpool = atan2s(dz, dx);
 
-            yawToWhirlpool -= (s16)(0x2000 * 1000.0f / (distance + 1000.0f));
+            yawToWhirlpool -= (s16)(DEGREES(45) * 1000.0f / (distance + 1000.0f));
 
             if (whirlpool->strength >= 0) {
                 if (gCurrLevelNum == LEVEL_DDD && gCurrAreaIndex == 2) {
@@ -341,7 +341,7 @@ static s32 act_water_idle(struct MarioState *m) {
         return set_mario_action(m, ACT_BREASTSTROKE, 0);
     }
 
-    if (m->faceAngle[0] < -0x1000) {
+    if (m->faceAngle[0] < DEGREES(-22.5)) {
         val = 0x30000;
     }
 
@@ -446,29 +446,31 @@ static void common_swimming_step(struct MarioState *m, s16 swimStrength) {
 
     switch (perform_water_step(m)) {
         case WATER_STEP_HIT_FLOOR:
-            floorPitch = -find_floor_slope(m, -0x8000);
+            floorPitch = -find_floor_slope(m, DEGREES(-180));
             if (m->faceAngle[0] < floorPitch) {
                 m->faceAngle[0] = floorPitch;
             }
             break;
 
         case WATER_STEP_HIT_CEILING:
-            if (m->faceAngle[0] > -0x3000) {
+            if (m->faceAngle[0] > DEGREES(-67.5)) {
                 m->faceAngle[0] -= 0x100;
             }
             break;
 
         case WATER_STEP_HIT_WALL:
             if (m->controller->stickY == 0.0f) {
+                // These angles were likely specified as arbitrary s16 values,
+                // but are converted to degrees for consistency.
                 if (m->faceAngle[0] > 0.0f) {
                     m->faceAngle[0] += 0x200;
-                    if (m->faceAngle[0] > 0x3F00) {
-                        m->faceAngle[0] = 0x3F00;
+                    if (m->faceAngle[0] > DEGREES(88.59375)) {
+                        m->faceAngle[0] = DEGREES(88.59375);
                     }
                 } else {
                     m->faceAngle[0] -= 0x200;
-                    if (m->faceAngle[0] < -0x3F00) {
-                        m->faceAngle[0] = -0x3F00;
+                    if (m->faceAngle[0] < DEGREES(-88.59375)) {
+                        m->faceAngle[0] = DEGREES(-88.59375);
                     }
                 }
             }
@@ -780,7 +782,7 @@ static s32 check_water_grab(struct MarioState *m) {
         f32 dz = object->oPosZ - m->pos[2];
         s16 dAngleToObject = atan2s(dz, dx) - m->faceAngle[1];
 
-        if (dAngleToObject >= -0x2AAA && dAngleToObject <= 0x2AAA) {
+        if (dAngleToObject >= DEGREES(-60) && dAngleToObject <= DEGREES(60)) {
             m->usedObj = object;
             mario_grab_used_object(m);
             m->marioBodyState->grabPos = GRAB_POS_LIGHT_OBJ;
@@ -1059,13 +1061,13 @@ static s32 act_caught_in_whirlpool(struct MarioState *m) {
 
     if (distance <= 28.0f) {
         newDistance = 16.0f;
-        angleChange = 0x1800;
+        angleChange = DEGREES(33.75);
     } else if (distance < 256.0f) {
         newDistance = distance - (12.0f - distance / 32.0f);
-        angleChange = (s16)(0x1C00 - distance * 20.0f);
+        angleChange = (s16)(DEGREES(39.375) - distance * 20.0f);
     } else {
         newDistance = distance - 4.0f;
-        angleChange = 0x800;
+        angleChange = DEGREES(11.25);
     }
 
     m->vel[1] = -640.0f / (newDistance + 16.0f);
@@ -1085,7 +1087,7 @@ static s32 act_caught_in_whirlpool(struct MarioState *m) {
     m->pos[2] = whirlpool->oPosZ - dx * sinAngleChange + dz * cosAngleChange;
     m->pos[1] = whirlpool->oPosY + marioObj->oMarioWhirlpoolPosY;
 
-    m->faceAngle[1] = atan2s(dz, dx) + 0x8000;
+    m->faceAngle[1] = atan2s(dz, dx) + DEGREES(180);
 
     set_mario_animation(m, MARIO_ANIM_GENERAL_FALL);
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
@@ -1120,7 +1122,7 @@ static void update_metal_water_walking_speed(struct MarioState *m) {
         m->forwardVel += 1.1f;
     } else if (m->forwardVel <= val) {
         m->forwardVel += 1.1f - m->forwardVel / 43.0f;
-    } else if (m->floor->normal.y >= 0.95f) {
+    } else if (m->floor->normal.y >= 0.95f) { // ~cos(18.194872 deg)
         m->forwardVel -= 1.0f;
     }
 
