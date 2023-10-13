@@ -32,6 +32,9 @@ extern f32 gCosineTable[];
 
 #define sqr(x) ((x) * (x))
 
+#define approach_angle(current, target, rate) \
+    ((target) - approach_s32((s16)((target) - (current)), 0, (rate), (rate)))
+
 void *vec3f_copy(Vec3f dest, Vec3f src);
 void *vec3f_set(Vec3f dest, f32 x, f32 y, f32 z);
 void *vec3f_add(Vec3f dest, Vec3f a);
