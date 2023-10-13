@@ -384,8 +384,7 @@ void update_shell_speed(struct MarioState *m) {
         m->forwardVel = 64.0f;
     }
 
-    m->faceAngle[1] =
-        m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+    m->faceAngle[1] = approach_angle(m->faceAngle[1], m->intendedYaw, 0x800);
 
     apply_slope_accel(m);
 }
@@ -459,8 +458,7 @@ void update_walking_speed(struct MarioState *m) {
         m->forwardVel = 48.0f;
     }
 
-    m->faceAngle[1] =
-        m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+    m->faceAngle[1] = approach_angle(m->faceAngle[1], m->intendedYaw, 0x800);
     apply_slope_accel(m);
 }
 
@@ -1322,8 +1320,7 @@ s32 act_burning_ground(struct MarioState *m) {
     m->forwardVel = approach_f32(m->forwardVel, 32.0f, 4.0f, 1.0f);
 
     if (m->input & INPUT_NONZERO_ANALOG) {
-        m->faceAngle[1] =
-            m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x600, 0x600);
+        m->faceAngle[1] = approach_angle(m->faceAngle[1], m->intendedYaw, 0x600);
     }
 
     apply_slope_accel(m);
