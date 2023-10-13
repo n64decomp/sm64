@@ -574,26 +574,25 @@ u32 mario_floor_is_slippery(struct MarioState *m) {
     f32 normY;
 
     if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SLIDE
-        && m->floor->normal.y < 0.9998477f //~cos(1 deg)
-    ) {
+        && m->floor->normal.y < COS_1) { // ~cos(1 deg)
         return TRUE;
     }
 
     switch (mario_get_floor_class(m)) {
         case SURFACE_VERY_SLIPPERY:
-            normY = 0.9848077f; //~cos(10 deg)
+            normY = COS_10; //~cos(10 deg)
             break;
 
         case SURFACE_SLIPPERY:
-            normY = 0.9396926f; //~cos(20 deg)
+            normY = COS_20; //~cos(20 deg)
             break;
 
         default:
-            normY = 0.7880108f; //~cos(38 deg)
+            normY = COS_38; //~cos(38 deg)
             break;
 
         case SURFACE_NOT_SLIPPERY:
-            normY = 0.0f;
+            normY = COS_90;
             break;
     }
 
@@ -607,25 +606,25 @@ s32 mario_floor_is_slope(struct MarioState *m) {
     f32 normY;
 
     if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SLIDE
-        && m->floor->normal.y < 0.9998477f) { // ~cos(1 deg)
+        && m->floor->normal.y < COS_1) { // ~cos(1 deg)
         return TRUE;
     }
 
     switch (mario_get_floor_class(m)) {
         case SURFACE_VERY_SLIPPERY:
-            normY = 0.9961947f; // ~cos(5 deg)
+            normY = COS_5; // ~cos(5 deg)
             break;
 
         case SURFACE_SLIPPERY:
-            normY = 0.9848077f; // ~cos(10 deg)
+            normY = COS_10; // ~cos(10 deg)
             break;
 
         default:
-            normY = 0.9659258f; // ~cos(15 deg)
+            normY = COS_15; // ~cos(15 deg)
             break;
 
         case SURFACE_NOT_SLIPPERY:
-            normY = 0.9396926f; // ~cos(20 deg)
+            normY = COS_20; // ~cos(20 deg)
             break;
     }
 
@@ -646,19 +645,19 @@ s32 mario_floor_is_steep(struct MarioState *m) {
     if (!mario_facing_downhill(m, FALSE)) {
         switch (mario_get_floor_class(m)) {
             case SURFACE_VERY_SLIPPERY:
-                normY = 0.9659258f; // ~cos(15 deg)
+                normY = COS_15; // ~cos(15 deg)
                 break;
 
             case SURFACE_SLIPPERY:
-                normY = 0.9396926f; // ~cos(20 deg)
+                normY = COS_20; // ~cos(20 deg)
                 break;
 
             default:
-                normY = 0.8660254f; // ~cos(30 deg)
+                normY = COS_30; // ~cos(30 deg)
                 break;
 
             case SURFACE_NOT_SLIPPERY:
-                normY = 0.8660254f; // ~cos(30 deg)
+                normY = COS_30; // ~cos(30 deg)
                 break;
         }
 

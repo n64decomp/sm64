@@ -1122,7 +1122,7 @@ static void update_metal_water_walking_speed(struct MarioState *m) {
         m->forwardVel += 1.1f;
     } else if (m->forwardVel <= val) {
         m->forwardVel += 1.1f - m->forwardVel / 43.0f;
-    } else if (m->floor->normal.y >= 0.95f) {
+    } else if (m->floor->normal.y >= 0.95f) { // ~cos(18.194872 deg)
         m->forwardVel -= 1.0f;
     }
 

@@ -19,7 +19,7 @@
 
 s32 check_common_idle_cancels(struct MarioState *m) {
     mario_drop_held_object(m);
-    if (m->floor->normal.y < 0.29237169f) {
+    if (m->floor->normal.y < COS_73) {
         return mario_push_off_steep_floor(m, ACT_FREEFALL, 0);
     }
 
@@ -60,7 +60,7 @@ s32 check_common_idle_cancels(struct MarioState *m) {
 }
 
 s32 check_common_hold_idle_cancels(struct MarioState *m) {
-    if (m->floor->normal.y < 0.29237169f) {
+    if (m->floor->normal.y < COS_73) {
         return mario_push_off_steep_floor(m, ACT_HOLD_FREEFALL, 0);
     }
 
