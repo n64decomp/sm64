@@ -160,6 +160,10 @@ docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 --user $UID:
 
 Resulting artifacts can be found in the `build` directory.
 
+#### Nix Shell Environment
+
+Those using the Nix package manager can run `nix-shell` to load an environment that provides the required dependencies.
+
 ## Project Structure
 
 	sm64
