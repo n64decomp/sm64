@@ -1,6 +1,5 @@
 { pkgs ? import <nixpkgs> {
     # https://nixos.org/manual/nixpkgs/stable/#sec-cross-usage
-    localSystem = (import <nixpkgs/lib>).systems.examples.x86_64-darwin;
     crossSystem = (import <nixpkgs/lib>).systems.examples.mips-linux-gnu;
   }
 }:
