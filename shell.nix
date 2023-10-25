@@ -4,6 +4,12 @@
   }
 }:
 
+let
+  hostPlatformCheck =
+    with pkgs.stdenv.hostPlatform;
+    if isMips then null
+    else abort "cross platform target must be a MIPS target";
+in
 pkgs.callPackage
   ({ mkShell
    , gnumake42
