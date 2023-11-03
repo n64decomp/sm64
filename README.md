@@ -14,7 +14,7 @@ It builds the following ROMs:
 This repo does not include all assets necessary for compiling the ROMs.
 A prior copy of the game is required to extract the assets.
 
-## Quick Start (for Ubuntu)
+## Quick Start (for Debian / Ubuntu)
 
 1. Install prerequisites: `sudo apt install -y binutils-mips-linux-gnu build-essential git pkgconf python3`
 2. Clone the repo from within Linux: `git clone https://github.com/n64decomp/sm64.git`
