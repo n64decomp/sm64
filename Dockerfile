@@ -3,6 +3,7 @@ FROM ubuntu:22.04 as build
 RUN apt-get update && \
     apt-get install -y \
         binutils-mips-linux-gnu \
+        bsdextrautils \
         build-essential \
         git \
         pkgconf \
