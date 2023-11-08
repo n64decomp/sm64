@@ -139,15 +139,9 @@ docker build -t sm64 .
 
 To build, mount the local filesystem into the Docker container and build the ROM with `docker run sm64 make`.
 
-##### macOS example for (U):
+##### Example:
 ```
-docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 sm64 make VERSION=us -j4
-```
-
-##### Linux example for (U):
-For a Linux host, Docker needs to be instructed which user should own the output files:
-```
-docker run --rm --mount type=bind,source="$(pwd)",destination=/sm64 --user $UID:$GID sm64 make VERSION=us -j4
+docker run --rm -v ${PWD}:/sm64 sm64 make VERSION=us -j4
 ```
 
 Resulting artifacts can be found in the `build` directory.
