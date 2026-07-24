@@ -154,7 +154,7 @@ endif
 COLOR ?= 1
 
 # display selected options unless 'make clean' or 'make distclean' is run
-ifeq ($(filter clean distclean,$(MAKECMDGOALS)),)
+ifeq ($(filter clean distclean test_math_util,$(MAKECMDGOALS)),)
   $(info ==== Build Options ====)
   $(info Version:        $(VERSION))
   $(info Microcode:      $(GRUCODE))
@@ -186,7 +186,7 @@ TOOLS_DIR := tools
 
 PYTHON := python3
 
-ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
+ifeq ($(filter clean distclean test_math_util print-%,$(MAKECMDGOALS)),)
 
   # Make sure assets exist
   NOEXTRACT ?= 0
@@ -306,6 +306,7 @@ endif
 IQUE_EGCS_PATH := $(TOOLS_DIR)/ique_egcs
 IQUE_LD_PATH := $(TOOLS_DIR)/ique_ld
 
+ifeq ($(filter clean distclean test_math_util,$(MAKECMDGOALS)),)
 # detect prefix for MIPS toolchain
 ifneq      ($(call find-command,mips-linux-gnu-ld),)
   CROSS := mips-linux-gnu-
@@ -317,6 +318,9 @@ else
   ifeq ($(filter run_tests clean distclean,$(MAKECMDGOALS)),)
     $(error Unable to detect a suitable MIPS toolchain installed)
   endif
+endif
+else
+  CROSS := mips-linux-gnu-
 endif
 
 AS            := $(CROSS)as
@@ -394,8 +398,10 @@ else
   CPPFLAGS := -P -Wno-trigraphs -D_LANGUAGE_ASSEMBLY $(DEF_INC_CFLAGS)
 endif
 
+HOST_CC ?= gcc
+
 # Check code syntax with host compiler
-CC_CHECK := gcc
+CC_CHECK := $(HOST_CC)
 CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS)
 
 # C compiler options
@@ -482,6 +488,7 @@ endif
 
 clean:
 	$(RM) -r $(BUILD_DIR_BASE)
+	$(RM) tests/test_math_util
 
 distclean: clean
 	$(PYTHON) extract_assets.py --clean
@@ -490,6 +497,10 @@ distclean: clean
 
 test: $(ROM)
 	$(EMULATOR) $(EMU_FLAGS) $<
+
+test_math_util:
+	$(HOST_CC) -Iinclude -Isrc -D_LANGUAGE_C -DAVOID_UB -DNON_MATCHING=1 tests/test_math_util.c src/engine/math_util.c -lm -o tests/test_math_util
+	./tests/test_math_util
 
 load: $(ROM)
 	$(LOADER) $(LOADER_FLAGS) $<
