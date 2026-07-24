@@ -249,10 +249,7 @@ class Section:
 
     def find_symbol(self, name):
         assert self.sh_type == SHT_SYMTAB
-        for s in self.symbol_entries:
-            if s.name == name:
-                return (s.st_shndx, s.st_value)
-        return None
+        return self.symbol_lookup.get(name)
 
     def find_symbol_in_section(self, name, section):
         pos = self.find_symbol(name)
@@ -268,6 +265,10 @@ class Section:
         for i in range(0, self.sh_size, self.sh_entsize):
             entries.append(Symbol(self.fmt, self.data[i:i+self.sh_entsize], self.strtab))
         self.symbol_entries = entries
+        self.symbol_lookup = {}
+        for s in entries:
+            if s.name not in self.symbol_lookup:
+                self.symbol_lookup[s.name] = (s.st_shndx, s.st_value)
 
     def init_relocs(self):
         assert self.is_rel()
