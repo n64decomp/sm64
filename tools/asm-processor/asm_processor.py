@@ -348,15 +348,15 @@ class ElfFile:
         self.symtab = symtab
 
         shstr = self.sections[self.elf_header.e_shstrndx]
+        self.sections_by_name = {}
         for s in self.sections:
             s.name = shstr.lookup_str(s.sh_name)
             s.late_init(self.sections)
+            if s.name not in self.sections_by_name:
+                self.sections_by_name[s.name] = s
 
     def find_section(self, name):
-        for s in self.sections:
-            if s.name == name:
-                return s
-        return None
+        return self.sections_by_name.get(name)
 
     def add_section(self, name, sh_type, sh_flags, sh_link, sh_info, sh_addralign, sh_entsize, data):
         shstr = self.sections[self.elf_header.e_shstrndx]
@@ -368,6 +368,8 @@ class ElfFile:
         self.sections.append(s)
         s.name = name
         s.late_init(self.sections)
+        if name not in self.sections_by_name:
+            self.sections_by_name[name] = s
         return s
 
     def drop_mdebug_gptab(self):
@@ -375,6 +377,10 @@ class ElfFile:
         # references might be wrong. Luckily, these sections typically are.
         while self.sections[-1].sh_type in [SHT_MIPS_DEBUG, SHT_MIPS_GPTAB]:
             self.sections.pop()
+        self.sections_by_name = {}
+        for s in self.sections:
+            if s.name not in self.sections_by_name:
+                self.sections_by_name[s.name] = s
 
     def write(self, filename):
         outfile = open(filename, 'wb')
