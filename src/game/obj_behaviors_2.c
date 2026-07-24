@@ -894,7 +894,7 @@ static void treat_far_home_as_mario(f32 threshold) {
     }
 }
 
-#include "behaviors/koopa.inc.c" // TODO: Text arg field name
+#include "behaviors/koopa.inc.c" // oKoopaTheQuickInitTextboxCooldown
 #include "behaviors/pokey.inc.c"
 #include "behaviors/swoop.inc.c"
 #include "behaviors/fly_guy.inc.c"
