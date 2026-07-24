@@ -314,7 +314,9 @@ else ifneq ($(call find-command,mips64-linux-gnu-ld),)
 else ifneq ($(call find-command,mips64-elf-ld),)
   CROSS := mips64-elf-
 else
-  $(error Unable to detect a suitable MIPS toolchain installed)
+  ifeq ($(filter run_tests clean distclean,$(MAKECMDGOALS)),)
+    $(error Unable to detect a suitable MIPS toolchain installed)
+  endif
 endif
 
 AS            := $(CROSS)as
@@ -929,8 +931,28 @@ $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@
 
 
+#==============================================================================#
+# Unit Tests                                                                   #
+#==============================================================================#
 
-.PHONY: all clean distclean default diff test load libultra
+tests/test_math_util.o: tests/test_math_util.c
+	$(call print,Compiling test runner:,$<,$@)
+	$(V)gcc -DNON_MATCHING=1 -DAVOID_UB=1 -Iinclude -Isrc -I. -c $< -o $@
+
+tests/math_util_test.o: src/engine/math_util.c
+	$(call print,Compiling math_util for test:,$<,$@)
+	$(V)gcc -DNON_MATCHING=1 -DAVOID_UB=1 -Iinclude -Isrc -I. -c $< -o $@
+
+tests/test_math_util: tests/test_math_util.o tests/math_util_test.o
+	$(call print,Linking test runner:,$^,$@)
+	$(V)gcc $^ -lm -o $@
+
+run_tests: tests/test_math_util
+	$(call print,Running tests:,,$<)
+	$(V)./tests/test_math_util
+
+
+.PHONY: all clean distclean default diff test load libultra run_tests
 # with no prerequisites, .SECONDARY causes no intermediate target to be removed
 .SECONDARY:
 
