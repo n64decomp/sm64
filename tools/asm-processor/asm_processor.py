@@ -249,10 +249,7 @@ class Section:
 
     def find_symbol(self, name):
         assert self.sh_type == SHT_SYMTAB
-        for s in self.symbol_entries:
-            if s.name == name:
-                return (s.st_shndx, s.st_value)
-        return None
+        return self.symbol_lookup.get(name)
 
     def find_symbol_in_section(self, name, section):
         pos = self.find_symbol(name)
@@ -268,6 +265,10 @@ class Section:
         for i in range(0, self.sh_size, self.sh_entsize):
             entries.append(Symbol(self.fmt, self.data[i:i+self.sh_entsize], self.strtab))
         self.symbol_entries = entries
+        self.symbol_lookup = {}
+        for s in entries:
+            if s.name not in self.symbol_lookup:
+                self.symbol_lookup[s.name] = (s.st_shndx, s.st_value)
 
     def init_relocs(self):
         assert self.is_rel()
@@ -348,15 +349,15 @@ class ElfFile:
         self.symtab = symtab
 
         shstr = self.sections[self.elf_header.e_shstrndx]
+        self.sections_by_name = {}
         for s in self.sections:
             s.name = shstr.lookup_str(s.sh_name)
             s.late_init(self.sections)
+            if s.name not in self.sections_by_name:
+                self.sections_by_name[s.name] = s
 
     def find_section(self, name):
-        for s in self.sections:
-            if s.name == name:
-                return s
-        return None
+        return self.sections_by_name.get(name)
 
     def add_section(self, name, sh_type, sh_flags, sh_link, sh_info, sh_addralign, sh_entsize, data):
         shstr = self.sections[self.elf_header.e_shstrndx]
@@ -368,6 +369,8 @@ class ElfFile:
         self.sections.append(s)
         s.name = name
         s.late_init(self.sections)
+        if name not in self.sections_by_name:
+            self.sections_by_name[name] = s
         return s
 
     def drop_mdebug_gptab(self):
@@ -375,6 +378,10 @@ class ElfFile:
         # references might be wrong. Luckily, these sections typically are.
         while self.sections[-1].sh_type in [SHT_MIPS_DEBUG, SHT_MIPS_GPTAB]:
             self.sections.pop()
+        self.sections_by_name = {}
+        for s in self.sections:
+            if s.name not in self.sections_by_name:
+                self.sections_by_name[s.name] = s
 
     def write(self, filename):
         outfile = open(filename, 'wb')

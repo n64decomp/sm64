@@ -676,7 +676,7 @@ def main():
         while output[write_to] == '':
             write_to -= 1
             delta += 1
-        if write_to > pos and all(output[i] == '' for i in range(pos+1, write_to)):
+        if write_to > pos and output[pos+1:write_to] == [''] * (write_to - (pos + 1)):
             nice_target = str(delta)
             output[pos] = output[pos].replace('writeseq', 'writeseq_nextinstr')
         else:

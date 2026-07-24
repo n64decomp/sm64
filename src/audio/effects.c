@@ -68,7 +68,7 @@ static void sequence_channel_process_sound(struct SequenceChannel *seqChannel) {
     }
 
     panFromChannel = seqChannel->pan * seqChannel->panChannelWeight;
-    panLayerWeight = US_FLOAT(1.0) - seqChannel->panChannelWeight;
+    panLayerWeight = JP_DOUBLE(1.0) - seqChannel->panChannelWeight;
 
     for (i = 0; i < 4; i++) {
         struct SequenceChannelLayer *layer = seqChannel->layers[i];
@@ -166,9 +166,9 @@ f32 get_portamento_freq_scale(struct Portamento *p) {
     }
 
 #if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
-    result = US_FLOAT(1.0) + p->extent * (gPitchBendFrequencyScale[v0 + 128] - US_FLOAT(1.0));
+    result = JP_DOUBLE(1.0) + p->extent * (gPitchBendFrequencyScale[v0 + 128] - JP_DOUBLE(1.0));
 #else
-    result = US_FLOAT(1.0) + p->extent * (gPitchBendFrequencyScale[v0 + 127] - US_FLOAT(1.0));
+    result = JP_DOUBLE(1.0) + p->extent * (gPitchBendFrequencyScale[v0 + 127] - JP_DOUBLE(1.0));
 #endif
     return result;
 }
@@ -251,12 +251,12 @@ f32 get_vibrato_freq_scale(struct VibratoState *vib) {
     }
 
     pitchChange = get_vibrato_pitch_change(vib);
-    extent = (f32) vib->extent / US_FLOAT(4096.0);
+    extent = (f32) vib->extent / JP_DOUBLE(4096.0);
 
 #if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
-    result = US_FLOAT(1.0) + extent * (gPitchBendFrequencyScale[pitchChange + 128] - US_FLOAT(1.0));
+    result = JP_DOUBLE(1.0) + extent * (gPitchBendFrequencyScale[pitchChange + 128] - JP_DOUBLE(1.0));
 #else
-    result = US_FLOAT(1.0) + extent * (gPitchBendFrequencyScale[pitchChange + 127] - US_FLOAT(1.0));
+    result = JP_DOUBLE(1.0) + extent * (gPitchBendFrequencyScale[pitchChange + 127] - JP_DOUBLE(1.0));
 #endif
     return result;
 }

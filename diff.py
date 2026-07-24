@@ -341,7 +341,7 @@ if objdump_executable is None:
         except FileNotFoundError:
             pass
 
-if not objdump_executable:
+if not objdump_executable and __name__ == "__main__":
     fail(
         "Missing binutils; please ensure mips-linux-gnu-objdump or mips64-elf-objdump exist, or configure objdump_executable."
     )
@@ -1522,4 +1522,5 @@ def main() -> None:
             display.terminate()
 
 
-main()
+if __name__ == "__main__":
+    main()

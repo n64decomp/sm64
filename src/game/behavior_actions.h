@@ -7,7 +7,7 @@ void bhv_star_door_loop_2(void);
 void spawn_triangle_break_particles(s16 numTris, s16 triModel, f32 triSize, s16 triAnimState);
 
 void spawn_mist_from_global(void);
-void clear_particle_flags(u32 flags);
+void clear_parent_particle_flags(u32 flags);
 void spawn_wind_particles(s16 pitch, s16 yaw);
 s32 check_if_moving_over_floor(f32 a0, f32 a1);
 s32 arc_to_goal_pos(Vec3f a0, Vec3f a1, f32 yVel, f32 gravity);
@@ -95,7 +95,7 @@ void bhv_ukiki_cage_star_loop(void);
 void bhv_ukiki_cage_loop(void);
 void bhv_bitfs_sinking_platform_loop(void);
 void bhv_bitfs_sinking_cage_platform_loop(void);
-void bhv_ddd_moving_pole_loop(void);
+void bhv_bitfs_moving_pole_loop(void);
 void bhv_platform_normals_init(void);
 void bhv_tilting_inverted_pyramid_loop(void);
 void bhv_squishable_platform_loop(void);

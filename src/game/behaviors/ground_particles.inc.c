@@ -1,7 +1,7 @@
 // ground_particles.inc.c
 
 void bhv_pound_white_puffs_init(void) {
-    clear_particle_flags(ACTIVE_PARTICLE_MIST_CIRCLE);
+    clear_parent_particle_flags(ACTIVE_PARTICLE_MIST_CIRCLE);
     spawn_mist_from_global();
 }
 
@@ -40,7 +40,7 @@ static struct SpawnParticlesInfo sSandParticles = {
 };
 
 void bhv_ground_sand_init(void) {
-    clear_particle_flags(ACTIVE_PARTICLE_DIRT);
+    clear_parent_particle_flags(ACTIVE_PARTICLE_DIRT);
     cur_obj_spawn_particles(&sSandParticles);
 }
 
@@ -56,9 +56,8 @@ void spawn_smoke_with_velocity(void) {
     obj_translate_xyz_random(smoke, sSmokeMovementParams[3]);
 }
 
-// TODO Fix name
-void clear_particle_flags(u32 flags) {
-    o->parentObj->oActiveParticleFlags &= flags ^ 0xFFFFFFFF; // Clear the flags given (could just be ~flags)
+void clear_parent_particle_flags(u32 flags) {
+    o->parentObj->oActiveParticleFlags &= ~flags;
 }
 
 static struct SpawnParticlesInfo sSnowParticles = {
@@ -77,6 +76,6 @@ static struct SpawnParticlesInfo sSnowParticles = {
 };
 
 void bhv_ground_snow_init(void) {
-    clear_particle_flags(ACTIVE_PARTICLE_SNOW);
+    clear_parent_particle_flags(ACTIVE_PARTICLE_SNOW);
     cur_obj_spawn_particles(&sSnowParticles);
 }

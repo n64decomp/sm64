@@ -32,8 +32,7 @@ void bhv_piranha_plant_bubble_loop(void) {
     f32 scale = 0;
     s32 i;
     s32 animFrame = parent->header.gfx.animInfo.animFrame;
-    // TODO: rename lastFrame if it is inaccurate
-    s32 lastFrame = parent->header.gfx.animInfo.curAnim->loopEnd - 2;
+    s32 nearLoopEnd = parent->header.gfx.animInfo.curAnim->loopEnd - 2;
     UNUSED u8 filler[4];
 
     cur_obj_set_pos_relative(parent, 0, 72.0f, 180.0f);
@@ -60,9 +59,9 @@ void bhv_piranha_plant_bubble_loop(void) {
                      * which the bubble is at its smallest, where its scale is 1.0f.
                      */
                     // the first frame after shrinking is done
-                    f32 doneShrinkingFrame = lastFrame / 2.0f - 4.0f;
+                    f32 doneShrinkingFrame = nearLoopEnd / 2.0f - 4.0f;
                     // the frame just before growing begins
-                    f32 beginGrowingFrame = lastFrame / 2.0f + 4.0f;
+                    f32 beginGrowingFrame = nearLoopEnd / 2.0f + 4.0f;
 
                     // Note that the bubble always starts this loop at its largest.
                     if (animFrame < doneShrinkingFrame) {
@@ -72,7 +71,7 @@ void bhv_piranha_plant_bubble_loop(void) {
                         // Grow from 1.0f to 5.0f.
                         scale = sins((
                                     // they should have used beginGrowingFrame here:
-                                    (animFrame - (lastFrame / 2.0f + 4.0f)) / beginGrowingFrame
+                                    (animFrame - (nearLoopEnd / 2.0f + 4.0f)) / beginGrowingFrame
                                     ) * 0x4000) * 4.0f + 1.0;
                     } else {
                         // Stay at 1.0f for a few frames.
