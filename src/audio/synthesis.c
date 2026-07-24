@@ -709,19 +709,19 @@ u64 *synthesis_process_notes(s16 *aiBuf, s32 bufLen, u64 *cmd) {
             }
 
 #ifndef VERSION_EU
-            if (note->frequency < US_FLOAT(2.0)) {
+            if (note->frequency < JP_DOUBLE(2.0)) {
                 nParts = 1;
-                if (note->frequency > US_FLOAT(1.99996)) {
-                    note->frequency = US_FLOAT(1.99996);
+                if (note->frequency > JP_DOUBLE(1.99996)) {
+                    note->frequency = JP_DOUBLE(1.99996);
                 }
                 resamplingRate = note->frequency;
             } else {
                 // If frequency is > 2.0, the processing must be split into two parts
                 nParts = 2;
-                if (note->frequency >= US_FLOAT(3.99993)) {
-                    note->frequency = US_FLOAT(3.99993);
+                if (note->frequency >= JP_DOUBLE(3.99993)) {
+                    note->frequency = JP_DOUBLE(3.99993);
                 }
-                resamplingRate = note->frequency * US_FLOAT(.5);
+                resamplingRate = note->frequency * JP_DOUBLE(.5);
             }
 
             resamplingRateFixedPoint = (u16)(s32)(resamplingRate * 32768.0f);

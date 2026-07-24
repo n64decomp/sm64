@@ -616,7 +616,7 @@ void process_notes(void) {
             frequency *= note->vibratoFreqScale * note->portamentoFreqScale;
             cap = 3.99992f;
             if (gAiFrequency != 32006) {
-                frequency *= US_FLOAT(32000.0) / (f32) gAiFrequency;
+                frequency *= JP_DOUBLE(32000.0) / (f32) gAiFrequency;
             }
             frequency = (frequency < cap ? frequency : cap);
             scale *= 4.3498e-5f; // ~1 / 23000
@@ -862,21 +862,21 @@ void build_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLay
     u8 lim;
     u8 origSampleCount = note->sampleCount;
 
-    if (seqLayer->freqScale < US_FLOAT(1.0)) {
+    if (seqLayer->freqScale < JP_DOUBLE(1.0)) {
         note->sampleCount = 64;
-        seqLayer->freqScale *= US_FLOAT(1.0465);
+        seqLayer->freqScale *= JP_DOUBLE(1.0465);
         stepSize = 1;
-    } else if (seqLayer->freqScale < US_FLOAT(2.0)) {
+    } else if (seqLayer->freqScale < JP_DOUBLE(2.0)) {
         note->sampleCount = 32;
-        seqLayer->freqScale *= US_FLOAT(0.52325);
+        seqLayer->freqScale *= JP_DOUBLE(0.52325);
         stepSize = 2;
-    } else if (seqLayer->freqScale < US_FLOAT(4.0)) {
+    } else if (seqLayer->freqScale < JP_DOUBLE(4.0)) {
         note->sampleCount = 16;
-        seqLayer->freqScale *= US_FLOAT(0.26263);
+        seqLayer->freqScale *= JP_DOUBLE(0.26263);
         stepSize = 4;
     } else {
         note->sampleCount = 8;
-        seqLayer->freqScale *= US_FLOAT(0.13081);
+        seqLayer->freqScale *= JP_DOUBLE(0.13081);
         stepSize = 8;
     }
 

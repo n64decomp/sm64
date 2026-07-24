@@ -52,11 +52,11 @@
 #define TEMPO_SCALE TATUMS_PER_BEAT
 #endif
 
-// TODO: US_FLOAT should probably be renamed to JP_DOUBLE since eu seems to use floats too
+// JP_DOUBLE is a double on JP, but float on other regions (since they use floats too)
 #ifdef VERSION_JP
-#define US_FLOAT(x) x
+#define JP_DOUBLE(x) x
 #else
-#define US_FLOAT(x) x ## f
+#define JP_DOUBLE(x) x ## f
 #endif
 
 // Convert u8 or u16 to f32. On JP, this uses a u32->f32 conversion,

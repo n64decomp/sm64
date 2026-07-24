@@ -222,7 +222,7 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
                 if (cmd == 0xc1) {
                     layer->velocitySquare = (f32)(temp_a0_5 * temp_a0_5);
                 } else {
-                    layer->pan = (f32) temp_a0_5 / US_FLOAT(128.0);
+                    layer->pan = (f32) temp_a0_5 / JP_DOUBLE(128.0);
                 }
                 break;
 
@@ -383,7 +383,7 @@ l1138:
                 } else {
                     layer->adsr.envelope = drum->envelope;
                     layer->adsr.releaseRate = drum->releaseRate;
-                    layer->pan = FLOAT_CAST(drum->pan) / US_FLOAT(128.0);
+                    layer->pan = FLOAT_CAST(drum->pan) / JP_DOUBLE(128.0);
                     layer->sound = &drum->sound;
                     layer->freqScale = layer->sound->tuning;
                 }
@@ -440,13 +440,13 @@ l1138:
                                 goto l13cc;
                         }
 l13cc:
-                        portamento->extent = sp24 / freqScale - US_FLOAT(1.0);
+                        portamento->extent = sp24 / freqScale - JP_DOUBLE(1.0);
                         if (PORTAMENTO_IS_SPECIAL((*layer).portamento)) {
-                            portamento->speed = US_FLOAT(32512.0) * FLOAT_CAST((*seqPlayer).tempo)
+                            portamento->speed = JP_DOUBLE(32512.0) * FLOAT_CAST((*seqPlayer).tempo)
                                                 / ((f32)(*layer).delay * (f32) gTempoInternalToExternal
                                                    * FLOAT_CAST((*layer).portamentoTime));
                         } else {
-                            portamento->speed = US_FLOAT(127.0) / FLOAT_CAST((*layer).portamentoTime);
+                            portamento->speed = JP_DOUBLE(127.0) / FLOAT_CAST((*layer).portamentoTime);
                         }
                         portamento->cur = 0.0f;
                         layer->freqScale = freqScale;
