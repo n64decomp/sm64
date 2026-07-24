@@ -1522,4 +1522,5 @@ def main() -> None:
             display.terminate()
 
 
-main()
+if __name__ == "__main__":
+    main()

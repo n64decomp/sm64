@@ -70,3 +70,7 @@ build/*
 !/sound/**/*custom*/**/*.aiff
 !/assets/**/*custom*.bin
 !/assets/**/*custom*/**/*.bin
+
+# Python
+__pycache__/
+*.pyc
