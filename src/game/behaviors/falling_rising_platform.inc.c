@@ -11,8 +11,7 @@ void bhv_bitfs_sinking_platform_loop(void) {
     o->oBitFSPlatformTimer += 0x100;
 }
 
-// TODO: Named incorrectly. fix
-void bhv_ddd_moving_pole_loop(void) {
+void bhv_bitfs_moving_pole_loop(void) {
     obj_copy_pos_and_angle(o, o->parentObj);
 }
 

@@ -95,7 +95,7 @@ void bhv_ukiki_cage_star_loop(void);
 void bhv_ukiki_cage_loop(void);
 void bhv_bitfs_sinking_platform_loop(void);
 void bhv_bitfs_sinking_cage_platform_loop(void);
-void bhv_ddd_moving_pole_loop(void);
+void bhv_bitfs_moving_pole_loop(void);
 void bhv_platform_normals_init(void);
 void bhv_tilting_inverted_pyramid_loop(void);
 void bhv_squishable_platform_loop(void);

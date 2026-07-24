@@ -1391,21 +1391,21 @@ const BehaviorScript bhvBitFSSinkingCagePlatform[] = {
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     LOAD_COLLISION_DATA(bitfs_seg7_collision_sinking_cage_platform),
     SET_HOME(),
-    SPAWN_CHILD(/*Model*/ MODEL_BITFS_BLUE_POLE, /*Behavior*/ bhvDDDMovingPole),
+    SPAWN_CHILD(/*Model*/ MODEL_BITFS_BLUE_POLE, /*Behavior*/ bhvBitFSMovingPole),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_bitfs_sinking_cage_platform_loop),
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
 
-const BehaviorScript bhvDDDMovingPole[] = {
+const BehaviorScript bhvBitFSMovingPole[] = {
     BEGIN(OBJ_LIST_POLELIKE),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_INT(oInteractType, INTERACT_POLE),
     SET_HITBOX(/*Radius*/ 80, /*Height*/ 710),
     SET_INT(oIntangibleTimer, 0),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_ddd_moving_pole_loop),
+        CALL_NATIVE(bhv_bitfs_moving_pole_loop),
         CALL_NATIVE(bhv_pole_base_loop),
     END_LOOP(),
 };
