@@ -458,20 +458,20 @@
 #define /*0x0FC*/ oExclamationBoxUnkFC OBJECT_FIELD_S32(0x1D) // angle?
 
 /* Eyerok Boss */
-#define /*0x0F8*/ oEyerokBossNumHands   OBJECT_FIELD_S32(0x1C)
-#define /*0x0FC*/ oEyerokBossUnkFC      OBJECT_FIELD_S32(0x1D)
-#define /*0x100*/ oEyerokBossActiveHand OBJECT_FIELD_S32(0x1E)
-#define /*0x104*/ oEyerokBossUnk104     OBJECT_FIELD_S32(0x1F)
-#define /*0x108*/ oEyerokBossUnk108     OBJECT_FIELD_F32(0x20)
-#define /*0x10C*/ oEyerokBossUnk10C     OBJECT_FIELD_F32(0x21)
-#define /*0x110*/ oEyerokBossUnk110     OBJECT_FIELD_F32(0x22)
-#define /*0x1AC*/ oEyerokBossUnk1AC     OBJECT_FIELD_S32(0x49)
+#define /*0x0F8*/ oEyerokBossNumHands               OBJECT_FIELD_S32(0x1C)
+#define /*0x0FC*/ oEyerokBossAttackCounter          OBJECT_FIELD_S32(0x1D)
+#define /*0x100*/ oEyerokBossPrimaryActiveHand      OBJECT_FIELD_S32(0x1E)
+#define /*0x104*/ oEyerokBossPoundCountdown         OBJECT_FIELD_S32(0x1F)
+#define /*0x108*/ oEyerokBossPoundOrientation       OBJECT_FIELD_F32(0x20)
+#define /*0x10C*/ oEyerokBossTargetHomeOffsetZ      OBJECT_FIELD_F32(0x21)
+#define /*0x110*/ oEyerokBossApproachSlider         OBJECT_FIELD_F32(0x22)
+#define /*0x1AC*/ oEyerokBossSecondaryActiveHand    OBJECT_FIELD_S32(0x49)
 
 /* Eyerok Hand */
-#define /*0x0F4*/ oEyerokHandWakeUpTimer OBJECT_FIELD_S32(0x1B)
-#define /*0x0F8*/ oEyerokReceivedAttack  OBJECT_FIELD_S32(0x1C)
-#define /*0x0FC*/ oEyerokHandUnkFC       OBJECT_FIELD_S32(0x1D)
-#define /*0x100*/ oEyerokHandUnk100      OBJECT_FIELD_S32(0x1E)
+#define /*0x0F4*/ oEyerokHandWakeUpTimer    OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oEyerokReceivedAttack     OBJECT_FIELD_S32(0x1C)
+#define /*0x0FC*/ oEyerokHandBlinkAnimIndex OBJECT_FIELD_S32(0x1D)
+#define /*0x100*/ oEyerokHandBlinkCountdown OBJECT_FIELD_S32(0x1E)
 
 /* Falling Pillar */
 #define /*0x0F4*/ oFallingPillarPitchAcceleration OBJECT_FIELD_F32(0x1B)

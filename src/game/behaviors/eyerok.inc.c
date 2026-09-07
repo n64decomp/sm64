@@ -14,8 +14,8 @@ struct ObjectHitbox sEyerokHitbox = {
 
 s8 D_80331BA4[] = { 0, 1, 3, 2, 1, 0 };
 
-static s32 eyerok_check_mario_relative_z(s32 arg0) {
-    if (gMarioObject->oPosZ - o->oHomeZ < arg0) {
+static s32 eyerok_check_mario_passed_home_boundary_z(s32 threshold) {
+    if (gMarioObject->oPosZ - o->oHomeZ < threshold) {
         return TRUE;
     } else {
         return FALSE;
@@ -48,14 +48,14 @@ static void eyerok_boss_act_wake_up(void) {
                 o->oSubAction++;
             }
 
-            if (o->oEyerokBossUnk110 == 0.0f && mario_ready_to_speak()) {
+            if (o->oEyerokBossApproachSlider == 0.0f && mario_ready_to_speak()) {
                 o->oAction = EYEROK_BOSS_ACT_SHOW_INTRO_TEXT;
             } else if (o->oTimer > 150) {
-                if (approach_f32_ptr(&o->oEyerokBossUnk110, 0.0f, 10.0f)) {
+                if (approach_f32_ptr(&o->oEyerokBossApproachSlider, 0.0f, 10.0f)) {
                     o->oTimer = 0;
                 }
             } else if (o->oTimer > 90) {
-                approach_f32_ptr(&o->oEyerokBossUnk110, 300.0f, 10.0f);
+                approach_f32_ptr(&o->oEyerokBossApproachSlider, 300.0f, 10.0f);
             }
         }
     } else {
@@ -72,45 +72,45 @@ static void eyerok_boss_act_show_intro_text(void) {
 static void eyerok_boss_act_fight(void) {
     if (o->oEyerokBossNumHands == 0) {
         o->oAction = EYEROK_BOSS_ACT_DIE;
-    } else if (o->oEyerokBossUnk1AC == 0 && o->oEyerokBossActiveHand == 0) {
-        if (o->oEyerokBossUnk104 != 0) {
-            if (approach_f32_ptr(&o->oEyerokBossUnk110, 1.0f, 0.02f)) {
-                if (o->oEyerokBossUnk104 < 0) {
-                    if (!eyerok_check_mario_relative_z(400) && ++o->oEyerokBossUnk104 == 0) {
-                        o->oEyerokBossUnk104 = 1;
+    } else if (o->oEyerokBossSecondaryActiveHand == 0 && o->oEyerokBossPrimaryActiveHand == 0) {
+        if (o->oEyerokBossPoundCountdown != 0) {
+            if (approach_f32_ptr(&o->oEyerokBossApproachSlider, 1.0f, 0.02f)) {
+                if (o->oEyerokBossPoundCountdown < 0) {
+                    if (!eyerok_check_mario_passed_home_boundary_z(400) && ++o->oEyerokBossPoundCountdown == 0) {
+                        o->oEyerokBossPoundCountdown = 1;
                     }
                 } else {
-                    o->oEyerokBossUnk104--;
+                    o->oEyerokBossPoundCountdown--;
                 }
 
-                if (o->oEyerokBossUnk104 != 0 && o->oEyerokBossUnk104 != 1) {
-                    o->oEyerokBossUnkFC++;
-                    if ((o->oEyerokBossActiveHand = o->oEyerokBossUnkFC & 0x1) == 0) {
-                        o->oEyerokBossActiveHand = -1;
+                if (o->oEyerokBossPoundCountdown != 0 && o->oEyerokBossPoundCountdown != 1) {
+                    o->oEyerokBossAttackCounter++;
+                    if ((o->oEyerokBossPrimaryActiveHand = o->oEyerokBossAttackCounter & 0x1) == 0) {
+                        o->oEyerokBossPrimaryActiveHand = -1;
                     }
                 }
             }
         } else {
-            o->oEyerokBossUnkFC++;
+            o->oEyerokBossAttackCounter++;
 
-            if (eyerok_check_mario_relative_z(400)) {
-                o->oEyerokBossUnk104 = -8;
-                o->oEyerokBossUnk110 = 1.0f;
-                o->oEyerokBossUnk108 = 0.0f;
-            } else if (o->oEyerokBossNumHands == 2 && o->oEyerokBossUnkFC % 6 == 0) {
-                o->oEyerokBossUnk104 = 8;
-                o->oEyerokBossUnk110 = 0.0f;
+            if (eyerok_check_mario_passed_home_boundary_z(400)) {
+                o->oEyerokBossPoundCountdown = -8;
+                o->oEyerokBossApproachSlider = 1.0f;
+                o->oEyerokBossPoundOrientation = 0.0f;
+            } else if (o->oEyerokBossNumHands == 2 && o->oEyerokBossAttackCounter % 6 == 0) {
+                o->oEyerokBossPoundCountdown = 8;
+                o->oEyerokBossApproachSlider = 0.0f;
 
-                if ((o->oEyerokBossUnkFC = random_u16() & 0x1) != 0) {
-                    o->oEyerokBossUnk108 = -1.0f;
+                if ((o->oEyerokBossAttackCounter = random_u16() & 0x1) != 0) {
+                    o->oEyerokBossPoundOrientation = -1.0f;
                 } else {
-                    o->oEyerokBossUnk108 = 1.0f;
+                    o->oEyerokBossPoundOrientation = 1.0f;
                 }
 
-                o->oEyerokBossUnk10C = gMarioObject->oPosZ;
-                clamp_f32(&o->oEyerokBossUnk10C, o->oPosZ + 400.0f, o->oPosZ + 1600.0f);
-            } else if ((o->oEyerokBossActiveHand = o->oEyerokBossUnkFC & 0x1) == 0) {
-                o->oEyerokBossActiveHand = -1;
+                o->oEyerokBossTargetHomeOffsetZ = gMarioObject->oPosZ;
+                clamp_f32(&o->oEyerokBossTargetHomeOffsetZ, o->oPosZ + 400.0f, o->oPosZ + 1600.0f);
+            } else if ((o->oEyerokBossPrimaryActiveHand = o->oEyerokBossAttackCounter & 0x1) == 0) {
+                o->oEyerokBossPrimaryActiveHand = -1;
             }
         }
     }
@@ -210,14 +210,14 @@ static void eyerok_hand_act_idle(void) {
     cur_obj_init_animation_with_sound(2);
 
     if (o->parentObj->oAction == EYEROK_BOSS_ACT_FIGHT) {
-        if (o->parentObj->oEyerokBossUnk104 != 0) {
-            if (o->parentObj->oEyerokBossUnk104 != 1) {
+        if (o->parentObj->oEyerokBossPoundCountdown != 0) {
+            if (o->parentObj->oEyerokBossPoundCountdown != 1) {
                 o->oAction = EYEROK_HAND_ACT_BEGIN_DOUBLE_POUND;
                 o->oGravity = 0.0f;
             }
-        } else if (o->parentObj->oEyerokBossUnk1AC == 0 && o->parentObj->oEyerokBossActiveHand != 0) {
-            if (o->parentObj->oEyerokBossActiveHand == o->oBhvParams2ndByte) {
-                if (eyerok_check_mario_relative_z(400) || random_u16() % 2 != 0) {
+        } else if (o->parentObj->oEyerokBossSecondaryActiveHand == 0 && o->parentObj->oEyerokBossPrimaryActiveHand != 0) {
+            if (o->parentObj->oEyerokBossPrimaryActiveHand == o->oBhvParams2ndByte) {
+                if (eyerok_check_mario_passed_home_boundary_z(400) || random_u16() % 2 != 0) {
                     o->oAction = EYEROK_HAND_ACT_TARGET_MARIO;
                     o->oMoveAngleYaw = o->oAngleToMario;
                     o->oGravity = 0.0f;
@@ -237,24 +237,24 @@ static void eyerok_hand_act_idle(void) {
             }
         }
     } else {
-        o->oPosY = o->oHomeY + o->parentObj->oEyerokBossUnk110;
+        o->oPosY = o->oHomeY + o->parentObj->oEyerokBossApproachSlider;
     }
 }
 
 static void eyerok_hand_act_open(void) {
-    o->parentObj->oEyerokBossUnk1AC = o->oBhvParams2ndByte;
+    o->parentObj->oEyerokBossSecondaryActiveHand = o->oBhvParams2ndByte;
 
     if (cur_obj_init_anim_and_check_if_end(4)) {
         o->oAction = EYEROK_HAND_ACT_SHOW_EYE;
-        o->oEyerokHandUnkFC = 2;
-        o->oEyerokHandUnk100 = 60;
+        o->oEyerokHandBlinkAnimIndex = 2;
+        o->oEyerokHandBlinkCountdown = 60;
 
         o->collisionData = segmented_to_virtual(ssl_seg7_collision_070282F8);
 
         if (o->parentObj->oEyerokBossNumHands != 2) {
-            s16 sp1E = o->oAngleToMario;
-            clamp_s16(&sp1E, -0x3000, 0x3000);
-            o->oMoveAngleYaw = sp1E;
+            s16 movingYaw = o->oAngleToMario;
+            clamp_s16(&movingYaw, -0x3000, 0x3000);
+            o->oMoveAngleYaw = movingYaw;
             o->oForwardVel = 50.0f;
         } else {
             o->oMoveAngleYaw = 0;
@@ -267,7 +267,7 @@ static void eyerok_hand_act_show_eye(void) {
     cur_obj_play_sound_at_anim_range(0, 0, SOUND_OBJ_EYEROK_SHOW_EYE);
 
     if (!eyerok_hand_check_attacked()) {
-        if (o->parentObj->oEyerokBossActiveHand == 0) {
+        if (o->parentObj->oEyerokBossPrimaryActiveHand == 0) {
             if (o->oAnimState < 3) {
                 o->oAnimState++;
             } else if (cur_obj_check_if_near_animation_end()) {
@@ -275,21 +275,21 @@ static void eyerok_hand_act_show_eye(void) {
                 o->oAction = EYEROK_HAND_ACT_CLOSE;
             }
         } else {
-            if (o->oEyerokHandUnk100--) {
-                if (o->oEyerokHandUnkFC != 0) {
-                    o->oEyerokHandUnkFC--;
+            if (o->oEyerokHandBlinkCountdown--) {
+                if (o->oEyerokHandBlinkAnimIndex != 0) {
+                    o->oEyerokHandBlinkAnimIndex--;
                 }
-                o->oAnimState = D_80331BA4[o->oEyerokHandUnkFC];
+                o->oAnimState = D_80331BA4[o->oEyerokHandBlinkAnimIndex];
             } else {
-                o->oEyerokHandUnkFC = 5;
-                o->oEyerokHandUnk100 = random_linear_offset(20, 50);
+                o->oEyerokHandBlinkAnimIndex = 5;
+                o->oEyerokHandBlinkCountdown = random_linear_offset(20, 50);
             }
 
             if (o->parentObj->oEyerokBossNumHands != 2) {
                 obj_face_yaw_approach(o->oMoveAngleYaw, 0x800);
                 if (o->oTimer > 10
                     && (o->oPosZ - gMarioObject->oPosZ > 0.0f || (o->oMoveFlags & OBJ_MOVE_HIT_EDGE))) {
-                    o->parentObj->oEyerokBossActiveHand = 0;
+                    o->parentObj->oEyerokBossPrimaryActiveHand = 0;
                     o->oForwardVel = 0.0f;
                 }
             }
@@ -303,10 +303,10 @@ static void eyerok_hand_act_close(void) {
 
         if (o->parentObj->oEyerokBossNumHands != 2) {
             o->oAction = EYEROK_HAND_ACT_RETREAT;
-            o->parentObj->oEyerokBossActiveHand = o->oBhvParams2ndByte;
-        } else if (o->parentObj->oEyerokBossActiveHand == 0) {
+            o->parentObj->oEyerokBossPrimaryActiveHand = o->oBhvParams2ndByte;
+        } else if (o->parentObj->oEyerokBossPrimaryActiveHand == 0) {
             o->oAction = EYEROK_HAND_ACT_IDLE;
-            o->parentObj->oEyerokBossUnk1AC = 0;
+            o->parentObj->oEyerokBossSecondaryActiveHand = 0;
         }
     }
 }
@@ -329,15 +329,15 @@ static void eyerok_hand_act_recover(void) {
 }
 
 static void eyerok_hand_act_become_active(void) {
-    if (o->parentObj->oEyerokBossActiveHand == 0 || o->parentObj->oEyerokBossNumHands != 2) {
+    if (o->parentObj->oEyerokBossPrimaryActiveHand == 0 || o->parentObj->oEyerokBossNumHands != 2) {
         o->oAction = EYEROK_HAND_ACT_RETREAT;
-        o->parentObj->oEyerokBossActiveHand = o->oBhvParams2ndByte;
+        o->parentObj->oEyerokBossPrimaryActiveHand = o->oBhvParams2ndByte;
     }
 }
 
 static void eyerok_hand_act_die(void) {
     if (cur_obj_init_anim_and_check_if_end(1)) {
-        o->parentObj->oEyerokBossUnk1AC = 0;
+        o->parentObj->oEyerokBossSecondaryActiveHand = 0;
         obj_explode_and_spawn_coins(150.0f, 1);
         create_sound_spawner(SOUND_OBJ2_EYEROK_SOUND_LONG);
     }
@@ -363,16 +363,16 @@ static void eyerok_hand_act_retreat(void) {
 
     if (approach_f32_ptr(&o->oPosY, o->oHomeY, 20.0f) && distToHome == 0.0f && o->oFaceAngleYaw == 0) {
         o->oAction = EYEROK_HAND_ACT_IDLE;
-        o->parentObj->oEyerokBossActiveHand -= o->oBhvParams2ndByte;
+        o->parentObj->oEyerokBossPrimaryActiveHand -= o->oBhvParams2ndByte;
 
-        if (o->parentObj->oEyerokBossUnk1AC == o->oBhvParams2ndByte) {
-            o->parentObj->oEyerokBossUnk1AC = 0;
+        if (o->parentObj->oEyerokBossSecondaryActiveHand == o->oBhvParams2ndByte) {
+            o->parentObj->oEyerokBossSecondaryActiveHand = 0;
         }
     }
 }
 
 static void eyerok_hand_act_target_mario(void) {
-    if (eyerok_check_mario_relative_z(400) || o->oPosZ - gMarioObject->oPosZ > 0.0f
+    if (eyerok_check_mario_passed_home_boundary_z(400) || o->oPosZ - gMarioObject->oPosZ > 0.0f
         || o->oPosZ - o->parentObj->oPosZ > 1700.0f || absf(o->oPosX - o->parentObj->oPosX) > 900.0f
         || (o->oMoveFlags & OBJ_MOVE_HIT_WALL)) {
         o->oForwardVel = 0.0f;
@@ -438,38 +438,40 @@ static void eyerok_hand_act_fist_sweep(void) {
 }
 
 static void eyerok_hand_act_begin_double_pound(void) {
-    if (o->parentObj->oEyerokBossUnk104 < 0
-        || o->parentObj->oEyerokBossActiveHand == o->oBhvParams2ndByte) {
+    if (o->parentObj->oEyerokBossPoundCountdown < 0 // Pound in place when Mario is close
+        || o->parentObj->oEyerokBossPrimaryActiveHand == o->oBhvParams2ndByte) {
         o->oAction = EYEROK_HAND_ACT_DOUBLE_POUND;
-        o->oMoveAngleYaw = (s32)(o->oFaceAngleYaw - 0x4000 * o->parentObj->oEyerokBossUnk108);
-    } else {
-        f32 sp4 = o->parentObj->oPosX + 400.0f * o->parentObj->oEyerokBossUnk108
-                  - 180.0f * o->oBhvParams2ndByte;
+        o->oMoveAngleYaw = (s32)(o->oFaceAngleYaw - 0x4000 * o->parentObj->oEyerokBossPoundOrientation);
+    } else { // Approach Mario before moving pounds
+        f32 targetHomeOffsetX = o->parentObj->oPosX + 400.0f * o->parentObj->oEyerokBossPoundOrientation
+            - 180.0f * o->oBhvParams2ndByte;
 
-        o->oPosX = o->oHomeX + (sp4 - o->oHomeX) * o->parentObj->oEyerokBossUnk110;
-        o->oPosY = o->oHomeY + 300.0f * o->parentObj->oEyerokBossUnk110;
-        o->oPosZ =
-            o->oHomeZ + (o->parentObj->oEyerokBossUnk10C - o->oHomeZ) * o->parentObj->oEyerokBossUnk110;
+        o->oPosX = o->oHomeX + (targetHomeOffsetX - o->oHomeX) * o->parentObj->oEyerokBossApproachSlider;
+        o->oPosY = o->oHomeY + 300.0f * o->parentObj->oEyerokBossApproachSlider;
+        o->oPosZ = o->oHomeZ
+            + (o->parentObj->oEyerokBossTargetHomeOffsetZ - o->oHomeZ) * o->parentObj->oEyerokBossApproachSlider;
     }
 }
 
 static void eyerok_hand_act_double_pound(void) {
     if (o->parentObj->oEyerokBossNumHands != 2) {
-        o->parentObj->oEyerokBossActiveHand = o->oBhvParams2ndByte;
+        o->parentObj->oEyerokBossPrimaryActiveHand = o->oBhvParams2ndByte;
     }
 
-    if (o->parentObj->oEyerokBossUnk104 == 1) {
+    if (o->parentObj->oEyerokBossPoundCountdown == 1) {
         o->oAction = EYEROK_HAND_ACT_RETREAT;
-        o->parentObj->oEyerokBossUnk1AC = o->oBhvParams2ndByte;
-    } else if (o->parentObj->oEyerokBossActiveHand == o->oBhvParams2ndByte) {
+        o->parentObj->oEyerokBossSecondaryActiveHand = o->oBhvParams2ndByte;
+    } else if (o->parentObj->oEyerokBossPrimaryActiveHand == o->oBhvParams2ndByte) {
         if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
             if (o->oGravity < -15.0f) {
-                o->parentObj->oEyerokBossActiveHand = 0;
+                o->parentObj->oEyerokBossPrimaryActiveHand = 0;
                 eyerok_hand_pound_ground();
                 o->oForwardVel = 0.0f;
                 o->oGravity = -15.0f;
             } else {
-                o->oForwardVel = 30.0f * absf(o->parentObj->oEyerokBossUnk108);
+                //! If eyerok could land on the ground when this action begins,
+                //  it would fly up like a rocket (eyerok raising).
+                o->oForwardVel = 30.0f * absf(o->parentObj->oEyerokBossPoundOrientation);
                 o->oVelY = 100.0f;
                 o->oMoveFlags = 0;
             }
