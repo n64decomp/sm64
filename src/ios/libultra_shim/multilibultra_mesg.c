@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <PR/os_message.h>
+#include <ultra64.h>
 
 typedef struct IosMesgQueueSync {
     pthread_mutex_t mutex;

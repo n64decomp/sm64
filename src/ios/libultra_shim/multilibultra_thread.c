@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <PR/os_thread.h>
+#include <ultra64.h>
 
 typedef struct IosThreadHandle {
     pthread_t pthread;

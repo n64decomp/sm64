@@ -36,8 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <PR/os_message.h>
-#include <PR/sptask.h>
+#include <ultra64.h>
 
 extern s32 ios_libultra_post_event(OSEvent event);
 

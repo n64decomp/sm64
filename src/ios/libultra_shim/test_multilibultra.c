@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <PR/os_message.h>
-#include <PR/os_thread.h>
+#include <ultra64.h>
 
 extern s32 ios_libultra_post_event(OSEvent event);
 

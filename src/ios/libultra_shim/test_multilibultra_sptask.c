@@ -11,8 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <PR/os_message.h>
-#include <PR/sptask.h>
+#include <ultra64.h>
 
 extern void (*ios_gfx_interpret_dl)(const void *dl, u32 size);
 extern void (*ios_audio_interpret_abi)(const void *abi, u32 size);
