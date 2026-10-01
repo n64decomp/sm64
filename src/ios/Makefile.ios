@@ -1,0 +1,46 @@
+# On-device build Makefile for the SM64 iOS port.
+# Runs directly on the jailbroken iOS device (clang 3.7.1 / make / ldid
+# compiling against the live root filesystem's frameworks -- there is no
+# separate cross SDK on this toolchain).
+#
+# This currently builds only the smoke-test shell app (src/ios/app) to
+# validate the full build -> sign -> install -> launch pipeline. Game
+# sources are added incrementally as platform backends land.
+
+APP_NAME    := SM64
+BUNDLE_ID   := com.sm64decomp.ios
+EXECUTABLE  := sm64ios
+BUILD_DIR   := build
+APP_DIR     := $(BUILD_DIR)/$(APP_NAME).app
+
+CC          := clang
+ARCH        := armv7
+IOS_MIN     := 6.0
+
+SYSROOT     := /private/var/sdk
+
+CFLAGS      := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -fobjc-arc \
+               -isysroot $(SYSROOT) -Wall -O2 -fmessage-length=0
+FRAMEWORKS  := -framework UIKit -framework Foundation -framework CoreGraphics
+LDFLAGS     := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) $(FRAMEWORKS)
+
+SRCS        := app/main.m app/SM64AppDelegate.m
+OBJS        := $(patsubst app/%.m,$(BUILD_DIR)/obj/%.o,$(SRCS))
+
+.PHONY: all app install run clean
+
+all: app
+
+$(BUILD_DIR)/obj/%.o: app/%.m
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+app: $(OBJS)
+	@mkdir -p $(APP_DIR)
+	$(CC) $(LDFLAGS) -o $(APP_DIR)/$(EXECUTABLE) $(OBJS)
+	cp app/Info.plist $(APP_DIR)/Info.plist
+	ldid -S $(APP_DIR)/$(EXECUTABLE)
+	@echo "Built $(APP_DIR)"
+
+clean:
+	rm -rf $(BUILD_DIR)
