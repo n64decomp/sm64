@@ -27,11 +27,12 @@ LDFLAGS     := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSRO
 SRCS        := app/main.m app/SM64AppDelegate.m
 OBJS        := $(patsubst app/%.m,$(BUILD_DIR)/obj/%.o,$(SRCS))
 
-LIBULTRA_SHIM_SRCS := libultra_shim/multilibultra_thread.c libultra_shim/multilibultra_mesg.c
+LIBULTRA_SHIM_SRCS := libultra_shim/multilibultra_thread.c libultra_shim/multilibultra_mesg.c libultra_shim/multilibultra_sptask.c
 LIBULTRA_TEST_SRCS := libultra_shim/test_multilibultra.c
+LIBULTRA_SPTASK_TEST_SRCS := libultra_shim/test_multilibultra_sptask.c
 LIBULTRA_INCLUDES  := -I../../include
 
-.PHONY: all app install run clean libultra_test
+.PHONY: all app install run clean libultra_test libultra_sptask_test
 
 all: app
 
@@ -56,6 +57,16 @@ libultra_test:
 	    -o $(BUILD_DIR)/libultra_test
 	ldid -S $(BUILD_DIR)/libultra_test
 	@echo "Built $(BUILD_DIR)/libultra_test"
+
+# Standalone CLI test for the SP/DP task dispatch shim.
+libultra_sptask_test:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) \
+	    -D_LANGUAGE_C $(LIBULTRA_INCLUDES) -Wall -O0 -g \
+	    $(LIBULTRA_SHIM_SRCS) $(LIBULTRA_SPTASK_TEST_SRCS) \
+	    -o $(BUILD_DIR)/libultra_sptask_test
+	ldid -S $(BUILD_DIR)/libultra_sptask_test
+	@echo "Built $(BUILD_DIR)/libultra_sptask_test"
 
 clean:
 	rm -rf $(BUILD_DIR)
