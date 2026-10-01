@@ -34,7 +34,9 @@ KEY_PATH = os.environ.get(
 REMOTE_DIR = os.environ.get("SM64IOS_REMOTE_DIR", "/var/root/sm64ios_build")
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SYNC_PATHS = ["src/ios", "src/ios/Makefile.ios"]
+# src/ios (game-independent iOS port code) plus include/ (unmodified
+# libultra headers the shim and eventually real game sources need).
+SYNC_DIRS = ["src/ios", "include"]
 
 
 def connect():
@@ -62,15 +64,16 @@ def remote_mkdirs(sftp, remote_path):
 def sync(client):
     sftp = client.open_sftp()
     file_count = 0
-    for local_root, _dirs, files in os.walk(os.path.join(REPO_ROOT, "src", "ios")):
-        rel = os.path.relpath(local_root, REPO_ROOT).replace("\\", "/")
-        remote_root = posixpath.join(REMOTE_DIR, rel)
-        remote_mkdirs(sftp, remote_root)
-        for fname in files:
-            local_file = os.path.join(local_root, fname)
-            remote_file = posixpath.join(remote_root, fname)
-            sftp.put(local_file, remote_file)
-            file_count += 1
+    for sync_dir in SYNC_DIRS:
+        for local_root, _dirs, files in os.walk(os.path.join(REPO_ROOT, sync_dir)):
+            rel = os.path.relpath(local_root, REPO_ROOT).replace("\\", "/")
+            remote_root = posixpath.join(REMOTE_DIR, rel)
+            remote_mkdirs(sftp, remote_root)
+            for fname in files:
+                local_file = os.path.join(local_root, fname)
+                remote_file = posixpath.join(remote_root, fname)
+                sftp.put(local_file, remote_file)
+                file_count += 1
     sftp.close()
     print("Synced %d files to %s:%s" % (file_count, HOST, REMOTE_DIR))
 
@@ -103,7 +106,7 @@ def launch(client, bundle_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["sync", "build", "install", "launch", "shell"])
+    parser.add_argument("action", choices=["sync", "build", "install", "launch", "shell", "test"])
     parser.add_argument("rest", nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
@@ -129,6 +132,16 @@ def main():
         elif args.action == "shell":
             cmd = " ".join(args.rest)
             code = run_remote(client, cmd)
+            sys.exit(code)
+        elif args.action == "test":
+            # Builds and runs a standalone CLI test (default:
+            # libultra_test). Usage: deploy.py test [make-target]
+            target = args.rest[0] if args.rest else "libultra_test"
+            sync(client)
+            code = run_remote(client, "make -f Makefile.ios %s" % target)
+            if code != 0:
+                sys.exit(code)
+            code = run_remote(client, "./build/%s" % target)
             sys.exit(code)
     finally:
         client.close()

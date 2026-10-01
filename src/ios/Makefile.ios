@@ -27,7 +27,11 @@ LDFLAGS     := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSRO
 SRCS        := app/main.m app/SM64AppDelegate.m
 OBJS        := $(patsubst app/%.m,$(BUILD_DIR)/obj/%.o,$(SRCS))
 
-.PHONY: all app install run clean
+LIBULTRA_SHIM_SRCS := libultra_shim/multilibultra_thread.c libultra_shim/multilibultra_mesg.c
+LIBULTRA_TEST_SRCS := libultra_shim/test_multilibultra.c
+LIBULTRA_INCLUDES  := -I../../include
+
+.PHONY: all app install run clean libultra_test
 
 all: app
 
@@ -41,6 +45,17 @@ app: $(OBJS)
 	cp app/Info.plist $(APP_DIR)/Info.plist
 	ldid -S $(APP_DIR)/$(EXECUTABLE)
 	@echo "Built $(APP_DIR)"
+
+# Standalone CLI test for the libultra threading/messaging shim -- not part
+# of the app bundle, just a native executable run directly over SSH.
+libultra_test:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) \
+	    -D_LANGUAGE_C $(LIBULTRA_INCLUDES) -Wall -O0 -g \
+	    $(LIBULTRA_SHIM_SRCS) $(LIBULTRA_TEST_SRCS) \
+	    -o $(BUILD_DIR)/libultra_test
+	ldid -S $(BUILD_DIR)/libultra_test
+	@echo "Built $(BUILD_DIR)/libultra_test"
 
 clean:
 	rm -rf $(BUILD_DIR)
