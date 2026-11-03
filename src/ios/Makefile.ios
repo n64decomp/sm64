@@ -17,16 +17,19 @@ APP_DIR    := $(BUILD_DIR)/$(APP_NAME).app
 CC       := clang
 ARCH     := armv7
 IOS_MIN  := 6.0
+TARGET_TRIPLE ?= armv7-apple-ios$(IOS_MIN)
 SYSROOT  := /private/var/sdk
 
-CFLAGS := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -fobjc-arc \
+CFLAGS := -target $(TARGET_TRIPLE) -arch $(ARCH) \
+          -miphoneos-version-min=$(IOS_MIN) -fobjc-arc \
           -isysroot $(SYSROOT) -Wall -O2 -fmessage-length=0 \
           -DIOS_BUILD=1 -DUSE_GLES=1 -DTARGET_OS_IOS=1
 INCLUDES := -I. -Iapp -Igfx
 FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics \
               -framework QuartzCore -framework OpenGLES \
               -framework AudioToolbox -framework CoreAudio
-LDFLAGS := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) $(FRAMEWORKS)
+LDFLAGS := -target $(TARGET_TRIPLE) -arch $(ARCH) \
+           -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) $(FRAMEWORKS)
 
 APP_SRCS := app/main.m app/SM64AppDelegate.m app/ROMValidator.m app/N64PadView.m \
             gfx/EAGLView.m
@@ -53,7 +56,7 @@ GAME_INCLUDES := -I../../include -I$(GBUILD) -I$(GBUILD)/include \
   -I../../src -I../.. -I../../src/pc -I../../src/pc/gfx \
   -I../../src/pc/controller -I../../src/pc/audio -I. -Iapp -Igfx
 GAME_OPT ?= -O2
-GAME_CFLAGS := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) \
+GAME_CFLAGS := -target $(TARGET_TRIPLE) -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) \
   -isysroot $(SYSROOT) -Wall $(GAME_OPT) -fmessage-length=0 \
   $(GAME_DEFINES) $(GAME_INCLUDES) -fno-strict-aliasing -fwrapv
 GAME_CC := clang
