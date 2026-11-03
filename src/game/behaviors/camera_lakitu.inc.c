@@ -11,7 +11,7 @@
  * Spawn cloud if not the intro lakitu.
  */
 void bhv_camera_lakitu_init(void) {
-    if (o->oBhvParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
+    if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
         // Despawn unless this is the very beginning of the game
         if (gNeverEnteredCastle != TRUE) {
             obj_mark_for_deletion(o);
@@ -28,11 +28,13 @@ void bhv_camera_lakitu_init(void) {
 static void camera_lakitu_intro_act_trigger_cutscene(void) {
     //! These bounds are slightly smaller than the actual bridge bounds, allowing
     //  the RTA speedrunning method of lakitu skip
-    if (gMarioObject->oPosX > -544.0f && gMarioObject->oPosX < 545.0f
-        && gMarioObject->oPosY > 800.0f && gMarioObject->oPosZ > -2000.0f
-        && gMarioObject->oPosZ < -177.0f && gMarioObject->oPosZ < -177.0f // always double check your conditions
-        && set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_START) {
-        o->oAction = CAMERA_LAKITU_INTRO_ACT_SPAWN_CLOUD;
+    if (gMarioObject->oPosX > -544.0f && gMarioObject->oPosX < 545.0f && gMarioObject->oPosY > 800.0f
+        && gMarioObject->oPosZ > -2000.0f && gMarioObject->oPosZ < -177.0f
+        && gMarioObject->oPosZ < -177.0f) // always double check your conditions
+    {
+        if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_START) {
+            o->oAction = CAMERA_LAKITU_INTRO_ACT_SPAWN_CLOUD;
+        }
     }
 }
 
@@ -106,6 +108,7 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                         o->oCameraLakituUnk104 = TRUE;
                     }
 #endif
+
                     // Once within 1000 units, slow down
                     approach_f32_ptr(&o->oCameraLakituSpeed, 20.0f, 1.0f);
                     if (o->oDistanceToMario < 500.0f
@@ -116,16 +119,16 @@ static void camera_lakitu_intro_act_show_dialog(void) {
                     }
                 }
             }
-        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP,
+        } else if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, 
             DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, DIALOG_034)) {
             o->oCameraLakituFinishedDialog = TRUE;
         }
     }
 
-    o->oCameraLakituPitchVel = approach_s16_symmetric(o->oCameraLakituPitchVel, 2000, 400);
+    o->oCameraLakituPitchVel = approach_s16_symmetric(o->oCameraLakituPitchVel, 0x7D0, 0x190);
     obj_move_pitch_approach(targetMovePitch, o->oCameraLakituPitchVel);
 
-    o->oCameraLakituYawVel = approach_s16_symmetric(o->oCameraLakituYawVel, 2000, 100);
+    o->oCameraLakituYawVel = approach_s16_symmetric(o->oCameraLakituYawVel, 0x7D0, 0x64);
     cur_obj_rotate_yaw_toward(targetMoveYaw, o->oCameraLakituYawVel);
 
     // vel y is explicitly computed, so gravity doesn't apply
@@ -140,7 +143,7 @@ void bhv_camera_lakitu_update(void) {
     if (!(o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
         obj_update_blinking(&o->oCameraLakituBlinkTimer, 20, 40, 4);
 
-        if (o->oBhvParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
+        if (o->oBehParams2ndByte != CAMERA_LAKITU_BP_FOLLOW_CAMERA) {
             switch (o->oAction) {
                 case CAMERA_LAKITU_INTRO_ACT_TRIGGER_CUTSCENE:
                     camera_lakitu_intro_act_trigger_cutscene();
@@ -153,8 +156,7 @@ void bhv_camera_lakitu_update(void) {
                     break;
             }
         } else {
-            f32 val0C = 4331.53f - gLakituState.curPos[0];
-
+            f32 val0C = (f32) 0x875C3D / 0x800 - gLakituState.curPos[0];
             if (gLakituState.curPos[0] < 1700.0f || val0C < 0.0f) {
                 cur_obj_hide();
             } else {
@@ -171,7 +173,7 @@ void bhv_camera_lakitu_update(void) {
                 o->oFaceAnglePitch = atan2s(cur_obj_lateral_dist_to_home(),
                                             o->oPosY - gLakituState.curFocus[1]);
 
-                o->oPosX = 4331.53f + val0C;
+                o->oPosX = (f32) 0x875C3D / 0x800 + val0C;
             }
         }
     }

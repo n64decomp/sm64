@@ -19,7 +19,7 @@ typedef union {
 
 struct Connection {
     struct GdObj header;  // this header is never used
-    u8 filler[8];
+    u8 filler14[8];
     VtxPtc node1;  // first connected vertex or particle
     VtxPtc node2;  // second connected vertex or particle
     f32 unk24;
@@ -105,7 +105,7 @@ void Unknown80181D14(struct ObjFace *face) {
 /* 230680 -> 230858 */
 void func_80181EB0(struct Connection *cxn) {
     struct GdVec3f sp34;
-    UNUSED u8 filler[44];
+    UNUSED u8 unused[0x2C];
     struct ObjParticle *sp4 = cxn->node1.ptc;
     struct ObjParticle *sp0 = cxn->node2.ptc;
 
@@ -134,7 +134,7 @@ void func_80181EB0(struct Connection *cxn) {
 /* @ 230858 -> 230B70 */
 void func_80182088(struct Connection *cxn) {
     struct GdVec3f sp4C;
-    UNUSED u8 filler[36];
+    UNUSED u8 unused[0x24];
     f32 sp24;
     f32 sp20;
     struct ObjParticle *sp1C;
@@ -208,7 +208,7 @@ void func_801823A0(struct ObjNet *net) {
 /* 230CC0 -> 230DCC */
 struct ObjParticle *make_particle(u32 flags, s32 colourNum, f32 x, f32 y, f32 z) {
     struct ObjParticle *particle = (struct ObjParticle *) make_object(OBJ_TYPE_PARTICLES);
-    UNUSED u8 filler[8];
+    UNUSED u8 unused[8];
 
     particle->pos.x = x;
     particle->pos.y = y;
@@ -317,12 +317,13 @@ void func_80182A08(struct ObjParticle *ptc, struct GdVec3f *b) {
 /* 231454 -> 231D40; orig name: Unknown80182C84 */
 void move_particle(struct ObjParticle *ptc) {
     f32 sp7C;
-    UNUSED u8 filler1[12];
+    UNUSED u8 unused2[12];
     struct GdVec3f sp64;
     struct ObjParticle *sp60;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused1[4];
     s32 i;
-    UNUSED u8 filler3[8];
+    UNUSED u8 unused4[4];
+    UNUSED u8 unused5[4];
     struct ObjCamera *sp4C;
     struct GdVec3f sp40;
     struct GdVec3f sp34;

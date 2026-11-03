@@ -1,39 +1,11 @@
 #ifndef RUMBLE_INIT_H
 #define RUMBLE_INIT_H
 
+#include <PR/ultratypes.h>
+
 #include "config.h"
 
 #if ENABLE_RUMBLE
-
-struct RumbleData {
-    u8 unk00;
-    u8 unk01;
-    s16 unk02;
-    s16 unk04;
-};
-
-struct StructSH8031D9B0 {
-    s16 unk00;
-    s16 unk02;
-    s16 unk04;
-    s16 unk06;
-    s16 unk08;
-    s16 unk0A;
-    s16 unk0C;
-    s16 unk0E;
-};
-
-extern OSThread gRumblePakThread;
-
-extern OSPfs gRumblePakPfs;
-
-extern OSMesg gRumblePakSchedulerMesgBuf;
-extern OSMesgQueue gRumblePakSchedulerMesgQueue;
-extern OSMesg gRumbleThreadVIMesgBuf;
-extern OSMesgQueue gRumbleThreadVIMesgQueue;
-
-extern struct RumbleData gRumbleDataQueue[3];
-extern struct StructSH8031D9B0 gCurrRumbleSettings;
 
 extern s32 gRumblePakTimer;
 

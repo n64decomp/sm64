@@ -107,7 +107,7 @@ void bhv_big_bully_with_minions_loop(void);
 f32 water_ring_calc_mario_dist(void);
 void water_ring_init(void);
 void bhv_jet_stream_water_ring_init(void);
-void water_ring_check_collection(f32 avgScale, struct Object *ringManager);
+void water_ring_check_collection(f32 avgScale, struct Object* ringManager);
 void water_ring_set_scale(f32 avgScale);
 void water_ring_act_collected(void);
 void water_ring_act_not_collected(void);
@@ -148,7 +148,7 @@ void bhv_bowling_ball_init(void);
 void bowling_ball_set_hitbox(void);
 void bowling_ball_set_waypoints(void);
 void bhv_bowling_ball_roll_loop(void);
-void bhv_bowling_ball_initialize_loop(void);
+void bhv_bowling_ball_initializeLoop(void);
 void bhv_bowling_ball_loop(void);
 void bhv_generic_bowling_ball_spawner_init(void);
 void bhv_generic_bowling_ball_spawner_loop(void);
@@ -160,6 +160,6 @@ void bhv_free_bowling_ball_roll_loop(void); /* likely unused */
 void bhv_free_bowling_ball_loop(void); /* likely unused */
 void bhv_rr_cruiser_wing_init(void);
 void bhv_rr_cruiser_wing_loop(void);
-void spawn_default_star(f32 homeX, f32 homeY, f32 homeZ);
+void spawn_default_star(f32 sp20, f32 sp24, f32 sp28);
 
 #endif // OBJ_BEHAVIORS_H

@@ -30,7 +30,7 @@ void bhv_ttc_moving_bar_init(void) {
 
     // This causes the first cycle to start at different times for different
     // bars
-    o->oTTCMovingBarStoppedTimer = 10 * o->oBhvParams2ndByte;
+    o->oTTCMovingBarStoppedTimer = 10 * o->oBehParams2ndByte;
 
     o->oMoveAngleYaw = 0x4000 - o->oMoveAngleYaw;
 }
@@ -43,11 +43,11 @@ static void ttc_moving_bar_act_wait(void) {
         // This is zero except on the first cycle, and is used to desync the
         // bars from each other at the very beginning
         if (o->oTTCMovingBarStoppedTimer != 0) {
-            o->oTTCMovingBarStoppedTimer--;
+            o->oTTCMovingBarStoppedTimer -= 1;
         } else {
             if (gTTCSpeedSetting == TTC_SPEED_RANDOM) {
                 // Set the delay for the next cycle
-                o->oTTCMovingBarDelay = sTTCMovingBarRandomDelays[random_u16() & 0x03];
+                o->oTTCMovingBarDelay = sTTCMovingBarRandomDelays[random_u16() & 0x3];
 
                 // With 50% probability, pause after pulling back
                 if (random_u16() % 2 == 0) {
@@ -70,7 +70,7 @@ static void ttc_moving_bar_act_pull_back(void) {
     if ((o->oTTCMovingBarSpeed += 0.73f) > 0.0f) {
         // Possibly pause after pulling back
         if (o->oTTCMovingBarStoppedTimer != 0) {
-            o->oTTCMovingBarStoppedTimer--;
+            o->oTTCMovingBarStoppedTimer -= 1;
             o->oTTCMovingBarSpeed = 0.0f;
         } else {
             // Begin extending

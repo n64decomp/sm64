@@ -1741,18 +1741,6 @@ ALIGNED8 static const Texture texture_menu_course_lower[] = {
 #include "levels/menu/main_menu_seg7_eu.0EDA0.rgba16.inc.c"
 };
 
-#elif defined(VERSION_CN)
-
-// 0x070BCE0 - 0x070CCE0
-ALIGNED8 static const Texture texture_menu_course_upper[] = {
-#include "levels/menu/main_menu_seg7_cn.0BCE0.rgba16.inc.c"
-};
-
-// 0x0700CCE0 - 0x0700DCE0
-ALIGNED8 static const Texture texture_menu_course_lower[] = {
-#include "levels/menu/main_menu_seg7_cn.0CCE0.rgba16.inc.c"
-};
-
 #else
 
 // 0x0700D1A8 - 0x0700E1A8

@@ -2694,7 +2694,7 @@ const Collision rr_seg7_collision_level[] = {
     COL_TRI_SPECIAL(31, 46, 45, 0x140),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(23),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  2599, -1833,  2071, /*yaw*/   64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  2599, -1833,  2071, /*yaw*/   64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  1902, -1833,  1063, /*yaw*/    0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04, /*pos*/  3803, -1833,  2036, /*yaw*/    0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_05, /*pos*/ -4888, -2550,  5847, /*yaw*/    0),
@@ -5419,7 +5419,7 @@ const Collision rr_seg7_collision_level[] = {
     COL_TRI_SPECIAL(35, 46, 47, 0x100),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(23),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  2599, -1833,  2071, /*yaw*/   64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  2599, -1833,  2071, /*yaw*/   64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  1902, -1833,  1063, /*yaw*/    0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04, /*pos*/  3803, -1833,  2036, /*yaw*/    0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_05, /*pos*/ -4888, -2550,  5847, /*yaw*/    0),

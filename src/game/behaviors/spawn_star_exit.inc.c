@@ -1,4 +1,4 @@
-// spawn_star_exit.inc.c
+// spawn_star_exit.c.inc
 
 void bhv_ccm_touched_star_spawn_loop(void) {
     if (gCCMEnteredSlide & 1) {

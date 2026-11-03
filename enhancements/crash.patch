@@ -158,7 +158,7 @@ index 00000000..033bf952
 +    jr    $k0 // run the original handler
 +     nop
 diff --git a/lib/asm/__osExceptionPreamble.s b/lib/asm/__osExceptionPreamble.s
-index 4e841ea0..ab0c7d13 100644
+index c3b97993..c552a485 100644
 --- a/lib/asm/__osExceptionPreamble.s
 +++ b/lib/asm/__osExceptionPreamble.s
 @@ -11,8 +11,8 @@
@@ -173,17 +173,17 @@ index 4e841ea0..ab0c7d13 100644
       nop
  
 diff --git a/sm64.ld b/sm64.ld
-index da9bc4dd..25ac57e8 100755
+index 7d9b5b4a..c7bb81b9 100755
 --- a/sm64.ld
 +++ b/sm64.ld
 @@ -117,6 +117,7 @@ SECTIONS
-         BUILD_DIR/src/game/rendering_graph_node.o(.text);
-         BUILD_DIR/src/game/profiler.o(.text);
-         BUILD_DIR/asm/decompress.o(.text);
-+        BUILD_DIR/asm/crash.o(.text);
-         BUILD_DIR/src/game/camera.o(.text);
-         BUILD_DIR/src/game/debug_course.o(.text);
-         BUILD_DIR/src/game/object_list_processor.o(.text);
+       BUILD_DIR/src/game/rendering_graph_node.o(.text);
+       BUILD_DIR/src/game/profiler.o(.text);
+       BUILD_DIR/asm/decompress.o(.text);
++      BUILD_DIR/asm/crash.o(.text);
+       BUILD_DIR/src/game/camera.o(.text);
+       BUILD_DIR/src/game/debug_course.o(.text);
+       BUILD_DIR/src/game/object_list_processor.o(.text);
 diff --git a/src/game/crash.c b/src/game/crash.c
 new file mode 100644
 index 00000000..716adfbd

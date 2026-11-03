@@ -1,6 +1,6 @@
 // sliding_platform_2.inc.c
 
-static Collision const *sSlidingPlatform2CollisionData[] = {
+static void const *sSlidingPlatform2CollisionData[] = {
     bits_seg7_collision_0701A9A0,
     bits_seg7_collision_0701AA0C,
     bitfs_seg7_collision_07015714,
@@ -12,19 +12,20 @@ static Collision const *sSlidingPlatform2CollisionData[] = {
 };
 
 void bhv_sliding_plat_2_init(void) {
-    s32 collisionDataIndex = ((u16)(o->oBhvParams >> 16) & 0x0380) >> 7;
+    s32 collisionDataIndex;
 
+    collisionDataIndex = ((u16)(o->oBehParams >> 16) & 0x0380) >> 7;
     o->collisionData = segmented_to_virtual(sSlidingPlatform2CollisionData[collisionDataIndex]);
-    o->oBackAndForthPlatformPathLength = 50.0f * ((u16)(o->oBhvParams >> 16) & 0x003F);
+    o->oBackAndForthPlatformPathLength = 50.0f * ((u16)(o->oBehParams >> 16) & 0x003F);
 
     if (collisionDataIndex < 5 || collisionDataIndex > 6) {
         o->oBackAndForthPlatformVel = 15.0f;
-        if ((u16)(o->oBhvParams >> 16) & 0x0040) {
+        if ((u16)(o->oBehParams >> 16) & 0x0040) {
             o->oMoveAngleYaw += 0x8000;
         }
     } else {
         o->oBackAndForthPlatformVel = 10.0f;
-        if ((u16)(o->oBhvParams >> 16) & 0x0040) {
+        if ((u16)(o->oBehParams >> 16) & 0x0040) {
             o->oBackAndForthPlatformDirection = -1.0f;
         } else {
             o->oBackAndForthPlatformDirection = 1.0f;

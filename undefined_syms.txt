@@ -1,6 +1,7 @@
 /* libultra OS symbols */
 
 /* boot and osException symbols */
+/* most of these should be in hardware.h */
 
 /* exceptions */
 
@@ -14,9 +15,6 @@ SP_DMEM_UNK1  = 0xA4000774;
 SP_IMEM       = 0xA4001000;
 SP_STATUS_REG = 0xA4040010;
 SP_PC         = 0xA4080000;
-
-D_CN_0400049C = 0x0400049C;
-D_CN_0400074C = 0x0400074C;
 
 /* MI */
 
@@ -54,21 +52,10 @@ RI_REFRESH_REG = 0xA4700010;
 SI_STATUS_REG = 0xA4800018;
 
 /* Unknown */
+
 D_B0000008 = 0xB0000008;
 D_B0000010 = 0xB0000010;
 D_B0000014 = 0xB0000014;
 D_C0000000 = 0xC0000000;
 D_C0000008 = 0xC0000008;
 D_C000000C = 0xC000000C;
-
-/* iQue symbols */
-__osBbEepromAddress = 0x8000035C;
-__osBbEepromSize = 0x80000360;
-__osBbFlashAddress = 0x80000364;
-__osBbFlashSize = 0x80000368;
-__osBbSramAddress = 0x8000036C;
-__osBbSramSize = 0x80000370;
-__osBbPakAddress = 0x80000374;
-__osBbPakSize = 0x80000384;
-__osBbIsBb = 0x80000388;
-__osBbHackFlags = 0x8000038C;

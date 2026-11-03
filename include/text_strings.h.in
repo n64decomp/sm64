@@ -6,48 +6,30 @@
 /**
  * Global Symbols
  */
-#define TEXT_EMPTY_STRING _("")
-#define TEXT_ZERO _%("0")
+#define TEXT_ZERO _("0")
 #define TEXT_COIN _("$")
 #define TEXT_STAR _("★")
 #define TEXT_COIN_X _("$×")
 #define TEXT_STAR_X _("★×")
 #define TEXT_VARIABLE_X _("×")
-
-#ifdef VERSION_CN
-#define TEXT_STAR_DIFF _("★　")
-#define TEXT_UNFILLED_STAR _("☆　")
-#else
-#define TEXT_STAR_DIFF TEXT_STAR
 #define TEXT_UNFILLED_STAR _("☆")
-#endif
 
 /**
  * Global Text
  */
 // File Select
-#define TEXT_4DASHES _("----") // Used in Score File Menu
-#ifdef VERSION_CN
-#define TEXT_NEW 0x7E, 0x7F, 0x82, 0x83, 0xFE, 0x80, 0x81, 0x84, 0x85, 0xFF
-#else
 #define TEXT_NEW _("NEW") // New File Text
-#endif
+#define TEXT_4DASHES _("----") // Used in Score File Menu
 
 // Ingame Menu
-#ifdef VERSION_CN
-#define TEXT_PAUSE 0x86, 0x87, 0x8A, 0x8B, 0x8E, 0x8F, 0xFE, 0x88, 0x89, 0x8C, 0x8D, 0x90, 0x91, 0xFF
-#define TEXT_HUD_CONGRATULATIONS 0x3A, 0x3B, 0x3E, 0x3F, 0x42, 0x43, 0xFE, 0x3C, 0x3D, 0x40, 0x41, 0x44, 0x45, 0xFF
-#else
 #define TEXT_PAUSE _("PAUSE") // Pause text, Castle Courses
 #define TEXT_HUD_CONGRATULATIONS _("CONGRATULATIONS") // Course Complete Text, Bowser Courses
-#endif
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
 
 /**
  * File Select Text
  */
-
 // Main Screens
 // JPHUD menu strings are defined in "text_menu_strings.h.in"
 #define TEXT_MARIO TEXT_JPHUD_MARIO // View Score Menu
@@ -147,7 +129,6 @@
 /**
  * File Select Text
  */
-
 // Main Screens
 #define TEXT_MARIO _("MARIO") // View Score Menu
 #define TEXT_SELECT_FILE _("SELECT FILE")
@@ -155,7 +136,6 @@
 #define TEXT_COPY_FILE _("COPY FILE")
 #define TEXT_ERASE_FILE _("ERASE FILE")
 #define TEXT_SOUND_SELECT _("SOUND SELECT")
-
 #define TEXT_FILE_MARIO_A _("MARIO A")
 #define TEXT_FILE_MARIO_B _("MARIO B")
 #define TEXT_FILE_MARIO_C _("MARIO C")
@@ -492,97 +472,4 @@
 #define TEXT_MENU_STARS_DE _("   GEHEIME STERNE")
 #endif // VERSION_EU
 
-#ifdef VERSION_CN
-
-/**
- * File Select Text
- */
-
-// Main Screens
-// JPHUD menu strings are defined in "text_menu_strings.h.in"
-#define TEXT_MARIO 0x76, 0x77, 0x7A, 0x7B, 0xFE, 0x78, 0x79, 0x7C, 0x7D, 0xFF
-#define TEXT_SELECT_FILE 0x96, 0x97, 0x9A, 0x9B, 0x9E, 0x9F, 0xFE, 0x98, 0x99, 0x9C, 0x9D, 0xA0, 0xA1, 0xFF
-#define TEXT_CHECK_FILE 0x46, 0x47, 0x4A, 0x4B, 0x4E, 0x4F, 0xFE, 0x48, 0x49, 0x4C, 0x4D, 0x50, 0x51, 0xFF
-#define TEXT_COPY_FILE 0x52, 0x53, 0x56, 0x57, 0x5A, 0x5B, 0xFE, 0x54, 0x55, 0x58, 0x59, 0x5C, 0x5D, 0xFF
-#define TEXT_ERASE_FILE 0x5E, 0x5F, 0x62, 0x63, 0x66, 0x67, 0xFE, 0x60, 0x61, 0x64, 0x65, 0x68, 0x69, 0xFF
-#define TEXT_SOUND_SELECT 0xA2, 0xA3, 0xA6, 0xA7, 0xAA, 0xAB, 0xFE, 0xA4, 0xA5, 0xA8, 0xA9, 0xAC, 0xAD, 0xFF
-
-#define TEXT_FILE_MARIO_A _("马力欧　A")
-#define TEXT_FILE_MARIO_B _("马力欧　B")
-#define TEXT_FILE_MARIO_C _("马力欧　C")
-#define TEXT_FILE_MARIO_D _("马力欧　D")
-
-// Menu Options
-#define TEXT_SCORE _("积分")
-#define TEXT_COPY _("复制")
-#define TEXT_ERASE _("删除")
-
-// Sound Options
-#define TEXT_STEREO _("立体声")
-#define TEXT_MONO _("单声道")
-#define TEXT_HEADSET _("耳机")
-
-// Misc Menu Text
-#define TEXT_SAVED_DATA_EXISTS _("有保存的数据")
-#define TEXT_NO_SAVED_DATA_EXISTS _("没有保存的数据")
-
-// Inside a Menu
-#define TEXT_RETURN _("返回")
-#define TEXT_CHECK_SCORE _("查看积分")
-#define TEXT_COPY_FILE_BUTTON _("复制文件")
-#define TEXT_ERASE_FILE_BUTTON _("删除文件")
-
-// Score Menu
-#define TEXT_HI_SCORE _("最高积分")
-#define TEXT_MY_SCORE _("我的积分")
-#define TEXT_SCORE_MARIO_A _("☺A")
-#define TEXT_SCORE_MARIO_B _("☺B")
-#define TEXT_SCORE_MARIO_C _("☺C")
-#define TEXT_SCORE_MARIO_D _("☺D")
-
-// Copy Menu
-#define TEXT_COPY_IT_TO_WHERE _("复制到何处")
-#define TEXT_COPYING_COMPLETED _("复制完毕")
-#define TEXT_NO_FILE_TO_COPY_FROM _("没有空文件")
-
-// Erase Menu
-#define TEXT_SURE _("确定吗？")
-#define TEXT_YES _("是")
-#define TEXT_NO _("否")
-#define TEXT_FILE_MARIO_A_JUST_ERASED _("文件已删除")
-
-/**
- * Menus Text (Pause, Course Completed)
- */
-// Main Courses
-#define TEXT_COURSE _("关卡")
-#define TEXT_MYSCORE TEXT_MY_SCORE
-#define TEXT_CONTINUE _("继续")
-#define TEXT_EXIT_COURSE _("退出")
-#define TEXT_CAMERA_ANGLE_R _("使用[R]键设定视角")
-
-// Camera Options
-#define TEXT_LAKITU_MARIO TEXT_EMPTY_STRING
-#define TEXT_LAKITU_STOP TEXT_EMPTY_STRING
-#define TEXT_NORMAL_UPCLOSE _("特写镜头")
-#define TEXT_NORMAL_FIXED _("固定镜头")
-
-// Course Completed Misc Text
-#define TEXT_CATCH _("接住")
-#define TEXT_CLEAR _("清除")
-#define TEXT_HUD_HI_SCORE 0x6A, 0x6B, 0x6E, 0x6F, 0x72, 0x73, 0xFE, 0x6C, 0x6D, 0x70, 0x71, 0x74, 0x75, 0xFF
-
-// Save Options
-#define TEXT_SAVE_AND_CONTINUE _("保存并继续")
-#define TEXT_SAVE_AND_QUIT _("保存并退出")
-#define TEXT_CONTINUE_WITHOUT_SAVING _("不必保存")
-
-// File Score Menu Icons
-#define TEXT_ARROW_L _("◀　L")
-#define TEXT_R_ARROW _("R　▶")
-
-#endif // VERSION_CN
-
 #endif // TEXT_STRINGS_H
-
-

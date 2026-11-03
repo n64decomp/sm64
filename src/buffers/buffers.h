@@ -29,6 +29,11 @@ extern struct SaveBuffer gSaveBuffer;
 
 extern u8 gGfxSPTaskStack[];
 
-extern struct GfxPool gGfxPools[2];
+#ifdef TARGET_N64
+#define GFX_NUM_POOLS 2
+#else
+#define GFX_NUM_POOLS 1
+#endif
+extern struct GfxPool gGfxPools[GFX_NUM_POOLS];
 
 #endif // BUFFERS_H

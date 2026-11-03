@@ -1,4 +1,3 @@
-
 /**
  * Behavior for the falling pillars inside the underwater cave area of
  * Jolly Roger Bay.
@@ -43,10 +42,13 @@ void bhv_falling_pillar_spawn_hitboxes(void) {
  * Mario.
  */
 s16 bhv_falling_pillar_calculate_angle_in_front_of_mario(void) {
+    f32 targetX;
+    f32 targetZ;
+
     // Calculate target to be 500 units in front of Mario in
     // the direction he is facing (angle[1] is yaw).
-    f32 targetX = sins(gMarioObject->header.gfx.angle[1]) * 500.0f + gMarioObject->header.gfx.pos[0];
-    f32 targetZ = coss(gMarioObject->header.gfx.angle[1]) * 500.0f + gMarioObject->header.gfx.pos[2];
+    targetX = sins(gMarioObject->header.gfx.angle[1]) * 500.0f + gMarioObject->header.gfx.pos[0];
+    targetZ = coss(gMarioObject->header.gfx.angle[1]) * 500.0f + gMarioObject->header.gfx.pos[2];
 
     // Calculate the angle to the target from the pillar's current location.
     return atan2s(targetZ - o->oPosZ, targetX - o->oPosX);
@@ -57,7 +59,6 @@ s16 bhv_falling_pillar_calculate_angle_in_front_of_mario(void) {
  */
 void bhv_falling_pillar_loop(void) {
     s16 angleInFrontOfMario;
-
     switch (o->oAction) {
         case FALLING_PILLAR_ACT_IDLE:
             // When Mario is within 1300 units of distance...
@@ -85,9 +86,8 @@ void bhv_falling_pillar_loop(void) {
             o->oFaceAngleYaw = approach_s16_symmetric(o->oFaceAngleYaw, angleInFrontOfMario, 0x400);
 
             // After 10 ticks, start falling.
-            if (o->oTimer > 10) {
+            if (o->oTimer > 10)
                 o->oAction = FALLING_PILLAR_ACT_FALLING;
-            }
             break;
 
         case FALLING_PILLAR_ACT_FALLING:
@@ -128,7 +128,7 @@ void bhv_falling_pillar_hitbox_loop(void) {
     f32 x = o->parentObj->oPosX;
     f32 y = o->parentObj->oPosY;
     f32 z = o->parentObj->oPosZ;
-    f32 yOffset = o->oBhvParams2ndByte * 400 + 300;
+    f32 yOffset = o->oBehParams2ndByte * 400 + 300;
 
     // Update position of hitboxes so they fall with the pillar.
     o->oPosX = sins(pitch) * sins(yaw) * yOffset + x;
@@ -139,7 +139,6 @@ void bhv_falling_pillar_hitbox_loop(void) {
     obj_set_hitbox(o, &sFallingPillarHitbox);
 
     // When the pillar goes inactive, the hitboxes also go inactive.
-    if (o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
+    if (o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED)
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-    }
 }

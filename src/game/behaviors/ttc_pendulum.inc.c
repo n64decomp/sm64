@@ -42,7 +42,7 @@ void bhv_ttc_pendulum_update(void) {
 
         // Stay still for a while
         if (o->oTTCPendulumDelay != 0) {
-            o->oTTCPendulumDelay--;
+            o->oTTCPendulumDelay -= 1;
         } else {
             // Accelerate in the direction that moves angle to zero
             if (o->oTTCPendulumAngle * o->oTTCPendulumAccelDir > 0.0f) {

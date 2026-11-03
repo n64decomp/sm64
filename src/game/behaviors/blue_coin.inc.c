@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvHiddenBlueCoin and bhvBlueCoinSwitch.
  * bhvHiddenBlueCoin are the stationary blue coins that appear when
@@ -25,7 +24,6 @@ void bhv_hidden_blue_coin_loop(void) {
             }
 
             break;
-
         case HIDDEN_BLUE_COIN_ACT_WAITING:
             // Wait until the blue coin switch starts ticking to activate.
             blueCoinSwitch = o->oHiddenBlueCoinSwitch;
@@ -35,7 +33,6 @@ void bhv_hidden_blue_coin_loop(void) {
             }
 
             break;
-
         case HIDDEN_BLUE_COIN_ACT_ACTIVE:
             // Become tangible
             cur_obj_enable_rendering();
@@ -88,7 +85,6 @@ void bhv_blue_coin_switch_loop(void) {
             load_object_collision_model();
 
             break;
-
         case BLUE_COIN_SWITCH_ACT_RECEDING:
             // Recede for 6 frames before going invisible and ticking.
             // This is probably an off-by-one error, since the switch is 100 units tall
@@ -112,7 +108,6 @@ void bhv_blue_coin_switch_loop(void) {
             }
 
             break;
-
         case BLUE_COIN_SWITCH_ACT_TICKING:
             // Tick faster when the blue coins start blinking
             if (o->oTimer < 200) {

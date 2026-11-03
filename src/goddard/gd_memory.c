@@ -1,3 +1,4 @@
+#ifndef USE_SYSTEM_MALLOC
 #include <PR/ultratypes.h>
 
 #include "debug_utils.h"
@@ -312,3 +313,7 @@ void mem_stats(void) {
     list = sEmptyBlockListHead;
     print_list_stats(list, FALSE, PERM_G_MEM_BLOCK | TEMP_G_MEM_BLOCK);
 }
+#else
+void mem_stats(void) {
+}
+#endif

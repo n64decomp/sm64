@@ -79,50 +79,50 @@
         "inst0": {
             "release_rate": 10,
             "envelope": "envelope0",
-            "sound": "22_boys_choir_Bb4"
+            "sound": "22_boys_choir"
         },
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "19_brass_Eb3"
+            "sound": "19_brass"
         },
         "inst2": {
             "release_rate": 15,
             "normal_range_lo": 27,
             "normal_range_hi": 46,
             "envelope": "envelope2",
-            "sound_lo": "23_strings_Eb2",
-            "sound": "24_strings_G#2",
-            "sound_hi": "25_strings_F#3"
+            "sound_lo": "23_strings_1",
+            "sound": "24_strings_2",
+            "sound_hi": "25_strings_3"
         },
         "inst3": {
             "release_rate": 90,
             "envelope": "envelope3",
-            "sound": "28_sitar_1_A2"
+            "sound": "28_sitar_1"
         },
         "inst4": {
             "release_rate": 208,
             "envelope": "envelope4",
-            "sound": "29_orchestra_hit_C3"
+            "sound": "29_orchestra_hit"
         },
         "inst5": {
             "release_rate": 100,
             "normal_range_lo": 55,
             "normal_range_hi": 56,
             "envelope": "envelope5",
-            "sound_lo": "2A_tabla_riff_1",
-            "sound": "2B_tabla_riff_2",
-            "sound_hi": "2C_tabla_riff_3"
+            "sound_lo": "2A",
+            "sound": "2B",
+            "sound_hi": "2C"
         },
         "inst6": {
             "release_rate": 208,
             "envelope": "envelope6",
-            "sound": "19_brass_Eb3"
+            "sound": "19_brass"
         },
         "inst7": {
             "release_rate": 10,
             "envelope": "envelope7",
-            "sound": "22_boys_choir_Bb4"
+            "sound": "22_boys_choir"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope8", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

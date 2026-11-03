@@ -1,24 +1,25 @@
-// hidden_star.inc.c
+// hidden_star.c.inc
 
 void bhv_hidden_star_init(void) {
-    s16 count = count_objects_with_behavior(bhvHiddenStarTrigger);
+    s16 sp36;
+    struct Object *sp30;
 
-    if (count == 0) {
-        struct Object *star = spawn_object_abs_with_rot(o, 0, MODEL_STAR, bhvStar,
-                                                        o->oPosX, o->oPosY, o->oPosZ, 0, 0, 0);
-        star->oBhvParams = o->oBhvParams;
+    sp36 = count_objects_with_behavior(bhvHiddenStarTrigger);
+    if (sp36 == 0) {
+        sp30 =
+            spawn_object_abs_with_rot(o, 0, MODEL_STAR, bhvStar, o->oPosX, o->oPosY, o->oPosZ, 0, 0, 0);
+        sp30->oBehParams = o->oBehParams;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 
-    o->oHiddenStarTriggerCounter = 5 - count;
+    o->oHiddenStarTriggerCounter = 5 - sp36;
 }
 
 void bhv_hidden_star_loop(void) {
     switch (o->oAction) {
         case 0:
-            if (o->oHiddenStarTriggerCounter == 5) {
+            if (o->oHiddenStarTriggerCounter == 5)
                 o->oAction = 1;
-            }
             break;
 
         case 1:
@@ -31,13 +32,13 @@ void bhv_hidden_star_loop(void) {
     }
 }
 
+/* TODO: this is likely not a checkpoint but a Secret */
 void bhv_hidden_star_trigger_loop(void) {
-    if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
-        struct Object *hiddenStar = cur_obj_nearest_object_with_behavior(bhvHiddenStar);
-
+    struct Object *hiddenStar;
+    if (obj_check_if_collided_with_object(o, gMarioObject) == 1) {
+        hiddenStar = cur_obj_nearest_object_with_behavior(bhvHiddenStar);
         if (hiddenStar != NULL) {
             hiddenStar->oHiddenStarTriggerCounter++;
-
             if (hiddenStar->oHiddenStarTriggerCounter != 5) {
                 spawn_orange_number(hiddenStar->oHiddenStarTriggerCounter, 0, 0, 0);
             }
@@ -46,7 +47,8 @@ void bhv_hidden_star_trigger_loop(void) {
             play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #else
             play_sound(SOUND_MENU_COLLECT_SECRET
-                       + (((u8) hiddenStar->oHiddenStarTriggerCounter - 1) << 16), gGlobalSoundSource);
+                           + (((u8) hiddenStar->oHiddenStarTriggerCounter - 1) << 16),
+                       gGlobalSoundSource);
 #endif
         }
 
@@ -56,12 +58,10 @@ void bhv_hidden_star_trigger_loop(void) {
 
 void bhv_bowser_course_red_coin_star_loop(void) {
     gRedCoinsCollected = o->oHiddenStarTriggerCounter;
-
     switch (o->oAction) {
         case 0:
-            if (o->oHiddenStarTriggerCounter == 8) {
+            if (o->oHiddenStarTriggerCounter == 8)
                 o->oAction = 1;
-            }
             break;
 
         case 1:

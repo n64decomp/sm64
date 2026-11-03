@@ -8,12 +8,20 @@ To apply a patch, run `tools/apply_patch.sh [patch]` where `[patch]` is the name
 to the source code.
 
 Likewise, to undo the changes from a patch you applied, run
-`tools/revert_patch.sh` with the name of the .patch file you wish to undo.
+`tools/revert_patch.sh` with the name of the .patch file you wish to undo. 
 
 To create your own enhancement patch, switch to the `master` Git
-branch, make your changes to the code (but do not commit), then run `tools/create_patch.sh`. Your changes will be stored in the .patch file you specify.
+branch, make your changes to the code (but do not commit), then run `tools/create_patch.sh`. Your changes will be stored in the .patch file you specify. 
 
 The following enhancements are included in this directory:
+
+## 60 FPS - `60fps.patch`
+
+This patch is only supported when not targeting N64. It also currently requires a 64-bit platform. If compiled for a 32-bit platform, the game will run out of memory and crash.
+
+This allows the game to be rendered at 60 FPS instead of 30 FPS by interpolation.
+
+The Mario head intro is the only exception which is still rendered at 30 FPS.
 
 ## Crash Screen - `crash.patch`
 

@@ -1,4 +1,3 @@
-// recovery_heart.inc.c
 
 struct ObjectHitbox sRecoveryHeartHitbox = {
     /* interactType:      */ 0,
@@ -17,7 +16,7 @@ void bhv_recovery_heart_loop(void) {
     if (obj_check_if_collided_with_object(o, gMarioObject)) {
         if (o->oSpinningHeartPlayedSound == 0) {
             cur_obj_play_sound_2(SOUND_GENERAL_HEART_SPIN);
-            o->oSpinningHeartPlayedSound++;
+            o->oSpinningHeartPlayedSound += 1;
         }
 
         o->oAngleVelYaw = (s32)(200.0f * gMarioStates[0].forwardVel) + 1000;

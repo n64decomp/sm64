@@ -1,3 +1,6 @@
+#ifdef USE_SYSTEM_MALLOC
+#include <stdlib.h>
+#endif
 #include <PR/ultratypes.h>
 
 #include "audio/external.h"
@@ -89,10 +92,26 @@ struct Object *try_allocate_object(struct ObjectNode *destList, struct ObjectNod
         destList->prev->next = nextObj;
         destList->prev = nextObj;
     } else {
+#ifdef USE_SYSTEM_MALLOC
+        nextObj = (struct ObjectNode *) malloc(sizeof(struct Object));
+        if (nextObj == NULL) {
+            abort();
+        }
+        // Insert at end of destination list
+        nextObj->prev = destList->prev;
+        nextObj->next = destList;
+        destList->prev->next = nextObj;
+        destList->prev = nextObj;
+#else
         return NULL;
+#endif
     }
 
+#ifdef USE_SYSTEM_MALLOC
+    init_graph_node_object(NULL, &nextObj->gfx, 0, gVec3fZero, gVec3sZero, gVec3fOne);
+#else
     geo_remove_child(&nextObj->gfx.node);
+#endif
     geo_add_child(&gObjParentGraphNode, &nextObj->gfx.node);
 
     return (struct Object *) nextObj;
@@ -112,6 +131,7 @@ void unused_deallocate(struct LinkedList *freeList, struct LinkedList *node) {
     node->next = freeList->next;
     freeList->next = node;
 }
+
 /**
  * Remove the given object from the object list that it's currently in, and
  * insert it at the beginning of the free list (singly linked).
@@ -126,6 +146,7 @@ static void deallocate_object(struct ObjectNode *freeList, struct ObjectNode *ob
     freeList->next = obj;
 }
 
+#ifndef USE_SYSTEM_MALLOC
 /**
  * Add every object in the pool to the free object list.
  */
@@ -146,6 +167,7 @@ void init_free_object_list(void) {
     // End the list
     obj->header.next = NULL;
 }
+#endif
 
 /**
  * Clear each object list, without adding the objects back to the free list.
@@ -154,6 +176,17 @@ void clear_object_lists(struct ObjectNode *objLists) {
     s32 i;
 
     for (i = 0; i < NUM_OBJ_LISTS; i++) {
+#ifdef USE_SYSTEM_MALLOC
+        struct ObjectNode *list = objLists + i;
+        struct ObjectNode *node = list->next;
+
+        while (node != NULL && node != list) {
+            struct Object *obj = (struct Object *) node;
+            node = node->next;
+
+            unload_object(obj);
+        }
+#endif
         objLists[i].next = &objLists[i];
         objLists[i].prev = &objLists[i];
     }
@@ -192,7 +225,9 @@ void unload_object(struct Object *obj) {
     obj->header.gfx.throwMatrix = NULL;
     stop_sounds_from_source(obj->header.gfx.cameraToObject);
     geo_remove_child(&obj->header.gfx.node);
+#ifndef USE_SYSTEM_MALLOC
     geo_add_child(&gObjParentGraphNode, &obj->header.gfx.node);
+#endif
 
     obj->header.gfx.node.flags &= ~GRAPH_RENDER_BILLBOARD;
     obj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
@@ -209,6 +244,7 @@ struct Object *allocate_object(struct ObjectNode *objList) {
     s32 i;
     struct Object *obj = try_allocate_object(objList, &gFreeObjectList);
 
+#ifndef USE_SYSTEM_MALLOC
     // The object list is full if the newly created pointer is NULL.
     // If this happens, we first attempt to unload unimportant objects
     // in order to finish allocating the object.
@@ -233,6 +269,7 @@ struct Object *allocate_object(struct ObjectNode *objList) {
             }
         }
     }
+#endif
 
     // Initialize object fields
 

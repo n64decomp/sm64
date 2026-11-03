@@ -1,4 +1,4 @@
-// treasure_chest.inc.c
+// treasure_chest.c.inc
 
 /**
  * Hitbox for treasure chest bottom.
@@ -20,9 +20,8 @@ void bhv_treasure_chest_top_loop(void) {
 
     switch (o->oAction) {
         case 0:
-            if (o->parentObj->oAction == 1) {
+            if (o->parentObj->oAction == 1)
                 o->oAction = 1;
-            }
             break;
 
         case 1:
@@ -35,20 +34,18 @@ void bhv_treasure_chest_top_loop(void) {
                 }
             }
 
-            o->oFaceAnglePitch -= 0x200;
+            o->oFaceAnglePitch += -0x200;
             if (o->oFaceAnglePitch < -0x4000) {
                 o->oFaceAnglePitch = -0x4000;
                 o->oAction++;
-                if (o->parentObj->oBhvParams2ndByte != 4) {
-                    spawn_orange_number(o->parentObj->oBhvParams2ndByte, 0, -40, 0);
-                }
+                if (o->parentObj->oBehParams2ndByte != 4)
+                    spawn_orange_number(o->parentObj->oBehParams2ndByte, 0, -40, 0);
             }
             break;
 
         case 2:
-            if (o->parentObj->oAction == 0) {
+            if (o->parentObj->oAction == 0)
                 o->oAction = 3;
-            }
             break;
 
         case 3:
@@ -68,33 +65,34 @@ void bhv_treasure_chest_bottom_init(void) {
 void bhv_treasure_chest_bottom_loop(void) {
     switch (o->oAction) {
         case 0:
-            if (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, gMarioObject->header.gfx.angle[1] + 0x8000, 0x3000)
-                && is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 150)
-                && !o->parentObj->oTreasureChestUnkF8) {
-                if (o->parentObj->oTreasureChestUnkF4 == o->oBhvParams2ndByte) {
-                    play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
-                    o->parentObj->oTreasureChestUnkF4++;
-                    o->oAction = 1;
-                } else {
-                    o->parentObj->oTreasureChestUnkF4 = 1;
-                    o->parentObj->oTreasureChestUnkF8 = TRUE;
-                    o->oAction = 2;
-                    cur_obj_become_tangible();
-                    play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+            if (obj_check_if_facing_toward_angle(o->oMoveAngleYaw, gMarioObject->header.gfx.angle[1] + 0x8000, 0x3000)) {
+                if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 150)) {
+                    if (!o->parentObj->oTreasureChestUnkF8) {
+                        if (o->parentObj->oTreasureChestUnkF4 == o->oBehParams2ndByte) {
+                            play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
+                            o->parentObj->oTreasureChestUnkF4++;
+                            o->oAction = 1;
+                        } else {
+                            o->parentObj->oTreasureChestUnkF4 = 1;
+                            o->parentObj->oTreasureChestUnkF8 = 1;
+                            o->oAction = 2;
+                            cur_obj_become_tangible();
+                            play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+                        }
+                    }
                 }
             }
             break;
 
         case 1:
-            if (o->parentObj->oTreasureChestUnkF8 == TRUE) {
+            if (o->parentObj->oTreasureChestUnkF8 == 1)
                 o->oAction = 0;
-            }
             break;
 
         case 2:
             cur_obj_become_intangible();
             if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 500)) {
-                o->parentObj->oTreasureChestUnkF8 = FALSE;
+                o->parentObj->oTreasureChestUnkF8 = 0;
                 o->oAction = 0;
             }
     }
@@ -103,10 +101,11 @@ void bhv_treasure_chest_bottom_loop(void) {
     o->oInteractStatus = 0;
 }
 
-void spawn_treasure_chest(s8 sp3B, s32 x, s32 y, s32 z, s16 yaw) {
-    struct Object *sp34 = spawn_object_abs_with_rot(o, 0, MODEL_TREASURE_CHEST_BASE,
-                                                    bhvTreasureChestBottom, x, y, z, 0, yaw, 0);
-    sp34->oBhvParams2ndByte = sp3B;
+void spawn_treasure_chest(s8 sp3B, s32 sp3C, s32 sp40, s32 sp44, s16 sp4A) {
+    struct Object *sp34;
+    sp34 = spawn_object_abs_with_rot(o, 0, MODEL_TREASURE_CHEST_BASE, bhvTreasureChestBottom, sp3C,
+                                     sp40, sp44, 0, sp4A, 0);
+    sp34->oBehParams2ndByte = sp3B;
 }
 
 void bhv_treasure_chest_ship_init(void) {
@@ -130,7 +129,7 @@ void bhv_treasure_chest_ship_loop(void) {
 
         case 1:
             if (gEnvironmentRegions != NULL) {
-                gEnvironmentRegions[6] -= 5;
+                gEnvironmentRegions[6] += -5;
                 play_sound(SOUND_ENV_WATER_DRAIN, gGlobalSoundSource);
                 set_environmental_camera_shake(SHAKE_ENV_JRB_SHIP_DRAIN);
                 if (gEnvironmentRegions[6] < -335) {
@@ -176,7 +175,7 @@ void bhv_treasure_chest_jrb_loop(void) {
     }
 }
 
-void bhv_treasure_chest_ddd_init(void) {
+void bhv_treasure_chest_init(void) {
     spawn_treasure_chest(1, -4500, -5119, 1300, -0x6001);
     spawn_treasure_chest(2, -1800, -5119, 1050, 0x1FFF);
     spawn_treasure_chest(3, -4500, -5119, -1100, 9102);
@@ -186,7 +185,7 @@ void bhv_treasure_chest_ddd_init(void) {
     o->oTreasureChestUnkFC = 0;
 }
 
-void bhv_treasure_chest_ddd_loop(void) {
+void bhv_treasure_chest_loop(void) {
     switch (o->oAction) {
         case 0:
             if (o->oTreasureChestUnkF4 == 5) {

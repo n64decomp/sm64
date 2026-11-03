@@ -8,7 +8,8 @@
  * Shadow types. Shadows are circles, squares, or hardcoded rectangles, and
  * can be composed of either 4 or 9 vertices.
  */
-enum ShadowType {
+enum ShadowType
+{
     SHADOW_CIRCLE_9_VERTS = 0,
     SHADOW_CIRCLE_4_VERTS = 1,
     SHADOW_CIRCLE_4_VERTS_FLAT_UNUSED = 2,

@@ -21,7 +21,7 @@ struct GdTimer {
     /* 0x00 */ s32 start;   // in cycles
     /* 0x04 */ s32 end;     // in cycles
     /* 0x08 */ s32 total;   // in cycles
-    /* 0x0C */ f32 unused;
+    /* 0x0C */ f32 unused0C;
     /* 0x10 */ f32 scaledTotal;  // total / sTimeScaleFactor (1.0f) Unused function modified value
     /* 0x14 */ f32 prevScaledTotal;
     /* 0x18 */ const char *name;
@@ -37,7 +37,7 @@ union PrintVal {
 
 /* based on fields set in gd_fopen; gd_malloc_perm(84) for size */
 struct GdFile {
-    /* 0x00 */ u8  filler1[4];
+    /* 0x00 */ u8  pad00[4];
     /* 0x04 */ u32 pos;
     /* 0x08 */ s8 *stream;
     /* Known Flags for +0xC field:
@@ -45,7 +45,7 @@ struct GdFile {
     ** 2 : binary mode
     ** 4 : eof */
     /* 0x0C */ u32 flags;
-    /* 0x10 */ u8  filler2[64];
+    /* 0x10 */ u8  pad10[0x50-0x10];
     /* 0x50 */ u32 size;
 }; /* sizeof() = 0x54 */
 

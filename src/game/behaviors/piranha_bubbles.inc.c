@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvPiranhaPlantBubble and bhvPiranhaPlantWakingBubbles.
  *
@@ -31,10 +30,12 @@ void bhv_piranha_plant_bubble_loop(void) {
     struct Object *parent = o->parentObj; // the Piranha Plant
     f32 scale = 0;
     s32 i;
-    s32 animFrame = parent->header.gfx.animInfo.animFrame;
+    s32 frame = parent->header.gfx.animInfo.animFrame;
     // TODO: rename lastFrame if it is inaccurate
     s32 lastFrame = parent->header.gfx.animInfo.curAnim->loopEnd - 2;
-    UNUSED u8 filler[4];
+    s32 UNUSED unused;
+    f32 doneShrinkingFrame; // the first frame after shrinking is done
+    f32 beginGrowingFrame;  // the frame just before growing begins
 
     cur_obj_set_pos_relative(parent, 0, 72.0f, 180.0f);
 
@@ -59,21 +60,21 @@ void bhv_piranha_plant_bubble_loop(void) {
                      * slightly after halfway. This leaves about 8 frames during
                      * which the bubble is at its smallest, where its scale is 1.0f.
                      */
-                    // the first frame after shrinking is done
-                    f32 doneShrinkingFrame = lastFrame / 2.0f - 4.0f;
-                    // the frame just before growing begins
-                    f32 beginGrowingFrame = lastFrame / 2.0f + 4.0f;
+                    doneShrinkingFrame = lastFrame / 2.0f - 4.0f;
+                    beginGrowingFrame = lastFrame / 2.0f + 4.0f;
 
                     // Note that the bubble always starts this loop at its largest.
-                    if (animFrame < doneShrinkingFrame) {
+                    if (frame < doneShrinkingFrame) {
                         // Shrink from 5.0f to 1.0f.
-                        scale = coss(animFrame / doneShrinkingFrame * 0x4000) * 4.0f + 1.0;
-                    } else if (animFrame > beginGrowingFrame) {
+                        scale = coss(frame / doneShrinkingFrame * 0x4000) * 4.0f + 1.0;
+                    } else if (frame > beginGrowingFrame) {
                         // Grow from 1.0f to 5.0f.
                         scale = sins((
-                                    // they should have used beginGrowingFrame here:
-                                    (animFrame - (lastFrame / 2.0f + 4.0f)) / beginGrowingFrame
-                                    ) * 0x4000) * 4.0f + 1.0;
+                                         // they should have used beginGrowingFrame here:
+                                         (frame - (lastFrame / 2.0f + 4.0f)) / beginGrowingFrame)
+                                     * 0x4000)
+                                    * 4.0f
+                                + 1.0;
                     } else {
                         // Stay at 1.0f for a few frames.
                         scale = 1.0f;
@@ -89,7 +90,7 @@ void bhv_piranha_plant_bubble_loop(void) {
 
         case PIRANHA_PLANT_BUBBLE_ACT_BURST:
             cur_obj_disable_rendering();
-            scale = 0.0f;
+            scale = 0;
 
             // Spawn 15 small bubbles to make it look like this bubble burst.
             for (i = 0; i < 15; i++) {
@@ -100,6 +101,5 @@ void bhv_piranha_plant_bubble_loop(void) {
             scale = 1.0f; // this has no effect; it is set to 0 in the idle state
             break;
     }
-
     cur_obj_scale(scale);
 }

@@ -30,15 +30,16 @@ static struct ObjectHitbox sWaterBombHitbox = {
  */
 void bhv_water_bomb_spawner_update(void) {
     f32 latDistToMario;
-    f32 spawnerRadius = 50 * (u16)(o->oBhvParams >> 16) + 200.0f;
+    f32 spawnerRadius;
 
+    spawnerRadius = 50 * (u16)(o->oBehParams >> 16) + 200.0f;
     latDistToMario = lateral_dist_between_objects(o, gMarioObject);
 
     // When mario is in range and a water bomb isn't already active
     if (!o->oWaterBombSpawnerBombActive && latDistToMario < spawnerRadius
         && gMarioObject->oPosY - o->oPosY < 1000.0f) {
         if (o->oWaterBombSpawnerTimeToSpawn != 0) {
-            o->oWaterBombSpawnerTimeToSpawn--;
+            o->oWaterBombSpawnerTimeToSpawn -= 1;
         } else {
             struct Object *waterBomb =
                 spawn_object_relative(0, 0, 2000, 0, o, MODEL_WATER_BOMB, bhvWaterBomb);
@@ -67,8 +68,8 @@ void bhv_water_bomb_spawner_update(void) {
  * Spawn particles when the water bomb explodes.
  */
 void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYBase) {
-    static struct SpawnParticlesInfo waterBombExplodeParticles = {
-        /* bhvParam:        */ 0,
+    static struct SpawnParticlesInfo sWaterBombExplodeParticles = {
+        /* behParam:        */ 0,
         /* count:           */ 5,
         /* model:           */ MODEL_BUBBLE,
         /* offsetY:         */ 20,
@@ -82,11 +83,10 @@ void water_bomb_spawn_explode_particles(s8 offsetY, s8 forwardVelRange, s8 velYB
         /* sizeRange:       */ 10.0f,
     };
 
-    waterBombExplodeParticles.offsetY = offsetY;
-    waterBombExplodeParticles.forwardVelRange = forwardVelRange;
-    waterBombExplodeParticles.velYBase = velYBase;
-
-    cur_obj_spawn_particles(&waterBombExplodeParticles);
+    sWaterBombExplodeParticles.offsetY = offsetY;
+    sWaterBombExplodeParticles.forwardVelRange = forwardVelRange;
+    sWaterBombExplodeParticles.velYBase = velYBase;
+    cur_obj_spawn_particles(&sWaterBombExplodeParticles);
 }
 
 /**
@@ -175,8 +175,9 @@ static void water_bomb_act_explode(void) {
  * Despawn after 100 frames.
  */
 static void water_bomb_act_shot_from_cannon(void) {
-    static struct SpawnParticlesInfo waterBombCannonParticle = {
-        /* bhvParam:        */ 0,
+
+    static struct SpawnParticlesInfo sWaterBombCannonParticle = {
+        /* behParam:        */ 0,
         /* count:           */ 1,
         /* model:           */ MODEL_BUBBLE,
         /* offsetY:         */ 236,
@@ -197,7 +198,7 @@ static void water_bomb_act_shot_from_cannon(void) {
             if (o->oTimer == 1) {
                 water_bomb_spawn_explode_particles(-20, 10, 30);
             }
-            cur_obj_spawn_particles(&waterBombCannonParticle);
+            cur_obj_spawn_particles(&sWaterBombCannonParticle);
         }
 
         if (o->header.gfx.scale[1] > 1.2f) {

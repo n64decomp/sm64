@@ -9,12 +9,14 @@
 #define NUM_CELLS       (2 * LEVEL_BOUNDARY_MAX / CELL_SIZE)
 #define NUM_CELLS_INDEX (NUM_CELLS - 1)
 
-struct SurfaceNode {
+struct SurfaceNode
+{
     struct SurfaceNode *next;
     struct Surface *surface;
 };
 
-enum {
+enum
+{
     SPATIAL_PARTITION_FLOORS,
     SPATIAL_PARTITION_CEILS,
     SPATIAL_PARTITION_WALLS
@@ -33,9 +35,9 @@ extern s16 sSurfacePoolSize;
 
 void alloc_surface_pools(void);
 #ifdef NO_SEGMENTED_MEMORY
-u32 get_area_terrain_size(TerrainData *data);
+u32 get_area_terrain_size(s16 *data);
 #endif
-void load_area_terrain(s16 index, TerrainData *data, RoomData *surfaceRooms, s16 *macroObjects);
+void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects);
 void clear_dynamic_surfaces(void);
 void load_object_collision_model(void);
 

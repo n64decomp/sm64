@@ -19,7 +19,7 @@
 
 {
     "table": [
-        {"demofile":"bitdw", "ifdef":["VERSION_US", "VERSION_SH", "VERSION_CN"]},
+        {"demofile":"bitdw", "ifdef":["VERSION_US", "VERSION_SH"]},
         
         /* Whomp's Fortress has the wrong size.
            The original entries probably manually input the sizes. */
@@ -44,6 +44,6 @@
            Mario runs into the sign and aligns himself as if it were a mistake. */
         {"name":"unused"},
         
-        {"name":"bitdw", "ifdef":["VERSION_US", "VERSION_SH", "VERSION_CN"]}
+        {"name":"bitdw", "ifdef":["VERSION_US", "VERSION_SH"]}
     ]
 }

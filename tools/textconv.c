@@ -11,14 +11,12 @@
 
 #define ARRAY_COUNT(arr) (sizeof(arr) / sizeof(arr[0]))
 
-#define INVALID_CHAR 0xFFFFFFFF
-
 struct CharmapEntry
 {
     uint32_t unicode[3];
     int length; // length of the unicode array. TODO: use dynamic memory allocation
     int bytesCount;
-    uint8_t bytes[4]; // bytes to convert unicode array to, (e.g. 'A' = 0x0A)
+    uint8_t bytes[2]; // bytes to convert unicode array to, (e.g. 'A' = 0x0A)
 };
 
 static struct HashTable *charmap;
@@ -158,11 +156,10 @@ static int is_identifier_char(char c)
     return isalnum(c) || c == '_';
 }
 
-static uint32_t get_escape_char(int c)
+static int get_escape_char(int c)
 {
     const uint8_t escapeTable[] =
     {
-        ['0'] = '\0',
         ['a'] = '\a',
         ['b'] = '\b',
         ['f'] = '\f',
@@ -175,10 +172,10 @@ static uint32_t get_escape_char(int c)
         ['"'] = '"',
     };
 
-    if ((unsigned int)c < ARRAY_COUNT(escapeTable) && (escapeTable[c] != 0 || c == '0'))
+    if ((unsigned int)c < ARRAY_COUNT(escapeTable) && escapeTable[c] != 0)
         return escapeTable[c];
     else
-        return INVALID_CHAR;
+        return 0;
 }
 
 static void read_charmap(const char *filename)
@@ -192,10 +189,9 @@ static void read_charmap(const char *filename)
         char *nextLine = line_split(line);
 
         struct CharmapEntry entry;
-        struct CharmapEntry *existing;
 
         line = skip_whitespace(line);
-        if (line[0] != 0 && !(line[0] == '/' && line[1] == '/'))  // ignore empty lines and comments
+        if (line[0] != 0 && line[0] != '#')  // ignore empty lines and comments
         {
             int len = 0;
             /* Read Character */
@@ -229,7 +225,7 @@ static void read_charmap(const char *filename)
                         continue;
                     }
                     entry.unicode[len] = get_escape_char(*line);
-                    if (entry.unicode[len] == INVALID_CHAR)
+                    if (entry.unicode[len] == 0)
                         parse_error(filename, lineNum, "unknown escape sequence \\%c", *line);
                     line++; // increment again to get past the escape sequence.
                 }
@@ -256,8 +252,8 @@ static void read_charmap(const char *filename)
             {
                 uint32_t value;
 
-                if (entry.bytesCount >= 4)
-                    parse_error(filename, lineNum, "more than 4 values specified");
+                if (entry.bytesCount >= 2)
+                    parse_error(filename, lineNum, "more than 2 values specified");
 
                 line = skip_whitespace(line);
 
@@ -278,25 +274,9 @@ static void read_charmap(const char *filename)
                 line++;
             }
 
-            existing = hashtable_query(charmap, &entry);
-
-            if (existing != NULL) {
-                const char *fmt = "0x%02X, ";
-                int fmtlen = 6;
-
-                char str[32];
-                int i;
-
-                for (i = 0; i < existing->bytesCount; i++) {
-                    sprintf(&str[fmtlen * i], fmt, existing->bytes[i]);
-                }
-
-                str[fmtlen * i - 2] = '\0';
-
-                parse_error(filename, lineNum, "entry for character already exists (%s)", str);
-            } else {
-                hashtable_insert(charmap, &entry);
-            }
+            if (hashtable_query(charmap, &entry) != NULL)
+                parse_error(filename, lineNum, "entry for character already exists");
+            hashtable_insert(charmap, &entry);
         }
 
         line = nextLine;
@@ -319,12 +299,9 @@ static int count_line_num(const char *start, const char *pos)
     return lineNum;
 }
 
-static char *convert_string(char *pos, FILE *fout, const char *inputFileName, char *start, int uncompressed, int cnOneByte)
+static char *convert_string(char *pos, FILE *fout, const char *inputFileName, char *start, int uncompressed)
 {
-    const struct CharmapEntry terminatorInput = {.unicode = {'\0'}, .length = 1};
-    struct CharmapEntry *terminator;
     int hasString = 0;
-    int i;
 
     while (1)
     {
@@ -348,9 +325,10 @@ static char *convert_string(char *pos, FILE *fout, const char *inputFileName, ch
             struct CharmapEntry input;
             struct CharmapEntry *last_valid_entry = NULL;
             struct CharmapEntry *entry;
-            uint32_t c;
+            int i, c;
             int length = 0;
             char* last_valid_pos = NULL;
+
             // safely erase the unicode area before use
             memset(input.unicode, 0, sizeof (input.unicode));
             input.length = 0;
@@ -372,7 +350,7 @@ static char *convert_string(char *pos, FILE *fout, const char *inputFileName, ch
                 {
                     pos++;
                     c = get_escape_char(*pos);
-                    if (c == INVALID_CHAR)
+                    if (c == 0)
                         parse_error(inputFileName, count_line_num(start, pos), "unknown escape sequence \\%c", *pos);
                     input.unicode[length] = c;
                     pos++;
@@ -398,26 +376,13 @@ static char *convert_string(char *pos, FILE *fout, const char *inputFileName, ch
             pos = last_valid_pos;
             if (entry == NULL)
                 parse_error(inputFileName, count_line_num(start, pos), "no charmap entry for U+%X", input.unicode[0]);
-
-            for (i = 0; i < entry->bytesCount; i++) {
-                if (entry->bytesCount > 1 && cnOneByte && i % 2 == 0) {
-                    continue;
-                }
+            for (i = 0; i < entry->bytesCount; i++)
                 fprintf(fout, "0x%02X,", entry->bytes[i]);
-            }
         }
         pos++;  // skip over closing '"'
     }
     pos++;  // skip over closing ')'
-    // use terminator \0 from charmap if provided, otherwise default 0xFF
-    terminator = hashtable_query(charmap, &terminatorInput);
-    if (terminator == NULL)
-        fputs("0xFF", fout);
-    else
-    {
-        for (i = 0; i < (cnOneByte ? 1 : terminator->bytesCount); i++)
-            fprintf(fout, "0x%02X,", terminator->bytes[i]);
-    }
+    fputs("0xFF", fout);
     return pos;
 }
 
@@ -486,7 +451,6 @@ static void convert_file(const char *infilename, const char *outfilename)
         else if ((*pos == '_') && (pos == in || !is_identifier_char(pos[-1])))
         {
             int uncompressed = 0;
-            int cnOneByte = 0;
             end = pos;
             pos++;
             if (*pos == '_') // an extra _ signifies uncompressed strings. Enable uncompressed flag
@@ -494,16 +458,11 @@ static void convert_file(const char *infilename, const char *outfilename)
                 pos++;
                 uncompressed = 1;
             }
-            if (*pos == '%') // an extra % signifies a one-byte long characters on iQue instead of two-byte
-            {
-                pos++;
-                cnOneByte = 1;
-            }
             if (*pos == '(')
             {
                 pos++;
                 fwrite(start, end - start, 1, fout);
-                pos = convert_string(pos, fout, infilename, in, uncompressed, cnOneByte);
+                pos = convert_string(pos, fout, infilename, in, uncompressed);
                 start = pos;
             }
         }

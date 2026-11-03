@@ -1,7 +1,5 @@
 #include "libultra_internal.h"
 
-#if !defined(VERSION_CN) || !defined(TARGET_N64)
-
 void guTranslateF(float m[4][4], float x, float y, float z) {
     guMtxIdentF(m);
     m[3][0] = x;
@@ -14,5 +12,3 @@ void guTranslate(Mtx *m, float x, float y, float z) {
     guTranslateF(mf, x, y, z);
     guMtxF2L(mf, m);
 }
-
-#endif

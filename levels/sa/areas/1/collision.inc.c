@@ -105,7 +105,7 @@ const Collision sa_seg7_collision[] = {
     COL_TRI(30, 47, 12),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(1),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ 0, -1535, 0, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ 0, -1535, 0, /*yaw*/ 64), // unused, probably an early way to set intial position
     COL_WATER_BOX_INIT(1),
     COL_WATER_BOX(0, -3173, -3173, 3174, 3174, 102),
     COL_END(),

@@ -63,10 +63,12 @@ s16 gDebugInfoOverwrite[16][8];
  */
 u32 gTimeStopState;
 
+#ifndef USE_SYSTEM_MALLOC
 /**
  * The pool that objects are allocated from.
  */
 struct Object gObjectPool[OBJECT_POOL_CAPACITY];
+#endif
 
 /**
  * A special object whose purpose is to act as a parent for macro objects.
@@ -146,9 +148,9 @@ struct MemoryPool *gObjectMemoryPool;
 
 s16 gCheckingSurfaceCollisionsForCamera;
 s16 gFindFloorIncludeSurfaceIntangible;
-TerrainData *gEnvironmentRegions;
+s16 *gEnvironmentRegions;
 s32 gEnvironmentLevels[20];
-RoomData gDoorAdjacentRooms[60][2];
+s8 gDoorAdjacentRooms[60][2];
 s16 gMarioCurrentRoom;
 s16 D_8035FEE2;
 s16 D_8035FEE4;
@@ -225,7 +227,7 @@ void copy_mario_state_to_object(void) {
     s32 i = 0;
     // L is real
     if (gCurrentObject != gMarioObject) {
-        i++;
+        i += 1;
     }
 
     gCurrentObject->oVelX = gMarioStates[i].vel[0];
@@ -300,7 +302,7 @@ s32 update_objects_starting_at(struct ObjectNode *objList, struct ObjectNode *fi
         cur_obj_update();
 
         firstObj = firstObj->next;
-        count++;
+        count += 1;
     }
 
     return count;
@@ -470,7 +472,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
     while (spawnInfo != NULL) {
         struct Object *object;
-        UNUSED u8 filler[4];
+        UNUSED s32 unused;
         const BehaviorScript *script;
         UNUSED s16 arg16 = (s16)(spawnInfo->behaviorArg & 0xFFFF);
 
@@ -483,10 +485,10 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
             // Behavior parameters are often treated as four separate bytes, but
             // are stored as an s32.
-            object->oBhvParams = spawnInfo->behaviorArg;
+            object->oBehParams = spawnInfo->behaviorArg;
             // The second byte of the behavior parameters is copied over to a special field
             // as it is the most frequently used by objects.
-            object->oBhvParams2ndByte = ((spawnInfo->behaviorArg) >> 16) & 0xFF;
+            object->oBehParams2ndByte = ((spawnInfo->behaviorArg) >> 16) & 0xFF;
 
             object->behavior = script;
             object->unused1 = 0;
@@ -540,16 +542,20 @@ void clear_objects(void) {
 
     debug_unknown_level_select_check();
 
+#ifndef USE_SYSTEM_MALLOC
     init_free_object_list();
+#endif
     clear_object_lists(gObjectListArray);
 
     stub_behavior_script_2();
     stub_obj_list_processor_1();
 
+#ifndef USE_SYSTEM_MALLOC
     for (i = 0; i < OBJECT_POOL_CAPACITY; i++) {
         gObjectPool[i].activeFlags = ACTIVE_FLAG_DEACTIVATED;
         geo_reset_object_node(&gObjectPool[i].header.gfx);
     }
+#endif
 
     gObjectMemoryPool = mem_pool_init(0x800, MEMORY_POOL_LEFT);
     gObjectLists = gObjectListArray;
@@ -571,13 +577,13 @@ void update_terrain_objects(void) {
  * the order specified by sObjectListUpdateOrder.
  */
 void update_non_terrain_objects(void) {
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
     s32 listIndex;
 
     s32 i = 2;
     while ((listIndex = sObjectListUpdateOrder[i]) != -1) {
         gObjectCounter += update_objects_in_list(&gObjectLists[listIndex]);
-        i++;
+        i += 1;
     }
 }
 
@@ -585,13 +591,13 @@ void update_non_terrain_objects(void) {
  * Unload deactivated objects in any object list.
  */
 void unload_deactivated_objects(void) {
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
     s32 listIndex;
 
     s32 i = 0;
     while ((listIndex = sObjectListUpdateOrder[i]) != -1) {
         unload_deactivated_objects_in_list(&gObjectLists[listIndex]);
-        i++;
+        i += 1;
     }
 
     // TIME_STOP_UNKNOWN_0 was most likely intended to be used to track whether

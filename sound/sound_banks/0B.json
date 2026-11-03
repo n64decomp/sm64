@@ -51,29 +51,29 @@
             "normal_range_lo": 29,
             "normal_range_hi": 63,
             "envelope": "envelope0",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "2E_accordion_C4"
+            "sound": "2E_accordion"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "2E_accordion_C4"
+            "sound": "2E_accordion"
         },
         "inst3": {
             "release_rate": 208,
             "envelope": "envelope3",
-            "sound": "16_french_horns_C3"
+            "sound": "16_french_horns"
         },
         "inst4": {
             "release_rate": 208,
             "envelope": "envelope4",
-            "sound": "16_french_horns_C3"
+            "sound": "16_french_horns"
         },
         "inst5": {
             "release_rate": 10,

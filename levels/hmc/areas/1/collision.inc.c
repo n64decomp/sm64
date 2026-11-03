@@ -3599,7 +3599,7 @@ const Collision hmc_seg7_collision_level[] = {
     COL_TRI(55, 58, 56),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(13),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,  /*pos*/ -7601,  2253,  7630, /*yaw*/  96), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,  /*pos*/ -7601,  2253,  7630, /*yaw*/  96), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_wooden_door, /*pos*/   922, -4689,  2330, /*yaw*/ 192),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_wooden_door, /*pos*/ -3586,  1536,   647, /*yaw*/  19),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_wooden_door, /*pos*/  5911,  -204,   870, /*yaw*/   0),

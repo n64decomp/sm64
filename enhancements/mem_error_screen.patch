@@ -37,7 +37,7 @@ index 749179b1..2f6f7a3c 100644
 +#define TEXT_PJ64 _("If you are using PJ64 1.6, go to:\nOptions > Settings > Rom Settings Tab > Memory Size\nthen select 8 MB from the drop-down box.")
 +#define TEXT_PJ64_2 _("If you are using PJ64 2.X, go to:\nOptions > Settings > Config: > Memory Size, select 8 MB")
 +
- #if defined(VERSION_JP) || defined(VERSION_SH) || defined(VERSION_CN)
+ #if defined(VERSION_JP) || defined(VERSION_SH)
  
  /**
 diff --git a/levels/entry.c b/levels/entry.c
@@ -66,26 +66,26 @@ index 30a87806..6bf7b79a 100644
  #include "levels/intro/header.h"
  
 +const GeoLayout intro_geo_error_screen[] = {
-+     GEO_NODE_SCREEN_AREA(0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
-+     GEO_OPEN_NODE(),
-+          GEO_ZBUFFER(0),
-+          GEO_OPEN_NODE(),
-+                GEO_NODE_ORTHO(100),
-+                GEO_OPEN_NODE(),
-+                     GEO_BACKGROUND_COLOR(0x0001),
-+                GEO_CLOSE_NODE(),
-+          GEO_CLOSE_NODE(),
-+          GEO_ZBUFFER(0),
-+          GEO_OPEN_NODE(),
-+                GEO_ASM(0, geo18_display_error_message),
-+          GEO_CLOSE_NODE(),
-+     GEO_CLOSE_NODE(),
-+     GEO_END(),
++    GEO_NODE_SCREEN_AREA(0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
++    GEO_OPEN_NODE(),
++        GEO_ZBUFFER(0),
++        GEO_OPEN_NODE(),
++            GEO_NODE_ORTHO(100),
++            GEO_OPEN_NODE(),
++                GEO_BACKGROUND_COLOR(0x0001),
++            GEO_CLOSE_NODE(),
++        GEO_CLOSE_NODE(),
++        GEO_ZBUFFER(0),
++        GEO_OPEN_NODE(),
++            GEO_ASM(0, geo18_display_error_message),
++        GEO_CLOSE_NODE(),
++    GEO_CLOSE_NODE(),
++    GEO_END(),
 +};
 +
  // 0x0E0002D0
  const GeoLayout intro_geo_0002D0[] = {
-     GEO_NODE_SCREEN_AREA(0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
+    GEO_NODE_SCREEN_AREA(0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
 diff --git a/levels/intro/header.h b/levels/intro/header.h
 index 99277e86..04797cd7 100644
 --- a/levels/intro/header.h

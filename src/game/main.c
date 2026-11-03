@@ -9,7 +9,6 @@
 #include "profiler.h"
 #include "buffers/buffers.h"
 #include "segments.h"
-#include "segment_symbols.h"
 #include "main.h"
 #include "rumble_init.h"
 
@@ -142,7 +141,7 @@ void create_thread(OSThread *thread, OSId id, void (*entry)(void *), void *arg, 
     osCreateThread(thread, id, entry, arg, sp, pri);
 }
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 extern void func_sh_802f69cc(void);
 #endif
 
@@ -152,7 +151,7 @@ void handle_nmi_request(void) {
     stop_sounds_in_continuous_banks();
     sound_banks_disable(SEQ_PLAYER_SFX, SOUND_BANKS_BACKGROUND);
     fadeout_music(90);
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
     func_sh_802f69cc();
 #endif
 }
@@ -184,7 +183,7 @@ void receive_new_tasks(void) {
 }
 
 void start_sptask(s32 taskType) {
-    UNUSED u8 filler[4];
+    UNUSED s32 pad; // needed to pad the stack
 
     if (taskType == M_AUDTASK) {
         gActiveSPTask = sCurrentAudioSPTask;
@@ -219,11 +218,11 @@ void pretend_audio_sptask_done(void) {
 }
 
 void handle_vblank(void) {
-    UNUSED u8 filler[4];
+    UNUSED s32 pad; // needed to pad the stack
 
     stub_main_3();
     gNumVblanks++;
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
     if (gResetTimer > 0 && gResetTimer < 100) {
         gResetTimer++;
     }
@@ -420,12 +419,12 @@ void turn_off_audio(void) {
  * Initialize hardware, start main thread, then idle.
  */
 void thread1_idle(UNUSED void *arg) {
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_US) || defined(VERSION_SH)
     s32 sp24 = osTvType;
 #endif
 
     osCreateViManager(OS_PRIORITY_VIMGR);
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_US) || defined(VERSION_SH)
     if (sp24 == TV_TYPE_NTSC) {
         osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
     } else {
@@ -453,7 +452,7 @@ void thread1_idle(UNUSED void *arg) {
 }
 
 void main_func(void) {
-    UNUSED u8 filler[64];
+    UNUSED u8 pad[64]; // needed to pad the stack
 
     osInitialize();
     stub_main_1();

@@ -1,4 +1,8 @@
-// triplet_butterfly.inc.c
+struct TripletButterflyActivationData {
+    s32 model;
+    const BehaviorScript *behavior;
+    f32 scale;
+};
 
 static struct ObjectHitbox sTripletButterflyExplodeHitbox = {
     /* interactType:      */ INTERACT_MR_BLIZZARD,
@@ -12,23 +16,18 @@ static struct ObjectHitbox sTripletButterflyExplodeHitbox = {
     /* hurtboxHeight:     */ 50,
 };
 
-struct TripletButterflyActivationData {
-    s32 model;
-    const BehaviorScript *behavior;
-    f32 scale;
-};
-
 static struct TripletButterflyActivationData sTripletButterflyActivationData[] = {
-    /* TRIPLET_BUTTERFLY_TYPE_EXPLODES  */ { MODEL_BOWLING_BALL, NULL,          0.5f },
-    /* TRIPLET_BUTTERFLY_TYPE_SPAWN_1UP */ { MODEL_1UP,          bhv1UpWalking, 1.0f },
+    { MODEL_BOWLING_BALL, NULL, 0.5f },
+    { MODEL_1UP, bhv1upWalking, 1.0f },
 };
 
 static void triplet_butterfly_act_init(void) {
-    s32 butterflySpawnType = o->oBhvParams2ndByte & TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_MASK;
+    s32 butterflyNum;
     s32 i;
 
-    if (butterflySpawnType != TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNER || o->oDistanceToMario < 200.0f) {
-        if (butterflySpawnType == TRIPLET_BUTTERFLY_BP_SPAWN_TYPE_SPAWNER) {
+    butterflyNum = o->oBehParams2ndByte & TRIPLET_BUTTERFLY_BP_BUTTERFLY_NUM;
+    if (butterflyNum != 0 || o->oDistanceToMario < 200.0f) {
+        if (butterflyNum == 0) {
             for (i = 1; i <= 2; i++) {
                 spawn_object_relative(i, 0, 0, 0, o, MODEL_BUTTERFLY, bhvTripletButterfly);
             }
@@ -37,16 +36,16 @@ static void triplet_butterfly_act_init(void) {
         }
 
         //! TODO: Describe this glitch
-        if (o->parentObj->oTripletButterflySelectedButterfly == o->oBhvParams2ndByte) {
+        if (o->parentObj->oTripletButterflySelectedButterfly == o->oBehParams2ndByte) {
             o->oTripletButterflyType = TRIPLET_BUTTERFLY_TYPE_SPAWN_1UP;
-        } else if (o->parentObj->oBhvParams2ndByte & TRIPLET_BUTTERFLY_BP_NO_BOMBS) {
+        } else if (o->parentObj->oBehParams2ndByte & TRIPLET_BUTTERFLY_BP_NO_BOMBS) {
             o->oTripletButterflyType = TRIPLET_BUTTERFLY_TYPE_NORMAL;
         }
         // Default butterfly type is TRIPLET_BUTTERFLY_TYPE_EXPLODES
 
         o->oAction = TRIPLET_BUTTERFLY_ACT_WANDER;
 
-        o->oTripletButterflyBaseYaw = o->oBhvParams2ndByte * (0x10000 / 3);
+        o->oTripletButterflyBaseYaw = o->oBehParams2ndByte * (0x10000 / 3);
         o->oMoveAngleYaw = (s32)(o->oTripletButterflyBaseYaw + random_linear_offset(0, 0x5555));
         o->oTripletButterflySpeed = random_linear_offset(15, 15);
 
@@ -117,6 +116,8 @@ static void triplet_butterfly_act_activate(void) {
 }
 
 static void triplet_butterfly_act_explode(void) {
+    f32 scaleIncrease;
+
     obj_check_attacks(&sTripletButterflyExplodeHitbox, -1);
 
     if (o->oAction == -1 || (o->oMoveFlags & OBJ_MOVE_HIT_WALL) || o->oTimer >= 158) {
@@ -125,7 +126,7 @@ static void triplet_butterfly_act_explode(void) {
         obj_mark_for_deletion(o);
     } else {
         if (o->oTimer > 120) {
-            f32 scaleIncrease = 0.04f * coss(o->oTripletButterflyScalePhase);
+            scaleIncrease = 0.04f * coss(o->oTripletButterflyScalePhase);
             if (scaleIncrease > 0.0f) {
                 scaleIncrease *= 4.5f;
                 o->oTripletButterflyScalePhase += 10000;

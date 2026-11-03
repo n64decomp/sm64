@@ -330,11 +330,11 @@ unachtsam, wenn Du Dich\n\
 leise, also langsam,\n\
 bewegst.\n\
 Die Kameraposition kannst\n\
-Du durch [C]▶ und [C]◀\n\
+Du durch [C]> und [C]<\n\
 verändern, um einen\n\
 Überblick zu erhalten.\n\
 Das Weitwinkelobjektiv\n\
-wird mit [C]▼ eingesetzt.\n\
+wird mit [C]| eingesetzt.\n\
 Details der Umgebung\n\
 werden so sichtbar!\n\
 Ein Warnton erklingt,\n\
@@ -417,7 +417,7 @@ zum Hauptfilm!"))
 DEFINE_DIALOG(DIALOG_035, 1, 5, 30, 200, _("\
 Die [C]-Knöpfe dienen der\n\
 Steuerung der Kamera.\n\
-Benutze den ▲-Knopf, um\n\
+Benutze den ^-Knopf, um\n\
 die Kamera mit dem\n\
 Analog-Stick zu bewegen.\n\
 Normalerweise sorgt ein\n\
@@ -431,7 +431,7 @@ Drückst Du die [R]-Taste,\n\
 wechselst Du zwischen\n\
 Lakitus und Marios\n\
 Sicht hin und her. Drücke\n\
-▼, um den Zoom oder\n\
+|, um den Zoom oder\n\
 das Weitwinkelobjektiv zu\n\
 aktivieren. Dies ist in\n\
 allen Perspektiven möglich.\n\
@@ -443,7 +443,7 @@ dem Bildschirm befindet."))
 
 DEFINE_DIALOG(DIALOG_036, 1, 5, 30, 200, _("\
 AUSSICHTSPLATTFORM\n\
-Drücke ▲ und genieße die\n\
+Drücke ^ und genieße die\n\
 Aussicht. Vielleicht\n\
 entdeckst Du Geheimnisse\n\
 Deiner Umgebung.\n\

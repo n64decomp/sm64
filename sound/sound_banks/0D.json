@@ -74,40 +74,40 @@
             "release_rate": 100,
             "normal_range_lo": 41,
             "envelope": "envelope0",
-            "sound_lo": "00_banjo_D2",
-            "sound": "01_banjo_A2"
+            "sound_lo": "00",
+            "sound": "01_banjo_1"
         },
         "inst1": {
             "release_rate": 100,
             "normal_range_lo": 41,
             "envelope": "envelope1",
-            "sound_lo": "00_banjo_D2",
-            "sound": "01_banjo_A2"
+            "sound_lo": "00",
+            "sound": "01_banjo_1"
         },
         "inst2": {
             "release_rate": 180,
             "envelope": "envelope2",
-            "sound": "02_violin_B2"
+            "sound": "02"
         },
         "inst3": {
             "release_rate": 208,
             "envelope": "envelope3",
-            "sound": "02_violin_B2"
+            "sound": "02"
         },
         "inst4": {
             "release_rate": 76,
             "envelope": "envelope4",
-            "sound": "03_human_whistle_C3"
+            "sound": "03_human_whistle"
         },
         "inst5": {
             "release_rate": 53,
             "envelope": "envelope5",
-            "sound": "04_bright_piano_G#3"
+            "sound": "04_bright_piano"
         },
         "inst6": {
             "release_rate": 208,
             "envelope": "envelope6",
-            "sound": "05_acoustic_bass_A1"
+            "sound": "05_acoustic_bass"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope7", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

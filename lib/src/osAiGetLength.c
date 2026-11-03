@@ -1,6 +1,7 @@
 #include "libultra_internal.h"
-#include "PR/rcp.h"
+#include "osAi.h"
+#include "hardware.h"
 
 u32 osAiGetLength() {
-    return IO_READ(AI_LEN_REG);
+    return HW_REG(AI_LEN_REG, u32);
 }

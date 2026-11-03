@@ -20,7 +20,8 @@
 #endif
 
 
-struct Controller {
+struct Controller
+{
   /*0x00*/ s16 rawStickX;       //
   /*0x02*/ s16 rawStickY;       //
   /*0x04*/ float stickX;        // [-64, 64] positive is right
@@ -48,14 +49,11 @@ typedef uintptr_t GeoLayout;
 typedef uintptr_t LevelScript;
 typedef s16 Movtex;
 typedef s16 MacroObject;
-typedef s16 Collision; // Collision data is limited to -32768 to 32767. Change this if you want to increase it.
+typedef s16 Collision;
 typedef s16 Trajectory;
 typedef s16 PaintingData;
 typedef uintptr_t BehaviorScript;
 typedef u8 Texture;
-typedef s8 RoomData; // Rooms are limited to -128 to 127. Change the type if you wish to have more rooms.
-typedef Collision TerrainData;
-typedef TerrainData Vec3Terrain[3];
 
 enum SpTaskState {
     SPTASK_STATE_NOT_STARTED,
@@ -65,20 +63,22 @@ enum SpTaskState {
     SPTASK_STATE_FINISHED_DP
 };
 
-struct SPTask {
+struct SPTask
+{
     /*0x00*/ OSTask task;
     /*0x40*/ OSMesgQueue *msgqueue;
     /*0x44*/ OSMesg msg;
     /*0x48*/ enum SpTaskState state;
 }; // size = 0x4C, align = 0x8
 
-struct VblankHandler {
+struct VblankHandler
+{
     OSMesgQueue *queue;
     OSMesg msg;
 };
 
 #define ANIM_FLAG_NOLOOP     (1 << 0) // 0x01
-#define ANIM_FLAG_BACKWARD   (1 << 1) // 0x02
+#define ANIM_FLAG_FORWARD    (1 << 1) // 0x02
 #define ANIM_FLAG_2          (1 << 2) // 0x04
 #define ANIM_FLAG_HOR_TRANS  (1 << 3) // 0x08
 #define ANIM_FLAG_VERT_TRANS (1 << 4) // 0x10
@@ -100,7 +100,8 @@ struct Animation {
 
 #define ANIMINDEX_NUMPARTS(animindex) (sizeof(animindex) / sizeof(u16) / 6 - 1)
 
-struct GraphNode {
+struct GraphNode
+{
     /*0x00*/ s16 type; // structure type
     /*0x02*/ s16 flags; // hi = drawing layer, lo = rendering modes
     /*0x04*/ struct GraphNode *prev;
@@ -109,7 +110,8 @@ struct GraphNode {
     /*0x10*/ struct GraphNode *children;
 };
 
-struct AnimInfo {
+struct AnimInfo
+{
     /*0x00 0x38*/ s16 animID;
     /*0x02 0x3A*/ s16 animYTrans;
     /*0x04 0x3C*/ struct Animation *curAnim;
@@ -119,7 +121,8 @@ struct AnimInfo {
     /*0x10 0x48*/ s32 animAccel;
 };
 
-struct GraphNodeObject {
+struct GraphNodeObject
+{
     /*0x00*/ struct GraphNode node;
     /*0x14*/ struct GraphNode *sharedChild;
     /*0x18*/ s8 areaIndex;
@@ -133,7 +136,8 @@ struct GraphNodeObject {
     /*0x54*/ Vec3f cameraToObject;
 };
 
-struct ObjectNode {
+struct ObjectNode
+{
     struct GraphNodeObject gfx;
     struct ObjectNode *next;
     struct ObjectNode *prev;
@@ -142,7 +146,8 @@ struct ObjectNode {
 // NOTE: Since ObjectNode is the first member of Object, it is difficult to determine
 // whether some of these pointers point to ObjectNode or Object.
 
-struct Object {
+struct Object
+{
     /*0x000*/ struct ObjectNode header;
     /*0x068*/ struct Object *parentObj;
     /*0x06C*/ struct Object *prevObj;
@@ -151,7 +156,8 @@ struct Object {
     /*0x076*/ s16 numCollidedObjs;
     /*0x078*/ struct Object *collidedObjs[4];
     /*0x088*/
-    union {
+    union
+    {
         // Object fields. See object_fields.h.
         u32 asU32[0x50];
         s32 asS32[0x50];
@@ -201,7 +207,8 @@ struct Object {
     /*0x25C*/ void *respawnInfo;
 };
 
-struct ObjectHitbox {
+struct ObjectHitbox
+{
     /*0x00*/ u32 interactType;
     /*0x04*/ u8 downOffset;
     /*0x05*/ s8 damageOrCoinValue;
@@ -213,21 +220,23 @@ struct ObjectHitbox {
     /*0x0E*/ s16 hurtboxHeight;
 };
 
-struct Waypoint {
+struct Waypoint
+{
     s16 flags;
     Vec3s pos;
 };
 
-struct Surface {
-    /*0x00*/ TerrainData type;
-    /*0x02*/ TerrainData force;
+struct Surface
+{
+    /*0x00*/ s16 type;
+    /*0x02*/ s16 force;
     /*0x04*/ s8 flags;
-    /*0x05*/ RoomData room;
-    /*0x06*/ TerrainData lowerY;
-    /*0x08*/ TerrainData upperY;
-    /*0x0A*/ Vec3Terrain vertex1;
-    /*0x10*/ Vec3Terrain vertex2;
-    /*0x16*/ Vec3Terrain vertex3;
+    /*0x05*/ s8 room;
+    /*0x06*/ s16 lowerY;
+    /*0x08*/ s16 upperY;
+    /*0x0A*/ Vec3s vertex1;
+    /*0x10*/ Vec3s vertex2;
+    /*0x16*/ Vec3s vertex3;
     /*0x1C*/ struct {
         f32 x;
         f32 y;
@@ -237,7 +246,8 @@ struct Surface {
     /*0x2C*/ struct Object *object;
 };
 
-struct MarioBodyState {
+struct MarioBodyState
+{
     /*0x00*/ u32 action;
     /*0x04*/ s8 capState; /// see MarioCapGSCId
     /*0x05*/ s8 eyeState;
@@ -249,10 +259,11 @@ struct MarioBodyState {
     /*0x0C*/ Vec3s torsoAngle;
     /*0x12*/ Vec3s headAngle;
     /*0x18*/ Vec3f heldObjLastPosition; /// also known as HOLP
-    u8 filler[4];
+    u8 padding[4];
 };
 
-struct MarioState {
+struct MarioState
+{
     /*0x00*/ u16 unk00;
     /*0x02*/ u16 input;
     /*0x04*/ u32 flags;
@@ -312,7 +323,7 @@ struct MarioState {
     /*0xB8*/ s16 prevNumStarsForDialog;
     /*0xBC*/ f32 peakHeight;
     /*0xC0*/ f32 quicksandDepth;
-    /*0xC4*/ f32 gettingBlownGravity;
+    /*0xC4*/ f32 unkC4;
 };
 
 #endif // TYPES_H

@@ -1,4 +1,4 @@
-// celebration_star.inc.c
+// celebration_star.c.inc
 
 void bhv_celebration_star_init(void) {
     o->oHomeX = gMarioObject->header.gfx.pos[0];
@@ -10,7 +10,7 @@ void bhv_celebration_star_init(void) {
     if (gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2) {
         o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BOWSER_KEY];
         o->oFaceAnglePitch = 0;
-        o->oFaceAngleRoll = 0xC000;
+        o->oFaceAngleRoll = 49152;
         cur_obj_scale(0.1f);
         o->oCelebStarUnkF4 = 1;
     } else {
@@ -35,19 +35,17 @@ void celeb_star_act_spin_around_mario(void) {
     o->oFaceAngleYaw += 0x1000;
     o->oMoveAngleYaw += 0x2000;
 
-    if (o->oTimer == 40) {
+    if (o->oTimer == 40)
         o->oAction = CELEB_STAR_ACT_FACE_CAMERA;
-    }
-
     if (o->oTimer < 35) {
         spawn_object(o, MODEL_SPARKLES, bhvCelebrationStarSparkle);
         o->oCelebStarDiameterOfRotation++;
-    } else {
+    } else
         o->oCelebStarDiameterOfRotation -= 20;
-    }
 }
 
 void celeb_star_act_face_camera(void) {
+
     if (o->oTimer < 10) {
 #if BUGFIX_STAR_BOWSER_KEY
         if (o->oCelebStarUnkF4 == 0) {
@@ -63,9 +61,8 @@ void celeb_star_act_face_camera(void) {
         o->oFaceAngleYaw = gMarioObject->header.gfx.angle[1];
     }
 
-    if (o->oTimer == 59) {
+    if (o->oTimer == 59)
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-    }
 }
 
 void bhv_celebration_star_loop(void) {
@@ -83,9 +80,8 @@ void bhv_celebration_star_loop(void) {
 void bhv_celebration_star_sparkle_loop(void) {
     o->oPosY -= 15.0f;
 
-    if (o->oTimer == 12) {
+    if (o->oTimer == 12)
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-    }
 }
 
 void bhv_star_key_collection_puff_spawner_loop(void) {

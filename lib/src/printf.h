@@ -2,12 +2,6 @@
 #define _PRINTF_H_
 #include <stdarg.h>
 
-#ifdef VERSION_CN
-typedef char fmt_type;
-#else
-typedef u8 fmt_type;
-#endif
-
 typedef struct
 {
     union {
@@ -28,7 +22,7 @@ typedef struct
     /* 28 */ s32 width;
     /* 2c */ u32 size;
     /* 30 */ u32 flags;
-    /* 34 */ fmt_type length;
+    /* 34 */ u8 length;
 } printf_struct;
 
 #define FLAGS_SPACE 1
@@ -37,6 +31,6 @@ typedef struct
 #define FLAGS_HASH 8
 #define FLAGS_ZERO 16
 s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char *fmt, va_list args);
-void _Litob(printf_struct *args, fmt_type type);
-void _Ldtob(printf_struct *args, fmt_type type);
+void _Litob(printf_struct *args, u8 type);
+void _Ldtob(printf_struct *args, u8 type);
 #endif

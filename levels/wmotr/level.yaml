@@ -1,6 +1,6 @@
-# Wing Mario over the Rainbow
+# Wing Mario Over the Rainbow
 short-name: wmotr
-full-name: Wing Mario over the Rainbow
+full-name: Wing Mario Over the Rainbow
 texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: []

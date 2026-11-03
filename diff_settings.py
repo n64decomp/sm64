@@ -10,8 +10,6 @@ def add_custom_arguments(parser):
             help="Set version to EU.")
     group.add_argument('-s', dest='lang', action='store_const', const='sh',
             help="Set version to SH.")
-    group.add_argument('-c', dest='lang', action='store_const', const='cn',
-            help="Set version to CN.")
 
 def apply(config, args):
     lang = args.lang or 'us'

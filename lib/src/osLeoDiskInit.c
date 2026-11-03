@@ -1,31 +1,34 @@
 #include "libultra_internal.h"
-#include "PR/rcp.h"
-#include "PR/os.h"
+#include "hardware.h"
 
-OSPiHandle __Dom2SpeedParam;
+// this file must include some globally referenced data because it is not called anywhere
+// data, comes shortly before _Ldtob I think, before crash_screen
+
+extern OSPiHandle *__osPiTable;
+// bss
+OSPiHandle LeoDiskHandle;
 OSPiHandle *__osDiskHandle;
 
 OSPiHandle *osLeoDiskInit(void) {
-    s32 saveMask;
-
-    __Dom2SpeedParam.type = DEVICE_TYPE_64DD;
-    __Dom2SpeedParam.baseAddress = PHYS_TO_K1(PI_DOM2_ADDR1);
-    __Dom2SpeedParam.latency = 3;
-    __Dom2SpeedParam.pulse = 6;
-    __Dom2SpeedParam.pageSize = 6;
-    __Dom2SpeedParam.relDuration = 2;
+    s32 sp1c;
+    LeoDiskHandle.type = 2;
+    LeoDiskHandle.baseAddress = (0xa0000000 | 0x05000000);
+    LeoDiskHandle.latency = 3;
+    LeoDiskHandle.pulse = 6;
+    LeoDiskHandle.pageSize = 6;
+    LeoDiskHandle.relDuration = 2;
 #ifdef VERSION_SH
-    __Dom2SpeedParam.domain = 1;
+    LeoDiskHandle.domain = 1;
 #endif
-    IO_WRITE(PI_BSD_DOM2_LAT_REG, __Dom2SpeedParam.latency);
-    IO_WRITE(PI_BSD_DOM2_PWD_REG, __Dom2SpeedParam.pulse);
-    IO_WRITE(PI_BSD_DOM2_PGS_REG, __Dom2SpeedParam.pageSize);
-    IO_WRITE(PI_BSD_DOM2_RLS_REG, __Dom2SpeedParam.relDuration);
-    bzero(&__Dom2SpeedParam.transferInfo, sizeof(__OSTranxInfo));
-    saveMask = __osDisableInt();
-    __Dom2SpeedParam.next = __osPiTable;
-    __osPiTable = &__Dom2SpeedParam;
-    __osDiskHandle = &__Dom2SpeedParam;
-    __osRestoreInt(saveMask);
-    return &__Dom2SpeedParam;
+    HW_REG(PI_BSD_DOM2_LAT_REG, u32) = LeoDiskHandle.latency;
+    HW_REG(PI_BSD_DOM2_PWD_REG, u32) = LeoDiskHandle.pulse;
+    HW_REG(PI_BSD_DOM2_PGS_REG, u32) = LeoDiskHandle.pageSize;
+    HW_REG(PI_BSD_DOM2_RLS_REG, u32) = LeoDiskHandle.relDuration;
+    bzero(&LeoDiskHandle.transferInfo, sizeof(__OSTranxInfo));
+    sp1c = __osDisableInt();
+    LeoDiskHandle.next = __osPiTable;
+    __osPiTable = &LeoDiskHandle;
+    __osDiskHandle = &LeoDiskHandle;
+    __osRestoreInt(sp1c);
+    return &LeoDiskHandle;
 }

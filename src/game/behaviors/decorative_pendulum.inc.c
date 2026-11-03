@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvDecorativePendulum.
  * This controls the pendulum that lies underneath the Tick Tock Clock painting.
@@ -14,11 +13,10 @@ void bhv_decorative_pendulum_init(void) {
  * acceleration.
  */
 void bhv_decorative_pendulum_loop(void) {
-    if (o->oFaceAngleRoll > 0) {
+    if (o->oFaceAngleRoll > 0)
         o->oAngleVelRoll -= 0x08;
-    } else {
+    else
         o->oAngleVelRoll += 0x08;
-    }
 
     o->oFaceAngleRoll += o->oAngleVelRoll;
 
@@ -28,7 +26,6 @@ void bhv_decorative_pendulum_loop(void) {
      * This means the sound we hear when the pendulum hits its upswing is
      * actually one sound played twice in rapid succession.
      */
-    if (o->oAngleVelRoll == 0x10 || o->oAngleVelRoll == -0x10) {
+    if (o->oAngleVelRoll == 0x10 || o->oAngleVelRoll == -0x10)
         cur_obj_play_sound_2(SOUND_GENERAL_BIG_CLOCK);
-    }
 }

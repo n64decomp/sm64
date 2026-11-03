@@ -13,29 +13,30 @@
  * linker script syntax.
 */
 
-#define SEG_START         0x8005C000
-
-#define SEG_FRAMEBUFFERS_SIZE (2 * SCREEN_WIDTH * SCREEN_HEIGHT * 3)
-#define SEG_GODDARD_POOL_OFFSET 0x52000 // Offset from right side of pool
-#define SEG_GODDARD       (SEG_POOL_END - SEG_GODDARD_POOL_OFFSET)
-
 #ifndef USE_EXT_RAM /* Default: Runs out of memory quickly when importing custom assets. */
 
-#define RDRAM_END         0x80400000
+#define SEG_POOL_START   0x8005C000
+#define SEG_POOL_END     SEG_BUFFERS
 
-#define SEG_POOL_START    SEG_START
-#define SEG_POOL_SIZE     0x165000
-#define SEG_POOL_END      (SEG_POOL_START + SEG_POOL_SIZE)
+#define SEG_GODDARD      0x8016F000
 
-#define SEG_BUFFERS       SEG_POOL_END
+#define SEG_BUFFERS      0x801C1000
 
-#ifdef VERSION_EU
-#define SEG_ENGINE        0x8036FF00
+#if defined(VERSION_SH) || ENABLE_RUMBLE
+#define SEG_MAIN         0x80249000
+#elif defined(VERSION_EU)
+#define SEG_MAIN         0x80241800 // TODO: Investigate why it's different?
 #else
-#define SEG_ENGINE        0x80378800
+#define SEG_MAIN         0x80246000
 #endif
 
-#define SEG_FRAMEBUFFERS  (RDRAM_END - SEG_FRAMEBUFFERS_SIZE)
+#ifdef VERSION_EU
+#define SEG_ENGINE       0x8036FF00
+#else
+#define SEG_ENGINE       0x80378800
+#endif
+
+#define SEG_FRAMEBUFFERS 0x8038F800
 
 #else /* Use Expansion Pak space for pool. */
 
@@ -44,19 +45,14 @@
  * importing large custom content.
  */
 
-#ifdef VERSION_CN
-#define RDRAM_END         0x807C0000 // iQue has stuff like EEPROM mapped at 807C0000 onwards. TODO: Code this using osMemSize
-#else
-#define RDRAM_END         0x80800000
-#endif
-
-#define SEG_BUFFERS       SEG_START
-#define SEG_ENGINE        ((u32) &_engineSegmentStart)
-#define SEG_FRAMEBUFFERS  ((u32) &_framebuffersSegmentNoloadStart)
-#define SEG_POOL_START    ((u32) &_framebuffersSegmentNoloadEnd)
-#define SEG_POOL_END      RDRAM_END
-#define SEG_POOL_END_4MB  0x80400000 // For the error message screen enhancement.
-
+#define SEG_BUFFERS      0x8005C000 // 0x0085000 in size
+#define SEG_MAIN         0x800E1000 // 0x0132800 in size
+#define SEG_ENGINE       0x80213800 // 0x0017000 in size
+#define SEG_FRAMEBUFFERS 0x8022A800 // 0x0070800 in size
+#define SEG_POOL_START   0x8029B000 // 0x0165000 in size
+#define SEG_POOL_END     0x80800000
+#define SEG_POOL_END_4MB 0x80400000 // For the error message screen enhancement.
+#define SEG_GODDARD      SEG_POOL_START + 0x113000
 #endif
 
 #endif // SEGMENTS_H

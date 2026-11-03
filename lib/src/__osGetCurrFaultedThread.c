@@ -1,5 +1,5 @@
 #include "libultra_internal.h"
 
 OSThread *__osGetCurrFaultedThread() {
-    return __osActiveQueue;
+    return D_8033489C; // 80302efc
 }

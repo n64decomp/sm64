@@ -7,14 +7,16 @@
 #include "macros.h"
 #include "types.h"
 
-enum TextureTransitionID {
+enum TextureTransitionID
+{
     TEX_TRANS_STAR,
     TEX_TRANS_CIRCLE,
     TEX_TRANS_MARIO,
     TEX_TRANS_BOWSER
 };
 
-enum TextureTransitionType {
+enum TextureTransitionType
+{
     TRANS_TYPE_MIRROR,
     TRANS_TYPE_CLAMP
 };

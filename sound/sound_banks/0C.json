@@ -93,69 +93,69 @@
             "normal_range_lo": 29,
             "normal_range_hi": 63,
             "envelope": "envelope0",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst1": {
             "release_rate": 24,
             "normal_range_lo": 29,
             "normal_range_hi": 61,
             "envelope": "envelope1",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst2": {
             "release_rate": 38,
             "normal_range_lo": 29,
             "normal_range_hi": 61,
             "envelope": "envelope2",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst3": {
             "release_rate": 38,
             "normal_range_lo": 29,
             "normal_range_hi": 61,
             "envelope": "envelope3",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst4": {
             "release_rate": 38,
             "normal_range_lo": 29,
             "normal_range_hi": 61,
             "envelope": "envelope4",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst5": {
             "release_rate": 38,
             "normal_range_lo": 29,
             "normal_range_hi": 61,
             "envelope": "envelope5",
-            "sound_lo": "3B_acoustic_guitar_A1",
-            "sound": "3C_acoustic_guitar_E3",
-            "sound_hi": "3D_acoustic_guitar_B6"
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
         },
         "inst6": {
             "release_rate": 208,
             "envelope": "envelope6",
-            "sound": "21_sine_bass_Bb2"
+            "sound": "21_sine_bass"
         },
         "inst7": {
             "release_rate": 114,
             "envelope": "envelope7",
-            "sound": "34_alto_flute_A4"
+            "sound": "34_alto_flute"
         },
         "inst8": {
             "release_rate": 208,
             "envelope": "envelope8",
-            "sound": "34_alto_flute_A4"
+            "sound": "34_alto_flute"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope9", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},
@@ -251,7 +251,7 @@
         "inst12": {
             "release_rate": 10,
             "envelope": "envelope13",
-            "sound": "42_vibraphone_F#4"
+            "sound": "42_vibraphone"
         }
     },
     "instrument_list": [

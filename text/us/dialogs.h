@@ -140,7 +140,7 @@ it, fair and square!"))
 DEFINE_DIALOG(DIALOG_008, 1, 4, 30, 200, _("\
 BEWARE OF CHAIN CHOMP\n\
 Extreme Danger!\n\
-Get close and press [C]▲\n\
+Get close and press [C]^\n\
 for a better look.\n\
 Scary, huh?\n\
 See the Red Coin on top\n\
@@ -352,8 +352,8 @@ order to walk quietly.\n\
 And wrapping up filming\n\
 techniques reported on\n\
 earlier, you can take a\n\
-look around using [C]▶ and\n\
-[C]◀. Press [C]▼ to view the\n\
+look around using [C]> and\n\
+[C]<. Press [C]| to view the\n\
 action from a distance.\n\
 When you can't move the\n\
 camera any farther, the\n\
@@ -424,7 +424,7 @@ If we can't adjust the\n\
 view any further, we'll\n\
 buzz. To take a look at\n\
 the surroundings, stop\n\
-and press [C]▲.\n\
+and press [C]^.\n\
 \n\
 Press [A] to resume play.\n\
 Switch camera modes with\n\
@@ -438,7 +438,7 @@ Lakitu Bros."))
 
 DEFINE_DIALOG(DIALOG_035, 1, 5, 30, 200, _("\
 There are four camera, or\n\
-『[C],』 Buttons. Press [C]▲\n\
+『[C],』 Buttons. Press [C]^\n\
 to look around using the\n\
 Control Stick.\n\
 \n\
@@ -448,19 +448,19 @@ It is the camera\n\
 recommended for normal\n\
 play.\n\
 You can change angles by\n\
-pressing [C]▶. If you press\n\
+pressing [C]>. If you press\n\
 [R], the view switches to\n\
 Mario's camera, which\n\
 is directly behind him.\n\
 Press [R] again to return\n\
 to Lakitu's camera. Press\n\
-[C]▼ to see Mario from\n\
+[C]| to see Mario from\n\
 afar, using either\n\
 Lakitu's or Mario's view."))
 
 DEFINE_DIALOG(DIALOG_036, 1, 5, 30, 200, _("\
 OBSERVATION PLATFORM\n\
-Press [C]▲ to take a look\n\
+Press [C]^ to take a look\n\
 around. Don't miss\n\
 anything!\n\
 \n\

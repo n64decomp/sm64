@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvBetaChestBottom and bhvBetaChestLid.
  * These are apparently the beta versions of chests.
@@ -50,7 +49,6 @@ void bhv_beta_chest_lid_loop(void) {
             }
 
             break;
-
         case BETA_CHEST_ACT_OPENING:
             if (o->oTimer == 0) {
                 // Spawn the bubble 80 units in the -Y direction and 120 units in the +Z direction.
@@ -65,7 +63,7 @@ void bhv_beta_chest_lid_loop(void) {
                 o->oAction++; // Set to BETA_CHEST_ACT_IDLE_OPEN
             }
 
-            // fallthrough
+            // Fall-through
         case BETA_CHEST_ACT_IDLE_OPEN:
             break;
     }

@@ -1,8 +1,6 @@
-// fire_spitter.inc.c
 
 static void fire_spitter_act_idle(void) {
     approach_f32_ptr(&o->header.gfx.scale[0], 0.2f, 0.002f);
-
     if (o->oTimer > 150 && o->oDistanceToMario < 800.0f && !(o->oMoveFlags & OBJ_MOVE_MASK_IN_WATER)) {
         o->oAction = FIRE_SPITTER_ACT_SPIT_FIRE;
         o->oFireSpitterScaleVel = 0.05f;
@@ -18,7 +16,6 @@ static void fire_spitter_act_spit_fire(void) {
     // starting moving scale by 0.05 each frame toward 0.1. The first time
     // it becomes below 0.15 during this latter portion, shoot fire.
     scaleStatus = obj_grow_then_shrink(&o->oFireSpitterScaleVel, 0.15f, 0.1f);
-
     if (scaleStatus != 0) {
         if (scaleStatus < 0) {
             o->oAction = FIRE_SPITTER_ACT_IDLE;

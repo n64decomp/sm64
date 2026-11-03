@@ -3,7 +3,8 @@
 
 /* Mario Animation IDs */
 
-enum MarioAnimID {
+enum MarioAnimID
+{
     /* 0x00 */ MARIO_ANIM_SLOW_LEDGE_GRAB,
     /* 0x01 */ MARIO_ANIM_FALL_OVER_BACKWARDS,
     /* 0x02 */ MARIO_ANIM_BACKWARD_AIR_KB,
@@ -195,7 +196,7 @@ enum MarioAnimID {
     /* 0xBC */ MARIO_ANIM_TURNING_PART1,
     /* 0xBD */ MARIO_ANIM_TURNING_PART2,
     /* 0xBE */ MARIO_ANIM_SLIDEFLIP_LAND,
-    /* 0xBF */ MARIO_ANIM_SLIDEFLIP,
+    /* 0XBF */ MARIO_ANIM_SLIDEFLIP,
     /* 0xC0 */ MARIO_ANIM_TRIPLE_JUMP_LAND,
     /* 0xC1 */ MARIO_ANIM_TRIPLE_JUMP,
     /* 0xC2 */ MARIO_ANIM_FIRST_PERSON,

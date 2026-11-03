@@ -7,7 +7,8 @@
 #define STUB_LEVEL(_0, levelenum, _2, _3, _4, _5, _6, _7, _8) levelenum,
 #define DEFINE_LEVEL(_0, levelenum, _2, _3, _4, _5, _6, _7, _8, _9, _10) levelenum,
 
-enum LevelNum {
+enum LevelNum
+{
     LEVEL_NONE,
 #include "levels/level_defines.h"
     LEVEL_COUNT,

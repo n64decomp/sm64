@@ -990,7 +990,7 @@ const Collision cotmc_seg7_collision_level[] = {
     COL_TRI(208, 206, 207),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(1),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -4185, 20, -47, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -4185, 20, -47, /*yaw*/ 64), // unused, probably an early way to set intial position
     COL_WATER_BOX_INIT(1),
     COL_WATER_BOX(0, -1535, -7679, 1536, 3389, 0),
     COL_END(),

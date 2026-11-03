@@ -91,67 +91,67 @@
             "sound": "0F_mario_snoring2"
         },
         "inst16": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "10_mario_doh"
         },
         "inst17": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "11_mario_game_over"
         },
         "inst18": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "12_mario_hello"
         },
         "inst19": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "13_mario_press_start_to_play"
         },
         "inst20": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "14_mario_twirl_bounce"
         },
         "inst21": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "15_mario_snoring3"
         },
         "inst22": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": {"ifdef": ["VERSION_SH", "VERSION_CN"], "then": "16_mario_bye_bye", "else": "16_mario_so_longa_bowser"}
+            "sound": {"ifdef": ["VERSION_SH"], "then": "16_mario_bye_bye", "else": "16_mario_so_longa_bowser"}
         },
         "inst23": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "17_mario_ima_tired"
         },
         "inst24": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "18_mario_waha"
         },
         "inst25": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "19_mario_yippee"
         },
         "inst26": {
-            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"],
+            "ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"],
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "1A_mario_lets_a_go"

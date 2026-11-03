@@ -71,50 +71,6 @@ const Gfx title_screen_bg_dl_0A000190[] = {
     gsSPEndDisplayList(),
 };
 
-#if defined(VERSION_CN)
-
-// 0x0A0001C0
-ALIGNED8 static const Texture title_texture_0A0001C0[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.001C0.rgba16.inc.c"
-};
-
-// 0x0A000E40
-ALIGNED8 static const Texture title_texture_0A000E40[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.00E40.rgba16.inc.c"
-};
-
-// 0x0A001AC0
-ALIGNED8 static const Texture title_texture_0A001AC0[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.01AC0.rgba16.inc.c"
-};
-
-// 0x0A002740
-ALIGNED8 static const Texture title_texture_0A002740[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.02740.rgba16.inc.c"
-};
-
-// 0x0A0033C0
-ALIGNED8 static const Texture title_texture_0A0033C0[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.033C0.rgba16.inc.c"
-};
-
-// 0x0A004040
-ALIGNED8 static const Texture title_texture_0A004040[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.04040.rgba16.inc.c"
-};
-
-// 0x0A004CC0
-ALIGNED8 static const Texture title_texture_0A004CC0[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.04CC0.rgba16.inc.c"
-};
-
-// 0x0A005940
-ALIGNED8 static const Texture title_texture_0A005940[] = {
-#include "textures/title_screen_bg/title_screen_bg_ique.05940.rgba16.inc.c"
-};
-
-#else
-
 // 0x0A0001C0
 ALIGNED8 static const Texture title_texture_0A0001C0[] = {
 #include "textures/title_screen_bg/title_screen_bg.001C0.rgba16.inc.c"
@@ -155,8 +111,6 @@ ALIGNED8 static const Texture title_texture_0A005940[] = {
 #include "textures/title_screen_bg/title_screen_bg.05940.rgba16.inc.c"
 };
 
-#endif
-
 // 0x0A0065C0
 const Texture *const mario_title_texture_table[] = {
     title_texture_0A0001C0, title_texture_0A000E40, title_texture_0A001AC0, title_texture_0A002740,
@@ -169,7 +123,7 @@ const Texture *const game_over_texture_table[] = {
 
 UNUSED static const u64 title_screen_bg_unused_0 = 0;
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 const Gfx title_screen_bg_dl_0A0065E8[] = {
     gsDPPipeSync(),
     gsDPSetCycleType(G_CYC_COPY),

@@ -1,4 +1,3 @@
-
 /**
  * This is the behavior file for the tilting inverted pyramids in BitFS/LLL.
  * The object essentially just tilts and moves Mario with it.
@@ -78,9 +77,9 @@ void bhv_tilting_inverted_pyramid_loop(void) {
     f32 mz;
 
     s32 marioOnPlatform = FALSE;
-    UNUSED u8 filler1[4];
+    UNUSED s32 unused;
     Mat4 *transform = &o->transform;
-    UNUSED u8 filler2[28];
+    UNUSED s32 unused2[7];
 
     if (gMarioObject->platform == o) {
         get_mario_pos(&mx, &my, &mz);
@@ -94,7 +93,7 @@ void bhv_tilting_inverted_pyramid_loop(void) {
         dy = 500.0f;
         dz = gMarioObject->oPosZ - o->oPosZ;
         d = sqrtf(dx * dx + dy * dy + dz * dz);
-
+    
         //! Always true since dy = 500, making d >= 500.
         if (d != 0.0f) {
             // Normalizing
@@ -108,9 +107,8 @@ void bhv_tilting_inverted_pyramid_loop(void) {
             dz = 0.0f;
         }
 
-        if (o->oTiltingPyramidMarioOnPlatform == TRUE) {
+        if (o->oTiltingPyramidMarioOnPlatform == TRUE)
             marioOnPlatform++;
-        }
 
         o->oTiltingPyramidMarioOnPlatform = TRUE;
     } else {
@@ -120,7 +118,7 @@ void bhv_tilting_inverted_pyramid_loop(void) {
         o->oTiltingPyramidMarioOnPlatform = FALSE;
     }
 
-    // Approach the normals by 0.01f towards the new goal, then create a transform matrix and orient the object.
+    // Approach the normals by 0.01f towards the new goal, then create a transform matrix and orient the object. 
     // Outside of the other conditionals since it needs to tilt regardless of whether Mario is on.
     o->oTiltingPyramidNormalX = approach_by_increment(dx, o->oTiltingPyramidNormalX, 0.01f);
     o->oTiltingPyramidNormalY = approach_by_increment(dy, o->oTiltingPyramidNormalY, 0.01f);
@@ -128,7 +126,7 @@ void bhv_tilting_inverted_pyramid_loop(void) {
     create_transform_from_normals(*transform, o->oTiltingPyramidNormalX, o->oTiltingPyramidNormalY, o->oTiltingPyramidNormalZ);
 
     // If Mario is on the platform, adjust his position for the platform tilt.
-    if (marioOnPlatform) {
+    if (marioOnPlatform != FALSE) {
         linear_mtxf_mul_vec3f(*transform, posAfterRotation, dist);
         mx += posAfterRotation[0] - posBeforeRotation[0];
         my += posAfterRotation[1] - posBeforeRotation[1];

@@ -55,6 +55,10 @@ static s16 sScriptStatus;
 static s32 sRegister;
 static struct LevelCommand *sCurrentCmd;
 
+#ifdef USE_SYSTEM_MALLOC
+static struct MemoryPool *sMemPoolForGoddard;
+#endif
+
 static s32 eval_script_op(s8 op, s32 arg) {
     s32 result = 0;
 
@@ -280,18 +284,34 @@ static void level_cmd_load_mio0(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
+#ifdef USE_SYSTEM_MALLOC
+static void *alloc_for_goddard(u32 size) {
+    return mem_pool_alloc(sMemPoolForGoddard, size);
+}
+
+static void free_for_goddard(void *ptr) {
+    mem_pool_free(sMemPoolForGoddard, ptr);
+}
+#endif
+
 static void level_cmd_load_mario_head(void) {
+#ifdef USE_SYSTEM_MALLOC
+    sMemPoolForGoddard = mem_pool_init(0, 0);
+    gdm_init(alloc_for_goddard, free_for_goddard);
+    gdm_setup();
+    gdm_maketestdl(CMD_GET(s16, 2));
+#else
     // TODO: Fix these hardcoded sizes
     void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000), MEMORY_POOL_LEFT);
     if (addr != NULL) {
         gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(0xE1000));
         gd_add_to_heap(gZBuffer, sizeof(gZBuffer)); // 0x25800
-        gd_add_to_heap(gFramebuffer0, 3 * sizeof(gFramebuffer0)); // 0x70800
+        gd_add_to_heap(gFrameBuffer0, 3 * sizeof(gFrameBuffer0)); // 0x70800
         gdm_setup();
         gdm_maketestdl(CMD_GET(s16, 2));
     } else {
-        CN_DEBUG_PRINTF(("face anime memory overflow\n"));
     }
+#endif
 
     sCurrentCmd = CMD_NEXT;
 }
@@ -321,8 +341,12 @@ static void level_cmd_clear_level(void) {
 
 static void level_cmd_alloc_level_pool(void) {
     if (sLevelPool == NULL) {
+#ifdef USE_SYSTEM_MALLOC
+        sLevelPool = alloc_only_pool_init();
+#else
         sLevelPool = alloc_only_pool_init(main_pool_available() - sizeof(struct AllocOnlyPool),
                                           MEMORY_POOL_LEFT);
+#endif
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -331,7 +355,9 @@ static void level_cmd_alloc_level_pool(void) {
 static void level_cmd_free_level_pool(void) {
     s32 i;
 
+#ifndef USE_SYSTEM_MALLOC
     alloc_only_pool_resize(sLevelPool, sLevelPool->usedSpace);
+#endif
     sLevelPool = NULL;
 
     for (i = 0; i < 8; i++) {
@@ -426,7 +452,7 @@ static void level_cmd_init_mario(void) {
     gMarioSpawnInfo->areaIndex = 0;
     gMarioSpawnInfo->behaviorArg = CMD_GET(u32, 4);
     gMarioSpawnInfo->behaviorScript = CMD_GET(void *, 8);
-    gMarioSpawnInfo->model = gLoadedGraphNodes[CMD_GET(u8, 3)];
+    gMarioSpawnInfo->unk18 = gLoadedGraphNodes[CMD_GET(u8, 3)];
     gMarioSpawnInfo->next = NULL;
 
     sCurrentCmd = CMD_NEXT;
@@ -454,7 +480,7 @@ static void level_cmd_place_object(void) {
 
         spawnInfo->behaviorArg = CMD_GET(u32, 16);
         spawnInfo->behaviorScript = CMD_GET(void *, 20);
-        spawnInfo->model = gLoadedGraphNodes[model];
+        spawnInfo->unk18 = gLoadedGraphNodes[model];
         spawnInfo->next = gAreas[sCurrAreaIndex].objectSpawnInfos;
 
         gAreas[sCurrAreaIndex].objectSpawnInfos = spawnInfo;
@@ -546,8 +572,8 @@ static void level_cmd_3A(void) {
     struct UnusedArea28 *val4;
 
     if (sCurrAreaIndex != -1) {
-        if ((val4 = gAreas[sCurrAreaIndex].unused) == NULL) {
-            val4 = gAreas[sCurrAreaIndex].unused =
+        if ((val4 = gAreas[sCurrAreaIndex].unused28) == NULL) {
+            val4 = gAreas[sCurrAreaIndex].unused28 =
                 alloc_only_pool_alloc(sLevelPool, sizeof(struct UnusedArea28));
         }
 
@@ -683,7 +709,6 @@ static void level_cmd_set_transition(void) {
 }
 
 static void level_cmd_nop(void) {
-    CN_DEBUG_PRINTF(("BAD: seqBlankColor\n"));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -825,9 +850,6 @@ struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sCurrentCmd = cmd;
 
     while (sScriptStatus == SCRIPT_RUNNING) {
-        CN_DEBUG_PRINTF(("%08X: ", sCurrentCmd));
-        CN_DEBUG_PRINTF(("%02d\n", sCurrentCmd->type));
-
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

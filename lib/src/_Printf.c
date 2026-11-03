@@ -6,7 +6,7 @@
 #define ATOI(i, a)                                                                                     \
     for (i = 0; *a >= '0' && *a <= '9'; a++)                                                           \
         if (i < 999)                                                                                   \
-            i = i * 10 + *a - '0';
+            i = *a + i * 10 - '0';
 #define _PROUT(dst, fmt, _size)                                                                        \
     if (_size > 0) {                                                                                   \
         dst = prout(dst, fmt, _size);                                                                  \
@@ -25,25 +25,25 @@
             _PROUT(dst, src, c);                                                                       \
         }
 
-char spaces[] = "                                ";
-char zeroes[] = "00000000000000000000000000000000";
+const char length_str[] = "hlL";
+const char flags_str[] = " +-#0";
+const u32 flags_arr[] = { FLAGS_SPACE, FLAGS_PLUS, FLAGS_MINUS, FLAGS_HASH, FLAGS_ZERO, 0 };
+char _spaces[] = "                                ";
+char _zeroes[] = "00000000000000000000000000000000";
 
-static void _Putfld(printf_struct *, va_list *, fmt_type, fmt_type *);
+static void _Putfld(printf_struct *, va_list *, u8, u8 *);
 
 s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char *fmt, va_list args) {
-    static const char flags_str[] = " +-#0";
-    static const u32 flags_arr[] = { FLAGS_SPACE, FLAGS_PLUS, FLAGS_MINUS, FLAGS_HASH, FLAGS_ZERO, 0 };
-
     printf_struct sp78;
-    const fmt_type *fmt_ptr;
-    fmt_type c;
+    const u8 *fmt_ptr;
+    u8 c;
     const char *flag_index;
-    fmt_type sp4c[0x20]; // probably a buffer?
+    u8 sp4c[0x20]; // probably a buffer?
     s32 sp48, sp44, sp40, sp3c, sp38, sp34, sp30, sp2c, sp28, sp24;
     sp78.size = 0;
     while (TRUE) {
-        fmt_ptr = (fmt_type *) fmt;
-#if defined(VERSION_SH) || defined(VERSION_CN)
+        fmt_ptr = (u8 *) fmt;
+#ifdef VERSION_SH
         // new version: don't point fmt_ptr beyond NUL character
         while ((c = *fmt_ptr) != 0 && c != '%') {
             fmt_ptr++;
@@ -56,7 +56,7 @@ s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char 
             }
         }
 #endif
-        _PROUT(dst, fmt, fmt_ptr - (fmt_type *) fmt);
+        _PROUT(dst, fmt, fmt_ptr - (u8 *) fmt);
         if (c == 0) {
             return sp78.size;
         }
@@ -86,7 +86,11 @@ s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char 
                 ATOI(sp78.precision, fmt_ptr);
             }
         }
-        sp78.length = strchr("hlL", *fmt_ptr) != NULL ? *fmt_ptr++ : '\0';
+        if (strchr(length_str, *fmt_ptr) != NULL) {
+            sp78.length = *fmt_ptr++;
+        } else {
+            sp78.length = 0;
+        }
 
         if (sp78.length == 'l' && *fmt_ptr == 'l') {
             sp78.length = 'L';
@@ -95,19 +99,19 @@ s32 _Printf(char *(*prout)(char *, const char *, size_t), char *dst, const char 
         _Putfld(&sp78, &args, *fmt_ptr, sp4c);
         sp78.width -= sp78.part1_len + sp78.num_leading_zeros + sp78.part2_len + sp78.num_mid_zeros
                       + sp78.part3_len + sp78.num_trailing_zeros;
-        _PAD(sp44, sp78.width, sp48, spaces, !(sp78.flags & FLAGS_MINUS));
+        _PAD(sp44, sp78.width, sp48, _spaces, !(sp78.flags & FLAGS_MINUS));
         _PROUT(dst, (char *) sp4c, sp78.part1_len);
-        _PAD(sp3c, sp78.num_leading_zeros, sp40, zeroes, 1);
+        _PAD(sp3c, sp78.num_leading_zeros, sp40, _zeroes, 1);
         _PROUT(dst, sp78.buff, sp78.part2_len);
-        _PAD(sp34, sp78.num_mid_zeros, sp38, zeroes, 1);
+        _PAD(sp34, sp78.num_mid_zeros, sp38, _zeroes, 1);
         _PROUT(dst, (char *) (&sp78.buff[sp78.part2_len]), sp78.part3_len)
-        _PAD(sp2c, sp78.num_trailing_zeros, sp30, zeroes, 1);
-        _PAD(sp24, sp78.width, sp28, spaces, sp78.flags & FLAGS_MINUS);
+        _PAD(sp2c, sp78.num_trailing_zeros, sp30, _zeroes, 1);
+        _PAD(sp24, sp78.width, sp28, _spaces, sp78.flags & FLAGS_MINUS);
         fmt = (char *) fmt_ptr + 1;
     }
 }
 
-static void _Putfld(printf_struct *a0, va_list *args, fmt_type type, fmt_type *buff) {
+static void _Putfld(printf_struct *a0, va_list *args, u8 type, u8 *buff) {
     a0->part1_len = a0->num_leading_zeros = a0->part2_len = a0->num_mid_zeros = a0->part3_len =
         a0->num_trailing_zeros = 0;
 

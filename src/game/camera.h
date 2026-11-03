@@ -295,7 +295,8 @@
 /**
  * A copy of player information that is relevant to the camera.
  */
-struct PlayerCameraState {
+struct PlayerCameraState
+{
     /**
      * Mario's action on this frame.
      */
@@ -316,7 +317,8 @@ struct PlayerCameraState {
  * Struct containing info that is used when transition_next_state() is called. Stores the intermediate
  * distances and angular displacements from lakitu's goal position and focus.
  */
-struct TransitionInfo {
+struct TransitionInfo
+{
     /*0x00*/ s16 posPitch;
     /*0x02*/ s16 posYaw;
     /*0x04*/ f32 posDist;
@@ -325,16 +327,17 @@ struct TransitionInfo {
     /*0x0C*/ f32 focDist;
     /*0x10*/ s32 framesLeft;
     /*0x14*/ Vec3f marioPos;
-    /*0x20*/ u8 unused; // for the structs to align, there has to be an extra unused variable here. type is unknown.
+    /*0x20*/ u8 pad; // for the structs to align, there has to be an extra unused variable here. type is unknown.
 };
 
 /**
  * A point that's used in a spline, controls the direction to move the camera in
  * during the shake effect.
  */
-struct HandheldShakePoint {
+struct HandheldShakePoint
+{
     /*0x00*/ s8 index; // only set to -1
-    /*0x04 (aligned)*/ u32 unused;
+    /*0x04 (aligned)*/ u32 pad;
     /*0x08*/ Vec3s point;
 }; // size = 0x10
 
@@ -356,7 +359,8 @@ typedef CameraEvent CutsceneShot;
 /**
  * Defines a bounding box which activates an event while Mario is inside
  */
-struct CameraTrigger {
+struct CameraTrigger
+{
     /**
      * The area this should be checked in, or -1 if it should run in every area of the level.
      *
@@ -384,7 +388,8 @@ struct CameraTrigger {
  * A camera shot that is active for a number of frames.
  * Together, a sequence of shots makes up a cutscene.
  */
-struct Cutscene {
+struct Cutscene
+{
     /// The function that gets called.
     CutsceneShot shot;
     /// How long the shot lasts.
@@ -394,7 +399,8 @@ struct Cutscene {
 /**
  * Info for the camera's field of view and the FOV shake effect.
  */
-struct CameraFOVStatus {
+struct CameraFOVStatus
+{
     /// The current function being used to set the camera's field of view (before any fov shake is applied).
     /*0x00*/ u8 fovFunc;
     /// The current field of view in degrees
@@ -419,7 +425,8 @@ struct CameraFOVStatus {
 /**
  * Information for a control point in a spline segment.
  */
-struct CutsceneSplinePoint {
+struct CutsceneSplinePoint
+{
     /* The index of this point in the spline. Ignored except for -1, which ends the spline.
        An index of -1 should come four points after the start of the last segment. */
     s8 index;
@@ -433,7 +440,8 @@ struct CutsceneSplinePoint {
  * Struct containing the nearest floor and ceiling to the player, as well as the previous floor and
  * ceiling. It also stores their distances from the player's position.
  */
-struct PlayerGeometry {
+struct PlayerGeometry
+{
     /*0x00*/ struct Surface *currFloor;
     /*0x04*/ f32 currFloorHeight;
     /*0x08*/ s16 currFloorType;
@@ -453,7 +461,8 @@ struct PlayerGeometry {
 /**
  * Point used in transitioning between camera modes and C-Up.
  */
-struct LinearTransitionPoint {
+struct LinearTransitionPoint
+{
     Vec3f focus;
     Vec3f pos;
     f32 dist;
@@ -464,7 +473,8 @@ struct LinearTransitionPoint {
 /**
  * Info about transitioning between camera modes.
  */
-struct ModeTransitionInfo {
+struct ModeTransitionInfo
+{
     s16 newMode;
     s16 lastMode;
     s16 max;
@@ -476,7 +486,8 @@ struct ModeTransitionInfo {
 /**
  * A point in a path used by update_parallel_tracking_camera
  */
-struct ParallelTrackingPoint {
+struct ParallelTrackingPoint
+{
     /// Whether this point is the start of a path
     s16 startOfPath;
     /// Point used to define a line segment to follow
@@ -490,7 +501,8 @@ struct ParallelTrackingPoint {
 /**
  * Stores the camera's info
  */
-struct CameraStoredInfo {
+struct CameraStoredInfo
+{
     /*0x00*/ Vec3f pos;
     /*0x0C*/ Vec3f focus;
     /*0x18*/ f32 panDist;
@@ -502,7 +514,8 @@ struct CameraStoredInfo {
  *
  * See the sCutsceneVars[] array in camera.c for more details.
  */
-struct CutsceneVariable {
+struct CutsceneVariable
+{
     /// Perhaps an index
     s32 unused1;
     Vec3f point;
@@ -517,7 +530,8 @@ struct CutsceneVariable {
  * update_lakitu, its pos and focus are used to calculate lakitu's next position and focus, which are
  * then used to render the game.
  */
-struct Camera {
+struct Camera
+{
     /*0x00*/ u8 mode; // What type of mode the camera uses (see defines above)
     /*0x01*/ u8 defMode;
     /**
@@ -539,9 +553,9 @@ struct Camera {
     /// For example, this is what makes the camera rotate around the hill in BoB
     /*0x2C*/ f32 areaCenZ;
     /*0x30*/ u8 cutscene;
-    /*0x31*/ u8 filler1[8];
+    /*0x31*/ u8 filler31[0x8];
     /*0x3A*/ s16 nextYaw;
-    /*0x3C*/ u8 filler2[40];
+    /*0x3C*/ u8 filler3C[0x28];
     /*0x64*/ u8 doorStatus;
     /// The y coordinate of the "center" of the area. Unlike areaCenX and areaCenZ, this is only used
     /// when paused. See zoom_out_if_paused_and_outside
@@ -556,7 +570,8 @@ struct Camera {
  *
  * @see update_lakitu()
  */
-struct LakituState {
+struct LakituState
+{
     /**
      * Lakitu's position, which (when CAM_FLAG_SMOOTH_MOVEMENT is set), approaches his goalPos every frame.
      */
@@ -576,14 +591,14 @@ struct LakituState {
      */
     /*0x24*/ Vec3f goalPos;
 
-    /*0x30*/ u8 filler1[12]; // extra unused Vec3f?
+    /*0x30*/ u8 filler30[12]; // extra unused Vec3f?
 
     /// Copy of the active camera mode
     /*0x3C*/ u8 mode;
     /// Copy of the default camera mode
     /*0x3D*/ u8 defMode;
 
-    /*0x3E*/ u8 filler2[10];
+    /*0x3E*/ u8 filler3E[10];
 
     /*0x48*/ f32 focusDistance; // unused
     /*0x4C*/ s16 oldPitch; // unused
@@ -602,7 +617,7 @@ struct LakituState {
 
     /*0x60*/ Vec3f unusedVec1;
     /*0x6C*/ Vec3s unusedVec2;
-    /*0x72*/ u8 filler3[8];
+    /*0x72*/ u8 filler72[8];
 
     /// Used to rotate the screen when rendering.
     /*0x7A*/ s16 roll;

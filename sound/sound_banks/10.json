@@ -49,32 +49,32 @@
         "inst0": {
             "release_rate": 10,
             "envelope": "envelope0",
-            "sound": "3E_monk_choir_B2"
+            "sound": "3E_monk_choir"
         },
         "inst1": {
             "release_rate": 10,
             "envelope": "envelope1",
-            "sound": "3E_monk_choir_B2"
+            "sound": "3E_monk_choir"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "3F_small_gamelan"
+            "sound": "3F"
         },
         "inst3": {
             "release_rate": 10,
             "envelope": "envelope3",
-            "sound": "40_fu_yin_gong_C4"
+            "sound": "40_bell"
         },
         "inst4": {
             "release_rate": 10,
             "envelope": "envelope4",
-            "sound": "40_fu_yin_gong_C4"
+            "sound": "40_bell"
         },
         "inst5": {
             "release_rate": 10,
             "envelope": "envelope5",
-            "sound": "40_fu_yin_gong_C4"
+            "sound": "40_bell"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope6", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

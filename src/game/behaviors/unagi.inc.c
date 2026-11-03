@@ -13,9 +13,9 @@ struct ObjectHitbox sUnagiHitbox = {
 };
 
 void bhv_unagi_init(void) {
-    if (o->oBhvParams2ndByte != 1) {
+    if (o->oBehParams2ndByte != 1) {
         o->oPathedStartWaypoint = segmented_to_virtual(jrb_seg7_trajectory_unagi_1);
-        if (o->oBhvParams2ndByte == 0) {
+        if (o->oBehParams2ndByte == 0) {
             o->oFaceAnglePitch = -7600;
         } else {
             o->oAction = 1;
@@ -47,11 +47,13 @@ void unagi_act_1_4(s32 arg0) {
         if (cur_obj_check_anim_frame(30)) {
             o->oForwardVel = 40.0f;
         }
-    } else if (cur_obj_check_if_at_animation_end()) {
-        if (o->oAction != arg0 && (o->oPathedPrevWaypointFlags & 0xFF) >= 7) {
-            cur_obj_init_animation_with_sound(3);
-        } else {
-            cur_obj_init_animation_with_sound(2);
+    } else {
+        if (cur_obj_check_if_at_animation_end()) {
+            if (o->oAction != arg0 && (o->oPathedPrevWaypointFlags & 0xFF) >= 7) {
+                cur_obj_init_animation_with_sound(3);
+            } else {
+                cur_obj_init_animation_with_sound(2);
+            }
         }
     }
 
@@ -59,7 +61,7 @@ void unagi_act_1_4(s32 arg0) {
         cur_obj_play_sound_2(SOUND_GENERAL_MOVING_WATER);
     }
 
-    if (cur_obj_follow_path(0) == PATH_REACHED_END) {
+    if (cur_obj_follow_path(0) == -1) {
         o->oAction = arg0;
     }
 
@@ -138,13 +140,13 @@ void unagi_act_3(void) {
 }
 
 void bhv_unagi_loop(void) {
-    s32 i;
+    s32 val04;
 
     if (o->oUnagiUnk1B2 == 0) {
         o->oUnagiUnk1AC = 99999.0f;
         if (o->oDistanceToMario < 3000.0f) {
-            for (i = -4; i < 4; i++) {
-                spawn_object_relative(i, 0, 0, 0, o, MODEL_NONE, bhvUnagiSubobject);
+            for (val04 = -4; val04 < 4; val04++) {
+                spawn_object_relative(val04, 0, 0, 0, o, MODEL_NONE, bhvUnagiSubobject);
             }
             o->oUnagiUnk1B2 = 1;
         }
@@ -171,10 +173,12 @@ void bhv_unagi_loop(void) {
 }
 
 void bhv_unagi_subobject_loop(void) {
+    f32 val04;
+
     if (o->parentObj->oUnagiUnk1B2 == 0) {
         obj_mark_for_deletion(o);
     } else {
-        f32 val04 = 300.0f * o->oBhvParams2ndByte;
+        val04 = 300.0f * o->oBehParams2ndByte;
 
         o->oPosY = o->parentObj->oPosY - val04 * sins(o->parentObj->oFaceAnglePitch) * 1.13f;
 
@@ -183,15 +187,15 @@ void bhv_unagi_subobject_loop(void) {
         o->oPosX = o->parentObj->oPosX + val04 * sins(o->parentObj->oFaceAngleYaw);
         o->oPosZ = o->parentObj->oPosZ + val04 * coss(o->parentObj->oFaceAngleYaw);
 
-        if (o->oBhvParams2ndByte == -4) {
+        if (o->oBehParams2ndByte == -4) {
             if (o->parentObj->oAnimState != 0 && o->oDistanceToMario < 150.0f) {
-                o->oBhvParams = o->parentObj->oBhvParams;
+                o->oBehParams = o->parentObj->oBehParams;
                 spawn_default_star(6833.0f, -3654.0f, 2230.0f);
                 o->parentObj->oAnimState = 0;
             }
         } else {
             obj_check_attacks(&sUnagiHitbox, o->oAction);
-            if (o->oBhvParams2ndByte == 3) {
+            if (o->oBehParams2ndByte == 3) {
                 o->parentObj->oUnagiUnk1AC = o->oDistanceToMario;
             }
         }

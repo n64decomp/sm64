@@ -78,7 +78,7 @@ extern const u8 *const hmc_seg7_painting_textures_07025518[];
 extern struct Painting cotmc_painting;
 extern const Collision hmc_seg7_collision_level[];
 extern const MacroObject hmc_seg7_macro_objs[];
-extern const RoomData hmc_seg7_rooms[];
+extern const u8 hmc_seg7_rooms[];
 extern const Collision hmc_seg7_collision_elevator[];
 extern const Collision hmc_seg7_collision_0702B65C[];
 extern const Collision hmc_seg7_collision_controllable_platform[];

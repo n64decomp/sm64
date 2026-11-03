@@ -1,86 +1,64 @@
 #include "libultra_internal.h"
 #include "osContInternal.h"
-#include "PR/ique.h"
 #include <macros.h>
-#include "controller.h"
 
-ALIGNED8 OSPifRam __osContPifRam;
+#ifndef AVOID_UB
+ALIGNED8 OSContPackedStruct _osContCmdBuf[7];
+UNUSED static u32 unused; // padding between these two variables
+u32 _osContPifCtrl;
+#else
+// Reordered gcc vars above will disturb the aliasing done to access all 8 members of this array, hence AVOID_UB.
+ALIGNED8 OSContPackedStruct _osContCmdBuf[8];
+#endif
 
-extern u8 __osContLastCmd;
-extern u8 __osMaxControllers;
+extern u8 _osLastSentSiCmd;
+extern u8 _osContNumControllers;
 
 void __osPackReadData(void);
-
 s32 osContStartReadData(OSMesgQueue *mesg) {
-#ifdef VERSION_CN
-    s32 ret;
-#else
     s32 ret = 0;
     s32 i;
-#endif
     __osSiGetAccess();
-    if (__osContLastCmd != CONT_CMD_READ_BUTTON) {
+    if (_osLastSentSiCmd != 1) {
         __osPackReadData();
-        ret = __osSiRawStartDma(OS_WRITE, __osContPifRam.ramarray);
+        ret = __osSiRawStartDma(OS_WRITE, _osContCmdBuf);
         osRecvMesg(mesg, NULL, OS_MESG_BLOCK);
     }
-#ifndef VERSION_CN
-    for (i = 0; i < ARRAY_COUNT(__osContPifRam.ramarray) + 1; i++) {
-        __osContPifRam.ramarray[i] = 0xff;
+    for (i = 0; i < 0x10; i++) {
+        *((u32 *) &_osContCmdBuf + i) = 255;
     }
-    __osContPifRam.pifstatus = 0;
-#endif
 
-    ret = __osSiRawStartDma(OS_READ, __osContPifRam.ramarray);
-#ifdef VERSION_CN
-    __osContLastCmd = 0xfd;
-#else
-    __osContLastCmd = CONT_CMD_READ_BUTTON;
-#endif
+    _osContPifCtrl = 0;
+    ret = __osSiRawStartDma(OS_READ, _osContCmdBuf);
+    _osLastSentSiCmd = 1;
     __osSiRelAccess();
     return ret;
 }
-
 void osContGetReadData(OSContPad *pad) {
-    u8 *cmdBufPtr;
+    OSContPackedRead *cmdBufPtr;
     OSContPackedRead response;
     s32 i;
-    cmdBufPtr = (u8 *) __osContPifRam.ramarray;
-    for (i = 0; i < __osMaxControllers; i++, cmdBufPtr += sizeof(OSContPackedRead), pad++) {
-        response = * (OSContPackedRead *) cmdBufPtr;
+    cmdBufPtr = &_osContCmdBuf[0].read;
+    for (i = 0; i < _osContNumControllers; i++, cmdBufPtr++, pad++) {
+        response = *cmdBufPtr;
         pad->errnum = (response.rxLen & 0xc0) >> 4;
         if (pad->errnum == 0) {
             pad->button = response.button;
             pad->stick_x = response.rawStickX;
             pad->stick_y = response.rawStickY;
         }
-    }
-#ifdef VERSION_CN
-    if (__osBbIsBb != 0 && __osBbHackFlags != 0) {
-        OSContPad tmp;
-        pad -= __osMaxControllers;
-        tmp = *pad;
-        *pad = pad[__osBbHackFlags];
-        pad[__osBbHackFlags] = tmp;
-    }
-#endif
+    };
 }
-
 void __osPackReadData() {
-    u8 *cmdBufPtr;
+    OSContPackedRead *cmdBufPtr;
     OSContPackedRead request;
     s32 i;
-    cmdBufPtr = (u8 *) __osContPifRam.ramarray;
-
-#ifdef VERSION_CN
-    for (i = 0; i < ARRAY_COUNT(__osContPifRam.ramarray); i++) {
-#else
-    for (i = 0; i < ARRAY_COUNT(__osContPifRam.ramarray) + 1; i++) {
-#endif
-        __osContPifRam.ramarray[i] = 0;
+    cmdBufPtr = &_osContCmdBuf[0].read;
+    for (i = 0; i < 0x10; i++) {
+        *((u32 *) &_osContCmdBuf + i) = 0;
     }
 
-    __osContPifRam.pifstatus = 1;
+    _osContPifCtrl = 1;
     request.padOrEnd = 255;
     request.txLen = 1;
     request.rxLen = 4;
@@ -88,9 +66,8 @@ void __osPackReadData() {
     request.button = 65535;
     request.rawStickX = -1;
     request.rawStickY = -1;
-    for (i = 0; i < __osMaxControllers; i++) {
-        * (OSContPackedRead *) cmdBufPtr = request;
-        cmdBufPtr += sizeof(OSContPackedRead);
+    for (i = 0; i < _osContNumControllers; i++) {
+        *cmdBufPtr++ = request;
     }
-    *cmdBufPtr = 254;
+    cmdBufPtr->padOrEnd = 254;
 }

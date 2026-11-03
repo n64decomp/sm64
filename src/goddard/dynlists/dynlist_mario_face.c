@@ -354,7 +354,7 @@ struct DynList dynlist_mario_face_shape[] = {
     MakeDynObj(D_DATA_GRP, DYNOBJ_MARIO_FACE_TRI_GROUP),
         LinkWithPtr(&mario_Face_FaceInfo),
 
-    StartGroup(DYNOBJ_MARIO_FACE_MTL_GROUP),
+    StartGroup(DYNOBJ_MARIO_FACE_MTL_GROUP),    
         // Teeth color
         MakeDynObj(D_MATERIAL, 0),
             SetId(0),
@@ -366,7 +366,7 @@ struct DynList dynlist_mario_face_shape[] = {
             SetAmbient(0.883, 0.602, 0.408),
             SetDiffuse(0.883, 0.602, 0.408),
         // Shadow on back of hat
-        MakeDynObj(D_MATERIAL, 0),
+        MakeDynObj(D_MATERIAL, 0),    
             SetId(2),
             SetAmbient(0.362, 0.0, 0.0),
             SetDiffuse(0.362, 0.0, 0.0),

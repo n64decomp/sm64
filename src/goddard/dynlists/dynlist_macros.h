@@ -24,7 +24,7 @@
 
 /**
  * Set the initial position of the current object
- * Supported Objs: joints, particles, nets, vertices, cameras
+ * Supported Objs: joints, particles, nets, vertices, cameras 
  */
 #define SetInitialPosition(x, y, z) \
     { 1, {0}, {0}, {(x), (y), (z)} }
@@ -150,7 +150,7 @@
     { 19, {0}, {(void *)(type)}, {0.0, 0.0, 0.0} }
 
 /**
- * Set the current shape's material group to the specified group.
+ * Set the current shape's material group to the specified group. 
  * Supported Objs: shapes
  */
 #define SetMaterialGroup(mtlGrpName) \

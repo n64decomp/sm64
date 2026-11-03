@@ -162,9 +162,9 @@ struct Painting *gRipplingPainting;
 /**
  * Whether the DDD painting is moved forward, should being moving backwards, or has already moved backwards.
  */
-s8 gDDDPaintingStatus;
+s8 gDddPaintingStatus;
 
-struct Painting *sHMCPaintings[] = {
+struct Painting *sHmcPaintings[] = {
     &cotmc_painting,
     NULL,
 };
@@ -175,15 +175,15 @@ struct Painting *sInsideCastlePaintings[] = {
     &ttm_painting, &ttc_painting, &sl_painting,  &thi_huge_painting, NULL,
 };
 
-struct Painting *sTTMPaintings[] = {
+struct Painting *sTtmPaintings[] = {
     &ttm_slide_painting,
     NULL,
 };
 
 struct Painting **sPaintingGroups[] = {
-    sHMCPaintings,
+    sHmcPaintings,
     sInsideCastlePaintings,
-    sTTMPaintings,
+    sTtmPaintings,
 };
 
 s16 gPaintingUpdateCounter = 1;
@@ -1102,14 +1102,14 @@ void reset_painting(struct Painting *painting) {
  * When the painting reaches backPos, a save flag is set so that the painting will spawn at backPos
  * whenever it loads.
  *
- * This function also sets gDDDPaintingStatus, which controls the warp:
+ * This function also sets gDddPaintingStatus, which controls the warp:
  *  0 (0b00): set x coordinate to frontPos
  *  2 (0b10): set x coordinate to backPos
  *  3 (0b11): same as 2. Bit 0 is ignored
  */
 void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32 speed) {
     // Obtain the DDD star flags
-    u32 dddFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_DDD));
+    u32 dddFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_DDD - 1);
     // Get the other save file flags
     u32 saveFileFlags = save_file_get_flags();
     // Find out whether Board Bowser's Sub was collected
@@ -1120,12 +1120,12 @@ void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32
     if (!bowsersSubBeaten && !dddBack) {
         // If we haven't collected the star or moved the painting, put the painting at the front
         painting->posX = frontPos;
-        gDDDPaintingStatus = 0;
+        gDddPaintingStatus = 0;
     } else if (bowsersSubBeaten && !dddBack) {
         // If we've collected the star but not moved the painting back,
         // Each frame, move the painting by a certain speed towards the back area.
         painting->posX += speed;
-        gDDDPaintingStatus = BOWSERS_SUB_BEATEN;
+        gDddPaintingStatus = BOWSERS_SUB_BEATEN;
         if (painting->posX >= backPos) {
             painting->posX = backPos;
             // Tell the save file that we've moved DDD back.
@@ -1134,7 +1134,7 @@ void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32
     } else if (bowsersSubBeaten && dddBack) {
         // If the painting has already moved back, place it in the back position.
         painting->posX = backPos;
-        gDDDPaintingStatus = BOWSERS_SUB_BEATEN | DDD_BACK;
+        gDddPaintingStatus = BOWSERS_SUB_BEATEN | DDD_BACK;
     }
 }
 

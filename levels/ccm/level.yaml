@@ -1,6 +1,6 @@
-# Cool, Cool Mountain
+# Cool Cool Mountain
 short-name: ccm
-full-name: Cool, Cool Mountain
+full-name: Cool Cool Mountain
 texture-file: ["/texture.inc.c"]
 area-count: 2
 objects: [ropeway_lift, snowman_base, snowman_head]

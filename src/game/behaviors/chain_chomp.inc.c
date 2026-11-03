@@ -13,15 +13,15 @@
  * Hitbox for chain chomp.
  */
 static struct ObjectHitbox sChainChompHitbox = {
-    /* interactType:      */ INTERACT_MR_BLIZZARD,
-    /* downOffset:        */ 0,
+    /* interactType: */ INTERACT_MR_BLIZZARD,
+    /* downOffset: */ 0,
     /* damageOrCoinValue: */ 3,
-    /* health:            */ 1,
-    /* numLootCoins:      */ 0,
-    /* radius:            */ 80,
-    /* height:            */ 160,
-    /* hurtboxRadius:     */ 80,
-    /* hurtboxHeight:     */ 160,
+    /* health: */ 1,
+    /* numLootCoins: */ 0,
+    /* radius: */ 80,
+    /* height: */ 160,
+    /* hurtboxRadius: */ 80,
+    /* hurtboxHeight: */ 160,
 };
 
 /**
@@ -30,8 +30,8 @@ static struct ObjectHitbox sChainChompHitbox = {
 void bhv_chain_chomp_chain_part_update(void) {
     if (o->parentObj->oAction == CHAIN_CHOMP_ACT_UNLOAD_CHAIN) {
         obj_mark_for_deletion(o);
-    } else if (o->oBhvParams2ndByte != CHAIN_CHOMP_CHAIN_PART_BP_PIVOT) {
-        struct ChainSegment *segment = &o->parentObj->oChainChompSegments[o->oBhvParams2ndByte];
+    } else if (o->oBehParams2ndByte != CHAIN_CHOMP_CHAIN_PART_BP_PIVOT) {
+        struct ChainSegment *segment = &o->parentObj->oChainChompSegments[o->oBehParams2ndByte];
 
         // Set position relative to the pivot
         o->oPosX = o->parentObj->parentObj->oPosX + segment->posX;
@@ -190,7 +190,7 @@ static void chain_chomp_sub_act_turn(void) {
                         o->oChainChompTargetPitch = obj_get_pitch_from_vel();
                     }
                 } else {
-                    o->oTimer--;
+                    o->oTimer -= 1;
                 }
             } else {
                 o->oForwardVel = 0.0f;
@@ -201,7 +201,7 @@ static void chain_chomp_sub_act_turn(void) {
             o->oVelY = 20.0f;
         }
     } else {
-        cur_obj_rotate_yaw_toward(o->oAngleToMario, 400);
+        cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x190);
         o->oTimer = 0;
     }
 }
@@ -228,7 +228,7 @@ static void chain_chomp_sub_act_lunge(void) {
     } else {
         // Turn toward pivot
         cur_obj_rotate_yaw_toward(atan2s(o->oChainChompSegments[0].posZ, o->oChainChompSegments[0].posX),
-                                  0x1000);
+                              0x1000);
 
         if (o->oChainChompUnk104 != 0.0f) {
             approach_f32_ptr(&o->oChainChompUnk104, 0.0f, 0.8f);
@@ -256,7 +256,7 @@ static void chain_chomp_released_trigger_cutscene(void) {
 
     //! Can delay this if we get into a cutscene-unfriendly action after the
     //  last post ground pound and before this
-    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK
+    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK 
         && (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) && cutscene_object(CUTSCENE_STAR_SPAWN, o) == 1) {
         o->oChainChompReleaseStatus = CHAIN_CHOMP_RELEASED_LUNGE_AROUND;
         o->oTimer = 0;
@@ -274,9 +274,9 @@ static void chain_chomp_released_lunge_around(void) {
     if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
         // Before first bounce, turn toward mario and wait 2 seconds
         if (o->oChainChompNumLunges == 0) {
-            if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 800)) {
+            if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x320)) {
                 if (o->oTimer > 60) {
-                    o->oChainChompNumLunges++;
+                    o->oChainChompNumLunges += 1;
                     // enable wall collision
                     o->oWallHitboxRadius = 200.0f;
                 }
@@ -434,7 +434,7 @@ static void chain_chomp_act_move(void) {
         chain_chomp_update_chain_segments();
 
         // Begin a lunge if mario tries to attack
-        if (obj_check_attacks(&sChainChompHitbox, o->oAction) != 0) {
+        if (obj_check_attacks(&sChainChompHitbox, o->oAction)) {
             o->oSubAction = CHAIN_CHOMP_SUB_ACT_LUNGE;
             o->oChainChompMaxDistFromPivotPerChainPart = 900.0f / 5;
             o->oForwardVel = 0.0f;
@@ -503,7 +503,7 @@ void bhv_wooden_post_update(void) {
 
     if (o->oWoodenPostOffsetY != 0.0f) {
         o->oPosY = o->oHomeY + o->oWoodenPostOffsetY;
-    } else if (!(o->oBhvParams & WOODEN_POST_BP_NO_COINS_MASK)) {
+    } else if (!(o->oBehParams & WOODEN_POST_BP_NO_COINS_MASK)) {
         // Reset the timer once mario is far enough
         if (o->oDistanceToMario > 400.0f) {
             o->oTimer = o->oWoodenPostTotalMarioAngle = 0;
@@ -535,7 +535,7 @@ void bhv_chain_chomp_gate_update(void) {
     if (o->parentObj->oChainChompHitGate) {
         spawn_mist_particles_with_sound(SOUND_GENERAL_WALL_EXPLOSION);
         set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
-        spawn_mist_particles_variable(0, 127, 200.0f);
+        spawn_mist_particles_variable(0, 0x7F, 200.0f);
         spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, 4);
         obj_mark_for_deletion(o);
     }

@@ -3,11 +3,12 @@
 s32 osSendMesg(OSMesgQueue *mq, OSMesg msg, s32 flag) {
     register u32 int_disabled;
     register s32 index;
+    register OSThread *s2;
     int_disabled = __osDisableInt();
 
-    while (MQ_IS_FULL(mq)) {
+    while (mq->validCount >= mq->msgCount) {
         if (flag == OS_MESG_BLOCK) {
-            __osRunningThread->state = 8;
+            D_803348A0->state = 8;
             __osEnqueueAndYield(&mq->fullqueue);
         } else {
             __osRestoreInt(int_disabled);
@@ -20,7 +21,8 @@ s32 osSendMesg(OSMesgQueue *mq, OSMesg msg, s32 flag) {
     mq->validCount++;
 
     if (mq->mtqueue->next != NULL) {
-        osStartThread(__osPopThread(&mq->mtqueue));
+        s2 = __osPopThread(&mq->mtqueue);
+        osStartThread(s2);
     }
 
     __osRestoreInt(int_disabled);

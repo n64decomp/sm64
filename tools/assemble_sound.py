@@ -944,7 +944,7 @@ def main():
             args.append(a)
 
     defines_set = {d.split("=")[0] for d in defines}
-    is_shindou = ("VERSION_SH" in defines_set or "VERSION_CN" in defines_set)
+    is_shindou = "VERSION_SH" in defines_set
 
     if sequences_out_file is not None and not need_help:
         write_sequences(

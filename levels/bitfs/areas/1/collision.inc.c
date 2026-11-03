@@ -2053,7 +2053,7 @@ const Collision bitfs_seg7_collision_level[] = {
     COL_TRI(801, 802, 509),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(24),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/ -7577, -2764,    0, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/ -7577, -2764,    0, /*yaw*/ 64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -5938, -3071,    0, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04, /*pos*/ -5488, -1535,   41, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04, /*pos*/  4342,  1741,   41, /*yaw*/  0),

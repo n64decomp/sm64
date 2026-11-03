@@ -1,5 +1,5 @@
 // 0x0707808C
-const RoomData inside_castle_seg7_area_2_rooms[] = {
+const u8 inside_castle_seg7_area_2_rooms[] = {
      6,  6,  6,  6,  6,  6,  6,  6, // 2144-2151
      6,  6,  6,  6,  6,  6,  6,  6, // 2152-2159
      6,  6,  6,  6,  6,  6,  6,  6, // 2160-2167

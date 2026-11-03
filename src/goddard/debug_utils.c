@@ -220,7 +220,7 @@ void remove_all_timers(void) {
     for (i = 0; i < ARRAY_COUNT(sTimers); i++) {
         sTimers[i].name = NULL;
         sTimers[i].total = 0;
-        sTimers[i].unused = 0.0f;
+        sTimers[i].unused0C = 0.0f;
         sTimers[i].scaledTotal = 0.0f;
         sTimers[i].prevScaledTotal = 0.0f;
         sTimers[i].gadgetColourNum = sTimerGadgetColours[(u32) i % 7];
@@ -470,7 +470,7 @@ void print_stack_trace(void) {
  */
 void fatal_printf(const char *fmt, ...) {
     char cur;
-    UNUSED u8 filler[4];
+    UNUSED u8 pad[4];
     va_list vl;
 
     va_start(vl, fmt);
@@ -704,7 +704,7 @@ char *sprint_val_withspecifiers(char *str, union PrintVal val, char *specifiers)
     s32 intPart;  // sp38
     s32 intPrec;  // sp34
     s32 fracPrec; // sp30
-    UNUSED u8 filler[4];
+    UNUSED u8 pad[4];
     char cur; // sp2B
 
     fracPrec = 6;
@@ -840,7 +840,7 @@ struct GdFile *gd_fopen(const char *filename, const char *mode) {
     struct GdFile *f; // sp74
     char *loadedname; // sp70
     u32 i;            // sp6C
-    UNUSED u8 filler[4];
+    UNUSED u32 pad68;
     struct UnkBufThing buf; // sp24
     u8 *bufbytes;           // sp20
     u8 *fileposptr;         // sp1C
@@ -932,7 +932,7 @@ s32 is_newline(char c) {
 s32 gd_fread_line(char *buf, u32 size, struct GdFile *f) {
     signed char c;
     u32 pos = 0;
-    UNUSED u8 filler[4];
+    UNUSED u32 pad1c;
 
     do {
         if (gd_fread(&c, 1, 1, f) == -1) {

@@ -29,7 +29,8 @@
  * Every object is categorized into an object list, which controls the order
  * they are processed and which objects they can collide with.
  */
-enum ObjectList {
+enum ObjectList
+{
     OBJ_LIST_PLAYER,      //  (0) Mario
     OBJ_LIST_UNUSED_1,    //  (1) (unused)
     OBJ_LIST_DESTRUCTIVE, //  (2) things that can be used to destroy other objects, like
@@ -99,9 +100,9 @@ extern struct MemoryPool *gObjectMemoryPool;
 
 extern s16 gCheckingSurfaceCollisionsForCamera;
 extern s16 gFindFloorIncludeSurfaceIntangible;
-extern TerrainData *gEnvironmentRegions;
+extern s16 *gEnvironmentRegions;
 extern s32 gEnvironmentLevels[20];
-extern RoomData gDoorAdjacentRooms[60][2];
+extern s8 gDoorAdjacentRooms[60][2];
 extern s16 gMarioCurrentRoom;
 extern s16 D_8035FEE2;
 extern s16 D_8035FEE4;

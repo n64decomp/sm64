@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvHauntedBookshelf.
  * This is the bookshelf that recedes after solving the puzzle of the haunted books.
@@ -30,7 +29,6 @@ void bhv_haunted_bookshelf_loop(void) {
             }
 
             break;
-
         case HAUNTED_BOOKSHELF_ACT_RECEDE:
             // Move the bookshelf and play the sound
             o->oPosX += 5.0f;
@@ -42,7 +40,6 @@ void bhv_haunted_bookshelf_loop(void) {
             }
 
             break;
-
         default:
             break;
     }

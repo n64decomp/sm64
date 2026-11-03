@@ -178,9 +178,6 @@ $(eval $(call level_rules,menu,generic)) # Menu (File Select)
 # --------------------------------------
 
 # Ending cake textures are generated in a special way
-$(BUILD_DIR)/levels/ending/cake_cn.inc.c: levels/ending/cake_cn.png
-	$(call print,Splitting:,$<,$@)
-	$(V)$(SKYCONV) --type cake-cn --split $^ $(BUILD_DIR)/levels/ending
 $(BUILD_DIR)/levels/ending/cake_eu.inc.c: levels/ending/cake_eu.png
 	$(call print,Splitting:,$<,$@)
 	$(V)$(SKYCONV) --type cake-eu --split $^ $(BUILD_DIR)/levels/ending

@@ -1,5 +1,5 @@
 #include "libultra_internal.h"
-#include "PR/rcp.h"
+#include "hardware.h"
 #include <macros.h>
 
 #define _osVirtualToPhysical(ptr)                                                                      \
@@ -7,11 +7,10 @@
         ptr = (void *) osVirtualToPhysical(ptr);                                                       \
     }
 
-FORCE_BSS OSTask tmpTask;
-
+OSTask D_803638B0;
 OSTask *_VirtualToPhysicalTask(OSTask *task) {
     OSTask *physicalTask;
-    physicalTask = &tmpTask;
+    physicalTask = &D_803638B0;
     bcopy(task, physicalTask, sizeof(OSTask));
     _osVirtualToPhysical(physicalTask->t.ucode);
     _osVirtualToPhysical(physicalTask->t.ucode_data);
@@ -30,9 +29,9 @@ void osSpTaskLoad(OSTask *task) {
         physicalTask->t.ucode_data = physicalTask->t.yield_data_ptr;
         physicalTask->t.ucode_data_size = physicalTask->t.yield_data_size;
         task->t.flags &= ~M_TASK_FLAG0;
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
         if (physicalTask->t.flags & M_TASK_FLAG2) {
-            physicalTask->t.ucode = (u64 *) IO_READ((uintptr_t)task->t.yield_data_ptr + 0xBFC);
+            physicalTask->t.ucode = (u64*)HW_REG((uintptr_t)task->t.yield_data_ptr + 0xBFC, u64*);
         }
 #endif
     }

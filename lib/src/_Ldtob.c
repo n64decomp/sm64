@@ -7,9 +7,9 @@
 #define BUFF_LEN 0x20
 
 static s16 _Ldunscale(s16 *, printf_struct *);
-static void _Genld(printf_struct *, fmt_type, fmt_type *, s16, s16);
+static void _Genld(printf_struct *, u8, u8 *, s16, s16);
 
-const double pows[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 10e127L, 10e255L };
+const double D_80338670[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 10e127L, 10e255L };
 
 /* float properties */
 #define _D0 0
@@ -44,9 +44,10 @@ const double pows[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 10e1
 #define _D3 3
 #endif
 
-void _Ldtob(printf_struct *args, fmt_type type) {
-    fmt_type buff[BUFF_LEN];
-    fmt_type *ptr;
+void _Ldtob(printf_struct *args, u8 type) {
+    u8 buff[BUFF_LEN];
+    u8 *ptr;
+    UNUSED u32 sp70;
     f64 val;
     /* maybe struct? */
     s16 err;
@@ -58,7 +59,12 @@ void _Ldtob(printf_struct *args, fmt_type type) {
     f64 factor;
     s32 gen;
     s32 j;
-
+    s32 lo;
+    ldiv_t qr;
+    u8 drop;
+    s32 n2;
+    /* */
+    UNUSED u8 unused[0x4];
     ptr = buff;
     val = args->value.f64;
     if (args->precision < 0) {
@@ -82,11 +88,11 @@ void _Ldtob(printf_struct *args, fmt_type type) {
         }
         exp = exp * 30103 / 0x000186A0 - 4;
         if (exp < 0) {
-            n = (-exp + 3) & ~3;
+            n = (3 - exp) & ~3;
             exp = -n;
             for (i = 0; n > 0; n >>= 1, i++) {
                 if ((n & 1) != 0) {
-                    val *= pows[i];
+                    val *= D_80338670[i];
                 }
             }
         } else {
@@ -95,25 +101,25 @@ void _Ldtob(printf_struct *args, fmt_type type) {
                 exp &= ~3;
                 for (n = exp, i = 0; n > 0; n >>= 1, i++) {
                     if ((n & 1) != 0) {
-                        factor *= pows[i];
+                        factor *= D_80338670[i];
                     }
                 }
                 val /= factor;
             }
         }
-        gen = args->precision + ((type == 'f') ? exp + 10 : 6);
+        gen = ((type == 'f') ? exp + 10 : 6) + args->precision;
         if (gen > 0x13) {
             gen = 0x13;
         }
         *ptr++ = '0';
         while (gen > 0 && 0 < val) {
-            s32 lo = val;
+            lo = val;
             if ((gen -= 8) > 0) {
                 val = (val - lo) * 1.0e8;
             }
             ptr = ptr + 8;
             for (j = 8; lo > 0 && --j >= 0;) {
-                ldiv_t qr = ldiv(lo, 10);
+                qr = ldiv(lo, 10);
                 *--ptr = qr.rem + '0';
                 lo = qr.quot;
             }
@@ -129,13 +135,16 @@ void _Ldtob(printf_struct *args, fmt_type type) {
             --gen, --exp;
         }
 
-        nsig = args->precision + ((type == 'f') ? exp + 1 : ((type == 'e' || type == 'E') ? 1 : 0));
+        nsig = ((type == 'f') ? exp + 1 : ((type == 'e' || type == 'E') ? 1 : 0)) + args->precision;
         if (gen < nsig) {
             nsig = gen;
         }
         if (nsig > 0) {
-            fmt_type drop = (nsig < gen && ptr[nsig] > '4') ? '9' : '0';
-            s32 n2;
+            if (nsig < gen && ptr[nsig] > '4') {
+                drop = '9';
+            } else {
+                drop = '0';
+            }
 
             for (n2 = nsig; ptr[--n2] == drop;) {
                 nsig--;
@@ -171,12 +180,12 @@ static s16 _Ldunscale(s16 *pex, printf_struct *px) {
     }
 }
 
-static void _Genld(printf_struct *px, fmt_type code, fmt_type *p, s16 nsig, s16 xexp) {
-    const fmt_type point = '.';
+static void _Genld(printf_struct *px, u8 code, u8 *p, s16 nsig, s16 xexp) {
+    u8 point = '.';
     if (nsig <= 0) {
         nsig = 1,
 
-        p = (fmt_type *) "0";
+        p = (u8 *) "0";
     }
 
     if (code == 'f'
@@ -249,7 +258,7 @@ static void _Genld(printf_struct *px, fmt_type code, fmt_type *p, s16 nsig, s16 
             px->part2_len += nsig;
             px->num_mid_zeros = px->precision - nsig;
         }
-        p = (fmt_type *) &px->buff[px->part2_len]; /* put exponent */
+        p = (u8 *) &px->buff[px->part2_len]; /* put exponent */
         *p++ = code;
         if (0 <= xexp) {
             *p++ = '+';
@@ -265,7 +274,7 @@ static void _Genld(printf_struct *px, fmt_type code, fmt_type *p, s16 nsig, s16 
         }
         *p++ = xexp / 10 + '0', xexp %= 10;
         *p++ = xexp + '0';
-        px->part3_len = p - (fmt_type *) &px->buff[px->part2_len];
+        px->part3_len = p - (u8 *) &px->buff[px->part2_len];
     }
     if ((px->flags & (FLAGS_ZERO | FLAGS_MINUS)) == FLAGS_ZERO) { /* pad with leading zeros */
         int n =

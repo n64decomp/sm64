@@ -22,7 +22,7 @@ const LevelScript level_main_menu_entry_1[] = {
     INIT_LEVEL(),
     FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),
     LOAD_MIO0(/*seg*/ 0x07, _menu_segment_7SegmentRomStart, _menu_segment_7SegmentRomEnd),
-    LOAD_RAW (/*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
+    LOAD_RAW(/*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_MARIO_SAVE_BUTTON,      geo_menu_mario_save_button),
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_RED_ERASE_BUTTON,       geo_menu_erase_button),
@@ -36,8 +36,8 @@ const LevelScript level_main_menu_entry_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_GENERIC_BUTTON,         geo_menu_generic_button),
 
     AREA(/*index*/ 1, geo_menu_file_select_strings_and_menu_cursor),
-        OBJECT(/*model*/ MODEL_NONE,         /*pos*/ 0, 0, -19000, /*angle*/ 0, 0, 0, /*bhvParam*/ BPARAM1(0x04), /*bhv*/ bhvMenuButtonManager),
-        OBJECT(/*model*/ MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, /*pos*/ 0, 0, -19000, /*angle*/ 0, 0, 0, /*bhvParam*/ BPARAM1(0x04), /*bhv*/ bhvYellowBackgroundInMenu),
+        OBJECT(/*model*/ MODEL_NONE,         /*pos*/ 0, 0, -19000, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvMenuButtonManager),
+        OBJECT(/*model*/ MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, /*pos*/ 0, 0, -19000, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvYellowBackgroundInMenu),
         TERRAIN(/*terrainData*/ main_menu_seg7_collision),
     END_AREA(),
 
@@ -66,7 +66,7 @@ const LevelScript level_main_menu_entry_2[] = {
     /*13*/ ALLOC_LEVEL_POOL(),
 
     /*14*/ AREA(/*index*/ 2, geo_menu_act_selector_strings),
-        /*16*/ OBJECT(/*model*/ MODEL_NONE, /*pos*/ 0, -100, 0, /*angle*/ 0, 0, 0, /*bhvParam*/ BPARAM1(0x04), /*bhv*/ bhvActSelector),
+        /*16*/ OBJECT(/*model*/ MODEL_NONE, /*pos*/ 0, -100, 0, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvActSelector),
         /*22*/ TERRAIN(/*terrainData*/ main_menu_seg7_collision),
     /*24*/ END_AREA(),
 

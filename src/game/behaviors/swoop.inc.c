@@ -61,7 +61,7 @@ static void swoop_act_move(void) {
         o->oFaceAngleRoll = 0;
     } else {
         if (o->oSwoopBonkCountdown != 0) {
-            o->oSwoopBonkCountdown--;
+            o->oSwoopBonkCountdown -= 1;
         } else if (o->oVelY != 0.0f) {
             // If we're not done swooping, turn toward mario. When between
             // 0 and 200 units above mario, increase speed and stop swooping

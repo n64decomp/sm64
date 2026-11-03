@@ -161,7 +161,6 @@ The Indy development board use cartridge domain 1:
 #define DEVICE_TYPE_BULK	1	/* ROM bulk */
 #define DEVICE_TYPE_64DD	2	/* 64 Disk Drive */
 #define DEVICE_TYPE_SRAM	3	/* SRAM */
-#define DEVICE_TYPE_INIT	7	/* initial value */
 
 /*************************************************************************
  * SP Memory

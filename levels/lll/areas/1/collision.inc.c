@@ -1376,7 +1376,7 @@ const Collision lll_seg7_area_1_collision[] = {
     COL_TRI(10, 52, 3),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(1),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -3839, 154, 6272, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -3839, 154, 6272, /*yaw*/ 64), // unused, probably an early way to set intial position
     COL_END(),
 #else
     COL_INIT(),
@@ -2730,7 +2730,7 @@ const Collision lll_seg7_area_1_collision[] = {
     COL_TRI(3, 52, 71),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(1),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -3839, 154, 6272, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -3839, 154, 6272, /*yaw*/ 64), // unused, probably an early way to set intial position
     COL_END(),
 #endif
 };

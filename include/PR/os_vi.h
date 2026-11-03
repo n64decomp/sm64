@@ -4,16 +4,6 @@
 #include <PR/ultratypes.h>
 #include <PR/os_message.h>
 
-//TODO: figure out what this is
-#define VI_STATE_01 0x01
-#define VI_STATE_XSCALE_UPDATED 0x02
-#define VI_STATE_YSCALE_UPDATED 0x04
-#define VI_STATE_08 0x08         //related to control regs changing
-#define VI_STATE_10 0x10         //swap buffer
-#define VI_STATE_BLACK 0x20      //probably related to a black screen
-#define VI_STATE_REPEATLINE 0x40 //repeat line?
-#define VI_STATE_FADE 0x80       //fade
-
 /* Ultra64 Video Interface */
 
 
@@ -37,7 +27,8 @@
 
 /* Types */
 
-typedef struct {
+typedef struct
+{
     u32 ctrl;
     u32 width;
     u32 burst;
@@ -49,7 +40,8 @@ typedef struct {
     u32 vCurrent;
 } OSViCommonRegs;
 
-typedef struct {
+typedef struct
+{
     u32 origin;
     u32 yScale;
     u32 vStart;
@@ -57,13 +49,15 @@ typedef struct {
     u32 vIntr;
 } OSViFieldRegs;
 
-typedef struct {
+typedef struct
+{
     u8 type;
     OSViCommonRegs comRegs;
     OSViFieldRegs fldRegs[2];
 } OSViMode;
 
-typedef struct {
+typedef struct
+{
     /* 0x00 */ u16 unk00; //some kind of flags.  swap buffer sets to 0x10
     /* 0x02 */ u16 retraceCount;
     /* 0x04 */ void* buffer;

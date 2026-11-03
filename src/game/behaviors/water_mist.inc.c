@@ -1,4 +1,4 @@
-// water_mist.inc.c
+// water_mist.c.inc
 // TODO: there is confusion with the earlier mist file. Clarify?
 
 void bhv_water_mist_2_loop(void) {

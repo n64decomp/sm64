@@ -1,131 +1,61 @@
 #include "libultra_internal.h"
-#include "PR/rcp.h"
-#include "PR/ique.h"
+#include "hardware.h"
 #include "new_func.h"
 #include "PR/R4300.h"
-#include "piint.h"
-
+// TODO: This define is from piint.h, but including that causes problems...
+#define UPDATE_REG(reg, var)                                                                           \
+    if (cHandle->var != pihandle->var) \
+        IO_WRITE(reg, pihandle->var);
 // TODO: This define is from os.h, but including that causes problems...
 #define PI_DOMAIN1 0
+// TODO: These defines are from PR/rcp.h, but including that causes problems...
+#define IO_WRITE(addr, data) (*(vu32 *) PHYS_TO_K1(addr) = (u32)(data))
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 extern OSPiHandle *__osCurrentHandle[2];
 #endif
 
-s32 osEPiRawStartDma(OSPiHandle *pihandle, s32 dir, u32 devAddr, void *dram_addr, u32 size) {
-#ifdef VERSION_CN
-    u64 dummyBuf[2];
-    u32 status;
-    u32 domain;
-    u32 buf;
-    u32 mask;
-    u16 *tmp;
-    u32 i;
-    u32 end;
-#elif defined(VERSION_SH)
+s32 osEPiRawStartDma(OSPiHandle *pihandle, s32 dir, u32 cart_addr, void *dram_addr, u32 size) {
+#ifdef VERSION_SH
     u32 status;
     u32 domain;
 #else
-    register u32 status;
+    register int status;
 #endif
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
-    EPI_SYNC(pihandle, status, domain);
-#else
-    WAIT_ON_IO_BUSY(status);
-#endif
-
-#ifdef VERSION_CN
-    if (dir == OS_READ) {
-        mask = 1;
-
-        for (i = 1; i <= pihandle->pageSize + 2; i++) {
-            mask *= 2;
+    status = HW_REG(PI_STATUS_REG, u32);
+    while (status & PI_STATUS_ERROR)
+        status = HW_REG(PI_STATUS_REG, u32);
+#ifdef VERSION_SH // TODO: This is the EPI_SYNC macro
+    domain = pihandle->domain;
+    if (__osCurrentHandle[domain] != pihandle) {
+        OSPiHandle *cHandle = __osCurrentHandle[domain];
+        if (domain == PI_DOMAIN1) {
+            UPDATE_REG(PI_BSD_DOM1_LAT_REG, latency);
+            UPDATE_REG(PI_BSD_DOM1_PGS_REG, pageSize);
+            UPDATE_REG(PI_BSD_DOM1_RLS_REG, relDuration);
+            UPDATE_REG(PI_BSD_DOM1_PWD_REG, pulse);
+        } else {
+            UPDATE_REG(PI_BSD_DOM2_LAT_REG, latency);
+            UPDATE_REG(PI_BSD_DOM2_PGS_REG, pageSize);
+            UPDATE_REG(PI_BSD_DOM2_RLS_REG, relDuration);
+            UPDATE_REG(PI_BSD_DOM2_PWD_REG, pulse);
         }
-
-        if ((devAddr & (mask - 1)) == mask - 2) {
-            osEPiRawReadIo(pihandle, devAddr - 2, &buf);
-
-            tmp = (u16 *) PHYS_TO_K1(dram_addr);
-            *(tmp++) = (u16) buf;
-
-            devAddr += 2;
-            dram_addr = tmp;
-            size -= 2;
-
-            if (size >= 4) {
-                osEPiRawReadIo(pihandle, devAddr, &buf);
-
-                tmp = (u16 *) dram_addr;
-                *(tmp++) = buf >> 16;
-                *(tmp++) = (u16) buf;
-
-                devAddr += 4;
-                dram_addr = tmp;
-                size -= 4;
-
-                if (size != 0) {
-                    osEPiRawReadIo(pihandle, devAddr, &buf);
-
-                    tmp = (u16 *) PHYS_TO_K1(dram_addr);
-                    *(tmp++) = buf >> 16;
-
-                    devAddr += 2;
-                    dram_addr = tmp;
-                    size -= 2;
-                }
-            }
-        }
-
-        end = devAddr + size;
-
-        if (((end & (mask - 1)) == 2) | (size == 2)) {
-            if (end & 2) {
-                osEPiRawReadIo(pihandle, end - 2, &buf);
-                tmp = (u16 *) PHYS_TO_K1(dram_addr) + (size - 2) / 2;
-                *tmp = buf >> 16;
-            } else {
-                osEPiRawReadIo(pihandle, end - 4, &buf);
-                tmp = (u16 *) PHYS_TO_K1(dram_addr) + (size - 2) / 2;
-                *tmp = (u16) buf;
-            }
-
-            size -= 2;
-        }
-
-        if (size == 0) {
-            size = 8;
-            dram_addr = dummyBuf;
-            devAddr = 0;
-        }
+        __osCurrentHandle[domain] = pihandle;
     }
 #endif
+    HW_REG(PI_DRAM_ADDR_REG, void *) = (void *) osVirtualToPhysical(dram_addr);
+    HW_REG(PI_CART_ADDR_REG, void *) = (void *) (((uintptr_t) pihandle->baseAddress | cart_addr) & 0x1fffffff);
 
-    IO_WRITE(PI_DRAM_ADDR_REG, osVirtualToPhysical(dram_addr));
-    IO_WRITE(PI_CART_ADDR_REG, K1_TO_PHYS(pihandle->baseAddress | devAddr));
-
-#ifdef VERSION_CN
-    if ((u32) dir >= 2U) {
-        return -1;
-    }
-
-    if ((pihandle->baseAddress | devAddr) <= 0x400) {
-        IO_WRITE(dir == OS_READ ? PI_EX_WR_LEN_REG : PI_EX_RD_LEN_REG, size - 1);
-    } else {
-        IO_WRITE(dir == OS_READ ? PI_WR_LEN_REG : PI_RD_LEN_REG, size - 1);
-    }
-#else
     switch (dir) {
         case OS_READ:
-            IO_WRITE(PI_WR_LEN_REG, size - 1);
+            HW_REG(PI_WR_LEN_REG, u32) = size - 1;
             break;
         case OS_WRITE:
-            IO_WRITE(PI_RD_LEN_REG, size - 1);
+            HW_REG(PI_RD_LEN_REG, u32) = size - 1;
             break;
         default:
             return -1;
     }
-#endif
     return 0;
 }
-

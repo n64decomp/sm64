@@ -75,7 +75,7 @@ void cur_obj_play_sound_2(s32 soundMagic) {
         if (soundMagic == SOUND_OBJ_POUNDING_LOUD) {
             queue_rumble_data(3, 60);
         }
-        if (soundMagic == SOUND_OBJ_WHOMP) {
+        if (soundMagic == SOUND_OBJ_WHOMP_LOWPRIO) {
             queue_rumble_data(5, 80);
         }
 #endif
@@ -93,7 +93,8 @@ void cur_obj_play_sound_2(s32 soundMagic) {
  * Technically, these functions are only educated guesses. Trust these
  * interpretations at your own discretion.
  */
-s32 calc_dist_to_volume_range_1(f32 distance) { // range from 60-124
+s32 calc_dist_to_volume_range_1(f32 distance) // range from 60-124
+{
     s32 volume;
 
     if (distance < 500.0f) {
@@ -107,7 +108,8 @@ s32 calc_dist_to_volume_range_1(f32 distance) { // range from 60-124
     return volume;
 }
 
-s32 calc_dist_to_volume_range_2(f32 distance) { // range from 79.2-143.2
+s32 calc_dist_to_volume_range_2(f32 distance) // range from 79.2-143.2
+{
     s32 volume;
 
     if (distance < 1300.0f) {

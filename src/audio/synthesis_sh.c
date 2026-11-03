@@ -1,4 +1,4 @@
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 #include <ultra64.h>
 
 #include "synthesis.h"
@@ -8,6 +8,10 @@
 #include "seqplayer.h"
 #include "internal.h"
 #include "external.h"
+
+#ifndef TARGET_N64
+#include "../pc/mixer.h"
+#endif
 
 
 #define DMEM_ADDR_TEMP 0x450

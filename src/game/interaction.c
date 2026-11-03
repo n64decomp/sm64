@@ -129,7 +129,7 @@ static u32 sBackwardKnockbackActions[][3] = {
 
 static u8 sDisplayingDoorText = FALSE;
 static u8 sJustTeleported = FALSE;
-static u8 sPSSSlideStarted = FALSE;
+static u8 sPssSlideStarted = FALSE;
 
 /**
  * Returns the type of cap Mario is wearing.
@@ -746,11 +746,10 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
 
     o->oInteractStatus = INT_STATUS_INTERACTED;
 
-    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum)
-        && m->numCoins - o->oDamageOrCoinValue < 100 && m->numCoins >= 100) {
-        bhv_spawn_star_no_level_exit(STAR_INDEX_100_COINS);
+    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - o->oDamageOrCoinValue < 100
+        && m->numCoins >= 100) {
+        bhv_spawn_star_no_level_exit(6);
     }
-
 #if ENABLE_RUMBLE
     if (o->oDamageOrCoinValue >= 2) {
         queue_rumble_data(5, 80);
@@ -808,7 +807,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         m->interactObj = o;
         m->usedObj = o;
 
-        starIndex = (o->oBhvParams >> 24) & 0x1F;
+        starIndex = (o->oBehParams >> 24) & 0x1F;
         save_file_collect_star_or_key(m->numCoins, starIndex);
 
         m->numStars =
@@ -903,7 +902,7 @@ u32 interact_warp(struct MarioState *m, UNUSED u32 interactType, struct Object *
 u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     u32 doorAction = 0;
     u32 saveFlags = save_file_get_flags();
-    s16 warpDoorId = o->oBhvParams >> 24;
+    s16 warpDoorId = o->oBehParams >> 24;
     u32 actionArg;
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
@@ -958,14 +957,14 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
 
 u32 get_door_save_file_flag(struct Object *door) {
     u32 saveFileFlag = 0;
-    s16 requiredNumStars = door->oBhvParams >> 24;
+    s16 requiredNumStars = door->oBehParams >> 24;
 
-    s16 isCCMDoor = door->oPosX < 0.0f;
-    s16 isPSSDoor = door->oPosY > 500.0f;
+    s16 isCcmDoor = door->oPosX < 0.0f;
+    s16 isPssDoor = door->oPosY > 500.0f;
 
     switch (requiredNumStars) {
         case 1:
-            if (isPSSDoor) {
+            if (isPssDoor) {
                 saveFileFlag = SAVE_FLAG_UNLOCKED_PSS_DOOR;
             } else {
                 saveFileFlag = SAVE_FLAG_UNLOCKED_WF_DOOR;
@@ -973,7 +972,7 @@ u32 get_door_save_file_flag(struct Object *door) {
             break;
 
         case 3:
-            if (isCCMDoor) {
+            if (isCcmDoor) {
                 saveFileFlag = SAVE_FLAG_UNLOCKED_CCM_DOOR;
             } else {
                 saveFileFlag = SAVE_FLAG_UNLOCKED_JRB_DOOR;
@@ -997,7 +996,7 @@ u32 get_door_save_file_flag(struct Object *door) {
 }
 
 u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    s16 requiredNumStars = o->oBhvParams >> 24;
+    s16 requiredNumStars = o->oBehParams >> 24;
     s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
@@ -1143,7 +1142,7 @@ u32 interact_strong_wind(struct MarioState *m, UNUSED u32 interactType, struct O
         m->usedObj = o;
 
         m->faceAngle[1] = o->oMoveAngleYaw + 0x8000;
-        m->gettingBlownGravity = 0.4f;
+        m->unkC4 = 0.4f;
         m->forwardVel = -24.0f;
         m->vel[1] = 12.0f;
 
@@ -1227,7 +1226,7 @@ u32 interact_clam_or_bubba(struct MarioState *m, UNUSED u32 interactType, struct
 }
 
 u32 interact_bully(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    UNUSED u8 filler[4];
+    UNUSED u32 unused;
 
     u32 interaction;
     if (m->flags & MARIO_METAL_CAP) {
@@ -1322,7 +1321,7 @@ u32 interact_mr_blizzard(struct MarioState *m, UNUSED u32 interactType, struct O
 }
 
 u32 interact_hit_from_below(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    UNUSED u8 filler[4];
+    UNUSED u32 unused;
 
     u32 interaction;
     if (m->flags & MARIO_METAL_CAP) {
@@ -1511,7 +1510,7 @@ u32 interact_pole(struct MarioState *m, UNUSED u32 interactType, struct Object *
     s32 actionId = m->action & ACT_ID_MASK;
     if (actionId >= 0x080 && actionId < 0x0A0) {
         if (!(m->prevAction & ACT_FLAG_ON_POLE) || m->usedObj != o) {
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
             f32 velConv = m->forwardVel; // conserve the velocity.
             struct Object *marioObj = m->marioObj;
             u32 lowSpeed;
@@ -1522,7 +1521,7 @@ u32 interact_pole(struct MarioState *m, UNUSED u32 interactType, struct Object *
 
             mario_stop_riding_and_holding(m);
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
             lowSpeed = (velConv <= 10.0f);
 #endif
 
@@ -1541,7 +1540,7 @@ u32 interact_pole(struct MarioState *m, UNUSED u32 interactType, struct Object *
 
             //! @bug Using m->forwardVel here is assumed to be 0.0f due to the set from earlier.
             //       This is fixed in the Shindou version.
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
             marioObj->oMarioPoleYawVel = (s32)(velConv * 0x100 + 0x1000);
 #else
             marioObj->oMarioPoleYawVel = (s32)(m->forwardVel * 0x100 + 0x1000);
@@ -1800,7 +1799,7 @@ void mario_process_interactions(struct MarioState *m) {
     }
 
     if (m->invincTimer > 0 && !sDelayInvincTimer) {
-        m->invincTimer--;
+        m->invincTimer -= 1;
     }
 
     //! If the kick/punch flags are set and an object collision changes Mario's
@@ -1839,19 +1838,19 @@ void pss_begin_slide(UNUSED struct MarioState *m) {
     if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_TIMER)) {
         level_control_timer(TIMER_CONTROL_SHOW);
         level_control_timer(TIMER_CONTROL_START);
-        sPSSSlideStarted = TRUE;
+        sPssSlideStarted = TRUE;
     }
 }
 
 void pss_end_slide(struct MarioState *m) {
     //! This flag isn't set on death or level entry, allowing double star spawn
-    if (sPSSSlideStarted) {
+    if (sPssSlideStarted) {
         u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
         if (slideTime < 630) {
-            m->marioObj->oBhvParams = (STAR_INDEX_ACT_2 << 24);
+            m->marioObj->oBehParams = (1 << 24);
             spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
         }
-        sPSSSlideStarted = FALSE;
+        sPssSlideStarted = FALSE;
     }
 }
 

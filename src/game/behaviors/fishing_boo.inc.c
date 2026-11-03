@@ -1,4 +1,4 @@
-// fishing_boo.inc.c
+// fishing_boo.c.inc
 
 // Unused behavior file for the Fishing Boo enemy.
 // The fire circles around mario and would make it
@@ -10,7 +10,6 @@
 void bhv_beta_moving_flames_spawn_loop(void) {
     o->oDistanceToMario = lateral_dist_between_objects(o, gMarioObject);
     o->oPosY -= 100.0f;
-
     switch (o->oAction) {
         case 0:
         case 1:
@@ -33,7 +32,6 @@ void bhv_beta_moving_flames_spawn_loop(void) {
 
 void bhv_beta_moving_flames_loop(void) {
     cur_obj_scale(5.0f);
-
     o->oForwardVel = sins(o->oMovingFlameTimer) * 70.0f;
     o->oMovingFlameTimer += 0x800;
 }

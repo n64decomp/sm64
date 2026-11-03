@@ -13,7 +13,7 @@ typedef struct OSTimer_str
     u64 interval;
     u64 remaining;
     OSMesgQueue *mq;
-    OSMesg msg;
+    OSMesg *msg;
 } OSTimer;
 
 typedef u64 OSTime;

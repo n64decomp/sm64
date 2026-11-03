@@ -118,7 +118,7 @@ s8 gMovtexVtxColor = MOVTEX_VTX_COLOR_DEFAULT;
 float gPaintingMarioYEntry = 0.0f;
 
 /// Variable to ensure the initial Wet-Dry World water level is set only once
-s32 gWDWWaterLevelSet = FALSE;
+s32 gWdwWaterLevelSet = FALSE;
 
 extern u8 ssl_quicksand[];
 extern u8 ssl_pyramid_sand[];
@@ -243,7 +243,7 @@ struct MovtexObject gMovtexNonColored[] = {
     { MOVTEX_COTMC_WATER, TEXTURE_WATER, 14, cotmc_movtex_tris_water, cotmc_dl_water_begin,
       cotmc_dl_water_end, cotmc_dl_water, 0xff, 0xff, 0xff, 0xb4, LAYER_TRANSPARENT_INTER },
 
-    // Tall, Tall mountain has water going from the top to the bottom of the mountain.
+    // Tall Tall mountain has water going from the top to the bottom of the mountain.
     { MOVTEX_TTM_BEGIN_WATERFALL, TEXTURE_WATER, 6, ttm_movtex_tris_begin_waterfall,
       dl_waterbox_rgba16_begin, dl_waterbox_end, ttm_dl_waterfall, 0xff, 0xff, 0xff, 0xb4,
       LAYER_TRANSPARENT },
@@ -308,9 +308,9 @@ Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *n
 
     // Why was this global variable needed when they could just check for GEO_CONTEXT_AREA_LOAD?
     if (callContext != GEO_CONTEXT_RENDER) {
-        gWDWWaterLevelSet = FALSE;
+        gWdwWaterLevelSet = FALSE;
     } else if (callContext == GEO_CONTEXT_RENDER && gEnvironmentRegions != NULL
-               && !gWDWWaterLevelSet) {
+               && !gWdwWaterLevelSet) {
         if (gPaintingMarioYEntry <= 1382.4) {
             wdwWaterHeight = 31;
         } else if (gPaintingMarioYEntry >= 1600.0) {
@@ -321,7 +321,7 @@ Gfx *geo_wdw_set_initial_water_level(s32 callContext, UNUSED struct GraphNode *n
         for (i = 0; i < *gEnvironmentRegions; i++) {
             gEnvironmentRegions[i * 6 + 6] = wdwWaterHeight;
         }
-        gWDWWaterLevelSet = TRUE;
+        gWdwWaterLevelSet = TRUE;
     }
     return NULL;
 }
@@ -523,8 +523,8 @@ extern u8 sl_movtex_water[];
 extern u8 wdw_movtex_area1_water[];
 extern u8 wdw_movtex_area2_water[];
 extern u8 jrb_movtex_water[];
-extern u8 jrb_movtex_initial_mist[];
-extern u8 jrb_movtex_sunken_ship_water[];
+extern u8 jrb_movtex_intial_mist[];
+extern u8 jrb_movtex_sinked_boat_water[];
 extern u8 thi_movtex_area1_water[];
 extern u8 thi_movtex_area2_water[];
 extern u8 castle_grounds_movtex_water[];
@@ -566,10 +566,10 @@ void *get_quad_collection_from_id(u32 id) {
             return wdw_movtex_area2_water;
         case JRB_MOVTEX_WATER:
             return jrb_movtex_water;
-        case JRB_MOVTEX_INITIAL_MIST:
-            return jrb_movtex_initial_mist;
-        case JRB_MOVTEX_SUNKEN_SHIP_WATER:
-            return jrb_movtex_sunken_ship_water;
+        case JRB_MOVTEX_INTIAL_MIST:
+            return jrb_movtex_intial_mist;
+        case JRB_MOVTEX_SINKED_BOAT_WATER:
+            return jrb_movtex_sinked_boat_water;
         case THI_MOVTEX_AREA1_WATER:
             return thi_movtex_area1_water;
         case THI_MOVTEX_AREA2_WATER:
@@ -605,7 +605,7 @@ void movtex_change_texture_format(u32 quadCollectionId, Gfx **gfx) {
         case SSL_MOVTEX_TOXBOX_QUICKSAND_MIST:
             gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
             break;
-        case JRB_MOVTEX_INITIAL_MIST:
+        case JRB_MOVTEX_INTIAL_MIST:
             gSPDisplayList((*gfx)++, dl_waterbox_ia16_begin);
             break;
         default:
@@ -643,12 +643,11 @@ Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUS
             gfx = gfxHead;
         }
         asGenerated = (struct GraphNodeGenerated *) node;
-        if (asGenerated->parameter == JRB_MOVTEX_INITIAL_MIST) {
+        if (asGenerated->parameter == JRB_MOVTEX_INTIAL_MIST) {
             if (gLakituState.goalPos[1] < 1024.0) { // if camera under water
                 return NULL;
             }
-            if (save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_JRB))
-                & (1 << 0)) { // the "Plunder in the Sunken Ship" star in JRB is collected
+            if (save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_JRB - 1) & 1) { // first star in JRB complete
                 return NULL;
             }
         } else if (asGenerated->parameter == HMC_MOVTEX_TOXIC_MAZE_MIST) {
@@ -670,9 +669,8 @@ Gfx *geo_movtex_draw_water_regions(s32 callContext, struct GraphNode *node, UNUS
             waterId = gEnvironmentRegions[i * 6 + 1];
             waterY = gEnvironmentRegions[i * 6 + 6];
             subList = movtex_gen_quads_id(waterId, waterY, quadCollection);
-            if (subList != NULL) {
+            if (subList != NULL)
                 gSPDisplayList(gfx++, VIRTUAL_TO_PHYSICAL(subList));
-            }
         }
         gSPDisplayList(gfx++, dl_waterbox_end);
         gSPEndDisplayList(gfx);

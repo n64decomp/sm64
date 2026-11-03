@@ -185,8 +185,8 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
     struct SurfaceNode *node;
     s16 cellX, cellZ;
     s32 numCollisions = 0;
-    TerrainData x = colData->x;
-    TerrainData z = colData->z;
+    s16 x = colData->x;
+    s16 z = colData->z;
 
     colData->numWalls = 0;
 
@@ -211,7 +211,7 @@ s32 find_wall_collisions(struct WallCollisionData *colData) {
     numCollisions += find_wall_collisions_from_list(node, colData);
 
     // Increment the debug tracker.
-    gNumCalls.wall++;
+    gNumCalls.wall += 1;
 
     return numCollisions;
 }
@@ -305,20 +305,18 @@ static struct Surface *find_ceil_from_list(struct SurfaceNode *surfaceNode, s32 
  */
 f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     s16 cellZ, cellX;
-
     struct Surface *ceil, *dynamicCeil;
     struct SurfaceNode *surfaceList;
-
     f32 height = CELL_HEIGHT_LIMIT;
     f32 dynamicHeight = CELL_HEIGHT_LIMIT;
+    s16 x, y, z;
 
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
-    //  float locations can return ceilings despite them not existing there.
-    //  (Dynamic ceilings will unload due to the range.)
-    TerrainData x = (TerrainData) posX;
-    TerrainData y = (TerrainData) posY;
-    TerrainData z = (TerrainData) posZ;
-
+    // float locations  can return ceilings despite them not existing there.
+    //(Dynamic ceilings will unload due to the range.)
+    x = (s16) posX;
+    y = (s16) posY;
+    z = (s16) posZ;
     *pceil = NULL;
 
     if (x <= -LEVEL_BOUNDARY_MAX || x >= LEVEL_BOUNDARY_MAX) {
@@ -348,7 +346,7 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
     *pceil = ceil;
 
     // Increment the debug tracker.
-    gNumCalls.ceil++;
+    gNumCalls.ceil += 1;
 
     return height;
 }
@@ -491,9 +489,9 @@ f32 unused_find_dynamic_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfl
     f32 floorHeight = FLOOR_LOWER_LIMIT;
 
     // Would normally cause PUs, but dynamic floors unload at that range.
-    TerrainData x = (TerrainData) xPos;
-    TerrainData y = (TerrainData) yPos;
-    TerrainData z = (TerrainData) zPos;
+    s16 x = (s16) xPos;
+    s16 y = (s16) yPos;
+    s16 z = (s16) zPos;
 
     // Each level is split into cells to limit load, find the appropriate cell.
     s16 cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & NUM_CELLS_INDEX;
@@ -520,11 +518,11 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     f32 dynamicHeight = FLOOR_LOWER_LIMIT;
 
     //! (Parallel Universes) Because position is casted to an s16, reaching higher
-    //  float locations can return floors despite them not existing there.
-    //  (Dynamic floors will unload due to the range.)
-    TerrainData x = (TerrainData) xPos;
-    TerrainData y = (TerrainData) yPos;
-    TerrainData z = (TerrainData) zPos;
+    // float locations  can return floors despite them not existing there.
+    //(Dynamic floors will unload due to the range.)
+    s16 x = (s16) xPos;
+    s16 y = (s16) yPos;
+    s16 z = (s16) zPos;
 
     *pfloor = NULL;
 
@@ -565,7 +563,7 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
 
     // If a floor was missed, increment the debug counter.
     if (floor == NULL) {
-        gNumFindFloorMisses++;
+        gNumFindFloorMisses += 1;
     }
 
     if (dynamicHeight > height) {
@@ -576,7 +574,7 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
     *pfloor = floor;
 
     // Increment the debug tracker.
-    gNumCalls.floor++;
+    gNumCalls.floor += 1;
 
     return height;
 }
@@ -591,10 +589,10 @@ f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
 f32 find_water_level(f32 x, f32 z) {
     s32 i;
     s32 numRegions;
-    TerrainData val;
+    s16 val;
     f32 loX, hiX, loZ, hiZ;
     f32 waterLevel = FLOOR_LOWER_LIMIT;
-    TerrainData *p = gEnvironmentRegions;
+    s16 *p = gEnvironmentRegions;
 
     if (p != NULL) {
         numRegions = *p++;
@@ -626,11 +624,11 @@ f32 find_water_level(f32 x, f32 z) {
 f32 find_poison_gas_level(f32 x, f32 z) {
     s32 i;
     s32 numRegions;
-    UNUSED u8 filler[4];
-    TerrainData val;
+    UNUSED s32 unused;
+    s16 val;
     f32 loX, hiX, loZ, hiZ;
     f32 gasLevel = FLOOR_LOWER_LIMIT;
-    TerrainData *p = gEnvironmentRegions;
+    s16 *p = gEnvironmentRegions;
 
     if (p != NULL) {
         numRegions = *p++;

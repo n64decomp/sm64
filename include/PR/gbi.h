@@ -4424,7 +4424,8 @@ typedef union {
 	_g0->words.w0 = _SHIFTL(G_FILLRECT, 24, 8) | 			\
 		       _SHIFTL((lrx), 2, 22);				\
 	_g0->words.w1 = _SHIFTL((lry), 2, 22);				\
-        _g1->words.w0 = _SHIFTL((ulx), 2, 22);				\
+	_g1->words.w0 = _SHIFTL(G_RDPHALF_1, 24, 8) | 			\
+		       _SHIFTL((ulx), 2, 22);				\
 	_g1->words.w1 = _SHIFTL((uly), 2, 22);				\
 }
 #define	gsDPFillRectangle(ulx, uly, lrx, lry)				\
@@ -4433,7 +4434,7 @@ typedef union {
 	_SHIFTL((lry), 2, 22),						\
 }},									\
 {{									\
-	_SHIFTL((ulx), 2, 22),						\
+	(_SHIFTL(G_RDPHALF_1, 24, 8) | _SHIFTL((ulx), 2, 22)),		\
 	_SHIFTL((uly), 2, 22),						\
 }}
 #else
@@ -4670,24 +4671,26 @@ typedef union {
 									\
     _g0->words.w0 = _SHIFTL(G_TEXRECT, 24, 8) | 			\
 		       _SHIFTL((xh), 0, 24);				\
-    _g0->words.w1 = _SHIFTL((yh), 0, 24);				\
-    _g1->words.w0 = (_SHIFTL(tile, 24, 3) | _SHIFTL((xl), 0, 24));	\
-    _g1->words.w1 = _SHIFTL((yl), 0, 24);				\
-    _g2->words.w0 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16));		\
+    _g0->words.w1 = (_SHIFTL(tile, 24, 3) | _SHIFTL((yh), 0, 24));	\
+    _g1->words.w0 = (_SHIFTL(G_RDPHALF_1, 24, 8) | 			\
+		       _SHIFTL((xl), 0, 24));				\
+    _g1->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16));		\
+    _g2->words.w0 = _SHIFTL(G_RDPHALF_2, 24, 8) | 			\
+		       _SHIFTL((yl), 0, 24);				\
     _g2->words.w1 = (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16));	\
 }
 
 # define gsSPTextureRectangle(xl, yl, xh, yh, tile, s, t, dsdx, dtdy)	\
 {{									\
     (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL((xh), 0, 24)),			\
-    _SHIFTL((yh), 0, 24),						\
+    (_SHIFTL((tile), 24, 3) | _SHIFTL((yh), 0, 24)),			\
 }},									\
 {{									\
-    (_SHIFTL((tile), 24, 3) | _SHIFTL((xl), 0, 24)),			\
-    _SHIFTL((yl), 0, 24),						\
-}},									\
-{{									\
+    (_SHIFTL((G_RDPHALF_1), 24, 8) | _SHIFTL((xl), 0, 24)),		\
     _SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16),				\
+}},									\
+{{									\
+    (_SHIFTL((G_RDPHALF_2), 24, 8) | _SHIFTL((yl), 0, 24)),		\
     _SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16)			\
 }}
 
@@ -4697,10 +4700,12 @@ typedef union {
 									\
     _g0->words.w0 = _SHIFTL(G_TEXRECTFLIP, 24, 8) | 			\
 		       _SHIFTL((xh), 0, 24);				\
-    _g0->words.w1 = _SHIFTL((yh), 0, 24);				\
-    _g1->words.w0 = (_SHIFTL(tile, 24, 3) | _SHIFTL((xl), 0, 24));	\
-    _g1->words.w1 = _SHIFTL((yl), 0, 24);				\
-    _g2->words.w0 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16));		\
+    _g0->words.w1 = (_SHIFTL(tile, 24, 3) | _SHIFTL((yh), 0, 24));	\
+    _g1->words.w0 = (_SHIFTL(G_RDPHALF_1, 24, 8) | 			\
+		       _SHIFTL((xl), 0, 24));				\
+    _g1->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16));		\
+    _g2->words.w0 = _SHIFTL(G_RDPHALF_2, 24, 8) | 			\
+		       _SHIFTL((yl), 0, 24);				\
     _g2->words.w1 = (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16));	\
 }
 #else

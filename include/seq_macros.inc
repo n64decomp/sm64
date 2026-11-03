@@ -155,7 +155,7 @@
     .byte 0xff
 .endm
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 
 .macro seq_unreservenotes
     .byte 0xf0
@@ -462,7 +462,7 @@
     var_long \a
 .endm
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 
 .macro chan_setnotepriority a
     .byte 0xe9

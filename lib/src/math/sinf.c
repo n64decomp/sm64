@@ -56,7 +56,7 @@ float sinf(float x)
 
 			poly = (((((P[4].d * xsq) + P[3].d) * xsq) + P[2].d) * xsq) + P[1].d;
 
-			result = dx + ((dx * xsq) * poly);
+			result = ((dx * xsq) * poly) + dx;
 
 			return result;
 		}
@@ -90,7 +90,7 @@ float sinf(float x)
 
 		poly = (((((P[4].d * xsq) + P[3].d) * xsq) + P[2].d) * xsq) + P[1].d;
 
-		result = dx + ((dx * xsq) * poly);
+		result = ((dx * xsq) * poly) + dx;
 
 		if ((n & 0x1) == 0)
 		{

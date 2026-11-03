@@ -188,7 +188,7 @@ static s32 bhv_cmd_spawn_child_with_param(void) {
 
     struct Object *child = spawn_object_at_origin(gCurrentObject, 0, modelID, behavior);
     obj_copy_pos_and_angle(child, gCurrentObject);
-    child->oBhvParams2ndByte = bhvParam;
+    child->oBehParams2ndByte = bhvParam;
 
     gCurBhvCommand += 3;
     return BHV_PROC_CONTINUE;
@@ -904,7 +904,7 @@ static BhvCommandProc BehaviorCmdTable[] = {
 
 // Execute the behavior script of the current object, process the object flags, and other miscellaneous code for updating objects.
 void cur_obj_update(void) {
-    UNUSED u8 filler[4];
+    UNUSED u32 unused;
 
     s16 objFlags = gCurrentObject->oFlags;
     f32 distanceFromMario;

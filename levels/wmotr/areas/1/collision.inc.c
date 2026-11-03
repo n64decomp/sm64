@@ -2055,6 +2055,6 @@ const Collision wmotr_seg7_collision[] = {
     COL_TRI(288, 286, 289),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(1),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -67, 1669, -16, /*yaw*/ 192), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/ -67, 1669, -16, /*yaw*/ 192), // unused, probably an early way to set intial position
     COL_END(),
 };

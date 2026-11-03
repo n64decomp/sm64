@@ -173,7 +173,7 @@ void set_static_gdgt_value(struct ObjValPtr *vp) {
 
 /* 23A488 -> 23A4D0 */
 static void reset_gadget_default(struct ObjGadget *gdgt) {
-    UNUSED u8 filler[4];
+    UNUSED u8 pad[4];
 
     sCurGadgetPtr = gdgt;
     apply_to_obj_types_in_group(OBJ_TYPE_VALPTRS, (applyproc_t) set_static_gdgt_value, gdgt->valueGrp);
@@ -181,7 +181,7 @@ static void reset_gadget_default(struct ObjGadget *gdgt) {
 
 /* 23A4D0 -> 23A784 */
 void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
-    UNUSED u8 filler[8];
+    UNUSED u8 pad[8];
     f32 range;
     struct ObjValPtr *vp;
 
@@ -220,7 +220,7 @@ void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
 
 /* 23A784 -> 23A940; orig name: Unknown8018BFB4 */
 void reset_gadget(struct ObjGadget *gdgt) {
-    UNUSED u8 filler[8];
+    UNUSED u8 pad[8];
     f32 range;
     struct ObjValPtr *vp;
 

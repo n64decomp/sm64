@@ -4,42 +4,85 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>SM64</string>
 	<key>CFBundleExecutable</key>
 	<string>sm64ios</string>
+	<key>CFBundleIconFile</key>
+	<string>Icon</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon</string>
+		<string>Icon@2x</string>
+		<string>Icon-Small</string>
+		<string>Icon-Small@2x</string>
+		<string>Icon-Small-50</string>
+		<string>Icon-Small-50@2x</string>
+		<string>Icon-72</string>
+		<string>Icon-72@2x</string>
+	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>Icon</string>
+				<string>Icon@2x</string>
+				<string>Icon-Small</string>
+				<string>Icon-Small@2x</string>
+				<string>Icon-Small-50</string>
+				<string>Icon-Small-50@2x</string>
+				<string>Icon-72</string>
+				<string>Icon-72@2x</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>com.sm64decomp.ios</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>SM64</string>
-	<key>CFBundleDisplayName</key>
-	<string>SM64</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1</string>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>SM64</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
 	<string>6.0</string>
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>UIPrerenderedIcon</key>
+	<false/>
+	<key>UIInterfaceOrientation</key>
+	<string>UIInterfaceOrientationLandscapeRight</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
 	<array>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.sm64decomp.ios</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sm64ios</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

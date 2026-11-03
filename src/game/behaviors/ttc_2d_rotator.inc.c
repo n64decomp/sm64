@@ -38,8 +38,8 @@ static s16 sTTC2DRotatorTimeBetweenTurns[][4] = {
  */
 void bhv_ttc_2d_rotator_init(void) {
     o->oTTC2DRotatorMinTimeUntilNextTurn =
-        sTTC2DRotatorTimeBetweenTurns[o->oBhvParams2ndByte][gTTCSpeedSetting];
-    o->oTTC2DRotatorIncrement = o->oTTC2DRotatorSpeed = sTTC2DRotatorSpeeds[o->oBhvParams2ndByte];
+        sTTC2DRotatorTimeBetweenTurns[o->oBehParams2ndByte][gTTCSpeedSetting];
+    o->oTTC2DRotatorIncrement = o->oTTC2DRotatorSpeed = sTTC2DRotatorSpeeds[o->oBehParams2ndByte];
 }
 
 /**
@@ -51,7 +51,7 @@ void bhv_ttc_2d_rotator_update(void) {
     s32 startYaw = o->oFaceAngleYaw;
 
     if (o->oTTC2DRotatorRandomDirTimer != 0) {
-        o->oTTC2DRotatorRandomDirTimer--;
+        o->oTTC2DRotatorRandomDirTimer -= 1;
     }
 
     // Wait until rotated to target yaw
@@ -67,7 +67,7 @@ void bhv_ttc_2d_rotator_update(void) {
                 // If ready for a change in direction, then pick a new
                 // direction
                 if (o->oTTC2DRotatorRandomDirTimer == 0) {
-                    if (random_u16() & 0x03) {
+                    if (random_u16() & 0x3) {
                         o->oTTC2DRotatorIncrement = o->oTTC2DRotatorSpeed;
                         o->oTTC2DRotatorRandomDirTimer = random_mod_offset(90, 60, 4);
                     } else {
@@ -82,7 +82,7 @@ void bhv_ttc_2d_rotator_update(void) {
     }
 
     o->oAngleVelYaw = o->oFaceAngleYaw - startYaw;
-    if (o->oBhvParams2ndByte == TTC_2D_ROTATOR_BP_HAND) {
+    if (o->oBehParams2ndByte == TTC_2D_ROTATOR_BP_HAND) {
         load_object_collision_model();
     }
 }

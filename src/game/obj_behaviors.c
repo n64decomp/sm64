@@ -91,7 +91,7 @@ Gfx UNUSED *geo_obj_transparency_something(s32 callContext, struct GraphNode *no
     struct Object *heldObject;
     struct Object *obj;
     UNUSED struct Object *unusedObject;
-    UNUSED u8 filler[4];
+    UNUSED s32 pad;
 
     gfxHead = NULL;
 
@@ -99,6 +99,7 @@ Gfx UNUSED *geo_obj_transparency_something(s32 callContext, struct GraphNode *no
         heldObject = (struct Object *) gCurGraphNodeObject;
         obj = (struct Object *) node;
         unusedObject = (struct Object *) node;
+
 
         if (gCurGraphNodeHeldObject != NULL) {
             heldObject = gCurGraphNodeHeldObject->objNode;
@@ -405,7 +406,7 @@ void obj_splash(s32 waterY, s32 objY) {
     }
 
     // Spawns bubbles if underwater.
-    if ((objY + 50) < waterY && !(globalTimer & 31)) {
+    if ((objY + 50) < waterY && (globalTimer & 0x1F) == 0) {
         spawn_object(o, MODEL_WHITE_PARTICLE_SMALL, bhvObjectBubble);
     }
 }
@@ -592,7 +593,7 @@ s8 obj_check_if_facing_toward_angle(u32 base, u32 goal, s16 range) {
  */
 s8 obj_find_wall_displacement(Vec3f dist, f32 x, f32 y, f32 z, f32 radius) {
     struct WallCollisionData hitbox;
-    UNUSED u8 filler[32];
+    UNUSED u8 filler[0x20];
 
     hitbox.x = x;
     hitbox.y = y;
@@ -679,6 +680,8 @@ s8 current_mario_room_check(s16 room) {
  * Triggers dialog when Mario is facing an object and controls it while in the dialog.
  */
 s16 trigger_obj_dialog_when_facing(s32 *inDialog, s16 dialogID, f32 dist, s32 actionArg) {
+    s16 dialogueResponse;
+
     if ((is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, (s32) dist) == TRUE
          && obj_check_if_facing_toward_angle(o->oFaceAngleYaw, gMarioObject->header.gfx.angle[1] + 0x8000, 0x1000) == TRUE
          && obj_check_if_facing_toward_angle(o->oMoveAngleYaw, o->oAngleToMario, 0x1000) == TRUE)
@@ -686,11 +689,11 @@ s16 trigger_obj_dialog_when_facing(s32 *inDialog, s16 dialogID, f32 dist, s32 ac
         *inDialog = TRUE;
 
         if (set_mario_npc_dialog(actionArg) == MARIO_DIALOG_STATUS_SPEAK) { //If Mario is speaking.
-            s16 dialogResponse = cutscene_object_with_dialog(CUTSCENE_DIALOG, o, dialogID);
-            if (dialogResponse != DIALOG_RESPONSE_NONE) {
+            dialogueResponse = cutscene_object_with_dialog(CUTSCENE_DIALOG, o, dialogID);
+            if (dialogueResponse) {
                 set_mario_npc_dialog(MARIO_DIALOG_STOP);
                 *inDialog = FALSE;
-                return dialogResponse;
+                return dialogueResponse;
             }
             return 0;
         }
@@ -729,7 +732,7 @@ void obj_check_floor_death(s16 collisionFlags, struct Surface *floor) {
 s8 obj_lava_death(void) {
     struct Object *deathSmoke;
 
-    if (o->oTimer > 30) {
+    if (o->oTimer >= 31) {
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         return TRUE;
     } else {
@@ -752,14 +755,14 @@ s8 obj_lava_death(void) {
 /**
  * Spawns an orange number object relatively, such as those that count up for secrets.
  */
-void spawn_orange_number(s8 bhvParam, s16 relX, s16 relY, s16 relZ) {
+void spawn_orange_number(s8 behParam, s16 relX, s16 relY, s16 relZ) {
     struct Object *orangeNumber;
 
-    if (bhvParam >= 10) {
+    if (behParam >= 10) {
         return;
     }
 
-    orangeNumber = spawn_object_relative(bhvParam, relX, relY, relZ, o, MODEL_NUMBER, bhvOrangeNumber);
+    orangeNumber = spawn_object_relative(behParam, relX, relY, relZ, o, MODEL_NUMBER, bhvOrangeNumber);
     orangeNumber->oPosY += 25.0f;
 }
 
@@ -772,7 +775,7 @@ s8 sDebugTimer = 0;
 /**
  * Unused presumably debug function that tracks for a sequence of inputs.
  */
-UNUSED s8 debug_sequence_tracker(s16 debugInputSequence[]) {
+s8 UNUSED debug_sequence_tracker(s16 debugInputSequence[]) {
     // If end of sequence reached, return true.
     if (debugInputSequence[sDebugSequenceTracker] == 0) {
         sDebugSequenceTracker = 0;

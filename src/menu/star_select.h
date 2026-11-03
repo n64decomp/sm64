@@ -6,7 +6,8 @@
 
 #include "types.h"
 
-enum StarSelectorTypes {
+enum StarSelectorTypes
+{
     STAR_SELECTOR_NOT_SELECTED,
     STAR_SELECTOR_SELECTED,
     STAR_SELECTOR_100_COINS

@@ -1,7 +1,7 @@
 #include "internal.h"
 #include "data.h"
 
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
 
 struct ReverbSettingsEU sReverbSettings[] = {
     {0x01, 0x30, 0x2fff, 0x0000, 0x0000, -1, 0x3000, 0x0000, 0x0000},

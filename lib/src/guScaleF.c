@@ -1,7 +1,5 @@
 #include "libultra_internal.h"
 
-#if !defined(VERSION_CN) || !defined(TARGET_N64)
-
 void guScaleF(float mf[4][4], float x, float y, float z) {
     guMtxIdentF(mf);
     mf[0][0] = x;
@@ -15,5 +13,3 @@ void guScale(Mtx *m, float x, float y, float z) {
     guScaleF(mf, x, y, z);
     guMtxF2L(mf, m);
 }
-
-#endif

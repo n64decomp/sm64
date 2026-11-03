@@ -1,35 +1,34 @@
 .set noat      // allow manual use of $at
 .set noreorder // don't insert nops after branches
+.set gp=64
 
 #include "macros.inc"
 
-#include <PR/R4300.h>
-#include <PR/rcp.h>
-#include <PR/os.h>
+.eqv MI_INTR_MASK_REG, 0xA430000C
 
 .section .text, "ax"
 
 glabel osSetIntMask
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
     mfc0  $t4, $12
-    andi  $v0, $t4, OS_IM_CPU
+    andi  $v0, $t4, 0xff01
     lui   $t0, %hi(__OSGlobalIntMask) // $t0, 0x8030
     addiu $t0, %lo(__OSGlobalIntMask) // addiu $t0, $t0, 0x208c
     lw    $t3, ($t0)
-    li    $at, 0xFFFFFFFF
+    li    $at, -1
     xor   $t0, $t3, $at
-    andi  $t0, $t0, SR_IMASK
+    andi  $t0, $t0, 0xff00
     or    $v0, $v0, $t0
 #else
     mfc0  $t1, $12
-    andi  $v0, $t1, OS_IM_CPU
+    andi  $v0, $t1, 0xff01
 #endif
-    lui   $t2, %hi(PHYS_TO_K1(MI_INTR_MASK_REG)) // $t2, 0xa430
-    lw    $t2, %lo(PHYS_TO_K1(MI_INTR_MASK_REG))($t2)
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+    lui   $t2, %hi(MI_INTR_MASK_REG) // $t2, 0xa430
+    lw    $t2, %lo(MI_INTR_MASK_REG)($t2)
+#if defined(VERSION_EU) || defined(VERSION_SH)
     beqz  $t2, .L80200074
     srl   $t1, $t3, 0x10
-    li    $at, 0xFFFFFFFF
+    li    $at, -1
     xor   $t1, $t1, $at
     andi  $t1, $t1, 0x3f
     or    $t2, $t2, $t1
@@ -39,23 +38,23 @@ glabel osSetIntMask
     or    $v0, $v0, $t2
     lui   $at, 0x3f
     and   $t0, $a0, $at
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
     and   $t0, $t0, $t3
 #endif
     srl   $t0, $t0, 0xf
-    lui   $t2, %hi(__osRcpImTable)
+    lui   $t2, %hi(D_803386D0)
     addu  $t2, $t2, $t0
-    lhu   $t2, %lo(__osRcpImTable)($t2)
-    lui   $at, %hi(PHYS_TO_K1(MI_INTR_MASK_REG)) // $at, 0xa430
-    sw    $t2, %lo(PHYS_TO_K1(MI_INTR_MASK_REG))($at)
-    andi  $t0, $a0, OS_IM_CPU
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+    lhu   $t2, %lo(D_803386D0)($t2)
+    lui   $at, %hi(MI_INTR_MASK_REG) // $at, 0xa430
+    sw    $t2, %lo(MI_INTR_MASK_REG)($at)
+    andi  $t0, $a0, 0xff01
+#if defined(VERSION_EU) || defined(VERSION_SH)
     andi  $t1, $t3, 0xff00
     and   $t0, $t0, $t1
 #endif
     lui   $at, (0xFFFF00FF >> 16) // lui $at, 0xffff
     ori   $at, (0xFFFF00FF & 0xFFFF) // ori $at, $at, 0xff
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
     and   $t4, $t4, $at
     or    $t4, $t4, $t0
     mtc0  $t4, $12
@@ -72,7 +71,7 @@ glabel osSetIntMask
 
 .section .rodata
 
-glabel __osRcpImTable
+glabel D_803386D0
 .half 0x0555
 .half 0x0556
 .half 0x0559

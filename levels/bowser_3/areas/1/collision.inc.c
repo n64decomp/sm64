@@ -68,7 +68,7 @@ const Collision bowser_3_seg7_collision_level[] = {
     COL_TRI(0, 2, 3),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(7),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/     0,   307,     0, /*yaw*/  128), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/     0,   307,     0, /*yaw*/  128), // unused, probably an early way to set intial position
     SPECIAL_OBJECT(/*preset*/ special_bowser,       /*pos*/    13,   307, -1024),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -3362,  -204,  1121, /*yaw*/    0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/     0,  -204,  3584, /*yaw*/    0),

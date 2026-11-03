@@ -1423,7 +1423,7 @@ const Collision sl_seg7_area_1_collision[] = {
     COL_TRI(510, 327, 321),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(10),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/  5541,  1024,   443, /*yaw*/ 192), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/  5541,  1024,   443, /*yaw*/ 192), // unused, probably an early way to set intial position
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,  /*pos*/  5395,  1054, -5443),
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,  /*pos*/     0,  4864,     0),
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,  /*pos*/  5666,  1024, -3341),

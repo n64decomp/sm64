@@ -587,7 +587,7 @@ const Collision totwc_seg7_collision[] = {
     COL_TRI(81, 97, 67),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(23),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/ -4095,  2935,     0, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/ -4095,  2935,     0, /*yaw*/ 64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  4608,  -357,  -511, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -4095,   666,   512, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -5631, -1893,  6144, /*yaw*/  0),

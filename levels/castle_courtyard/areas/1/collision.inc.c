@@ -847,7 +847,7 @@ const Collision castle_courtyard_seg7_collision[] = {
     COL_TRI(136, 45, 133),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(19),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/    15,    0,   202, /*yaw*/ 128), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/    15,    0,   202, /*yaw*/ 128), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03,     /*pos*/     0, 2048,  2662, /*yaw*/   0),
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/  2272, -214, -1432),
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/   818,   10,   203),
@@ -865,7 +865,7 @@ const Collision castle_courtyard_seg7_collision[] = {
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/ -2446, -214, -1786),
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/ -2820, -214, -1317),
     SPECIAL_OBJECT(/*preset*/ special_spiky_tree,       /*pos*/ -1868, -214,   -45),
-    SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_wooden_door_warp, /*pos*/     0,    0,   461, /*yaw*/   0, /*bhvParam2*/ 1),
+    SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_wooden_door_warp, /*pos*/     0,    0,   461, /*yaw*/   0, /*behParam2*/ 1),
     COL_WATER_BOX_INIT(1),
     COL_WATER_BOX(0, -656, -2405, 674, -1074, 51),
     COL_END(),

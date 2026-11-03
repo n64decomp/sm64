@@ -1,34 +1,39 @@
-#include "config.h"
-
-#if ENABLE_RUMBLE
-
 #include <ultra64.h>
-#include <PR/os.h>
 #include "macros.h"
 
 #include "buffers/buffers.h"
 #include "main.h"
 #include "rumble_init.h"
+#include "config.h"
 
-FORCE_BSS OSThread gRumblePakThread;
+#if ENABLE_RUMBLE
 
-FORCE_BSS OSPfs gRumblePakPfs;
+OSThread gRumblePakThread;
 
-FORCE_BSS OSMesg gRumblePakSchedulerMesgBuf;
-FORCE_BSS OSMesgQueue gRumblePakSchedulerMesgQueue;
-FORCE_BSS OSMesg gRumbleThreadVIMesgBuf;
-FORCE_BSS OSMesgQueue gRumbleThreadVIMesgQueue;
+s32 gRumblePakPfs; // Actually an OSPfs but we don't have that header yet
 
-FORCE_BSS struct RumbleData gRumbleDataQueue[3];
-FORCE_BSS struct StructSH8031D9B0 gCurrRumbleSettings;
+s8 D_SH_8031D8F8[0x60];
+
+OSMesg gRumblePakSchedulerMesgBuf[1];
+OSMesgQueue gRumblePakSchedulerMesgQueue;
+OSMesg gRumbleThreadVIMesgBuf[1];
+OSMesgQueue gRumbleThreadVIMesgQueue;
+
+struct RumbleData gRumbleDataQueue[3];
+struct StructSH8031D9B0 gCurrRumbleSettings;
 
 s32 sRumblePakThreadActive = FALSE;
 s32 sRumblePakActive = FALSE;
 s32 sRumblePakErrorCount = 0;
 s32 gRumblePakTimer = 0;
 
+// These void* are OSPfs* but we don't have that header
+extern s32 osMotorStop(void *);
+extern s32 osMotorStart(void *);
+extern u32 osMotorInit(OSMesgQueue *, void *, s32);
+
 void init_rumble_pak_scheduler_queue(void) {
-    osCreateMesgQueue(&gRumblePakSchedulerMesgQueue, &gRumblePakSchedulerMesgBuf, 1);
+    osCreateMesgQueue(&gRumblePakSchedulerMesgQueue, gRumblePakSchedulerMesgBuf, 1);
     osSendMesg(&gRumblePakSchedulerMesgQueue, (OSMesg) 0, OS_MESG_NOBLOCK);
 }
 
@@ -48,11 +53,7 @@ static void start_rumble(void) {
 
     block_until_rumble_pak_free();
 
-#ifdef VERSION_CN
-    if (!__osMotorAccess(&gRumblePakPfs, MOTOR_START)) {
-#else
     if (!osMotorStart(&gRumblePakPfs)) {
-#endif
         sRumblePakErrorCount = 0;
     } else {
         sRumblePakErrorCount++;
@@ -68,11 +69,7 @@ static void stop_rumble(void) {
 
     block_until_rumble_pak_free();
 
-#ifdef VERSION_CN
-    if (!__osMotorAccess(&gRumblePakPfs, MOTOR_STOP)) {
-#else
     if (!osMotorStop(&gRumblePakPfs)) {
-#endif
         sRumblePakErrorCount = 0;
     } else {
         sRumblePakErrorCount++;
@@ -241,15 +238,13 @@ void func_sh_8024CA04(void) {
     gCurrRumbleSettings.unk0C = 4;
 }
 
+#ifdef TARGET_N64
 static void thread6_rumble_loop(UNUSED void *a0) {
     OSMesg msg;
 
-    CN_DEBUG_PRINTF(("start motor thread\n"));
-
     cancel_rumble();
-    sRumblePakThreadActive = TRUE;
 
-    CN_DEBUG_PRINTF(("go motor thread\n"));
+    sRumblePakThreadActive = TRUE;
 
     while (TRUE) {
         // Block until VI
@@ -263,7 +258,7 @@ static void thread6_rumble_loop(UNUSED void *a0) {
                 sRumblePakActive = FALSE;
             }
         } else if (gNumVblanks % 60 == 0) {
-            sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) == 0;
+            sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) < 1;
             sRumblePakErrorCount = 0;
         }
 
@@ -272,16 +267,13 @@ static void thread6_rumble_loop(UNUSED void *a0) {
         }
     }
 }
+#endif
 
 void cancel_rumble(void) {
-    sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) == 0;
+    sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) < 1;
 
     if (sRumblePakActive) {
-#ifdef VERSION_CN
-        __osMotorAccess(&gRumblePakPfs, MOTOR_STOP);
-#else
         osMotorStop(&gRumblePakPfs);
-#endif
     }
 
     gRumbleDataQueue[0].unk00 = 0;
@@ -295,9 +287,11 @@ void cancel_rumble(void) {
 }
 
 void create_thread_6(void) {
-    osCreateMesgQueue(&gRumbleThreadVIMesgQueue, &gRumbleThreadVIMesgBuf, 1);
+#ifdef TARGET_N64
+    osCreateMesgQueue(&gRumbleThreadVIMesgQueue, gRumbleThreadVIMesgBuf, 1);
     osCreateThread(&gRumblePakThread, 6, thread6_rumble_loop, NULL, gThread6Stack + 0x2000, 30);
     osStartThread(&gRumblePakThread);
+#endif
 }
 
 void rumble_thread_update_vi(void) {
@@ -305,10 +299,8 @@ void rumble_thread_update_vi(void) {
         return;
     }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmultichar"
-    osSendMesg(&gRumbleThreadVIMesgQueue, (OSMesg) 'VRTC', OS_MESG_NOBLOCK);
-#pragma GCC diagnostic pop
+    // 0x56525443 = 'VRTC'
+    osSendMesg(&gRumbleThreadVIMesgQueue, (OSMesg) 0x56525443, OS_MESG_NOBLOCK);
 }
 
 #endif

@@ -41,18 +41,11 @@ versionGroup.add_argument(
     const="sh",
     dest="version",
 )
-versionGroup.add_argument(
-    "-c",
-    "--cn",
-    help="use iQue (Chinese) version",
-    action="store_const",
-    const="cn",
-    dest="version",
-)
 parser.add_argument(
     "-m", "--make", help="run make before finding difference(s)", action="store_true"
 )
 parser.add_argument(
+    "-c",
     "--count",
     type=int,
     default=1,

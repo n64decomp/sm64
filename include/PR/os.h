@@ -59,6 +59,37 @@ typedef struct {
         s32             (*dma)(s32, u32, void *, u32);
         s32             (*edma)(OSPiHandle *, s32, u32, void *, u32);
 } OSDevMgr;
+
+/*
+ * Structure for file system
+ */
+
+
+
+typedef struct {
+    int        status;
+    OSMesgQueue     *queue;
+    int        channel;
+    u8        id[32];
+    u8        label[32];
+    int        version;
+    int        dir_size;
+    int        inode_table;        /* block location */
+    int        minode_table;        /* mirrioring inode_table */
+    int        dir_table;        /* block location */
+    int        inode_start_page;    /* page # */
+    u8        banks;
+    u8        activebank;
+} OSPfs;
+
+
+typedef struct {
+    u32    file_size;    /* bytes */
+      u32     game_code;
+      u16     company_code;
+      char      ext_name[4];
+      char     game_name[16];
+} OSPfsState;
     
 /*
  * Structure for Profiler 
@@ -84,6 +115,39 @@ typedef struct {
 #define OS_STATE_RUNNABLE    2
 #define OS_STATE_RUNNING    4
 #define OS_STATE_WAITING    8
+
+/* Events */
+#ifdef _FINALROM
+#define OS_NUM_EVENTS           15
+#else
+#define OS_NUM_EVENTS           23
+#endif
+
+#define OS_EVENT_SW1              0     /* CPU SW1 interrupt */
+#define OS_EVENT_SW2              1     /* CPU SW2 interrupt */
+#define OS_EVENT_CART             2     /* Cartridge interrupt: used by rmon */
+#define OS_EVENT_COUNTER          3     /* Counter int: used by VI/Timer Mgr */
+#define OS_EVENT_SP               4     /* SP task done interrupt */
+#define OS_EVENT_SI               5     /* SI (controller) interrupt */
+#define OS_EVENT_AI               6     /* AI interrupt */
+#define OS_EVENT_VI               7     /* VI interrupt: used by VI/Timer Mgr */
+#define OS_EVENT_PI               8     /* PI interrupt: used by PI Manager */
+#define OS_EVENT_DP               9     /* DP full sync interrupt */
+#define OS_EVENT_CPU_BREAK        10    /* CPU breakpoint: used by rmon */
+#define OS_EVENT_SP_BREAK         11    /* SP breakpoint:  used by rmon */
+#define OS_EVENT_FAULT            12    /* CPU fault event: used by rmon */
+#define OS_EVENT_THREADSTATUS     13    /* CPU thread status: used by rmon */
+#define OS_EVENT_PRENMI           14    /* Pre NMI interrupt */
+#ifndef _FINALROM
+#define OS_EVENT_RDB_READ_DONE    15    /* RDB read ok event: used by rmon */
+#define OS_EVENT_RDB_LOG_DONE     16    /* read of log data complete */
+#define OS_EVENT_RDB_DATA_DONE    17    /* read of hostio data complete */
+#define OS_EVENT_RDB_REQ_RAMROM   18    /* host needs ramrom access */
+#define OS_EVENT_RDB_FREE_RAMROM  19    /* host is done with ramrom access */
+#define OS_EVENT_RDB_DBG_DONE     20
+#define OS_EVENT_RDB_FLUSH_PROF   21
+#define OS_EVENT_RDB_ACK_PROF     22
+#endif
 
 /* Flags for debugging purpose */
 
@@ -121,6 +185,12 @@ typedef struct {
 #define OS_PRIORITY_SIMGR    140
 #define    OS_PRIORITY_APPMAX    127
 #define OS_PRIORITY_IDLE      0    /* Must be 0 */
+
+
+/* Flags to turn blocking on/off when sending/receiving message */
+
+#define    OS_MESG_NOBLOCK        0
+#define    OS_MESG_BLOCK        1
 
 /* Flags to indicate direction of data transfer */
 
@@ -335,6 +405,42 @@ typedef struct {
 #define L_CBUTTONS    CONT_C
 #define R_CBUTTONS    CONT_F
 #define D_CBUTTONS    CONT_D
+
+/* File System size */
+#define    OS_PFS_VERSION        0x0200
+#define    OS_PFS_VERSION_HI    (OS_PFS_VERSION >> 8)
+#define    OS_PFS_VERSION_LO    (OS_PFS_VERSION & 255)
+
+#define PFS_FILE_NAME_LEN       16
+#define PFS_FILE_EXT_LEN        4
+#define BLOCKSIZE        32        /* bytes */
+#define PFS_ONE_PAGE            8        /* blocks */
+#define PFS_MAX_BANKS        62
+
+/* File System flag */
+
+#define PFS_READ                0
+#define PFS_WRITE               1
+#define PFS_CREATE              2
+
+/* File System status */
+#define PFS_INITIALIZED        0x1
+#define PFS_CORRUPTED        0x2        /* File system was corrupted */
+
+/* File System error number */
+
+#define PFS_ERR_NOPACK        1    /* no memory card is plugged or   */
+#define PFS_ERR_NEW_PACK        2    /* ram pack has been changed to a */
+                    /* different one           */
+#define PFS_ERR_INCONSISTENT    3    /* need to run Pfschecker       */
+#define PFS_ERR_CONTRFAIL    CONT_OVERRUN_ERROR              
+#define PFS_ERR_INVALID         5    /* invalid parameter or file not exist*/
+#define PFS_ERR_BAD_DATA        6       /* the data read from pack are bad*/
+#define PFS_DATA_FULL           7    /* no free pages on ram pack      */
+#define PFS_DIR_FULL            8    /* no free directories on ram pack*/
+#define PFS_ERR_EXIST        9    /* file exists               */
+#define PFS_ERR_ID_FATAL    10    /* dead ram pack */
+#define PFS_ERR_DEVICE        11    /* wrong device type*/
 
 /* definition for EEPROM */
 
@@ -632,12 +738,6 @@ extern s32 osEepromLongWrite(OSMesgQueue *, u8, u8 *, int);
 extern s32 osMotorInit(OSMesgQueue *, OSPfs *, int);
 extern s32 osMotorStop(OSPfs *);
 extern s32 osMotorStart(OSPfs *);
-
-#ifdef VERSION_CN
-#define MOTOR_START 1
-#define MOTOR_STOP 0
-extern s32 __osMotorAccess(OSPfs *, s32);
-#endif
 
 /* Enhanced PI interface */
 

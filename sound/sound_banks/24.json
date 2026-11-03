@@ -37,19 +37,19 @@
         "inst0": {
             "release_rate": 43,
             "envelope": "envelope0",
-            "sound": "41_pan_flute_C3"
+            "sound": "41_pan_flute"
         },
         "inst1": {
             "release_rate": 24,
             "normal_range_lo": 42,
             "envelope": "envelope1",
-            "sound_lo": "14_strings_Eb2",
-            "sound": "15_strings_B3"
+            "sound_lo": "14_strings_5",
+            "sound": "15_strings_4"
         },
         "inst2": {
             "release_rate": 43,
             "envelope": "envelope3",
-            "sound": "41_pan_flute_C3"
+            "sound": "41_pan_flute"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope2", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},
@@ -120,7 +120,7 @@
         "inst3": {
             "release_rate": 10,
             "envelope": "envelope4",
-            "sound": "22_boys_choir_Bb4"
+            "sound": "22_boys_choir"
         }
     },
     "instrument_list": [

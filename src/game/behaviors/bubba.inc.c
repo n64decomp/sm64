@@ -13,8 +13,9 @@ static struct ObjectHitbox sBubbaHitbox = {
 };
 
 void bubba_act_0(void) {
-    f32 sp24 = cur_obj_lateral_dist_to_home();
+    f32 sp24;
 
+    sp24 = cur_obj_lateral_dist_to_home();
     treat_far_home_as_mario(2000.0f);
     o->oAnimState = 0;
 
@@ -32,12 +33,12 @@ void bubba_act_0(void) {
             o->oBubbaUnkF8 = random_linear_offset(20, 30);
         }
 
-        if ((o->oBubbaUnkFC = o->oMoveFlags & OBJ_MOVE_HIT_WALL)) {
+        if ((o->oBubbaUnkFC = o->oMoveFlags & OBJ_MOVE_HIT_WALL) != 0) {
             o->oBubbaUnk1AE = cur_obj_reflect_move_angle_off_wall();
         } else if (o->oTimer > 30 && o->oDistanceToMario < 2000.0f) {
             o->oAction = 1;
         } else if (o->oBubbaUnkF8 != 0) {
-            o->oBubbaUnkF8--;
+            o->oBubbaUnkF8 -= 1;
         } else {
             o->oBubbaUnk1AE = obj_random_fixed_turn(0x2000);
             o->oBubbaUnkF8 = random_linear_offset(100, 100);
@@ -47,7 +48,6 @@ void bubba_act_0(void) {
 
 void bubba_act_1(void) {
     treat_far_home_as_mario(2500.0f);
-
     if (o->oDistanceToMario > 2500.0f) {
         o->oAction = 0;
     } else if (o->oBubbaUnk100 != 0) {
@@ -96,7 +96,7 @@ void bubba_act_1(void) {
 }
 
 void bhv_bubba_loop(void) {
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
 
     o->oInteractionSubtype &= ~INT_SUBTYPE_EATS_MARIO;
     o->oBubbaUnk104 = obj_turn_pitch_toward_mario(120.0f, 0);

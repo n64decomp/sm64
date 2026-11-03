@@ -3,20 +3,20 @@
 void osSetThreadPri(OSThread *thread, OSPri pri) {
     register u32 int_disabled = __osDisableInt();
     if (thread == NULL) {
-        thread = __osRunningThread;
+        thread = D_803348A0;
     }
 
     if (thread->priority != pri) {
         thread->priority = pri;
-        if (thread != __osRunningThread) {
+        if (thread != D_803348A0) {
             if (thread->state != OS_STATE_STOPPED) {
                 __osDequeueThread(thread->queue, thread);
                 __osEnqueueThread(thread->queue, thread);
             }
         }
-        if (__osRunningThread->priority < __osRunQueue->priority) {
-            __osRunningThread->state = OS_STATE_RUNNABLE;
-            __osEnqueueAndYield(&__osRunQueue);
+        if (D_803348A0->priority < D_80334898->priority) {
+            D_803348A0->state = OS_STATE_RUNNABLE;
+            __osEnqueueAndYield(&D_80334898);
         }
     }
 

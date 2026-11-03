@@ -1,4 +1,3 @@
-
 /**
  * This file contains the initialization and behavior for red coins.
  * Behavior controls audio and the orange number spawned, as well as interacting with
@@ -28,17 +27,19 @@ void bhv_red_coin_init(void) {
     struct Surface *dummyFloor;
     UNUSED f32 floorHeight = find_floor(o->oPosX, o->oPosY, o->oPosZ, &dummyFloor);
 
-    // Set the red coins to have a parent of the closest red coin star.
     struct Object *hiddenRedCoinStar;
 
-    if ((hiddenRedCoinStar =
-             cur_obj_nearest_object_with_behavior(bhvHiddenRedCoinStar)) != NULL) {
+    // Set the red coins to have a parent of the closest red coin star.
+    hiddenRedCoinStar = cur_obj_nearest_object_with_behavior(bhvHiddenRedCoinStar);
+    if (hiddenRedCoinStar != NULL)
         o->parentObj = hiddenRedCoinStar;
-    } else if ((hiddenRedCoinStar =
-             cur_obj_nearest_object_with_behavior(bhvBowserCourseRedCoinStar)) != NULL) {
-        o->parentObj = hiddenRedCoinStar;
-    } else {
-        o->parentObj = NULL;
+    else {
+        hiddenRedCoinStar = cur_obj_nearest_object_with_behavior(bhvBowserCourseRedCoinStar);
+        if (hiddenRedCoinStar != NULL) {
+            o->parentObj = hiddenRedCoinStar;
+        } else {
+            o->parentObj = NULL;
+        }
     }
 
     obj_set_hitbox(o, &sRedCoinHitbox);
@@ -68,7 +69,7 @@ void bhv_red_coin_loop(void) {
             // On all versions but the JP version, each coin collected plays a higher noise.
 #ifndef VERSION_JP
             play_sound(SOUND_MENU_COLLECT_RED_COIN
-                       + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
+                           + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
                        gGlobalSoundSource);
 #endif
         }

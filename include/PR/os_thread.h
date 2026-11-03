@@ -16,8 +16,6 @@
 #define OS_STATE_RUNNING    4
 #define OS_STATE_WAITING    8
 
-#if defined(_LANGUAGE_C) || defined(_LANGUAGE_C_PLUS_PLUS)
-
 /* Types */
 
 typedef s32 OSPri;
@@ -73,7 +71,5 @@ OSPri osGetThreadPri(OSThread *thread);
 void osSetThreadPri(OSThread *thread, OSPri pri);
 void osStartThread(OSThread *thread);
 void osStopThread(OSThread *thread);
-
-#endif
 
 #endif

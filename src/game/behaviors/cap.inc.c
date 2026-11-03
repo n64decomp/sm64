@@ -1,4 +1,4 @@
-// cap.inc.c
+// cap.c.inc
 
 static struct ObjectHitbox sCapHitbox = {
     /* interactType:      */ INTERACT_CAP,
@@ -14,14 +14,13 @@ static struct ObjectHitbox sCapHitbox = {
 
 s32 cap_set_hitbox(void) {
     obj_set_hitbox(o, &sCapHitbox);
-
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         o->oInteractStatus = 0;
-        return TRUE;
+        return 1;
     }
 
-    return FALSE;
+    return 0;
 }
 
 void cap_despawn(void) {
@@ -31,9 +30,8 @@ void cap_despawn(void) {
 }
 
 void cap_check_quicksand(void) {
-    if (sObjFloor == NULL) {
+    if (sObjFloor == NULL)
         return;
-    }
 
     switch (sObjFloor->type) {
         case SURFACE_DEATH_PLANE:
@@ -78,24 +76,24 @@ void cap_sink_quicksand(void) {
             break;
 
         case 11:
-            if (o->oTimer < 10) {
+            if (o->oTimer < 10)
                 o->oGraphYOffset += -3.0f;
-            }
+
             o->oFaceAnglePitch = 0x2000;
             break;
 
         case 12:
             o->oGraphYOffset += -1.0f;
-            if (o->oTimer > 20) {
+            if (o->oTimer >= 21)
                 o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-            }
+
             break;
 
         case 13:
             o->oGraphYOffset += -6.0f;
-            if (o->oTimer > 20) {
+            if (o->oTimer >= 21)
                 o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-            }
+
             o->oFaceAnglePitch = 0x2000;
             break;
     }
@@ -120,12 +118,11 @@ void cap_scale_vertically(void) {
 }
 
 void wing_vanish_cap_act_0(void) {
-    s16 collisionFlags;
+    s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
-    collisionFlags = object_step();
-
-    if (collisionFlags & OBJ_COL_FLAG_GROUNDED) {
+    sp1E = object_step();
+    if (sp1E & 0x01) {
         cap_check_quicksand();
         if (o->oVelY != 0.0f) {
             o->oCapUnkF4 = 1;
@@ -133,9 +130,8 @@ void wing_vanish_cap_act_0(void) {
         }
     }
 
-    if (o->oCapUnkF4 == 1) {
+    if (o->oCapUnkF4 == 1)
         cap_scale_vertically();
-    }
 }
 
 void bhv_wing_vanish_cap_loop(void) {
@@ -150,9 +146,8 @@ void bhv_wing_vanish_cap_loop(void) {
             break;
     }
 
-    if (o->oTimer > 20) {
+    if (o->oTimer > 20)
         cur_obj_become_tangible();
-    }
 
     cap_despawn();
     cap_set_hitbox();
@@ -162,18 +157,16 @@ void bhv_metal_cap_init(void) {
     o->oGravity = 2.4f;
     o->oFriction = 0.999f;
     o->oBuoyancy = 1.5f;
-    o->oOpacity = 255;
+    o->oOpacity = 0xFF;
 }
 
 void metal_cap_act_0(void) {
-    s16 collisionFlags;
+    s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
-    collisionFlags = object_step();
-
-    if (collisionFlags & OBJ_COL_FLAG_GROUNDED) {
+    sp1E = object_step();
+    if (sp1E & 0x01)
         cap_check_quicksand();
-    }
 }
 
 void bhv_metal_cap_loop(void) {
@@ -188,9 +181,8 @@ void bhv_metal_cap_loop(void) {
             break;
     }
 
-    if (o->oTimer > 20) {
+    if (o->oTimer > 20)
         cur_obj_become_tangible();
-    }
 
     cap_set_hitbox();
     cap_despawn();
@@ -200,7 +192,7 @@ void bhv_normal_cap_init(void) {
     o->oGravity = 0.7f;
     o->oFriction = 0.89f;
     o->oBuoyancy = 0.9f;
-    o->oOpacity = 255;
+    o->oOpacity = 0xFF;
 
     save_file_set_cap_pos(o->oPosX, o->oPosY, o->oPosZ);
 }
@@ -228,13 +220,12 @@ void normal_cap_set_save_flags(void) {
 }
 
 void normal_cap_act_0(void) {
-    s16 collisionFlags;
+    s16 sp1E;
 
     o->oFaceAngleYaw += o->oForwardVel * 128.0f;
     o->oFaceAnglePitch += o->oForwardVel * 80.0f;
-    collisionFlags = object_step();
-
-    if (collisionFlags & OBJ_COL_FLAG_GROUNDED) {
+    sp1E = object_step();
+    if (sp1E & 0x01) {
         cap_check_quicksand();
 
         if (o->oVelY != 0.0f) {
@@ -244,9 +235,8 @@ void normal_cap_act_0(void) {
         }
     }
 
-    if (o->oCapUnkF4 == 1) {
+    if (o->oCapUnkF4 == 1)
         cap_scale_vertically();
-    }
 }
 
 void bhv_normal_cap_loop(void) {
@@ -261,17 +251,14 @@ void bhv_normal_cap_loop(void) {
             break;
     }
 
-    if ((s32) o->oForwardVel != 0) {
+    if ((s32) o->oForwardVel != 0)
         save_file_set_cap_pos(o->oPosX, o->oPosY, o->oPosZ);
-    }
 
-    if (o->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
+    if (o->activeFlags == ACTIVE_FLAG_DEACTIVATED)
         normal_cap_set_save_flags();
-    }
 
-    if (cap_set_hitbox() == TRUE) {
+    if (cap_set_hitbox() == 1)
         save_file_clear_flags(SAVE_FLAG_CAP_ON_GROUND);
-    }
 }
 
 void bhv_vanish_cap_init(void) {

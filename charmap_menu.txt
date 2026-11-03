@@ -1,5 +1,5 @@
-// Menu HUD chars, only used in JP
-// Char values used by text_menu_strings.h.in
+# Menu HUD chars, only used in JP
+# Char values used by text_menu_strings.h.in
 'フ' = 0x00
 'ァ' = 0x01
 'イ' = 0x02

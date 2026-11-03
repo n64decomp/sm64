@@ -2293,7 +2293,7 @@ const Collision ttm_seg7_area_1_collision[] = {
     COL_TRI(516, 430, 819),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(29),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/   102, -4332,  5734, /*yaw*/ 32), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/   102, -4332,  5734, /*yaw*/ 32), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -3276, -4423, -3685, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  7293, -5056,  1429, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  4938, -5568,  5115, /*yaw*/  0),

@@ -10,8 +10,8 @@
 #include <stdbool.h>
 #include <math.h>
 
-#include "sm64tools/n64graphics.h"
-#include "sm64tools/utils.h"
+#include "n64graphics.h"
+#include "utils.h"
 
 #define SKYCONV_ENCODING ENCODING_U8
 
@@ -26,7 +26,6 @@ typedef enum {
     Skybox,
     Cake,
     CakeEU,
-    CakeCN,
     ImageType_MAX
 } ImageType;
 
@@ -57,10 +56,6 @@ static const ImageProps IMAGE_PROPERTIES[ImageType_MAX][2] = {
         {320, 224, 64, 32, 5, 7, false, false},
         {320, 224, 64, 32, 5, 7, false, false},
     },
-    [CakeCN] = {
-        {316, 228, 79, 19, 4, 12, false, false},
-        {320, 240, 80, 20, 4, 12, false, false},
-    },
 };
 
 typedef struct {
@@ -71,7 +66,6 @@ static const TableDimension TABLE_DIMENSIONS[ImageType_MAX] = {
     [Skybox]   = {8, 10},
     [Cake]     = {4, 12},
     [CakeEU]   = {5,  7},
-    [CakeCN]   = {4, 12},
 };
 
 TextureTile *tiles;
@@ -248,9 +242,6 @@ void write_tiles() {
         case CakeEU:
             strcat(buffer, "cake_eu");
         break;
-        case CakeCN:
-            strcat(buffer, "cake_cn");
-        break;
         default:
             exit(EXIT_FAILURE);
         break;
@@ -333,10 +324,7 @@ static void write_cake_c() {
         exit(EXIT_FAILURE);
     }
 
-    if (type == CakeCN) {
-        strcat(buffer, "/cake_cn.inc.c");
-    }
-    else if (type == CakeEU) {
+    if (type == CakeEU) {
         strcat(buffer, "/cake_eu.inc.c");
     }
     else {
@@ -420,9 +408,9 @@ fail:
     exit(1);
 }
 
-void combine_cakeimg(const char *input, const char *output) {
+void combine_cakeimg(const char *input, const char *output, bool eu) {
     int W, H, SMALLH, SMALLW;
-    if (type == CakeEU) {
+    if (eu) {
         W = 5;
         H = 7;
         SMALLH = 32;
@@ -438,7 +426,7 @@ void combine_cakeimg(const char *input, const char *output) {
     if (!file) goto fail;
 
     rgba *combined;
-    if (type == Cake) {
+    if (!eu) {
         combined = malloc((SMALLH-1)*H * (SMALLW-1)*W * sizeof(rgba));
         for (int i = 0; i < H; i++) {
             for (int j = 0; j < W; j++) {
@@ -488,7 +476,7 @@ fail:
 // Modified from n64split
 static void usage() {
     fprintf(stderr,
-            "Usage: %s --type sky|cake|cake-eu|cake-cn {--combine INPUT OUTPUT | --split INPUT OUTPUT}\n"
+            "Usage: %s --type sky|cake|cake_eu {--combine INPUT OUTPUT | --split INPUT OUTPUT}\n"
             "\n"
             "Optional arguments:\n"
             " --write-tiles OUTDIR      Also create the individual tiles' PNG files\n", programName);
@@ -525,7 +513,7 @@ static int parse_arguments(int argc, char *argv[]) {
 
             output = argv[i];
         }
-
+        
         if (strcmp(argv[i], "--type") == 0) {
             if (++i >= argc || type != InvalidType) {
                 goto invalid;
@@ -533,8 +521,6 @@ static int parse_arguments(int argc, char *argv[]) {
 
             if (strcmp(argv[i], "sky") == 0) {
                 type = Skybox;
-            } else if(strcmp(argv[i], "cake-cn") == 0) {
-                type = CakeCN;
             } else if(strcmp(argv[i], "cake-eu") == 0) {
                 type = CakeEU;
             } else if(strcmp(argv[i], "cake") == 0) {
@@ -611,9 +597,10 @@ int main(int argc, char *argv[]) {
                     combine_skybox(input, output);
                 break;
                 case Cake:
+                    combine_cakeimg(input, output, 0);
+                break;
                 case CakeEU:
-                case CakeCN:
-                    combine_cakeimg(input, output);
+                    combine_cakeimg(input, output, 1);
                 break;
                 default:
                     usage();
@@ -644,7 +631,6 @@ int main(int argc, char *argv[]) {
                     break;
                 case Cake:
                 case CakeEU:
-                case CakeCN:
                     assign_tile_positions();
                     write_cake_c();
                     break;

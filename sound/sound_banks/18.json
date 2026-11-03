@@ -61,22 +61,22 @@
         "inst0": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "35_gospel_organ_F4"
+            "sound": "35_gospel_organ"
         },
         "inst1": {
             "release_rate": 208,
             "envelope": "envelope1",
-            "sound": "36_sawtooth_synth_Eb1"
+            "sound": "36_sawtooth_synth"
         },
         "inst2": {
             "release_rate": 208,
             "envelope": "envelope2",
-            "sound": "37_square_synth_C5"
+            "sound": "37_square_synth"
         },
         "inst3": {
             "release_rate": 208,
             "envelope": "envelope3",
-            "sound": "29_orchestra_hit_C3"
+            "sound": "29_orchestra_hit"
         },
         "percussion": [
             {"release_rate": 10, "pan": 62, "envelope": "envelope4", "sound": {"sample": "06_kick_drum_1", "tuning": 0.210224}},

@@ -6060,7 +6060,7 @@ const Gfx mario_right_hand_cap_wings_half_2_dl[] = {
 };
 
 // 0x0401B0E0 - 0x0401B138
-const Gfx mario_right_hand_cap_wings_initial_dl[] = {
+const Gfx mario_right_hand_cap_wings_intial_dl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBFADEA, G_CC_MODULATERGBFADEA),
     gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
@@ -6104,7 +6104,7 @@ const Gfx mario_right_hand_cap[] = {
 
 // 0x0401B1D8 - 0x0401B230
 const Gfx mario_right_hand_cap_wings[] = {
-    gsSPDisplayList(mario_right_hand_cap_wings_initial_dl),
+    gsSPDisplayList(mario_right_hand_cap_wings_intial_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -6132,7 +6132,7 @@ const Gfx mario_metal_right_hand_cap_shared_dl[] = {
 
 // 0x0401B278 - 0x0401B2D0
 const Gfx mario_metal_right_hand_cap_shared_dl_wings[] = {
-    gsSPDisplayList(mario_right_hand_cap_wings_initial_dl),
+    gsSPDisplayList(mario_right_hand_cap_wings_intial_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_metal_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -6590,7 +6590,7 @@ const Gfx mario_wings_half_2_unused_dl[] = {
 };
 
 // 0x0401C6D8 - 0x0401C730
-const Gfx mario_cap_wings_unused_initial_dl[] = {
+const Gfx mario_cap_wings_unused_intial_dl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBA, G_CC_MODULATERGBA),
     gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
@@ -6656,7 +6656,7 @@ const Gfx mario_metal_cap_unused_dl[] = {
 
 // 0x0401C890 - 0x0401C8E8 # Unreferenced, unused like the duplicated cap, same case
 const Gfx mario_cap_wings_unused[] = {
-    gsSPDisplayList(mario_cap_wings_unused_initial_dl),
+    gsSPDisplayList(mario_cap_wings_unused_intial_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
@@ -6671,7 +6671,7 @@ const Gfx mario_cap_wings_unused[] = {
 
 // 0x0401C8E8 - 0x0401C940 # Unreferenced, unused like the duplicated cap, same case
 const Gfx mario_metal_cap_wings_unused[] = {
-    gsSPDisplayList(mario_cap_wings_unused_initial_dl),
+    gsSPDisplayList(mario_cap_wings_unused_intial_dl),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, mario_texture_metal_wings_half_1),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),

@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: © 2022 Decompollaborate
-# SPDX-License-Identifier: MIT
-
-include **/*.h
-include **/**/*.h
-graft include

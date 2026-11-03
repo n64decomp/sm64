@@ -1,8 +1,8 @@
 // animated_floor_switch.inc.c
 
 struct Struct80331A54 {
-    const Collision *collision;
-    s16 model;
+    const void *unk00;
+    s16 unk04;
 };
 
 struct Struct80331A54 D_80331A54[][5] = {
@@ -37,16 +37,16 @@ void bhv_animates_on_floor_switch_press_init(void) {
 
 void bhv_animates_on_floor_switch_press_loop(void) {
     if (o->oFloorSwitchPressAnimationUnk100 != 0) {
-        if (o->parentObj->oAction != PURPLE_SWITCH_ACT_TICKING) {
+        if (o->parentObj->oAction != 2) {
             o->oFloorSwitchPressAnimationUnk100 = 0;
         }
 
         if (o->oFloorSwitchPressAnimationUnkFC != 0) {
-            o->oFloorSwitchPressAnimationUnkF4 = D_80331ACC[o->oBhvParams2ndByte];
+            o->oFloorSwitchPressAnimationUnkF4 = D_80331ACC[o->oBehParams2ndByte];
         } else {
             o->oFloorSwitchPressAnimationUnkF4 = 0;
         }
-    } else if (o->parentObj->oAction == PURPLE_SWITCH_ACT_TICKING) {
+    } else if (o->parentObj->oAction == 2) {
         o->oFloorSwitchPressAnimationUnkFC ^= 1;
         o->oFloorSwitchPressAnimationUnk100 = 1;
     }
@@ -63,7 +63,7 @@ void bhv_animates_on_floor_switch_press_loop(void) {
         }
 
         if (o->oFloorSwitchPressAnimationUnkF8 < 9) {
-            o->oFloorSwitchPressAnimationUnkF8++;
+            o->oFloorSwitchPressAnimationUnkF8 += 1;
         }
     } else if ((o->oFloorSwitchPressAnimationUnkF8 -= 2) < 0) {
         o->oFloorSwitchPressAnimationUnkF8 = 0;
@@ -71,7 +71,7 @@ void bhv_animates_on_floor_switch_press_loop(void) {
     }
 
     o->collisionData = segmented_to_virtual(
-        D_80331A54[o->oBhvParams2ndByte][o->oFloorSwitchPressAnimationUnkF8 / 2].collision);
+        D_80331A54[o->oBehParams2ndByte][o->oFloorSwitchPressAnimationUnkF8 / 2].unk00);
 
-    cur_obj_set_model(D_80331A54[o->oBhvParams2ndByte][o->oFloorSwitchPressAnimationUnkF8 / 2].model);
+    cur_obj_set_model(D_80331A54[o->oBehParams2ndByte][o->oFloorSwitchPressAnimationUnkF8 / 2].unk04);
 }

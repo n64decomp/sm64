@@ -1,5 +1,6 @@
 .set noat      // allow manual use of $at
 .set noreorder // don't insert nops after branches
+.set gp=64
 
 #include "macros.inc"
 
@@ -8,49 +9,42 @@
 
 glabel osInvalDCache
     blez  $a1, .L80323500
-     nop
+    nop
     li    $t3, 8192
     sltu  $at, $a1, $t3
     beqz  $at, .L80323508
-     nop
+    nop
     move  $t0, $a0
     addu  $t1, $a0, $a1
     sltu  $at, $t0, $t1
     beqz  $at, .L80323500
-     nop
-#ifdef VERSION_CN
+    nop
+    andi  $t2, $t0, 0xf
+    beqz  $t2, .L803234D0
     addiu $t1, $t1, -0x10
-    andi  $t2, $t0, 0xf
-    beqz  $t2, .L803234D0
-     nop
-#else
-    andi  $t2, $t0, 0xf
-    beqz  $t2, .L803234D0
-     addiu $t1, $t1, -0x10
-#endif
     subu  $t0, $t0, $t2
     cache 0x15, ($t0)
     sltu  $at, $t0, $t1
     beqz  $at, .L80323500
-     nop
+    nop
     addiu $t0, $t0, 0x10
 .L803234D0:
     andi  $t2, $t1, 0xf
     beqz  $t2, .L803234F0
-     nop
+    nop
     subu  $t1, $t1, $t2
     cache 0x15, 0x10($t1)
     sltu  $at, $t1, $t0
     bnez  $at, .L80323500
-     nop
+    nop
 .L803234F0:
     cache 0x11, ($t0)
     sltu  $at, $t0, $t1
     bnez  $at, .L803234F0
-     addiu $t0, $t0, 0x10
+    addiu $t0, $t0, 0x10
 .L80323500:
     jr    $ra
-     nop
+    nop
 
 .L80323508:
     li    $t0, K0BASE

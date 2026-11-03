@@ -1,8 +1,9 @@
 #include "libultra_internal.h"
-#include "piint.h"
+
+extern OSMgrArgs __osPiDevMgr;
 
 OSMesgQueue *osPiGetCmdQueue(void) {
-    if (!__osPiDevMgr.active) {
+    if (!__osPiDevMgr.initialized) {
         return NULL;
     }
     return __osPiDevMgr.cmdQueue;

@@ -6,7 +6,7 @@
 sequence_start:
 seq_setmutebhv 0x60
 seq_setmutescale 0
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
   seq_setvol 100
 #else
   seq_setvol 127
@@ -89,7 +89,7 @@ chan_dyncall
 .poll_023589:
 chan_delay1
 chan_ioreadval 0
-chan_bltz .skip_023589 // if we have a signal:
+chan_bltz .skip_023589 // if we have a signal: 
   chan_beqz .force_stop_023589 // told to stop
   chan_jump .start_playing_023589 // told to play something else
 .skip_023589:
@@ -2074,7 +2074,7 @@ chan_setlayer 0, .layer_C3C
 chan_end
 
 .layer_C3C:
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
   layer_transpose 2
 #endif
 layer_portamento 0x82, 41, 127
@@ -2113,7 +2113,7 @@ chan_setlayer 0, .layer_C6C
 chan_end
 
 .layer_C6C:
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
   layer_transpose 1
 #endif
 layer_portamento 0x82, 44, 200
@@ -2693,13 +2693,13 @@ layer_jump .layer_C4E
   layer_end
 #endif
 
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
   .chan_unused_F9A_eu:
   chan_setbank 8
   chan_setinstr 0
   chan_setlayer 0, .layer_FA2_eu
   chan_end
-
+  
   .layer_FA2_eu:
   layer_delay 0x5
   layer_end
@@ -3402,7 +3402,7 @@ chan_setbank 9
 chan_setinstr 3
 chan_setval 40
 chan_call .set_reverb
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
   chan_setreverb 40
 #endif
 chan_setlayer 0, .layer_141A
@@ -3410,7 +3410,7 @@ chan_end
 
 .layer_141A:
 layer_transpose 24
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
   layer_note1 51, 0xc, 90
 #endif
 layer_note1 39, 0x4, 90
@@ -4155,7 +4155,7 @@ layer_end
   chan_setlayer 1, .layer_1902
   chan_setlayer 2, .layer_1907
 #else
-  #if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+  #if defined(VERSION_EU) || defined(VERSION_SH)
     chan_setbank 9
     chan_setinstr 3
   #else
@@ -7509,7 +7509,7 @@ layer_end
 chan_reservenotes 4
 chan_setbank 9
 chan_setinstr 2
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
   chan_setval 15
   .set EXIT_PIPE_NOTE_VELOCITY, 106
 #else
@@ -7831,7 +7831,7 @@ chan_end
   .layer_3146:
   layer_delay 0x6
 
-  #if defined(VERSION_SH) || defined(VERSION_CN)
+  #ifdef VERSION_SH
     .set RED_COIN_NOTE_VELOCITY_SUB, 10
   #else
     .set RED_COIN_NOTE_VELOCITY_SUB, 0
@@ -8153,7 +8153,7 @@ envelope_goto 2
 .envelope_341C:
 envelope_line 25 32760
 envelope_line 60 10000
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
   envelope_hang
 #else
   envelope_goto 2

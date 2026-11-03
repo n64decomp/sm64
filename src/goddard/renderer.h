@@ -51,8 +51,12 @@ void *gd_malloc(u32 size, u8 perm);
 void *gd_malloc_perm(u32 size);
 void *gd_malloc_temp(u32 size);
 void draw_indexed_dl(s32 dlNum, s32 gfxIdx);
+#ifdef USE_SYSTEM_MALLOC
+void gdm_init(void *(*allocFn)(u32 size), void (*freeFn)(void *ptr));
+#else   
 void gd_add_to_heap(void *addr, u32 size);
 void gdm_init(void *blockpool, u32 size);
+#endif
 void gdm_setup(void);
 void gdm_maketestdl(s32 id);
 void gd_vblank(void);

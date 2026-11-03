@@ -43,13 +43,13 @@
 #define SURFACE_HARD_VERY_SLIPPERY           0x0036 // Hard and very slippery (Always has fall damage)
 #define SURFACE_HARD_NOT_SLIPPERY            0x0037 // Hard and Non-slippery (Always has fall damage)
 #define SURFACE_VERTICAL_WIND                0x0038 // Death at bottom with vertical wind
-#define SURFACE_BOSS_FIGHT_CAMERA            0x0065 // Wide camera for BoB and WF bosses
+#define SURFACE_BOSS_FIGHT_CAMERA            0x0065 // Wide camera for BOB and WF bosses
 #define SURFACE_CAMERA_FREE_ROAM             0x0066 // Free roam camera for THI and TTC
 #define SURFACE_THI3_WALLKICK                0x0068 // Surface where there's a wall kick section in THI 3rd area, has no action defined
 #define SURFACE_CAMERA_8_DIR                 0x0069 // Surface that enables far camera for platforms, used in THI
 #define SURFACE_CAMERA_MIDDLE                0x006E // Surface camera that returns to the middle, used on the 4 pillars of SSL
 #define SURFACE_CAMERA_ROTATE_RIGHT          0x006F // Surface camera that rotates to the right (Bowser 1 & THI)
-#define SURFACE_CAMERA_ROTATE_LEFT           0x0070 // Surface camera that rotates to the left (BoB & TTM)
+#define SURFACE_CAMERA_ROTATE_LEFT           0x0070 // Surface camera that rotates to the left (BOB & TTM)
 #define SURFACE_CAMERA_BOUNDARY              0x0072 // Intangible Area, only used to restrict camera movement
 #define SURFACE_NOISE_VERY_SLIPPERY_73       0x0073 // Very slippery floor with noise, unused
 #define SURFACE_NOISE_VERY_SLIPPERY_74       0x0074 // Very slippery floor with noise, unused
@@ -60,9 +60,9 @@
 #define SURFACE_NO_CAM_COL_SLIPPERY          0x0079 // Surface with no cam collision flag, slippery with noise (CCM, PSS and TTM slides)
 #define SURFACE_SWITCH                       0x007A // Surface with no cam collision flag, non-slippery with noise, used by switches and Dorrie
 #define SURFACE_VANISH_CAP_WALLS             0x007B // Vanish cap walls, pass through them with Vanish Cap
-#define SURFACE_PAINTING_WOBBLE_A6           0x00A6 // Painting wobble (BoB Left)
-#define SURFACE_PAINTING_WOBBLE_A7           0x00A7 // Painting wobble (BoB Middle)
-#define SURFACE_PAINTING_WOBBLE_A8           0x00A8 // Painting wobble (BoB Right)
+#define SURFACE_PAINTING_WOBBLE_A6           0x00A6 // Painting wobble (BOB Left)
+#define SURFACE_PAINTING_WOBBLE_A7           0x00A7 // Painting wobble (BOB Middle)
+#define SURFACE_PAINTING_WOBBLE_A8           0x00A8 // Painting wobble (BOB Right)
 #define SURFACE_PAINTING_WOBBLE_A9           0x00A9 // Painting wobble (CCM Left)
 #define SURFACE_PAINTING_WOBBLE_AA           0x00AA // Painting wobble (CCM Middle)
 #define SURFACE_PAINTING_WOBBLE_AB           0x00AB // Painting wobble (CCM Right)
@@ -102,12 +102,12 @@
 #define SURFACE_PAINTING_WOBBLE_CD           0x00CD // Painting wobble (THI Huge - Left)
 #define SURFACE_PAINTING_WOBBLE_CE           0x00CE // Painting wobble (THI Huge - Middle)
 #define SURFACE_PAINTING_WOBBLE_CF           0x00CF // Painting wobble (THI Huge - Right)
-#define SURFACE_PAINTING_WOBBLE_D0           0x00D0 // Painting wobble (HMC & CotMC - Left), makes the painting wobble if touched
-#define SURFACE_PAINTING_WOBBLE_D1           0x00D1 // Painting wobble (Unused, HMC & CotMC - Middle)
-#define SURFACE_PAINTING_WOBBLE_D2           0x00D2 // Painting wobble (Unused, HMC & CotMC - Right)
-#define SURFACE_PAINTING_WARP_D3             0x00D3 // Painting warp (BoB Left)
-#define SURFACE_PAINTING_WARP_D4             0x00D4 // Painting warp (BoB Middle)
-#define SURFACE_PAINTING_WARP_D5             0x00D5 // Painting warp (BoB Right)
+#define SURFACE_PAINTING_WOBBLE_D0           0x00D0 // Painting wobble (HMC & COTMC - Left), makes the painting wobble if touched
+#define SURFACE_PAINTING_WOBBLE_D1           0x00D1 // Painting wobble (Unused, HMC & COTMC - Middle)
+#define SURFACE_PAINTING_WOBBLE_D2           0x00D2 // Painting wobble (Unused, HMC & COTMC - Right)
+#define SURFACE_PAINTING_WARP_D3             0x00D3 // Painting warp (BOB Left)
+#define SURFACE_PAINTING_WARP_D4             0x00D4 // Painting warp (BOB Middle)
+#define SURFACE_PAINTING_WARP_D5             0x00D5 // Painting warp (BOB Right)
 #define SURFACE_PAINTING_WARP_D6             0x00D6 // Painting warp (CCM Left)
 #define SURFACE_PAINTING_WARP_D7             0x00D7 // Painting warp (CCM Middle)
 #define SURFACE_PAINTING_WARP_D8             0x00D8 // Painting warp (CCM Right)

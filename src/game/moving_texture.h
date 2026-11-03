@@ -10,7 +10,8 @@
 #define ROTATE_COUNTER_CLOCKWISE 1
 
 /// Ids for textures used for moving textures
-enum MovtexRectTextureId {
+enum MovtexRectTextureId
+{
     TEXTURE_WATER,
     TEXTURE_MIST,
     TEXTURE_JRB_WATER,
@@ -70,8 +71,8 @@ extern f32 gPaintingMarioYEntry;
 #define WDW_MOVTEX_AREA1_WATER                      (   1 | MOVTEX_AREA_WDW)
 #define WDW_MOVTEX_AREA2_WATER                      (   2 | MOVTEX_AREA_WDW)
 #define JRB_MOVTEX_WATER                            (   1 | MOVTEX_AREA_JRB)
-#define JRB_MOVTEX_INITIAL_MIST                     (   5 | MOVTEX_AREA_JRB)
-#define JRB_MOVTEX_SUNKEN_SHIP_WATER                (   2 | MOVTEX_AREA_JRB)
+#define JRB_MOVTEX_INTIAL_MIST                      (   5 | MOVTEX_AREA_JRB)
+#define JRB_MOVTEX_SINKED_BOAT_WATER                (   2 | MOVTEX_AREA_JRB)
 #define THI_MOVTEX_AREA1_WATER                      (   1 | MOVTEX_AREA_THI)
 #define THI_MOVTEX_AREA2_WATER                      (   2 | MOVTEX_AREA_THI)
 #define CASTLE_GROUNDS_MOVTEX_WATER                 (   1 | MOVTEX_AREA_CASTLE_GROUNDS)

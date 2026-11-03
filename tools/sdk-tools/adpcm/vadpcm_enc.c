@@ -56,11 +56,7 @@ int main(int argc, char **argv)
     ALADPCMloop *aloops;
     Marker *markers;
     CodeChunk cChunk;
-#ifdef __sgi
     char filename[1024];
-#else
-    const char *filename;
-#endif
     FILE *fhandle;
     FILE *ifile;
     FILE *ofile;
@@ -76,12 +72,7 @@ int main(int argc, char **argv)
         switch (c)
         {
         case 'c':
-#ifdef __sgi
             if (sscanf(optarg, "%s", filename) == 1)
-#else
-            // Allow filenames with spaces
-            filename = optarg;
-#endif
             {
                 if ((fhandle = fopen(filename, "r")) == NULL)
                 {

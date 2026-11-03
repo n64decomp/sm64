@@ -1,5 +1,5 @@
 #include "libultra_internal.h"
-#include "PR/os.h"
+#include "new_func.h"
 
 void __osResetGlobalIntMask(u32 mask) {
     register u32 prev;

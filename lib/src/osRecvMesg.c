@@ -2,16 +2,16 @@
 
 s32 osRecvMesg(OSMesgQueue *mq, OSMesg *msg, s32 flag) {
     register u32 int_disabled;
+    register OSThread *thread;
     int_disabled = __osDisableInt();
 
     while (!mq->validCount) {
         if (!flag) {
             __osRestoreInt(int_disabled);
             return -1;
-        } else {
-            __osRunningThread->state = OS_STATE_WAITING;
-            __osEnqueueAndYield(&mq->mtqueue);
         }
+        D_803348A0->state = OS_STATE_WAITING;
+        __osEnqueueAndYield(&mq->mtqueue);
     }
 
     if (msg != NULL) {
@@ -22,7 +22,8 @@ s32 osRecvMesg(OSMesgQueue *mq, OSMesg *msg, s32 flag) {
     mq->validCount--;
 
     if (mq->fullqueue->next != NULL) {
-        osStartThread(__osPopThread(&mq->fullqueue));
+        thread = __osPopThread(&mq->fullqueue);
+        osStartThread(thread);
     }
 
     __osRestoreInt(int_disabled);

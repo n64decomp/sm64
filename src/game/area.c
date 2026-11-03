@@ -106,13 +106,10 @@ void set_warp_transition_rgb(u8 red, u8 green, u8 blue) {
 }
 
 void print_intro_text(void) {
-#ifdef VERSION_CN
-    u8 sp18[] = { 0xB0, 0x00 }; // TODO: iQue colorful text
-#endif
 #ifdef VERSION_EU
     s32 language = eu_get_language();
 #endif
-    if ((gGlobalTimer & 31) < 20) {
+    if ((gGlobalTimer & 0x1F) < 20) {
         if (gControllerBits == 0) {
 #ifdef VERSION_EU
             print_text_centered(SCREEN_WIDTH / 2, 20, gNoControllerMsg[language]);
@@ -123,11 +120,7 @@ void print_intro_text(void) {
 #ifdef VERSION_EU
             print_text(20, 20, "START");
 #else
-#ifdef VERSION_CN
-            print_text_centered(60, 38, (char *) sp18);
-#else
             print_text_centered(60, 38, "PRESS");
-#endif
             print_text_centered(60, 20, "START");
 #endif
         }
@@ -139,7 +132,7 @@ u32 get_mario_spawn_type(struct Object *o) {
     const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
     for (i = 0; i < 20; i++) {
-        if (behavior == sWarpBhvSpawnTable[i]) {
+        if (sWarpBhvSpawnTable[i] == behavior) {
             return sSpawnTypeFromWarpBhv[i];
         }
     }
@@ -158,15 +151,20 @@ struct ObjectWarpNode *area_get_warp_node(u8 id) {
 }
 
 struct ObjectWarpNode *area_get_warp_node_from_params(struct Object *o) {
-    u8 id = (o->oBhvParams & 0x00FF0000) >> 16;
+    u8 sp1F = (o->oBehParams & 0x00FF0000) >> 16;
 
-    return area_get_warp_node(id);
+    return area_get_warp_node(sp1F);
 }
 
 void load_obj_warp_nodes(void) {
     struct ObjectWarpNode *sp24;
     struct Object *sp20 = (struct Object *) gObjParentGraphNode.children;
 
+#ifdef USE_SYSTEM_MALLOC
+    if (sp20 == NULL) {
+        return;
+    }
+#endif
     do {
         struct Object *sp1C = sp20;
 
@@ -201,7 +199,7 @@ void clear_areas(void) {
         gAreaData[i].instantWarps = NULL;
         gAreaData[i].objectSpawnInfos = NULL;
         gAreaData[i].camera = NULL;
-        gAreaData[i].unused = NULL;
+        gAreaData[i].unused28 = NULL;
         gAreaData[i].whirlpools[0] = NULL;
         gAreaData[i].whirlpools[1] = NULL;
         gAreaData[i].dialog[0] = DIALOG_NONE;
@@ -337,14 +335,16 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
 
         gWarpTransition.data.texTimer = 0;
 
-        if (transType & 1) { // Is the image fading in?
+        if (transType & 1) // Is the image fading in?
+        {
             gWarpTransition.data.startTexRadius = GFX_DIMENSIONS_FULL_RADIUS;
             if (transType >= 0x0F) {
                 gWarpTransition.data.endTexRadius = 16;
             } else {
                 gWarpTransition.data.endTexRadius = 0;
             }
-        } else { // The image is fading out. (Reverses start & end circles)
+        } else // The image is fading out. (Reverses start & end circles)
+        {
             if (transType >= 0x0E) {
                 gWarpTransition.data.startTexRadius = 16;
             } else {
@@ -414,7 +414,7 @@ void render_game(void) {
         if (D_8032CE78 != NULL) {
             clear_viewport(D_8032CE78, gWarpTransFBSetColor);
         } else {
-            clear_framebuffer(gWarpTransFBSetColor);
+            clear_frame_buffer(gWarpTransFBSetColor);
         }
     }
 

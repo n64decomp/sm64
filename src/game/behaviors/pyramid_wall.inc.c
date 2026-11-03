@@ -1,6 +1,5 @@
-
 /**
- * Behavior for bhvSSLMovingPyramidWall.
+ * Behavior for bhvSslMovingPyramidWall.
  *
  * This controls the moving walls found within Shifting Sand Land's pyramid.
  * Each wall starts at an initial position and moves up or down at a constant
@@ -12,7 +11,8 @@
  * positions.
  */
 void bhv_ssl_moving_pyramid_wall_init(void) {
-    switch (o->oBhvParams2ndByte) {
+
+    switch (o->oBehParams2ndByte) {
         case PYRAMID_WALL_BP_POSITION_HIGH:
             break;
 
@@ -36,16 +36,14 @@ void bhv_ssl_moving_pyramid_wall_loop(void) {
     switch (o->oAction) {
         case PYRAMID_WALL_ACT_MOVING_DOWN:
             o->oVelY = -5.12f;
-            if (o->oTimer == 100) {
+            if (o->oTimer == 100)
                 o->oAction = PYRAMID_WALL_ACT_MOVING_UP;
-            }
             break;
 
         case PYRAMID_WALL_ACT_MOVING_UP:
             o->oVelY = 5.12f;
-            if (o->oTimer == 100) {
+            if (o->oTimer == 100)
                 o->oAction = PYRAMID_WALL_ACT_MOVING_DOWN;
-            }
             break;
     }
 

@@ -1747,7 +1747,7 @@ const Collision ccm_seg7_area_1_collision[] = {
     COL_TRI(336, 609, 616),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(21),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/ -1512,  2560, -2305, /*yaw*/ 100), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,       /*pos*/ -1512,  2560, -2305, /*yaw*/ 100), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03,     /*pos*/  -409,  2765, -1637, /*yaw*/   0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04,     /*pos*/  2355, -4095,  4096, /*yaw*/   0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_05,     /*pos*/ -4210, -1446,  1874, /*yaw*/   0),
@@ -1767,7 +1767,7 @@ const Collision ccm_seg7_area_1_collision[] = {
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,        /*pos*/ -1146, -3583,  5919),
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,        /*pos*/ -1768,  2560, -1793),
     SPECIAL_OBJECT(/*preset*/ special_snow_tree,        /*pos*/ -3443,   807, -2713),
-    SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_wooden_door_warp, /*pos*/  2464, -4607,  4302, /*yaw*/ 158, /*bhvParam2*/ 20),
+    SPECIAL_OBJECT_WITH_YAW_AND_PARAM(/*preset*/ special_wooden_door_warp, /*pos*/  2464, -4607,  4302, /*yaw*/ 158, /*behParam2*/ 20),
     COL_WATER_BOX_INIT(1),
     COL_WATER_BOX(0, 3137, 4228, 3925, 4945, -4638),
     COL_END(),

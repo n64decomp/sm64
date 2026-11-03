@@ -293,7 +293,7 @@ void geo_layout_cmd_nop3(void) {
 }
 
 /*
-  0x0C: Create z-buffer-toggling scene graph node
+  0x0C: Create zbuffer-toggling scene graph node
    cmd+0x01: u8 enableZBuffer (1 = on, 0 = off)
 */
 void geo_layout_cmd_node_master_list(void) {

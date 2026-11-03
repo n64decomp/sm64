@@ -1,6 +1,6 @@
-# Bob-omb Battlefield
+# Bob-Omb Battlefield
 short-name: bob
-full-name: Bob-omb Battlefield
+full-name: Bob-Omb Battlefield
 texture-file: ["/texture.inc.c"]
 area-count: 1
 objects: [chain_chomp_gate, grate_door, seesaw_platform]

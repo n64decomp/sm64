@@ -95,10 +95,6 @@
 #define INT_STATUS_ATTACKED_MARIO        (1 << 13) /* 0x00002000 */
 #define INT_STATUS_WAS_ATTACKED          (1 << 14) /* 0x00004000 */
 #define INT_STATUS_INTERACTED            (1 << 15) /* 0x00008000 */
-#define INT_STATUS_UNK16                 (1 << 16) /* 0x00010000 */
-#define INT_STATUS_UNK17                 (1 << 17) /* 0x00020000 */
-#define INT_STATUS_UNK18                 (1 << 18) /* 0x00040000 */
-#define INT_STATUS_UNK19                 (1 << 19) /* 0x00080000 */
 #define INT_STATUS_TRAP_TURN             (1 << 20) /* 0x00100000 */
 #define INT_STATUS_HIT_MINE              (1 << 21) /* 0x00200000 */
 #define INT_STATUS_STOP_RIDING           (1 << 22) /* 0x00400000 */

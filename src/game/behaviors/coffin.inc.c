@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvCoffinSpawner and bhvCoffin.
  * The coffins are spawned by a singular spawner,
@@ -38,7 +37,7 @@ void bhv_coffin_spawner_loop(void) {
 
                 // Behavior param of 0 for all even i, 1 for all odd
                 coffin = spawn_object_relative(i & 1, coffinRelativePos[i].x, 0, relativeZ, o,
-                                               MODEL_BBH_WOODEN_TOMB, bhvCoffin);
+                                              MODEL_BBH_WOODEN_TOMB, bhvCoffin);
 
                 // Never true, game would enter a while(1) before it could.
                 // Possible a remnant of days this didn't happen.
@@ -50,7 +49,7 @@ void bhv_coffin_spawner_loop(void) {
                 }
             }
 
-            o->oAction++;
+            o->oAction += 1;
         }
     } else if (o->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM) {
         o->oAction = COFFIN_SPAWNER_ACT_COFFINS_UNLOADED;
@@ -63,7 +62,14 @@ void bhv_coffin_spawner_loop(void) {
  * Also controls laying the coffin down after it has stood up.
  */
 void coffin_act_idle(void) {
-    if (o->oBhvParams2ndByte != COFFIN_BP_STATIC) {
+    f32 yawCos;
+    f32 yawSin;
+    f32 dx;
+    f32 dz;
+    f32 distForwards;
+    f32 distSideways;
+
+    if (o->oBehParams2ndByte != COFFIN_BP_STATIC) {
         // Lay down if standing
         if (o->oFaceAnglePitch != 0) {
             o->oAngleVelPitch = approach_s16_symmetric(o->oAngleVelPitch, -2000, 200);
@@ -84,23 +90,25 @@ void coffin_act_idle(void) {
             o->oTimer = 0;
         } else {
             // Yaw never changes and is aligned, so yawCos = 1 or -1, yawSin = 0
-            f32 yawCos = coss(o->oFaceAngleYaw);
-            f32 yawSin = sins(o->oFaceAngleYaw);
+            yawCos = coss(o->oFaceAngleYaw);
+            yawSin = sins(o->oFaceAngleYaw);
 
-            f32 dx = gMarioObject->oPosX - o->oPosX;
-            f32 dz = gMarioObject->oPosZ - o->oPosZ;
+            dx = gMarioObject->oPosX - o->oPosX;
+            dz = gMarioObject->oPosZ - o->oPosZ;
 
-            f32 distForwards = dx * yawCos + dz * yawSin;
-            f32 distSideways = dz * yawCos - dx * yawSin;
+            distForwards = dx * yawCos + dz * yawSin;
+            distSideways = dz * yawCos - dx * yawSin;
 
             // This checks a box around the coffin and if it has been a bit since it stood up.
             // It also checks in the case Mario is squished, so he doesn't get permanently squished.
             if (o->oTimer > 60
-                && (o->oDistanceToMario > 100.0f || gMarioState->action == ACT_SQUISHED)
-                && gMarioObject->oPosY - o->oPosY < 200.0f && absf(distForwards) < 140.0f
-                && distSideways < 150.0f && distSideways > -450.0f) {
-                cur_obj_play_sound_2(SOUND_GENERAL_BUTTON_PRESS_2_LOWPRIO);
-                o->oAction = COFFIN_ACT_STAND_UP;
+                && (o->oDistanceToMario > 100.0f || gMarioState->action == ACT_SQUISHED)) {
+                if (gMarioObject->oPosY - o->oPosY < 200.0f && absf(distForwards) < 140.0f) {
+                    if (distSideways < 150.0f && distSideways > -450.0f) {
+                        cur_obj_play_sound_2(SOUND_GENERAL_BUTTON_PRESS_2_LOWPRIO);
+                        o->oAction = COFFIN_ACT_STAND_UP;
+                    }
+                }
             }
 
             o->oAngleVelPitch = 0;

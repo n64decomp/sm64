@@ -1075,7 +1075,7 @@ const Collision wf_seg7_collision_070102D8[] = {
     COL_TRI(4, 7, 5),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(6),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  2560,  256, 5120, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  2560,  256, 5120, /*yaw*/ 64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_0E, /*pos*/  3584,  154, 4864, /*yaw*/ 0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_0F, /*pos*/  4608,  256, 1792, /*yaw*/ 0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_11, /*pos*/ -2499, 1792, -261, /*yaw*/ 0),

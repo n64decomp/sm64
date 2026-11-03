@@ -28,16 +28,6 @@
 #define LANGUAGE_FUNCTION sLanguageMode
 #endif
 
-#ifdef VERSION_CN
-#define FILE_SELECT_PRINT_STRING print_generic_string
-#define FILE_SELECT_TEXT_DL_BEGIN dl_ia_text_begin
-#define FILE_SELECT_TEXT_DL_END dl_ia_text_end
-#else
-#define FILE_SELECT_PRINT_STRING print_menu_generic_string
-#define FILE_SELECT_TEXT_DL_BEGIN dl_menu_ia8_text_begin
-#define FILE_SELECT_TEXT_DL_END dl_menu_ia8_text_end
-#endif
-
 /**
  * @file file_select.c
  * This file implements how the file select and it's menus render and function.
@@ -69,12 +59,6 @@ static u8 sYesNoColor[2];
 
 // The button that is selected when it is clicked.
 static s8 sSelectedButtonID = MENU_BUTTON_NONE;
-
-// On iQue, the courses can't all fit on one screen; there are two pages,
-// switched between with the L and R triggers.
-#ifdef VERSION_CN
-static s8 sScorePage = 0;
-#endif
 
 // Whether we are on the main menu or one of the submenus.
 static s8 sCurrentMenuLevel = MENU_LAYER_MAIN;
@@ -142,163 +126,163 @@ static s8 sOpenLangSettings = FALSE;
 #endif
 
 #ifndef VERSION_EU
-static u8 textReturn[] = { TEXT_RETURN };
+static unsigned char textReturn[] = { TEXT_RETURN };
 #else
-static u8 textReturn[][8] = {{ TEXT_RETURN }, { TEXT_RETURN_FR }, { TEXT_RETURN_DE }};
+static unsigned char textReturn[][8] = {{ TEXT_RETURN }, { TEXT_RETURN_FR }, { TEXT_RETURN_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textViewScore[] = { TEXT_CHECK_SCORE };
+static unsigned char textViewScore[] = { TEXT_CHECK_SCORE };
 #else
-static u8 textViewScore[][12] = {{ TEXT_CHECK_SCORE }, {TEXT_CHECK_SCORE_FR}, {TEXT_CHECK_SCORE_DE}};
+static unsigned char textViewScore[][12] = {{ TEXT_CHECK_SCORE }, {TEXT_CHECK_SCORE_FR}, {TEXT_CHECK_SCORE_DE}};
 #endif
 
 #ifndef VERSION_EU
-static u8 textCopyFileButton[] = { TEXT_COPY_FILE_BUTTON };
+static unsigned char textCopyFileButton[] = { TEXT_COPY_FILE_BUTTON };
 #else
-static u8 textCopyFileButton[][15] = {{ TEXT_COPY_FILE }, { TEXT_COPY_FILE_FR }, { TEXT_COPY_FILE_DE }};
+static unsigned char textCopyFileButton[][15] = {{ TEXT_COPY_FILE }, { TEXT_COPY_FILE_FR }, { TEXT_COPY_FILE_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textEraseFileButton[] = { TEXT_ERASE_FILE_BUTTON };
+static unsigned char textEraseFileButton[] = { TEXT_ERASE_FILE_BUTTON };
 #else
-static u8 textEraseFileButton[][16] = { {TEXT_ERASE_FILE}, {TEXT_ERASE_FILE_FR}, {TEXT_ERASE_FILE_DE} };
+static unsigned char textEraseFileButton[][16] = { {TEXT_ERASE_FILE}, {TEXT_ERASE_FILE_FR}, {TEXT_ERASE_FILE_DE} };
 #endif
 
 #ifndef VERSION_EU
-static u8 textSoundModes[][8] = { { TEXT_STEREO }, { TEXT_MONO }, { TEXT_HEADSET } };
+static unsigned char textSoundModes[][8] = { { TEXT_STEREO }, { TEXT_MONO }, { TEXT_HEADSET } };
 #endif
 
-static u8 textMarioA[] = { TEXT_FILE_MARIO_A };
-static u8 textMarioB[] = { TEXT_FILE_MARIO_B };
-static u8 textMarioC[] = { TEXT_FILE_MARIO_C };
-static u8 textMarioD[] = { TEXT_FILE_MARIO_D };
+static unsigned char textMarioA[] = { TEXT_FILE_MARIO_A };
+static unsigned char textMarioB[] = { TEXT_FILE_MARIO_B };
+static unsigned char textMarioC[] = { TEXT_FILE_MARIO_C };
+static unsigned char textMarioD[] = { TEXT_FILE_MARIO_D };
 
 #ifndef VERSION_EU
-static u8 textNew[] = { TEXT_NEW };
-static u8 starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
-static u8 xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
+static unsigned char textNew[] = { TEXT_NEW };
+static unsigned char starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
+static unsigned char xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
 #endif
 
 #ifndef VERSION_EU
-static u8 textSelectFile[] = { TEXT_SELECT_FILE };
+static unsigned char textSelectFile[] = { TEXT_SELECT_FILE };
 #else
-static u8 textSelectFile[][17] = {{ TEXT_SELECT_FILE }, { TEXT_SELECT_FILE_FR }, { TEXT_SELECT_FILE_DE }};
+static unsigned char textSelectFile[][17] = {{ TEXT_SELECT_FILE }, { TEXT_SELECT_FILE_FR }, { TEXT_SELECT_FILE_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textScore[] = { TEXT_SCORE };
+static unsigned char textScore[] = { TEXT_SCORE };
 #else
-static u8 textScore[][9] = {{ TEXT_SCORE }, { TEXT_SCORE_FR }, { TEXT_SCORE_DE }};
+static unsigned char textScore[][9] = {{ TEXT_SCORE }, { TEXT_SCORE_FR }, { TEXT_SCORE_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textCopy[] = { TEXT_COPY };
+static unsigned char textCopy[] = { TEXT_COPY };
 #else
-static u8 textCopy[][9] = {{ TEXT_COPY }, { TEXT_COPY_FR }, { TEXT_COPY_DE }};
+static unsigned char textCopy[][9] = {{ TEXT_COPY }, { TEXT_COPY_FR }, { TEXT_COPY_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textErase[] = { TEXT_ERASE };
+static unsigned char textErase[] = { TEXT_ERASE };
 #else
-static u8 textErase[][8] = {{ TEXT_ERASE }, { TEXT_ERASE_FR }, { TEXT_ERASE_DE }};
+static unsigned char textErase[][8] = {{ TEXT_ERASE }, { TEXT_ERASE_FR }, { TEXT_ERASE_DE }};
 #endif
 
 #ifdef VERSION_EU
-static u8 textOption[][9] = {{ TEXT_OPTION }, { TEXT_OPTION_FR }, { TEXT_OPTION_DE } };
+static unsigned char textOption[][9] = {{ TEXT_OPTION }, { TEXT_OPTION_FR }, { TEXT_OPTION_DE } };
 #endif
 
 #ifndef VERSION_EU
-static u8 textCheckFile[] = { TEXT_CHECK_FILE };
+static unsigned char textCheckFile[] = { TEXT_CHECK_FILE };
 #else
-static u8 textCheckFile[][18] = {{ TEXT_CHECK_FILE }, { TEXT_CHECK_FILE_FR }, { TEXT_CHECK_FILE_DE }};
+static unsigned char textCheckFile[][18] = {{ TEXT_CHECK_FILE }, { TEXT_CHECK_FILE_FR }, { TEXT_CHECK_FILE_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textNoSavedDataExists[] = { TEXT_NO_SAVED_DATA_EXISTS };
+static unsigned char textNoSavedDataExists[] = { TEXT_NO_SAVED_DATA_EXISTS };
 #else
-static u8 textNoSavedDataExists[][30] = {{ TEXT_NO_SAVED_DATA_EXISTS }, { TEXT_NO_SAVED_DATA_EXISTS_FR }, { TEXT_NO_SAVED_DATA_EXISTS_DE }};
+static unsigned char textNoSavedDataExists[][30] = {{ TEXT_NO_SAVED_DATA_EXISTS }, { TEXT_NO_SAVED_DATA_EXISTS_FR }, { TEXT_NO_SAVED_DATA_EXISTS_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textCopyFile[] = { TEXT_COPY_FILE };
+static unsigned char textCopyFile[] = { TEXT_COPY_FILE };
 #else
-static u8 textCopyFile[][16] = {{ TEXT_COPY_FILE_BUTTON }, { TEXT_COPY_FILE_BUTTON_FR }, { TEXT_COPY_FILE_BUTTON_DE }};
+static unsigned char textCopyFile[][16] = {{ TEXT_COPY_FILE_BUTTON }, { TEXT_COPY_FILE_BUTTON_FR }, { TEXT_COPY_FILE_BUTTON_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textCopyItToWhere[] = { TEXT_COPY_IT_TO_WHERE };
+static unsigned char textCopyItToWhere[] = { TEXT_COPY_IT_TO_WHERE };
 #else
-static u8 textCopyItToWhere[][18] = {{ TEXT_COPY_IT_TO_WHERE }, { TEXT_COPY_IT_TO_WHERE_FR }, { TEXT_COPY_IT_TO_WHERE_DE }};
-#endif
-
-#if !defined(VERSION_EU)
-static u8 textNoSavedDataExistsCopy[] = { TEXT_NO_SAVED_DATA_EXISTS };
+static unsigned char textCopyItToWhere[][18] = {{ TEXT_COPY_IT_TO_WHERE }, { TEXT_COPY_IT_TO_WHERE_FR }, { TEXT_COPY_IT_TO_WHERE_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textCopyCompleted[] = { TEXT_COPYING_COMPLETED };
-#else
-static u8 textCopyCompleted[][18] = {{ TEXT_COPYING_COMPLETED }, { TEXT_COPYING_COMPLETED_FR }, { TEXT_COPYING_COMPLETED_DE }};
+static unsigned char textNoSavedDataExistsCopy[] = { TEXT_NO_SAVED_DATA_EXISTS };
 #endif
 
 #ifndef VERSION_EU
-static u8 textSavedDataExists[] = { TEXT_SAVED_DATA_EXISTS };
+static unsigned char textCopyCompleted[] = { TEXT_COPYING_COMPLETED };
 #else
-static u8 textSavedDataExists[][20] = {{ TEXT_SAVED_DATA_EXISTS }, { TEXT_SAVED_DATA_EXISTS_FR }, { TEXT_SAVED_DATA_EXISTS_DE }};
+static unsigned char textCopyCompleted[][18] = {{ TEXT_COPYING_COMPLETED }, { TEXT_COPYING_COMPLETED_FR }, { TEXT_COPYING_COMPLETED_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textNoFileToCopyFrom[] = { TEXT_NO_FILE_TO_COPY_FROM };
+static unsigned char textSavedDataExists[] = { TEXT_SAVED_DATA_EXISTS };
 #else
-static u8 textNoFileToCopyFrom[][21] = {{ TEXT_NO_FILE_TO_COPY_FROM }, { TEXT_NO_FILE_TO_COPY_FROM_FR }, { TEXT_NO_FILE_TO_COPY_FROM_DE }};
+static unsigned char textSavedDataExists[][20] = {{ TEXT_SAVED_DATA_EXISTS }, { TEXT_SAVED_DATA_EXISTS_FR }, { TEXT_SAVED_DATA_EXISTS_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textYes[] = { TEXT_YES };
+static unsigned char textNoFileToCopyFrom[] = { TEXT_NO_FILE_TO_COPY_FROM };
 #else
-static u8 textYes[][4] = {{ TEXT_YES }, { TEXT_YES_FR }, { TEXT_YES_DE }};
+static unsigned char textNoFileToCopyFrom[][21] = {{ TEXT_NO_FILE_TO_COPY_FROM }, { TEXT_NO_FILE_TO_COPY_FROM_FR }, { TEXT_NO_FILE_TO_COPY_FROM_DE }};
 #endif
 
 #ifndef VERSION_EU
-static u8 textNo[] = { TEXT_NO };
+static unsigned char textYes[] = { TEXT_YES };
 #else
-static u8 textNo[][5] = {{ TEXT_NO }, { TEXT_NO_FR }, { TEXT_NO_DE }};
+static unsigned char textYes[][4] = {{ TEXT_YES }, { TEXT_YES_FR }, { TEXT_YES_DE }};
+#endif
+
+#ifndef VERSION_EU
+static unsigned char textNo[] = { TEXT_NO };
+#else
+static unsigned char textNo[][5] = {{ TEXT_NO }, { TEXT_NO_FR }, { TEXT_NO_DE }};
 #endif
 
 #ifdef VERSION_EU
 // In EU, Erase File and Sound Select strings are outside it's print string function
-static u8 textEraseFile[][17] = {
+static unsigned char textEraseFile[][17] = {
     { TEXT_ERASE_FILE_BUTTON }, { TEXT_ERASE_FILE_BUTTON_FR }, { TEXT_ERASE_FILE_BUTTON_DE }
 };
-static u8 textSure[][8] = {{ TEXT_SURE }, { TEXT_SURE_FR }, { TEXT_SURE_DE }};
-static u8 textMarioAJustErased[][20] = {
+static unsigned char textSure[][8] = {{ TEXT_SURE }, { TEXT_SURE_FR }, { TEXT_SURE_DE }};
+static unsigned char textMarioAJustErased[][20] = {
     { TEXT_FILE_MARIO_A_JUST_ERASED }, { TEXT_FILE_MARIO_A_JUST_ERASED_FR }, { TEXT_FILE_MARIO_A_JUST_ERASED_DE }
 };
 
-static u8 textSoundSelect[][13] = {
+static unsigned char textSoundSelect[][13] = {
     { TEXT_SOUND_SELECT }, { TEXT_SOUND_SELECT_FR }, { TEXT_SOUND_SELECT_DE }
 };
 
-static u8 textLanguageSelect[][17] = {
+static unsigned char textLanguageSelect[][17] = {
     { TEXT_LANGUAGE_SELECT }, { TEXT_LANGUAGE_SELECT_FR }, { TEXT_LANGUAGE_SELECT_DE }
 };
 
-static u8 textSoundModes[][10] = {
+static unsigned char textSoundModes[][10] = {
     { TEXT_STEREO }, { TEXT_MONO }, { TEXT_HEADSET },
     { TEXT_STEREO_FR }, { TEXT_MONO_FR }, { TEXT_HEADSET_FR },
     { TEXT_STEREO_DE }, { TEXT_MONO_DE }, { TEXT_HEADSET_DE }
 };
 
-static u8 textLanguage[][9] = {{ TEXT_ENGLISH }, { TEXT_FRENCH }, { TEXT_GERMAN }};
+static unsigned char textLanguage[][9] = {{ TEXT_ENGLISH }, { TEXT_FRENCH }, { TEXT_GERMAN }};
 
-static u8 textMario[] = { TEXT_MARIO };
-static u8 textHiScore[][15] = {{ TEXT_HI_SCORE }, { TEXT_HI_SCORE_FR }, { TEXT_HI_SCORE_DE }};
-static u8 textMyScore[][10] = {{ TEXT_MY_SCORE }, { TEXT_MY_SCORE_FR }, { TEXT_MY_SCORE_DE }};
+static unsigned char textMario[] = { TEXT_MARIO };
+static unsigned char textHiScore[][15] = {{ TEXT_HI_SCORE }, { TEXT_HI_SCORE_FR }, { TEXT_HI_SCORE_DE }};
+static unsigned char textMyScore[][10] = {{ TEXT_MY_SCORE }, { TEXT_MY_SCORE_FR }, { TEXT_MY_SCORE_DE }};
 
-static u8 textNew[][5] = {{ TEXT_NEW }, { TEXT_NEW_FR }, { TEXT_NEW_DE }};
-static u8 starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
-static u8 xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
+static unsigned char textNew[][5] = {{ TEXT_NEW }, { TEXT_NEW_FR }, { TEXT_NEW_DE }};
+static unsigned char starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
+static unsigned char xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
 #endif
 
 /**
@@ -643,7 +627,6 @@ void render_score_menu_buttons(struct Object *scoreButton) {
 #else
     #define SCORE_TIMER 31
 #endif
-
 /**
  * In the score menu, checks if a button was clicked to play a sound, button state and other functions.
  */
@@ -698,7 +681,6 @@ void check_score_menu_clicked_buttons(struct Object *scoreButton) {
         }
     }
 }
-
 #undef SCORE_TIMER
 
 /**
@@ -816,7 +798,7 @@ void copy_action_file_button(struct Object *copyButton, s32 copyFileButtonID) {
                     gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE];
             } else {
                 // If clicked in a existing save file, play buzz sound
-                if (copyFileButtonID == MENU_BUTTON_COPY_FILE_A + sSelectedFileIndex) {
+                if (MENU_BUTTON_COPY_FILE_A + sSelectedFileIndex == copyFileButtonID) {
                     play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
 #if ENABLE_RUMBLE
                     queue_rumble_data(5, 80);
@@ -982,7 +964,7 @@ void erase_action_file_button(struct Object *eraseButton, s32 eraseFileButtonID)
             }
             break;
         case ERASE_PHASE_PROMPT: // Erase Menu "SURE? YES NO" Phase (after a file is selected)
-            if (eraseFileButtonID == MENU_BUTTON_ERASE_MIN + sSelectedFileIndex) {
+            if (MENU_BUTTON_ERASE_MIN + sSelectedFileIndex == eraseFileButtonID) {
                 // If clicked in a existing save file, play click sound and zoom out button
                 // Note: The prompt functions are actually called when the ERASE_MSG_PROMPT
                 // message is displayed with print_erase_menu_prompt
@@ -998,7 +980,6 @@ void erase_action_file_button(struct Object *eraseButton, s32 eraseFileButtonID)
             break;
     }
 }
-
 #undef BUZZ_TIMER
 
 /**
@@ -1044,7 +1025,6 @@ void check_erase_menu_clicked_buttons(struct Object *eraseButton) {
         }
     }
 }
-
 #undef ACTION_TIMER
 #undef MAIN_RETURN_TIMER
 
@@ -1094,7 +1074,6 @@ void render_sound_mode_menu_buttons(struct Object *soundModeButton) {
     sMainMenuButtons[MENU_BUTTON_OPTION_MIN + sSoundMode]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN;
 #endif
 }
-
 #undef SOUND_BUTTON_Y
 
 /**
@@ -1221,8 +1200,9 @@ void load_score_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceBut
     // If the previous button is in default state
     if (sMainMenuButtons[prevMenuButtonID]->oMenuButtonState == MENU_BUTTON_STATE_DEFAULT) {
         // Hide buttons of corresponding button menu groups
-        //! Not possible, this is checking if the score menu was opened from the score menu!
-        if (prevMenuButtonID == MENU_BUTTON_SCORE) {
+        if (prevMenuButtonID == MENU_BUTTON_SCORE) //! Not possible, this is checking if the score menu
+                                                   //! was opened from the score menu!
+        {
             for (buttonID = MENU_BUTTON_SCORE_MIN; buttonID < MENU_BUTTON_SCORE_MAX; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
@@ -1266,8 +1246,9 @@ void load_copy_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButt
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
         }
-        //! Not possible, this is checking if the copy menu was opened from the copy menu!
-        if (prevMenuButtonID == MENU_BUTTON_COPY) {
+        if (prevMenuButtonID == MENU_BUTTON_COPY) //! Not possible, this is checking if the copy menu
+                                                  //! was opened from the copy menu!
+        {
             for (buttonID = MENU_BUTTON_COPY_MIN; buttonID < MENU_BUTTON_COPY_MAX; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
@@ -1311,8 +1292,9 @@ void load_erase_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceBut
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
         }
-        //! Not possible, this is checking if the erase menu was opened from the erase menu!
-        if (prevMenuButtonID == MENU_BUTTON_ERASE) {
+        if (prevMenuButtonID == MENU_BUTTON_ERASE) //! Not possible, this is checking if the erase menu
+                                                   //! was opened from the erase menu!
+        {
             for (buttonID = MENU_BUTTON_ERASE_MIN; buttonID < MENU_BUTTON_ERASE_MAX; buttonID++) {
                 mark_obj_for_deletion(sMainMenuButtons[buttonID]);
             }
@@ -1394,7 +1376,7 @@ void bhv_menu_button_manager_init(void) {
     sTextBaseAlpha = 0;
 }
 
-#ifdef VERSION_JP
+#if defined(VERSION_JP)
     #define SAVE_FILE_SOUND SOUND_MENU_STAR_SOUND
 #else
     #define SAVE_FILE_SOUND SOUND_MENU_STAR_SOUND_OKEY_DOKEY
@@ -1503,7 +1485,6 @@ void check_main_menu_clicked_buttons(void) {
     }
 #endif
 }
-
 #undef SAVE_FILE_SOUND
 
 /**
@@ -1641,22 +1622,16 @@ void handle_cursor_button_input(void) {
         || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_D) {
         if (gPlayer3Controller->buttonPressed
 #ifdef VERSION_EU
-            & (B_BUTTON | START_BUTTON | Z_TRIG)
+            & (B_BUTTON | START_BUTTON | Z_TRIG)) {
 #else
-            & (B_BUTTON | START_BUTTON)
+            & (B_BUTTON | START_BUTTON)) {
 #endif
-        ) {
             sClickPos[0] = sCursorPos[0];
             sClickPos[1] = sCursorPos[1];
             sCursorClickingTimer = 1;
         } else if (gPlayer3Controller->buttonPressed & A_BUTTON) {
             sScoreFileCoinScoreMode = 1 - sScoreFileCoinScoreMode;
             play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-#ifdef VERSION_CN
-        } else if ((gPlayer3Controller->buttonPressed & L_TRIG) || (gPlayer3Controller->buttonPressed & R_TRIG)) {
-            sScorePage = 1 - sScorePage;
-            play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-#endif
         }
     } else { // If cursor is clicked
         if (gPlayer3Controller->buttonPressed
@@ -1720,14 +1695,12 @@ void print_menu_cursor(void) {
     handle_controller_cursor_input();
     create_dl_translation_matrix(MENU_MTX_PUSH, sCursorPos[0] + 160.0f - 5.0, sCursorPos[1] + 120.0f - 25.0, 0.0f);
     // Get the right graphic to use for the cursor.
-    if (sCursorClickingTimer == 0) {
+    if (sCursorClickingTimer == 0)
         // Idle
         gSPDisplayList(gDisplayListHead++, dl_menu_idle_hand);
-    }
-    if (sCursorClickingTimer != 0) {
+    if (sCursorClickingTimer != 0)
         // Grabbing
         gSPDisplayList(gDisplayListHead++, dl_menu_grabbing_hand);
-    }
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     if (sCursorClickingTimer != 0) {
         sCursorClickingTimer++; // This is a very strange way to implement a timer? It counts up and
@@ -1741,7 +1714,7 @@ void print_menu_cursor(void) {
 /**
  * Prints a hud string depending of the hud table list defined with text fade properties.
  */
-void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const u8 *text) {
+void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const unsigned char *text) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha - sTextFadeAlpha);
     print_hud_lut_string(hudLUT, x, y, text);
@@ -1751,7 +1724,7 @@ void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const u8 *text) {
 /**
  * Prints a generic white string with text fade properties.
  */
-void print_generic_string_fade(s16 x, s16 y, const u8 *text) {
+void print_generic_string_fade(s16 x, s16 y, const unsigned char *text) {
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha - sTextFadeAlpha);
     print_generic_string(x, y, text);
@@ -1797,20 +1770,15 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
         }
         // Print star count
         int_to_str(starCount, starCountText);
-        print_hud_lut_string(HUD_LUT_GLOBAL, x + (offset + 16), y, starCountText);
+        print_hud_lut_string(HUD_LUT_GLOBAL, x + offset + 16, y, starCountText);
     } else {
         // Print "new" text
-#ifdef VERSION_CN
-        print_hud_lut_string(HUD_LUT_GLOBAL, x - 2, y - 5, LANGUAGE_ARRAY(textNew));
-#else
         print_hud_lut_string(HUD_LUT_GLOBAL, x, y, LANGUAGE_ARRAY(textNew));
-#endif
     }
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
     #define SELECT_FILE_X 96
-    #define SELECT_FILE_Y 35
     #define SCORE_X 50
     #define COPY_X 115
     #define ERASE_X 180
@@ -1823,11 +1791,8 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     #define SAVEFILE_X2 209
     #define MARIOTEXT_X1 92
     #define MARIOTEXT_X2 207
-    #define MARIOTEXT_Y1 65
-    #define MARIOTEXT_Y2 105
 #elif defined(VERSION_US)
     #define SELECT_FILE_X 93
-    #define SELECT_FILE_Y 35
     #define SCORE_X 52
     #define COPY_X 117
     #define ERASE_X 177
@@ -1836,28 +1801,11 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     #define SAVEFILE_X2 209
     #define MARIOTEXT_X1 92
     #define MARIOTEXT_X2 207
-    #define MARIOTEXT_Y1 65
-    #define MARIOTEXT_Y2 105
-#elif defined(VERSION_EU)
+#else // VERSION_EU
     #define SAVEFILE_X1 97
     #define SAVEFILE_X2 204
     #define MARIOTEXT_X1 97
     #define MARIOTEXT_X2 204
-    #define MARIOTEXT_Y1 65
-    #define MARIOTEXT_Y2 105
-#elif defined(VERSION_CN)
-    #define SELECT_FILE_X 106
-    #define SELECT_FILE_Y 25
-    #define SCORE_X 52
-    #define COPY_X 113
-    #define ERASE_X 177
-    #define SOUNDMODE_X1 sSoundTextX
-    #define SAVEFILE_X1 92
-    #define SAVEFILE_X2 209
-    #define MARIOTEXT_X1 92
-    #define MARIOTEXT_X2 207
-    #define MARIOTEXT_Y1 164
-    #define MARIOTEXT_Y2 124
 #endif
 
 /**
@@ -1868,7 +1816,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
  * Same rule applies for score, copy and erase strings.
  */
 void print_main_menu_strings(void) {
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
     // The current sound mode is automatically centered on US and Shindou.
     static s16 sSoundTextX; // TODO: There should be a way to make this match on both US and Shindou.
 #endif
@@ -1876,7 +1824,7 @@ void print_main_menu_strings(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
 #ifndef VERSION_EU
-    print_hud_lut_string(HUD_LUT_DIFF2, SELECT_FILE_X, SELECT_FILE_Y, textSelectFile);
+    print_hud_lut_string(HUD_LUT_DIFF, SELECT_FILE_X, 35, textSelectFile);
 #endif
     // Print file star counts
     print_save_file_star_count(SAVE_FILE_A, SAVEFILE_X1, 78);
@@ -1897,15 +1845,14 @@ void print_main_menu_strings(void) {
     print_generic_string(SOUNDMODE_X1, 39, textSoundModes[sSoundMode]);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 #endif
-
     // Print file names
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_BEGIN);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    FILE_SELECT_PRINT_STRING(MARIOTEXT_X1, MARIOTEXT_Y1, textMarioA);
-    FILE_SELECT_PRINT_STRING(MARIOTEXT_X2, MARIOTEXT_Y1, textMarioB);
-    FILE_SELECT_PRINT_STRING(MARIOTEXT_X1, MARIOTEXT_Y2, textMarioC);
-    FILE_SELECT_PRINT_STRING(MARIOTEXT_X2, MARIOTEXT_Y2, textMarioD);
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_END);
+    print_menu_generic_string(MARIOTEXT_X1, 65, textMarioA);
+    print_menu_generic_string(MARIOTEXT_X2, 65, textMarioB);
+    print_menu_generic_string(MARIOTEXT_X1, 105, textMarioC);
+    print_menu_generic_string(MARIOTEXT_X2, 105, textMarioD);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 }
 
 #ifdef VERSION_EU
@@ -1941,22 +1888,15 @@ void print_main_lang_strings(void) {
 }
 #endif
 
-#if defined(VERSION_JP) || defined(VERSION_SH)
-    #define CHECK_FILE_X 90
-    #define CHECK_FILE_Y 35
-    #define NOSAVE_DATA_X1 90
-#elif defined(VERSION_US)
-    #define CHECK_FILE_X 95
-    #define CHECK_FILE_Y 35
-    #define NOSAVE_DATA_X1 99
-#elif defined(VERSION_EU)
-    #define CHECK_FILE_X checkFileX
-    #define CHECK_FILE_Y 35
-    #define NOSAVE_DATA_X1 noSaveDataX
-#elif defined(VERSION_CN)
-    #define CHECK_FILE_X 106
-    #define CHECK_FILE_Y 25
-    #define NOSAVE_DATA_X1 99
+#ifdef VERSION_EU
+#define CHECK_FILE_X checkFileX
+#define NOSAVE_DATA_X1 noSaveDataX
+#elif defined(VERSION_JP) || defined(VERSION_SH)
+#define CHECK_FILE_X 90
+#define NOSAVE_DATA_X1 90
+#else
+#define CHECK_FILE_X 95
+#define NOSAVE_DATA_X1 99
 #endif
 
 /**
@@ -1972,7 +1912,7 @@ void score_menu_display_message(s8 messageID) {
 #ifdef VERSION_EU
             checkFileX = get_str_x_pos_from_center_scale(160, LANGUAGE_ARRAY(textCheckFile), 12.0f);
 #endif
-            print_hud_lut_string_fade(HUD_LUT_DIFF, CHECK_FILE_X, CHECK_FILE_Y, LANGUAGE_ARRAY(textCheckFile));
+            print_hud_lut_string_fade(HUD_LUT_DIFF, CHECK_FILE_X, 35, LANGUAGE_ARRAY(textCheckFile));
             break;
         case SCORE_MSG_NOSAVE_DATA:
 #ifdef VERSION_EU
@@ -1987,30 +1927,14 @@ void score_menu_display_message(s8 messageID) {
     #define RETURN_X     45
     #define COPYFILE_X1  128
     #define ERASEFILE_X1 228
-    #define SCORE_FILE_Y1 62
-    #define SCORE_FILE_Y2 105
-#elif defined(VERSION_US)
-    #define RETURN_X     44
-    #define COPYFILE_X1  135
-    #define ERASEFILE_X1 231
-    #define SCORE_FILE_Y1 62
-    #define SCORE_FILE_Y2 105
 #elif defined(VERSION_EU)
     #define RETURN_X     centeredX
     #define COPYFILE_X1  centeredX
     #define ERASEFILE_X1 centeredX
-#elif defined(VERSION_CN)
+#else
     #define RETURN_X     44
     #define COPYFILE_X1  135
     #define ERASEFILE_X1 231
-    #define SCORE_FILE_Y1 164
-    #define SCORE_FILE_Y2 121
-#endif
-
-#ifdef VERSION_CN
-    #define RETURN_X_OLD 45 // this X wasn't changed in all places
-#else
-    #define RETURN_X_OLD RETURN_X
 #endif
 
 #ifdef VERSION_EU
@@ -2069,17 +1993,17 @@ void print_score_menu_strings(void) {
     print_generic_string(ERASEFILE_X1, 35, LANGUAGE_ARRAY(textEraseFileButton));
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 
-    // Print file names
 #ifdef VERSION_EU
     print_main_menu_strings();
 #else
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_BEGIN);
+    // Print file names
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    FILE_SELECT_PRINT_STRING(89, SCORE_FILE_Y1, textMarioA);
-    FILE_SELECT_PRINT_STRING(211, SCORE_FILE_Y1, textMarioB);
-    FILE_SELECT_PRINT_STRING(89, SCORE_FILE_Y2, textMarioC);
-    FILE_SELECT_PRINT_STRING(211, SCORE_FILE_Y2, textMarioD);
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_END);
+    print_menu_generic_string(89, 62, textMarioA);
+    print_menu_generic_string(211, 62, textMarioB);
+    print_menu_generic_string(89, 105, textMarioC);
+    print_menu_generic_string(211, 105, textMarioD);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 #endif
 }
 
@@ -2090,15 +2014,6 @@ void print_score_menu_strings(void) {
     #define NOSAVE_DATA_X2 90
     #define COPYCOMPLETE_X 90
     #define SAVE_EXISTS_X1 90
-    #define COPY_FILE_Y    35
-#elif defined(VERSION_US)
-    #define NOFILE_COPY_X  119
-    #define COPY_FILE_X    104
-    #define COPYIT_WHERE_X 109
-    #define NOSAVE_DATA_X2 101
-    #define COPYCOMPLETE_X 110
-    #define SAVE_EXISTS_X1 110
-    #define COPY_FILE_Y    35
 #elif defined(VERSION_EU)
     #define NOFILE_COPY_X  centeredX
     #define COPY_FILE_X    centeredX
@@ -2106,15 +2021,13 @@ void print_score_menu_strings(void) {
     #define NOSAVE_DATA_X2 centeredX
     #define COPYCOMPLETE_X centeredX
     #define SAVE_EXISTS_X1 centeredX
-    #define COPY_FILE_Y    35
-#elif defined(VERSION_CN)
+#else
     #define NOFILE_COPY_X  119
     #define COPY_FILE_X    104
     #define COPYIT_WHERE_X 109
     #define NOSAVE_DATA_X2 101
     #define COPYCOMPLETE_X 110
     #define SAVE_EXISTS_X1 110
-    #define COPY_FILE_Y    25
 #endif
 
 /**
@@ -2136,7 +2049,7 @@ void copy_menu_display_message(s8 messageID) {
 #ifdef VERSION_EU
                 centeredX = get_str_x_pos_from_center_scale(160, textCopyFile[sLanguageMode], 12.0f);
 #endif
-                print_hud_lut_string_fade(HUD_LUT_DIFF, COPY_FILE_X, COPY_FILE_Y, LANGUAGE_ARRAY(textCopyFile));
+                print_hud_lut_string_fade(HUD_LUT_DIFF, COPY_FILE_X, 35, LANGUAGE_ARRAY(textCopyFile));
             }
             break;
         case COPY_MSG_COPY_WHERE:
@@ -2216,26 +2129,15 @@ void copy_menu_update_message(void) {
 #if defined(VERSION_JP)
     #define VIEWSCORE_X1 133
     #define ERASEFILE_X2 220
-    #define COPY_FILE_Y1 62
-    #define COPY_FILE_Y2 105
-#elif defined(VERSION_US)
-    #define VIEWSCORE_X1 128
-    #define ERASEFILE_X2 230
-    #define COPY_FILE_Y1 62
-    #define COPY_FILE_Y2 105
-#elif defined(VERSION_EU)
-    #define VIEWSCORE_X1 centeredX
-    #define ERASEFILE_X2 centeredX
 #elif defined(VERSION_SH)
     #define VIEWSCORE_X1 133
     #define ERASEFILE_X2 230
-    #define COPY_FILE_Y1 62
-    #define COPY_FILE_Y2 105
-#elif defined(VERSION_CN)
+#elif defined(VERSION_EU)
+    #define VIEWSCORE_X1 centeredX
+    #define ERASEFILE_X2 centeredX
+#else
     #define VIEWSCORE_X1 128
     #define ERASEFILE_X2 230
-    #define COPY_FILE_Y1 164
-    #define COPY_FILE_Y2 121
 #endif
 
 /**
@@ -2276,90 +2178,64 @@ void print_copy_menu_strings(void) {
 #endif
     print_generic_string(ERASEFILE_X2, 35, LANGUAGE_ARRAY(textEraseFileButton));
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-
-    // Print file names
 #ifdef VERSION_EU
     print_main_menu_strings();
 #else
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_BEGIN);
+    // Print file names
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    FILE_SELECT_PRINT_STRING(89, COPY_FILE_Y1, textMarioA);
-    FILE_SELECT_PRINT_STRING(211, COPY_FILE_Y1, textMarioB);
-    FILE_SELECT_PRINT_STRING(89, COPY_FILE_Y2, textMarioC);
-    FILE_SELECT_PRINT_STRING(211, COPY_FILE_Y2, textMarioD);
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_END);
+    print_menu_generic_string(89, 62, textMarioA);
+    print_menu_generic_string(211, 62, textMarioB);
+    print_menu_generic_string(89, 105, textMarioC);
+    print_menu_generic_string(211, 105, textMarioD);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 #endif
 }
 
-#if defined(VERSION_JP) || defined(VERSION_SH)
-#ifdef VERSION_JP
+#if defined(VERSION_JP)
     #define CURSOR_X 160.0f
-#else
-    #define CURSOR_X (x + 70)
-#endif
     #define MENU_ERASE_YES_MIN_X 145
     #define MENU_ERASE_YES_MAX_X 164
-#elif defined(VERSION_CN)
+#elif defined(VERSION_SH)
     #define CURSOR_X (x + 70)
-    #define MENU_ERASE_YES_MIN_X 144
-    #define MENU_ERASE_YES_MAX_X 173
+    #define MENU_ERASE_YES_MIN_X 145
+    #define MENU_ERASE_YES_MAX_X 164
 #else
     #define CURSOR_X (x + 70)
     #define MENU_ERASE_YES_MIN_X 140
     #define MENU_ERASE_YES_MAX_X 169
 #endif
 
-#ifdef VERSION_CN
-    #define MENU_ERASE_YES_NO_MIN_Y 191
-    #define MENU_ERASE_YES_NO_MAX_Y 210
-    #define MENU_ERASE_NO_MIN_X 189
-    #define MENU_ERASE_NO_MAX_X 218
-    #define MENU_ERASE_YES_X_OFFSET 60
-#elif defined(VERSION_SH)
-    #define MENU_ERASE_YES_NO_MIN_Y 191
-    #define MENU_ERASE_YES_NO_MAX_Y 210
+#define MENU_ERASE_YES_NO_MIN_Y 191
+#define MENU_ERASE_YES_NO_MAX_Y 210
+#ifdef VERSION_SH
     #define MENU_ERASE_NO_MIN_X 194
     #define MENU_ERASE_NO_MAX_X 213
-    #define MENU_ERASE_YES_X_OFFSET 56
 #else
-    #define MENU_ERASE_YES_NO_MIN_Y 191
-    #define MENU_ERASE_YES_NO_MAX_Y 210
     #define MENU_ERASE_NO_MIN_X 189
     #define MENU_ERASE_NO_MAX_X 218
-    #define MENU_ERASE_YES_X_OFFSET 56
 #endif
 
 /**
  * Prints the "YES NO" prompt and checks if one of the prompts are hovered to do it's functions.
  */
 void print_erase_menu_prompt(s16 x, s16 y) {
-    s16 colorTransTimer = gGlobalTimer * (1 << 12);
+    s16 colorFade = gGlobalTimer << 12;
 
     s16 cursorX = sCursorPos[0] + CURSOR_X;
     s16 cursorY = sCursorPos[1] + 120.0f;
 
-    // TODO: Merge IDO/GCC
     if (cursorX < MENU_ERASE_YES_MAX_X && cursorX >= MENU_ERASE_YES_MIN_X &&
-#ifdef VERSION_CN
-        (u16) (cursorY - MENU_ERASE_YES_NO_MIN_Y) < MENU_ERASE_YES_NO_MAX_Y - MENU_ERASE_YES_NO_MIN_Y
-#else
-        cursorY < MENU_ERASE_YES_NO_MAX_Y && cursorY >= MENU_ERASE_YES_NO_MIN_Y
-#endif
-    ) {
+        cursorY < MENU_ERASE_YES_NO_MAX_Y && cursorY >= MENU_ERASE_YES_NO_MIN_Y) {
         // Fade "YES" string color but keep "NO" gray
-        sYesNoColor[0] = sins(colorTransTimer) * 50.0f + 205.0f;
+        sYesNoColor[0] = sins(colorFade) * 50.0f + 205.0f;
         sYesNoColor[1] = 150;
         sEraseYesNoHoverState = MENU_ERASE_HOVER_YES;
-    } else if (cursorX < MENU_ERASE_NO_MAX_X && cursorX >= MENU_ERASE_NO_MIN_X &&
-#ifdef VERSION_CN
-        (u16) (cursorY - MENU_ERASE_YES_NO_MIN_Y) < MENU_ERASE_YES_NO_MAX_Y - MENU_ERASE_YES_NO_MIN_Y
-#else
-        cursorY < MENU_ERASE_YES_NO_MAX_Y && cursorY >= MENU_ERASE_YES_NO_MIN_Y
-#endif
-    ) {
+    } else if (cursorX < MENU_ERASE_NO_MAX_X && cursorX >= MENU_ERASE_NO_MIN_X
+        && cursorY < MENU_ERASE_YES_NO_MAX_Y && cursorY >= MENU_ERASE_YES_NO_MIN_Y) {
         // Fade "NO" string color but keep "YES" gray
         sYesNoColor[0] = 150;
-        sYesNoColor[1] = sins(colorTransTimer) * 50.0f + 205.0f;
+        sYesNoColor[1] = sins(colorFade) * 50.0f + 205.0f;
         sEraseYesNoHoverState = MENU_ERASE_HOVER_NO;
     } else {
         // Don't fade both strings and keep them gray
@@ -2402,7 +2278,7 @@ void print_erase_menu_prompt(s16 x, s16 y) {
     // Print "YES NO" strings
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, sYesNoColor[0], sYesNoColor[0], sYesNoColor[0], sTextBaseAlpha);
-    print_generic_string(x + MENU_ERASE_YES_X_OFFSET, y, LANGUAGE_ARRAY(textYes));
+    print_generic_string(x + 56, y, LANGUAGE_ARRAY(textYes));
     gDPSetEnvColor(gDisplayListHead++, sYesNoColor[1], sYesNoColor[1], sYesNoColor[1], sTextBaseAlpha);
     print_generic_string(x + 98, y, LANGUAGE_ARRAY(textNo));
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
@@ -2413,35 +2289,25 @@ void print_erase_menu_prompt(s16 x, s16 y) {
 // M a r i o   A --- マ リ オ Ａ
 // 0 1 2 3 4 5 6 --- 0 1 2 3
 #if defined(VERSION_JP) || defined(VERSION_SH)
-#ifdef VERSION_JP
-    #define ERASE_FILE_X     96
-#else
+#ifdef VERSION_SH
     #define ERASE_FILE_X     111
+#else
+    #define ERASE_FILE_X     96
 #endif
-    #define ERASE_FILE_Y     35
     #define NOSAVE_DATA_X3   90
     #define MARIO_ERASED_VAR 3
     #define MARIO_ERASED_X   90
     #define SAVE_EXISTS_X2   90
-#elif defined(VERSION_US)
-    #define ERASE_FILE_X     98
-    #define ERASE_FILE_Y     35
-    #define NOSAVE_DATA_X3   100
-    #define MARIO_ERASED_VAR 6
-    #define MARIO_ERASED_X   100
-    #define SAVE_EXISTS_X2   100
 #elif defined(VERSION_EU)
     #define ERASE_FILE_X     centeredX
-    #define ERASE_FILE_Y     35
     #define NOSAVE_DATA_X3   centeredX
     #define MARIO_ERASED_VAR 6
     #define MARIO_ERASED_X   centeredX
     #define SAVE_EXISTS_X2   centeredX
-#elif defined(VERSION_CN)
-    #define ERASE_FILE_X     106
-    #define ERASE_FILE_Y     25
+#else
+    #define ERASE_FILE_X     98
     #define NOSAVE_DATA_X3   100
-    #define MARIO_ERASED_VAR 15
+    #define MARIO_ERASED_VAR 6
     #define MARIO_ERASED_X   100
     #define SAVE_EXISTS_X2   100
 #endif
@@ -2455,11 +2321,11 @@ void erase_menu_display_message(s8 messageID) {
 #endif
 
 #ifndef VERSION_EU
-    u8 textEraseFile[] = { TEXT_ERASE_FILE };
-    u8 textSure[] = { TEXT_SURE };
-    u8 textNoSavedDataExists[] = { TEXT_NO_SAVED_DATA_EXISTS };
-    u8 textMarioAJustErased[] = { TEXT_FILE_MARIO_A_JUST_ERASED };
-    u8 textSavedDataExists[] = { TEXT_SAVED_DATA_EXISTS };
+    unsigned char textEraseFile[] = { TEXT_ERASE_FILE };
+    unsigned char textSure[] = { TEXT_SURE };
+    unsigned char textNoSavedDataExists[] = { TEXT_NO_SAVED_DATA_EXISTS };
+    unsigned char textMarioAJustErased[] = { TEXT_FILE_MARIO_A_JUST_ERASED };
+    unsigned char textSavedDataExists[] = { TEXT_SAVED_DATA_EXISTS };
 #endif
 
     switch (messageID) {
@@ -2467,7 +2333,7 @@ void erase_menu_display_message(s8 messageID) {
 #ifdef VERSION_EU
             centeredX = get_str_x_pos_from_center_scale(160, textEraseFile[sLanguageMode], 12.0f);
 #endif
-            print_hud_lut_string_fade(HUD_LUT_DIFF, ERASE_FILE_X, ERASE_FILE_Y, LANGUAGE_ARRAY(textEraseFile));
+            print_hud_lut_string_fade(HUD_LUT_DIFF, ERASE_FILE_X, 35, LANGUAGE_ARRAY(textEraseFile));
             break;
         case ERASE_MSG_PROMPT:
             print_generic_string_fade(90, 190, LANGUAGE_ARRAY(textSure));
@@ -2538,20 +2404,11 @@ void erase_menu_update_message(void) {
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
-    #define VIEWSCORE_X2 133
-    #define COPYFILE_X2 223
-    #define ERASE_FILE_Y1 62
-    #define ERASE_FILE_Y2 105
-#elif defined(VERSION_CN)
-    #define VIEWSCORE_X2 129
-    #define COPYFILE_X2 228
-    #define ERASE_FILE_Y1 164
-    #define ERASE_FILE_Y2 121
+#define VIEWSCORE_X2 133
+#define COPYFILE_X2 223
 #else
-    #define VIEWSCORE_X2 127
-    #define COPYFILE_X2 233
-    #define ERASE_FILE_Y1 62
-    #define ERASE_FILE_Y2 105
+#define VIEWSCORE_X2 127
+#define COPYFILE_X2 233
 #endif
 
 /**
@@ -2591,35 +2448,30 @@ void print_erase_menu_strings(void) {
     centeredX = get_str_x_pos_from_center(249, textCopyFileButton[sLanguageMode], 10.0f);
     print_generic_string(centeredX, 35, textCopyFileButton[sLanguageMode]);
 #else
-    print_generic_string(RETURN_X_OLD, 35, textReturn);
+    print_generic_string(RETURN_X, 35, textReturn);
     print_generic_string(VIEWSCORE_X2, 35, textViewScore);
     print_generic_string(COPYFILE_X2, 35, textCopyFileButton);
 #endif
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 
-    // Print file names
 #ifdef VERSION_EU
     print_main_menu_strings();
 #else
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_BEGIN);
+    // Print file names
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    FILE_SELECT_PRINT_STRING(89, ERASE_FILE_Y1, textMarioA);
-    FILE_SELECT_PRINT_STRING(211, ERASE_FILE_Y1, textMarioB);
-    FILE_SELECT_PRINT_STRING(89, ERASE_FILE_Y2, textMarioC);
-    FILE_SELECT_PRINT_STRING(211, ERASE_FILE_Y2, textMarioD);
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_END);
+    print_menu_generic_string(89, 62, textMarioA);
+    print_menu_generic_string(211, 62, textMarioB);
+    print_menu_generic_string(89, 105, textMarioC);
+    print_menu_generic_string(211, 105, textMarioD);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 #endif
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
     #define SOUND_HUD_X 96
-    #define SOUND_HUD_Y 35
 #elif defined(VERSION_US)
     #define SOUND_HUD_X 88
-    #define SOUND_HUD_Y 35
-#elif defined(VERSION_CN)
-    #define SOUND_HUD_X 106
-    #define SOUND_HUD_Y 55
 #endif
 
 /**
@@ -2630,14 +2482,14 @@ void print_erase_menu_strings(void) {
 void print_sound_mode_menu_strings(void) {
     s32 mode;
 
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_US) || defined(VERSION_SH)
     s16 textX;
 #elif defined(VERSION_EU)
     s32 textX;
 #endif
 
 #ifndef VERSION_EU
-    u8 textSoundSelect[] = { TEXT_SOUND_SELECT };
+    unsigned char textSoundSelect[] = { TEXT_SOUND_SELECT };
 #endif
 
     // Print "SOUND SELECT" text
@@ -2648,7 +2500,7 @@ void print_sound_mode_menu_strings(void) {
     print_hud_lut_string(HUD_LUT_DIFF, 47, 32, textSoundSelect[sLanguageMode]);
     print_hud_lut_string(HUD_LUT_DIFF, 47, 101, textLanguageSelect[sLanguageMode]);
 #else
-    print_hud_lut_string(HUD_LUT_DIFF, SOUND_HUD_X, SOUND_HUD_Y, textSoundSelect);
+    print_hud_lut_string(HUD_LUT_DIFF, SOUND_HUD_X, 35, textSoundSelect);
 #endif
 
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
@@ -2682,7 +2534,7 @@ void print_sound_mode_menu_strings(void) {
 #else
     // Print sound mode names
     for (mode = 0; mode < 3; mode++) {
-        if (sSoundMode == mode) {
+        if (mode == sSoundMode) {
             gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
         } else {
             gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
@@ -2705,32 +2557,22 @@ void print_sound_mode_menu_strings(void) {
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
 
-#ifndef VERSION_CN
-u8 textStarX[] = { TEXT_STAR_X };
-#endif
+unsigned char textStarX[] = { TEXT_STAR_X };
 
 /**
  * Prints castle secret stars collected in a score menu save file.
  */
 void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) {
-#ifdef VERSION_CN
-    u8 secretStarsText[36];
-    u8 textStarX[] = { TEXT_STAR_X };
-#else
-    u8 secretStarsText[20];
-#endif
-
+    unsigned char secretStarsText[20];
     // Print "[star] x"
-    FILE_SELECT_PRINT_STRING(x, y, textStarX);
-
+    print_menu_generic_string(x, y, textStarX);
     // Print number of castle secret stars
-    INT_TO_STR_DIFF(save_file_get_total_star_count(fileIndex, COURSE_BONUS_STAGES - 1, COURSE_MAX - 1),
+    int_to_str(save_file_get_total_star_count(fileIndex, COURSE_BONUS_STAGES - 1, COURSE_MAX - 1),
                secretStarsText);
-
 #ifdef VERSION_EU
-    FILE_SELECT_PRINT_STRING(x + 20, y, secretStarsText);
+    print_menu_generic_string(x + 20, y, secretStarsText);
 #else
-    FILE_SELECT_PRINT_STRING(x + 16, y, secretStarsText);
+    print_menu_generic_string(x + 16, y, secretStarsText);
 #endif
 }
 
@@ -2748,54 +2590,41 @@ void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) {
  * Prints course coins collected in a score menu save file.
  */
 void print_score_file_course_coin_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
-#ifdef VERSION_CN
-    u8 coinScoreText[36];
-#else
-    u8 coinScoreText[20];
-#endif
-
+    unsigned char coinScoreText[20];
     u8 stars = save_file_get_star_flags(fileIndex, courseIndex);
-    u8 textCoinX[] = { TEXT_COIN_X };
-    u8 textStar[] = { TEXT_STAR };
-
+    unsigned char textCoinX[] = { TEXT_COIN_X };
+    unsigned char textStar[] = { TEXT_STAR };
 #if defined(VERSION_JP) || defined(VERSION_SH)
     #define LENGTH 5
-#elif defined(VERSION_CN)
-    #define LENGTH 16
 #else
     #define LENGTH 8
 #endif
-    u8 fileNames[][LENGTH] = {
+    unsigned char fileNames[][LENGTH] = {
         { TEXT_4DASHES }, // huh?
         { TEXT_SCORE_MARIO_A }, { TEXT_SCORE_MARIO_B }, { TEXT_SCORE_MARIO_C }, { TEXT_SCORE_MARIO_D },
     };
 #undef LENGTH
-
     // MYSCORE
     if (sScoreFileCoinScoreMode == 0) {
         // Print "[coin] x"
-        FILE_SELECT_PRINT_STRING(x + 25, y, textCoinX);
-
+        print_menu_generic_string(x + 25, y, textCoinX);
         // Print coin score
-        INT_TO_STR_DIFF(save_file_get_course_coin_score(fileIndex, courseIndex), coinScoreText);
-        FILE_SELECT_PRINT_STRING(x + 41, y, coinScoreText);
-
+        int_to_str(save_file_get_course_coin_score(fileIndex, courseIndex), coinScoreText);
+        print_menu_generic_string(x + 41, y, coinScoreText);
         // If collected, print 100 coin star
         if (stars & (1 << 6)) {
-            FILE_SELECT_PRINT_STRING(x + 70, y, textStar);
+            print_menu_generic_string(x + 70, y, textStar);
         }
     }
     // HISCORE
     else {
         // Print "[coin] x"
-        FILE_SELECT_PRINT_STRING(x + HISCORE_COIN_ICON_X, y, textCoinX);
-
+        print_menu_generic_string(x + HISCORE_COIN_ICON_X, y, textCoinX);
         // Print coin highscore
-        INT_TO_STR_DIFF((u16) save_file_get_max_coin_score(courseIndex) & 0xFFFF, coinScoreText);
-        FILE_SELECT_PRINT_STRING(x + HISCORE_COIN_TEXT_X, y, coinScoreText);
-
+        int_to_str((u16) save_file_get_max_coin_score(courseIndex) & 0xFFFF, coinScoreText);
+        print_menu_generic_string(x + HISCORE_COIN_TEXT_X, y, coinScoreText);
         // Print coin highscore file
-        FILE_SELECT_PRINT_STRING(x + HISCORE_COIN_NAMES_X, y,
+        print_menu_generic_string(x + HISCORE_COIN_NAMES_X, y,
                          fileNames[(save_file_get_max_coin_score(courseIndex) >> 16) & 0xFFFF]);
     }
 }
@@ -2805,13 +2634,7 @@ void print_score_file_course_coin_score(s8 fileIndex, s16 courseIndex, s16 x, s1
  */
 void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
     s16 i = 0;
-
-#ifdef VERSION_CN
-    u8 starScoreText[36];
-#else
-    u8 starScoreText[19];
-#endif
-
+    unsigned char starScoreText[19];
     u8 stars = save_file_get_star_flags(fileIndex, courseIndex);
     s8 starCount = save_file_get_course_star_count(fileIndex, courseIndex);
     // Don't count 100 coin star
@@ -2820,28 +2643,15 @@ void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
     }
     // Add 1 star character for every star collected
     for (i = 0; i < starCount; i++) {
-#ifdef VERSION_CN
-        starScoreText[i * 2] = 0x00;
-        starScoreText[i * 2 + 1] = DIALOG_CHAR_STAR_FILLED;
-#else
         starScoreText[i] = DIALOG_CHAR_STAR_FILLED;
-#endif
     }
-
     // Terminating byte
-#ifdef VERSION_CN
-    starScoreText[i * 2] = DIALOG_CHAR_TERMINATOR;
-    starScoreText[i * 2 + 1] = DIALOG_CHAR_TERMINATOR;
-#else
     starScoreText[i] = DIALOG_CHAR_TERMINATOR;
-#endif
-
-    FILE_SELECT_PRINT_STRING(x, y, starScoreText);
+    print_menu_generic_string(x, y, starScoreText);
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
     #define MARIO_X 28
-    #define MARIO_Y 15
     #define FILE_LETTER_X 86
 #ifdef VERSION_JP
     #define LEVEL_NUM_PAD 0
@@ -2854,80 +2664,39 @@ void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
     #define STAR_SCORE_X 152
     #define MYSCORE_X 237
     #define HISCORE_X 237
-    #define MYSCORE_Y 24
-    #define HISCORE_Y 24
-#elif defined(VERSION_CN)
-    #define MARIO_X 25
-    #define MARIO_Y 9
-    #define FILE_LETTER_X 95
-    #define SECRET_STARS_PAD 6
-    #define LEVEL_NAME_X 26
-    #define STAR_SCORE_X 171
-    #define MYSCORE_X 238
-    #define HISCORE_X 231
-    #define MYSCORE_Y 200
-    #define HISCORE_Y 200
 #else
     #define MARIO_X 25
-    #define MARIO_Y 15
     #define FILE_LETTER_X 95
     #define LEVEL_NUM_PAD 3
     #define SECRET_STARS_PAD 6
     #define LEVEL_NAME_X 23
     #define STAR_SCORE_X 171
-#ifdef VERSION_EU
-    #define MYSCORE_X get_str_x_pos_from_center(257, textMyScore[sLanguageMode], 10.0f)
-    #define HISCORE_X get_str_x_pos_from_center(257, textHiScore[sLanguageMode], 10.0f)
-#else
     #define MYSCORE_X 238
     #define HISCORE_X 231
-#endif
-    #define MYSCORE_Y 24
-    #define HISCORE_Y 24
 #endif
 
 #ifdef VERSION_EU
 #include "game/segment7.h"
 #endif
 
-#define PRINT_COURSE_NAME_CN(courseIndex, shift) \
-    FILE_SELECT_PRINT_STRING(LEVEL_NAME_X, 14 + 21 * (9 - courseIndex) + shift, \
-                             segmented_to_virtual(levelNameTable[courseIndex - 1]));
-
-#define PRINT_COURSE_SCORES_CN(courseIndex, shift) \
-    print_score_file_star_score(fileIndex, courseIndex - 1, STAR_SCORE_X, 14 + 21 * (9 - courseIndex) + shift); \
-    print_score_file_course_coin_score(fileIndex, courseIndex - 1, 213, 14 + 21 * (9 - courseIndex) + shift);
-
-#define PRINT_COURSE_NAME_AND_SCORES(courseIndex, pad) \
-    FILE_SELECT_PRINT_STRING(LEVEL_NAME_X + (pad * LEVEL_NUM_PAD), 23 + 12 * courseIndex, \
-                             segmented_to_virtual(levelNameTable[courseIndex - 1])); \
-    print_score_file_star_score(fileIndex, courseIndex - 1, STAR_SCORE_X, 23 + 12 * courseIndex); \
-    print_score_file_course_coin_score(fileIndex, courseIndex - 1, 213, 23 + 12 * courseIndex);
-
 /**
  * Prints save file score strings that shows when a save file is chosen inside the score menu.
  */
 void print_save_file_scores(s8 fileIndex) {
 #ifndef VERSION_EU
-
-    u8 textMario[] = { TEXT_MARIO };
+    unsigned char textMario[] = { TEXT_MARIO };
 #ifdef VERSION_JP
-    u8 textFileLetter[] = { TEXT_ZERO };
+    unsigned char textFileLetter[] = { TEXT_ZERO };
     void **levelNameTable = segmented_to_virtual(seg2_course_name_table);
 #endif
-    u8 textHiScore[] = { TEXT_HI_SCORE };
-    u8 textMyScore[] = { TEXT_MY_SCORE };
-#ifdef VERSION_CN
-    u8 textArrowL[] = { TEXT_ARROW_L };
-    u8 textRArrow[] = { TEXT_R_ARROW };
-#endif
-#ifndef VERSION_JP
-    u8 textFileLetter[] = { TEXT_ZERO };
+    unsigned char textHiScore[] = { TEXT_HI_SCORE };
+    unsigned char textMyScore[] = { TEXT_MY_SCORE };
+#if defined(VERSION_US) || defined(VERSION_SH)
+    unsigned char textFileLetter[] = { TEXT_ZERO };
     void **levelNameTable = segmented_to_virtual(seg2_course_name_table);
 #endif
-
 #else
-    u8 textFileLetter[] = { TEXT_ZERO };
+    unsigned char textFileLetter[] = { TEXT_ZERO };
     void **levelNameTable;
 
     switch (sLanguageMode) {
@@ -2948,114 +2717,74 @@ void print_save_file_scores(s8 fileIndex) {
     // Print file name at top
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_hud_lut_string(HUD_LUT_DIFF, MARIO_X, MARIO_Y, textMario);
+    print_hud_lut_string(HUD_LUT_DIFF, MARIO_X, 15, textMario);
     print_hud_lut_string(HUD_LUT_GLOBAL, FILE_LETTER_X, 15, textFileLetter);
 
     // Print save file star count at top
     print_save_file_star_count(fileIndex, 124, 15);
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
-
     // Print course scores
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_BEGIN);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
 
-    //! Huge print list, for loops exist for a reason!
-#ifdef VERSION_CN
-    if (sScorePage == 0) {
-        PRINT_COURSE_NAME_CN(COURSE_SSL, 0)
-        PRINT_COURSE_NAME_CN(COURSE_LLL, 0)
-        PRINT_COURSE_NAME_CN(COURSE_HMC, 0)
-        PRINT_COURSE_NAME_CN(COURSE_BBH, 0)
-        PRINT_COURSE_NAME_CN(COURSE_CCM, 0)
-        PRINT_COURSE_NAME_CN(COURSE_JRB, 0)
-        PRINT_COURSE_NAME_CN(COURSE_WF, 0)
-        PRINT_COURSE_NAME_CN(COURSE_BOB, 0)
+//! Huge print list, for loops exist for a reason!
+#define PRINT_COURSE_SCORES(courseIndex, pad) \
+    print_menu_generic_string(LEVEL_NAME_X + (pad * LEVEL_NUM_PAD), 23 + 12 * courseIndex, \
+                              segmented_to_virtual(levelNameTable[courseIndex - 1])); \
+    print_score_file_star_score(fileIndex, courseIndex - 1, STAR_SCORE_X, 23 + 12 * courseIndex); \
+    print_score_file_course_coin_score(fileIndex, courseIndex - 1, 213, 23 + 12 * courseIndex);
 
-        PRINT_COURSE_SCORES_CN(COURSE_SSL, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_LLL, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_HMC, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_BBH, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_CCM, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_JRB, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_WF, 0)
-        PRINT_COURSE_SCORES_CN(COURSE_BOB, 0)
-    } else if (sScorePage == 1) {
-        // Print castle secret stars text
-        print_generic_string(LEVEL_NAME_X, 23 + 12 * 1,
-                                  segmented_to_virtual(levelNameTable[25]));
-
-        PRINT_COURSE_NAME_CN(COURSE_RR, 168)
-        PRINT_COURSE_NAME_CN(COURSE_TTC, 168)
-        PRINT_COURSE_NAME_CN(COURSE_THI, 168)
-        PRINT_COURSE_NAME_CN(COURSE_TTM, 168)
-        PRINT_COURSE_NAME_CN(COURSE_WDW, 168)
-        PRINT_COURSE_NAME_CN(COURSE_SL, 168)
-        PRINT_COURSE_NAME_CN(COURSE_DDD, 168)
-
-        // Print castle secret stars score
-        print_score_file_castle_secret_stars(fileIndex, STAR_SCORE_X, 23 + 12 * 1);
-
-        PRINT_COURSE_SCORES_CN(COURSE_RR, 168)
-        PRINT_COURSE_SCORES_CN(COURSE_TTC, 168)
-        PRINT_COURSE_SCORES_CN(COURSE_THI, 168)
-        PRINT_COURSE_SCORES_CN(COURSE_TTM, 168)
-        PRINT_COURSE_SCORES_CN(COURSE_WDW, 168)
-        PRINT_COURSE_SCORES_CN(COURSE_SL, 168)
-        PRINT_COURSE_SCORES_CN(COURSE_DDD, 168)
-    }
-#else
     // Course values are indexed, from Bob-omb Battlefield to Rainbow Ride
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_BOB, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_WF,  1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_JRB, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_CCM, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_BBH, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_HMC, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_LLL, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_SSL, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_DDD, 1)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_SL,  0)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_WDW, 0)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_TTM, 0)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_THI, 0)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_TTC, 0)
-    PRINT_COURSE_NAME_AND_SCORES(COURSE_RR,  0)
+    PRINT_COURSE_SCORES(COURSE_BOB, 1)
+    PRINT_COURSE_SCORES(COURSE_WF,  1)
+    PRINT_COURSE_SCORES(COURSE_JRB, 1)
+    PRINT_COURSE_SCORES(COURSE_CCM, 1)
+    PRINT_COURSE_SCORES(COURSE_BBH, 1)
+    PRINT_COURSE_SCORES(COURSE_HMC, 1)
+    PRINT_COURSE_SCORES(COURSE_LLL, 1)
+    PRINT_COURSE_SCORES(COURSE_SSL, 1)
+    PRINT_COURSE_SCORES(COURSE_DDD, 1)
+    PRINT_COURSE_SCORES(COURSE_SL,  0)
+    PRINT_COURSE_SCORES(COURSE_WDW, 0)
+    PRINT_COURSE_SCORES(COURSE_TTM, 0)
+    PRINT_COURSE_SCORES(COURSE_THI, 0)
+    PRINT_COURSE_SCORES(COURSE_TTC, 0)
+    PRINT_COURSE_SCORES(COURSE_RR,  0)
+
+#undef PRINT_COURSE_SCORES
 
     // Print castle secret stars text
-    FILE_SELECT_PRINT_STRING(LEVEL_NAME_X + SECRET_STARS_PAD, 23 + 12 * 16,
+    print_menu_generic_string(LEVEL_NAME_X + SECRET_STARS_PAD, 23 + 12 * 16,
                               segmented_to_virtual(levelNameTable[25]));
     // Print castle secret stars score
     print_score_file_castle_secret_stars(fileIndex, STAR_SCORE_X, 23 + 12 * 16);
-#endif
 
     // Print current coin score mode
     if (sScoreFileCoinScoreMode == 0) {
-        FILE_SELECT_PRINT_STRING(MYSCORE_X, MYSCORE_Y, LANGUAGE_ARRAY(textMyScore));
-    } else {
-        FILE_SELECT_PRINT_STRING(HISCORE_X, HISCORE_Y, LANGUAGE_ARRAY(textHiScore));
-    }
-
-#ifdef VERSION_CN
-    // Print L and R button indicators
-    FILE_SELECT_PRINT_STRING(30, 17, textArrowL);
-    FILE_SELECT_PRINT_STRING(270, 17, textRArrow);
+#ifdef VERSION_EU
+        print_menu_generic_string(get_str_x_pos_from_center(257, textMyScore[sLanguageMode], 10.0f),
+            24, textMyScore[sLanguageMode]);
+#else
+        print_menu_generic_string(MYSCORE_X, 24, textMyScore);
 #endif
-
-    gSPDisplayList(gDisplayListHead++, FILE_SELECT_TEXT_DL_END);
+    } else {
+#ifdef VERSION_EU
+        print_menu_generic_string(get_str_x_pos_from_center(257, textHiScore[sLanguageMode], 10.0f),
+            24,textHiScore[sLanguageMode]);
+#else
+        print_menu_generic_string(HISCORE_X, 24, textHiScore);
+#endif
+    }
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
 }
-
-#undef PRINT_COURSE_NAME_CN
-#undef PRINT_COURSE_SCORES_CN
-#undef PRINT_COURSE_NAME_AND_SCORES
 
 /**
  * Prints file select strings depending on the menu selected.
  * Also checks if all saves exists and defines text and main menu timers.
  */
 static void print_file_select_strings(void) {
-#ifndef VERSION_CN
-    UNUSED u8 filler[8];
-#endif
+    UNUSED s32 unused1;
+    UNUSED s32 unused2;
 
     create_dl_ortho_matrix();
     switch (sSelectedButtonID) {
@@ -3105,7 +2834,7 @@ static void print_file_select_strings(void) {
         sTextBaseAlpha += 10;
     }
     if (sMainMenuTimer < 1000) {
-        sMainMenuTimer++;
+        sMainMenuTimer += 1;
     }
 }
 
@@ -3127,7 +2856,7 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
  */
 s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
 #ifdef VERSION_EU
-    s8 fileIndex;
+    s8 fileNum;
 #endif
     sSelectedButtonID = MENU_BUTTON_NONE;
     sCurrentMenuLevel = MENU_LAYER_MAIN;
@@ -3167,8 +2896,8 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
 #ifdef VERSION_EU
     sLanguageMode = eu_get_language();
 
-    for (fileIndex = 0; fileIndex <= 3; fileIndex++) {
-        if (save_file_exists(fileIndex) == TRUE) {
+    for (fileNum = 0; fileNum < 4; fileNum++) {
+        if (save_file_exists(fileNum) == TRUE) {
             sOpenLangSettings = FALSE;
             break;
         } else {
@@ -3191,7 +2920,3 @@ s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
     area_update_objects();
     return sSelectedFileNum;
 }
-
-#undef FILE_SELECT_PRINT_STRING
-#undef FILE_SELECT_TEXT_DL_BEGIN
-#undef FILE_SELECT_TEXT_DL_END

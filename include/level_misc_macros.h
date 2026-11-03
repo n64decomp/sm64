@@ -1,11 +1,11 @@
 #ifndef LEVEL_MISC_MACROS_H
 #define LEVEL_MISC_MACROS_H
 
-#define MACRO_OBJECT_WITH_BHV_PARAM(preset, yaw, posX, posY, posZ, bhvParam) \
-    ((s16)((yaw * 0x10 / 45) << 9) | (preset + 0x1F)), posX, posY, posZ, bhvParam
+#define MACRO_OBJECT_WITH_BEH_PARAM(preset, yaw, posX, posY, posZ, behParam) \
+    ((s16)((yaw * 0x10 / 45) << 9) | (preset + 0x1F)), posX, posY, posZ, behParam
 
 #define MACRO_OBJECT(preset, yaw, posX, posY, posZ) \
-    MACRO_OBJECT_WITH_BHV_PARAM(preset, yaw, posX, posY, posZ, 0)
+    MACRO_OBJECT_WITH_BEH_PARAM(preset, yaw, posX, posY, posZ, 0)
 
 #define MACRO_OBJECT_END() \
     0x001E

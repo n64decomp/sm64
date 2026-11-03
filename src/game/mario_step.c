@@ -552,7 +552,7 @@ void apply_gravity(struct MarioState *m) {
             m->vel[1] = -65.0f;
         }
     } else if (m->action == ACT_GETTING_BLOWN) {
-        m->vel[1] -= m->gettingBlownGravity;
+        m->vel[1] -= m->unkC4;
         if (m->vel[1] < -75.0f) {
             m->vel[1] = -75.0f;
         }

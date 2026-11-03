@@ -32,4 +32,16 @@ typedef union {
     u32 as_raw[2];
 } OSContPackedStruct;
 
+#ifdef AVOID_UB
+// Fix the OSContPackedStruct array
+extern OSContPackedStruct _osContCmdBuf[8];
+
+// And fix the last element
+#define _osContPifCtrl _osContCmdBuf[7].as_raw[1]
+#else
+// Original OSContPackedStruct definitions
+extern OSContPackedStruct _osContCmdBuf[7];
+extern u32 _osContPifCtrl;
+#endif
+
 #endif

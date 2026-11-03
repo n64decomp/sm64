@@ -1,4 +1,4 @@
-// corkbox.inc.c
+// corkbox.c.inc
 // TODO: This split seems weird. Investigate further?
 
 void bhv_bobomb_bully_death_smoke_init(void) {
@@ -31,19 +31,19 @@ void bhv_bobomb_explosion_bubble_loop(void) {
         spawn_object(o, MODEL_SMALL_WATER_SPLASH, bhvObjectWaterSplash);
     }
 
-    if (o->oTimer > 60) {
+    if (o->oTimer >= 61)
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-    }
 
     o->oPosY += o->oVelY;
     o->oTimer++;
 }
 
 void bhv_respawner_loop(void) {
+    struct Object *spawnedObject;
+
     if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, o->oRespawnerMinSpawnDist)) {
-        struct Object *spawnedObject = spawn_object(o, o->oRespawnerModelToRespawn,
-                                                    o->oRespawnerBehaviorToRespawn);
-        spawnedObject->oBhvParams = o->oBhvParams;
+        spawnedObject = spawn_object(o, o->oRespawnerModelToRespawn, o->oRespawnerBehaviorToRespawn);
+        spawnedObject->oBehParams = o->oBehParams;
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }
@@ -51,7 +51,7 @@ void bhv_respawner_loop(void) {
 void create_respawner(s32 model, const BehaviorScript *behToSpawn, s32 minSpawnDist) {
     struct Object *respawner = spawn_object_abs_with_rot(o, 0, MODEL_NONE, bhvRespawner, o->oHomeX,
                                                          o->oHomeY, o->oHomeZ, 0, 0, 0);
-    respawner->oBhvParams = o->oBhvParams;
+    respawner->oBehParams = o->oBehParams;
     respawner->oRespawnerModelToRespawn = model;
     respawner->oRespawnerMinSpawnDist = minSpawnDist;
     respawner->oRespawnerBehaviorToRespawn = behToSpawn;

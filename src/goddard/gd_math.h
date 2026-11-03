@@ -24,7 +24,7 @@ enum GdRotAxis {
 void gd_adjunct_mat4f(Mat4f *src, Mat4f *dst);
 f32 gd_mat4f_det(Mat4f *mtx);
 f32 gd_3x3_det(f32 r0c0, f32 r0c1, f32 r0c2,
-               f32 r1c0, f32 r1c1, f32 r1c2,
+               f32 r1c0, f32 r1c1, f32 r1c2, 
                f32 r2c0, f32 r2c1, f32 r2c2);
 f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d);
 

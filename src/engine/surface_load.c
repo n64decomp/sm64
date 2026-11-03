@@ -1,5 +1,7 @@
 #include <PR/ultratypes.h>
 
+#include "prevent_bss_reordering.h"
+
 #include "sm64.h"
 #include "game/ingame_menu.h"
 #include "graph_node.h"
@@ -25,6 +27,13 @@ SpatialPartitionCell gDynamicSurfacePartition[NUM_CELLS][NUM_CELLS];
 /**
  * Pools of data to contain either surface nodes or surfaces.
  */
+#ifdef USE_SYSTEM_MALLOC
+static struct AllocOnlyPool *sStaticSurfaceNodePool;
+static struct AllocOnlyPool *sStaticSurfacePool;
+static struct AllocOnlyPool *sDynamicSurfaceNodePool;
+static struct AllocOnlyPool *sDynamicSurfacePool;
+static u8 sStaticSurfaceLoadComplete;
+#else
 struct SurfaceNode *sSurfaceNodePool;
 struct Surface *sSurfacePool;
 
@@ -32,6 +41,8 @@ struct Surface *sSurfacePool;
  * The size of the surface pool (2300).
  */
 s16 sSurfacePoolSize;
+#endif
+
 
 u8 unused8038EEA8[0x30];
 
@@ -39,14 +50,24 @@ u8 unused8038EEA8[0x30];
  * Allocate the part of the surface node pool to contain a surface node.
  */
 static struct SurfaceNode *alloc_surface_node(void) {
+#ifdef USE_SYSTEM_MALLOC
+    struct AllocOnlyPool *pool = !sStaticSurfaceLoadComplete ?
+                                 sStaticSurfaceNodePool : sDynamicSurfaceNodePool;
+    struct SurfaceNode *node = alloc_only_pool_alloc(pool, sizeof(struct SurfaceNode));
+#else
     struct SurfaceNode *node = &sSurfaceNodePool[gSurfaceNodesAllocated];
+#endif
     gSurfaceNodesAllocated++;
 
     node->next = NULL;
 
+#ifndef USE_SYSTEM_MALLOC
+    //! A bounds check! If there's more surface nodes than 7000 allowed,
+    //  we, um...
+    // Perhaps originally just debug feedback?
     if (gSurfaceNodesAllocated >= 7000) {
-        CN_DEBUG_PRINTF((" mcMakeBGCheckList OVERFLOW\n"));
     }
+#endif
 
     return node;
 }
@@ -56,13 +77,22 @@ static struct SurfaceNode *alloc_surface_node(void) {
  * initialize the surface.
  */
 static struct Surface *alloc_surface(void) {
-
+#ifdef USE_SYSTEM_MALLOC
+    struct AllocOnlyPool *pool = !sStaticSurfaceLoadComplete ?
+                                 sStaticSurfacePool : sDynamicSurfacePool;
+    struct Surface *surface = alloc_only_pool_alloc(pool, sizeof(struct Surface));
+#else
     struct Surface *surface = &sSurfacePool[gSurfacesAllocated];
+#endif
     gSurfacesAllocated++;
 
+#ifndef USE_SYSTEM_MALLOC
+    //! A bounds check! If there's more surfaces than the 2300 allowed,
+    //  we, um...
+    // Perhaps originally just debug feedback?
     if (gSurfacesAllocated >= sSurfacePoolSize) {
-        CN_DEBUG_PRINTF((" mcMakeBGCheckData OVERFLOW\n"));
     }
+#endif
 
     surface->type = 0;
     surface->force = 0;
@@ -159,7 +189,7 @@ static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surfac
 /**
  * Returns the lowest of three values.
  */
-static s16 min_3(TerrainData a0, TerrainData a1, TerrainData a2) {
+static s16 min_3(s16 a0, s16 a1, s16 a2) {
     if (a1 < a0) {
         a0 = a1;
     }
@@ -174,7 +204,7 @@ static s16 min_3(TerrainData a0, TerrainData a1, TerrainData a2) {
 /**
  * Returns the highest of three values.
  */
-static s16 max_3(TerrainData a0, TerrainData a1, TerrainData a2) {
+static s16 max_3(s16 a0, s16 a1, s16 a2) {
     if (a1 > a0) {
         a0 = a1;
     }
@@ -191,7 +221,7 @@ static s16 max_3(TerrainData a0, TerrainData a1, TerrainData a2) {
  * time). This function determines the lower cell for a given x/z position.
  * @param coord The coordinate to test
  */
-static s16 lower_cell_index(TerrainData coord) {
+static s16 lower_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
@@ -207,7 +237,7 @@ static s16 lower_cell_index(TerrainData coord) {
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
     if (coord % CELL_SIZE < 50) {
-        index--;
+        index -= 1;
     }
 
     if (index < 0) {
@@ -223,7 +253,7 @@ static s16 lower_cell_index(TerrainData coord) {
  * time). This function determines the upper cell for a given x/z position.
  * @param coord The coordinate to test
  */
-static s16 upper_cell_index(TerrainData coord) {
+static s16 upper_cell_index(s16 coord) {
     s16 index;
 
     // Move from range [-0x2000, 0x2000) to [0, 0x4000)
@@ -239,7 +269,7 @@ static s16 upper_cell_index(TerrainData coord) {
     //! Some wall checks are larger than the buffer, meaning wall checks can
     //  miss walls that are near a cell border.
     if (coord % CELL_SIZE > CELL_SIZE - 50) {
-        index++;
+        index += 1;
     }
 
     if (index > NUM_CELLS_INDEX) {
@@ -293,7 +323,7 @@ UNUSED static void stub_surface_load_1(void) {
  * @param vertexData The raw data containing vertex positions
  * @param vertexIndices Helper which tells positions in vertexData to start reading vertices
  */
-static struct Surface *read_surface_data(TerrainData *vertexData, TerrainData **vertexIndices) {
+static struct Surface *read_surface_data(s16 *vertexData, s16 **vertexIndices) {
     struct Surface *surface;
     register s32 x1, y1, z1;
     register s32 x2, y2, z2;
@@ -301,7 +331,7 @@ static struct Surface *read_surface_data(TerrainData *vertexData, TerrainData **
     s32 maxY, minY;
     f32 nx, ny, nz;
     f32 mag;
-    TerrainData offset1, offset2, offset3;
+    s16 offset1, offset2, offset3;
 
     offset1 = 3 * (*vertexIndices)[0];
     offset2 = 3 * (*vertexIndices)[1];
@@ -381,7 +411,7 @@ static struct Surface *read_surface_data(TerrainData *vertexData, TerrainData **
  * Returns whether a surface has exertion/moves Mario
  * based on the surface type.
  */
-static s32 surface_has_force(TerrainData surfaceType) {
+static s32 surface_has_force(s16 surfaceType) {
     s32 hasForce = FALSE;
 
     switch (surfaceType) {
@@ -398,7 +428,6 @@ static s32 surface_has_force(TerrainData surfaceType) {
         default:
             break;
     }
-
     return hasForce;
 }
 
@@ -406,7 +435,7 @@ static s32 surface_has_force(TerrainData surfaceType) {
  * Returns whether a surface should have the
  * SURFACE_FLAG_NO_CAM_COLLISION flag.
  */
-static s32 surf_has_no_cam_collision(TerrainData surfaceType) {
+static s32 surf_has_no_cam_collision(s16 surfaceType) {
     s32 flags = 0;
 
     switch (surfaceType) {
@@ -428,21 +457,21 @@ static s32 surf_has_no_cam_collision(TerrainData surfaceType) {
  * Load in the surfaces for a given surface type. This includes setting the flags,
  * exertion, and room.
  */
-static void load_static_surfaces(TerrainData **data, TerrainData *vertexData, TerrainData surfaceType, RoomData **surfaceRooms) {
+static void load_static_surfaces(s16 **data, s16 *vertexData, s16 surfaceType, s8 **surfaceRooms) {
     s32 i;
     s32 numSurfaces;
     struct Surface *surface;
-    RoomData room = 0;
+    s8 room = 0;
     s16 hasForce = surface_has_force(surfaceType);
     s16 flags = surf_has_no_cam_collision(surfaceType);
 
     numSurfaces = *(*data);
-    (*data)++;
+    *data += 1;
 
     for (i = 0; i < numSurfaces; i++) {
         if (*surfaceRooms != NULL) {
             room = *(*surfaceRooms);
-            (*surfaceRooms)++;
+            *surfaceRooms += 1;
         }
 
         surface = read_surface_data(vertexData, data);
@@ -462,7 +491,7 @@ static void load_static_surfaces(TerrainData **data, TerrainData *vertexData, Te
 
         *data += 3;
         if (hasForce) {
-            (*data)++;
+            *data += 1;
         }
     }
 }
@@ -470,10 +499,11 @@ static void load_static_surfaces(TerrainData **data, TerrainData *vertexData, Te
 /**
  * Read the data for vertices for reference by triangles.
  */
-static TerrainData *read_vertex_data(TerrainData **data) {
+static s16 *read_vertex_data(s16 **data) {
     s32 numVertices;
-    UNUSED u8 filler[16];
-    TerrainData *vertexData;
+    UNUSED s16 unused1[3];
+    UNUSED s16 unused2[3];
+    s16 *vertexData;
 
     numVertices = *(*data);
     (*data)++;
@@ -487,7 +517,7 @@ static TerrainData *read_vertex_data(TerrainData **data) {
 /**
  * Loads in special environmental regions, such as water, poison gas, and JRB fog.
  */
-static void load_environmental_regions(TerrainData **data) {
+static void load_environmental_regions(s16 **data) {
     s32 numRegions;
     s32 i;
 
@@ -495,12 +525,11 @@ static void load_environmental_regions(TerrainData **data) {
     numRegions = *(*data)++;
 
     if (numRegions > 20) {
-        CN_DEBUG_PRINTF(("Error Water Over\n"));
     }
 
     for (i = 0; i < numRegions; i++) {
-        UNUSED TerrainData val, loX, loZ, hiX, hiZ;
-        TerrainData height;
+        UNUSED s16 val, loX, loZ, hiX, hiZ;
+        s16 height;
 
         val = *(*data)++;
 
@@ -519,9 +548,16 @@ static void load_environmental_regions(TerrainData **data) {
  * Allocate some of the main pool for surfaces (2300 surf) and for surface nodes (7000 nodes).
  */
 void alloc_surface_pools(void) {
+#ifdef USE_SYSTEM_MALLOC
+    sStaticSurfaceNodePool = alloc_only_pool_init();
+    sStaticSurfacePool = alloc_only_pool_init();
+    sDynamicSurfaceNodePool = alloc_only_pool_init();
+    sDynamicSurfacePool = alloc_only_pool_init();
+#else
     sSurfacePoolSize = 2300;
     sSurfaceNodePool = main_pool_alloc(7000 * sizeof(struct SurfaceNode), MEMORY_POOL_LEFT);
     sSurfacePool = main_pool_alloc(sSurfacePoolSize * sizeof(struct Surface), MEMORY_POOL_LEFT);
+#endif
 
     gCCMEnteredSlide = 0;
     reset_red_coins_collected();
@@ -531,14 +567,14 @@ void alloc_surface_pools(void) {
 /**
  * Get the size of the terrain data, to get the correct size when copying later.
  */
-u32 get_area_terrain_size(TerrainData *data) {
-    TerrainData *startPos = data;
+u32 get_area_terrain_size(s16 *data) {
+    s16 *startPos = data;
     s32 end = FALSE;
-    TerrainData terrainLoadType;
+    s16 terrainLoadType;
     s32 numVertices;
     s32 numRegions;
     s32 numSurfaces;
-    TerrainData hasForce;
+    s16 hasForce;
 
     while (!end) {
         terrainLoadType = *data++;
@@ -582,16 +618,27 @@ u32 get_area_terrain_size(TerrainData *data) {
  * Process the level file, loading in vertices, surfaces, some objects, and environmental
  * boxes (water, gas, JRB fog).
  */
-void load_area_terrain(s16 index, TerrainData *data, RoomData *surfaceRooms, s16 *macroObjects) {
-    TerrainData terrainLoadType;
-    TerrainData *vertexData;
-    UNUSED u8 filler[4];
+void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects) {
+    s16 terrainLoadType;
+    s16 *vertexData;
+    UNUSED s32 unused;
 
     // Initialize the data for this.
     gEnvironmentRegions = NULL;
     unused8038BE90 = 0;
     gSurfaceNodesAllocated = 0;
     gSurfacesAllocated = 0;
+#ifdef USE_SYSTEM_MALLOC
+    alloc_only_pool_clear(sStaticSurfaceNodePool);
+    alloc_only_pool_clear(sStaticSurfacePool);
+    alloc_only_pool_clear(sDynamicSurfaceNodePool);
+    alloc_only_pool_clear(sDynamicSurfacePool);
+    sStaticSurfaceLoadComplete = FALSE;
+
+    // Originally they forgot to clear this matrix,
+    // results in segfaults if this is not done.
+    clear_dynamic_surfaces();
+#endif
 
     clear_static_surfaces();
 
@@ -616,8 +663,7 @@ void load_area_terrain(s16 index, TerrainData *data, RoomData *surfaceRooms, s16
             break;
         } else if (TERRAIN_LOAD_IS_SURFACE_TYPE_HIGH(terrainLoadType)) {
             load_static_surfaces(&data, vertexData, terrainLoadType, &surfaceRooms);
-        } else {
-            CN_DEBUG_PRINTF((" BGCode Error \n"));
+            continue;
         }
     }
 
@@ -635,6 +681,10 @@ void load_area_terrain(s16 index, TerrainData *data, RoomData *surfaceRooms, s16
 
     gNumStaticSurfaceNodes = gSurfaceNodesAllocated;
     gNumStaticSurfaces = gSurfacesAllocated;
+
+#ifdef USE_SYSTEM_MALLOC
+    sStaticSurfaceLoadComplete = TRUE;
+#endif
 }
 
 /**
@@ -642,6 +692,15 @@ void load_area_terrain(s16 index, TerrainData *data, RoomData *surfaceRooms, s16
  */
 void clear_dynamic_surfaces(void) {
     if (!(gTimeStopState & TIME_STOP_ACTIVE)) {
+#ifdef USE_SYSTEM_MALLOC
+        if (gSurfacesAllocated > gNumStaticSurfaces) {
+            alloc_only_pool_clear(sDynamicSurfacePool);
+        }
+        if (gSurfaceNodesAllocated > gNumStaticSurfaceNodes) {
+            alloc_only_pool_clear(sDynamicSurfaceNodePool);
+        }
+#endif
+
         gSurfacesAllocated = gNumStaticSurfaces;
         gSurfaceNodesAllocated = gNumStaticSurfaceNodes;
 
@@ -655,8 +714,8 @@ UNUSED static void unused_80383604(void) {
 /**
  * Applies an object's transformation to the object's vertices.
  */
-void transform_object_vertices(TerrainData **data, TerrainData *vertexData) {
-    register TerrainData *vertices;
+void transform_object_vertices(s16 **data, s16 *vertexData) {
+    register s16 *vertices;
     register f32 vx, vy, vz;
     register s32 numVertices;
 
@@ -684,9 +743,9 @@ void transform_object_vertices(TerrainData **data, TerrainData *vertexData) {
         vz = *(vertices++);
 
         //! No bounds check on vertex data
-        *vertexData++ = (TerrainData)(vx * m[0][0] + vy * m[1][0] + vz * m[2][0] + m[3][0]);
-        *vertexData++ = (TerrainData)(vx * m[0][1] + vy * m[1][1] + vz * m[2][1] + m[3][1]);
-        *vertexData++ = (TerrainData)(vx * m[0][2] + vy * m[1][2] + vz * m[2][2] + m[3][2]);
+        *vertexData++ = (s16)(vx * m[0][0] + vy * m[1][0] + vz * m[2][0] + m[3][0]);
+        *vertexData++ = (s16)(vx * m[0][1] + vy * m[1][1] + vz * m[2][1] + m[3][1]);
+        *vertexData++ = (s16)(vx * m[0][2] + vy * m[1][2] + vz * m[2][2] + m[3][2]);
     }
 
     *data = vertices;
@@ -695,12 +754,12 @@ void transform_object_vertices(TerrainData **data, TerrainData *vertexData) {
 /**
  * Load in the surfaces for the gCurrentObject. This includes setting the flags, exertion, and room.
  */
-void load_object_surfaces(TerrainData **data, TerrainData *vertexData) {
+void load_object_surfaces(s16 **data, s16 *vertexData) {
     s32 surfaceType;
     s32 i;
     s32 numSurfaces;
-    TerrainData hasForce;
-    TerrainData flags;
+    s16 hasForce;
+    s16 flags;
     s16 room;
 
     surfaceType = *(*data);
@@ -716,7 +775,7 @@ void load_object_surfaces(TerrainData **data, TerrainData *vertexData) {
 
     // The DDD warp is initially loaded at the origin and moved to the proper
     // position in paintings.c and doesn't update its room, so set it here.
-    if (gCurrentObject->behavior == segmented_to_virtual(bhvDDDWarp)) {
+    if (gCurrentObject->behavior == segmented_to_virtual(bhvDddWarp)) {
         room = 5;
     } else {
         room = 0;
@@ -752,10 +811,10 @@ void load_object_surfaces(TerrainData **data, TerrainData *vertexData) {
  * Transform an object's vertices, reload them, and render the object.
  */
 void load_object_collision_model(void) {
-    UNUSED u8 filler[4];
-    TerrainData vertexData[600];
+    UNUSED s32 unused;
+    s16 vertexData[600];
 
-    TerrainData *collisionData = gCurrentObject->collisionData;
+    s16 *collisionData = gCurrentObject->collisionData;
     f32 marioDist = gCurrentObject->oDistanceToMario;
     f32 tangibleDist = gCurrentObject->oCollisionDistance;
 

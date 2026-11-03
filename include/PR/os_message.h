@@ -76,10 +76,7 @@ typedef struct OSMesgQueue_s {
  */
 
 /* Events */
-
-#ifdef BBPLAYER
-#define OS_NUM_EVENTS           31
-#elif defined(_FINALROM)
+#ifdef _FINALROM
 #define OS_NUM_EVENTS           15
 #else
 #define OS_NUM_EVENTS           23
@@ -109,16 +106,6 @@ typedef struct OSMesgQueue_s {
 #define OS_EVENT_RDB_DBG_DONE     20
 #define OS_EVENT_RDB_FLUSH_PROF   21
 #define OS_EVENT_RDB_ACK_PROF     22
-#endif
-#ifdef BBPLAYER
-#define OS_EVENT_FLASH            23    /* NAND flash operation complete */
-#define OS_EVENT_AES              24    /* AES */
-#define OS_EVENT_IDE              25    /* IDE? */
-#define OS_EVENT_PI_ERR           26    /* PI Error? */
-#define OS_EVENT_USB0             27    /* USB Controller 0 */
-#define OS_EVENT_USB1             28    /* USB Controller 1 */
-#define OS_EVENT_UNK_29           29    /* TODO does this exist at all */
-#define OS_EVENT_MD               30    /* Related to card */
 #endif
 
 /* Flags to turn blocking on/off when sending/receiving message */

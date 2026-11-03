@@ -1,6 +1,5 @@
-#if !defined(VERSION_SH) && !defined(VERSION_CN)
+#ifndef VERSION_SH
 #include <ultra64.h>
-#include <PR/os.h>
 
 #include "data.h"
 #include "external.h"
@@ -71,7 +70,7 @@ struct CtlEntry *gCtlEntries; // sh: 0x803505F8
 #if defined(VERSION_EU)
 u32 padEuBss1;
 struct AudioBufferParametersEU gAudioBufferParameters;
-#else
+#elif defined(VERSION_US) || defined(VERSION_JP)
 s32 gAiFrequency;
 #endif
 
@@ -914,13 +913,13 @@ void audio_init() {
 #if defined(VERSION_JP) || defined(VERSION_US)
     u8 buf[0x10];
 #endif
-    s32 i, j, k;
+    s32 i, j, UNUSED k;
     UNUSED s32 lim1; // lim1 unused in EU
 #if defined(VERSION_EU)
     UNUSED u8 buf[0x10];
     s32 UNUSED lim2, lim3;
 #else
-    s32 lim2, lim3;
+    s32 lim2, UNUSED lim3;
 #endif
     UNUSED u32 size;
     UNUSED u64 *ptr64;
@@ -974,8 +973,7 @@ void audio_init() {
 #endif
 
 #ifdef TARGET_N64
-    eu_stubbed_printf_3(
-        "Clear Workarea %x -%x size %x \n",
+    eu_stubbed_printf_3("Clear Workarea %x -%x size %x \n",
         (uintptr_t) &gAudioGlobalsStartMarker,
         (uintptr_t) &gAudioGlobalsEndMarker,
         (uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker

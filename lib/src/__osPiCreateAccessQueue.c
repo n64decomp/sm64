@@ -1,10 +1,8 @@
 #include "libultra_internal.h"
 
-#include "macros.h"
-
 #define PIAccessQueueSize 2
 
-FORCE_BSS OSMesg osPiMesgBuff[PIAccessQueueSize];
+OSMesg osPiMesgBuff[PIAccessQueueSize];
 OSMesgQueue gOsPiMessageQueue;
 u32 gOsPiAccessQueueCreated = 0;
 

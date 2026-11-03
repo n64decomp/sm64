@@ -1,25 +1,23 @@
 #include "libultra_internal.h"
-#include "PR/os.h"
-#include "piint.h"
-
-#include "macros.h"
 
 #define OS_PI_MGR_MESG_BUFF_SIZE 1
 
-OSDevMgr __osPiDevMgr = { 0 };
+#ifdef VERSION_SH // TODO: In libreultra this is in an include
+extern OSPiHandle *CartRomHandle;
+extern OSPiHandle *LeoDiskHandle;
+#endif
 
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+OSMgrArgs __osPiDevMgr = { 0 };
+#if defined(VERSION_EU) || defined(VERSION_SH)
 OSPiHandle *__osPiTable = NULL;
 #endif
-
-#if defined(VERSION_SH) || defined(VERSION_CN)
-OSPiHandle *__osCurrentHandle[2] = { &__Dom1SpeedParam, &__Dom2SpeedParam };
+#ifdef VERSION_SH
+OSPiHandle **__osCurrentHandle[2] = { &CartRomHandle, &LeoDiskHandle };
 #endif
-
-FORCE_BSS OSThread piMgrThread;
-FORCE_BSS u32 piMgrStack[0x400]; // stack bottom
-FORCE_BSS OSMesgQueue piEventQueue;
-FORCE_BSS OSMesg piEventBuf[OS_PI_MGR_MESG_BUFF_SIZE + 1];
+OSThread piMgrThread;
+u32 piMgrStack[0x400]; // stack bottom
+OSMesgQueue __osPiMesgQueue;
+OSMesg piMgrMesgBuff[OS_PI_MGR_MESG_BUFF_SIZE + 1];
 
 extern u32 gOsPiAccessQueueCreated;
 extern OSMesgQueue gOsPiMessageQueue;
@@ -30,13 +28,13 @@ void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf, s32 cmdMsgC
     OSPri newPri;
     OSPri currentPri;
 
-    if (!__osPiDevMgr.active) {
+    if (!__osPiDevMgr.initialized) {
         osCreateMesgQueue(cmdQ, cmdBuf, cmdMsgCnt);
-        osCreateMesgQueue(&piEventQueue, &piEventBuf[0], OS_PI_MGR_MESG_BUFF_SIZE);
+        osCreateMesgQueue(&__osPiMesgQueue, &piMgrMesgBuff[0], OS_PI_MGR_MESG_BUFF_SIZE);
         if (!gOsPiAccessQueueCreated) {
             __osPiCreateAccessQueue();
         } // what is this constant geez
-        osSetEventMesg(OS_EVENT_PI, &piEventQueue, (void *) 0x22222222);
+        osSetEventMesg(OS_EVENT_PI, &__osPiMesgQueue, (void *) 0x22222222);
         newPri = -1;
         currentPri = osGetThreadPri(NULL);
         if (currentPri < pri) {
@@ -44,14 +42,14 @@ void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ, OSMesg *cmdBuf, s32 cmdMsgC
             osSetThreadPri(NULL, pri);
         }
         int_disabled = __osDisableInt();
-        __osPiDevMgr.active = TRUE;
-        __osPiDevMgr.thread = &piMgrThread;
+        __osPiDevMgr.initialized = TRUE;
+        __osPiDevMgr.mgrThread = &piMgrThread;
         __osPiDevMgr.cmdQueue = cmdQ;
-        __osPiDevMgr.evtQueue = &piEventQueue;
-        __osPiDevMgr.acsQueue = &gOsPiMessageQueue;
-        __osPiDevMgr.dma = osPiRawStartDma;
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
-        __osPiDevMgr.edma = osEPiRawStartDma;
+        __osPiDevMgr.eventQueue = &__osPiMesgQueue;
+        __osPiDevMgr.accessQueue = &gOsPiMessageQueue;
+        __osPiDevMgr.dma_func = osPiRawStartDma;
+#if defined(VERSION_EU) || defined(VERSION_SH)
+        __osPiDevMgr.edma_func = osEPiRawStartDma;
 #endif
         osCreateThread(&piMgrThread, 0, __osDevMgrMain, (void *) &__osPiDevMgr, &piMgrStack[0x400], pri);
         osStartThread(&piMgrThread);

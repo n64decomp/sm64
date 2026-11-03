@@ -123,22 +123,22 @@ static void toad_message_opaque(void) {
 }
 
 static void toad_message_talking(void) {
-    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN,
-        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogID)) {
+    if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN, 
+        DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, gCurrentObject->oToadMessageDialogId)) {
         gCurrentObject->oToadMessageRecentlyTalked = TRUE;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADING;
-        switch (gCurrentObject->oToadMessageDialogID) {
+        switch (gCurrentObject->oToadMessageDialogId) {
             case TOAD_STAR_1_DIALOG:
-                gCurrentObject->oToadMessageDialogID = TOAD_STAR_1_DIALOG_AFTER;
-                bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_1);
+                gCurrentObject->oToadMessageDialogId = TOAD_STAR_1_DIALOG_AFTER;
+                bhv_spawn_star_no_level_exit(0);
                 break;
             case TOAD_STAR_2_DIALOG:
-                gCurrentObject->oToadMessageDialogID = TOAD_STAR_2_DIALOG_AFTER;
-                bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_2);
+                gCurrentObject->oToadMessageDialogId = TOAD_STAR_2_DIALOG_AFTER;
+                bhv_spawn_star_no_level_exit(1);
                 break;
             case TOAD_STAR_3_DIALOG:
-                gCurrentObject->oToadMessageDialogID = TOAD_STAR_3_DIALOG_AFTER;
-                bhv_spawn_star_no_level_exit(STAR_INDEX_ACT_3);
+                gCurrentObject->oToadMessageDialogId = TOAD_STAR_3_DIALOG_AFTER;
+                bhv_spawn_star_no_level_exit(2);
                 break;
         }
     }
@@ -182,32 +182,31 @@ void bhv_toad_message_loop(void) {
 void bhv_toad_message_init(void) {
     s32 saveFlags = save_file_get_flags();
     s32 starCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    s32 dialogID = (gCurrentObject->oBhvParams >> 24) & 0xFF;
+    s32 dialogId = (gCurrentObject->oBehParams >> 24) & 0xFF;
     s32 enoughStars = TRUE;
 
-    switch (dialogID) {
+    switch (dialogId) {
         case TOAD_STAR_1_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_1_REQUIREMENT);
             if (saveFlags & SAVE_FLAG_COLLECTED_TOAD_STAR_1) {
-                dialogID = TOAD_STAR_1_DIALOG_AFTER;
+                dialogId = TOAD_STAR_1_DIALOG_AFTER;
             }
             break;
         case TOAD_STAR_2_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_2_REQUIREMENT);
             if (saveFlags & SAVE_FLAG_COLLECTED_TOAD_STAR_2) {
-                dialogID = TOAD_STAR_2_DIALOG_AFTER;
+                dialogId = TOAD_STAR_2_DIALOG_AFTER;
             }
             break;
         case TOAD_STAR_3_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_3_REQUIREMENT);
             if (saveFlags & SAVE_FLAG_COLLECTED_TOAD_STAR_3) {
-                dialogID = TOAD_STAR_3_DIALOG_AFTER;
+                dialogId = TOAD_STAR_3_DIALOG_AFTER;
             }
             break;
     }
-
     if (enoughStars) {
-        gCurrentObject->oToadMessageDialogID = dialogID;
+        gCurrentObject->oToadMessageDialogId = dialogId;
         gCurrentObject->oToadMessageRecentlyTalked = FALSE;
         gCurrentObject->oToadMessageState = TOAD_MESSAGE_FADED;
         gCurrentObject->oOpacity = 81;
@@ -239,9 +238,9 @@ void bhv_unlock_door_star_init(void) {
 }
 
 void bhv_unlock_door_star_loop(void) {
-    UNUSED u8 filler1[4];
+    UNUSED u8 unused1[4];
     s16 prevYaw = gCurrentObject->oMoveAngleYaw;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused2[4];
 
     // Speed up the star every frame
     if (gCurrentObject->oUnlockDoorStarYawVel < 0x2400) {
@@ -322,12 +321,12 @@ static Gfx *make_gfx_mario_alpha(struct GraphNodeGenerated *node, s16 alpha) {
  * Sets the correct blend mode and color for mirror Mario.
  */
 Gfx *geo_mirror_mario_set_alpha(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
-    UNUSED u8 filler1[4];
+    UNUSED u8 unused1[4];
     Gfx *gfx = NULL;
     struct GraphNodeGenerated *asGenerated = (struct GraphNodeGenerated *) node;
     struct MarioBodyState *bodyState = &gBodyStates[asGenerated->parameter];
     s16 alpha;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused2[4];
 
     if (callContext == GEO_CONTEXT_RENDER) {
         alpha = (bodyState->modelState & 0x100) ? (bodyState->modelState & 0xFF) : 255;
@@ -614,9 +613,9 @@ Gfx *geo_render_mirror_mario(s32 callContext, struct GraphNode *node, UNUSED Mat
                 gMirrorMario.pos[0] = mirroredX + MIRROR_X;
                 gMirrorMario.angle[1] = -gMirrorMario.angle[1];
                 gMirrorMario.scale[0] *= -1.0f;
-                ((struct GraphNode *) &gMirrorMario)->flags |= GRAPH_RENDER_ACTIVE;
+                ((struct GraphNode *) &gMirrorMario)->flags |= 1;
             } else {
-                ((struct GraphNode *) &gMirrorMario)->flags &= ~GRAPH_RENDER_ACTIVE;
+                ((struct GraphNode *) &gMirrorMario)->flags &= ~1;
             }
             break;
     }
@@ -645,6 +644,5 @@ Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, 
         }
         asGenerated->fnNode.node.flags = (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
     }
-
     return gfx;
 }

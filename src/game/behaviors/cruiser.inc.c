@@ -1,4 +1,4 @@
-// cruiser.inc.c
+// cruiser.c.inc
 
 void bhv_rr_cruiser_wing_init(void) {
     o->oRRCruiserWingUnkF4 = o->oFaceAngleYaw;
@@ -6,7 +6,7 @@ void bhv_rr_cruiser_wing_init(void) {
 }
 
 void bhv_rr_cruiser_wing_loop(void) {
-    if (o->oBhvParams2ndByte == 0) {
+    if (o->oBehParams2ndByte == 0) {
         o->oFaceAngleYaw = o->oRRCruiserWingUnkF4 + sins(o->oTimer * 0x400) * 8192.0f;
         o->oFaceAnglePitch = o->oRRCruiserWingUnkF8 + coss(o->oTimer * 0x400) * 2048.0f;
     } else {

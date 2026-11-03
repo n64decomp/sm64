@@ -1,24 +1,22 @@
-// boo.inc.c
-
-#define SPAWN_CASTLE_BOO_STAR_REQUIREMENT 12
+// boo.c.inc
 
 static struct ObjectHitbox sBooGivingStarHitbox = {
-    /* interactType:      */ 0,
-    /* downOffset:        */ 0,
+    /* interactType: */      0,
+    /* downOffset: */        0,
     /* damageOrCoinValue: */ 3,
-    /* health:            */ 3,
-    /* numLootCoins:      */ 0,
-    /* radius:            */ 140,
-    /* height:            */ 80,
-    /* hurtboxRadius:     */ 40,
-    /* hurtboxHeight:     */ 60,
+    /* health: */            3,
+    /* numLootCoins: */      0,
+    /* radius: */            140,
+    /* height: */            80,
+    /* hurtboxRadius: */     40,
+    /* hurtboxHeight: */     60,
 };
 
 // Relative positions
 static s16 sCourtyardBooTripletPositions[][3] = {
-    { 0, 50, 0 },
-    { 210, 110, 210 },
-    { -210, 70, -210 },
+    {0, 50, 0},
+    {210, 110, 210},
+    {-210, 70, -210}
 };
 
 static void boo_stop(void) {
@@ -43,8 +41,10 @@ static s32 boo_should_be_stopped(void) {
             return TRUE;
         }
 
-        if (o->oRoom == 10 && (gTimeStopState & TIME_STOP_MARIO_OPENED_DOOR)) {
-            return TRUE;
+        if (o->oRoom == 10) {
+            if (gTimeStopState & TIME_STOP_MARIO_OPENED_DOOR) {
+                return TRUE;
+            }
         }
     }
 
@@ -71,8 +71,10 @@ static s32 boo_should_be_active(void) {
             return TRUE;
         }
     } else if (!boo_should_be_stopped()) {
-        if (o->oDistanceToMario < activationRadius
-            && (o->oRoom == gMarioCurrentRoom || gMarioCurrentRoom == 0)) {
+        if (
+            o->oDistanceToMario < activationRadius &&
+            (o->oRoom == gMarioCurrentRoom || gMarioCurrentRoom == 0)
+        ) {
             return TRUE;
         }
     }
@@ -82,14 +84,21 @@ static s32 boo_should_be_active(void) {
 
 void bhv_courtyard_boo_triplet_init(void) {
     s32 i;
+    struct Object *boo;
 
-    if (gHudDisplay.stars < SPAWN_CASTLE_BOO_STAR_REQUIREMENT) {
+    if (gHudDisplay.stars < 12) {
         obj_mark_for_deletion(o);
     } else {
         for (i = 0; i < 3; i++) {
-            struct Object *boo = spawn_object_relative(
-                BOO_BP_GENERIC, sCourtyardBooTripletPositions[i][0], sCourtyardBooTripletPositions[i][1],
-                sCourtyardBooTripletPositions[i][2], o, MODEL_BOO, bhvGhostHuntBoo);
+            boo = spawn_object_relative(
+                0x01,
+                sCourtyardBooTripletPositions[i][0],
+                sCourtyardBooTripletPositions[i][1],
+                sCourtyardBooTripletPositions[i][2],
+                o,
+                MODEL_BOO,
+                bhvGhostHuntBoo
+            );
 
             boo->oMoveAngleYaw = random_u16();
         }
@@ -115,14 +124,14 @@ static void boo_approach_target_opacity_and_update_scale(void) {
         }
     }
 
-    scale = (o->oOpacity / 255.0f * 0.4 + 0.6) * o->oBooBaseScale;
+    scale = (o->oOpacity/255.0f * 0.4 + 0.6) * o->oBooBaseScale;
     obj_scale(o, scale); // why no cur_obj_scale? was cur_obj_scale written later?
 }
 
 static void boo_oscillate(s32 ignoreOpacity) {
     o->oFaceAnglePitch = sins(o->oBooOscillationTimer) * 0x400;
 
-    if (o->oOpacity == 255 || ignoreOpacity == TRUE) {
+    if (o->oOpacity == 0xFF || ignoreOpacity == TRUE) {
         o->header.gfx.scale[0] = sins(o->oBooOscillationTimer) * 0.08 + o->oBooBaseScale;
         o->header.gfx.scale[1] = -sins(o->oBooOscillationTimer) * 0.08 + o->oBooBaseScale;
         o->header.gfx.scale[2] = o->header.gfx.scale[0];
@@ -136,13 +145,15 @@ static s32 boo_vanish_or_appear(void) {
     s16 relativeMarioFaceAngle = abs_angle_diff(o->oMoveAngleYaw, gMarioObject->oFaceAngleYaw);
     // magic?
     s16 relativeAngleToMarioThreshhold = 0x1568;
-    s16 relativeMarioFaceAngleThreshhold = 0x6B58;
+    s16 relativeMarioFaceAngleThreshhold = 0x6b58;
     s32 doneAppearing = FALSE;
 
     o->oVelY = 0.0f;
 
-    if (relativeAngleToMario > relativeAngleToMarioThreshhold
-        || relativeMarioFaceAngle < relativeMarioFaceAngleThreshhold) {
+    if (
+        relativeAngleToMario > relativeAngleToMarioThreshhold ||
+        relativeMarioFaceAngle < relativeMarioFaceAngleThreshhold
+    ) {
         if (o->oOpacity == 40) {
             o->oBooTargetOpacity = 255;
             cur_obj_play_sound_2(SOUND_OBJ_BOO_LAUGH_LONG);
@@ -164,9 +175,9 @@ static void boo_set_move_yaw_for_during_hit(s32 hurt) {
     o->oFlags &= ~OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW;
     o->oBooMoveYawBeforeHit = (f32) o->oMoveAngleYaw;
 
-    if (hurt) {
+    if (hurt != FALSE) {
         o->oBooMoveYawDuringHit = gMarioObject->oMoveAngleYaw;
-    } else if (coss((s16) o->oMoveAngleYaw - (s16) o->oAngleToMario) < 0.0f) {
+    } else if (coss((s16)o->oMoveAngleYaw - (s16)o->oAngleToMario) < 0.0f) {
         o->oBooMoveYawDuringHit = o->oMoveAngleYaw;
     } else {
         o->oBooMoveYawDuringHit = (s16)(o->oMoveAngleYaw + 0x8000);
@@ -185,7 +196,7 @@ static void boo_move_during_hit(s32 roll, f32 fVel) {
     o->oVelY = coss(oscillationVel);
     o->oMoveAngleYaw = o->oBooMoveYawDuringHit;
 
-    if (roll) {
+    if (roll != FALSE) {
         o->oFaceAngleYaw  += sBooHitRotations[o->oTimer];
         o->oFaceAngleRoll += sBooHitRotations[o->oTimer];
     }
@@ -212,12 +223,11 @@ static s32 boo_update_after_bounced_on(f32 a0) {
     }
 
     if (o->oTimer < 32) {
-        boo_move_during_hit(FALSE, sBooHitRotations[o->oTimer] / 5000.0f * a0);
+        boo_move_during_hit(FALSE, sBooHitRotations[o->oTimer]/5000.0f * a0);
     } else {
         cur_obj_become_tangible();
         boo_reset_after_hit();
         o->oAction = 1;
-
         return TRUE;
     }
 
@@ -233,12 +243,13 @@ static s32 big_boo_update_during_nonlethal_hit(f32 a0) {
     }
 
     if (o->oTimer < 32) {
-        boo_move_during_hit(TRUE, sBooHitRotations[o->oTimer] / 5000.0f * a0);
+        boo_move_during_hit(TRUE, sBooHitRotations[o->oTimer]/5000.0f * a0);
     } else if (o->oTimer < 48) {
         big_boo_shake_after_hit();
     } else {
         cur_obj_become_tangible();
         boo_reset_after_hit();
+
         o->oAction = 1;
 
         return TRUE;
@@ -250,6 +261,8 @@ static s32 big_boo_update_during_nonlethal_hit(f32 a0) {
 // called every frame once mario lethally hits the boo until the boo is deleted,
 // returns whether death is complete
 static s32 boo_update_during_death(void) {
+    struct Object *parentBigBoo;
+
     if (o->oTimer == 0) {
         o->oForwardVel = 40.0f;
         o->oMoveAngleYaw = gMarioObject->oMoveAngleYaw;
@@ -265,14 +278,14 @@ static s32 boo_update_during_death(void) {
             o->oBooDeathStatus = BOO_DEATH_STATUS_DEAD;
 
             if (o->oBooParentBigBoo != NULL) {
-                struct Object *parentBigBoo = o->oBooParentBigBoo;
+                parentBigBoo = o->oBooParentBigBoo;
 
 #ifndef VERSION_JP
                 if (!cur_obj_has_behavior(bhvBoo)) {
-#endif
                     parentBigBoo->oBigBooNumMinionBoosKilled++;
-#ifndef VERSION_JP
                 }
+#else
+                parentBigBoo->oBigBooNumMinionBoosKilled++;
 #endif
             }
 
@@ -299,8 +312,7 @@ static s32 boo_get_attack_status(void) {
     s32 attackStatus = BOO_NOT_ATTACKED;
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-        if ((o->oInteractStatus & INT_STATUS_WAS_ATTACKED)
-            && !obj_has_attack_type(ATTACK_FROM_ABOVE)) {
+        if ((o->oInteractStatus & INT_STATUS_WAS_ATTACKED) && !obj_has_attack_type(ATTACK_FROM_ABOVE)) {
             cur_obj_become_intangible();
 
             o->oInteractStatus = 0;
@@ -321,31 +333,30 @@ static s32 boo_get_attack_status(void) {
 }
 
 // boo idle/chasing movement?
-static void boo_chase_mario(f32 a0, s16 turnSpeed, f32 velMultiplier) {
-    f32 dy;
-    s16 targetYaw;
+static void boo_chase_mario(f32 a0, s16 a1, f32 a2) {
+    f32 sp1C;
+    s16 sp1A;
 
     if (boo_vanish_or_appear()) {
-        o->oInteractType = INTERACT_BOUNCE_TOP;
+        o->oInteractType = 0x8000;
 
         if (cur_obj_lateral_dist_from_mario_to_home() > 1500.0f) {
-            targetYaw = cur_obj_angle_to_home();
+            sp1A = cur_obj_angle_to_home();
         } else {
-            targetYaw = o->oAngleToMario;
+            sp1A = o->oAngleToMario;
         }
 
-        cur_obj_rotate_yaw_toward(targetYaw, turnSpeed);
+        cur_obj_rotate_yaw_toward(sp1A, a1);
         o->oVelY = 0.0f;
 
-        if (!mario_is_in_air_action()) {
-            dy = o->oPosY - gMarioObject->oPosY;
-            if (a0 < dy && dy < 500.0f) {
-                o->oVelY = increment_velocity_toward_range(
-                               o->oPosY, gMarioObject->oPosY + 50.0f, 10.0f, 2.0f);
+        if (mario_is_in_air_action() == 0) {
+            sp1C = o->oPosY - gMarioObject->oPosY;
+            if (a0 < sp1C && sp1C < 500.0f) {
+                o->oVelY = increment_velocity_toward_range(o->oPosY, gMarioObject->oPosY + 50.0f, 10.f, 2.0f);
             }
         }
 
-        cur_obj_set_vel_from_mario_vel(10.0f - o->oBooNegatedAggressiveness, velMultiplier);
+        cur_obj_set_vel_from_mario_vel(10.0f - o->oBooNegatedAggressiveness, a2);
 
         if (o->oForwardVel != 0.0f) {
             boo_oscillate(FALSE);
@@ -362,7 +373,7 @@ static void boo_chase_mario(f32 a0, s16 turnSpeed, f32 velMultiplier) {
 static void boo_act_0(void) {
     o->activeFlags |= ACTIVE_FLAG_MOVE_THROUGH_GRATE;
 
-    if (o->oBhvParams2ndByte == BOO_BP_MERRY_GO_ROUND) {
+    if (o->oBehParams2ndByte == 2) {
         o->oRoom = 10;
     }
 
@@ -372,11 +383,11 @@ static void boo_act_0(void) {
 
     o->oBooParentBigBoo = cur_obj_nearest_object_with_behavior(bhvGhostHuntBigBoo);
     o->oBooBaseScale = 1.0f;
-    o->oBooTargetOpacity = 255;
+    o->oBooTargetOpacity = 0xFF;
 
     if (boo_should_be_active()) {
         // Condition is met if the object is bhvBalconyBigBoo or bhvMerryGoRoundBoo
-        if (o->oBhvParams2ndByte == BOO_BP_MERRY_GO_ROUND) {
+        if (o->oBehParams2ndByte == 2) {
             o->oBooParentBigBoo = NULL;
             o->oAction = 5;
         } else {
@@ -406,7 +417,6 @@ static void boo_act_1(void) {
     }
 
     boo_chase_mario(-100.0f, o->oBooTurningSpeed + 0x180, 0.5f);
-
     attackStatus = boo_get_attack_status();
 
     if (boo_should_be_stopped()) {
@@ -434,7 +444,7 @@ static void boo_act_2(void) {
 
 static void boo_act_3(void) {
     if (boo_update_during_death()) {
-        if (o->oBhvParams2ndByte != BOO_BP_GHOST_HUNT) {
+        if (o->oBehParams2ndByte != 0) {
             obj_mark_for_deletion(o);
         } else {
             o->oAction = 4;
@@ -470,7 +480,7 @@ static void (*sBooActions[])(void) = {
     boo_act_2,
     boo_act_3,
     boo_act_4,
-    boo_act_5,
+    boo_act_5
 };
 
 void bhv_boo_loop(void) {
@@ -481,9 +491,10 @@ void bhv_boo_loop(void) {
     cur_obj_move_standard(78);
     boo_approach_target_opacity_and_update_scale();
 
-    if (obj_has_behavior(o->parentObj, bhvMerryGoRoundBooManager)
-        && o->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
-        o->parentObj->oMerryGoRoundBooManagerNumBoosKilled++;
+    if (obj_has_behavior(o->parentObj, bhvMerryGoRoundBooManager)) {
+        if (o->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
+            o->parentObj->oMerryGoRoundBooManagerNumBoosKilled++;
+        }
     }
 
     o->oInteractStatus = 0;
@@ -499,13 +510,11 @@ static void big_boo_act_0(void) {
 
     o->oBooParentBigBoo = NULL;
 
-    if (boo_should_be_active()
 #ifndef VERSION_JP
-        && o->oBigBooNumMinionBoosKilled >= gDebugInfo[DEBUG_PAGE_ENEMYINFO][0] + 5
+    if (boo_should_be_active() && gDebugInfo[5][0] + 5 <= o->oBigBooNumMinionBoosKilled) {
 #else
-        && o->oBigBooNumMinionBoosKilled >= 5
+    if (boo_should_be_active() && o->oBigBooNumMinionBoosKilled >= 5) {
 #endif
-    ) {
         o->oAction = 1;
 
         cur_obj_set_pos_to_home();
@@ -513,7 +522,7 @@ static void big_boo_act_0(void) {
 
         cur_obj_unhide();
 
-        o->oBooTargetOpacity = 255;
+        o->oBooTargetOpacity = 0xFF;
         o->oBooBaseScale = 3.0f;
         o->oHealth = 3;
 
@@ -528,18 +537,18 @@ static void big_boo_act_0(void) {
 
 static void big_boo_act_1(void) {
     s32 attackStatus;
-    s16 turnSpeed;
-    f32 velMultiplier;
+    s16 sp22;
+    f32 sp1C;
 
     if (o->oHealth == 3) {
-        turnSpeed = 0x180; velMultiplier = 0.5f;
+        sp22 = 0x180; sp1C = 0.5f;
     } else if (o->oHealth == 2) {
-        turnSpeed = 0x240; velMultiplier = 0.6f;
+        sp22 = 0x240; sp1C = 0.6f;
     } else {
-        turnSpeed = 0x300; velMultiplier = 0.8f;
+        sp22 = 0x300; sp1C = 0.8f;
     }
 
-    boo_chase_mario(-100.0f, turnSpeed, velMultiplier);
+    boo_chase_mario(-100.0f, sp22, sp1C);
 
     attackStatus = boo_get_attack_status();
 
@@ -560,7 +569,7 @@ static void big_boo_act_1(void) {
         o->oAction = 3;
     }
 
-    if (attackStatus == BOO_ATTACKED) {
+    if (attackStatus == 1) {
         create_sound_spawner(SOUND_OBJ_THWOMP);
     }
 }
@@ -604,11 +613,11 @@ static void big_boo_act_3(void) {
 
             obj_set_angle(o, 0, 0, 0);
 
-            if (o->oBhvParams2ndByte == BIG_BOO_BP_GHOST_HUNT) {
+            if (o->oBehParams2ndByte == 0) {
                 big_boo_spawn_ghost_hunt_star();
-            } else if (o->oBhvParams2ndByte == BIG_BOO_BP_MERRY_GO_ROUND) {
+            } else if (o->oBehParams2ndByte == 1) {
                 big_boo_spawn_merry_go_round_star();
-            } else { // BIG_BOO_BP_BALCONY
+            } else {
                 big_boo_spawn_balcony_star();
             }
         }
@@ -629,11 +638,11 @@ static void big_boo_act_4(void) {
     boo_stop();
 #endif
 
-    if (o->oBhvParams2ndByte == BIG_BOO_BP_GHOST_HUNT) {
+    if (o->oBehParams2ndByte == 0) {
         obj_set_pos(o, 973, 0, 626);
 
         if (o->oTimer > 60 && o->oDistanceToMario < 600.0f) {
-            obj_set_pos(o, 973, 0, 717);
+            obj_set_pos(o,  973, 0, 717);
 
             spawn_object_relative(0, 0, 0,    0, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
             spawn_object_relative(1, 0, 0, -200, o, MODEL_BBH_STAIRCASE_STEP, bhvBooStaircase);
@@ -651,7 +660,7 @@ static void (*sBooGivingStarActions[])(void) = {
     big_boo_act_1,
     big_boo_act_2,
     big_boo_act_3,
-    big_boo_act_4,
+    big_boo_act_4
 };
 
 void bhv_big_boo_loop(void) {
@@ -666,13 +675,12 @@ void bhv_big_boo_loop(void) {
     cur_obj_move_standard(78);
 
     boo_approach_target_opacity_and_update_scale();
-
     o->oInteractStatus = 0;
 }
 
 static void boo_with_cage_act_0(void) {
     o->oBooParentBigBoo = NULL;
-    o->oBooTargetOpacity = 255;
+    o->oBooTargetOpacity = 0xFF;
     o->oBooBaseScale = 2.0f;
 
     cur_obj_scale(2.0f);
@@ -686,7 +694,7 @@ static void boo_with_cage_act_0(void) {
 static void boo_with_cage_act_1(void) {
     s32 attackStatus;
 
-    boo_chase_mario(100.0f, 0x200, 0.5f);
+    boo_chase_mario(100.0f, 512, 0.5f);
 
     attackStatus = boo_get_attack_status();
 
@@ -716,11 +724,13 @@ static void boo_with_cage_act_3(void) {
 }
 
 void bhv_boo_with_cage_init(void) {
-    if (gHudDisplay.stars < SPAWN_CASTLE_BOO_STAR_REQUIREMENT) {
+    struct Object* cage;
+
+    if (gHudDisplay.stars < 12) {
         obj_mark_for_deletion(o);
     } else {
-        struct Object *cage = spawn_object(o, MODEL_HAUNTED_CAGE, bhvBooCage);
-        cage->oBhvParams = o->oBhvParams;
+        cage = spawn_object(o, MODEL_HAUNTED_CAGE, bhvBooCage);
+        cage->oBehParams = o->oBehParams;
     }
 }
 
@@ -728,10 +738,11 @@ static void (*sBooWithCageActions[])(void) = {
     boo_with_cage_act_0,
     boo_with_cage_act_1,
     boo_with_cage_act_2,
-    boo_with_cage_act_3,
+    boo_with_cage_act_3
 };
 
-void bhv_boo_with_cage_loop(void) {
+void bhv_boo_with_cage_loop(void)
+{
     //PARTIAL_UPDATE
 
     cur_obj_update_floor_and_walls();
@@ -739,7 +750,6 @@ void bhv_boo_with_cage_loop(void) {
     cur_obj_move_standard(78);
 
     boo_approach_target_opacity_and_update_scale();
-
     o->oInteractStatus = 0;
 }
 
@@ -749,8 +759,7 @@ void bhv_merry_go_round_boo_manager_loop(void) {
             if (o->oDistanceToMario < 1000.0f) {
                 if (o->oMerryGoRoundBooManagerNumBoosKilled < 5) {
                     if (o->oMerryGoRoundBooManagerNumBoosSpawned != 5) {
-                        if (o->oMerryGoRoundBooManagerNumBoosSpawned
-                                - o->oMerryGoRoundBooManagerNumBoosKilled < 2) {
+                        if (o->oMerryGoRoundBooManagerNumBoosSpawned - o->oMerryGoRoundBooManagerNumBoosKilled < 2) {
                             spawn_object(o, MODEL_BOO, bhvMerryGoRoundBoo);
                             o->oMerryGoRoundBooManagerNumBoosSpawned++;
                         }
@@ -759,9 +768,9 @@ void bhv_merry_go_round_boo_manager_loop(void) {
                     o->oAction++;
                 }
 
-                if (o->oMerryGoRoundBooManagerNumBoosKilled >= 5) {
-                    struct Object *bigBoo = spawn_object(o, MODEL_BOO, bhvMerryGoRoundBigBoo);
-                    obj_copy_behavior_params(bigBoo, o);
+                if (o->oMerryGoRoundBooManagerNumBoosKilled > 4) {
+                    struct Object *boo = spawn_object(o, MODEL_BOO, bhvMerryGoRoundBigBoo);
+                    obj_copy_behavior_params(boo, o);
 
                     o->oAction = 2;
 
@@ -774,14 +783,12 @@ void bhv_merry_go_round_boo_manager_loop(void) {
             }
 
             break;
-
         case 1:
             if (o->oTimer > 60) {
                 o->oAction = 0;
             }
 
             break;
-
         case 2:
             break;
     }
@@ -803,7 +810,7 @@ void bhv_boo_in_castle_loop(void) {
     if (o->oAction == 0) {
         cur_obj_hide();
 
-        if (gHudDisplay.stars < SPAWN_CASTLE_BOO_STAR_REQUIREMENT) {
+        if (gHudDisplay.stars < 12) {
             obj_mark_for_deletion(o);
         }
 
@@ -859,7 +866,7 @@ void bhv_boo_in_castle_loop(void) {
 void bhv_boo_staircase(void) {
     f32 targetY;
 
-    switch (o->oBhvParams2ndByte) {
+    switch (o->oBehParams2ndByte) {
         case 1:
             targetY = 0.0f;
             break;
@@ -871,7 +878,7 @@ void bhv_boo_staircase(void) {
             break;
     }
 
-    switch (o->oAction) {
+    switch(o->oAction) {
         case 0:
             o->oPosY = o->oHomeY - 620.0f;
             o->oAction++;
@@ -886,7 +893,6 @@ void bhv_boo_staircase(void) {
             }
 
             break;
-
         case 2:
             if (o->oTimer == 0) {
                 cur_obj_play_sound_2(SOUND_GENERAL_UNKNOWN4_LOWPRIO);
@@ -897,9 +903,8 @@ void bhv_boo_staircase(void) {
             }
 
             break;
-
         case 3:
-            if (o->oTimer == 0 && o->oBhvParams2ndByte == 1) {
+            if (o->oTimer == 0 && o->oBehParams2ndByte == 1) {
                 play_puzzle_jingle();
             }
 

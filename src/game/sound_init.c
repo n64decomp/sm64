@@ -349,7 +349,7 @@ void thread4_sound(UNUSED void *arg) {
         if (gResetTimer < 25) {
             struct SPTask *spTask;
             profiler_log_thread4_time();
-            spTask = create_next_audio_frame_task();
+            spTask = create_next_audio_frame_task(); 
             if (spTask != NULL) {
                 dispatch_audio_sptask(spTask);
             }

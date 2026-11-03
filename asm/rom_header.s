@@ -10,17 +10,11 @@
 /* Revision */
 #ifdef VERSION_SH
     .word  0x00001448
-#elif defined(VERSION_CN)
-    .word  0x0000144C
 #elif defined(VERSION_EU)
     .word  0x00001446
 #else /* NTSC-U and NTSC-J 1.0 */
     .word  0x00001444
 #endif
-
-#ifdef VERSION_CN
-    .fill 0x30
-#else
 
 .word  0x4EAA3D0E               /* Checksum 1 */
 .word  0x74757C24               /* Checksum 2 */
@@ -49,6 +43,4 @@
     .byte  0x03                 /* Version (Shindou) */
 #else
     .byte  0x00                 /* Version */
-#endif
-
 #endif

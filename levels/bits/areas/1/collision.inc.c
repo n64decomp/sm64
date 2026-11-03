@@ -2400,7 +2400,7 @@ const Collision bits_seg7_collision_level[] = {
     COL_TRI(135, 216, 214),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(22),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/ -7039, -4812,     4, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/ -7039, -4812,     4, /*yaw*/ 64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -4505, -5119,     0, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_04, /*pos*/ -2291, -2073,  -762, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_05, /*pos*/  3891, -3276,  -705, /*yaw*/  0),

@@ -77,7 +77,7 @@ const Collision bowser_1_seg7_collision_level[] = {
     COL_TRI(25, 27, 28),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(22),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/     0, 1843,     0, /*yaw*/ 1423), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/     0, 1843,     0, /*yaw*/ 1423), // unused, probably an early way to set intial position
     SPECIAL_OBJECT(/*preset*/ special_mine,         /*pos*/  2949,  589,     0),
     SPECIAL_OBJECT(/*preset*/ special_mine,         /*pos*/     0,  589, -2949),
     SPECIAL_OBJECT(/*preset*/ special_mine,         /*pos*/     0,  589,  2949),

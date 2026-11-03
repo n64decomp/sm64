@@ -1554,7 +1554,7 @@ const Collision ssl_seg7_area_1_collision[] = {
     COL_TRI(482, 483, 484),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(7),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/   653, 38,  6566, /*yaw*/ 64), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/   653, 38,  6566, /*yaw*/ 64), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  5760,  0,  5751, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/ -3583,  0,  2935, /*yaw*/  0),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_level_geo_03, /*pos*/  -511,  0,  2935, /*yaw*/  0),

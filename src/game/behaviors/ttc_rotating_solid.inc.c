@@ -7,7 +7,7 @@
 /**
  * The collision models for cube and triangular prism, respectively.
  */
-static Collision const *sTTCRotatingSolidCollisionModels[] = {
+static void const *sTTCRotatingSolidCollisionModels[] = {
     ttc_seg7_collision_07014F70,
     ttc_seg7_collision_07015008,
 };
@@ -26,9 +26,9 @@ static u8 sTTCRotatingSolidInitialDelays[] = {
  * Init function for bhvTTCRotatingSolid.
  */
 void bhv_ttc_rotating_solid_init(void) {
-    o->collisionData = segmented_to_virtual(sTTCRotatingSolidCollisionModels[o->oBhvParams2ndByte]);
+    o->collisionData = segmented_to_virtual(sTTCRotatingSolidCollisionModels[o->oBehParams2ndByte]);
 
-    o->oTTCRotatingSolidNumSides = o->oBhvParams2ndByte == TTC_ROTATING_SOLID_BP_CUBE ? 4 : 3;
+    o->oTTCRotatingSolidNumSides = o->oBehParams2ndByte == TTC_ROTATING_SOLID_BP_CUBE ? 4 : 3;
 
     o->oTTCRotatingSolidRotationDelay = sTTCRotatingSolidInitialDelays[gTTCSpeedSetting];
 }
@@ -51,7 +51,7 @@ void bhv_ttc_rotating_solid_update(void) {
                 (s32)((f32) o->oTTCRotatingSolidNumTurns / o->oTTCRotatingSolidNumSides * 0x10000);
             s32 startRoll = o->oFaceAngleRoll;
 
-            obj_face_roll_approach(targetRoll, 1200);
+            obj_face_roll_approach(targetRoll, 0x4B0);
 
             o->oAngleVelRoll = o->oFaceAngleRoll - startRoll;
             if (o->oAngleVelRoll == 0) {

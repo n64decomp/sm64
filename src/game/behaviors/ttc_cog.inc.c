@@ -27,8 +27,8 @@ static s16 sTTCCogNormalSpeeds[] = { 200, 400 };
  */
 void bhv_ttc_cog_init(void) {
     o->collisionData = segmented_to_virtual(
-        sTTCCogCollisionModels[(o->oBhvParams2ndByte & TTC_COG_BP_SHAPE_MASK) >> 1]);
-    o->oTTCCogDir = sTTCCogDirections[o->oBhvParams2ndByte & TTC_COG_BP_DIR_MASK];
+        sTTCCogCollisionModels[(o->oBehParams2ndByte & TTC_COG_BP_SHAPE_MASK) >> 1]);
+    o->oTTCCogDir = sTTCCogDirections[o->oBehParams2ndByte & TTC_COG_BP_DIR_MASK];
 }
 
 /**

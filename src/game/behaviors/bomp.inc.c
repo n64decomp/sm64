@@ -1,4 +1,4 @@
-// bomp.inc.c
+// bomp.c.inc
 
 void bhv_small_bomp_init(void) {
     o->oFaceAngleYaw -= 0x4000;
@@ -9,7 +9,7 @@ void bhv_small_bomp_init(void) {
 void bhv_small_bomp_loop(void) {
     switch (o->oAction) {
         case BOMP_ACT_WAIT:
-            if (o->oTimer > 100) {
+            if (o->oTimer >= 101) {
                 o->oAction = BOMP_ACT_POKE_OUT;
                 o->oForwardVel = 30.0f;
             }
@@ -18,7 +18,7 @@ void bhv_small_bomp_loop(void) {
         case BOMP_ACT_POKE_OUT:
             if (o->oPosX > 3450.0f) {
                 o->oPosX = 3450.0f;
-                o->oForwardVel = 0.0f;
+                o->oForwardVel = 0;
             }
 
             if (o->oTimer == 15.0) {
@@ -31,7 +31,7 @@ void bhv_small_bomp_loop(void) {
         case BOMP_ACT_EXTEND:
             if (o->oPosX > 3830.0f) {
                 o->oPosX = 3830.0f;
-                o->oForwardVel = 0.0f;
+                o->oForwardVel = 0;
             }
 
             if (o->oTimer == 60) {
@@ -45,7 +45,7 @@ void bhv_small_bomp_loop(void) {
         case BOMP_ACT_RETRACT:
             if (o->oPosX < 3330.0f) {
                 o->oPosX = 3330.0f;
-                o->oForwardVel = 0.0f;
+                o->oForwardVel = 0;
             }
 
             if (o->oTimer == 90) {
@@ -65,7 +65,7 @@ void bhv_large_bomp_init(void) {
 void bhv_large_bomp_loop(void) {
     switch (o->oAction) {
         case BOMP_ACT_WAIT:
-            if (o->oTimer > 100) {
+            if (o->oTimer >= 101) {
                 o->oAction = BOMP_ACT_POKE_OUT;
                 o->oForwardVel = 30.0f;
             }
@@ -74,7 +74,7 @@ void bhv_large_bomp_loop(void) {
         case BOMP_ACT_POKE_OUT:
             if (o->oPosX > 3450.0f) {
                 o->oPosX = 3450.0f;
-                o->oForwardVel = 0.0f;
+                o->oForwardVel = 0;
             }
 
             if (o->oTimer == 15.0) {
@@ -87,7 +87,7 @@ void bhv_large_bomp_loop(void) {
         case BOMP_ACT_EXTEND:
             if (o->oPosX > 3830.0f) {
                 o->oPosX = 3830.0f;
-                o->oForwardVel = 0.0f;
+                o->oForwardVel = 0;
             }
 
             if (o->oTimer == 60) {
@@ -101,7 +101,7 @@ void bhv_large_bomp_loop(void) {
         case BOMP_ACT_RETRACT:
             if (o->oPosX < 3330.0f) {
                 o->oPosX = 3330.0f;
-                o->oForwardVel = 0.0f;
+                o->oForwardVel = 0;
             }
 
             if (o->oTimer == 90) {

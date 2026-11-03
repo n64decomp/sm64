@@ -14,7 +14,6 @@
 #include <PR/os_thread.h>
 #include <PR/os_time.h>
 #include <PR/os_message.h>
-#include <PR/os_pfs.h>
 #include <PR/os_cont.h>
 #include <PR/os_tlb.h>
 #include <PR/sptask.h>
@@ -28,7 +27,6 @@
 #include <PR/os_libc.h>
 #include <PR/gu.h>
 #include <PR/os_ai.h>
-#include <PR/os_motor.h>
 #include <PR/libaudio.h>
 #include <PR/libultra.h>
 

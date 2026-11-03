@@ -1256,7 +1256,7 @@ const Collision thi_seg7_area_1_collision[] = {
     COL_TRI(412, 320, 319),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(2),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,  /*pos*/ -7372, -2969,  7373, /*yaw*/ 106), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,  /*pos*/ -7372, -2969,  7373, /*yaw*/ 106), // unused, probably an early way to set intial position
     SPECIAL_OBJECT(/*preset*/ special_bubble_tree, /*pos*/  4813,  -511,  2254),
     COL_WATER_BOX_INIT(3),
     COL_WATER_BOX(0, -8191, -8191, -5119, 6246, -3071),

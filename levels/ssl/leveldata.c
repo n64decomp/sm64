@@ -1,13 +1,12 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
-#include "sm64.h"
 
 #include "dialog_ids.h"
 #include "level_misc_macros.h"
 #include "macros.h"
-#include "macro_presets.h"
+#include "macro_preset_names.h"
 #include "moving_texture_macros.h"
-#include "special_presets.h"
+#include "special_preset_names.h"
 #include "surface_terrains.h"
 #include "textures.h"
 #include "types.h"

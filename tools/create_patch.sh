@@ -21,5 +21,5 @@ fi
 git add .
 # Generate the patch.
 git diff -p --staged > "$1"
-# Undo the 'git add'.
+# Undo the 'git add'. 
 git reset

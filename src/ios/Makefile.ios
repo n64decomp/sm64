@@ -1,83 +1,124 @@
-# On-device build Makefile for the SM64 iOS port.
-# Runs directly on the jailbroken iOS device (clang 3.7.1 / make / ldid
-# compiling against the live root filesystem's frameworks -- there is no
-# separate cross SDK on this toolchain).
+# On-device build for the SM64 iOS 6 port (iPad 1, armv7, /private/var/sdk).
+# Runs ON the jailbroken device via tools/ios/deploy.py (sync + ssh make).
 #
-# This currently builds only the smoke-test shell app (src/ios/app) to
-# validate the full build -> sign -> install -> launch pipeline. Game
-# sources are added incrementally as platform backends land.
+# Targets:
+#   game      - the app: UIKit shell (EAGL view, on-screen N64 pad, ROM
+#               picker/validator) linked with the full game. Needs the
+#               extracted assets in build/us_pc (produced on the dev machine
+#               and synced) and a valid baserom on the device to play.
+#   game_objs - compile the game objects only (quick compile check).
+#   clean     - remove build/.
+APP_NAME   := SM64
+BUNDLE_ID  := com.sm64decomp.ios
+EXECUTABLE := sm64ios
+BUILD_DIR  := build
+APP_DIR    := $(BUILD_DIR)/$(APP_NAME).app
 
-APP_NAME    := SM64
-BUNDLE_ID   := com.sm64decomp.ios
-EXECUTABLE  := sm64ios
-BUILD_DIR   := build
-APP_DIR     := $(BUILD_DIR)/$(APP_NAME).app
+CC       := clang
+ARCH     := armv7
+IOS_MIN  := 6.0
+SYSROOT  := /private/var/sdk
 
-CC          := clang
-ARCH        := armv7
-IOS_MIN     := 6.0
+CFLAGS := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -fobjc-arc \
+          -isysroot $(SYSROOT) -Wall -O2 -fmessage-length=0 \
+          -DIOS_BUILD=1 -DUSE_GLES=1 -DTARGET_OS_IOS=1
+INCLUDES := -I. -Iapp -Igfx
+FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics \
+              -framework QuartzCore -framework OpenGLES \
+              -framework AudioToolbox -framework CoreAudio
+LDFLAGS := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) $(FRAMEWORKS)
 
-SYSROOT     := /private/var/sdk
+APP_SRCS := app/main.m app/SM64AppDelegate.m app/ROMValidator.m app/N64PadView.m \
+            gfx/EAGLView.m
+APP_OBJS := $(patsubst %.m,$(BUILD_DIR)/obj/%.o,$(APP_SRCS))
 
-CFLAGS      := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -fobjc-arc \
-               -isysroot $(SYSROOT) -Wall -O2 -fmessage-length=0
-FRAMEWORKS  := -framework UIKit -framework Foundation -framework CoreGraphics
-LDFLAGS     := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) $(FRAMEWORKS)
+# App icon set (iPhone + iPad + iTunes artwork; see app/icons/). Copied into
+# the bundle by the game target.
+ICONS := $(wildcard app/icons/*)
 
-SRCS        := app/main.m app/SM64AppDelegate.m
-OBJS        := $(patsubst app/%.m,$(BUILD_DIR)/obj/%.o,$(SRCS))
+# Full game: sm64-port TARGET_N64=0 source layout, compiled on-device with
+# the iOS 6 SDK. Generated data (build/us_pc/**) is produced on the dev
+# machine (see tools) and synced; only .c/.h/.inc.c participate here.
+# The iOS backend (gfx_ios_gles1 RAPI, gfx_ios_wm, audio_ios,
+# controller_touch_ios) replaces gfx_sdl2/gfx_glx/audio_sdl/controller_sdl.
+REPO     := ../..
+GBUILD   := ../../build/us_pc
+GOBJ_DIR := $(BUILD_DIR)/game
 
-LIBULTRA_SHIM_SRCS := libultra_shim/multilibultra_thread.c libultra_shim/multilibultra_mesg.c libultra_shim/multilibultra_sptask.c libultra_shim/multilibultra_vi.c libultra_shim/multilibultra_misc.c
-LIBULTRA_TEST_SRCS := libultra_shim/test_multilibultra.c
-LIBULTRA_SPTASK_TEST_SRCS := libultra_shim/test_multilibultra_sptask.c
-LIBULTRA_VI_TEST_SRCS := libultra_shim/test_multilibultra_vi.c
-LIBULTRA_INCLUDES  := -I../../include
+GAME_DEFINES := -DVERSION_US=1 -DF3DEX_GBI_2E=1 -DNON_MATCHING=1 -DAVOID_UB=1 \
+  -DNO_SEGMENTED_MEMORY=1 -DUSE_SYSTEM_MALLOC=1 -DWIDESCREEN=1 \
+  -DIOS_BUILD=1 -DUSE_GLES=1 -DTARGET_OS_IOS=1 -DENABLE_IOS_GLES1=1 \
+  -D_LANGUAGE_C
+GAME_INCLUDES := -I../../include -I$(GBUILD) -I$(GBUILD)/include \
+  -I../../src -I../.. -I../../src/pc -I../../src/pc/gfx \
+  -I../../src/pc/controller -I../../src/pc/audio -I. -Iapp -Igfx
+GAME_OPT ?= -O2
+GAME_CFLAGS := -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) \
+  -isysroot $(SYSROOT) -Wall $(GAME_OPT) -fmessage-length=0 \
+  $(GAME_DEFINES) $(GAME_INCLUDES) -fno-strict-aliasing -fwrapv
+GAME_CC := clang
 
-.PHONY: all app install run clean libultra_test libultra_sptask_test libultra_vi_test
+GAME_SRC_DIRS := src src/engine src/game src/audio src/menu src/buffers \
+  actors levels bin bin/us data sound src/goddard src/goddard/dynlists
+GAME_C := $(foreach d,$(GAME_SRC_DIRS),$(wildcard $(REPO)/$(d)/*.c))
+GAME_C += $(wildcard $(REPO)/levels/*/leveldata.c) $(wildcard $(REPO)/levels/*/script.c) $(wildcard $(REPO)/levels/*/geo.c)
+GAME_C := $(filter-out $(REPO)/src/game/main.c,$(GAME_C))
+GAME_C += $(wildcard $(GBUILD)/assets/mario_anim_data.c) \
+          $(wildcard $(GBUILD)/assets/demo_data.c) \
+          $(wildcard $(GBUILD)/bin/*_skybox.c)
+GAME_C += $(REPO)/lib/src/alBnkfNew.c $(REPO)/lib/src/guLookAtRef.c \
+  $(REPO)/lib/src/guMtxF2L.c $(REPO)/lib/src/guNormalize.c \
+  $(REPO)/lib/src/guOrthoF.c $(REPO)/lib/src/guPerspectiveF.c \
+  $(REPO)/lib/src/guRotateF.c $(REPO)/lib/src/guScaleF.c \
+  $(REPO)/lib/src/guTranslateF.c
+GAME_C += $(REPO)/src/pc/pc_main.c $(REPO)/src/pc/configfile.c \
+  $(REPO)/src/pc/dlmalloc.c $(REPO)/src/pc/mixer.c \
+  $(REPO)/src/pc/ultra_reimplementation.c \
+  $(REPO)/src/pc/gfx/gfx_pc.c $(REPO)/src/pc/gfx/gfx_cc.c \
+  $(REPO)/src/pc/controller/controller_entry_point.c \
+  $(REPO)/src/pc/controller/controller_keyboard.c \
+  $(REPO)/src/pc/audio/audio_null.c
+GAME_C += ../../src/ios/app/ios_touch_state.c \
+          ../../src/ios/gfx/gfx_ios_gles1.c \
+          ../../src/ios/app/controller_touch_ios.c
+GAME_OBJC := ../../src/ios/gfx/gfx_ios_wm.m ../../src/ios/audio/audio_ios.m
 
-all: app
+# One explicit rule per file (no VPATH: basenames like script.c repeat).
+define GCOMPILE_C
+$(GOBJ_DIR)/$(1:../../%.c=%.o): $(1)
+	@mkdir -p $$(dir $$@)
+	$$(GAME_CC) $$(GAME_CFLAGS) -c $$< -o $$@
+endef
+$(foreach f,$(GAME_C),$(eval $(call GCOMPILE_C,$(f))))
+$(GOBJ_DIR)/src/ios/gfx/gfx_ios_gles1.o: GAME_CFLAGS += -DRAPI_IOS_GLES1
 
-$(BUILD_DIR)/obj/%.o: app/%.m
+GOBJ_OBJC := $(patsubst ../../%.m,$(GOBJ_DIR)/%.o,$(GAME_OBJC))
+$(GOBJ_DIR)/%.o: ../../%.m
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(GAME_CC) $(GAME_CFLAGS) -fobjc-arc -c $< -o $@
 
-app: $(OBJS)
+GAME_OBJS := $(foreach f,$(GAME_C),$(GOBJ_DIR)/$(f:../../%.c=%.o)) $(GOBJ_OBJC)
+
+.PHONY: all game game_objs clean
+
+all: game
+
+$(BUILD_DIR)/obj/%.o: %.m
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Shell objects + game objects in one app binary.
+# (pc_main's own main() is compiled out under IOS_BUILD; UIKit main.m wins.)
+game: game_objs $(APP_OBJS)
 	@mkdir -p $(APP_DIR)
-	$(CC) $(LDFLAGS) -o $(APP_DIR)/$(EXECUTABLE) $(OBJS)
+	$(CC) $(LDFLAGS) -o $(APP_DIR)/$(EXECUTABLE) $(APP_OBJS) $(GAME_OBJS)
 	cp app/Info.plist $(APP_DIR)/Info.plist
+	@if [ -n "$(ICONS)" ]; then cp $(ICONS) $(APP_DIR)/; fi
 	ldid -S $(APP_DIR)/$(EXECUTABLE)
-	@echo "Built $(APP_DIR)"
+	@echo "Built $(APP_DIR) (full game)"
 
-# Standalone CLI test for the libultra threading/messaging shim -- not part
-# of the app bundle, just a native executable run directly over SSH.
-libultra_test:
-	@mkdir -p $(BUILD_DIR)
-	$(CC) -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) \
-	    -D_LANGUAGE_C -D_FORTIFY_SOURCE=0 $(LIBULTRA_INCLUDES) -Wall -O0 -g \
-	    $(LIBULTRA_SHIM_SRCS) $(LIBULTRA_TEST_SRCS) \
-	    -o $(BUILD_DIR)/libultra_test
-	ldid -S $(BUILD_DIR)/libultra_test
-	@echo "Built $(BUILD_DIR)/libultra_test"
-
-# Standalone CLI test for the SP/DP task dispatch shim.
-libultra_sptask_test:
-	@mkdir -p $(BUILD_DIR)
-	$(CC) -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) \
-	    -D_LANGUAGE_C -D_FORTIFY_SOURCE=0 $(LIBULTRA_INCLUDES) -Wall -O0 -g \
-	    $(LIBULTRA_SHIM_SRCS) $(LIBULTRA_SPTASK_TEST_SRCS) \
-	    -o $(BUILD_DIR)/libultra_sptask_test
-	ldid -S $(BUILD_DIR)/libultra_sptask_test
-	@echo "Built $(BUILD_DIR)/libultra_sptask_test"
-
-# Standalone CLI test for the VI vblank + misc os*() shims.
-libultra_vi_test:
-	@mkdir -p $(BUILD_DIR)
-	$(CC) -arch $(ARCH) -miphoneos-version-min=$(IOS_MIN) -isysroot $(SYSROOT) \
-	    -D_LANGUAGE_C -D_FORTIFY_SOURCE=0 $(LIBULTRA_INCLUDES) -Wall -O0 -g \
-	    $(LIBULTRA_SHIM_SRCS) $(LIBULTRA_VI_TEST_SRCS) \
-	    -o $(BUILD_DIR)/libultra_vi_test
-	ldid -S $(BUILD_DIR)/libultra_vi_test
-	@echo "Built $(BUILD_DIR)/libultra_vi_test"
+game_objs: $(GAME_OBJS)
+	@echo "Built $(words $(GAME_OBJS)) game objects"
 
 clean:
 	rm -rf $(BUILD_DIR)

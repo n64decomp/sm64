@@ -88,20 +88,16 @@
 #define LEO_CMD_TYPE_2 2 //TODO: name
 
 #define LEO_ERROR_GOOD 0
-#define LEO_ERROR_3 3 //
 #define LEO_ERROR_4 4   //maybe busy?
-#define LEO_ERROR_6 6 //
-#define LEO_ERROR_17 17 //
 #define LEO_ERROR_22 22 //
 #define LEO_ERROR_23 23 //unrecovered read error?
 #define LEO_ERROR_24 24 //no reference position found?
 #define LEO_ERROR_29 29 //
-#define LEO_ERROR_75 75 //
 
 extern OSDevMgr __osPiDevMgr;
 extern OSPiHandle *__osCurrentHandle[2];
-extern OSPiHandle __Dom1SpeedParam;
-extern OSPiHandle __Dom2SpeedParam;
+extern OSPiHandle CartRomHandle;
+extern OSPiHandle LeoDiskHandle;
 extern OSMesgQueue __osPiAccessQueue;
 extern u32 __osPiAccessQueueEnabled;
 
@@ -114,78 +110,38 @@ OSMesgQueue *osPiGetCmdQueue(void);
 
 #define OS_RAMROM_STACKSIZE 1024
 
-#define WAIT_ON_IO_BUSY(stat)                               \
+#define WAIT_ON_IOBUSY(stat)                                \
     stat = IO_READ(PI_STATUS_REG);                          \
     while (stat & (PI_STATUS_IO_BUSY | PI_STATUS_DMA_BUSY)) \
         stat = IO_READ(PI_STATUS_REG);
-
-#ifdef VERSION_EU
-#define WAIT_ON_LEO_IO_BUSY(stat)    \
-    stat = IO_READ(PI_STATUS_REG);   \
-    while (stat & PI_STATUS_IO_BUSY) \
-        stat = IO_READ(PI_STATUS_REG);
-#else
-#define WAIT_ON_LEO_IO_BUSY WAIT_ON_IO_BUSY
-#endif
 
 #define UPDATE_REG(reg, var)           \
     if (cHandle->var != pihandle->var) \
         IO_WRITE(reg, pihandle->var);
 
-#ifdef VERSION_CN
-#define EPI_SYNC(pihandle, stat, domain)                   \
-                                                           \
-    WAIT_ON_IO_BUSY(stat)                                  \
-                                                           \
-    domain = pihandle->domain;                             \
-    if (__osCurrentHandle[domain]->type != pihandle->type) \
-    {                                                      \
-        OSPiHandle *cHandle = __osCurrentHandle[domain];   \
-        if (domain == PI_DOMAIN1)                          \
-        {                                                  \
-            UPDATE_REG(PI_BSD_DOM1_LAT_REG, latency);      \
-            UPDATE_REG(PI_BSD_DOM1_PGS_REG, pageSize);     \
-            UPDATE_REG(PI_BSD_DOM1_RLS_REG, relDuration);  \
-            UPDATE_REG(PI_BSD_DOM1_PWD_REG, pulse);        \
-        }                                                  \
-        else                                               \
-        {                                                  \
-            UPDATE_REG(PI_BSD_DOM2_LAT_REG, latency);      \
-            UPDATE_REG(PI_BSD_DOM2_PGS_REG, pageSize);     \
-            UPDATE_REG(PI_BSD_DOM2_RLS_REG, relDuration);  \
-            UPDATE_REG(PI_BSD_DOM2_PWD_REG, pulse);        \
-        }                                                  \
-        cHandle->type = pihandle->type;                    \
-        cHandle->latency = pihandle->latency;              \
-        cHandle->pageSize = pihandle->pageSize;            \
-        cHandle->relDuration = pihandle->relDuration;      \
-        cHandle->pulse = pihandle->pulse;                  \
+#define EPI_SYNC(pihandle, stat, domain)                  \
+                                                          \
+    WAIT_ON_IOBUSY(stat)                                  \
+                                                          \
+    domain = pihandle->domain;                            \
+    if (__osCurrentHandle[domain] != pihandle)            \
+    {                                                     \
+        OSPiHandle *cHandle = __osCurrentHandle[domain];  \
+        if (domain == PI_DOMAIN1)                         \
+        {                                                 \
+            UPDATE_REG(PI_BSD_DOM1_LAT_REG, latency);     \
+            UPDATE_REG(PI_BSD_DOM1_PGS_REG, pageSize);    \
+            UPDATE_REG(PI_BSD_DOM1_RLS_REG, relDuration); \
+            UPDATE_REG(PI_BSD_DOM1_PWD_REG, pulse);       \
+        }                                                 \
+        else                                              \
+        {                                                 \
+            UPDATE_REG(PI_BSD_DOM2_LAT_REG, latency);     \
+            UPDATE_REG(PI_BSD_DOM2_PGS_REG, pageSize);    \
+            UPDATE_REG(PI_BSD_DOM2_RLS_REG, relDuration); \
+            UPDATE_REG(PI_BSD_DOM2_PWD_REG, pulse);       \
+        }                                                 \
+        __osCurrentHandle[domain] = pihandle;             \
     }
-#else
-#define EPI_SYNC(pihandle, stat, domain)                   \
-                                                           \
-    WAIT_ON_IO_BUSY(stat)                                  \
-                                                           \
-    domain = pihandle->domain;                             \
-    if (__osCurrentHandle[domain] != pihandle)             \
-    {                                                      \
-        OSPiHandle *cHandle = __osCurrentHandle[domain];   \
-        if (domain == PI_DOMAIN1)                          \
-        {                                                  \
-            UPDATE_REG(PI_BSD_DOM1_LAT_REG, latency);      \
-            UPDATE_REG(PI_BSD_DOM1_PGS_REG, pageSize);     \
-            UPDATE_REG(PI_BSD_DOM1_RLS_REG, relDuration);  \
-            UPDATE_REG(PI_BSD_DOM1_PWD_REG, pulse);        \
-        }                                                  \
-        else                                               \
-        {                                                  \
-            UPDATE_REG(PI_BSD_DOM2_LAT_REG, latency);      \
-            UPDATE_REG(PI_BSD_DOM2_PGS_REG, pageSize);     \
-            UPDATE_REG(PI_BSD_DOM2_RLS_REG, relDuration);  \
-            UPDATE_REG(PI_BSD_DOM2_PWD_REG, pulse);        \
-        }                                                  \
-        __osCurrentHandle[domain] = pihandle;              \
-    }
-#endif
 
 #endif

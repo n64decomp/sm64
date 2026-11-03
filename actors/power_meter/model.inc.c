@@ -2,15 +2,6 @@
 
 UNUSED static const u64 power_meter_unused_1 = 0;
 
-#if defined(VERSION_CN)
-ALIGNED8 static const Texture texture_power_meter_left_side[] = {
-#include "actors/power_meter/power_meter_left_side_cn.rgba16.inc.c"
-};
-
-ALIGNED8 static const Texture texture_power_meter_right_side[] = {
-#include "actors/power_meter/power_meter_right_side_cn.rgba16.inc.c"
-};
-#else
 // 0x030233E0
 ALIGNED8 static const Texture texture_power_meter_left_side[] = {
 #include "actors/power_meter/power_meter_left_side.rgba16.inc.c"
@@ -20,7 +11,6 @@ ALIGNED8 static const Texture texture_power_meter_left_side[] = {
 ALIGNED8 static const Texture texture_power_meter_right_side[] = {
 #include "actors/power_meter/power_meter_right_side.rgba16.inc.c"
 };
-#endif
 
 // 0x030253E0
 ALIGNED8 static const Texture texture_power_meter_full[] = {
@@ -112,17 +102,10 @@ const Gfx dl_power_meter_base[] = {
 
 // 0x03029530
 static const Vtx vertex_power_meter_health_segments[] = {
-#if defined(VERSION_CN)
-    {{{   -16,    -20,      0}, 0, {     0,    992}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{    15,    -20,      0}, 0, {   992,    992}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{    15,     12,      0}, 0, {   992,      0}, {0xff, 0xff, 0xff, 0xff}}},
-    {{{   -16,     12,      0}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
-#else
     {{{   -16,    -16,      0}, 0, {     0,    992}, {0xff, 0xff, 0xff, 0xff}}},
     {{{    15,    -16,      0}, 0, {   992,    992}, {0xff, 0xff, 0xff, 0xff}}},
     {{{    15,     16,      0}, 0, {   992,      0}, {0xff, 0xff, 0xff, 0xff}}},
     {{{   -16,     16,      0}, 0, {     0,      0}, {0xff, 0xff, 0xff, 0xff}}},
-#endif
 };
 
 // 0x03029570 - 0x030295A0

@@ -20,20 +20,30 @@ typedef struct OSThread_ListHead_s
 } OSThread_ListHead;
 
 // Now fix the symbols to the new one.
-extern OSThread_ListHead __osThreadTail_fix;
+extern OSThread_ListHead D_80334890_fix;
 
-#define __osThreadTail __osThreadTail_fix.next
-#define D_80334894 __osThreadTail_fix.priority
-#define __osRunQueue __osThreadTail_fix.queue
-#define __osActiveQueue __osThreadTail_fix.tlnext
-#define __osRunningThread __osThreadTail_fix.unk10
+#define D_80334890 D_80334890_fix.next
+#define D_80334894 D_80334890_fix.priority
+#define D_80334898 D_80334890_fix.queue
+#define D_8033489C D_80334890_fix.tlnext
+#define D_803348A0 D_80334890_fix.unk10
+
+// Fix for the EEPROM array.
+extern u32 D_80365E00[16];
+
+// alias the last array element correctly
+#define D_80365E3C D_80365E00[15]
 #else
 // Original OSThread_ListHead definitions
-extern OSThread *__osThreadTail;
+extern OSThread *D_80334890;
 extern u32 D_80334894;
-extern OSThread *__osRunQueue;
-extern OSThread *__osActiveQueue;
-extern OSThread *__osRunningThread;
+extern OSThread *D_80334898;
+extern OSThread *D_8033489C;
+extern OSThread *D_803348A0;
+
+// Original EEPROM definitions
+extern u32 D_80365E00[15];
+extern u32 D_80365E3C;
 #endif
 
 typedef struct {
@@ -43,7 +53,7 @@ typedef struct {
     OSMesgQueue *eventQueue;
     OSMesgQueue *accessQueue;
     s32 (*dma_func)(s32, u32, void *, size_t);
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
     s32 (*edma_func)(OSPiHandle*, s32, u32, void *, size_t);
 #else
     u64 force_align;
@@ -66,9 +76,9 @@ void __osPiGetAccess(void);
 void __osSetSR(u32);
 u32 __osGetSR(void);
 void __osSetFpcCsr(u32);
-s32 __osSiRawReadIo(u32, u32 *);
-s32 __osSiRawWriteIo(u32, u32);
-s32 osPiRawReadIo(u32, u32 *);
+s32 __osSiRawReadIo(void *, u32 *);
+s32 __osSiRawWriteIo(void *, u32);
+s32 osPiRawReadIo(u32 a0, u32 *a1);
 void __osSpSetStatus(u32);
 u32 __osSpGetStatus(void);
 s32 __osSpSetPc(void *);
@@ -86,5 +96,4 @@ s32 __osAiDeviceBusy(void);
 void __osDispatchThread(void);
 u32 __osGetCause(void);
 s32 __osAtomicDec(u32 *);
-void __osSetHWIntrRoutine(OSHWIntr interrupt, s32 (*handler)(void));
 #endif

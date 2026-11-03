@@ -13,14 +13,10 @@ static OSIoMesg viEventCounterMesg;
 
 extern void __osTimerServicesInit(void);
 extern void __osTimerInterrupt(void);
-extern OSTime __osCurrentTime;
-extern u32 __osBaseCounter;
+extern OSTime _osCurrentTime;
+extern u32 D_80365DA8;
 extern u32 __osViIntrCount;
 void viMgrMain(void *);
-
-#ifdef VERSION_CN
-u32 __additional_scanline = 0;
-#endif
 
 void osCreateViManager(OSPri pri) {
     u32 int_disabled;
@@ -28,9 +24,6 @@ void osCreateViManager(OSPri pri) {
     OSPri currentPri;
     if (!viMgrMainArgs.initialized) {
         __osTimerServicesInit();
-#ifdef VERSION_CN
-        __additional_scanline = 0;
-#endif
         osCreateMesgQueue(&__osViMesgQueue, &viMgrMesgBuff[0], OS_VI_MANAGER_MESSAGE_BUFF_SIZE);
         viEventViMesg.hdr.type = 13;
         viEventViMesg.hdr.pri = 0;
@@ -53,7 +46,7 @@ void osCreateViManager(OSPri pri) {
         viMgrMainArgs.eventQueue = &__osViMesgQueue;
         viMgrMainArgs.accessQueue = NULL;
         viMgrMainArgs.dma_func = NULL;
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
         viMgrMainArgs.edma_func = NULL;
 #endif
 
@@ -99,13 +92,13 @@ void viMgrMain(void *vargs) {
                 __osViIntrCount++;
                 if (sp28) {
                     sp24 = osGetCount();
-                    __osCurrentTime = sp24;
+                    _osCurrentTime = sp24;
                     sp28 = 0;
                 }
-                sp24 = __osBaseCounter;
-                __osBaseCounter = osGetCount();
-                sp24 = __osBaseCounter - sp24;
-                __osCurrentTime = __osCurrentTime + sp24;
+                sp24 = D_80365DA8;
+                D_80365DA8 = osGetCount();
+                sp24 = D_80365DA8 - sp24;
+                _osCurrentTime = _osCurrentTime + sp24;
                 break;
 
             case 14:

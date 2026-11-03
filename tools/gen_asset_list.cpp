@@ -23,7 +23,7 @@ using namespace std;
 
 const char* OUTPUT_FILE = "assets.json";
 const size_t CHUNK_SIZE = 16;
-const vector<string> LANGS = {"jp", "us", "eu", "sh", "cn"};
+const vector<string> LANGS = {"jp", "us", "eu", "sh"};
 
 typedef uint8_t u8;
 typedef uint64_t u64;

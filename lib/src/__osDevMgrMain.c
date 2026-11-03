@@ -1,18 +1,10 @@
 #include "libultra_internal.h"
 #include "macros.h"
-#include "PR/os.h"
 
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
 #include "new_func.h"
-#include "PR/rcp.h"
-#include "PR/ique.h"
-
-#define ALIGN16(val) (((val) + 0xF) & ~0xF)
 
 void __osDevMgrMain(void *args) {
-#ifdef VERSION_CN
-    s32 loadedToTempBuffer = FALSE;
-#endif
     OSIoMesg *mb;
     OSMesg em;
     OSMesg dummy;
@@ -24,7 +16,7 @@ void __osDevMgrMain(void *args) {
     u32 sp2c;
     __OSBlockInfo *sp28;
     __OSTranxInfo *sp24;
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
     u32 tmp;
 #endif
 #ifdef VERSION_EU
@@ -51,55 +43,45 @@ void __osDevMgrMain(void *args) {
                 sp2c = 0;
             }
             osRecvMesg(sp34->accessQueue, &dummy, OS_MESG_BLOCK);
-            __osResetGlobalIntMask(OS_IM_PI);
-            osEPiRawWriteIo(mb->piHandle, 0x05000510, (sp24->bmCtlShadow | 0x80000000));
-l1:
-            osRecvMesg(sp34->eventQueue, &em, OS_MESG_BLOCK);
-#if defined(VERSION_SH) || defined(VERSION_CN)
-            sp24 = &mb->piHandle->transferInfo;
-            sp28 = &sp24->block[sp24->blockNum];
-            if (sp28->errStatus == 0x1D) {
-                osEPiRawWriteIo(mb->piHandle, 0x5000510, sp24->bmCtlShadow | 0x10000000);
-                osEPiRawWriteIo(mb->piHandle, 0x5000510, sp24->bmCtlShadow);
-                osEPiRawReadIo(mb->piHandle, 0x5000508, &tmp);
-                if ((tmp & 0x2000000) != 0) {
-                    osEPiRawWriteIo(mb->piHandle, 0x5000510, sp24->bmCtlShadow | 0x1000000);
+            __osResetGlobalIntMask(0x00100401); // remove magic constant!
+            __osEPiRawWriteIo(mb->piHandle, 0x05000510, (sp24->bmCtlShadow | 0x80000000));
+            while (TRUE) {
+                osRecvMesg(sp34->eventQueue, &em, OS_MESG_BLOCK);
+#ifdef VERSION_SH
+                sp24 = &mb->piHandle->transferInfo;
+                sp28 = &sp24->block[sp24->blockNum];
+                if (sp28->errStatus == 0x1D) {
+                    __osEPiRawWriteIo(mb->piHandle, 0x5000510, sp24->bmCtlShadow | 0x10000000);
+                    __osEPiRawWriteIo(mb->piHandle, 0x5000510, sp24->bmCtlShadow);
+                    __osEPiRawReadIo(mb->piHandle, 0x5000508, &tmp);
+                    if ((tmp & 0x2000000) != 0) {
+                        __osEPiRawWriteIo(mb->piHandle, 0x5000510, sp24->bmCtlShadow | 0x1000000);
+                    }
+                    sp28->errStatus = 4;
+                    HW_REG(PI_STATUS_REG, u32) = PI_STATUS_CLEAR_INTR;
+                    __osSetGlobalIntMask(0x100C01);
                 }
-                sp28->errStatus = 4;
-                IO_WRITE(PI_STATUS_REG, PI_STATUS_CLR_INTR);
-                __osSetGlobalIntMask(0x100C01);
-            }
-
-            osSendMesg(mb->hdr.retQueue, mb, OS_MESG_NOBLOCK);
-
-            if (sp2c == 1 && mb->piHandle->transferInfo.block[0].errStatus == 0) {
-                sp2c = 0;
-                goto l1;
-            }
+                osSendMesg(mb->hdr.retQueue, mb, OS_MESG_NOBLOCK);
+                if (sp2c != 1 || mb->piHandle->transferInfo.block[0].errStatus != 0) {
+                    break;
+                }
 #else
-            sp30 = osSendMesg(mb->hdr.retQueue, mb, OS_MESG_NOBLOCK);
-
-            if (sp2c == 1 && mb->piHandle->transferInfo.errStatus == 0) {
-                sp2c = 0;
-                goto l1;
-            }
+                sp30 = osSendMesg(mb->hdr.retQueue, mb, OS_MESG_NOBLOCK);
+                if (sp2c != 1 || mb->piHandle->transferInfo.errStatus != 0) {
+                    break;
+                }
 #endif
+                sp2c = 0;
+            }
             osSendMesg(sp34->accessQueue, NULL, OS_MESG_NOBLOCK);
-
             if (mb->piHandle->transferInfo.blockNum == 1) {
-                osYieldThread();
+                func_802F71F0();
             }
         } else {
             switch (mb->hdr.type) {
                 case 11:
                     osRecvMesg(sp34->accessQueue, &dummy, OS_MESG_BLOCK);
-#ifdef VERSION_CN
-                    if (__osBbIsBb == 1 && ((uintptr_t) mb->dramAddr & 0x7f) >= 0x60) {
-                        loadedToTempBuffer = TRUE;
-                        ret = sp34->dma_func(OS_READ, mb->devAddr, (void *) 0x80600000, mb->size);
-                    } else
-#endif
-                        ret = sp34->dma_func(OS_READ, mb->devAddr, mb->dramAddr, mb->size);
+                    ret = sp34->dma_func(OS_READ, mb->devAddr, mb->dramAddr, mb->size);
                     break;
                 case 12:
                     osRecvMesg(sp34->accessQueue, &dummy, OS_MESG_BLOCK);
@@ -107,15 +89,8 @@ l1:
                     break;
                 case 15:
                     osRecvMesg(sp34->accessQueue, &dummy, OS_MESG_BLOCK);
-#ifdef VERSION_CN
-                    if (__osBbIsBb == 1 && ((uintptr_t) mb->dramAddr & 0x7f) >= 0x60) {
-                        loadedToTempBuffer = TRUE;
-                        ret = sp34->edma_func(mb->piHandle, OS_READ, mb->devAddr, (void *) 0x80600000,
-                                               mb->size);
-                    } else
-#endif
-                        ret = sp34->edma_func(mb->piHandle, OS_READ, mb->devAddr, mb->dramAddr,
-                                               mb->size);
+                    ret = sp34->edma_func(mb->piHandle, OS_READ, mb->devAddr, mb->dramAddr,
+                                           mb->size);
                     break;
                 case 16:
                     osRecvMesg(sp34->accessQueue, &dummy, OS_MESG_BLOCK);
@@ -133,14 +108,6 @@ l1:
             }
             if (ret == 0) {
                 osRecvMesg(sp34->eventQueue, &em, OS_MESG_BLOCK);
-#ifdef VERSION_CN
-                if (__osBbIsBb == 1 && loadedToTempBuffer) {
-                    osInvalDCache((void *) 0x80600000, ALIGN16(mb->size));
-                    bcopy((void *) 0x80600000, mb->dramAddr, mb->size);
-                    osWritebackDCache(mb->dramAddr, mb->size);
-                    loadedToTempBuffer = FALSE;
-                }
-#endif
 #ifdef VERSION_EU
                 sp30 =
 #endif

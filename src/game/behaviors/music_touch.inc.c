@@ -1,4 +1,4 @@
-// music_touch.inc.c
+// music_touch.c.inc
 
 void bhv_play_music_track_when_touched_loop(void) {
     if (o->oAction == 0) {

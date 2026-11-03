@@ -1,4 +1,3 @@
-
 /**
  * Behavior for bhvUnusedParticleSpawn.
  *

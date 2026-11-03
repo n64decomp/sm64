@@ -1,6 +1,6 @@
 #include "libultra_internal.h"
-#include "PR/rcp.h"
+#include "hardware.h"
 
 void __osSpSetStatus(u32 status) {
-    IO_WRITE(SP_STATUS_REG, status);
+    HW_REG(SP_STATUS_REG, u32) = status;
 }

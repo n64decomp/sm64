@@ -19,7 +19,7 @@ const Collision bowser_2_seg7_collision_lava[] = {
     COL_TRI(0, 5, 7),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(2),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/  0, 1229,     0, /*yaw*/ 128), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start, /*pos*/  0, 1229,     0, /*yaw*/ 128), // unused, probably an early way to set intial position
     SPECIAL_OBJECT(/*preset*/ special_bowser,     /*pos*/ -8, 1229, -1418),
     COL_END(),
 };

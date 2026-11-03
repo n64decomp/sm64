@@ -1,4 +1,4 @@
-// spindel.inc.c
+// spindel.c.inc
 
 void bhv_spindel_init(void) {
     o->oHomeY = o->oPosY;
@@ -23,14 +23,12 @@ void bhv_spindel_loop(void) {
 
     sp18 = 10 - o->oSpindelUnkF4;
 
-    if (sp18 < 0) {
+    if (sp18 < 0)
         sp18 *= -1;
-    }
 
     sp18 -= 6;
-    if (sp18 < 0) {
+    if (sp18 < 0)
         sp18 = 0;
-    }
 
     if (o->oTimer == sp18 + 8) {
         o->oTimer = 0;
@@ -46,13 +44,12 @@ void bhv_spindel_loop(void) {
         }
     }
 
-    if (sp18 == 4 || sp18 == 3) {
+    if (sp18 == 4 || sp18 == 3)
         sp18 = 4;
-    } else if (sp18 == 2 || sp18 == 1) {
+    else if (sp18 == 2 || sp18 == 1)
         sp18 = 2;
-    } else if (sp18 == 0) {
+    else if (sp18 == 0)
         sp18 = 1;
-    }
 
     if (o->oTimer < sp18 * 8) {
         if (o->oSpindelUnkF8 == 0) {
@@ -71,14 +68,12 @@ void bhv_spindel_loop(void) {
         }
 
         sp1C = sins(o->oMoveAnglePitch * 4) * 23.0;
-        if (sp1C < 0.0f) {
+        if (sp1C < 0.0f)
             sp1C *= -1.0f;
-        }
 
         o->oPosY = o->oHomeY + sp1C;
 
-        if (o->oTimer + 1 == sp18 * 8) {
+        if (o->oTimer + 1 == sp18 * 8)
             set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
-        }
     }
 }

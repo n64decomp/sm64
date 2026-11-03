@@ -9,7 +9,7 @@
 
 struct Object *debug_print_obj_collision(struct Object *a) {
     struct Object *sp24;
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
     s32 i;
 
     for (i = 0; i < a->numCollidedObjs; i++) {

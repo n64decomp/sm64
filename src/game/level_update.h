@@ -49,79 +49,9 @@
 #define MARIO_SPAWN_LAUNCH_DEATH          0x25
 #define MARIO_SPAWN_UNKNOWN_27            0x27
 
-enum WarpNodes {
-    WARP_NODE_00,
-    WARP_NODE_01,
-    WARP_NODE_02,
-    WARP_NODE_03,
-    WARP_NODE_04,
-    WARP_NODE_05,
-    WARP_NODE_06,
-    WARP_NODE_07,
-    WARP_NODE_08,
-    WARP_NODE_09,
-    WARP_NODE_0A,
-    WARP_NODE_0B,
-    WARP_NODE_0C,
-    WARP_NODE_0D,
-    WARP_NODE_0E,
-    WARP_NODE_0F,
-    WARP_NODE_10,
-    WARP_NODE_11,
-    WARP_NODE_14 = 0x14,
-    WARP_NODE_15,
-    WARP_NODE_16,
-    WARP_NODE_17,
-    WARP_NODE_18,
-    WARP_NODE_19,
-    WARP_NODE_1A,
-    WARP_NODE_1B,
-    WARP_NODE_1C,
-    WARP_NODE_1D,
-    WARP_NODE_1E,
-    WARP_NODE_1F,
-    WARP_NODE_20,
-    WARP_NODE_21,
-    WARP_NODE_22,
-    WARP_NODE_23,
-    WARP_NODE_24,
-    WARP_NODE_25,
-    WARP_NODE_26,
-    WARP_NODE_27,
-    WARP_NODE_28,
-    WARP_NODE_29,
-    WARP_NODE_2A,
-    WARP_NODE_32 = 0x32,
-    WARP_NODE_33,
-    WARP_NODE_34,
-    WARP_NODE_35,
-    WARP_NODE_36,
-    WARP_NODE_37,
-    WARP_NODE_38,
-    WARP_NODE_3A = 0x3A,
-    WARP_NODE_64 = 0x64,
-    WARP_NODE_65,
-    WARP_NODE_66,
-    WARP_NODE_67,
-    WARP_NODE_68,
-    WARP_NODE_69,
-    WARP_NODE_6B = 0x6B,
-    WARP_NODE_6C,
-    WARP_NODE_6D,
 
-    // Special Warps
-    WARP_NODE_SUCCESS = 0xF0,
-    WARP_NODE_DEATH = 0xF1,
-    WARP_NODE_TOTWC = 0xF2,
-    WARP_NODE_WARP_FLOOR = 0xF3,
-    WARP_NODE_CREDITS_START = 0xF8,
-    WARP_NODE_CREDITS_MIN = WARP_NODE_CREDITS_START,
-    WARP_NODE_CREDITS_NEXT = 0xF9,
-    WARP_NODE_CREDITS_END = 0xFA
-};
-
-
-struct CreditsEntry {
+struct CreditsEntry
+{
     /*0x00*/ u8 levelNum;
     /*0x01*/ u8 areaIndex;
     /*0x02*/ u8 unk02;
@@ -139,7 +69,7 @@ extern s16 sCurrPlayMode;
 extern u16 D_80339ECA;
 extern s16 sTransitionTimer;
 extern void (*sTransitionUpdate)(s16 *);
-extern u8 unused2[4];
+extern u8 unused3[4];
 
 struct WarpDest {
     u8 type;
@@ -156,7 +86,7 @@ extern s16 sDelayedWarpOp;
 extern s16 sDelayedWarpTimer;
 extern s16 sSourceWarpNodeId;
 extern s32 sDelayedWarpArg;
-extern s16 sUnusedLevelUpdateBss;
+extern u8 unused4[2];
 extern s8 sTimerRunning;
 
 struct HudDisplay {

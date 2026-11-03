@@ -3742,7 +3742,7 @@ const Collision bbh_seg7_collision_level[] = {
     COL_TRI(12, 14, 15),
     COL_TRI_STOP(),
     COL_SPECIAL_INIT(26),
-    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  1434,  -204,  4710, /*yaw*/ 128), // unused, probably an early way to set initial position
+    SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_null_start,   /*pos*/  1434,  -204,  4710, /*yaw*/ 128), // unused, probably an early way to set intial position
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_haunted_door, /*pos*/     0, -2457,  2099, /*yaw*/ 128),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_haunted_door, /*pos*/ -1996, -2457,   205, /*yaw*/ 192),
     SPECIAL_OBJECT_WITH_YAW(/*preset*/ special_haunted_door, /*pos*/  1587, -2457,   205, /*yaw*/  64),

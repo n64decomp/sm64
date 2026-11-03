@@ -1,26 +1,24 @@
-#include "macros.h"
 #include "libultra_internal.h"
 
-extern u32 __osBbEepromSize;
+// TODO: merge with osEepromWrite
+typedef struct {
+    u16 unk00;
+    u8 unk02;
+    u8 unk03;
+} unkStruct;
 
-s32 __osEepStatus(OSMesgQueue *, OSContStatus *);
-s32 osEepromProbe(UNUSED OSMesgQueue *mq) {
-    s32 ret = 0;
-#ifndef VERSION_CN
-    OSContStatus status;
-#endif
+s32 __osEepStatus(OSMesgQueue *, unkStruct *);
+s32 osEepromProbe(OSMesgQueue *mq) {
+    s32 status = 0;
+    unkStruct sp18;
 
     __osSiGetAccess();
-#ifdef VERSION_CN
-    if (__osBbEepromSize == 0x200) {
-        ret = EEPROM_TYPE_4K;
-    } else if (__osBbEepromSize == 0x800) {
-        ret = EEPROM_TYPE_16K;
+    status = __osEepStatus(mq, &sp18);
+    if (status == 0 && (sp18.unk00 & 0x8000) != 0) {
+        status = 1;
+    } else {
+        status = 0;
     }
-#else
-    ret = __osEepStatus(mq, &status);
-    ret = (ret == 0 && (status.type & CONT_EEPROM) != 0) ? EEPROM_TYPE_4K : 0;
-#endif
     __osSiRelAccess();
-    return ret;
+    return status;
 }

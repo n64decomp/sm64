@@ -46,7 +46,7 @@ static s32 spiny_check_active(void) {
             //  behave similar to a regular goomba.
             //  It can also be used on a bob-omb respawner to change its model
             //  to a butterfly or fish.
-            o->parentObj->oEnemyLakituNumSpinies--;
+            o->parentObj->oEnemyLakituNumSpinies -= 1;
             obj_mark_for_deletion(o);
             return FALSE;
         }
@@ -85,7 +85,7 @@ static void spiny_act_walk(void) {
                           obj_bounce_off_walls_edges_objects(&o->oSpinyTargetYaw))) {
                     // Walk and occasionally randomly change direction
                     if (o->oSpinyTimeUntilTurn != 0) {
-                        o->oSpinyTimeUntilTurn--;
+                        o->oSpinyTimeUntilTurn -= 1;
                     } else {
                         o->oSpinyTargetYaw = o->oMoveAngleYaw + (s16) random_sign() * 0x2000;
                         o->oSpinyTimeUntilTurn = random_linear_offset(100, 100);
@@ -169,8 +169,10 @@ static void spiny_act_thrown_by_lakitu(void) {
 
         cur_obj_move_standard(-78);
 
-        if (obj_check_attacks(&sSpinyHitbox, o->oAction) != 0 && o->parentObj != o) {
-            o->parentObj->oEnemyLakituNumSpinies--;
+        if (obj_check_attacks(&sSpinyHitbox, o->oAction)) {
+            if (o->parentObj != o) {
+                o->parentObj->oEnemyLakituNumSpinies -= 1;
+            }
         }
     }
 }

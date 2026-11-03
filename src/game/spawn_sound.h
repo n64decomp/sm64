@@ -3,7 +3,8 @@
 
 #include <PR/ultratypes.h>
 
-struct SoundState {
+struct SoundState
+{
     s16 playSound; // if this is 1, the info below will
                    // be used to determine the sound behavior
                    // for the object. if 0, this is skipped.

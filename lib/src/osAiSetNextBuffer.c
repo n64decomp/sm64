@@ -1,5 +1,8 @@
 #include "libultra_internal.h"
-#include "PR/rcp.h"
+#include "osAi.h"
+#include "hardware.h"
+
+u8 D_80334820 = 0;
 
 /**
  * It is worth noting that a previous hardware bug has been fixed by a software
@@ -16,38 +19,22 @@
  */
 
 s32 osAiSetNextBuffer(void *buff, u32 len) {
-    static u8 hdwrBugFlag = 0;
-    char *bptr;
-
-#ifdef VERSION_CN
-    if (__osAiDeviceBusy()) {
-        return -1;
-    }
-#endif
-
-    bptr = buff;
-
-    if (hdwrBugFlag != 0) {
-        bptr -= 0x2000;
+    u8 *sp1c = buff;
+    if (D_80334820 != 0) {
+        sp1c -= 0x2000;
     }
 
-#ifdef VERSION_CN
-    if ((((uintptr_t) buff + len) & 0x1fff) == 0) {
-#else
     if ((((uintptr_t) buff + len) & 0x3fff) == 0x2000) {
-#endif
-        hdwrBugFlag = 1;
+        D_80334820 = 1;
     } else {
-        hdwrBugFlag = 0;
+        D_80334820 = 0;
     }
 
-#ifndef VERSION_CN
     if (__osAiDeviceBusy()) {
         return -1;
     }
-#endif
 
-    IO_WRITE(AI_DRAM_ADDR_REG, osVirtualToPhysical(bptr));
-    IO_WRITE(AI_LEN_REG, len);
+    HW_REG(AI_DRAM_ADDR_REG, void *) = (void *) osVirtualToPhysical(sp1c);
+    HW_REG(AI_LEN_REG, u32) = len;
     return 0;
 }

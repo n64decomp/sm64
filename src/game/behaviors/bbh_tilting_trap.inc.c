@@ -1,17 +1,16 @@
-
 /**
- * Behavior for bhvBBHTiltingTrapPlatform.
+ * Behavior for bhvBbhTiltingTrapPlatform.
  * This is the tilting platform trap in the upper floor of BBH
  * that drops the player into the merry-go-round area.
  */
 
 /**
- * Update function for bhvBBHTiltingTrapPlatform.
+ * Update function for bhvBbhTiltingTrapPlatform.
  */
 void bhv_bbh_tilting_trap_platform_loop(void) {
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
 
-    // Post-JP versions use oAction for the
+    // US (and probably later) versions use oAction for the
     // if statement, while immediately setting it over here.
     // This was done so that Mario leaving or getting on the platform
     // resets oTimer to 0.
@@ -30,14 +29,14 @@ void bhv_bbh_tilting_trap_platform_loop(void) {
         o->oFaceAnglePitch += o->oAngleVelPitch;
     } else
 #ifndef VERSION_JP
-        // In the post-JP versions, if the platform has tilted more than 3000 angle units
+        // In the US version, if the platform has tilted more than 3000 angle units
         // in less than 16 frames since Mario got on it, and he has stepped off,
         // this code will not run, so it will continue to rotate with the same
         // angular velocity for 16 more frames. This was probably done to make
         // the platform more dangerous. This code will not work correctly
         // without the oAction changes above, since oTimer will not ever
         // reset to 0 without them.
-        if ((absi(o->oFaceAnglePitch) < 3000) || (o->oTimer > 15))
+        if ((absi(o->oFaceAnglePitch) < 3000) || (o->oTimer >= 16))
 #endif
     {
         // Make the platform return to the horizontal at a speed of

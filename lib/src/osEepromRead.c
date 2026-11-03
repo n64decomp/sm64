@@ -1,115 +1,102 @@
 #include "libultra_internal.h"
-#include "PR/ique.h"
-#include "controller.h"
-#include "macros.h"
 
-#ifdef VERSION_CN
+extern u8 _osLastSentSiCmd;
 
-s32 osEepromRead(UNUSED OSMesgQueue *mq, u8 address, u8 *buffer) {
-    s32 ret = 0;
-    s32 i;
+typedef struct {
+    u16 unk00;
+    u8 unk02;
+    u8 unk03;
+} unkStruct;
+typedef struct {
+    u8 unk00;
+    u8 unk01;
+    u8 unk02;
+    u8 unk03;
+    u8 unk04;
+    u8 unk05;
+    u8 unk06;
+    u8 unk07;
+} unkStruct3;
 
-    __osSiGetAccess();
+typedef struct {
+    u8 unk00;
+    u8 unk01;
+    u8 unk02;
+    u8 unk03;
+    unkStruct3 unk04;
+} unkStruct2;
 
-    if (__osBbEepromSize == 0x200) {
-        if (address >= 0x200 / 8) {
-            ret = -1;
-        }
-    } else if (__osBbEepromSize != 0x800) {
-        ret = 8;
-    }
-
-    if (ret == 0) {
-        for (i = 0; i < 8; i++) {
-            buffer[i] = (__osBbEepromAddress + address * 8)[i];
-        }
-    }
-
-    __osSiRelAccess();
-    return ret;
-}
-
-#else
-
-void __osPackEepReadData(u8);
+s32 __osEepStatus(OSMesgQueue *, unkStruct *);
+s32 __osPackEepReadData(u8);
 
 s32 osEepromRead(OSMesgQueue *mq, u8 address, u8 *buffer) {
-    s32 ret = 0;
-    s32 i = 0;
-    u8 *ptr = (u8 *) &__osEepPifRam.ramarray;
-    OSContStatus sdata;
-    __OSContEepromFormat eepromformat;
-
-    if (address > EEPROM_MAXBLOCKS) {
+    s32 sp34;
+    s32 sp30;
+    u8 *sp2c;
+    unkStruct sp28;
+    unkStruct2 sp20;
+    sp34 = 0;
+    sp30 = 0;
+    sp2c = (u8 *) &D_80365E00;
+    if (address > 0x40) {
         return -1;
     }
-
     __osSiGetAccess();
-    ret = __osEepStatus(mq, &sdata);
-    if (ret != 0 || sdata.type != CONT_EEPROM) {
+    sp34 = __osEepStatus(mq, &sp28);
+    if (sp34 != 0 || sp28.unk00 != 0x8000) {
 
-        return CONT_NO_RESPONSE_ERROR;
+        return 8;
     }
-
-    while (sdata.status & CONT_EEPROM_BUSY) {
-        __osEepStatus(mq, &sdata);
+    while (sp28.unk02 & 0x80) {
+        __osEepStatus(mq, &sp28);
     }
     __osPackEepReadData(address);
-
-    ret = __osSiRawStartDma(OS_WRITE, &__osEepPifRam);
+    sp34 = __osSiRawStartDma(OS_WRITE, &D_80365E00);
     osRecvMesg(mq, NULL, OS_MESG_BLOCK);
-
-    for (i = 0; i < ARRAY_COUNT(__osEepPifRam.ramarray) + 1; i++) {
-        __osEepPifRam.ramarray[i] = CONT_CMD_NOP;
+    for (sp30 = 0; sp30 < 0x10; sp30++) {
+        (D_80365E00)[sp30] = 255;
     }
-    __osEepPifRam.pifstatus = 0;
-
-    ret = __osSiRawStartDma(OS_READ, &__osEepPifRam);
-    __osContLastCmd = CONT_CMD_READ_EEPROM;
+    D_80365E3C = 0;
+    sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
+    _osLastSentSiCmd = 4;
     osRecvMesg(mq, NULL, OS_MESG_BLOCK);
-
-    for (i = 0; i < 4; i++) {
-        ptr++;
+    for (sp30 = 0; sp30 < 4; sp30++) {
+        sp2c++;
     }
-
-    eepromformat = *(__OSContEepromFormat *) ptr;
-    ret = CHNL_ERR(eepromformat);
-
-    if (ret == 0) {
-        for (i = 0; i < 8; i++) {
-            *buffer++ = eepromformat.data[i];
+    sp20 = *(unkStruct2 *) sp2c;
+    sp34 = (sp20.unk01 & 0xc0) >> 4;
+    if (sp34 == 0) {
+        for (sp30 = 0; sp30 < 8; sp30++) {
+            *buffer++ = ((u8 *) &sp20.unk04)[sp30];
         }
     }
-
     __osSiRelAccess();
-    return ret;
+    return sp34;
 }
 
-void __osPackEepReadData(u8 address) {
-    u8 *ptr = (u8 *) &__osEepPifRam.ramarray;
-    __OSContEepromFormat eepromformat;
-    s32 i;
-    
-    for (i = 0; i < ARRAY_COUNT(__osEepPifRam.ramarray) + 1; i++) {
-        __osEepPifRam.ramarray[i] = CONT_CMD_NOP;
+s32 __osPackEepReadData(u8 address) {
+    u8 *sp14;
+    unkStruct2 sp8;
+    s32 sp4;
+    sp14 = (u8 *) &D_80365E00;
+    for (sp4 = 0; sp4 < 0x10; sp4++) {
+        D_80365E00[sp4] = 255;
     }
-    __osEepPifRam.pifstatus = CONT_CMD_EXE;
-
-    eepromformat.txsize = CONT_CMD_READ_EEPROM_TX;
-    eepromformat.rxsize = CONT_CMD_READ_EEPROM_RX;
-    eepromformat.cmd = CONT_CMD_READ_EEPROM;
-    eepromformat.address = address;
-    for (i = 0; i < ARRAY_COUNT(eepromformat.data); i++) {
-        eepromformat.data[i] = 0;
+    D_80365E3C = 1;
+    sp8.unk00 = 2;
+    sp8.unk01 = 8;
+    sp8.unk02 = 4;
+    sp8.unk03 = address;
+    for (sp4 = 0; sp4 < 8; sp4++) {
+        ((u8 *) &sp8.unk04)[sp4] = 0;
     }
-
-    for (i = 0; i < 4; i++) {
-        *ptr++ = 0;
+    for (sp4 = 0; sp4 < 4; sp4++) {
+        *sp14++ = 0;
     }
-
-    *(__OSContEepromFormat *) ptr = eepromformat;
-    ptr += sizeof(__OSContEepromFormat);
-    *ptr = CONT_CMD_END;
-}
-
+    *(unkStruct2 *) sp14 = sp8;
+    sp14 += 0xc;
+    *sp14 = 254;
+#ifdef AVOID_UB
+    return 0;
 #endif
+}

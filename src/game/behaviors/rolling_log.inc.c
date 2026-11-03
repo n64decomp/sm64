@@ -1,4 +1,4 @@
-// rolling_log.inc.c
+// rolling_log.c.inc
 
 // why are the falling platforms and rolling logs grouped
 // together? seems strange, but it also cooresponds to the
@@ -10,56 +10,50 @@ void bhv_ttm_rolling_log_init(void) {
     o->oPitouneUnkF8 = 3970.0f;
     o->oPitouneUnkFC = 3654.0f;
     o->oPitouneUnkF4 = 271037.0f;
-
     o->oMoveAngleYaw = 8810;
-    o->oForwardVel = 0.0f;
-    o->oVelX = 0.0f;
-    o->oVelZ = 0.0f;
+    o->oForwardVel = 0;
+    o->oVelX = 0;
+    o->oVelZ = 0;
     o->oFaceAnglePitch = 0;
     o->oAngleVelPitch = 0;
 }
 
 void rolling_log_roll_log(void) {
+    f32 sp24;
+
     if (gMarioObject->platform == o) {
-        f32 sp24 = (gMarioObject->header.gfx.pos[2] - o->oPosZ) * coss(-1*o->oMoveAngleYaw)
-                   - (gMarioObject->header.gfx.pos[0] - o->oPosX) * sins(-1*o->oMoveAngleYaw);
-        if (sp24 > 0) {
+        sp24 = (gMarioObject->header.gfx.pos[2] - o->oPosZ) * coss(-1*o->oMoveAngleYaw)
+               - (gMarioObject->header.gfx.pos[0] - o->oPosX) * sins(-1*o->oMoveAngleYaw);
+        if (sp24 > 0)
             o->oAngleVelPitch += 0x10;
-        } else {
+        else
             o->oAngleVelPitch -= 0x10;
-        }
 
-        if (o->oAngleVelPitch > 0x200) {
+        if (o->oAngleVelPitch > 0x200)
             o->oAngleVelPitch = 0x200;
-        }
 
-        if (o->oAngleVelPitch < -0x200) {
+        if (o->oAngleVelPitch < -0x200)
             o->oAngleVelPitch = -0x200;
-        }
     } else {
         if (is_point_close_to_object(o, o->oHomeX, o->oHomeY, o->oHomeZ, 100)) {
             if (o->oAngleVelPitch != 0) {
-                if (o->oAngleVelPitch > 0) {
+                if (o->oAngleVelPitch > 0)
                     o->oAngleVelPitch -= 0x10;
-                } else {
+                else
                     o->oAngleVelPitch += 0x10;
-                }
 
-                if (o->oAngleVelPitch < 0x10 && o->oAngleVelPitch > -0x10) {
+                if (o->oAngleVelPitch < 0x10 && o->oAngleVelPitch > -0x10)
                     o->oAngleVelPitch = 0;
-                }
             }
         } else {
             if (o->oAngleVelPitch != 0x100) {
-                if (o->oAngleVelPitch > 0x100) {
+                if (o->oAngleVelPitch > 0x100)
                     o->oAngleVelPitch -= 0x10;
-                } else {
+                else
                     o->oAngleVelPitch += 0x10;
-                }
 
-                if (o->oAngleVelPitch < 0x110 && o->oAngleVelPitch > 0xF0) {
+                if (o->oAngleVelPitch < 0x110 && o->oAngleVelPitch > 0xF0)
                     o->oAngleVelPitch = 0x100;
-                }
             }
         }
     }
@@ -79,11 +73,11 @@ void bhv_rolling_log_loop(void) {
     o->oPosZ += o->oVelZ;
 
     if (o->oPitouneUnkF4 < sqr(o->oPosX - o->oPitouneUnkF8) + sqr(o->oPosZ - o->oPitouneUnkFC)) {
-        o->oForwardVel = 0.0f;
+        o->oForwardVel = 0;
         o->oPosX = prevX;
         o->oPosZ = prevZ;
-        o->oVelX = 0.0f;
-        o->oVelZ = 0.0f;
+        o->oVelX = 0;
+        o->oVelZ = 0;
     }
 
     o->oFaceAnglePitch += o->oAngleVelPitch;
@@ -110,14 +104,11 @@ void volcano_act_1(void) {
 void volcano_act_3(void) {
     o->oAngleVelPitch = 0x90;
     o->oFaceAnglePitch += o->oAngleVelPitch;
-
-    if (o->oFaceAnglePitch > 0) {
+    if (o->oFaceAnglePitch > 0)
         o->oFaceAnglePitch = 0;
-    }
 
-    if (o->oTimer == 200) {
+    if (o->oTimer == 200)
         o->oAction = 0;
-    }
 }
 
 void bhv_volcano_trap_loop(void) {
@@ -155,9 +146,9 @@ void bhv_lll_rolling_log_init(void) {
     o->oPitouneUnkF4 = 1048576.0f;
 
     o->oMoveAngleYaw = 0x3FFF;
-    o->oForwardVel = 0.0f;
-    o->oVelX = 0.0f;
-    o->oVelZ = 0.0f;
+    o->oForwardVel = 0;
+    o->oVelX = 0;
+    o->oVelZ = 0;
     o->oFaceAnglePitch = 0;
     o->oAngleVelPitch = 0;
 }

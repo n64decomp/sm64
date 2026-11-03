@@ -1,25 +1,9 @@
 // assembler directives
 .set noat      // allow manual use of $at
 .set noreorder // don't insert nops after branches
+.set gp=64
 
 #include "macros.inc"
-
-.equ EXCEPTION_TLB_MISS, 0x80000000
-.equ SP_DMEM,            0xA4000000
-.equ SP_IMEM,            0xA4001000
-.equ MI_MODE_REG,        0xA4300000
-.equ RI_MODE_REG,        0xA4700000
-
-#ifdef VERSION_CN
-.macro cn_li a b
-    li \a, \b
-.endm
-#else
-.macro cn_li a b
-    lui \a, %hi(\b)
-    addiu \a, \a, %lo(\b)
-.endm
-#endif
 
 // 0xA0000000-0xBFFFFFFF: KSEG1 direct map non-cache mirror of 0x00000000
 // 0xA4000000-0xA4000FFF: RSP DMEM
@@ -35,7 +19,8 @@ glabel ipl3_entry // 0xA4000040
     mtc0  $zero, $13
     mtc0  $zero, $9
     mtc0  $zero, $11
-    cn_li $t0, RI_MODE_REG
+    lui   $t0, %hi(RI_MODE_REG)
+    addiu $t0, %lo(RI_MODE_REG)
     lw    $t1, 0xc($t0)
     bnez  $t1, .LA4000410
      nop
@@ -45,13 +30,15 @@ glabel ipl3_entry // 0xA4000040
     sw    $s5, 8($sp)
     sw    $s6, 0xc($sp)
     sw    $s7, 0x10($sp)
-    cn_li $t0, RI_MODE_REG
+    lui   $t0, %hi(RI_MODE_REG)
+    addiu $t0, %lo(RI_MODE_REG)
     lui   $t2, (0xa3f80000 >> 16)
     lui   $t3, (0xa3f00000 >> 16)
-    cn_li $t4, MI_MODE_REG
+    lui   $t4, %hi(MI_MODE_REG)
+    addiu $t4, %lo(MI_MODE_REG)
     ori   $t1, $zero, 64
     sw    $t1, 4($t0)
-    li    $s1, 8000
+    li   $s1, 8000
 .LA400009C:
     nop
     addi  $s1, $s1, -1
@@ -84,19 +71,20 @@ glabel ipl3_entry // 0xA4000040
     move  $t5, $zero
     move  $t6, $zero
     lui   $t7, (0xA3F00000 >> 16)
-    move $t8, $zero
+    move  $t8, $zero
     lui   $t9, (0xA3F00000 >> 16)
     lui   $s6, (0xA0000000 >> 16)
-    move $s7, $zero
+    move  $s7, $zero
     lui   $a2, (0xA3F00000 >> 16)
     lui   $a3, (0xA0000000 >> 16)
-    move $s2, $zero
+    move  $s2, $zero
     lui   $s4, (0xA0000000 >> 16)
     addiu $sp, $sp, -0x48
-    move $fp, $sp
+    move  $fp, $sp
     lui   $s0, %hi(MI_VERSION_REG)
     lw    $s0, %lo(MI_VERSION_REG)($s0)
-    cn_li $s1, 0x01010101
+    lui   $s1, (0x01010101 >> 16)
+    addiu $s1, (0x01010101 & 0xFFFF)
     bne   $s0, $s1, .LA4000160
      nop
     li    $s0, 512
@@ -173,16 +161,12 @@ glabel ipl3_entry // 0xA4000040
     bnez  $t0, .LA4000168
      nop
 .LA400025C:
-#ifdef VERSION_CN
-    li    $t0, 0xc0000000
-#else
     li    $t0, 0xc4000000
-#endif
     sw    $t0, 0xc($t2)
     li    $t0, 0x80000000
     sw    $t0, 0x4($t2)
-    move $sp, $fp
-    move $v1, $zero
+    move  $sp, $fp
+    move  $v1, $zero
 .LA4000274:
     lw    $t1, 4($sp)
     lui   $t0, 0xb009
@@ -261,7 +245,7 @@ glabel ipl3_entry // 0xA4000040
     ori   $t1, (0x0FFFFFFF & 0xFFFF)
     and   $s6, $s6, $t1
     sw    $s6, 0x18($t0)
-    move $sp, $fp
+    move  $sp, $fp
     addiu $sp, $sp, 0x48
     lw    $s3, ($sp)
     lw    $s4, 4($sp)
@@ -269,7 +253,8 @@ glabel ipl3_entry // 0xA4000040
     lw    $s6, 0xc($sp)
     lw    $s7, 0x10($sp)
     addiu $sp, $sp, 0x18
-    cn_li $t0, EXCEPTION_TLB_MISS
+    lui   $t0, %hi(EXCEPTION_TLB_MISS)
+    addiu $t0, $t0, %lo(EXCEPTION_TLB_MISS)
     addiu $t1, $t0, 0x4000
     addiu $t1, $t1, -0x20
     mtc0  $zero, $28
@@ -279,7 +264,8 @@ glabel ipl3_entry // 0xA4000040
     sltu  $at, $t0, $t1
     bnez  $at, .LA40003D8
      addiu $t0, $t0, 0x20
-    cn_li $t0, EXCEPTION_TLB_MISS
+    lui   $t0, %hi(EXCEPTION_TLB_MISS)
+    addiu $t0, %lo(EXCEPTION_TLB_MISS)
     addiu $t1, $t0, 0x2000
     addiu $t1, $t1, -0x10
 .LA40003F8:
@@ -290,7 +276,8 @@ glabel ipl3_entry // 0xA4000040
     b     .LA4000458
      nop
 .LA4000410:
-    cn_li  $t0, EXCEPTION_TLB_MISS
+    lui   $t0, %hi(EXCEPTION_TLB_MISS)
+    addiu $t0, %lo(EXCEPTION_TLB_MISS)
     addiu $t1, $t0, 0x4000
     addiu $t1, $t1, -0x20
     mtc0  $zero, $28
@@ -300,7 +287,8 @@ glabel ipl3_entry // 0xA4000040
     sltu  $at, $t0, $t1
     bnez  $at, .LA4000428
      addiu $t0, $t0, 0x20
-    cn_li $t0, EXCEPTION_TLB_MISS
+    lui   $t0, %hi(EXCEPTION_TLB_MISS)
+    addiu $t0, %lo(EXCEPTION_TLB_MISS)
     addiu $t1, $t0, 0x2000
     addiu $t1, $t1, -0x10
 .LA4000448:
@@ -309,45 +297,8 @@ glabel ipl3_entry // 0xA4000040
     bnez  $at, .LA4000448
      addiu $t0, $t0, 0x10
 .LA4000458:
-#ifdef VERSION_CN
-    la    $t0, D_CN_0400049C
-    lui   $t1, 0xf
-    ori   $t1, $t1, 0xffff
-    and   $t0, $t0, $t1
-    lui   $t2, 0xa400
-    lui   $t3, 0xfff0
-    and   $t2, $t2, $t3
-    or    $t0, $t0, $t2
-    la    $t3, D_CN_0400074C
-    and   $t3, $t3, $t1
-    or    $t3, $t3, $t2
-    lui   $t1, 0xa000
-.LA4000474:
-    lw    $t5, ($t0)
-    sw    $t5, ($t1)
-    addiu $t0, $t0, 4
-    addiu $t1, $t1, 4
-    sltu  $at, $t0, $t3
-    bnez  $at, .LA4000474
-     nop
-    lui   $t4, 0x8000
-    jr    $t4
-     nop
-    lui   $t3, 0xb000
-    lui   $t2, 0x1fff
-    ori   $t2, $t2, 0xffff
-    lw    $t1, 8($t3)
-    and   $t1, $t1, $t2
-    lui   $at, 0xa460
-    sw    $t1, ($at)
-.LA40004B8:
-    lui   $t0, 0xa460
-    lw    $t0, 0x10($t0)
-    andi  $t0, $t0, 2
-    bnez  $t0, .LA40004B8
-     nop
-#else
-    cn_li $t2, SP_DMEM
+    lui   $t2, %hi(SP_DMEM)
+    addiu $t2, $t2, %lo(SP_DMEM)
     lui   $t3, 0xfff0
     lui   $t1, 0x0010
     and   $t2, $t2, $t3
@@ -369,7 +320,8 @@ glabel ipl3_entry // 0xA4000040
     addiu $t1, $t1, 4
     bnez  $at, .LA4000498
      sw    $t5, -4($t1)
-    cn_li $t4, EXCEPTION_TLB_MISS
+    lui   $t4, %hi(EXCEPTION_TLB_MISS)
+    addiu $t4, %lo(EXCEPTION_TLB_MISS)
     jr    $t4
      nop
     lui   $t3, %hi(D_B0000008)
@@ -385,13 +337,13 @@ glabel ipl3_entry // 0xA4000040
     andi  $t0, $t0, 2
     bnezl $t0, .LA40004D0
      lui   $t0, %hi(PI_STATUS_REG)
-#endif
     li    $t0, 0x1000
     add   $t0, $t0, $t3
     and   $t0, $t0, $t2
     lui   $at, %hi(PI_CART_ADDR_REG)
     sw    $t0, %lo(PI_CART_ADDR_REG)($at)
-    cn_li $t2, 0x000FFFFF
+    lui   $t2, 0x0010
+    addiu $t2, 0xFFFF
     lui   $at, %hi(PI_WR_LEN_REG)
     sw    $t2, %lo(PI_WR_LEN_REG)($at)
 
@@ -429,104 +381,6 @@ glabel ipl3_entry // 0xA4000040
     andi  $t3, $t3, 0x1
     bnez  $t3, .LA4000514
      nop
-#ifdef VERSION_CN
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-#endif
-#ifdef VERSION_CN
-    lui   $t1, %hi(SP_PC)
-    lw    $t1, %lo(SP_PC)($t1)
-    beqz  $t1, .LA4000698
-     nop
-    addiu $t2, $zero, 0x41
-    lui   $at, %hi(SP_STATUS_REG)
-    sw    $t2, %lo(SP_STATUS_REG)($at)
-    lui   $at, %hi(SP_PC)
-    sw    $zero, %lo(SP_PC)($at)
-.LA4000698:
-    li    $t3, 0x00AAAAAE
-    lui   $at, %hi(SP_STATUS_REG)
-    sw    $t3, %lo(SP_STATUS_REG)($at)
-    li    $t0, 1365
-    lui   $at, %hi(MI_INTR_MASK_REG)
-    sw    $t0, %lo(MI_INTR_MASK_REG)($at)
-    lui   $at, %hi(SI_STATUS_REG)
-    sw    $zero, %lo(SI_STATUS_REG)($at)
-    lui   $at, %hi(AI_STATUS_REG)
-    sw    $zero, %lo(AI_STATUS_REG)($at)
-    li    $t1, 2048
-    lui   $at, %hi(MI_MODE_REG)
-    sw    $t1, %lo(MI_MODE_REG)($at)
-    li    $t1, 2
-    lui   $at, %hi(PI_STATUS_REG)
-    sw    $t1, %lo(PI_STATUS_REG)($at)
-    lui   $t0, (0xA0000300 >> 16)
-    ori   $t0, (0xA0000300 & 0xFFFF)
-    sw    $s4, ($t0)
-    sw    $s3, 4($t0)
-#else
     lui   $t3, %hi(D_B0000008)
     lw    $a0, %lo(D_B0000008)($t3)
     move  $a1, $s6
@@ -609,7 +463,8 @@ func_A4000690:
     lui   $at, %hi(SP_PC)
     sw    $zero, %lo(SP_PC)($at)
 .LA40006BC:
-    li    $t3, 0x00AAAAAE
+    lui   $t3, (0x00AAAAAE >> 16)
+    ori   $t3, (0x00AAAAAE & 0xFFFF)
     lui   $at, %hi(SP_STATUS_REG)
     sw    $t3, %lo(SP_STATUS_REG)($at)
     lui   $at, %hi(MI_INTR_MASK_REG)
@@ -628,53 +483,32 @@ func_A4000690:
     ori   $t0, (0xA0000300 & 0xFFFF)
     sw    $t1, %lo(PI_STATUS_REG)($at)
     sw    $s7, 0x14($t0)
-#endif
     sw    $s5, 0xc($t0)
-#ifdef VERSION_CN
-    beqz  $s3, .LA4000728
-     sw    $s7, 0x14($t0)
-    b     .LA4000730
-     lui   $t1, 0xa600
-#else
     sw    $s3, 0x4($t0)
     beqz  $s3, .LA4000728
      sw    $s4, ($t0)
     lui   $t1, 0xa600
     b     .LA4000730
      addiu $t1, $t1, 0
-#endif
 .LA4000728:
-    cn_li $t1, 0xb0000000
+    lui   $t1, 0xb000
+    addiu $t1, $t1, 0
 .LA4000730:
     sw    $t1, 0x8($t0)
-    cn_li $t0, SP_DMEM
+    lui   $t0, %hi(SP_DMEM)
+    addiu $t0, %lo(SP_DMEM)
     addi  $t1, $t0, 0x1000
-#ifdef VERSION_CN
-.LA4000710:
-    sw    $zero, ($t0)
-    addiu $t0, $t0, 4
-    bne   $t0, $t1, .LA4000710
-     nop
-#else
 .LA4000740:
     addiu $t0, $t0, 4
     bne   $t0, $t1, .LA4000740
      sw    $zero, -4($t0)
-#endif
-    cn_li $t0, SP_IMEM
+    lui   $t0, %hi(SP_IMEM)
+    addiu $t0, %lo(SP_IMEM)
     addi  $t1, $t0, 0x1000
-#ifdef VERSION_CN
-.LA400072C:
-    sw    $zero, ($t0)
-    addiu $t0, $t0, 4
-    bne   $t0, $t1, .LA400072C
-     nop
-#else
 .LA4000758:
     addiu $t0, $t0, 4
     bne   $t0, $t1, .LA4000758
      sw    $zero, -4($t0)
-#endif
     lui   $t3, %hi(D_B0000008)
     lw    $t1, %lo(D_B0000008)($t3)
     jr    $t1
@@ -683,12 +517,10 @@ func_A4000690:
 
 func_A4000778:
     addiu $sp, $sp, -0xa0
-#ifndef VERSION_CN
     sw    $s0, 0x40($sp)
     sw    $s1, 0x44($sp)
     move  $s1, $zero
     move  $s0, $zero
-#endif
     sw    $v0, ($sp)
     sw    $v1, 4($sp)
     sw    $a0, 8($sp)
@@ -705,10 +537,6 @@ func_A4000778:
     sw    $t7, 0x34($sp)
     sw    $t8, 0x38($sp)
     sw    $t9, 0x3c($sp)
-#ifdef VERSION_CN
-    sw    $s0, 0x40($sp)
-    sw    $s1, 0x44($sp)
-#endif
     sw    $s2, 0x48($sp)
     sw    $s3, 0x4c($sp)
     sw    $s4, 0x50($sp)
@@ -717,34 +545,19 @@ func_A4000778:
     sw    $s7, 0x5c($sp)
     sw    $fp, 0x60($sp)
     sw    $ra, 0x64($sp)
-#ifdef VERSION_CN
-    move $s0, $zero
-    move $s1, $zero
-#endif
 .LA40007EC:
     jal   func_A4000880
      nop
     addiu $s0, $s0, 1
-#ifdef VERSION_CN
-    addu  $s1, $s1, $v0
-#endif
     slti  $t1, $s0, 4
     bnez  $t1, .LA40007EC
-#ifdef VERSION_CN
-     nop
-#else
      addu  $s1, $s1, $v0
-#endif
     srl   $a0, $s1, 2
     jal   func_A4000A40
      li    $a1, 1
-#ifdef VERSION_CN
-    srl   $v0, $s1, 2
-#else
     lw    $ra, 0x64($sp)
     srl   $v0, $s1, 2
     lw    $s1, 0x44($sp)
-#endif
     lw    $v1, 4($sp)
     lw    $a0, 8($sp)
     lw    $a1, 0xc($sp)
@@ -761,9 +574,6 @@ func_A4000778:
     lw    $t8, 0x38($sp)
     lw    $t9, 0x3c($sp)
     lw    $s0, 0x40($sp)
-#ifdef VERSION_CN
-    lw    $s1, 0x44($sp)
-#endif
     lw    $s2, 0x48($sp)
     lw    $s3, 0x4c($sp)
     lw    $s4, 0x50($sp)
@@ -771,9 +581,6 @@ func_A4000778:
     lw    $s6, 0x58($sp)
     lw    $s7, 0x5c($sp)
     lw    $fp, 0x60($sp)
-#ifdef VERSION_CN
-    lw    $ra, 0x64($sp)
-#endif
     jr    $ra
      addiu $sp, $sp, 0xa0
 
@@ -785,46 +592,22 @@ func_A4000880:
     move  $t4, $zero
 .LA4000894:
     slti  $k0, $t4, 0x40
-#ifdef VERSION_CN
-    beqz  $k0, .LA40008D4
-     nop
-#else
     beql  $k0, $zero, .LA40008FC
      move  $v0, $zero
-#endif
     jal   func_A400090C
      move  $a0, $t4
-#ifdef VERSION_CN
-    blez  $v0, .LA40008CC
-     nop
-#else
     blezl $v0, .LA40008CC
      slti  $k0, $t1, 0x50
-#endif
     subu  $k0, $v0, $t1
     multu $k0, $t4
-#ifndef VERSION_CN
     move  $t1, $v0
-#endif
     mflo  $k0
     addu  $t3, $t3, $k0
-#ifdef VERSION_CN
-    move $t1, $v0
-#else
     nop
     slti  $k0, $t1, 0x50
-#endif
 .LA40008CC:
-#ifdef VERSION_CN
-    addiu $t4, $t4, 1
-    slti  $k0, $t1, 0x50
-#endif
     bnez  $k0, .LA4000894
-#ifdef VERSION_CN
-     nop
-#else
      addiu $t4, $t4, 1
-#endif
     sll   $a0, $t3, 2
     subu  $a0, $a0, $t3
     sll   $a0, $a0, 2
@@ -832,27 +615,15 @@ func_A4000880:
     sll   $a0, $a0, 1
     jal   func_A4000980
      addiu $a0, $a0, -0x370
-#ifdef VERSION_CN
-    b     .LA40008FC
-     nop
-.LA40008D4:
-    move $v0, $zero
-#else
     b     .LA4000900
      lw    $ra, 0x1c($sp)
     move  $v0, $zero
-#endif
 .LA40008FC:
     lw    $ra, 0x1c($sp)
 .LA4000900:
-#ifdef VERSION_CN
-    jr    $ra
-     addiu $sp, $sp, 0x20
-#else
     addiu $sp, $sp, 0x20
     jr    $ra
      nop
-#endif
 
 func_A400090C:
     addiu $sp, $sp, -0x28
@@ -861,16 +632,7 @@ func_A400090C:
     jal   func_A4000A40
      li    $a1, 2
     move  $fp, $zero
-.LA40008FC_cn:
     li    $k0, -1
-#ifdef VERSION_CN
-    sw    $k0, ($s4)
-    sw    $k0, ($s4)
-    sw    $k0, 4($s4)
-    lw    $v1, 4($s4)
-    srl   $v1, $v1, 0x10
-    move $gp, $zero
-#else
 .LA4000928:
     sw    $k0, 4($s4)
     lw    $v1, 4($s4)
@@ -878,82 +640,42 @@ func_A400090C:
     sw    $k0, ($s4)
     move  $gp, $zero
     srl   $v1, $v1, 0x10
-#endif
 .LA4000940:
     andi  $k0, $v1, 1
-#ifdef VERSION_CN
-    beqz  $k0, .LA4000928_cn
-     nop
-#else
     beql  $k0, $zero, .LA4000954
      addiu $gp, $gp, 1
-#endif
     addiu $v0, $v0, 1
-#ifdef VERSION_CN
-.LA4000928_cn:
-    srl   $v1, $v1, 1
-#endif
     addiu $gp, $gp, 1
 .LA4000954:
     slti  $k0, $gp, 8
     bnez  $k0, .LA4000940
-#ifdef VERSION_CN
-     nop
-#else
      srl   $v1, $v1, 1
-#endif
     addiu $fp, $fp, 1
     slti  $k0, $fp, 0xa
-#ifdef VERSION_CN
-    bnez  $k0, .LA40008FC_cn
-     nop
-    lw    $ra, 0x1c($sp)
-    jr    $ra
-     addiu $sp, $sp, 0x28
-#else
     bnezl $k0, .LA4000928
      li    $k0, -1
     lw    $ra, 0x1c($sp)
     addiu $sp, $sp, 0x28
     jr    $ra
      nop
-#endif
 
 func_A4000980:
     addiu $sp, $sp, -0x28
     sw    $ra, 0x1c($sp)
     sw    $a0, 0x20($sp)
-#ifndef VERSION_CN
     sb    $zero, 0x27($sp)
-#endif
     move  $t0, $zero
     move  $t2, $zero
     li    $t5, 51200
-#ifdef VERSION_CN
-    sb    $zero, 0x27($sp)
-#endif
     move  $t6, $zero
-#ifdef VERSION_CN
-.LA4000978:
-#endif
     slti  $k0, $t6, 0x40
 .LA40009A4:
-#ifdef VERSION_CN
-    bnez  $k0, .LA400098C_cn
-     nop
-#else
     bnezl $k0, .LA40009B8
      move  $a0, $t6
-#endif
     b     .LA4000A30
-     move $v0, $zero
-#ifdef VERSION_CN
-.LA400098C_cn:
-#endif
-    move $a0, $t6
-#ifndef VERSION_CN
+     move  $v0, $zero
+    move  $a0, $t6
 .LA40009B8:
-#endif
     jal   func_A4000A40
      li    $a1, 1
     jal   func_A4000AD0
@@ -962,37 +684,6 @@ func_A4000980:
      addiu $a0, $sp, 0x27
     lbu   $k0, 0x27($sp)
     li    $k1, 800
-#ifdef VERSION_CN
-    multu $k0, $k1
-    mflo  $t0
-    lw    $a0, 0x20($sp)
-    subu  $k0, $t0, $a0
-    bgez  $k0, .LA40009CC
-     nop
-    subu  $k0, $a0, $t0
-.LA40009CC:
-    slt   $k1, $k0, $t5
-    beqz  $k1, .LA40009E0
-     nop
-    move $t5, $k0
-    move $t2, $t6
-.LA40009E0:
-    lw    $a0, 0x20($sp)
-    slt   $k1, $t0, $a0
-    beqz  $k1, .LA4000A00
-     nop
-    addiu $t6, $t6, 1
-    slti  $k1, $t6, 0x41
-    bnez  $k1, .LA4000978
-     nop
-.LA4000A00:
-    addu  $v0, $t2, $t6
-    srl   $v0, $v0, 1
-.LA4000A30:
-    lw    $ra, 0x1c($sp)
-    jr    $ra
-     addiu $sp, $sp, 0x28
-#else
     lw    $a0, 0x20($sp)
     multu $k0, $k1
     mflo  $t0
@@ -1023,26 +714,15 @@ func_A4000980:
     addiu $sp, $sp, 0x28
     jr    $ra
      nop
-#endif
 
 func_A4000A40:
     addiu $sp, $sp, -0x28
-#ifdef VERSION_CN
-    sw    $ra, 0x1c($sp)
-    lui   $t7, 0x4200
-    andi  $a0, $a0, 0xff
-    xori  $a0, $a0, 0x3f
-    li    $k1, 1
-    bne   $a1, $k1, .LA4000A64
-     nop
-#else
     andi  $a0, $a0, 0xff
     li    $k1, 1
     xori  $a0, $a0, 0x3f
     sw    $ra, 0x1c($sp)
     bne   $a1, $k1, .LA4000A64
      lui   $t7, 0x4600
-#endif
     lui   $k0, 0x8000
     or    $t7, $t7, $k0
 .LA4000A64:
@@ -1064,53 +744,31 @@ func_A4000A40:
     andi  $k0, $a0, 0x20
     sll   $k0, $k0, 0x12
     or    $t7, $t7, $k0
-#ifdef VERSION_CN
-    sw    $t7, ($s5)
-    li    $k1, 1
-    bne   $a1, $k1, .LA4000AC0
-     nop
-#else
     li    $k1, 1
     bne   $a1, $k1, .LA4000AC0
      sw    $t7, ($s5)
-#endif
     lui   $k0, %hi(MI_MODE_REG)
     sw    $zero, %lo(MI_MODE_REG)($k0)
 .LA4000AC0:
     lw    $ra, 0x1c($sp)
-#ifdef VERSION_CN
-    jr    $ra
-     addiu $sp, $sp, 0x28
-#else
     addiu $sp, $sp, 0x28
     jr    $ra
      nop
-#endif
 
 func_A4000AD0:
     addiu $sp, $sp, -0x28
     sw    $ra, 0x1c($sp)
-#ifdef VERSION_CN
-    move $fp, $zero
-#endif
     li    $k0, 0x2000
     lui   $k1, %hi(MI_MODE_REG)
     sw    $k0, %lo(MI_MODE_REG)($k1)
-#ifndef VERSION_CN
     move  $fp, $zero
-#endif
     lw    $fp, ($s5)
     li    $k0, 0x1000
     sw    $k0, %lo(MI_MODE_REG)($k1)
-#ifdef VERSION_CN
-    move $k0, $zero
-#endif
     li    $k1, 0x40
     and   $k1, $k1, $fp
     srl   $k1, $k1, 6
-#ifndef VERSION_CN
     move  $k0, $zero
-#endif
     or    $k0, $k0, $k1
     li    $k1, 0x4000
     and   $k1, $k1, $fp
@@ -1134,13 +792,61 @@ func_A4000AD0:
     or    $k0, $k0, $k1
     sb    $k0, ($a0)
     lw    $ra, 0x1c($sp)
-#ifdef VERSION_CN
-    jr    $ra
-     addiu $sp, $sp, 0x28
-.fill 0x30
-#else
     addiu $sp, $sp, 0x28
     jr    $ra
      nop
     nop
-#endif
+
+// 0xA4000B70-0xA4000FFF: IPL3 Font
+glabel ipl3_font
+.incbin "textures/ipl3_raw/ipl3_font_00.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_01.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_02.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_03.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_04.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_05.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_06.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_07.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_08.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_09.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_10.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_11.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_12.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_13.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_14.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_15.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_16.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_17.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_18.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_19.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_20.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_21.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_22.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_23.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_24.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_25.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_26.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_27.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_28.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_29.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_30.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_31.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_32.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_33.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_34.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_35.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_36.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_37.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_38.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_39.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_40.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_41.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_42.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_43.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_44.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_45.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_46.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_47.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_48.ia1"
+.incbin "textures/ipl3_raw/ipl3_font_49.ia1"
+.fill 0x12

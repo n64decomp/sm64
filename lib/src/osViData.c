@@ -1,85 +1,7 @@
 #include "libultra_internal.h"
 
-#ifdef VERSION_CN
-
-OSViMode osViModeNtscLan1 = {
-    /*type*/ 2,
-    /*comRegs*/
-    { /*ctrl*/ 4382,
-      /*width*/ 320,
-      /*burst*/ 65348153,
-      /*vSync*/ 525,
-      /*hSync*/ 3093,
-      /*leap*/ 202705941,
-      /*hStart*/ 7078636,
-      /*xScale*/ 512,
-      /*vCurrent*/ 0 },
-    /*fldRegs*/
-    { { /*origin*/ 640,
-        /*yScale*/ 1024,
-        /*vStart*/ 2425343,
-        /*vBurst*/ 918020,
-        /*vIntr*/ 2 },
-      { /*origin*/ 640,
-        /*yScale*/ 1024,
-        /*vStart*/ 2425343,
-        /*vBurst*/ 918020,
-        /*vIntr*/ 2 } }
-};
-
-OSViMode osViModePalLan1 = {
-    /*type*/ 16,
-    /*comRegs*/
-    { /*ctrl*/ 4382,
-      /*width*/ 320,
-      /*burst*/ 72621626,
-      /*vSync*/ 625,
-      /*hSync*/ 1510505,
-      /*leap*/ 208604269,
-      /*hStart*/ 8389376,
-      /*xScale*/ 512,
-      /*vCurrent*/ 0 },
-    /*fldRegs*/
-    { { /*origin*/ 640,
-        /*yScale*/ 1024,
-        /*vStart*/ 6226489,
-        /*vBurst*/ 590443,
-        /*vIntr*/ 2 },
-      { /*origin*/ 640,
-        /*yScale*/ 1024,
-        /*vStart*/ 6226489,
-        /*vBurst*/ 590443,
-        /*vIntr*/ 2 } }
-};
-
-OSViMode osViModeMpalLan1 = {
-    /*type*/ 30,
-    /*comRegs*/
-    { /*ctrl*/ 4382,
-      /*width*/ 320,
-      /*burst*/ 73735737,
-      /*vSync*/ 525,
-      /*hSync*/ 265233,
-      /*leap*/ 202968090,
-      /*hStart*/ 7078636,
-      /*xScale*/ 512,
-      /*vCurrent*/ 0 },
-    /*fldRegs*/
-    { { /*origin*/ 640,
-        /*yScale*/ 1024,
-        /*vStart*/ 2425343,
-        /*vBurst*/ 918020,
-        /*vIntr*/ 2 },
-      { /*origin*/ 640,
-        /*yScale*/ 1024,
-        /*vStart*/ 2425343,
-        /*vBurst*/ 918020,
-        /*vIntr*/ 2 } }
-};
-
-#elif defined(VERSION_EU) || defined(VERSION_SH)
-
-OSViMode osViModePalLan1 = {
+#if defined(VERSION_EU) || defined(VERSION_SH)
+OSViMode D_80334990 = {
     /*type*/ 16,
     /*comRegs*/
     { /*ctrl*/ 12574,
@@ -113,7 +35,7 @@ OSViMode osViModePalLan1 = {
         /*vIntr*/ 2 } }
 };
 
-OSViMode osViModeMpalLan1 = {
+OSViMode D_803349E0 = {
     /*type*/ 30, //osViModePalLan1
     /*comRegs*/
     { /*ctrl*/ 12574,
@@ -138,7 +60,7 @@ OSViMode osViModeMpalLan1 = {
         /*vIntr*/ 2 } }
 };
 
-OSViMode osViModeNtscLan1 = {
+OSViMode D_80302FD0 = {
     /*type*/ 2,
     /*comRegs*/
     { /*ctrl*/ 12574,
@@ -162,10 +84,8 @@ OSViMode osViModeNtscLan1 = {
         /*vBurst*/ 918020,
         /*vIntr*/ 2 } }
 };
-
 #else
-
-OSViMode osViModePalLan1 = {
+OSViMode D_80334990 = {
     /*type*/ 2,
     /*comRegs*/
     { /*ctrl*/ 12574,
@@ -190,7 +110,7 @@ OSViMode osViModePalLan1 = {
         /*vIntr*/ 2 } }
 };
 
-OSViMode osViModeMpalLan1 = {
+OSViMode D_803349E0 = {
     /*type*/ 16,
     /*comRegs*/
     { /*ctrl*/ 12574,

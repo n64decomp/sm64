@@ -70,6 +70,7 @@ extern struct Object *sMasterTreadmill;
  */
 struct Object *sMasterTreadmill;
 
+
 f32 sObjSavedPosX;
 f32 sObjSavedPosY;
 f32 sObjSavedPosZ;
@@ -151,14 +152,14 @@ static void platform_on_track_update_pos_or_spawn_ball(s32 ballIndex, f32 x, f32
     struct Waypoint *initialPrevWaypoint;
     struct Waypoint *nextWaypoint;
     struct Waypoint *prevWaypoint;
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
     f32 amountToMove;
     f32 dx;
     f32 dy;
     f32 dz;
     f32 distToNextWaypoint;
 
-    if (ballIndex == 0 || ((u16)(o->oBhvParams >> 16) & 0x0080)) {
+    if (ballIndex == 0 || ((u16)(o->oBehParams >> 16) & 0x0080)) {
         initialPrevWaypoint = o->oPlatformOnTrackPrevWaypoint;
         nextWaypoint = initialPrevWaypoint;
 
@@ -173,13 +174,13 @@ static void platform_on_track_update_pos_or_spawn_ball(s32 ballIndex, f32 x, f32
         do {
             prevWaypoint = nextWaypoint;
 
-            nextWaypoint++;
+            nextWaypoint += 1;
             if (nextWaypoint->flags == WAYPOINT_FLAGS_END) {
                 if (ballIndex == 0) {
                     o->oPlatformOnTrackPrevWaypointFlags = WAYPOINT_FLAGS_END;
                 }
 
-                if (((u16)(o->oBhvParams >> 16) & PLATFORM_ON_TRACK_BP_RETURN_TO_START)) {
+                if (((u16)(o->oBehParams >> 16) & PLATFORM_ON_TRACK_BP_RETURN_TO_START)) {
                     nextWaypoint = o->oPlatformOnTrackStartWaypoint;
                 } else {
                     return;
@@ -534,7 +535,7 @@ static s32 oscillate_toward(s32 *value, f32 *vel, s32 target, f32 velCloseToZero
 static void obj_update_blinking(s32 *blinkTimer, s16 baseCycleLength, s16 cycleLengthRange,
                                 s16 blinkLength) {
     if (*blinkTimer != 0) {
-        (*blinkTimer)--;
+        *blinkTimer -= 1;
     } else {
         *blinkTimer = random_linear_offset(baseCycleLength, cycleLengthRange);
     }
@@ -624,8 +625,8 @@ static void obj_die_if_health_non_positive(void) {
             spawn_mist_particles();
         }
 
-        if (o->oNumLootCoins < 0) {
-            spawn_object(o, MODEL_BLUE_COIN, bhvSpawnedBlueCoin);
+        if ((s32)o->oNumLootCoins < 0) {
+            spawn_object(o, MODEL_BLUE_COIN, bhvMrIBlueCoin);
         } else {
             obj_spawn_loot_yellow_coins(o, o->oNumLootCoins, 20.0f);
         }
@@ -786,7 +787,7 @@ static void obj_act_squished(f32 baseScale) {
     if (approach_f32_ptr(&o->header.gfx.scale[1], targetScaleY, baseScale * 0.14f)) {
         o->header.gfx.scale[0] = o->header.gfx.scale[2] = baseScale * 2.0f - o->header.gfx.scale[1];
 
-        if (o->oTimer > 15) {
+        if (o->oTimer >= 16) {
             obj_die_if_health_non_positive();
         }
     }

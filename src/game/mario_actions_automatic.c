@@ -56,7 +56,9 @@ void play_climbing_sounds(struct MarioState *m, s32 b) {
 }
 
 s32 set_pole_position(struct MarioState *m, f32 offsetY) {
-    UNUSED u8 filler[12];
+    UNUSED s32 unused1;
+    UNUSED s32 unused2;
+    UNUSED s32 unused3;
     struct Surface *floor;
     struct Surface *ceil;
     f32 floorHeight;
@@ -297,7 +299,7 @@ s32 act_top_of_pole(struct MarioState *m) {
 }
 
 s32 perform_hanging_step(struct MarioState *m, Vec3f nextPos) {
-    UNUSED u8 filler[4];
+    UNUSED s32 unused;
     struct Surface *ceil;
     struct Surface *floor;
     f32 ceilHeight;
@@ -567,12 +569,13 @@ s32 act_ledge_grab(struct MarioState *m) {
         }
         return let_go_of_ledge(m);
     }
-    if (m->actionTimer == 10 && (m->input & INPUT_NONZERO_ANALOG)
 #ifdef VERSION_EU
-        // On EU, you can't slow climb up ledges while holding A.
-        && !(m->input & INPUT_A_DOWN)
+    // On EU, you can't slow climb up ledges while holding A.
+    if (m->actionTimer == 10 && (m->input & INPUT_NONZERO_ANALOG) && !(m->input & INPUT_A_DOWN))
+#else
+    if (m->actionTimer == 10 && (m->input & INPUT_NONZERO_ANALOG))
 #endif
-    ) {
+    {
         if (intendedDYaw >= -0x4000 && intendedDYaw <= 0x4000) {
             if (hasSpaceForMario) {
                 return set_mario_action(m, ACT_LEDGE_CLIMB_SLOW_1, 0);

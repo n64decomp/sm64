@@ -1,4 +1,4 @@
-// seaweed.inc.c
+// seaweed.c.inc
 
 void bhv_seaweed_init(void) {
     o->header.gfx.animInfo.animFrame = random_float() * 80.0f;

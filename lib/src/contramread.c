@@ -1,9 +1,8 @@
 #include "libultra_internal.h"
 #include "PR/rcp.h"
 #include "controller.h"
-#include "macros.h"
 
-extern s32 __osPfsGetStatus(OSMesgQueue *, s32);
+extern s32 func_8030A5C0(OSMesgQueue *, s32);
 void __osPackRamReadData(int channel, u16 address);
 
 s32 __osContRamRead(OSMesgQueue *mq, int channel, u16 address, u8 *buffer) {
@@ -16,7 +15,7 @@ s32 __osContRamRead(OSMesgQueue *mq, int channel, u16 address, u8 *buffer) {
     ptr = (u8 *)&__osPfsPifRam;
     retry = 2;
     __osSiGetAccess();
-    __osContLastCmd = CONT_CMD_READ_MEMPACK;
+    _osLastSentSiCmd = CONT_CMD_READ_MEMPACK;
     __osPackRamReadData(channel, address);
     ret = __osSiRawStartDma(OS_WRITE, &__osPfsPifRam);
     osRecvMesg(mq, NULL, OS_MESG_BLOCK);
@@ -35,14 +34,14 @@ s32 __osContRamRead(OSMesgQueue *mq, int channel, u16 address, u8 *buffer) {
             u8 c;
             c = __osContDataCrc((u8*)&ramreadformat.data);
             if (c != ramreadformat.datacrc) {
-                ret = __osPfsGetStatus(mq, channel);
+                ret = func_8030A5C0(mq, channel);
                 if (ret != 0) {
                     __osSiRelAccess();
                     return ret;
                 }
                 ret = PFS_ERR_CONTRFAIL;
             } else {
-                for (i = 0; i < ARRAY_COUNT(ramreadformat.data); i++) {
+                for (i = 0; i < ARRLEN(ramreadformat.data); i++) {
                     *buffer++ = ramreadformat.data[i];
                 }
             }
@@ -64,7 +63,7 @@ void __osPackRamReadData(int channel, u16 address) {
 
     ptr = (u8 *)__osPfsPifRam.ramarray;
 
-    for (i = 0; i < ARRAY_COUNT(__osPfsPifRam.ramarray) + 1; i++) {
+    for (i = 0; i < ARRLEN(__osPfsPifRam.ramarray) + 1; i++) { // also clear pifstatus
         __osPfsPifRam.ramarray[i] = 0;
     }
 
@@ -75,7 +74,7 @@ void __osPackRamReadData(int channel, u16 address) {
     ramreadformat.cmd = CONT_CMD_READ_MEMPACK;
     ramreadformat.address = (address << 0x5) | __osContAddressCrc(address);
     ramreadformat.datacrc = CONT_CMD_NOP;
-    for (i = 0; i < ARRAY_COUNT(ramreadformat.data); i++) {
+    for (i = 0; i < ARRLEN(ramreadformat.data); i++) {
         ramreadformat.data[i] = CONT_CMD_NOP;
     }
     if (channel != 0) {

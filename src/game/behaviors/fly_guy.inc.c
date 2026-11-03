@@ -29,13 +29,11 @@ static s16 sFlyGuyJitterAmounts[] = { 0x1000, -0x2000, 0x2000 };
  */
 static void fly_guy_act_idle(void) {
     o->oForwardVel = 0.0f;
-
     if (approach_f32_ptr(&o->header.gfx.scale[0], 1.5f, 0.02f)) {
         // If we are >2000 units from home or Mario is <2000 units from us
         if (o->oDistanceToMario >= 25000.0f || o->oDistanceToMario < 2000.0f) {
             // Turn toward home or Mario
             obj_face_yaw_approach(o->oAngleToMario, 0x300);
-
             if (cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x300)) {
                 o->oAction = FLY_GUY_ACT_APPROACH_MARIO;
             }
@@ -47,7 +45,7 @@ static void fly_guy_act_idle(void) {
                 o->oAction = FLY_GUY_ACT_APPROACH_MARIO;
             } else {
                 o->oFlyGuyUnusedJitter = o->oMoveAngleYaw + sFlyGuyJitterAmounts[o->oFlyGuyIdleTimer];
-                o->oFlyGuyIdleTimer++;
+                o->oFlyGuyIdleTimer += 1;
             }
         }
     }
@@ -68,19 +66,20 @@ static void fly_guy_act_approach_mario(void) {
 
         // If facing toward mario and we are either near mario laterally or
         // far above him
-        if (abs_angle_diff(o->oAngleToMario, o->oFaceAngleYaw) < 0x2000
-            && (o->oPosY - gMarioObject->oPosY > 400.0f || o->oDistanceToMario < 400.0f)) {
-            // Either shoot fire or lunge
-            if (o->oBhvParams2ndByte != FLY_GUY_BP_GENERIC && random_u16() % 2) {
-                o->oAction = FLY_GUY_ACT_SHOOT_FIRE;
-                o->oFlyGuyScaleVel = 0.06f;
-            } else {
-                o->oAction = FLY_GUY_ACT_LUNGE;
-                o->oFlyGuyLungeTargetPitch = obj_turn_pitch_toward_mario(-200.0f, 0);
+        if (abs_angle_diff(o->oAngleToMario, o->oFaceAngleYaw) < 0x2000) {
+            if (o->oPosY - gMarioObject->oPosY > 400.0f || o->oDistanceToMario < 400.0f) {
+                // Either shoot fire or lunge
+                if (o->oBehParams2ndByte != 0 && random_u16() % 2) {
+                    o->oAction = FLY_GUY_ACT_SHOOT_FIRE;
+                    o->oFlyGuyScaleVel = 0.06f;
+                } else {
+                    o->oAction = FLY_GUY_ACT_LUNGE;
+                    o->oFlyGuyLungeTargetPitch = obj_turn_pitch_toward_mario(-200.0f, 0);
 
-                o->oForwardVel = 25.0f * coss(o->oFlyGuyLungeTargetPitch);
-                o->oVelY = 25.0f * -sins(o->oFlyGuyLungeTargetPitch);
-                o->oFlyGuyLungeYDecel = -o->oVelY / 30.0f;
+                    o->oForwardVel = 25.0f * coss(o->oFlyGuyLungeTargetPitch);
+                    o->oVelY = 25.0f * -sins(o->oFlyGuyLungeTargetPitch);
+                    o->oFlyGuyLungeYDecel = -o->oVelY / 30.0f;
+                }
             }
         }
     } else if (obj_forward_vel_approach(0.0f, 0.2f)) {
@@ -108,7 +107,7 @@ static void fly_guy_act_lunge(void) {
         // Twirl back upward
 
         obj_face_pitch_approach(0, 0x100);
-        obj_face_roll_approach(o->oFlyGuyTargetRoll, 300);
+        obj_face_roll_approach(o->oFlyGuyTargetRoll, 0x12C);
 
         // Twirl in a spiral with curvature proportional to oFaceAngleRoll
         o->oMoveAngleYaw -= o->oFaceAngleRoll / 4;
@@ -132,18 +131,17 @@ static void fly_guy_act_lunge(void) {
  * Turn toward mario, then shoot fire. Then enter the idle action.
  */
 static void fly_guy_act_shoot_fire(void) {
+    s32 scaleStatus;
+
     o->oForwardVel = 0.0f;
 
     if (obj_face_yaw_approach(o->oAngleToMario, 0x800)) {
-        s32 scaleStatus;
-
         o->oMoveAngleYaw = o->oFaceAngleYaw;
 
         // Increase scale by 0.06, 0.05, ..., -0.03. Then wait ~8 frames, then
         // starting moving scale by 0.05 each frame toward 1.1. The first time
         // it becomes below 1.2 during this latter portion, shoot fire.
         scaleStatus = obj_grow_then_shrink(&o->oFlyGuyScaleVel, 1.2f, 1.1f);
-
         if (scaleStatus != 0) {
             if (scaleStatus < 0) {
                 // We have reached scale 1.1
@@ -151,7 +149,6 @@ static void fly_guy_act_shoot_fire(void) {
             } else {
                 // We have reached below scale 1.2 in the shrinking portion
                 s16 fireMovePitch = obj_turn_pitch_toward_mario(0.0f, 0);
-
                 cur_obj_play_sound_2(SOUND_OBJ_FLAME_BLOWN);
                 clamp_s16(&fireMovePitch, 0x800, 0x3000);
 
@@ -193,7 +190,7 @@ void bhv_fly_guy_update(void) {
         }
 
         // Oscillate up and down
-        o->oFlyGuyOscTimer++;
+        o->oFlyGuyOscTimer += 1;
         o->oPosY += coss(0x400 * o->oFlyGuyOscTimer) * 1.5f;
 
         switch (o->oAction) {

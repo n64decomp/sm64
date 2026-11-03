@@ -1,5 +1,5 @@
 // 0x07078870 - 0x07078DE3
-const RoomData inside_castle_seg7_area_3_rooms[] = {
+const u8 inside_castle_seg7_area_3_rooms[] = {
      5,  5,  5,  5,  5,  5,  5,  5, // 0-7
      5,  5,  5,  5,  5,  5,  5,  5, // 8-15
      5,  5,  5,  5,  5,  5,  5,  5, // 16-23

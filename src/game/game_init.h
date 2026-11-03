@@ -9,14 +9,19 @@
 #include "types.h"
 #include "memory.h"
 
+#ifdef USE_SYSTEM_MALLOC
+#define GFX_POOL_SIZE 1
+#else
 #define GFX_POOL_SIZE 6400 // Size of how large the master display list (gDisplayListHead) can be
+#endif
 
 struct GfxPool {
     Gfx buffer[GFX_POOL_SIZE];
     struct SPTask spTask;
 };
 
-struct DemoInput {
+struct DemoInput
+{
     u8 timer; // time until next input. if this value is 0, it means the demo is over
     s8 rawStickX;
     s8 rawStickY;
@@ -31,13 +36,19 @@ extern OSMesgQueue gGfxVblankQueue;
 extern OSMesg gGameMesgBuf[1];
 extern OSMesg gGfxMesgBuf[1];
 extern struct VblankHandler gGameVblankHandler;
-extern uintptr_t gPhysicalFramebuffers[3];
+extern uintptr_t gPhysicalFrameBuffers[3];
 extern uintptr_t gPhysicalZBuffer;
 extern void *gMarioAnimsMemAlloc;
 extern void *gDemoInputsMemAlloc;
 extern struct SPTask *gGfxSPTask;
+#ifdef USE_SYSTEM_MALLOC
+extern struct AllocOnlyPool *gGfxAllocOnlyPool;
+extern Gfx *gDisplayListHeadInChunk;
+extern Gfx *gDisplayListEndInChunk;
+#else
 extern Gfx *gDisplayListHead;
 extern u8 *gGfxPoolEnd;
+#endif
 extern struct GfxPool *gGfxPool;
 extern u8 gControllerBits;
 extern s8 gEepromProbe;
@@ -58,12 +69,12 @@ extern struct DmaHandlerList gDemoInputsBuf;
 extern u8 gMarioAnims[];
 extern u8 gDemoInputs[];
 
-extern u16 sRenderingFramebuffer;
+extern u16 sRenderingFrameBuffer;
 extern u32 gGlobalTimer;
 
 void setup_game_memory(void);
 void thread5_game_loop(UNUSED void *arg);
-void clear_framebuffer(s32 color);
+void clear_frame_buffer(s32 color);
 void clear_viewport(Vp *viewport, s32 color);
 void make_viewport_clip_rect(Vp *viewport);
 void init_rcp(void);
@@ -71,5 +82,10 @@ void end_master_display_list(void);
 void render_init(void);
 void select_gfx_pool(void);
 void display_and_vsync(void);
+
+#ifdef USE_SYSTEM_MALLOC
+Gfx **alloc_next_dl(void);
+#define gDisplayListHead (*(gDisplayListEndInChunk - gDisplayListHeadInChunk >= 2 ? &gDisplayListHeadInChunk : alloc_next_dl()))
+#endif
 
 #endif // GAME_INIT_H

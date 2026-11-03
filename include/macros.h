@@ -25,12 +25,6 @@
 #define UNUSED
 #endif
 
-#ifdef VERSION_CN
-#define UNUSED_CN UNUSED
-#else
-#define UNUSED_CN
-#endif
-
 // Avoid undefined behaviour for non-returning functions
 #ifdef __GNUC__
 #define NORETURN __attribute__((noreturn))
@@ -73,19 +67,6 @@
 #define VIRTUAL_TO_PHYSICAL(addr)   ((uintptr_t)(addr))
 #define PHYSICAL_TO_VIRTUAL(addr)   ((uintptr_t)(addr))
 #define VIRTUAL_TO_PHYSICAL2(addr)  ((void *)(addr))
-#endif
-
-// Stubbed CN debug prints
-#ifdef VERSION_CN
-#define CN_DEBUG_PRINTF(args) osSyncPrintf args
-#else
-#define CN_DEBUG_PRINTF(args)
-#endif
-
-#ifdef VERSION_CN
-#define FORCE_BSS __attribute__((nocommon)) __attribute__((section (".bss_cn")))
-#else
-#define FORCE_BSS
 #endif
 
 #endif // MACROS_H

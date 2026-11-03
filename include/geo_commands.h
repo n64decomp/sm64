@@ -308,7 +308,7 @@
     CMD_HH(ty, tz), \
     CMD_PTR(displayList)
 #define GEO_BILLBOARD() \
-     GEO_BILLBOARD_WITH_PARAMS(0, 0, 0, 0)
+    GEO_BILLBOARD_WITH_PARAMS(0, 0, 0, 0)
 
 /**
  * 0x15: Create plain display list scene graph node
@@ -357,7 +357,7 @@
     CMD_BBH(0x19, 0x00, background), \
     CMD_PTR(function)
 #define GEO_BACKGROUND_COLOR(background) \
-     GEO_BACKGROUND(background, NULL)
+    GEO_BACKGROUND(background, NULL)
 
 /**
  * 0x1A: No operation

@@ -34,5 +34,5 @@
     "1F_cutscene_victory": ["1A"],
     "20_cutscene_ending": ["23"],
     "21_menu_file_select": ["24"],
-    "22_cutscene_lakitu": {"ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH", "VERSION_CN"], "banks": ["1B"]}
+    "22_cutscene_lakitu": {"ifdef": ["VERSION_US", "VERSION_EU", "VERSION_SH"], "banks": ["1B"]}
 }

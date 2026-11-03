@@ -1,5 +1,6 @@
 .set noat      // allow manual use of $at
 .set noreorder // don't insert nops after branches
+.set gp=64
 
 #include "macros.inc"
 
@@ -18,13 +19,8 @@ glabel osInvalICache
     sltu  $at, $t0, $t1
     beqz  $at, .L80323728
      nop
-#ifdef VERSION_CN
-    addiu $t1, $t1, -0x20
-    andi  $t2, $t0, 0x1f
-#else
     andi  $t2, $t0, 0x1f
     addiu $t1, $t1, -0x20
-#endif
     subu  $t0, $t0, $t2
 .L80323718:
     cache 0x10, ($t0)

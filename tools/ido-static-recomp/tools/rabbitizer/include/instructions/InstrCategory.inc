@@ -1,6 +1,0 @@
-/* SPDX-FileCopyrightText: © 2022 Decompollaborate */
-/* SPDX-License-Identifier: MIT */
-
-RABBITIZER_DEF_INSTR_CATEGORY(CPU),
-RABBITIZER_DEF_INSTR_CATEGORY(RSP), // N64
-RABBITIZER_DEF_INSTR_CATEGORY(R5900), // PS2's Emotion Engine

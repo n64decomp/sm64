@@ -58,15 +58,15 @@ void bhv_pokey_body_part_update(void) {
             //  index by killing two body parts on the frame before a new part
             //  spawns, but one of the body parts shifts upward immediately,
             //  so not very interesting
-            if (o->oBhvParams2ndByte > 1
-                && !(o->parentObj->oPokeyAliveBodyPartFlags & (1 << (o->oBhvParams2ndByte - 1)))) {
+            if (o->oBehParams2ndByte > 1
+                && !(o->parentObj->oPokeyAliveBodyPartFlags & (1 << (o->oBehParams2ndByte - 1)))) {
                 o->parentObj->oPokeyAliveBodyPartFlags =
-                    o->parentObj->oPokeyAliveBodyPartFlags | 1 << (o->oBhvParams2ndByte - 1);
+                    o->parentObj->oPokeyAliveBodyPartFlags | 1 << (o->oBehParams2ndByte - 1);
 
                 o->parentObj->oPokeyAliveBodyPartFlags =
-                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBhvParams2ndByte) ^ ~0);
+                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ ~0);
 
-                o->oBhvParams2ndByte--;
+                o->oBehParams2ndByte -= 1;
             }
 
             // Set the bottom body part size, and gradually increase it.
@@ -76,19 +76,19 @@ void bhv_pokey_body_part_update(void) {
             //  was above it will instantly shrink and begin expanding in its
             //  place.
             else if (o->parentObj->oPokeyBottomBodyPartSize < 1.0f
-                     && o->oBhvParams2ndByte + 1 == o->parentObj->oPokeyNumAliveBodyParts) {
+                     && o->oBehParams2ndByte + 1 == o->parentObj->oPokeyNumAliveBodyParts) {
                 approach_f32_ptr(&o->parentObj->oPokeyBottomBodyPartSize, 1.0f, 0.1f);
                 cur_obj_scale(o->parentObj->oPokeyBottomBodyPartSize * 3.0f);
             }
 
             //! Pausing causes jumps in offset angle
-            offsetAngle = o->oBhvParams2ndByte * 0x4000 + gGlobalTimer * 0x800;
+            offsetAngle = o->oBehParams2ndByte * 0x4000 + gGlobalTimer * 0x800;
             o->oPosX = o->parentObj->oPosX + coss(offsetAngle) * 6.0f;
             o->oPosZ = o->parentObj->oPosZ + sins(offsetAngle) * 6.0f;
 
             // This is the height of the tower beneath the body part
             baseHeight = o->parentObj->oPosY
-                         + (120 * (o->parentObj->oPokeyNumAliveBodyParts - o->oBhvParams2ndByte) - 240)
+                         + (120 * (o->parentObj->oPokeyNumAliveBodyParts - o->oBehParams2ndByte) - 240)
                          + 120.0f * o->parentObj->oPokeyBottomBodyPartSize;
 
             // We treat the base height as a minimum height, allowing the body
@@ -99,7 +99,7 @@ void bhv_pokey_body_part_update(void) {
             }
 
             // Only the head has loot coins
-            if (o->oBhvParams2ndByte == 0) {
+            if (o->oBehParams2ndByte == 0) {
                 o->oNumLootCoins = 1;
             } else {
                 o->oNumLootCoins = 0;
@@ -109,8 +109,8 @@ void bhv_pokey_body_part_update(void) {
             // then die after a delay.
 
             if (obj_handle_attacks(&sPokeyBodyPartHitbox, o->oAction, sPokeyBodyPartAttackHandlers)) {
-                o->parentObj->oPokeyNumAliveBodyParts--;
-                if (o->oBhvParams2ndByte == 0) {
+                o->parentObj->oPokeyNumAliveBodyParts -= 1;
+                if (o->oBehParams2ndByte == 0) {
                     o->parentObj->oPokeyHeadWasKilled = TRUE;
                     // Last minute change to blue coins - not sure why they didn't
                     // just set it to -1 above
@@ -118,19 +118,19 @@ void bhv_pokey_body_part_update(void) {
                 }
 
                 o->parentObj->oPokeyAliveBodyPartFlags =
-                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBhvParams2ndByte) ^ ~0);
+                    o->parentObj->oPokeyAliveBodyPartFlags & ((1 << o->oBehParams2ndByte) ^ ~0);
             } else if (o->parentObj->oPokeyHeadWasKilled) {
                 cur_obj_become_intangible();
 
                 if (--o->oPokeyBodyPartDeathDelayAfterHeadKilled < 0) {
-                    o->parentObj->oPokeyNumAliveBodyParts--;
+                    o->parentObj->oPokeyNumAliveBodyParts -= 1;
                     obj_die_if_health_non_positive();
                 }
             } else {
                 // Die in order from top to bottom
                 // If a new body part spawns after the head has been killed, its
                 // death delay will be 0
-                o->oPokeyBodyPartDeathDelayAfterHeadKilled = (o->oBhvParams2ndByte << 2) + 20;
+                o->oPokeyBodyPartDeathDelayAfterHeadKilled = (o->oBehParams2ndByte << 2) + 20;
             }
 
             cur_obj_move_standard(-78);
@@ -181,6 +181,7 @@ static void pokey_act_uninitialized(void) {
  */
 static void pokey_act_wander(void) {
     s32 targetAngleOffset;
+    struct Object *bodyPart;
 
     if (o->oPokeyNumAliveBodyParts == 0) {
         obj_mark_for_deletion(o);
@@ -203,14 +204,13 @@ static void pokey_act_wander(void) {
                     // is killed, the new part's index is equal to the number
                     // of living body parts
 
-                    struct Object *bodyPart
-                        = spawn_object_relative(o->oPokeyNumAliveBodyParts, 0, 0, 0, o,
-                                                MODEL_POKEY_BODY_PART, bhvPokeyBodyPart);
+                    bodyPart = spawn_object_relative(o->oPokeyNumAliveBodyParts, 0, 0, 0, o,
+                                                     MODEL_POKEY_BODY_PART, bhvPokeyBodyPart);
 
                     if (bodyPart != NULL) {
                         o->oPokeyAliveBodyPartFlags =
                             o->oPokeyAliveBodyPartFlags | (1 << o->oPokeyNumAliveBodyParts);
-                        o->oPokeyNumAliveBodyParts++;
+                        o->oPokeyNumAliveBodyParts += 1;
                         o->oPokeyBottomBodyPartSize = 0.0f;
 
                         obj_scale(bodyPart, 0.0f);
@@ -234,7 +234,7 @@ static void pokey_act_wander(void) {
                 if (!(o->oPokeyTurningAwayFromWall =
                           obj_bounce_off_walls_edges_objects(&o->oPokeyTargetYaw))) {
                     if (o->oPokeyChangeTargetTimer != 0) {
-                        o->oPokeyChangeTargetTimer--;
+                        o->oPokeyChangeTargetTimer -= 1;
                     } else if (o->oDistanceToMario > 2000.0f) {
                         o->oPokeyTargetYaw = obj_random_fixed_turn(0x2000);
                         o->oPokeyChangeTargetTimer = random_linear_offset(30, 50);

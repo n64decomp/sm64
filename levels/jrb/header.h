@@ -52,13 +52,13 @@ extern const Collision jrb_seg7_collision_0700D1DC[];
 extern const Trajectory jrb_seg7_trajectory_unagi_1[];
 extern const Trajectory jrb_seg7_trajectory_unagi_2[];
 extern const struct MovtexQuadCollection jrb_movtex_water[];
-extern const struct MovtexQuadCollection jrb_movtex_initial_mist[];
+extern const struct MovtexQuadCollection jrb_movtex_intial_mist[];
 extern const Gfx jrb_seg7_dl_0700EF00[];
 extern const Gfx jrb_seg7_dl_0700FE48[];
 extern const Gfx jrb_seg7_dl_07010548[];
 extern const Collision jrb_seg7_area_2_collision[];
 extern const MacroObject jrb_seg7_area_2_macro_objs[];
-extern const struct MovtexQuadCollection jrb_movtex_sunken_ship_water[];
+extern const struct MovtexQuadCollection jrb_movtex_sinked_boat_water[];
 
 // script
 extern const LevelScript level_jrb_entry[];

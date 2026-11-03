@@ -271,7 +271,7 @@ s16 sCutsceneShot;
  */
 s16 gCutsceneTimer;
 s16 unused8033B3E8;
-#if defined(VERSION_EU) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_EU) || defined(VERSION_SH)
 s16 unused8033B3E82;
 #endif
 /**
@@ -668,7 +668,7 @@ void unused_set_camera_pitch_shake_env(s16 shake) {
 BAD_RETURN(f32) calc_y_to_curr_floor(f32 *posOff, f32 posMul, f32 posBound, f32 *focOff, f32 focMul, f32 focBound) {
     f32 floorHeight = sMarioGeometry.currFloorHeight;
     f32 waterHeight;
-    UNUSED u8 filler[4];
+    UNUSED s32 filler;
 
     if (!(sMarioCamState->action & ACT_FLAG_METAL_WATER)) {
         //! @bug this should use sMarioGeometry.waterHeight
@@ -904,10 +904,11 @@ s32 update_radial_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     f32 cenDistZ = sMarioCamState->pos[2] - c->areaCenZ;
     s16 camYaw = atan2s(cenDistZ, cenDistX) + sModeOffsetYaw;
     s16 pitch = look_down_slopes(camYaw);
-    UNUSED u8 filler1[4];
+    UNUSED f32 unused1;
     f32 posY;
     f32 focusY;
-    UNUSED u8 filler2[8];
+    UNUSED f32 unused2;
+    UNUSED f32 unused3;
     f32 yOff = 125.f;
     f32 baseDist = 1000.f;
 
@@ -929,7 +930,9 @@ s32 update_8_directions_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     s16 pitch = look_down_slopes(camYaw);
     f32 posY;
     f32 focusY;
-    UNUSED u8 filler[12];
+    UNUSED f32 unused1;
+    UNUSED f32 unused2;
+    UNUSED f32 unused3;
     f32 yOff = 125.f;
     f32 baseDist = 1000.f;
 
@@ -959,7 +962,7 @@ void radial_camera_move(struct Camera *c) {
     UNUSED s32 unused2 = 0;
     f32 areaDistX = sMarioCamState->pos[0] - c->areaCenX;
     f32 areaDistZ = sMarioCamState->pos[2] - c->areaCenZ;
-    UNUSED u8 filler[4];
+    UNUSED s32 filler;
 
     // How much the camera's yaw changed
     s16 yawOffset = calculate_yaw(sMarioCamState->pos, c->pos) - atan2s(areaDistZ, areaDistX);
@@ -1141,9 +1144,9 @@ void update_yaw_and_dist_from_c_up(UNUSED struct Camera *c) {
  */
 void mode_radial_camera(struct Camera *c) {
     Vec3f pos;
-    UNUSED u8 filler1[8];
+    UNUSED u8 unused1[8];
     s16 oldAreaYaw = sAreaYaw;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused2[4];
 
     if (gCameraMovementFlags & CAM_MOVING_INTO_MODE) {
         update_yaw_and_dist_from_c_up(c);
@@ -1171,7 +1174,7 @@ void mode_radial_camera(struct Camera *c) {
  */
 void mode_8_directions_camera(struct Camera *c) {
     Vec3f pos;
-    UNUSED u8 filler[8];
+    UNUSED u8 unused[8];
     s16 oldAreaYaw = sAreaYaw;
 
     radial_camera_input(c, 0.f);
@@ -1269,7 +1272,7 @@ s32 update_parallel_tracking_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     f32 marioFloorDist;
     Vec3f marioPos;
     UNUSED u8 filler4[12];
-    UNUSED Vec3f unused;
+    UNUSED Vec3f unused4;
     Vec3s pathAngle;
     // Variables for changing to the next/prev path in the list
     Vec3f oldPos;
@@ -1282,9 +1285,9 @@ s32 update_parallel_tracking_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     s16 prevYaw;
     s16 nextYaw;
 
-    unused[0] = 0.f;
-    unused[1] = 0.f;
-    unused[2] = 0.f;
+    unused4[0] = 0.f;
+    unused4[1] = 0.f;
+    unused4[2] = 0.f;
 
     // Store camera pos, for changing between paths
     vec3f_copy(oldPos, pos);
@@ -1679,14 +1682,18 @@ struct UnusedDanceInfo {
 };
 
 struct UnusedDanceInfo unusedDanceInfo1 = {
-    { -3026.0f, 912.0f, -2148.0f }, 600.0f, 0.3f
+  {-3026.0f, 912.0f, -2148.0f},
+  600.0f,
+  0.3f
 };
 
 u32 unusedDanceType = 0;
-
 struct UnusedDanceInfo unusedDanceInfo2 = {
-    { -4676.0f, 917.0f, -3802.0f }, 600.0f, 0.3f
+  {-4676.0f, 917.0f, -3802.0f},
+  600.0f,
+  0.3f
 };
+
 
 /**
  * Table that dictates camera movement in bookend room.
@@ -1730,7 +1737,7 @@ void mode_parallel_tracking_camera(struct Camera *c) {
  * Fixed camera mode, the camera rotates around a point and looks and zooms toward Mario.
  */
 void mode_fixed_camera(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u8 unused[8];
 
     if (gCurrLevelNum == LEVEL_BBH) {
         set_fov_function(CAM_FOV_BBH);
@@ -1749,9 +1756,9 @@ void mode_fixed_camera(struct Camera *c) {
  * The C-Buttons rotate the camera 90 degrees left/right and 67.5 degrees up/down.
  */
 s32 update_behind_mario_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
-    UNUSED u8 filler1[12];
+    UNUSED u8 unused2[12];
     f32 dist;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused3[4];
     s16 absPitch;
     s16 pitch;
     s16 yaw;
@@ -1760,7 +1767,7 @@ s32 update_behind_mario_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     s16 goalYawOff = 0;
     s16 yawSpeed;
     s16 pitchInc = 32;
-    UNUSED u8 filler3[12];
+    UNUSED u8 unused[12];
     f32 maxDist = 800.f;
     f32 focYOff = 125.f;
 
@@ -2058,7 +2065,7 @@ s32 update_mario_camera(UNUSED struct Camera *c, Vec3f focus, Vec3f pos) {
 s16 update_default_camera(struct Camera *c) {
     Vec3f tempPos;
     Vec3f cPos;
-    UNUSED u8 filler1[12];
+    UNUSED u8 unused1[12];
     struct Surface *marioFloor;
     struct Surface *cFloor;
     struct Surface *tempFloor;
@@ -2066,7 +2073,7 @@ s16 update_default_camera(struct Camera *c) {
     f32 camFloorHeight;
     f32 tempFloorHeight;
     f32 marioFloorHeight;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused2[4];
     f32 dist;
     f32 zoomDist;
     f32 waterHeight;
@@ -2081,7 +2088,7 @@ s16 update_default_camera(struct Camera *c) {
     s16 tempPitch;
     s16 tempYaw;
     f32 xzDist;
-    UNUSED u8 filler3[4];
+    UNUSED u8 unused4[4];
     s16 nextYawVel;
     s16 yawVel = 0;
     f32 scale;
@@ -2408,7 +2415,7 @@ void mode_mario_camera(struct Camera *c) {
  * Rotates the camera around the spiral staircase.
  */
 s32 update_spiral_stairs_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
-    UNUSED s16 unused;
+    UNUSED s16 unused1;
     /// The returned yaw
     s16 camYaw;
     // unused
@@ -2419,7 +2426,7 @@ s32 update_spiral_stairs_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     s16 posPitch;
     /// The camera's yaw around the stairs
     s16 posYaw;
-    UNUSED u8 filler[4];
+    UNUSED s32 unused2;
     Vec3f cPos;
     Vec3f checkPos;
     struct Surface *floor;
@@ -2724,7 +2731,7 @@ void move_into_c_up(struct Camera *c) {
  * The main update function for C-Up mode
  */
 s32 mode_c_up_camera(struct Camera *c) {
-    UNUSED u8 filler[12];
+    UNUSED u8 unused[12];
 
     // Play a sound when entering C-Up mode
     if (!(sCameraSoundFlags & CAM_SOUND_C_UP_PLAYED)) {
@@ -2782,7 +2789,7 @@ s32 update_in_cannon(UNUSED struct Camera *c, Vec3f focus, Vec3f pos) {
  * sCannonYOffset is used to make the camera rotate down when Mario has just entered the cannon
  */
 void mode_cannon_camera(struct Camera *c) {
-    UNUSED u8 filler[24];
+    UNUSED u8 unused[24];
 
     sLakituPitch = 0;
     gCameraMovementFlags &= ~CAM_MOVING_INTO_MODE;
@@ -2907,10 +2914,10 @@ void update_lakitu(struct Camera *c) {
     struct Surface *floor = NULL;
     Vec3f newPos;
     Vec3f newFoc;
-    UNUSED u8 filler1[12];
+    UNUSED Vec3f unusedVec3f;
     f32 distToFloor;
     s16 newYaw;
-    UNUSED u8 filler2[8];
+    UNUSED u8 unused1[8];
 
     if (gCameraMovementFlags & CAM_MOVE_PAUSE_SCREEN) {
     } else {
@@ -3009,7 +3016,7 @@ void update_lakitu(struct Camera *c) {
  * Gets controller input, checks for cutscenes, handles mode changes, and moves the camera
  */
 void update_camera(struct Camera *c) {
-    UNUSED u8 filler[24];
+    UNUSED u8 unused[24];
 
     gCamera = c;
     update_camera_hud_status(c);
@@ -3206,7 +3213,7 @@ void update_camera(struct Camera *c) {
  */
 void reset_camera(struct Camera *c) {
     UNUSED s32 unused = 0;
-    UNUSED u8 filler[16];
+    UNUSED u8 unused1[16];
     UNUSED struct LinearTransitionPoint *start = &sModeInfo.transitionStart;
     UNUSED struct LinearTransitionPoint *end = &sModeInfo.transitionEnd;
 
@@ -3451,11 +3458,11 @@ void init_camera(struct Camera *c) {
  *      modulo-4's the result, because each 8-bit mask only has 4 area bits for each level
  */
 void zoom_out_if_paused_and_outside(struct GraphNodeCamera *camera) {
-    UNUSED u8 filler1[8];
+    UNUSED u8 unused1[8];
     UNUSED f32 dist;
     UNUSED s16 pitch;
     s16 yaw;
-    UNUSED u8 filler2[4];
+    UNUSED u8 unused2[4];
     s32 areaMaskIndex = gCurrLevelArea / 32;
     s32 areaBit = 1 << (((gCurrLevelArea & 0x10) / 4) + (((gCurrLevelArea & 0xF) - 1) & 3));
 
@@ -3512,7 +3519,7 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
  * Copy Lakitu's pos and foc into `gc`
  */
 void update_graph_node_camera(struct GraphNodeCamera *gc) {
-    UNUSED u8 filler[8];
+    UNUSED u8 unused[8];
     UNUSED struct Camera *c = gc->config.camera;
 
     gc->rollScreen = gLakituState.roll;
@@ -3571,14 +3578,14 @@ void unused_object_angle_to_vec3s(Vec3s dst, struct Object *o) {
  * u is a value between 0 and 1 that represents the position along the spline,
  * and a0-a3 are parameters that define the spline.
  *
- * The spline is described at http://www2.cs.uregina.ca/~anima/UniformBSpline.htm
+ * The spline is described at www2.cs.uregina.ca/~anima/408/Notes/Interpolation/UniformBSpline.htm
  */
 void evaluate_cubic_spline(f32 u, Vec3f Q, Vec3f a0, Vec3f a1, Vec3f a2, Vec3f a3) {
     f32 B[4];
     f32 x;
     f32 y;
     f32 z;
-    UNUSED u8 filler[16];
+    UNUSED u8 unused[16];
 
     if (u > 1.f) {
         u = 1.f;
@@ -3679,7 +3686,7 @@ s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *s
             *splineSegment = 0;
             finished = 1;
         }
-        (*progress)--;
+        *progress -= 1;
     }
     return finished;
 }
@@ -3804,7 +3811,7 @@ void shake_camera_handheld(Vec3f pos, Vec3f focus) {
     f32 dist;
     s16 pitch;
     s16 yaw;
-    UNUSED u8 filler[8];
+    UNUSED u8 unused[8];
 
     if (sHandheldShakeMag == 0) {
         vec3f_set(shakeOffset, 0.f, 0.f, 0.f);
@@ -4241,7 +4248,7 @@ f32 camera_approach_f32_symmetric(f32 current, f32 target, f32 increment) {
  */
 void random_vec3s(Vec3s dst, s16 xRange, s16 yRange, s16 zRange) {
     f32 randomFloat;
-    UNUSED u8 filler[4];
+    UNUSED u8 unused[4];
     f32 tempXRange;
     f32 tempYRange;
     f32 tempZRange;
@@ -4337,7 +4344,7 @@ s32 clamp_positions_and_find_yaw(Vec3f pos, Vec3f origin, f32 xMax, f32 xMin, f3
  */
 s32 calc_avoid_yaw(s16 yawFromMario, s16 wallYaw) {
     s16 yawDiff;
-    UNUSED u8 filler[34]; // Debug print buffer? ;)
+    UNUSED u8 unused[34]; // Debug print buffer? ;)
     UNUSED s32 unused1 = 0;
     UNUSED s32 unused2 = 0;
 
@@ -4375,7 +4382,7 @@ s32 is_surf_within_bounding_box(struct Surface *surf, f32 xMax, f32 yMax, f32 zM
     f32 dx;
     f32 dy;
     f32 dz;
-    UNUSED u8 filler[4];
+    UNUSED u8 unused[4];
     s32 i;
     s32 j;
     // result
@@ -4453,7 +4460,7 @@ s32 is_range_behind_surface(Vec3f from, Vec3f to, struct Surface *surf, s16 rang
     s32 behindSurface = TRUE;
     s32 leftBehind = 0;
     s32 rightBehind = 0;
-    UNUSED u8 filler[20];
+    UNUSED u8 unused[20];
     f32 checkDist;
     s16 checkPitch;
     s16 checkYaw;
@@ -4722,7 +4729,7 @@ void shake_camera_yaw(Vec3f pos, Vec3f focus) {
  * Apply a rotational shake to the camera by adjusting its roll
  */
 void shake_camera_roll(s16 *roll) {
-    UNUSED u8 filler[8];
+    UNUSED u8 unused[8];
 
     if (gLakituState.shakeMagnitude[2] != 0) {
         increment_shake_offset(&gLakituState.shakeRollPhase, gLakituState.shakeRollVel);
@@ -5077,15 +5084,15 @@ s32 determine_dance_cutscene(UNUSED struct Camera *c) {
     u8 cutscene = 0;
     u8 cutsceneIndex = 0;
     u8 starIndex = (gLastCompletedStarNum - 1) / 2;
-    u8 courseNum = gCurrCourseNum;
+    u8 courseIndex = gCurrCourseNum;
 
     if (starIndex > 3) {
         starIndex = 0;
     }
-    if (courseNum > COURSE_MAX) {
-        courseNum = COURSE_NONE;
+    if (courseIndex > COURSE_MAX) {
+        courseIndex = COURSE_NONE;
     }
-    cutsceneIndex = sDanceCutsceneIndexTable[courseNum][starIndex];
+    cutsceneIndex = sDanceCutsceneIndexTable[courseIndex][starIndex];
 
     if (gLastCompletedStarNum & 1) {
         // Odd stars take the lower four bytes
@@ -5120,9 +5127,9 @@ u8 open_door_cutscene(u8 pullResult, u8 pushResult) {
  * @return the cutscene that should start, 0 if none
  */
 u8 get_cutscene_from_mario_status(struct Camera *c) {
-    UNUSED u8 filler1[4];
+    UNUSED u8 unused1[4];
     u8 cutscene = c->cutscene;
-    UNUSED u8 filler2[12];
+    UNUSED u8 unused2[12];
 
     if (cutscene == 0) {
         // A cutscene started by an object, if any, will start if nothing else happened
@@ -5401,13 +5408,14 @@ s16 next_lakitu_state(Vec3f newPos, Vec3f newFoc, Vec3f curPos, Vec3f curFoc,
     s16 pitchVelocity;
     f32 distVelocity;
     f32 goalDist;
-    UNUSED u8 filler1[4];
+    UNUSED f32 unusedDist;
     s16 goalPitch;
     s16 goalYaw;
-    UNUSED u8 filler2[4];
+    UNUSED s16 unusedPitch;
+    UNUSED s16 unusedYaw;
     f32 distTimer = sModeTransition.framesLeft;
     s16 angleTimer = sModeTransition.framesLeft;
-    UNUSED s16 inTransition = FALSE;
+    UNUSED s16 inTransition = 0;
     Vec3f nextPos;
     Vec3f nextFoc;
     Vec3f startPos;
@@ -5438,7 +5446,7 @@ s16 next_lakitu_state(Vec3f newPos, Vec3f newFoc, Vec3f curPos, Vec3f curFoc,
 
     // Transition from the last mode to the current one
     if (sModeTransition.framesLeft > 0) {
-        inTransition = TRUE;
+        inTransition = 1;
 
         vec3f_get_dist_and_angle(curFoc, curPos, &goalDist, &goalPitch, &goalYaw);
         distVelocity = ABS(goalDist - sModeTransition.posDist) / distTimer;
@@ -5607,7 +5615,7 @@ void set_fixed_cam_axis_sa_lobby(UNUSED s16 preset) {
  * Generally, block area mode changes if:
  *      Mario is wearing the metal cap, or at the water's surface, or the camera is in Mario mode
  *
- * However, if the level is WDW, DDD, or CotMC (levels that have metal cap and water):
+ * However, if the level is WDW, DDD, or COTMC (levels that have metal cap and water):
  *      Only block area mode changes if Mario is in a cannon,
  *      or if the camera is in Mario mode and Mario is not swimming or in water with the metal cap
  */
@@ -5695,7 +5703,7 @@ BAD_RETURN(s32) cam_sl_free_roam(struct Camera *c) {
  * Warps the camera underneath the floor, used in HMC to move under the elevator platforms
  */
 void move_camera_through_floor_while_descending(struct Camera *c, f32 height) {
-    UNUSED u8 filler[4];
+    UNUSED f32 pad;
 
     if ((sMarioGeometry.currFloorHeight < height - 100.f)
         && (sMarioGeometry.prevFloorHeight > sMarioGeometry.currFloorHeight)) {
@@ -6081,17 +6089,17 @@ u32 surface_type_modes(struct Camera *c) {
     switch (sMarioGeometry.currFloorType) {
         case SURFACE_CLOSE_CAMERA:
             transition_to_camera_mode(c, CAMERA_MODE_CLOSE, 90);
-            modeChanged++;
+            modeChanged += 1;
             break;
 
         case SURFACE_CAMERA_FREE_ROAM:
             transition_to_camera_mode(c, CAMERA_MODE_FREE_ROAM, 90);
-            modeChanged++;
+            modeChanged += 1;
             break;
 
         case SURFACE_NO_CAM_COL_SLIPPERY:
             transition_to_camera_mode(c, CAMERA_MODE_CLOSE, 90);
-            modeChanged++;
+            modeChanged += 1;
             break;
     }
     return modeChanged;
@@ -6560,7 +6568,7 @@ s16 camera_course_processing(struct Camera *c) {
                 }
             }
 
-            b++;
+            b += 1;
         }
     }
 
@@ -6592,7 +6600,8 @@ s16 camera_course_processing(struct Camera *c) {
 
             case AREA_BBH:
                 // if camera is fixed at bbh_room_13_balcony_camera (but as floats)
-                if (vec3f_compare(sFixedModeBasePosition, 210.f, 420.f, 3109.f) == TRUE) {
+                if (vec3f_compare(sFixedModeBasePosition, 210.f, 420.f, 3109.f) == 1)
+                {
                     if (sMarioCamState->pos[1] < 1800.f) {
                         transition_to_camera_mode(c, CAMERA_MODE_CLOSE, 30);
                     }
@@ -6733,24 +6742,24 @@ void resolve_geometry_collisions(Vec3f pos, UNUSED Vec3f lastGood) {
  * @return 3 if a wall is covering Mario, 1 if a wall is only near the camera.
  */
 s32 rotate_camera_around_walls(struct Camera *c, Vec3f cPos, s16 *avoidYaw, s16 yawRange) {
-    UNUSED u8 filler1[4];
+    UNUSED f32 unused1;
     struct WallCollisionData colData;
     struct Surface *wall;
-    UNUSED u8 filler2[12];
+    UNUSED Vec3f unused2;
     f32 dummyDist, checkDist;
-    UNUSED u8 filler3[4];
+    UNUSED f32 unused3;
     f32 coarseRadius;
     f32 fineRadius;
     s16 wallYaw, horWallNorm;
-    UNUSED s16 unused;
+    UNUSED s16 unused4;
     s16 dummyPitch;
     // The yaw of the vector from Mario to the camera.
     s16 yawFromMario;
-    UNUSED u8 filler4[2];
+    UNUSED s16 unused5;
     s32 status = 0;
     /// The current iteration. The algorithm takes 8 equal steps from Mario back to the camera.
     s32 step = 0;
-    UNUSED u8 filler5[4];
+    UNUSED s32 unused6;
 
     vec3f_get_dist_and_angle(sMarioCamState->pos, cPos, &dummyDist, &dummyPitch, &yawFromMario);
     sStatusFlags &= ~CAM_FLAG_CAM_NEAR_WALL;
@@ -6884,7 +6893,7 @@ s16 unused_dialog_cutscene_response(u8 cutscene) {
     }
 
     // if playing this cutscene and Mario responded, return the response
-    if ((gCamera->cutscene == cutscene) && (sCutsceneDialogResponse != DIALOG_RESPONSE_NONE)) {
+    if ((gCamera->cutscene == cutscene) && (sCutsceneDialogResponse)) {
         return sCutsceneDialogResponse;
     } else {
         return 0;
@@ -6968,15 +6977,15 @@ void init_spline_point(struct CutsceneSplinePoint *splinePoint, s8 index, u8 spe
 void copy_spline_segment(struct CutsceneSplinePoint dst[], struct CutsceneSplinePoint src[]) {
     s32 j = 0;
     s32 i = 0;
-    UNUSED u8 filler[8];
+    UNUSED s32 pad[2];
 
     init_spline_point(&dst[i], src[j].index, src[j].speed, src[j].point);
-    i++;
+    i += 1;
     do {
         do {
             init_spline_point(&dst[i], src[j].index, src[j].speed, src[j].point);
-            i++;
-            j++;
+            i += 1;
+            j += 1;
         } while ((src[j].index != -1) && (src[j].index != -1)); //! same comparison performed twice
     } while (j > 16);
 
@@ -7024,7 +7033,7 @@ static UNUSED void unused_cutscene_mario_dialog_looking_up(UNUSED struct Camera 
  * Lower the volume (US only) and start the peach letter background music
  */
 BAD_RETURN(s32) cutscene_intro_peach_start_letter_music(UNUSED struct Camera *c) {
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_US) || defined(VERSION_SH)
     seq_player_lower_volume(SEQ_PLAYER_LEVEL, 60, 40);
 #endif
     cutscene_intro_peach_play_message_music();
@@ -7158,7 +7167,7 @@ static UNUSED void unused_vec3f_to_vec3s(Vec3s dst, Vec3f src) {
  * Rotate the camera's focus around the camera's position by incYaw and incPitch
  */
 void pan_camera(struct Camera *c, s16 incPitch, s16 incYaw) {
-    UNUSED u8 filler[12];
+    UNUSED Vec3f unused1;
     f32 distCamToFocus;
     s16 pitch, yaw;
 
@@ -7773,7 +7782,7 @@ BAD_RETURN(s32) star_dance_bound_yaw(struct Camera *c, s16 absYaw, s16 yawMax) {
  * Store the camera's focus in cvar9.
  */
 BAD_RETURN(s32) cutscene_dance_closeup_start(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED s32 pad[2];
 
     if ((gLastCompletedStarNum == 4) && (gCurrCourseNum == COURSE_JRB)) {
         star_dance_bound_yaw(c, 0x0, 0x4000);
@@ -8210,9 +8219,9 @@ BAD_RETURN(s32) cutscene_star_spawn_store_info(struct Camera *c) {
  * Focus on the top of the star.
  */
 BAD_RETURN(s32) cutscene_star_spawn_focus_star(struct Camera *c) {
-    UNUSED u8 filler1[4]; // hMul?
+    UNUSED f32 hMul;
     Vec3f starPos;
-    UNUSED u8 filler2[4]; // vMul?
+    UNUSED f32 vMul;
 
     if (gCutsceneFocus != NULL) {
         object_pos_to_vec3f(starPos, gCutsceneFocus);
@@ -8313,7 +8322,7 @@ BAD_RETURN(s32) cutscene_exit_fall_to_castle_grounds_warp(struct Camera *c) {
 }
 
 /**
- * Cutscene that plays when Mario falls from WMotR.
+ * Cutscene that plays when Mario falls from WMOTR.
  */
 BAD_RETURN(s32) cutscene_exit_fall_to_castle_grounds(struct Camera *c) {
     cutscene_event(cutscene_exit_fall_to_castle_grounds_warp, c, 0, 0);
@@ -8419,7 +8428,7 @@ BAD_RETURN(s32) cutscene_red_coin_star_end(struct Camera *c) {
  * @param rotYaw constant yaw offset to add to the camera's focus
  */
 void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 rotPitch, s16 rotYaw) {
-    UNUSED u8 filler[4];
+    UNUSED f32 unused1;
     f32 nextDist;
     s16 nextPitch, nextYaw;
     // The next 2 polar coord points are only used in CUTSCENE_PREPARE_CANNON
@@ -8427,10 +8436,8 @@ void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 r
     s16 cannonPitch, cannonYaw;
     f32 curDist;
     s16 curPitch, curYaw;
-    UNUSED f64 unused;
-
+    UNUSED f64 unused2;
     vec3f_get_dist_and_angle(sCutsceneVars[3].point, c->pos, &nextDist, &nextPitch, &nextYaw);
-
     // If over 8000 units away from the cannon, just teleport there
     if ((nextDist > 8000.f) && (c->cutscene == CUTSCENE_PREPARE_CANNON)) {
         nextDist = goalDist * 4.f;
@@ -8689,9 +8696,9 @@ BAD_RETURN(s32) cutscene_suffocation_fly_away(UNUSED struct Camera *c) {
  * Keep Lakitu above the gas level.
  */
 BAD_RETURN(s32) cutscene_suffocation_stay_above_gas(struct Camera *c) {
-    UNUSED u8 filler1[4];
+    UNUSED f32 unused1;
     f32 gasLevel;
-    UNUSED u8 filler2[4];
+    UNUSED f32 unused2;
 
     cutscene_goto_cvar_pos(c, 400.f, 0x2800, 0x200, 0);
     gasLevel = find_poison_gas_level(sMarioCamState->pos[0], sMarioCamState->pos[2]);
@@ -8741,7 +8748,7 @@ BAD_RETURN(s32) cutscene_enter_pool_start(struct Camera *c) {
 }
 
 BAD_RETURN(s32) cutscene_enter_pool_loop(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     cutscene_goto_cvar_pos(c, 1200.f, 0x2000, 0x200, 0);
 }
@@ -8826,7 +8833,7 @@ BAD_RETURN(s32) cutscene_pyramid_top_explode_cam_shake(UNUSED struct Camera *c) 
  * Warp back to the old position, and start a heavy camera shake.
  */
 BAD_RETURN(s32) cutscene_pyramid_top_explode_warp_back(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     vec3f_copy(c->pos, sCutsceneVars[4].point);
     vec3f_copy(c->focus, sCutsceneVars[5].point);
@@ -8896,9 +8903,10 @@ UNUSED static void unused_cutscene_goto_cvar(struct Camera *c) {
  * cvar9.angle[1] is the yaw between Mario and the gCutsceneFocus
  */
 BAD_RETURN(s32) cutscene_dialog_start(struct Camera *c) {
-    UNUSED u8 filler[4];
-    UNUSED s16 unused;
+    UNUSED f32 unused1;
+    UNUSED s16 unused2;
     s16 yaw;
+
 
     cutscene_soften_music(c);
     set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_DIALOG);
@@ -9053,7 +9061,7 @@ UNUSED static void unused_cam_to_mario(struct Camera *c) {
  * Cutscene that plays when Mario is reading a message (a sign or message on the wall)
  */
 BAD_RETURN(s32) cutscene_read_message(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     cutscene_event(cutscene_read_message_start, c, 0, 0);
     sStatusFlags |= CAM_FLAG_SMOOTH_MOVEMENT;
@@ -9062,7 +9070,7 @@ BAD_RETURN(s32) cutscene_read_message(struct Camera *c) {
         // Do nothing until message is gone.
         case 0:
             if (get_dialog_id() != DIALOG_NONE) {
-                sCutsceneVars[0].angle[0]++;
+                sCutsceneVars[0].angle[0] += 1;
                 set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_DIALOG);
             }
             break;
@@ -9120,9 +9128,9 @@ BAD_RETURN(s32) cutscene_exit_succ_start(UNUSED struct Camera *c) {
  * Set the camera pos depending on which level Mario exited.
  */
 BAD_RETURN(s32) cutscene_non_painting_set_cam_pos(struct Camera *c) {
-    UNUSED u8 filler1[4];
+    UNUSED u32 unused1;
     struct Surface *floor;
-    UNUSED u8 filler2[12];
+    UNUSED Vec3f unused2;
 
     switch (gPrevLevel) {
         case LEVEL_HMC:
@@ -9304,9 +9312,9 @@ BAD_RETURN(s32) cutscene_non_painting_death(struct Camera *c) {
  *      because cvar1 rotates until is reaches 0, so it's important that it's a multiple of 0x100.
  */
 BAD_RETURN(s32) cutscene_cap_switch_press_start(struct Camera *c) {
-    UNUSED s16 unused;
+    UNUSED s16 unused1;
     s16 yaw;
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     store_info_star(c);
     yaw = calculate_yaw(sMarioCamState->pos, c->pos);
@@ -9323,7 +9331,7 @@ BAD_RETURN(s32) cutscene_cap_switch_press_rotate_around_mario(struct Camera *c) 
     f32 dist;
     s16 pitch, yaw;
     UNUSED s16 unusedYaw = sMarioCamState->faceAngle[1] + 0x1000;
-    UNUSED u8 filler[2];
+    UNUSED s16 unused;
     UNUSED s32 cvar1Yaw = sCutsceneVars[1].angle[1];
 
     vec3f_get_dist_and_angle(sMarioCamState->pos, c->pos, &dist, &pitch, &yaw);
@@ -9380,7 +9388,7 @@ BAD_RETURN(s32) cutscene_cap_switch_press_pan_left(struct Camera *c) {
  * Create a dialog box with the cap switch's text.
  */
 BAD_RETURN(s32) cutscene_cap_switch_press_create_dialog(UNUSED struct Camera *c) {
-    create_dialog_box_with_response(gCutsceneFocus->oBhvParams2ndByte + DIALOG_010);
+    create_dialog_box_with_response(gCutsceneFocus->oBehParams2ndByte + DIALOG_010);
 }
 
 static UNUSED BAD_RETURN(s32) unused_cap_switch_retrieve_info(struct Camera *c) {
@@ -9413,7 +9421,7 @@ BAD_RETURN(s32) cutscene_cap_switch_press(struct Camera *c) {
     if ((get_dialog_id() == DIALOG_NONE) && (sCutsceneVars[4].angle[0] != 0)) {
         sCutsceneDialogResponse = sCutsceneVars[4].angle[0];
         if (sCutsceneVars[4].angle[0] == 1) {
-            cap_switch_save(gCutsceneFocus->oBhvParams2ndByte);
+            cap_switch_save(gCutsceneFocus->oBehParams2ndByte);
         }
         stop_cutscene_and_retrieve_stored_info(c);
         transition_next_state(c, 30);
@@ -9602,7 +9610,7 @@ BAD_RETURN(s32) play_sound_intro_turn_on_hud(UNUSED struct Camera *c) {
  * Fly to the pipe. Near the end, the camera jumps to Lakitu's position and the hud turns on.
  */
 BAD_RETURN(s32) cutscene_intro_peach_fly_to_pipe(struct Camera *c) {
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
+#if defined(VERSION_US) || defined(VERSION_SH)
     cutscene_event(play_sound_intro_turn_on_hud, c, 818, 818);
 #elif defined(VERSION_EU)
     cutscene_event(play_sound_intro_turn_on_hud, c, 673, 673);
@@ -9623,7 +9631,7 @@ BAD_RETURN(s32) cutscene_intro_peach_fly_to_pipe(struct Camera *c) {
  * Lakitu flies around the warp pipe, then Mario jumps out.
  */
 BAD_RETURN(s32) cutscene_intro_peach_mario_appears(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     sMarioCamState->cameraEvent = 0;
     cutscene_event(cutscene_intro_peach_reset_spline, c, 0, 0);
@@ -9737,46 +9745,46 @@ BAD_RETURN(s32) cutscene_credits_reset_spline(UNUSED struct Camera *c) {
     cutscene_reset_spline();
 }
 
-extern struct CutsceneSplinePoint sBoBCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sBoBCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sWFCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sWFCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sJRBCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sJRBCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sCCMSlideCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sCCMSlideCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sBBHCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sBBHCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sHMCCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sHMCCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sTHIWigglerCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sTHIWigglerCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sBobCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sBobCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sWfCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sWfCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sJrbCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sJrbCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sCcmSlideCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sCcmSlideCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sBbhCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sBbhCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sHmcCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sHmcCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sThiWigglerCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sThiWigglerCreditsSplineFocus[];
 extern struct CutsceneSplinePoint sVolcanoCreditsSplinePositions[];
 extern struct CutsceneSplinePoint sVolcanoCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sSSLCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sSSLCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sDDDCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sDDDCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sSLCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sSLCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sWDWCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sWDWCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sTTMCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sTTMCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sTHIHugeCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sTHIHugeCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sTTCCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sTTCCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sRRCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sRRCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sSACreditsSplinePositions[];
-extern struct CutsceneSplinePoint sSACreditsSplineFocus[];
-extern struct CutsceneSplinePoint sCotMCCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sCotMCCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sDDDSubCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sDDDSubCreditsSplineFocus[];
-extern struct CutsceneSplinePoint sCCMOutsideCreditsSplinePositions[];
-extern struct CutsceneSplinePoint sCCMOutsideCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sSslCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sSslCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sDddCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sDddCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sSlCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sSlCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sWdwCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sWdwCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sTtmCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sTtmCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sThiHugeCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sThiHugeCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sTtcCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sTtcCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sRrCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sRrCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sSaCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sSaCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sCotmcCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sCotmcCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sDddSubCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sDddSubCreditsSplineFocus[];
+extern struct CutsceneSplinePoint sCcmOutsideCreditsSplinePositions[];
+extern struct CutsceneSplinePoint sCcmOutsideCreditsSplineFocus[];
 
 /**
  * Follow splines through the courses of the game.
@@ -9788,96 +9796,96 @@ BAD_RETURN(s32) cutscene_credits(struct Camera *c) {
 
     switch (gCurrLevelArea) {
         case AREA_BOB:
-            pos = sBoBCreditsSplinePositions;
-            focus = sBoBCreditsSplineFocus;
+            pos = sBobCreditsSplinePositions;
+            focus = sBobCreditsSplineFocus;
             break;
         case AREA_WF:
-            pos = sWFCreditsSplinePositions;
-            focus = sWFCreditsSplineFocus;
+            pos = sWfCreditsSplinePositions;
+            focus = sWfCreditsSplineFocus;
             break;
         case AREA_JRB_MAIN:
-            pos = sJRBCreditsSplinePositions;
-            focus = sJRBCreditsSplineFocus;
+            pos = sJrbCreditsSplinePositions;
+            focus = sJrbCreditsSplineFocus;
             break;
         case AREA_CCM_SLIDE:
-            pos = sCCMSlideCreditsSplinePositions;
-            focus = sCCMSlideCreditsSplineFocus;
+            pos = sCcmSlideCreditsSplinePositions;
+            focus = sCcmSlideCreditsSplineFocus;
             break;
         case AREA_BBH:
-            pos = sBBHCreditsSplinePositions;
-            focus = sBBHCreditsSplineFocus;
+            pos = sBbhCreditsSplinePositions;
+            focus = sBbhCreditsSplineFocus;
             break;
         case AREA_HMC:
-            pos = sHMCCreditsSplinePositions;
-            focus = sHMCCreditsSplineFocus;
+            pos = sHmcCreditsSplinePositions;
+            focus = sHmcCreditsSplineFocus;
             break;
         case AREA_THI_WIGGLER:
-            pos = sTHIWigglerCreditsSplinePositions;
-            focus = sTHIWigglerCreditsSplineFocus;
+            pos = sThiWigglerCreditsSplinePositions;
+            focus = sThiWigglerCreditsSplineFocus;
             break;
         case AREA_LLL_VOLCANO:
             pos = sVolcanoCreditsSplinePositions;
             focus = sVolcanoCreditsSplineFocus;
             break;
         case AREA_SSL_OUTSIDE:
-            pos = sSSLCreditsSplinePositions;
-            focus = sSSLCreditsSplineFocus;
+            pos = sSslCreditsSplinePositions;
+            focus = sSslCreditsSplineFocus;
             break;
         case AREA_DDD_WHIRLPOOL:
-            pos = sDDDCreditsSplinePositions;
-            focus = sDDDCreditsSplineFocus;
+            pos = sDddCreditsSplinePositions;
+            focus = sDddCreditsSplineFocus;
             break;
         case AREA_SL_OUTSIDE:
-            pos = sSLCreditsSplinePositions;
-            focus = sSLCreditsSplineFocus;
+            pos = sSlCreditsSplinePositions;
+            focus = sSlCreditsSplineFocus;
             break;
         case AREA_WDW_MAIN:
-            pos = sWDWCreditsSplinePositions;
-            focus = sWDWCreditsSplineFocus;
+            pos = sWdwCreditsSplinePositions;
+            focus = sWdwCreditsSplineFocus;
             break;
         case AREA_TTM_OUTSIDE:
-            pos = sTTMCreditsSplinePositions;
-            focus = sTTMCreditsSplineFocus;
+            pos = sTtmCreditsSplinePositions;
+            focus = sTtmCreditsSplineFocus;
             break;
         case AREA_THI_HUGE:
-            pos = sTHIHugeCreditsSplinePositions;
-            focus = sTHIHugeCreditsSplineFocus;
+            pos = sThiHugeCreditsSplinePositions;
+            focus = sThiHugeCreditsSplineFocus;
             break;
         case AREA_TTC:
-            pos = sTTCCreditsSplinePositions;
-            focus = sTTCCreditsSplineFocus;
+            pos = sTtcCreditsSplinePositions;
+            focus = sTtcCreditsSplineFocus;
             break;
         case AREA_RR:
-            pos = sRRCreditsSplinePositions;
-            focus = sRRCreditsSplineFocus;
+            pos = sRrCreditsSplinePositions;
+            focus = sRrCreditsSplineFocus;
             break;
         case AREA_SA:
-            pos = sSACreditsSplinePositions;
-            focus = sSACreditsSplineFocus;
+            pos = sSaCreditsSplinePositions;
+            focus = sSaCreditsSplineFocus;
             break;
         case AREA_COTMC:
-            pos = sCotMCCreditsSplinePositions;
-            focus = sCotMCCreditsSplineFocus;
+            pos = sCotmcCreditsSplinePositions;
+            focus = sCotmcCreditsSplineFocus;
             break;
         case AREA_DDD_SUB:
-            pos = sDDDSubCreditsSplinePositions;
-            focus = sDDDSubCreditsSplineFocus;
+            pos = sDddSubCreditsSplinePositions;
+            focus = sDddSubCreditsSplineFocus;
             break;
         case AREA_CCM_OUTSIDE:
             //! Checks if the "Snowman's Lost His Head" star was collected. The credits likely would
             //! have avoided the snowman if the player didn't collect that star, but in the end the
             //! developers decided against it.
-            if (save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum)) & (1 << 4)) {
-                pos = sCCMOutsideCreditsSplinePositions;
-                focus = sCCMOutsideCreditsSplineFocus;
+            if (save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1) & 0x10) {
+                pos = sCcmOutsideCreditsSplinePositions;
+                focus = sCcmOutsideCreditsSplineFocus;
             } else {
-                pos = sCCMOutsideCreditsSplinePositions;
-                focus = sCCMOutsideCreditsSplineFocus;
+                pos = sCcmOutsideCreditsSplinePositions;
+                focus = sCcmOutsideCreditsSplineFocus;
             }
             break;
         default:
-            pos = sCCMOutsideCreditsSplinePositions;
-            focus = sCCMOutsideCreditsSplineFocus;
+            pos = sCcmOutsideCreditsSplinePositions;
+            focus = sCcmOutsideCreditsSplineFocus;
     }
 
     copy_spline_segment(sCurCreditsSplinePos, pos);
@@ -9937,7 +9945,7 @@ BAD_RETURN(s32) cutscene_sliding_doors_fly_back_up(UNUSED struct Camera *c) {
  */
 BAD_RETURN(s32) cutscene_sliding_doors_follow_mario(struct Camera *c) {
     Vec3f pos;
-    UNUSED u8 filler[20];
+    UNUSED u32 pad[5];
 
     vec3f_copy(pos, c->pos);
     // Update cvar1 with Mario's position (the y value doesn't change)
@@ -9963,7 +9971,7 @@ BAD_RETURN(s32) cutscene_sliding_doors_follow_mario(struct Camera *c) {
  * Note: the star door unlocking event is not a cutscene, it's handled by Mario separately.
  */
 BAD_RETURN(s32) cutscene_sliding_doors_open(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     reset_pan_distance(c);
     cutscene_event(cutscene_sliding_doors_open_start, c, 0, 8);
@@ -10134,7 +10142,8 @@ BAD_RETURN(s32) cutscene_exit_painting(struct Camera *c) {
  * Unused. Warp the camera to Mario.
  */
 BAD_RETURN(s32) cutscene_unused_exit_start(struct Camera *c) {
-    UNUSED u8 filler[18];
+    UNUSED Vec3f unused1;
+    UNUSED Vec3s unused2;
     Vec3f offset;
     Vec3s marioAngle;
 
@@ -10184,7 +10193,7 @@ BAD_RETURN(s32) cutscene_enter_cannon_end(struct Camera *c) {
  */
 BAD_RETURN(s32) cutscene_enter_cannon_raise(struct Camera *c) {
     struct Object *o;
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
     f32 floorHeight;
     struct Surface *floor;
     Vec3f cannonFocus;
@@ -10228,7 +10237,8 @@ BAD_RETURN(s32) cutscene_enter_cannon_raise(struct Camera *c) {
  * Start the cannon entering cutscene
  */
 BAD_RETURN(s32) cutscene_enter_cannon_start(struct Camera *c) {
-    UNUSED u8 filler[8]; // cvar3Start, cvar4Start?
+    UNUSED u32 cvar3Start;
+    UNUSED u32 cvar4Start;
     struct Object *o;
 
     sStatusFlags |= CAM_FLAG_SMOOTH_MOVEMENT;
@@ -10337,7 +10347,7 @@ BAD_RETURN(s32) cutscene_door_end(struct Camera *c) {
  * Used for entering a room that uses a specific camera mode, like the castle lobby or BBH
  */
 BAD_RETURN(s32) cutscene_door_mode(struct Camera *c) {
-    UNUSED u8 filler[8];
+    UNUSED u32 pad[2];
 
     reset_pan_distance(c);
     camera_course_processing(c);
@@ -10381,7 +10391,7 @@ struct Cutscene sCutsceneEnding[] = {
     { cutscene_ending_kiss, 0x10b },
 #else
     { cutscene_ending_mario_land_closeup, 75 },
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
     { cutscene_ending_stars_free_peach, 431 },
 #else
     { cutscene_ending_stars_free_peach, 386 },
@@ -10389,7 +10399,7 @@ struct Cutscene sCutsceneEnding[] = {
     { cutscene_ending_peach_appears, 139 },
     { cutscene_ending_peach_descends, 590 },
     { cutscene_ending_mario_to_peach, 95 },
-#if defined(VERSION_SH) || defined(VERSION_CN)
+#ifdef VERSION_SH
     { cutscene_ending_peach_wakeup, 455 },
     { cutscene_ending_dialog, 286 },
 #else
@@ -10567,7 +10577,7 @@ struct Cutscene sCutsceneExitWaterfall[] = {
 };
 
 /**
- * Cutscene that plays when Mario falls from WMotR.
+ * Cutscene that plays when Mario falls from WMOTR.
  */
 struct Cutscene sCutsceneFallToCastleGrounds[] = {
     { cutscene_exit_fall_to_castle_grounds, 73 },
@@ -10836,7 +10846,7 @@ STATIC_ASSERT(ARRAY_COUNT(sZoomOutAreaMasks) - 1 == LEVEL_MAX / 2, "Make sure yo
  * TODO: Separate these into their own file(s)
  */
 
-struct CutsceneSplinePoint sBoBCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sBobCreditsSplinePositions[] = {
     { 1, 0, { 5984, 3255, 4975 } },
     { 2, 0, { 4423, 3315, 1888 } },
     { 3, 0, { 776, 2740, -1825 } },
@@ -10844,7 +10854,7 @@ struct CutsceneSplinePoint sBoBCreditsSplinePositions[] = {
     { -1, 0, { 741, 4387, -5474 } }
 };
 
-struct CutsceneSplinePoint sBoBCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sBobCreditsSplineFocus[] = {
     { 0, 30, { 5817, 3306, 4507 } },
     { 0, 40, { 4025, 3378, 1593 } },
     { 0, 50, { 1088, 2652, -2205 } },
@@ -10852,7 +10862,7 @@ struct CutsceneSplinePoint sBoBCreditsSplineFocus[] = {
     { -1, 60, { 1231, 4400, -5649 } }
 };
 
-struct CutsceneSplinePoint sWFCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sWfCreditsSplinePositions[] = {
     { 0, 0, { -301, 1399, 2643 } },
     { 0, 0, { -182, 2374, 4572 } },
     { 0, 0, { 4696, 3864, 413 } },
@@ -10860,7 +10870,7 @@ struct CutsceneSplinePoint sWFCreditsSplinePositions[] = {
     { -1, 0, { 1783, 4891, -1516 } }
 };
 
-struct CutsceneSplinePoint sWFCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sWfCreditsSplineFocus[] = {
     { 1, 30, { -249, 1484, 2153 } },
     { 2, 40, { -200, 2470, 4082 } },
     { 3, 40, { 4200, 3916, 370 } },
@@ -10868,7 +10878,7 @@ struct CutsceneSplinePoint sWFCreditsSplineFocus[] = {
     { -1, 40, { 1523, 4976, -1072 } }
 };
 
-struct CutsceneSplinePoint sJRBCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sJrbCreditsSplinePositions[] = {
     { 0, 0, { 5538, -4272, 2376 } },
     { 0, 0, { 5997, -3303, 2261 } },
     { 0, 0, { 6345, -3255, 2179 } },
@@ -10876,7 +10886,7 @@ struct CutsceneSplinePoint sJRBCreditsSplinePositions[] = {
     { -1, 0, { 6694, -3203, 2116 } }
 };
 
-struct CutsceneSplinePoint sJRBCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sJrbCreditsSplineFocus[] = {
     { 0, 50, { 5261, -4683, 2443 } },
     { 0, 50, { 5726, -3675, 2456 } },
     { 0, 50, { 6268, -2817, 2409 } },
@@ -10884,7 +10894,7 @@ struct CutsceneSplinePoint sJRBCreditsSplineFocus[] = {
     { -1, 50, { 7186, -3153, 2041 } }
 };
 
-struct CutsceneSplinePoint sCCMSlideCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sCcmSlideCreditsSplinePositions[] = {
     { 0, 0, { -6324, 6745, -5626 } },
     { 1, 0, { -6324, 6745, -5626 } },
     { 2, 0, { -6108, 6762, -5770 } },
@@ -10892,7 +10902,7 @@ struct CutsceneSplinePoint sCCMSlideCreditsSplinePositions[] = {
     { -1, 0, { -5672, 6790, -5979 } }
 };
 
-struct CutsceneSplinePoint sCCMSlideCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sCcmSlideCreditsSplineFocus[] = {
     { 0, 50, { -5911, 6758, -5908 } },
     { 1, 50, { -5911, 6758, -5908 } },
     { 2, 50, { -5652, 6814, -5968 } },
@@ -10900,21 +10910,21 @@ struct CutsceneSplinePoint sCCMSlideCreditsSplineFocus[] = {
     { -1, 50, { -5179, 6804, -6060 } }
 };
 
-struct CutsceneSplinePoint sBBHCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sBbhCreditsSplinePositions[] = {
     { 1, 0, { 1088, 341, 2447 } },
     { 2, 0, { 1338, 610, 2808 } },
     { 3, 0, { 2267, 1612, 2966 } },
     { -1, 0, { 2296, 1913, 2990 } }
 };
 
-struct CutsceneSplinePoint sBBHCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sBbhCreditsSplineFocus[] = {
     { 1, 50, { 1160, 263, 1958 } },
     { 2, 50, { 1034, 472, 2436 } },
     { 3, 50, { 1915, 1833, 2688 } },
     { -1, 50, { 2134, 2316, 2742 } }
 };
 
-struct CutsceneSplinePoint sHMCCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sHmcCreditsSplinePositions[] = {
     { 1, 0, { -5952, 1807, -5882 } },
     { 2, 0, { -5623, 1749, -4863 } },
     { 3, 0, { -5472, 1955, -2520 } },
@@ -10922,7 +10932,7 @@ struct CutsceneSplinePoint sHMCCreditsSplinePositions[] = {
     { -1, 0, { -5547, 391, -721 } }
 };
 
-struct CutsceneSplinePoint sHMCCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sHmcCreditsSplineFocus[] = {
     { 1, 210, { -5952, 1884, -6376 } },
     { 2, 58, { -5891, 1711, -5283 } },
     { 3, 30, { -5595, 1699, -2108 } },
@@ -10930,13 +10940,13 @@ struct CutsceneSplinePoint sHMCCreditsSplineFocus[] = {
     { -1, 31, { -5548, -85, -572 } }
 };
 
-struct CutsceneSplinePoint sTHIWigglerCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sThiWigglerCreditsSplinePositions[] = {
     { 1, 0, { -1411, 2474, -1276 } },
     { 2, 0, { -1606, 2479, -434 } },
     { -1, 0, { -1170, 2122, 1337 } }
 };
 
-struct CutsceneSplinePoint sTHIWigglerCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sThiWigglerCreditsSplineFocus[] = {
     { 1, 50, { -1053, 2512, -928 } },
     { 2, 50, { -1234, 2377, -114 } },
     { -1, 50, { -758, 2147, 1054 } }
@@ -10960,7 +10970,7 @@ struct CutsceneSplinePoint sVolcanoCreditsSplineFocus[] = {
     { -1, 50, { 1002, 460, -694 } }
 };
 
-struct CutsceneSplinePoint sSSLCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sSslCreditsSplinePositions[] = {
     { 0, 0, { -4262, 4658, -5015 } },
     { 0, 0, { -3274, 2963, -4661 } },
     { 0, 0, { -2568, 812, -6528 } },
@@ -10969,7 +10979,7 @@ struct CutsceneSplinePoint sSSLCreditsSplinePositions[] = {
     { -1, 0, { 2724, 660, -6298 } }
 };
 
-struct CutsceneSplinePoint sSSLCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sSslCreditsSplineFocus[] = {
     { 0, 50, { -4083, 4277, -4745 } },
     { 0, 50, { -2975, 2574, -4759 } },
     { 0, 50, { -2343, 736, -6088 } },
@@ -10978,7 +10988,7 @@ struct CutsceneSplinePoint sSSLCreditsSplineFocus[] = {
     { -1, 50, { 2448, 612, -5884 } }
 };
 
-struct CutsceneSplinePoint sDDDCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sDddCreditsSplinePositions[] = {
     { 0, 0, { -874, -4933, 366 } },
     { 0, 0, { -1463, -4782, 963 } },
     { 0, 0, { -1893, -4684, 1303 } },
@@ -10988,7 +10998,7 @@ struct CutsceneSplinePoint sDDDCreditsSplinePositions[] = {
     { -1, 0, { -4681, -1084, -623 } }
 };
 
-struct CutsceneSplinePoint sDDDCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sDddCreditsSplineFocus[] = {
     { 0, 50, { -1276, -4683, 622 } },
     { 0, 50, { -1858, -4407, 1097 } },
     { 0, 50, { -2324, -4332, 1318 } },
@@ -10998,35 +11008,35 @@ struct CutsceneSplinePoint sDDDCreditsSplineFocus[] = {
     { -1, 50, { -4665, -664, -1007 } }
 };
 
-struct CutsceneSplinePoint sSLCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sSlCreditsSplinePositions[] = {
     { 0, 0, { 939, 6654, 6196 } },
     { 0, 0, { 1873, 5160, 3714 } },
     { 0, 0, { 3120, 3564, 1314 } },
     { -1, 0, { 2881, 4231, 573 } }
 };
 
-struct CutsceneSplinePoint sSLCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sSlCreditsSplineFocus[] = {
     { 0, 50, { 875, 6411, 5763 } },
     { 0, 50, { 1659, 4951, 3313 } },
     { 0, 50, { 2630, 3565, 1215 } },
     { -1, 50, { 2417, 4056, 639 } }
 };
 
-struct CutsceneSplinePoint sWDWCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sWdwCreditsSplinePositions[] = {
     { 0, 0, { 3927, 2573, 3685 } },
     { 0, 0, { 2389, 2054, 1210 } },
     { 0, 0, { 2309, 2069, 22 } },
     { -1, 0, { 2122, 2271, -979 } }
 };
 
-struct CutsceneSplinePoint sWDWCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sWdwCreditsSplineFocus[] = {
     { 0, 50, { 3637, 2460, 3294 } },
     { 0, 50, { 1984, 2067, 918 } },
     { 0, 50, { 1941, 2255, -261 } },
     { -1, 50, { 1779, 2587, -1158 } }
 };
 
-struct CutsceneSplinePoint sTTMCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sTtmCreditsSplinePositions[] = {
     { 0, 0, { 386, 2535, 644 } },
     { 0, 0, { 1105, 2576, 918 } },
     { 0, 0, { 3565, 2261, 2098 } },
@@ -11035,7 +11045,7 @@ struct CutsceneSplinePoint sTTMCreditsSplinePositions[] = {
     { -1, 0, { 3917, -3130, 3656 } }
 };
 
-struct CutsceneSplinePoint sTTMCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sTtmCreditsSplineFocus[] = {
     { 1, 50, { 751, 2434, 318 } },
     { 2, 50, { 768, 2382, 603 } },
     { 3, 60, { 3115, 2086, 1969 } },
@@ -11044,7 +11054,7 @@ struct CutsceneSplinePoint sTTMCreditsSplineFocus[] = {
     { -1, 50, { 4172, -3385, 4001 } }
 };
 
-struct CutsceneSplinePoint sTHIHugeCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sThiHugeCreditsSplinePositions[] = {
     { 0, 0, { 6990, -1000, -4858 } },
     { 0, 0, { 7886, -1055, 2878 } },
     { 0, 0, { 1952, -1481, 10920 } },
@@ -11054,7 +11064,7 @@ struct CutsceneSplinePoint sTHIHugeCreditsSplinePositions[] = {
     { -1, 0, { -3246, 416, 3286 } }
 };
 
-struct CutsceneSplinePoint sTHIHugeCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sThiHugeCreditsSplineFocus[] = {
     { 1, 70, { 7022, -965, -5356 } },
     { 2, 40, { 7799, -915, 2405 } },
     { 3, 60, { 1878, -1137, 10568 } },
@@ -11064,35 +11074,35 @@ struct CutsceneSplinePoint sTHIHugeCreditsSplineFocus[] = {
     { -1, 50, { -2875, 182, 3045 } }
 };
 
-struct CutsceneSplinePoint sTTCCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sTtcCreditsSplinePositions[] = {
     { 1, 0, { -1724, 277, -994 } },
     { 2, 0, { -1720, 456, -995 } },
     { 3, 0, { -1655, 810, -1014 } },
     { -1, 0, { -1753, 883, -1009 } }
 };
 
-struct CutsceneSplinePoint sTTCCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sTtcCreditsSplineFocus[] = {
     { 1, 50, { -1554, 742, -1063 } },
     { 2, 50, { -1245, 571, -1102 } },
     { 3, 50, { -1220, 603, -1151 } },
     { -1, 50, { -1412, 520, -1053 } }
 };
 
-struct CutsceneSplinePoint sRRCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sRrCreditsSplinePositions[] = {
     { 0, 0, { -1818, 4036, 97 } },
     { 0, 0, { -575, 3460, -505 } },
     { 0, 0, { 1191, 3611, -1134 } },
     { -1, 0, { 2701, 3777, -3686 } }
 };
 
-struct CutsceneSplinePoint sRRCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sRrCreditsSplineFocus[] = {
     { 0, 50, { -1376, 3885, -81 } },
     { 0, 50, { -146, 3343, -734 } },
     { 0, 50, { 1570, 3446, -1415 } },
     { -1, 50, { 2794, 3627, -3218 } }
 };
 
-struct CutsceneSplinePoint sSACreditsSplinePositions[] = {
+struct CutsceneSplinePoint sSaCreditsSplinePositions[] = {
     { 0, 0, { -295, -396, -585 } },
     { 1, 0, { -295, -396, -585 } },
     { 2, 0, { -292, -856, -573 } },
@@ -11100,7 +11110,7 @@ struct CutsceneSplinePoint sSACreditsSplinePositions[] = {
     { -1, 0, { 175, -856, -654 } }
 };
 
-struct CutsceneSplinePoint sSACreditsSplineFocus[] = {
+struct CutsceneSplinePoint sSaCreditsSplineFocus[] = {
     { 0, 50, { -175, -594, -142 } },
     { 1, 50, { -175, -594, -142 } },
     { 2, 50, { -195, -956, -92 } },
@@ -11108,7 +11118,7 @@ struct CutsceneSplinePoint sSACreditsSplineFocus[] = {
     { -1, 50, { -307, -956, -537 } }
 };
 
-struct CutsceneSplinePoint sCotMCCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sCotmcCreditsSplinePositions[] = {
     { 0, 0, { -296, 495, 1607 } },
     { 0, 0, { -430, 541, 654 } },
     { 0, 0, { -466, 601, -359 } },
@@ -11116,7 +11126,7 @@ struct CutsceneSplinePoint sCotMCCreditsSplinePositions[] = {
     { -1, 0, { -95, 366, -2922 } }
 };
 
-struct CutsceneSplinePoint sCotMCCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sCotmcCreditsSplineFocus[] = {
     { 0, 50, { -176, 483, 2092 } },
     { 0, 50, { -122, 392, 1019 } },
     { 0, 50, { -268, 450, -792 } },
@@ -11124,7 +11134,7 @@ struct CutsceneSplinePoint sCotMCCreditsSplineFocus[] = {
     { -1, 50, { -51, 355, -3420 } }
 };
 
-struct CutsceneSplinePoint sDDDSubCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sDddSubCreditsSplinePositions[] = {
     { 0, 0, { 4656, 2171, 5028 } },
     { 0, 0, { 4548, 1182, 4596 } },
     { 0, 0, { 5007, 813, 3257 } },
@@ -11132,7 +11142,7 @@ struct CutsceneSplinePoint sDDDSubCreditsSplinePositions[] = {
     { -1, 0, { 4644, 774, 113 } }
 };
 
-struct CutsceneSplinePoint sDDDSubCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sDddSubCreditsSplineFocus[] = {
     { 0, 50, { 4512, 2183, 4549 } },
     { 0, 50, { 4327, 838, 4308 } },
     { 0, 50, { 4774, 749, 2819 } },
@@ -11140,14 +11150,14 @@ struct CutsceneSplinePoint sDDDSubCreditsSplineFocus[] = {
     { -1, 50, { 4194, 885, -75 } }
 };
 
-struct CutsceneSplinePoint sCCMOutsideCreditsSplinePositions[] = {
+struct CutsceneSplinePoint sCcmOutsideCreditsSplinePositions[] = {
     { 1, 0, { 1427, -1387, 5409 } },
     { 2, 0, { -1646, -1536, 4526 } },
     { 3, 0, { -3852, -1448, 3913 } },
     { -1, 0, { -5199, -1366, 1886 } }
 };
 
-struct CutsceneSplinePoint sCCMOutsideCreditsSplineFocus[] = {
+struct CutsceneSplinePoint sCcmOutsideCreditsSplineFocus[] = {
     { 1, 50, { 958, -1481, 5262 } },
     { 2, 50, { -2123, -1600, 4391 } },
     { 3, 50, { -3957, -1401, 3426 } },
@@ -11161,7 +11171,7 @@ struct CutsceneSplinePoint sCCMOutsideCreditsSplineFocus[] = {
  * the duration they want the flag to be active.
  */
 void play_cutscene(struct Camera *c) {
-    UNUSED u8 filler[12];
+    UNUSED u32 pad[3];
     UNUSED s16 unusedYawFocToMario;
     s16 cutsceneDuration;
     u8 oldCutscene;
@@ -11231,12 +11241,12 @@ void play_cutscene(struct Camera *c) {
         //! @bug This should check for 0x7FFF (CUTSCENE_LOOP)
         //! instead, cutscenes that last longer than 0x3FFF frames will never end on their own
         if (gCutsceneTimer < 0x3FFF) {
-            gCutsceneTimer++;
+            gCutsceneTimer += 1;
         }
         //! Because gCutsceneTimer is often set to 0x7FFF (CUTSCENE_LOOP), this conditional can only
         //! check for == due to overflow
         if (gCutsceneTimer == cutsceneDuration) {
-            sCutsceneShot++;
+            sCutsceneShot += 1;
             gCutsceneTimer = 0;
         }
     } else {
@@ -11543,8 +11553,6 @@ void obj_rotate_towards_point(struct Object *o, Vec3f point, s16 pitchOff, s16 y
     o->oMoveAnglePitch = approach_s16_asymptotic(o->oMoveAnglePitch, pitchOff - pitch, pitchDiv);
     o->oMoveAngleYaw = approach_s16_asymptotic(o->oMoveAngleYaw, yaw + yawOff, yawDiv);
 }
-
-#define o gCurrentObject
 
 #include "behaviors/intro_peach.inc.c"
 #include "behaviors/intro_lakitu.inc.c"

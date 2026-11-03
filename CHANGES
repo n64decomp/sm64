@@ -1,39 +1,3 @@
-Refresh 16 (Two years later...)
-1.) remove capstone from readme, slight update (#1212)
-2.) Update ido static recomp (#1211)
-3.) Fix misleading pointer (#1209)
-4.) update outdated link (#1208)
-5.) Match iQue (#1207)
-6.) iQue matching except BSS (#1124)
-7.) Create LICENSE.md
-8.) Reorganize and apply licenses to some of the tools/ programs per discussions with their author(s). (#1203)
-9.) Fix rumble_init libultra includes and checks (#1195)
-10.) Stacksize moved to defines (#1199)
-11.) Renamings we were too lazy to make a PR for for 3 years (#1198)
-12.) Fix spelling error in sound.h comment (#1197)
-13.) Update instrument sample names (#1196)
-14.) Object Labeling, Behavior Params, and Cleanup (#1193)
-15.) Significantly more Libultra Cleanup (#1192)
-16.) Typedefs for area Terrain Data and Rooms (#1178)
-17.) Allow spaces in filename for vadpcm_enc (#1175)
-18.) Label all warp nodes (#1191)
-19.) Remove hardware.h (#1190)
-20.) Document __osSetHWintrRoutine (#1186)
-21.) Change 3 space indent to 4 space indent and cleanup (#1189)
-22.) Libultra cleanup and labelling (#1188)
-23.) in-game menu renaming (#1187)
-24.) AVOID_UB fixes and cleanup (#1185)
-
-Refresh 15 (mostly a hotfix for RSP microcode selection)
-
-1.) Renamed frame_buffer funcs and _ZBUFFER (#1184)
-2.) RSP Microcode Hotfix (#1183)
-3.) Label osSetTimer.c (#1182)
-4.) Fix styling (#1177)
-5.) Rename all `FrameBuffer` variants to `Framebuffer` (#1176)
-6.) Remove (WIP) from sh.
-7.) Allow both archives and ELF objects to be patched (#1127)
-
 Refresh 14
 
 1.) Label whomp and some object fields (#1174)

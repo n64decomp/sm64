@@ -245,11 +245,7 @@ const Gfx dl_cake_end_screen_eu_070297D8[] = {
 // VERSION_EU
 #else
 
-#ifdef VERSION_CN
-#include "levels/ending/cake_cn.inc.c"
-#else
 #include "levels/ending/cake.inc.c"
-#endif
 
 // 0x07025800 - 0x07025840
 static const Vtx cake_end_vertex_07025800[] = {

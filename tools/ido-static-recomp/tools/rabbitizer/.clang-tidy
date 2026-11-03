@@ -1,9 +1,0 @@
-Checks: 'readability-*,-readability-magic-numbers,clang-diagnostic-*,clang-analyzer-*,-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,bugprone*,-bugprone-branch-clone,modernize*,performance*,portability*,diagnostic-*,analyzer-*,misc*,-misc-no-recursion'
-WarningsAsErrors: ''
-HeaderFilterRegex: '(src|include)\/.*\.h$'
-FormatStyle: 'file'
-CheckOptions:
-  # Require argument names to match exactly (instead of allowing a name to be a prefix/suffix of another)
-  # Note: 'true' is expected by clang-tidy 12+ but '1' is used for compatibility with older versions
-  - key: readability-inconsistent-declaration-parameter-name.Strict
-    value: 1

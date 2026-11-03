@@ -13,21 +13,23 @@
 #define CELL_HEIGHT_LIMIT           20000
 #define FLOOR_LOWER_LIMIT           -11000
 #define FLOOR_LOWER_LIMIT_MISC      (FLOOR_LOWER_LIMIT + 1000)
-// same as FLOOR_LOWER_LIMIT_MISC, explicitly for shadow.c
+// same as FLOOR_LOWER_LIMIT_MISC, explicitly for shadow.c 
 // It doesn't match if ".0" is removed or ".f" is added
 #define FLOOR_LOWER_LIMIT_SHADOW    (FLOOR_LOWER_LIMIT + 1000.0)
 
-struct WallCollisionData {
+struct WallCollisionData
+{
     /*0x00*/ f32 x, y, z;
     /*0x0C*/ f32 offsetY;
     /*0x10*/ f32 radius;
-    /*0x14*/ u8 filler[2];
+    /*0x14*/ s16 unused;
     /*0x16*/ s16 numWalls;
     /*0x18*/ struct Surface *walls[4];
 };
 
-struct FloorGeometry {
-    u8 filler[16]; // possibly position data?
+struct FloorGeometry
+{
+    f32 unused[4]; // possibly position data?
     f32 normalX;
     f32 normalY;
     f32 normalZ;

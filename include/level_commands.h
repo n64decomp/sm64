@@ -214,19 +214,19 @@
     CMD_PTR(unk4), \
     CMD_W(unk8)
 
-#define OBJECT_WITH_ACTS(model, posX, posY, posZ, angleX, angleY, angleZ, bhvParam, bhv, acts) \
+#define OBJECT_WITH_ACTS(model, posX, posY, posZ, angleX, angleY, angleZ, behParam, beh, acts) \
     CMD_BBBB(0x24, 0x18, acts, model), \
     CMD_HHHHHH(posX, posY, posZ, angleX, angleY, angleZ), \
-    CMD_W(bhvParam), \
-    CMD_PTR(bhv)
+    CMD_W(behParam), \
+    CMD_PTR(beh)
 
-#define OBJECT(model, posX, posY, posZ, angleX, angleY, angleZ, bhvParam, bhv) \
-    OBJECT_WITH_ACTS(model, posX, posY, posZ, angleX, angleY, angleZ, bhvParam, bhv, 0x1F)
+#define OBJECT(model, posX, posY, posZ, angleX, angleY, angleZ, behParam, beh) \
+    OBJECT_WITH_ACTS(model, posX, posY, posZ, angleX, angleY, angleZ, behParam, beh, 0x1F)
 
-#define MARIO(model, bhvArg, bhv) \
-    CMD_BBBB(0x25, 0x0C, 0x00, model), \
-    CMD_W(bhvArg), \
-    CMD_PTR(bhv)
+#define MARIO(unk3, behArg, beh) \
+    CMD_BBBB(0x25, 0x0C, 0x00, unk3), \
+    CMD_W(behArg), \
+    CMD_PTR(beh)
 
 #define WARP_NODE(id, destLevel, destArea, destNode, flags) \
     CMD_BBBB(0x26, 0x08, id, destLevel), \
@@ -268,8 +268,8 @@
     CMD_BBH(0x2F, 0x08, 0x0000), \
     CMD_PTR(surfaceRooms)
 
-#define SHOW_DIALOG(index, dialogID) \
-    CMD_BBBB(0x30, 0x04, index, dialogID)
+#define SHOW_DIALOG(index, dialogId) \
+    CMD_BBBB(0x30, 0x04, index, dialogId)
 
 #define TERRAIN_TYPE(terrainType) \
     CMD_BBH(0x31, 0x04, terrainType)

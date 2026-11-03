@@ -1,10 +1,9 @@
 // assembler directives
 .set noat      // allow manual use of $at
 .set noreorder // don't insert nops after branches
+.set gp=64
 
 #include "macros.inc"
-
-#ifndef VERSION_CN
 
 
 .section .text, "ax"
@@ -99,5 +98,3 @@ glabel __divdi3
     dsra32 $v1, $v1, 0
     jr    $ra
      dsra32 $v0, $v0, 0
-
-#endif
