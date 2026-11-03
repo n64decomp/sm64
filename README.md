@@ -1,5 +1,14 @@
 # sm64ios — Super Mario 64 for iOS 6 (first-generation iPad / armv7)
 
+## Build this app
+
+Use the separate [SM64 iOS Builder](https://github.com/JohnMama12/sm64-ios-builder)
+to build this source in WSL. Download or clone that repository and follow its
+README for Theos/SDK setup, ROM verification, and compiling a local `.deb`.
+Provide your own authentic US ROM; this project provides no ROM, extracted
+assets, SDK, or compiled app. The generated package is for local use only:
+`src/pc/gfx/LICENSE.txt` prohibits binary redistribution.
+
 > Note: ## ⚠️ 100% vibecoded
 >
 > The entire iOS port — UIKit shell, GLES 1.1 renderer, on-device build system, the SSH
