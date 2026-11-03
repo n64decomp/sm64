@@ -1,4 +1,4 @@
-# sm64ios — Super Mario 64 for iOS 6 (first-generation iPad / armv7)
+# sm64ios — Super Mario 64 for iOS 6 (armv7)
 
 ## Build this app
 
